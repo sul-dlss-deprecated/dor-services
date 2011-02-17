@@ -22,26 +22,35 @@ class SourceId
   attr_accessor :source
   attr_accessor :value
   
-  # A convience method just to return self when #each is called
-  def each
-    return self
+  def xml_values
+    [self.value, {:source => self.source}]
   end
-  
+
+  def to_s
+    "#{self.source}:#{self.value}"
+  end
 end
 
 class OtherId 
   attr_accessor :name
   attr_accessor :value
   
-  # A convience method just to return self when #each is called
-   def each
-     return self
-   end
+  def xml_values
+   [self.value, {:name => self.name}]
+  end
+  
+  def to_s
+    "#{self.name}:#{self.value}"
+  end
   
 end
 
 class Tag
   attr_accessor :value
+  
+  def xml_values
+    [self.value]
+  end
 end
 
 
@@ -64,8 +73,7 @@ class IdentityMetadata
      @objectId, @citationTitle = "", "" #there can only be one of these values
      @sourceId  =  SourceId.new #there can be only one. 
      @otherIds, @tags  = [], [] # this is an array that will be filled with OtherId and Tag objects
-     @objectTypes, @objectLabels, @objectCreators,  @citationCreators,
-     @agreementIds =  [], [],[],[],[],[]
+     @objectTypes, @objectLabels, @objectCreators, @citationCreators, @agreementIds =  [], [], [], [], [], []
       
   
      # if the new is given an xml string, store that in the xml attr_accessor and don't rebuild.
@@ -83,21 +91,21 @@ class IdentityMetadata
   def build_xml()
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.identityMetadata {
-          self.instance_variables.each do |var|
-            unless var == "@xml"       
-              self.instance_variable_get(var).each do |v| 
-                if v.is_a?(SourceId)
-                  xml.send("sourceId", v.value, :source => v.source ) 
-                elsif v.is_a?(OtherId)
-                  xml.send("otherId", v.value, :name => v.name )
-                elsif v.is_a?(Tag)
-                  xml.send("tag", v.value)
+          self.instance_variables.each do |var_name|
+            unless var_name == "@xml"
+              tag_name = var_name[1..-1].chomp('s')
+              var = self.instance_variable_get(var_name)
+              # wrap the singleton properties in a one-element array
+              var = [var] unless var.respond_to?(:each)
+              var.each do |v| 
+                if v.respond_to?(:xml_values)
+                  xml.send(tag_name, *(v.xml_values))
                 else
-                  xml.send("#{var.gsub('@','').chomp('s')}_", v) 
-                end #v.is_a?
-              end #self.instance_variable_get(var)
+                  xml.send(tag_name, v.to_s)
+                end
+              end #var.each
             end #unless
-          end #instance_Variables.each
+          end #instance_variables.each
         }
       end
       @xml = builder.to_xml
@@ -129,10 +137,7 @@ class IdentityMetadata
    
    # Returns an array of tag values
   def get_tags()
-     
-     tag_array = []
-     self.tags.each {|t| tag_array << t.value }
-     return tag_array
+     self.tags.collect { |t| t.value }
   end
      
    
@@ -156,7 +161,12 @@ class IdentityMetadata
    end
      
    # Add a new name,value pair to the set of identifiers
-   def add_identifier(key, value)
+   def add_identifier(*args)
+     (key,value) = args
+     if value.nil? and key =~ /:/
+       (key,value) = key.split(/:/,2)
+     end
+     
      other_id = self.get_other_id(key)
      if (other_id != nil)
        other_id.value = value
@@ -167,15 +177,23 @@ class IdentityMetadata
        self.otherIds << other_id
      end
    end
-  
-  
+   
+   def sourceId=(*args)
+     (source,value) = args
+     if value.nil? and source =~ /:/
+       (source,value) = source.split(/:/,2)
+     end
+     
+     self.sourceId.source = source
+     self.sourceId.value = value
+   end
+   
    # Return an array of strings where each entry consists of name:value
    def get_id_pairs
      pairs=Array.new  
-     self.otherIds.each do |other_id|
-         pairs << "#{other_id.name}:#{other_id.value}"
+     self.otherIds.collect do |other_id|
+         other_id.to_s
      end
-     return pairs
    end
   
   #another convience method to allow citationCreator=
@@ -195,7 +213,7 @@ class IdentityMetadata
        xml = xml.read
      end
         
-     im = IdentityMetadata.new(xml)
+     im = self.new(xml)
      doc = Nokogiri::XML(xml)
      
      children = doc.root.element_children #iterate through the nodes and map them to instance vars in the object. 
@@ -205,20 +223,15 @@ class IdentityMetadata
            im.sourceId.source = c["source"]
            im.sourceId.value = c.text.strip
          elsif c.name == "otherId" #otherID needs to be cast as an object and stored in an array
-           oi = OtherId.new
-           oi.name = c["name"]
-           oi.value = c.text.strip
-           im.otherIds << oi
+           im.add_identifier(c['name'],c.text.strip)
          elsif c.name == "tag" #tags also need to have objects created and stored in an array
-           tag = Tag.new
-           tag.value = c.text.strip
-           im.tags << tag
+           im.add_tag(c.text.strip)
          elsif c.name == "objectId" # objectId needs to be mapped to objectId attr_access
            im.objectId = c.text.strip
          elsif c.name == "citationTitle" #citationTitle also needs to be mapped to citationTitle attr_accessor
            im.citationTitle = c.text.strip
          else # everything else gets put into an attr_accessor array (note the added 's' on the attr_accessor.)
-             im.send("#{c.name}s").send("<<", c.text.strip)
+           im.send("#{c.name}s").send("<<", c.text.strip)
          end #if
        end #if
      end  #each

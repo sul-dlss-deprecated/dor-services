@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<identityMetadata>
+     <objectId>druid:rt923jk342</objectId>
+     <objectType>item</objectType>
+     <objectLabel>google download barcode 36105049267078</objectLabel>
+     <objectCreator>DOR</objectCreator>
+     <citationTitle>Squirrels of North America</citationTitle>
+     <citationCreator>Eder, Tamara, 1974-</citationCreator>
+     <sourceId source="google">STANFORD_342837261527</sourceId>
+     <otherId name="barcode">342837261527</otherId>
+     <otherId name="catkey">129483625</otherId>
+     <otherId name="uuid">7f3da130-7b02-11de-8a39-0800200c9a66</otherId>
+     <agreementId>druid:yh72ms9133</agreementId>
+     <tag>Google Books : Phase 1</tag>
+     <tag>Google Books : Scan source STANFORD</tag>
+	 <tag>Test : Added by spec tests</tag>
+</identityMetadata>
