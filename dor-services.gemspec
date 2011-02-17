@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
   
 Gem::Specification.new do |s|
   s.name        = "dor"
-  s.version     = "0.1"
+  s.version     = "0.1.1"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick"]
   s.email       = ["mbklein@stanford.edu"]
@@ -20,8 +20,9 @@ Gem::Specification.new do |s|
   s.add_dependency "rest-client"
   s.add_dependency "validatable"
   
-  # Bundler will install these gems too if you've checked out lyber-core source from git and run 'bundle install'
-  # It will not add these as dependencies if you require lyber-core for other projects
+  # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
+  # It will not add these as dependencies if you require dor-services for other projects
+  s.add_development_dependency "equivalent-xml"
   s.add_development_dependency "fakeweb"
   s.add_development_dependency "haml"
   s.add_development_dependency "pony"
