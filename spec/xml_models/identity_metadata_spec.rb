@@ -17,6 +17,7 @@ describe IdentityMetadata do
       :source_id => 'google:STANFORD_342837261527',
       :other_ids => ['barcode:342837261527', 'catkey:129483625', 'uuid:7f3da130-7b02-11de-8a39-0800200c9a66'],
       :agreement_id => 'druid:yh72ms9133',
+      :admin_policy => 'druid:hx23ke9928',
       :tags => ['Google Books : Phase 1', 'Google Books : Scan source STANFORD']
     }
   end
@@ -42,6 +43,7 @@ describe IdentityMetadata do
       @idm.citationCreators << @data[:citation_creator]
       @idm.sourceId = @data[:source_id]
       @idm.agreementIds << @data[:agreement_id]
+      @idm.adminPolicyObjects << @data[:admin_policy]
       @data[:other_ids].each { |id| @idm.add_identifier(id) }
       @data[:tags].each { |tag| @idm.add_tag(tag) }
 
@@ -68,6 +70,7 @@ describe IdentityMetadata do
       @idm.citationCreators.should include(@data[:citation_creator])
       @idm.sourceId.to_s.should == @data[:source_id]
       @idm.agreementIds.should include(@data[:agreement_id])
+      @idm.adminPolicyObjects.should include(@data[:admin_policy])
       @data[:other_ids].each { |id| @idm.get_id_pairs.should include(id) }
       @data[:tags].each { |tag| @idm.get_tags.should include(tag) }
     end

@@ -21,6 +21,8 @@ require 'nokogiri'
 #  <dc:identifier>druid:ng786kn0371</dc:identifier>
 #</oai_dc:dc>
 
+# TODO: Rewrite in OM
+
 class DublinCore 
   
   

@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   # Runtime dependencies
   s.add_dependency "active-fedora", ">=1.2.6"
   s.add_dependency "nokogiri", "=1.4.3.1"
+  s.add_dependency "om", ">=1.0.2"
   s.add_dependency "rest-client"
   s.add_dependency "validatable"
   

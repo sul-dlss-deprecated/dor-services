@@ -16,31 +16,57 @@ require 'nokogiri'
 #     <tag>Google Books : Scan source STANFORD</tag>
 #</identityMetadata>
 
+# TODO: Rewrite in OM
 
 # this just maps the #value method to return the "text", "source", "name" values form the hash
 class SourceId
-  attr_accessor :source
-  attr_accessor :value
+  attr_reader :source
+  attr_reader :value
   
   def xml_values
     [self.value, {:source => self.source}]
   end
 
+  def source=(val)
+    @source = val.nil? ? nil : val.to_s
+  end
+  
+  def value=(val)
+    @value = val.nil? ? nil : val.to_s
+  end
+  
   def to_s
     "#{self.source}:#{self.value}"
   end
+  
+  def empty?
+    (self.source.nil? || self.source.empty?) && (self.value.nil? || self.value.empty?)
+  end
+  
 end
 
 class OtherId 
-  attr_accessor :name
-  attr_accessor :value
+  attr_reader :name
+  attr_reader :value
   
   def xml_values
    [self.value, {:name => self.name}]
   end
   
+  def name=(val)
+    @name = val.nil? ? nil : val.to_s
+  end
+  
+  def value=(val)
+    @value = val.nil? ? nil : val.to_s
+  end
+  
   def to_s
     "#{self.name}:#{self.value}"
+  end
+  
+  def empty?
+    (self.name.nil? || self.name.empty?) && (self.value.nil? || self.value.empty?)
   end
   
 end
@@ -63,7 +89,7 @@ class IdentityMetadata
   attr_reader :sourceId, :tags
   # these instance vars map to nodes in the identityMetadata XML
   attr_accessor :objectTypes, :objectLabels, :objectCreators, :citationCreators, :citationTitle, 
-                :otherIds, :agreementIds
+                :otherIds, :agreementIds, :adminPolicyObjects
   # this stores the xml string
   attr_accessor :xml
   
@@ -73,7 +99,7 @@ class IdentityMetadata
      @objectId, @citationTitle = "", "" #there can only be one of these values
      @sourceId  =  SourceId.new #there can be only one. 
      @otherIds, @tags  = [], [] # this is an array that will be filled with OtherId and Tag objects
-     @objectTypes, @objectLabels, @objectCreators, @citationCreators, @agreementIds =  [], [], [], [], [], []
+     @objectTypes, @objectLabels, @objectCreators, @citationCreators, @agreementIds, @adminPolicyObjects =  [], [], [], [], [], [], []
       
   
      # if the new is given an xml string, store that in the xml attr_accessor and don't rebuild.
@@ -99,7 +125,9 @@ class IdentityMetadata
               var = [var] unless var.respond_to?(:each)
               var.each do |v| 
                 if v.respond_to?(:xml_values)
-                  xml.send(tag_name, *(v.xml_values))
+                  unless (v.respond_to?(:empty?) && v.empty?)
+                    xml.send(tag_name, *(v.xml_values))
+                  end
                 else
                   xml.send(tag_name, v.to_s)
                 end
@@ -108,7 +136,7 @@ class IdentityMetadata
           end #instance_variables.each
         }
       end
-      @xml = builder.to_xml
+      @xml = builder.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::NO_DECLARATION, :indent => 2)
   end
   
   # This method rebuilds the xml attr_accesor and returns it as a string.   
@@ -162,7 +190,7 @@ class IdentityMetadata
      
    # Add a new name,value pair to the set of identifiers
    def add_identifier(*args)
-     (key,value) = args
+     (key,value) = args.collect { |arg| arg.to_s }
      if value.nil? and key =~ /:/
        (key,value) = key.split(/:/,2)
      end
@@ -174,18 +202,20 @@ class IdentityMetadata
        other_id = OtherId.new
        other_id.name = key
        other_id.value = value
-       self.otherIds << other_id
+       @otherIds << other_id
      end
    end
    
-   def sourceId=(*args)
-     (source,value) = args
-     if value.nil? and source =~ /:/
-       (source,value) = source.split(/:/,2)
-     end
+   def sourceId=(value)
+     if value.nil?
+       @sourceId.source = nil
+       @sourceId.value = nil
+     else
+       (source,value) = value.split(/:/,2)
      
-     self.sourceId.source = source
-     self.sourceId.value = value
+       @sourceId.source = source
+       @sourceId.value = value
+     end
    end
    
    # Return an array of strings where each entry consists of name:value
