@@ -19,9 +19,9 @@ module Dor
 
       return "#{Dor::ID_NAMESPACE}:#{id.strip}"
 
-    rescue Exception => e
-      Rails.logger.error("Unable to mint id from suri: #{e.to_s}")
-      raise e
+#    rescue Exception => e
+#      Rails.logger.error("Unable to mint id from suri: #{e.to_s}")
+#      raise e
     end
   
     

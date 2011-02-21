@@ -1,4 +1,5 @@
 require 'active_fedora'
+require 'dor/suri_service'
 require 'xml_models/identity_metadata/identity_metadata'
 require 'xml_models/foxml'
 
@@ -8,7 +9,7 @@ module Dor
     
     class << self
       def register_object(object_type, content_model, admin_policy, label, agreement_id, source_id = {}, other_ids = {}, tags = [])
-        pid = 'druid:abc123xyz'
+        pid = Dor::SuriService.mint_id
 
         idmd = IdentityMetadata.new
         idmd.objectTypes << object_type
