@@ -10,6 +10,8 @@ require 'dor/base'
 require 'dor/suri_service'
 require 'dor/workflow_service'
 
+require 'dor_config'
+
 Spec::Runner.configure do |config|
   
 end

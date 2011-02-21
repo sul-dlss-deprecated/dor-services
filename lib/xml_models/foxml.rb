@@ -82,7 +82,9 @@ class Foxml
   
   def set_datastream(ds_name, new_value, nil_value = nil)
     new_value ||= nil_value
-    if new_value.is_a?(Nokogiri::XML::Node)
+    if new_value.is_a?(Nokogiri::XML::Document)
+      new_value = new_value.root.clone
+    elsif new_value.is_a?(Nokogiri::XML::Node)
       new_value = new_value.clone
     end
     parent = self.get_datastream(ds_name)
