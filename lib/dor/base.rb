@@ -22,13 +22,19 @@ module Dor
         
         foxml = Foxml.new(pid, label, content_model, idmd.to_xml, parent)
         
-        result = Fedora::Repository.instance.ingest(foxml.to_xml)
+        http_response = Fedora::Repository.instance.ingest(foxml.to_xml)
         new_object = begin
           self.load_instance(pid) 
         rescue ActiveFedora::ObjectNotFoundError
           nil
         end
-        return { :result => result, :object => new_object }
+        result = {
+          :status => http_response.code,
+          :message => http_response.message,
+          :pid => pid,
+          :object => new_object
+        }
+        return(result)
       end
     end
     
