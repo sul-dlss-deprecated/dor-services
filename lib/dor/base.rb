@@ -8,7 +8,7 @@ module Dor
   class Base < ActiveFedora::Base
     
     class << self
-      def register_object(object_type, content_model, admin_policy, label, agreement_id, source_id = {}, other_ids = {}, tags = [])
+      def register_object(object_type, content_model, admin_policy, label, agreement_id, parent = nil, source_id = {}, other_ids = {}, tags = [])
         pid = Dor::SuriService.mint_id
 
         idmd = IdentityMetadata.new
@@ -20,19 +20,15 @@ module Dor
         other_ids.each_pair { |name,value| idmd.add_identifier(name,value) }
         tags.each { |tag| idmd.add_tag(tag) }
         
-        foxml = Foxml.new(pid, label, content_model, idmd.to_xml)
-      end
-      
-      private
-      # Turn ['key1:value1','key2:value2'] into { 'key1' => 'value1', 'key2', 'value2' }
-      def hashify_ids(ids)
-        if ids.nil?
-          return {}
-        elsif ids.is_a?(Hash)
-          return ids
-        else
-          return Hash[ids.collect { |id| id.split(/:/,2) }]
+        foxml = Foxml.new(pid, label, content_model, idmd.to_xml, parent)
+        
+        result = Fedora::Repository.instance.ingest(foxml.to_xml)
+        new_object = begin
+          self.load_instance(pid) 
+        rescue ActiveFedora::ObjectNotFoundError
+          nil
         end
+        return { :result => result, :object => new_object }
       end
     end
     

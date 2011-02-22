@@ -15,12 +15,22 @@ class Foxml
     "rel"          => "info:fedora/fedora-system:def/relations-external#"
   } 
   
-  def initialize(pid=nil, label=nil, content_model=nil, identity_metadata=nil)
+  def initialize(pid=nil, label=nil, content_model=nil, identity_metadata=nil, parent = nil)
     @xml = Nokogiri::XML(XML_TEMPLATE) { |config| config.default_xml.noblanks }
+    @defined_namespaces = { '' => nil }
+    @xml.traverse { |node|
+      if node.respond_to?(:namespace_definitions)
+        node.namespace_definitions.each { |ns|
+          @defined_namespaces[ns.prefix] = ns
+        }
+      end
+    }
+
     self.pid = pid.to_s
     self.label = label.to_s
     self.content_model = content_model.to_s
     self.identity_metadata = identity_metadata
+    self.parent = parent
   end
 
   def pid
@@ -68,8 +78,29 @@ class Foxml
     if existing_title = self.get_datastream("DC","//dc:title")
       existing_title.remove
     end
-    self.dublin_core.add_child('<dc:title/>')
-    self.get_datastream("DC","//dc:title").content = value
+    new_child = @xml.create_element('title')
+    new_child.namespace = @defined_namespaces['dc']
+    new_child.content = value
+    self.dublin_core.add_child(new_child)
+    return new_child
+  end
+  
+  def parent
+    self.get_datastream("RELS-EXT","//rel:isPartOf/@rdf:resource")
+  end
+  
+  def parent=(value)
+    if existing_parent = self.get_datastream("RELS-EXT","//rel:isPartOf")
+      existing_parent.remove
+    end
+    if value.nil?
+      return nil
+    else
+      new_child = @xml.create_element('isPartOf', 'rdf:resource' => "info:fedora/#{value}")
+      new_child.namespace = @defined_namespaces['rel']
+      self.get_datastream("RELS-EXT","//rdf:Description").add_child(new_child)
+      return new_child
+    end
   end
   
   def get_datastream(ds_name, *paths)
@@ -135,12 +166,12 @@ class Foxml
     <foxml:datastreamVersion
       FORMAT_URI="info:fedora/fedora-system:FedoraRELSExt-1.0" ID="RELS-EXT.0"
       LABEL="RDF Statements about this object" MIMETYPE="application/rdf+xml">
-        <foxml:xmlContent>
-          <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" 
-              xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rel="info:fedora/fedora-system:def/relations-external#">
-              <rdf:Description rdf:about="info:fedora/$$PID$$">
-                <fedora-model:hasModel rdf:resource="info:fedora/$$MODEL$$"/>
-              </rdf:Description>
+      <foxml:xmlContent>
+        <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" 
+            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rel="info:fedora/fedora-system:def/relations-external#">
+            <rdf:Description rdf:about="info:fedora/$$PID$$">
+              <fedora-model:hasModel rdf:resource="info:fedora/$$MODEL$$"/>
+            </rdf:Description>
         </rdf:RDF>
       </foxml:xmlContent>
     </foxml:datastreamVersion>
