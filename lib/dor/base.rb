@@ -1,42 +1,9 @@
 require 'active_fedora'
 require 'dor/suri_service'
-require 'xml_models/identity_metadata/identity_metadata'
-require 'xml_models/foxml'
 
 module Dor
 
   class Base < ActiveFedora::Base
-    
-    class << self
-      def register_object(object_type, content_model, admin_policy, label, agreement_id, parent = nil, source_id = {}, other_ids = {}, tags = [])
-        pid = Dor::SuriService.mint_id
-
-        idmd = IdentityMetadata.new
-        idmd.objectTypes << object_type
-        idmd.adminPolicyObjects << admin_policy
-        idmd.agreementIds << agreement_id
-        idmd.sourceId.source = source_id[:source]
-        idmd.sourceId.value = source_id[:value]
-        other_ids.each_pair { |name,value| idmd.add_identifier(name,value) }
-        tags.each { |tag| idmd.add_tag(tag) }
-        
-        foxml = Foxml.new(pid, label, content_model, idmd.to_xml, parent)
-        
-        http_response = Fedora::Repository.instance.ingest(foxml.to_xml)
-        new_object = begin
-          self.load_instance(pid) 
-        rescue ActiveFedora::ObjectNotFoundError
-          nil
-        end
-        result = {
-          :status => http_response.code,
-          :message => http_response.message,
-          :pid => pid,
-          :object => new_object
-        }
-        return(result)
-      end
-    end
     
     def initialize(attrs = {})
       unless attrs[:pid]
