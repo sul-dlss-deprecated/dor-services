@@ -41,6 +41,7 @@ class Foxml
   def pid=(value)
     self.xpath('/foxml:digitalObject/@PID').first.value = value
     self.get_datastream("RELS-EXT","rdf:RDF/rdf:Description/@rdf:about").value = "info:fedora/#{value}"
+    update_dc_identifiers
   end
 
   def content_model
@@ -67,6 +68,7 @@ class Foxml
     self.set_datastream("identityMetadata",value,"<identityMetadata/>")
     # strip the namespace Nokogiri attaches to identityMetadata
     self.get_datastream("identityMetadata","*[local-name()='identityMetadata']").traverse { |n| n.namespace = nil }
+    update_dc_identifiers
   end
   
   def label
@@ -143,6 +145,25 @@ class Foxml
   
   def xpath(path)
     @xml.xpath(path, NAMESPACES)
+  end
+  
+  def update_dc_identifiers
+    new_ids = self.identity_metadata.xpath('*[local-name() = "sourceId" or local-name() = "otherId"]').collect do |n| 
+      n.attribute_nodes.first.value + ":" + n.content
+    end
+    unless self.pid.nil? or self.pid.empty?
+      new_ids << self.pid 
+    end
+    
+    dc = self.dublin_core
+    dc.xpath('dc:identifier',NAMESPACES).each { |existing_id| existing_id.remove }
+    new_ids.each do |id|
+      new_child = @xml.create_element('dc:identifier')
+      new_child.content = id
+      dc.add_child(new_child)
+      fix_namespaces(new_child)
+    end
+    return new_ids
   end
   
   def fix_namespaces(node)

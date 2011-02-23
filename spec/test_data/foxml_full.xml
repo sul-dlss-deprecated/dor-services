@@ -14,6 +14,11 @@
         <foxml:xmlContent>
           <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/">
 			<dc:title>Foxml Test Object</dc:title>
+	          <dc:identifier>google:STANFORD_342837261527</dc:identifier>
+	          <dc:identifier>barcode:342837261527</dc:identifier>
+	          <dc:identifier>catkey:129483625</dc:identifier>
+	          <dc:identifier>uuid:7f3da130-7b02-11de-8a39-0800200c9a66</dc:identifier>
+			  <dc:identifier>druid:abc123def</dc:identifier>
 		  </oai_dc:dc>
         </foxml:xmlContent>
     </foxml:datastreamVersion>
