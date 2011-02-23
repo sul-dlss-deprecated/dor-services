@@ -11,7 +11,6 @@ require 'nokogiri'
 #     <otherId name="barcode">342837261527</otherId>
 #     <otherId name="catkey">129483625</otherId>
 #     <otherId name="uuid">7f3da130-7b02-11de-8a39-0800200c9a66</otherId>
-#     <agreementId>druid:yh72ms9133</agreementId>
 #     <tag>Google Books : Phase 1</tag>
 #     <tag>Google Books : Scan source STANFORD</tag>
 #</identityMetadata>
@@ -89,17 +88,17 @@ class IdentityMetadata
   attr_reader :sourceId, :tags
   # these instance vars map to nodes in the identityMetadata XML
   attr_accessor :objectTypes, :objectLabels, :objectCreators, :citationCreators, :citationTitle, 
-                :otherIds, :agreementIds, :adminPolicyObjects
+                :otherIds, :objectAdminClass
   # this stores the xml string
   attr_accessor :xml
   
   
   def initialize(xml = nil)  
     
-     @objectId, @citationTitle = "", "" #there can only be one of these values
+     @objectId, @citationTitle, @objectAdminClass = "", "" #there can only be one of these values
      @sourceId  =  SourceId.new #there can be only one. 
      @otherIds, @tags  = [], [] # this is an array that will be filled with OtherId and Tag objects
-     @objectTypes, @objectLabels, @objectCreators, @citationCreators, @agreementIds, @adminPolicyObjects =  [], [], [], [], [], [], []
+     @objectTypes, @objectLabels, @objectCreators, @citationCreators =  [], [], [], []
       
   
      # if the new is given an xml string, store that in the xml attr_accessor and don't rebuild.
@@ -119,10 +118,13 @@ class IdentityMetadata
         xml.identityMetadata {
           self.instance_variables.each do |var_name|
             unless var_name == "@xml"
-              tag_name = var_name[1..-1].chomp('s')
               var = self.instance_variable_get(var_name)
+              tag_name = var_name[1..-1]
+              if var.is_a?(Array)
+                tag_name.chomp!('s')
+              end
               # wrap the singleton properties in a one-element array
-              var = [var] unless var.respond_to?(:each)
+              var = Array(var)
               var.each do |v| 
                 if v.respond_to?(:xml_values)
                   unless (v.respond_to?(:empty?) && v.empty?)
@@ -260,6 +262,8 @@ class IdentityMetadata
            im.objectId = c.text.strip
          elsif c.name == "citationTitle" #citationTitle also needs to be mapped to citationTitle attr_accessor
            im.citationTitle = c.text.strip
+         elsif c.name == "objectAdminClass"
+           im.objectAdminClass = c.text.strip
          else # everything else gets put into an attr_accessor array (note the added 's' on the attr_accessor.)
            im.send("#{c.name}s").send("<<", c.text.strip)
          end #if

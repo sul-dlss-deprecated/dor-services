@@ -32,7 +32,8 @@
       LABEL="RDF Statements about this object" MIMETYPE="application/rdf+xml">
         <foxml:xmlContent>
           <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" 
-              xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rel="info:fedora/fedora-system:def/relations-external#">
+              xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rel="info:fedora/fedora-system:def/relations-external#"
+			  xmlns:hydra="http://projecthydra.org/ns/relations#">
               <rdf:Description rdf:about="info:fedora/">
                 <fedora-model:hasModel rdf:resource="info:fedora/"/>
               </rdf:Description>

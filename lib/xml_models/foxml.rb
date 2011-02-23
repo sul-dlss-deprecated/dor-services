@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'nokogiri'
 
 # TODO: Rewrite in OM
@@ -12,10 +11,11 @@ class Foxml
     "foxml"        => "info:fedora/fedora-system:def/foxml#",
     "oai_dc"       => "http://www.openarchives.org/OAI/2.0/oai_dc/", 
     "rdf"          => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", 
-    "rel"          => "info:fedora/fedora-system:def/relations-external#"
+    "rel"          => "info:fedora/fedora-system:def/relations-external#",
+    "hydra"        => "http://projecthydra.org/ns/relations#"
   } 
   
-  def initialize(pid=nil, label=nil, content_model=nil, identity_metadata=nil, parent = nil)
+  def initialize(pid=nil, label=nil, content_model=nil, identity_metadata=nil, admin_policy_object=nil, parent = nil)
     @xml = Nokogiri::XML(XML_TEMPLATE) { |config| config.default_xml.noblanks }
     @defined_namespaces = { '' => nil }
     @xml.traverse { |node|
@@ -30,6 +30,7 @@ class Foxml
     self.label = label.to_s
     self.content_model = content_model.to_s
     self.identity_metadata = identity_metadata
+    self.admin_policy_object = admin_policy_object
     self.parent = parent
   end
 
@@ -43,11 +44,11 @@ class Foxml
   end
 
   def content_model
-    self.get_datastream("RELS-EXT","rdf:RDF/rdf:Description/fedora-model:hasModel/@rdf:resource").value
+    self.get_rels_ext_resource("fedora-model:hasModel")
   end
   
   def content_model=(value)
-    self.get_datastream("RELS-EXT","rdf:RDF/rdf:Description/fedora-model:hasModel/@rdf:resource").value = "info:fedora/#{value}"
+    self.set_rels_ext_resource("fedora-model:hasModel",value)
   end
   
   def dublin_core
@@ -63,7 +64,6 @@ class Foxml
   end
   
   def identity_metadata=(value)
-    $stderr.puts(value)
     self.set_datastream("identityMetadata",value,"<identityMetadata/>")
     # strip the namespace Nokogiri attaches to identityMetadata
     self.get_datastream("identityMetadata","*[local-name()='identityMetadata']").traverse { |n| n.namespace = nil }
@@ -78,27 +78,43 @@ class Foxml
     if existing_title = self.get_datastream("DC","//dc:title")
       existing_title.remove
     end
-    new_child = @xml.create_element('title')
-    new_child.namespace = @defined_namespaces['dc']
+    new_child = @xml.create_element('dc:title')
     new_child.content = value
     self.dublin_core.add_child(new_child)
+    fix_namespaces(new_child)
     return new_child
+  end
+
+  def admin_policy_object
+    self.get_rels_ext_resource("hydra:isGovernedBy")
+  end
+  
+  def admin_policy_object=(value)
+    self.set_rels_ext_resource("hydra:isGovernedBy",value)
   end
   
   def parent
-    self.get_datastream("RELS-EXT","//rel:isPartOf/@rdf:resource")
+    self.get_rels_ext_resource("rel:isPartOf")
   end
   
   def parent=(value)
-    if existing_parent = self.get_datastream("RELS-EXT","//rel:isPartOf")
+    self.set_rels_ext_resource("rel:isPartOf",value)
+  end
+  
+  def get_rels_ext_resource(predicate)
+    self.get_datastream("RELS-EXT","//#{predicate}/@rdf:resource").value.split(/\//).last
+  end
+  
+  def set_rels_ext_resource(predicate,value)
+    if existing_parent = self.get_datastream("RELS-EXT","//#{predicate}")
       existing_parent.remove
     end
     if value.nil?
       return nil
     else
-      new_child = @xml.create_element('isPartOf', 'rdf:resource' => "info:fedora/#{value}")
-      new_child.namespace = @defined_namespaces['rel']
+      new_child = @xml.create_element(predicate, 'rdf:resource' => "info:fedora/#{value}")
       self.get_datastream("RELS-EXT","//rdf:Description").add_child(new_child)
+      fix_namespaces(new_child)
       return new_child
     end
   end
@@ -129,9 +145,27 @@ class Foxml
     @xml.xpath(path, NAMESPACES)
   end
   
+  def fix_namespaces(node)
+    if node.is_a?(Nokogiri::XML::CharacterData)
+      node.namespace = nil
+    else
+      if node.name =~ /:/
+        (prefix,name) = node.name.split(/:/)
+        node.name = name
+        node.namespace = @defined_namespaces[prefix]
+      end
+      unless node.is_a?(Nokogiri::XML::Attr)
+        node.children.each { |n| fix_namespaces(n) }
+        node.attribute_nodes.each { |n| fix_namespaces(n) }
+      end
+    end
+  end
+  
   def method_missing(sym,*args)
     if @xml.respond_to?(sym)
       @xml.send(sym,*args)
+    else
+      super
     end
   end
   
@@ -168,7 +202,8 @@ class Foxml
       LABEL="RDF Statements about this object" MIMETYPE="application/rdf+xml">
       <foxml:xmlContent>
         <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" 
-            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rel="info:fedora/fedora-system:def/relations-external#">
+            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rel="info:fedora/fedora-system:def/relations-external#"
+            xmlns:hydra="http://projecthydra.org/ns/relations#">
             <rdf:Description rdf:about="info:fedora/$$PID$$">
               <fedora-model:hasModel rdf:resource="info:fedora/$$MODEL$$"/>
             </rdf:Description>

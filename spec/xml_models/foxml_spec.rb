@@ -9,6 +9,7 @@ describe Foxml do
     @specdir = File.join(File.dirname(__FILE__),"..")
     @pid = 'druid:abc123def'
     @idm = Nokogiri::XML(File.read(File.join(@specdir,"test_data/identity_metadata_full.xml")))
+    @admin_policy_object = 'druid:hx23ke9928'
     @label = "Foxml Test Object"
     @model = 'testObject'
     
@@ -22,7 +23,7 @@ describe Foxml do
   end
   
   it "should initialize with passed values" do
-    foxml = Foxml.new(@pid,@label,@model,@idm)
+    foxml = Foxml.new(@pid,@label,@model,@idm,@admin_policy_object)
     EquivalentXml.equivalent?(foxml.to_xml, @full_result).should == true
   end
   
@@ -43,6 +44,10 @@ describe Foxml do
     EquivalentXml.equivalent?(foxml.to_xml, @full_result).should == false
 
     foxml.identity_metadata = @idm
+    EquivalentXml.equivalent?(foxml.to_xml, @empty_result).should == false
+    EquivalentXml.equivalent?(foxml.to_xml, @full_result).should == false
+
+    foxml.admin_policy_object = @admin_policy_object
     EquivalentXml.equivalent?(foxml.to_xml, @empty_result).should == false
     EquivalentXml.equivalent?(foxml.to_xml, @full_result).should == true
   end
