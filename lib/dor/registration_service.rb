@@ -1,4 +1,5 @@
 require 'active_fedora'
+require 'dor/exceptions'
 require 'dor/suri_service'
 require 'xml_models/foxml'
 require 'xml_models/identity_metadata/identity_metadata'
@@ -11,7 +12,7 @@ module Dor
       def register_object(params = {})
         [:object_type, :content_model, :label].each do |required_param|
           unless params[required_param]
-            raise ArgumentError, ":#{required_param.to_s} must be specified in call to #{self.name}.register_object"
+            raise Dor::ParameterError, ":#{required_param.to_s} must be specified in call to #{self.name}.register_object"
           end
         end
 
@@ -23,8 +24,26 @@ module Dor
         other_ids = params[:other_ids] || {}
         tags = params[:tags] || []
         parent = params[:parent]
-        pid = params[:pid] || Dor::SuriService.mint_id
-
+        pid = nil
+        if params[:pid]
+          pid = params[:pid]
+          if self.query_by_id(pid).length > 0
+            raise Dor::DuplicateIdError, "An object with the PID #{pid} has already been registered."
+          end
+        else
+          pid = Dor::SuriService.mint_id
+        end
+        
+        if self.query_by_id(source_id).length > 0
+          raise Dor::DuplicateIdError, "An object with the source #{source_id.keys.first} and ID '#{source_id.values.first}' has already been registered."
+        end
+        
+        other_ids.each_pair do |*id| 
+          if self.query_by_id(id).length > 0
+            raise Dor::DuplicateIdError, "An object with the #{id[0]} '#{id[1]}' has already been registered."
+          end
+        end
+        
         idmd = IdentityMetadata.new
         idmd.objectTypes << object_type
         idmd.sourceId.source = source_id[:source]
@@ -48,6 +67,17 @@ module Dor
           :object => new_object
         }
         return(result)
+      end
+      
+      def query_by_id(id)
+        if id.is_a?(Hash) # Single valued: { :google => 'STANFORD_0123456789' }
+          id = id.collect { |*v| v.join(':') }.first
+        elsif id.is_a?(Array) # Two values: [ 'google', 'STANFORD_0123456789' ]
+          id = id.join(':')
+        end
+        
+        solr = Solr::Connection.new(Dor::GSEARCH_SOLR_URI)
+        solr.query(%{PID:"#{id}" OR dor_id_field:"#{id}"}).collect { |hit| hit['PID'] }.flatten
       end
     end
 
