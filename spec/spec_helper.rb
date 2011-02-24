@@ -6,9 +6,7 @@ require 'spec/autorun'
 
 require 'rubygems'
 require 'active_fedora'
-require 'dor/base'
-require 'dor/suri_service'
-require 'dor/workflow_service'
+require 'dor-services'
 
 Spec::Runner.configure do |config|
   
@@ -37,4 +35,3 @@ Rails = Object.new unless defined? Rails
 # Rails = Object.new unless(class_exists? 'Rails')
 
 require 'dor_config'
-

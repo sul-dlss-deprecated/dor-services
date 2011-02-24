@@ -1,0 +1,36 @@
+= dor-services
+
+Require the following:
+  require 'dor-services'
+
+Configuration is handled through the Dor::Config object:
+
+  Dor::Config.configure do |config|
+  	# Basic DOR configuration
+    config.fedora_url = 'https://dor-dev.stanford.edu/fedora'
+  	config.gsearch_solr_url = 'http://dor-dev.stanford.edu/solr'
+
+	# If using SSL certificates
+	config.cert_file = File.dirname(__FILE__) + '/../certs/dummy.crt'
+	config.key_file = File.dirname(__FILE__) + '/../certs/dummy.key'
+	config.key_pass = 'dummy'
+
+	# If using SURI service
+	config.mint_suri_ids = true
+	config.suri_url = 'http://some.suri.host:8080'
+	config.id_namespace = 'druid'
+	config.suri_user = 'suriuser'
+	config.suri_password = 'suripword'
+  end
+
+Values can also be configured individually:
+
+  Dor::Config[:mint_suri_ids] = true
+  Dor::Config.set(:mint_suri_ids,true)
+
+== Releases
+- <b>0.1.1</b> Initial release with basic object registration and query_by_id functionality
+
+== Copyright
+
+Copyright (c) 2010 Stanford University Library. See LICENSE for details.

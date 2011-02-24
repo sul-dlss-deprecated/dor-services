@@ -3,7 +3,7 @@ lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
   
 Gem::Specification.new do |s|
-  s.name        = "dor"
+  s.name        = "dor-services"
   s.version     = "0.1.1"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick"]
@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   
   # Runtime dependencies
   s.add_dependency "active-fedora", ">=1.2.6"
+  s.add_dependency "solr-ruby", ">=0.0.8"
   s.add_dependency "nokogiri", "=1.4.3.1"
   s.add_dependency "om", ">=1.0.2"
   s.add_dependency "rest-client"
@@ -34,6 +35,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "ruby-debug"
   s.add_development_dependency "yard"
  
-  s.files        = Dir.glob("lib/**/*") + %w(LICENSE README.rdoc)
+  s.files        = Dir.glob("lib/**/*")
   s.require_path = 'lib'
 end

@@ -1,6 +1,4 @@
 require 'active_fedora'
-require 'dor/exceptions'
-require 'dor/suri_service'
 require 'xml_models/foxml'
 require 'xml_models/identity_metadata/identity_metadata'
 
@@ -76,7 +74,7 @@ module Dor
           id = id.join(':')
         end
         
-        solr = Solr::Connection.new(Dor::GSEARCH_SOLR_URI)
+        solr = Solr::Connection.new(Dor::Config[:gsearch_solr_url])
         solr.query(%{PID:"#{id}" OR dor_id_field:"#{id}"}).collect { |hit| hit['PID'] }.flatten
       end
     end
