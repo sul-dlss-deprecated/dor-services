@@ -30,8 +30,6 @@ module Dor
         raise ::NameError, "Configuration key not found: #{property}"
       end
     end
-    
-    @fedora_instance = nil
 
     class << self
     
@@ -44,6 +42,10 @@ module Dor
  
       def []=(key,value)
         @configuration[key] = value
+      end
+      
+      def to_hash
+        @configuration.dup
       end
       
       def configure
