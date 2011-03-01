@@ -4,11 +4,10 @@ $:.unshift lib unless $:.include?(lib)
   
 Gem::Specification.new do |s|
   s.name        = "dor-services"
-  s.version     = "0.1.1"
+  s.version     = "0.1.2"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick"]
   s.email       = ["mbklein@stanford.edu"]
-  s.homepage    = "http://github.com/sul-dlss/dor-gem"
   s.summary     = "Ruby implmentation of DOR services used by the SULAIR Digital Library"
   s.description = "Contains classes to register objects and initialize workflows"
  
@@ -27,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "equivalent-xml", ">=0.1.5"
   s.add_development_dependency "fakeweb"
   s.add_development_dependency "haml"
-  s.add_development_dependency "pony"
+  s.add_development_dependency "lyberteam-devel", ">=0.1.1"
   s.add_development_dependency "rake", ">=0.8.7"
   s.add_development_dependency "rcov"
   s.add_development_dependency "rdoc"
