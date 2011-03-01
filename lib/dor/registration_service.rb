@@ -53,16 +53,9 @@ module Dor
         foxml.admin_policy_object = admin_policy
     
         http_response = Fedora::Repository.instance.ingest(foxml.to_xml)
-        new_object = begin
-          Dor::Base.load_instance(pid) 
-        rescue ActiveFedora::ObjectNotFoundError
-          nil
-        end
         result = {
-          :status => http_response.code,
-          :message => http_response.message,
-          :pid => pid,
-          :object => new_object
+          :response => http_response,
+          :pid => pid
         }
         return(result)
       end

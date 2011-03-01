@@ -43,10 +43,9 @@ describe Dor::RegistrationService do
       @mock_solr.should_receive(:query).exactly(3).times.and_return([])
 
       obj = Dor::RegistrationService.register_object(@params)
-      obj[:status].should == '201'
-      obj[:message].should == 'Created'
+      obj[:response].code.should == '201'
+      obj[:response].message.should == 'Created'
       obj[:pid].should == @pid
-      obj[:object].should == @mock_dor_base
     end
   
     it "should raise an exception if a required parameter is missing" do
