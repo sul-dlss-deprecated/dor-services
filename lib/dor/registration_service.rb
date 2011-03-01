@@ -36,12 +36,6 @@ module Dor
           raise Dor::DuplicateIdError, "An object with the source #{source_id.keys.first} and ID '#{source_id.values.first}' has already been registered."
         end
         
-        other_ids.each_pair do |*id| 
-          if self.query_by_id(id).length > 0
-            raise Dor::DuplicateIdError, "An object with the #{id[0]} '#{id[1]}' has already been registered."
-          end
-        end
-        
         idmd = IdentityMetadata.new
         idmd.objectTypes << object_type
         idmd.sourceId.source = source_id[:source]

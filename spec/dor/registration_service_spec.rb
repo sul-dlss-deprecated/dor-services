@@ -40,7 +40,7 @@ describe Dor::RegistrationService do
     end
     
     it "should properly register an object" do
-      @mock_solr.should_receive(:query).exactly(3).times.and_return([])
+      @mock_solr.should_receive(:query).once.and_return([])
 
       obj = Dor::RegistrationService.register_object(@params)
       obj[:response].code.should == '201'
