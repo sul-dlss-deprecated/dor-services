@@ -76,7 +76,7 @@ class Foxml
   end
   
   def label=(value)
-    self.xpath('//foxml:property[@NAME="info:fedora/fedora-system:def/model#label"]/@VALUE').first.value = value
+    self.xpath('//foxml:property[@NAME="info:fedora/fedora-system:def/model#label"]/@VALUE').first.value = value[0..254]
     if existing_title = self.get_datastream("DC","//dc:title")
       existing_title.remove
     end
