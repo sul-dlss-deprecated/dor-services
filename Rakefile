@@ -40,3 +40,7 @@ end
 
 task :default => [:rcov, :doc]
 
+# To release the gem to the DLSS gemserver, run 'rake dlss_release'
+require 'dlss/rake/dlss_release'
+Dlss::Release.new
+
