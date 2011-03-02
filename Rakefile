@@ -33,6 +33,9 @@ Spec::Rake::SpecTask.new(:unit) do |spec|
   spec.rcov = true
 end
 
+task :rcov => ["functional"] do
+end
+
 task :clean do
   puts 'Cleaning old coverage.data'
   FileUtils.rm('coverage.data') if(File.exists? 'coverage.data')
