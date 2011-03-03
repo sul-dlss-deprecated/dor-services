@@ -6,6 +6,8 @@ module Dor
   
   class RegistrationService
     
+    RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'"
+    
     class << self
       def register_object(params = {})
         [:object_type, :content_model, :label].each do |required_param|
@@ -32,14 +34,16 @@ module Dor
           pid = Dor::SuriService.mint_id
         end
         
-        if self.query_by_id("#{source_id[:source]}:#{source_id[:value]}").length > 0
-          raise Dor::DuplicateIdError, "An object with the source #{source_id.keys.first} and ID '#{source_id.values.first}' has already been registered."
+        source_name = source_id.keys.first
+        source_value = source_id[source_name]
+        if self.query_by_id("#{source_name}:#{source_value}").length > 0
+          raise Dor::DuplicateIdError, "An object with the source ID '#{source_name}:#{source_value}' has already been registered."
         end
         
         idmd = IdentityMetadata.new
         idmd.objectTypes << object_type
-        idmd.sourceId.source = source_id[:source]
-        idmd.sourceId.value = source_id[:value]
+        idmd.sourceId.source = source_name
+        idmd.sourceId.value = source_value
         other_ids.each_pair { |name,value| idmd.add_identifier(name,value) }
         tags.each { |tag| idmd.add_tag(tag) }
     
@@ -65,7 +69,7 @@ module Dor
           :lang => 'itql',
           :format => 'CSV',
           :limit => '1000',
-          :query => "select $object from <#ri> where $object <dc:identifier> '#{id}'"
+          :query => (RISEARCH_TEMPLATE % id)
         }
         
         client = RestClient::Resource.new(

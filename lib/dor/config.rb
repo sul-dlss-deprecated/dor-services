@@ -48,14 +48,21 @@ module Dor
         @configuration.dup
       end
       
-      def configure
+      def configure(hash = {})
         fedora_config = repo_configuration_signature
-        yield @configuration
+        @configuration.merge!(hash.reject { |k,v| @configuration.has_key?(k) == false })
+        yield @configuration if block_given?
         if fedora_config != repo_configuration_signature
-          ::Fedora::Repository.register(@configuration.fedora_url)
-          ::Fedora::Connection.const_set(:SSL_CLIENT_CERT_FILE,@configuration.fedora_cert_file)
-          ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_FILE,@configuration.fedora_key_file)
-          ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_PASS,@configuration.fedora_key_pass)
+          temp_v = $-v
+          $-v = nil
+          begin
+            ::Fedora::Repository.register(@configuration.fedora_url)
+            ::Fedora::Connection.const_set(:SSL_CLIENT_CERT_FILE,@configuration.fedora_cert_file)
+            ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_FILE,@configuration.fedora_key_file)
+            ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_PASS,@configuration.fedora_key_pass)
+          ensure
+            $-v = temp_v
+          end
         end
       end
 
