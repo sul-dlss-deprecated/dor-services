@@ -60,9 +60,21 @@ module Dor
         elsif id.is_a?(Array) # Two values: [ 'google', 'STANFORD_0123456789' ]
           id = id.join(':')
         end
+        query_params = {
+          :type => 'tuples',
+          :lang => 'itql',
+          :format => 'CSV',
+          :limit => '1000',
+          :query => "select $object from <#ri> where $object <dc:identifier> '#{id}'"
+        }
         
-        solr = Solr::Connection.new(Dor::Config[:gsearch_solr_url])
-        solr.query(%{PID:"#{id}" OR dor_id_field:"#{id}"}).collect { |hit| hit['PID'] }.flatten
+        risearch = RestClient.new(
+          Dor::Config[:fedora_url],
+          :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(Dor::Config[:fedora_cert_file])),
+          :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(Dor::Config[:fedora_key_file]), Dor::Config[:fedora_key_pass])
+        )
+        result = risearch.post('risearch', query_params)
+        result.split(/\n/)[1..-1].collect { |pid| pid.chomp.sub(/^info:fedora\//,'') }
       end
     end
 
