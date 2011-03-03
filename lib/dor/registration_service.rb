@@ -32,7 +32,7 @@ module Dor
           pid = Dor::SuriService.mint_id
         end
         
-        if self.query_by_id(source_id).length > 0
+        if self.query_by_id("#{source_id[:source]}:#{source_id[:value]}").length > 0
           raise Dor::DuplicateIdError, "An object with the source #{source_id.keys.first} and ID '#{source_id.values.first}' has already been registered."
         end
         
