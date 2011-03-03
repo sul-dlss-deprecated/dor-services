@@ -68,12 +68,12 @@ module Dor
           :query => "select $object from <#ri> where $object <dc:identifier> '#{id}'"
         }
         
-        risearch = RestClient.new(
+        client = RestClient::Resource.new(
           Dor::Config[:fedora_url],
           :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(Dor::Config[:fedora_cert_file])),
           :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(Dor::Config[:fedora_key_file]), Dor::Config[:fedora_key_pass])
         )
-        result = risearch.post('risearch', query_params)
+        result = client['risearch'].post(query_params)
         result.split(/\n/)[1..-1].collect { |pid| pid.chomp.sub(/^info:fedora\//,'') }
       end
     end
