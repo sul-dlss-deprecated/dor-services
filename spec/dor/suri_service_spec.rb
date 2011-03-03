@@ -8,7 +8,7 @@ describe Dor::SuriService do
       config.suri_url = 'http://some.suri.host:8080'
       config.id_namespace = 'druid'
       config.suri_user = 'suriuser'
-      config.suri_password = 'suripword'
+      config.suri_pass = 'suripword'
     end
   end
 

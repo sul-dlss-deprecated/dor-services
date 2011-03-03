@@ -15,7 +15,7 @@ module Dor
       :id_namespace => 'changeme',
       :suri_url => nil,
       :suri_user => nil,
-      :suri_password => nil,
+      :suri_pass => nil,
       :solr_url => nil
     }
     def @configuration.method_missing(sym,*args)
