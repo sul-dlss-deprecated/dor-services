@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency "om", ">=1.0.2"
   s.add_dependency "rest-client"
   s.add_dependency "validatable"
+  s.add_dependency "guid"
   
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects

@@ -1,4 +1,5 @@
 require 'active_fedora'
+require 'guid'
 require 'xml_models/foxml'
 require 'xml_models/identity_metadata/identity_metadata'
 
@@ -32,6 +33,10 @@ module Dor
           end
         else
           pid = Dor::SuriService.mint_id
+        end
+        other_ids[:pid] = pid
+        if (other_ids.has_key?(:uuid) or other_ids.has_key?('uuid')) == false
+          other_ids[:uuid] = Guid.new.to_s
         end
         
         source_name = source_id.keys.first

@@ -143,6 +143,12 @@ class Foxml
     end
   end
   
+  def to_xml(*args)
+    # Strip empty whitespace nodes for formatting purposes
+    @xml.traverse { |node| if node.is_a?(Nokogiri::XML::Text) and node.text.chomp.strip.empty?; node.remove; end }
+    @xml.to_xml(*args)
+  end
+  
   def xpath(path)
     @xml.xpath(path, NAMESPACES)
   end

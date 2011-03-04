@@ -88,14 +88,14 @@ class IdentityMetadata
   attr_reader :sourceId, :tags
   # these instance vars map to nodes in the identityMetadata XML
   attr_accessor :objectTypes, :objectLabels, :objectCreators, :citationCreators, :citationTitle, 
-                :otherIds, :objectAdminClass
-  # this stores the xml string
-  attr_accessor :xml
+                :otherIds, :adminPolicyKey
+  # this stores the Nokogiri XML
+  attr_reader :ng_xml
   
   
   def initialize(xml = nil)  
     
-     @objectId, @citationTitle, @objectAdminClass = "", "" #there can only be one of these values
+     @objectId, @citationTitle, @adminPolicyKey = "", "" #there can only be one of these values
      @sourceId  =  SourceId.new #there can be only one. 
      @otherIds, @tags  = [], [] # this is an array that will be filled with OtherId and Tag objects
      @objectTypes, @objectLabels, @objectCreators, @citationCreators =  [], [], [], []
@@ -138,7 +138,15 @@ class IdentityMetadata
           end #instance_variables.each
         }
       end
-      @xml = builder.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::NO_DECLARATION, :indent => 2)
+      @ng_xml = builder.doc
+  end
+
+  def xml
+    @ng_xml.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::NO_DECLARATION, :indent => 2)
+  end
+  
+  def xml=(value)
+    @ng_xml = Nokogiri::XML(value)
   end
   
   # This method rebuilds the xml attr_accesor and returns it as a string.   
@@ -262,8 +270,8 @@ class IdentityMetadata
            im.objectId = c.text.strip
          elsif c.name == "citationTitle" #citationTitle also needs to be mapped to citationTitle attr_accessor
            im.citationTitle = c.text.strip
-         elsif c.name == "objectAdminClass"
-           im.objectAdminClass = c.text.strip
+         elsif c.name == "adminPolicyKey"
+           im.adminPolicyKey = c.text.strip
          else # everything else gets put into an attr_accessor array (note the added 's' on the attr_accessor.)
            im.send("#{c.name}s").send("<<", c.text.strip)
          end #if

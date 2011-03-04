@@ -41,7 +41,7 @@ describe IdentityMetadata do
       @idm.citationTitle = @data[:citation_title]
       @idm.citationCreators << @data[:citation_creator]
       @idm.sourceId = @data[:source_id]
-      @idm.objectAdminClass = @data[:admin_policy]
+      @idm.adminPolicyKey = @data[:admin_policy]
       @data[:other_ids].each { |id| @idm.add_identifier(id) }
       @data[:tags].each { |tag| @idm.add_tag(tag) }
 
@@ -67,7 +67,7 @@ describe IdentityMetadata do
       @idm.citationTitle.should == @data[:citation_title]
       @idm.citationCreators.should include(@data[:citation_creator])
       @idm.sourceId.to_s.should == @data[:source_id]
-      @idm.objectAdminClass.should  == @data[:admin_policy]
+      @idm.adminPolicyKey.should  == @data[:admin_policy]
       @data[:other_ids].each { |id| @idm.get_id_pairs.should include(id) }
       @data[:tags].each { |tag| @idm.get_tags.should include(tag) }
     end
