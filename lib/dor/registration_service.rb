@@ -58,7 +58,7 @@ module Dor
         foxml = Foxml.new(pid, label, content_model, idmd.to_xml, parent)
         foxml.admin_policy_object = admin_policy
     
-        http_response = Fedora::Repository.instance.ingest(foxml.to_xml)
+        http_response = Fedora::Repository.instance.ingest(foxml.to_xml(:undent_datastreams => true))
         result = {
           :response => http_response,
           :pid => pid

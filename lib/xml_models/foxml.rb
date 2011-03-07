@@ -148,10 +148,22 @@ class Foxml
     end
   end
   
-  def to_xml(*args)
-    # Strip empty whitespace nodes for formatting purposes
+  def to_xml(opts = {})
+    undent_datastreams = opts.delete(:undent_datastreams)
     @xml.traverse { |node| if node.is_a?(Nokogiri::XML::Text) and node.text.chomp.strip.empty?; node.remove; end }
-    @xml.to_xml(*args)
+    result = @xml.to_xml(opts)
+
+    # Fedora FOXML ingest treats some (but not all) whitespace as significant. In order to get
+    # our datastreams to look pretty, we need to un-indent them. This an ugly hack, and only
+    # works because we've strictly controlled Nokogiri's serialization of whitespace.
+    if undent_datastreams
+      result.gsub!(/^(\s*)<foxml:xmlContent>\n(.+?)\n\s*<\/foxml:xmlContent>/m) { |m|
+        sp = $1
+        data = $2
+        "#{sp}<foxml:xmlContent>\n" + data.gsub(/^#{sp}  /,'') + "\n#{sp}</foxml:xmlContent>"
+      }
+    end
+    return result
   end
   
   def xpath(path)
