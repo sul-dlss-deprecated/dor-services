@@ -28,7 +28,7 @@ class Foxml
 
     self.pid = pid.to_s
     self.label = label.to_s
-    self.content_model = content_model.to_s
+    self.content_model = content_model
     self.identity_metadata = identity_metadata
     self.admin_policy_object = admin_policy_object
     self.parent = parent
@@ -104,7 +104,12 @@ class Foxml
   end
   
   def get_rels_ext_resource(predicate)
-    self.get_datastream("RELS-EXT","//#{predicate}/@rdf:resource").value.split(/\//).last
+    resource = self.get_datastream("RELS-EXT","//#{predicate}/@rdf:resource")
+    if resource.nil?
+      nil
+    else
+      resource.value.split(/\//).last
+    end
   end
   
   def set_rels_ext_resource(predicate,value)
@@ -232,7 +237,6 @@ class Foxml
             xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rel="info:fedora/fedora-system:def/relations-external#"
             xmlns:hydra="http://projecthydra.org/ns/relations#">
             <rdf:Description rdf:about="info:fedora/$$PID$$">
-              <fedora-model:hasModel rdf:resource="info:fedora/$$MODEL$$"/>
             </rdf:Description>
         </rdf:RDF>
       </foxml:xmlContent>

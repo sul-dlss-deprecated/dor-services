@@ -11,7 +11,7 @@ module Dor
     
     class << self
       def register_object(params = {})
-        [:object_type, :content_model, :label].each do |required_param|
+        [:object_type, :label].each do |required_param|
           unless params[required_param]
             raise Dor::ParameterError, ":#{required_param.to_s} must be specified in call to #{self.name}.register_object"
           end
@@ -34,7 +34,7 @@ module Dor
         else
           pid = Dor::SuriService.mint_id
         end
-        other_ids[:pid] = pid
+
         if (other_ids.has_key?(:uuid) or other_ids.has_key?('uuid')) == false
           other_ids[:uuid] = Guid.new.to_s
         end
@@ -46,6 +46,9 @@ module Dor
         end
         
         idmd = IdentityMetadata.new
+        idmd.objectId = pid
+        idmd.objectCreators << 'dor'
+        idmd.objectLabels << label
         idmd.objectTypes << object_type
         idmd.sourceId.source = source_name
         idmd.sourceId.value = source_value
