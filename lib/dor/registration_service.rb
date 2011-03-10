@@ -51,7 +51,7 @@ module Dor
         idmd.objectCreators << 'dor'
         idmd.objectLabels << label
         idmd.objectTypes << object_type
-        idmd.objectAdminClass = object_admin_class
+        idmd.objectAdminClass = admin_class
         idmd.sourceId.source = source_name
         idmd.sourceId.value = source_value
         other_ids.each_pair { |name,value| idmd.add_identifier(name,value) }
