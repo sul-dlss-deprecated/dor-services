@@ -88,16 +88,16 @@ class IdentityMetadata
   attr_reader :sourceId, :tags
   # these instance vars map to nodes in the identityMetadata XML
   attr_accessor :objectTypes, :objectLabels, :objectCreators, :citationCreators, :citationTitle, 
-                :otherIds, :adminPolicyKey
+                :otherIds, :adminPolicyKey, :objectAdminClass
   # this stores the Nokogiri XML
   attr_reader :ng_xml
   
   
   def initialize(xml = nil)  
     
-     @objectId, @citationTitle, @adminPolicyKey = "", "" #there can only be one of these values
-     @sourceId  =  SourceId.new #there can be only one. 
-     @otherIds, @tags  = [], [] # this is an array that will be filled with OtherId and Tag objects
+     @objectId, @citationTitle, @adminPolicyKey, @objectAdminClass = "", "", "", "" #there can only be one of these values
+     @sourceId = SourceId.new #there can be only one. 
+     @otherIds, @tags = [], [] # this is an array that will be filled with OtherId and Tag objects
      @objectTypes, @objectLabels, @objectCreators, @citationCreators =  [], [], [], []
       
   
@@ -272,6 +272,8 @@ class IdentityMetadata
            im.citationTitle = c.text.strip
          elsif c.name == "adminPolicyKey"
            im.adminPolicyKey = c.text.strip
+         elsif c.name == "objectAdminClass"
+           im.objectAdminClass = c.text.strip
          else # everything else gets put into an attr_accessor array (note the added 's' on the attr_accessor.)
            im.send("#{c.name}s").send("<<", c.text.strip)
          end #if
