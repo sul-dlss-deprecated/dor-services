@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require 'nokogiri'
-require 'equivalent-xml'
+require 'equivalent-xml/rspec_matchers'
 require 'xml_models/foxml'
 
 describe Foxml do
@@ -19,37 +19,37 @@ describe Foxml do
   
   it "should initialize empty" do
     foxml = Foxml.new
-    EquivalentXml.equivalent?(foxml.to_xml, @empty_result).should == true
+    foxml.to_xml.should be_equivalent_to(@empty_result)
   end
   
   it "should initialize with passed values" do
     foxml = Foxml.new(@pid,@label,@model,@idm,@admin_policy_object)
-    EquivalentXml.equivalent?(foxml.to_xml, @full_result).should == true
+    foxml.to_xml.should be_equivalent_to(@full_result)
   end
   
   it "should set values properly" do
     foxml = Foxml.new
-    EquivalentXml.equivalent?(foxml.to_xml, @empty_result).should == true
+    foxml.to_xml.should be_equivalent_to(@empty_result)
     
     foxml.pid = @pid
-    EquivalentXml.equivalent?(foxml.to_xml, @empty_result).should == false
-    EquivalentXml.equivalent?(foxml.to_xml, @full_result).should == false
+    foxml.to_xml.should_not be_equivalent_to(@empty_result)
+    foxml.to_xml.should_not be_equivalent_to(@full_result)
 
     foxml.label = @label
-    EquivalentXml.equivalent?(foxml.to_xml, @empty_result).should == false
-    EquivalentXml.equivalent?(foxml.to_xml, @full_result).should == false
+    foxml.to_xml.should_not be_equivalent_to(@empty_result)
+    foxml.to_xml.should_not be_equivalent_to(@full_result)
 
     foxml.content_model = @model
-    EquivalentXml.equivalent?(foxml.to_xml, @empty_result).should == false
-    EquivalentXml.equivalent?(foxml.to_xml, @full_result).should == false
+    foxml.to_xml.should_not be_equivalent_to(@empty_result)
+    foxml.to_xml.should_not be_equivalent_to(@full_result)
 
     foxml.identity_metadata = @idm
-    EquivalentXml.equivalent?(foxml.to_xml, @empty_result).should == false
-    EquivalentXml.equivalent?(foxml.to_xml, @full_result).should == false
+    foxml.to_xml.should_not be_equivalent_to(@empty_result)
+    foxml.to_xml.should_not be_equivalent_to(@full_result)
 
     foxml.admin_policy_object = @admin_policy_object
-    EquivalentXml.equivalent?(foxml.to_xml, @empty_result).should == false
-    EquivalentXml.equivalent?(foxml.to_xml, @full_result).should == true
+    foxml.to_xml.should_not be_equivalent_to(@empty_result)
+    foxml.to_xml.should be_equivalent_to(@full_result)
   end
   
 end

@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
   
 Gem::Specification.new do |s|
   s.name        = "dor-services"
-  s.version     = "0.2.1"
+  s.version     = "0.3.0"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick"]
   s.email       = ["mbklein@stanford.edu"]
@@ -17,14 +17,14 @@ Gem::Specification.new do |s|
   s.add_dependency "active-fedora", ">=1.2.6"
   s.add_dependency "solr-ruby", ">=0.0.8"
   s.add_dependency "nokogiri", "=1.4.3.1"
-  s.add_dependency "om", ">=1.0.2"
+  s.add_dependency "om", ">=1.2.0"
   s.add_dependency "rest-client"
   s.add_dependency "validatable"
   s.add_dependency "guid"
   
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects
-  s.add_development_dependency "equivalent-xml", ">=0.1.5"
+  s.add_development_dependency "equivalent-xml", ">=0.2.2"
   s.add_development_dependency "fakeweb"
   s.add_development_dependency "haml"
   s.add_development_dependency "lyberteam-devel", ">=0.1.1"

@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require 'nokogiri'
-require 'equivalent-xml'
+require 'equivalent-xml/rspec_matchers'
 require 'xml_models/identity_metadata/identity_metadata'
 
 describe IdentityMetadata do
@@ -30,7 +30,7 @@ describe IdentityMetadata do
     it "should serialize empty" do
       test_doc = Nokogiri::XML(@idm.to_xml)
       correct_doc = Nokogiri::XML(File.read(File.join(@specdir,"test_data/identity_metadata_empty.xml")))
-      EquivalentXml.equivalent?(test_doc,correct_doc).should == true
+      test_doc.should be_equivalent_to(correct_doc)
     end
     
     it "should build proper identity metadata XML" do
@@ -48,7 +48,7 @@ describe IdentityMetadata do
       test_doc = Nokogiri::XML(@idm.to_xml)
       correct_doc = Nokogiri::XML(File.read(File.join(@specdir,"test_data/identity_metadata_full.xml")))
       
-      EquivalentXml.equivalent?(test_doc,correct_doc).should == true
+      test_doc.should be_equivalent_to(correct_doc)
     end
   
   end
@@ -77,7 +77,7 @@ describe IdentityMetadata do
       test_doc = Nokogiri::XML(@idm.to_xml)
       correct_doc = Nokogiri::XML(File.read(File.join(@specdir,"test_data/identity_metadata_altered.xml")))
       
-      EquivalentXml.equivalent?(test_doc,correct_doc).should == true
+      test_doc.should be_equivalent_to(correct_doc)
     end
     
   end

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.loc.gov/mods/v3"
+      version="3.3"
+      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+   <titleInfo>
+      <nonSort>The</nonSort>
+      <title>isomorphism and thermal properties of the feldspars</title>
+   </titleInfo>
+   <name type="personal">
+      <namePart>Day, Arthur L. (Arthur Louis)</namePart>
+      <namePart type="date">1869-</namePart>
+      <role>
+         <roleTerm authority="marcrelator" type="text">creator</roleTerm>
+      </role>
+   </name>
+   <name type="personal">
+      <namePart>Allen, Eugene Thomas</namePart>
+      <namePart type="date">1864-</namePart>
+   </name>
+   <name type="personal">
+      <namePart>Iddings, Joseph Paxson</namePart>
+      <namePart type="date">1857-1920</namePart>
+   </name>
+   <name type="personal">
+      <namePart>Becker, George F. (George Ferdinand)</namePart>
+      <namePart type="date">1847-1919</namePart>
+   </name>
+   <typeOfResource>text</typeOfResource>
+   <originInfo>
+      <place>
+         <placeTerm type="code" authority="marccountry">dcu</placeTerm>
+      </place>
+      <place>
+         <placeTerm type="text">Washington, D.C</placeTerm>
+      </place>
+      <publisher>Carnegie Institution of Washington</publisher>
+      <dateIssued>1905</dateIssued>
+      <dateIssued encoding="marc" keyDate="yes">1905</dateIssued>
+      <issuance>monographic</issuance>
+   </originInfo>
+   <language>
+      <languageTerm authority="iso639-2b" type="code">eng</languageTerm>
+   </language>
+   <physicalDescription>
+      <form authority="marcform">print</form>
+      <extent>95 p. illus., XXVI (i.e. 27) pl. 27 cm.</extent>
+   </physicalDescription>
+   <note displayLabel="statement of responsibility">Part I- Thermal study [by] Arthur L. Day and E. T. Allen. Part II- Optical study [by] J. P. Iddings. With an introduction by George F. Becker.</note>
+   <subject authority="lcsh">
+      <topic>Crystallography</topic>
+   </subject>
+   <subject authority="lcsh">
+      <topic>Feldspar</topic>
+   </subject>
+   <classification authority="lcc">QD931 .D27</classification>
+   <relatedItem type="series">
+      <titleInfo>
+         <title>Carnegie Institution of Washington publication ; 31</title>
+      </titleInfo>
+   </relatedItem>
+   <identifier type="lccn">05032416</identifier>
+   <recordInfo>
+      <recordContentSource authority="marcorg">DLC</recordContentSource>
+      <recordCreationDate encoding="marc">770104</recordCreationDate>
+      <recordChangeDate encoding="iso8601">19900306063726.0</recordChangeDate>
+      <recordIdentifier>a45873</recordIdentifier>
+   </recordInfo>
+</mods>

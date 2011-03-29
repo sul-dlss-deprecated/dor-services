@@ -17,7 +17,9 @@ module Dor
       :suri_user => nil,
       :suri_pass => nil,
       :solr_url => nil,
-      :workflow_url => nil
+      :workflow_url => nil,
+      :exist_url => nil,
+      :catalog_url => nil
     }
     def @configuration.method_missing(sym,*args)
       property = sym.to_s.sub(/=$/,'').to_sym

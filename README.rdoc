@@ -35,6 +35,7 @@ Values can also be configured individually:
 - <b>0.1.5</b> Remove content model from required parameters for registration; fixed indenting of XML datastreams
 - <b>0.2.0</b> Implemented Dor::WorkflowService as a passthrough to existing DOR web services
 - <b>0.2.1</b> Added support for :object_admin_class parameter in register_object
+- <b>0.3.0</b> Added MetadataService to fetch metadata from various sources (currently Symphony and eXist/MD Toolkit)
 
 == Copyright
 
