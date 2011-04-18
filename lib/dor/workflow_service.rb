@@ -21,7 +21,7 @@ module Dor
       # - <b>wf_xml</b> - The xml that represents the workflow
       # 
       def create_workflow(repo, druid, workflow_name, wf_xml)
-        workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow_name}"].put(wf_xml)
+        workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow_name}"].put(wf_xml, :content_type => 'application/xml')
         return true
       end
   
@@ -86,7 +86,7 @@ module Dor
         return true
       end
       
-      private
+#      private
       def create_process_xml(params)
         builder = Nokogiri::XML::Builder.new do |xml|
           attrs = params.reject { |k,v| v.nil? }
@@ -96,7 +96,9 @@ module Dor
       end
       
       def workflow_resource
-        RestClient::Resource.new(Dor::Config[:workflow_url])
+        RestClient::Resource.new(Dor::Config[:workflow_url],
+        :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(Dor::Config[:fedora_cert_file])),
+        :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(Dor::Config[:fedora_key_file]), Dor::Config[:fedora_key_pass]))
       end
     end
   end
