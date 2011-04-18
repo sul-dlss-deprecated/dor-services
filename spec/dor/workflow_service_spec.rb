@@ -38,7 +38,7 @@ describe Dor::WorkflowService do
   
   describe "#create_workflow" do
     it "should pass workflow xml to the DOR workflow service and return the URL to the workflow" do
-      @mock_resource.should_receive(:put).with(@wf_xml).and_return('')
+      @mock_resource.should_receive(:put).with(@wf_xml, anything()).and_return('')
       Dor::WorkflowService.create_workflow(@repo, @druid, 'etdSubmitWF', @wf_xml)
     end
     
