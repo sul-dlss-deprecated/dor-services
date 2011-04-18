@@ -1,1 +1,6 @@
 .DS_Store
+.yardoc
+coverage
+coverage.data
+pkg
+rdoc

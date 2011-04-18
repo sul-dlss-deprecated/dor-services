@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dor-services (0.2.1)
+    dor-services (0.3.0)
       active-fedora (>= 1.2.6)
       guid
       nokogiri (= 1.4.3.1)
