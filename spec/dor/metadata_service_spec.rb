@@ -65,7 +65,7 @@ describe Dor::MetadataService do
     before :each do
       @mods = File.read(File.join(@specdir, 'test_data', 'mods_record.xml'))
       @mock_resource = mock('resource', :post => @mods)
-      @mock_resource.should_receive(:[]).with("db/mods").and_return(@mock_resource)
+      @mock_resource.should_receive(:[]).with("db/orbeon/fr/mods").and_return(@mock_resource)
       RestClient::Resource.should_receive(:new).with(Dor::Config[:exist_url]).and_return(@mock_resource)
     end
     

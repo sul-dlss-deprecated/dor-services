@@ -11,7 +11,7 @@ handler = Class.new do
       </text>
   </query>}
     client = RestClient::Resource.new(Dor::Config[:exist_url])
-    response = client['db/mods'].post(query, :content_type => 'application/xquery')
+    response = client['db/orbeon/fr/mods'].post(query, :content_type => 'application/xquery')
     doc = Nokogiri::XML(response)
     mods = doc.xpath('//mods:mods', { 'mods' => "http://www.loc.gov/mods/v3" })
     if mods.length > 0
@@ -24,7 +24,7 @@ handler = Class.new do
   def label(metadata)
     mods = Nokogiri::XML(metadata)
     mods.root.add_namespace_definition('mods','http://www.loc.gov/mods/v3')
-    mods.xpath('/mods:mods/mods:titleInfo[1]').xpath('mods:title|mods:nonSort').collect { |n| n.text }.join(' ').strip[0..254]
+    mods.xpath('/mods:mods/mods:titleInfo[1]').xpath('mods:title|mods:nonSort').collect { |n| n.text }.join(' ').strip
   end
 
   def prefixes

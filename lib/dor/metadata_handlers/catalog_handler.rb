@@ -9,7 +9,7 @@ handler = Class.new do
   def label(metadata)
     mods = Nokogiri::XML(metadata)
     mods.root.add_namespace_definition('mods','http://www.loc.gov/mods/v3')
-    mods.xpath('/mods:mods/mods:titleInfo[1]').xpath('mods:title|mods:nonSort').collect { |n| n.text }.join(' ').strip[0..254]
+    mods.xpath('/mods:mods/mods:titleInfo[1]').xpath('mods:title|mods:nonSort').collect { |n| n.text }.join(' ').strip
   end
 
   def prefixes
