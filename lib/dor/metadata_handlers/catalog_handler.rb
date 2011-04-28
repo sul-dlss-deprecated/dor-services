@@ -3,7 +3,7 @@ require 'rest-client'
 handler = Class.new do
   def fetch(prefix, identifier)
     client = RestClient::Resource.new(Dor::Config[:catalog_url])
-    client["?#{prefix}=#{identifier}"].get
+    client["?#{prefix.chomp}=#{identifier.chomp}"].get
   end
 
   def label(metadata)
