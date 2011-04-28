@@ -3,11 +3,11 @@ require 'guid'
 require 'xml_models/foxml'
 require 'xml_models/identity_metadata/identity_metadata'
 
+require 'dor/search_service'
+
 module Dor
   
   class RegistrationService
-    
-    RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'"
     
     class << self
       def register_object(params = {})
@@ -28,7 +28,7 @@ module Dor
         pid = nil
         if params[:pid]
           pid = params[:pid]
-          if self.query_by_id(pid).length > 0
+          if SearchService.query_by_id(pid).length > 0
             raise Dor::DuplicateIdError, "An object with the PID #{pid} has already been registered."
           end
         else
@@ -41,7 +41,7 @@ module Dor
         
         source_name = source_id.keys.first
         source_value = source_id[source_name]
-        if self.query_by_id("#{source_name}:#{source_value}").length > 0
+        if SearchService.query_by_id("#{source_name}:#{source_value}").length > 0
           raise Dor::DuplicateIdError, "An object with the source ID '#{source_name}:#{source_value}' has already been registered."
         end
         
@@ -50,6 +50,7 @@ module Dor
         idmd.objectCreators << 'dor'
         idmd.objectLabels << label
         idmd.objectTypes << object_type
+        idmd.adminPolicy = admin_policy
         idmd.sourceId.source = source_name
         idmd.sourceId.value = source_value
         other_ids.each_pair { |name,value| idmd.add_identifier(name,value) }
@@ -65,31 +66,8 @@ module Dor
         }
         return(result)
       end
-      
-      def query_by_id(id)
-        if id.is_a?(Hash) # Single valued: { :google => 'STANFORD_0123456789' }
-          id = id.collect { |*v| v.join(':') }.first
-        elsif id.is_a?(Array) # Two values: [ 'google', 'STANFORD_0123456789' ]
-          id = id.join(':')
-        end
-        query_params = {
-          :type => 'tuples',
-          :lang => 'itql',
-          :format => 'CSV',
-          :limit => '1000',
-          :query => (RISEARCH_TEMPLATE % id)
-        }
-        
-        client = RestClient::Resource.new(
-          Dor::Config[:fedora_url],
-          :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(Dor::Config[:fedora_cert_file])),
-          :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(Dor::Config[:fedora_key_file]), Dor::Config[:fedora_key_pass])
-        )
-        result = client['risearch'].post(query_params)
-        result.split(/\n/)[1..-1].collect { |pid| pid.chomp.sub(/^info:fedora\//,'') }
-      end
     end
-
+    
   end
 
 end
