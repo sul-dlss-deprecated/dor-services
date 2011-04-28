@@ -10,11 +10,12 @@ module Dor
     
     attr_reader :workflows
 
-    has_metadata :name => "identityMetadata", :type => ActiveFedora::NokogiriDatastream
+    has_metadata :name => "identityMetadata", :type => IdentityMetadataDS
     has_metadata :name => "descMetadata", :type => ActiveFedora::NokogiriDatastream
     has_metadata :name => "rightsMetadata", :type => ActiveFedora::NokogiriDatastream
-    has_metadata :name => "techMD", :type => ActiveFedora::NokogiriDatastream
+    has_metadata :name => "technicalMetadata", :type => ActiveFedora::NokogiriDatastream
     has_metadata :name => "DC", :type => SimpleDublinCoreDs
+    has_metadata :name => "RELS-EXT", :type => ActiveFedora::NokogiriDatastream
 
     def initialize(attrs = {})
       unless attrs[:pid]
@@ -29,6 +30,15 @@ module Dor
       configure_defined_datastreams
     end  
 
+    def admin_policy_object
+      apo_id = self.datastreams['RELS-EXT'].ng_xml.search('//hydra:isGovernedBy/@rdf:resource').first.value.split(%r{/}).last
+      if apo_id.nil? or apo_id.empty?
+        return nil
+      else
+        return Dor::AdminPolicyObject.load_instance(apo_id)
+      end
+    end
+    
     def identity_metadata
       if self.datastreams.has_key?('identityMetadata')
         IdentityMetadata.from_xml(self.datastreams['identityMetadata'].content)
