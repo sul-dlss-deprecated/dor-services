@@ -21,7 +21,9 @@ describe Dor::RegistrationService do
     before :each do
       @pid = 'druid:abc123def'
       Dor::SuriService.stub!(:mint_id).and_return("druid:abc123def")
-      Fedora::Repository.instance.stub!(:ingest).and_return(Net::HTTPCreated.new("1.1","201","Created"))
+      @mock_repo = mock(Fedora::Repository)
+      @mock_repo.stub!(:ingest).and_return(Net::HTTPCreated.new("1.1","201","Created"))
+      Fedora::Repository.stub!(:new).and_return(@mock_repo)
       @mock_dor_base = mock("Dor::Base")
       Dor::Base.stub!(:load_instance).and_return(@mock_dor_base)
 
