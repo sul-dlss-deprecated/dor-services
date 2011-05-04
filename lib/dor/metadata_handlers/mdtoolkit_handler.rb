@@ -3,28 +3,35 @@ require 'rest-client'
 
 handler = Class.new do
   def fetch(prefix, identifier)
-    query = %{<?xml version="1.0" encoding="UTF-8"?>
-  <query xmlns="http://exist.sourceforge.net/NS/exist">
-      <text>
-        declare namespace mods="http://www.loc.gov/mods/v3";
-        /mods:mods[mods:identifier/text()="druid:#{identifier}"]
-      </text>
-  </query>}
+    query = <<-QUERY
+<?xml version="1.0" encoding="UTF-8"?>
+<query xmlns="http://exist.sourceforge.net/NS/exist">
+    <text>
+      declare namespace mods="http://www.loc.gov/mods/v3";
+      declare variable $identifier as xs:string := "druid:#{identifier}";
+      /mods:mods[mods:identifier/text()=$identifier] | /msDesc[msIdentifier/idno/text()=$identifier]
+    </text>
+</query>
+    QUERY
     client = RestClient::Resource.new(Dor::Config[:exist_url])
-    response = client['db/orbeon/fr/mods'].post(query, :content_type => 'application/xquery')
+    response = client['db/orbeon/fr'].post(query, :content_type => 'application/xquery')
     doc = Nokogiri::XML(response)
-    mods = doc.xpath('//mods:mods', { 'mods' => "http://www.loc.gov/mods/v3" })
-    if mods.length > 0
-      mods.first.to_s
-    else
-      nil
-    end
+    doc.root.add_namespace_definition('exist','http://exist.sourceforge.net/NS/exist')
+    result = doc.xpath('/exist:result/*[1]').first
+    result.nil? ? nil : result.to_s
   end
 
   def label(metadata)
-    mods = Nokogiri::XML(metadata)
-    mods.root.add_namespace_definition('mods','http://www.loc.gov/mods/v3')
-    mods.xpath('/mods:mods/mods:titleInfo[1]').xpath('mods:title|mods:nonSort').collect { |n| n.text }.join(' ').strip
+    xml = Nokogiri::XML(metadata)
+    if xml.root.nil?
+      return ""
+    end
+    case xml.root.name
+    when 'msDesc' then xml.xpath('/msDesc/msIdentifier/collection').text
+    when 'mods'   then 
+      xml.root.add_namespace_definition('mods','http://www.loc.gov/mods/v3')
+      xml.xpath('/mods:mods/mods:titleInfo[1]').xpath('mods:title|mods:nonSort').collect { |n| n.text }.join(' ').strip
+    end
   end
 
   def prefixes
