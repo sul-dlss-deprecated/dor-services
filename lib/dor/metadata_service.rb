@@ -35,6 +35,16 @@ module Dor
         return handlers.keys
       end
       
+      def can_resolve?(identifier)
+        (prefix, identifier) = identifier.split(/:/,2)
+        handlers.keys.include?(prefix.to_sym)
+      end
+      
+      # TODO: Return a prioritized list
+      def resolvable(identifiers)
+        identifiers.select { |identifier| self.can_resolve?(identifier) }
+      end
+      
       def fetch(identifier)
         (prefix, identifier) = identifier.split(/:/,2)
         handler = handler_for(prefix)

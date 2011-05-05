@@ -59,11 +59,15 @@ module Dor
     end
 
     def build_descMetadata_datastream(ds)
-      source_id = self.identity_metadata.sourceId.to_s
-      content = Dor::MetadataService.fetch(source_id)
-      unless content.nil?
-        ds.label = 'Descriptive Metadata'
-        ds.ng_xml = Nokogiri::XML(content)
+      candidates = self.identity_metadata.otherIds
+      metadata_id = Dor::MetadataService.resolvable(candidates).first
+      
+      unless metadata_id.nil?
+        content = Dor::MetadataService.fetch(metadata_id.to_s)
+        unless content.nil?
+          ds.label = 'Descriptive Metadata'
+          ds.ng_xml = Nokogiri::XML(content)
+        end
       end
     end
 
