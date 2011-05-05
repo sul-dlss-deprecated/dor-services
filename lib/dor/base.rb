@@ -46,7 +46,7 @@ module Dor
         nil
       end
     end
-  
+
     # Self-aware datastream builders
     def build_datastream(datastream, force = false)
       ds = datastreams[datastream]
@@ -58,10 +58,17 @@ module Dor
       return ds
     end
 
-    def build_descMetadata_datastream(ds)
-      candidates = self.identity_metadata.otherIds
+    def fetch_descMetadata_datastream
+      candidates = self.identity_metadata.otherIds.collect { |oid| oid.to_s }
       metadata_id = Dor::MetadataService.resolvable(candidates).first
-      
+      unless metadata_id.nil?
+        return Dor::MetadataService.fetch(metadata_id.to_s)
+      else
+        return nil
+      end
+    end
+    
+    def build_descMetadata_datastream(ds)
       unless metadata_id.nil?
         content = Dor::MetadataService.fetch(metadata_id.to_s)
         unless content.nil?

@@ -38,6 +38,7 @@ Values can also be configured individually:
 - <b>0.3.0</b> Added MetadataService to fetch metadata from various sources (currently Symphony and eXist/MD Toolkit)
 - <b>1.0.0</b> Richer response from Registration Service
                MD Toolkit metadata handler work with non-MODS metadata
+- <b>1.0.1</b> Changed descMetadata fetcher to pull based on best available "other ID" instead of "source ID"
 
 == Copyright
 
