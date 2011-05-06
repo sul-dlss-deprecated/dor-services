@@ -69,12 +69,10 @@ module Dor
     end
     
     def build_descMetadata_datastream(ds)
-      unless metadata_id.nil?
-        content = Dor::MetadataService.fetch(metadata_id.to_s)
-        unless content.nil?
-          ds.label = 'Descriptive Metadata'
-          ds.ng_xml = Nokogiri::XML(content)
-        end
+      content = fetch_descMetadata_datastream
+      unless content.nil?
+        ds.label = 'Descriptive Metadata'
+        ds.ng_xml = Nokogiri::XML(content)
       end
     end
 

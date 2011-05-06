@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dor-services (1.0.1)
+    dor-services (1.0.3)
       active-fedora (>= 1.2.6)
       guid
       json

@@ -40,6 +40,7 @@ Values can also be configured individually:
                MD Toolkit metadata handler work with non-MODS metadata
 - <b>1.0.1</b> Changed descMetadata fetcher to pull based on best available "other ID" instead of "source ID"
 - <b>1.0.2</b> Added caching of metadata (250 records, 5 minute timeout)
+- <b>1.0.3</b> Fix bug in build_datastream
 
 == Copyright
 
