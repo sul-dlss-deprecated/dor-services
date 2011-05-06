@@ -1,3 +1,5 @@
+require 'cache'
+
 module Dor
 
   class MetadataError < Exception ; end
@@ -17,6 +19,7 @@ module Dor
   class MetadataService
     
     class << self
+      @@cache = Cache.new(nil, nil, 250, 300)
       
       def register(handler_class)
         ['fetch', 'label', 'prefixes'].each do |method|
@@ -46,9 +49,11 @@ module Dor
       end
       
       def fetch(identifier)
-        (prefix, identifier) = identifier.split(/:/,2)
-        handler = handler_for(prefix)
-        handler.fetch(prefix, identifier)
+        @@cache.fetch(identifier) do
+          (prefix, identifier) = identifier.split(/:/,2)
+          handler = handler_for(prefix)
+          handler.fetch(prefix, identifier)
+        end
       end
 
       def label_for(identifier)
