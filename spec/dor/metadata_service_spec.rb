@@ -42,7 +42,7 @@ describe Dor::MetadataService do
       @mods = File.read(File.join(@specdir, 'test_data', 'mods_record.xml'))
       @mock_resource = mock('catalog-resource', :get => @mods)
       @mock_resource.stub!(:[]).and_return(@mock_resource)
-      RestClient::Resource.should_receive(:new).with(Dor::Config[:catalog_url]).and_return(@mock_resource)
+      RestClient::Resource.should_receive(:new).with(Dor::Config.metadata.catalog.url).and_return(@mock_resource)
     end
     
     it "should fetch a record based on barcode" do
@@ -67,7 +67,7 @@ describe Dor::MetadataService do
       @exist_response = File.read(File.join(@specdir, 'test_data', 'exist_response.xml'))
       @mock_resource = mock('mdtoolkit-resource', :post => @exist_response)
       @mock_resource.stub!(:[]).and_return(@mock_resource)
-      RestClient::Resource.should_receive(:new).with(Dor::Config[:exist_url]).and_return(@mock_resource)
+      RestClient::Resource.should_receive(:new).with(Dor::Config.metadata.exist.url).and_return(@mock_resource)
     end
     
     it "should fetch a record based on a druid: prefix" do

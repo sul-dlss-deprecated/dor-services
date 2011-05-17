@@ -5,28 +5,31 @@ Require the following:
 
 Configuration is handled through the Dor::Config object:
 
-  Dor::Config.configure do |config|
+  Dor::Config.configure do
   	# Basic DOR configuration
-    config.fedora_url = 'https://dor-dev.stanford.edu/fedora'
-  	config.gsearch_solr_url = 'http://dor-dev.stanford.edu/solr'
+		fedora.url = 'https://dor-dev.stanford.edu/fedora'
+  	gsearch.url = 'http://dor-dev.stanford.edu/solr'
 
-	# If using SSL certificates
-	config.cert_file = File.dirname(__FILE__) + '/../certs/dummy.crt'
-	config.key_file = File.dirname(__FILE__) + '/../certs/dummy.key'
-	config.key_pass = 'dummy'
+		# If using SSL certificates
+		fedora do
+		  cert_file = File.dirname(__FILE__) + '/../certs/dummy.crt'
+		  key_file = File.dirname(__FILE__) + '/../certs/dummy.key'
+		  key_pass = 'dummy'
+		end
 
-	# If using SURI service
-	config.mint_suri_ids = true
-	config.suri_url = 'http://some.suri.host:8080'
-	config.id_namespace = 'druid'
-	config.suri_user = 'suriuser'
-	config.suri_password = 'suripword'
+		# If using SURI service
+		suri do
+		  mint_ids = true
+		  url = 'http://some.suri.host:8080'
+		  id_namespace = 'druid'
+		  user = 'suriuser'
+		  password = 'suripword'
+		end
   end
 
 Values can also be configured individually:
 
-  Dor::Config[:mint_suri_ids] = true
-  Dor::Config.set(:mint_suri_ids,true)
+  Dor::Config.suri.mint_ids(true)
 
 == Releases
 - <b>0.1.1</b> Initial release with basic object registration and query_by_id functionality

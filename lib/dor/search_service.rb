@@ -5,6 +5,8 @@ module Dor
   class SearchService
 
     RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'"
+
+    Config.declare(:gsearch) { url nil }
     
     class << self
       
@@ -18,16 +20,16 @@ module Dor
         }
         
         client = RestClient::Resource.new(
-          Dor::Config[:fedora_url],
-          :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(Dor::Config[:fedora_cert_file])),
-          :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(Dor::Config[:fedora_key_file]), Dor::Config[:fedora_key_pass])
+          Config.fedora.url,
+          :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(Config.fedora.cert_file)),
+          :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(Config.fedora.key_file), Config.fedora.key_pass)
         )
         result = client['risearch'].post(query_params)
         result.split(/\n/)[1..-1].collect { |pid| pid.chomp.sub(/^info:fedora\//,'') }
       end
       
       def gsearch(params)
-        client = RestClient::Resource.new(Dor::Config[:gsearch_solr_url])
+        client = RestClient::Resource.new(Dor::Config.gsearch.url)
         query_params = params.merge(:wt => 'json')
         query_string = query_params.collect { |k,v| "#{k}=#{URI.encode(v)}" }.join('&')
         result = JSON.parse(client["select?#{query_string}"].get)

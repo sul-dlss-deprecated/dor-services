@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
   
 Gem::Specification.new do |s|
   s.name        = "dor-services"
-  s.version     = "1.0.3"
+  s.version     = "1.0.4"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick"]
   s.email       = ["mbklein@stanford.edu"]
@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency "guid"
   s.add_dependency "json"
   s.add_dependency "ruby-cache"
+  s.add_dependency "mod-cons"
   
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects

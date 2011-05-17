@@ -18,6 +18,8 @@ module Dor
   
   class MetadataService
     
+    Config.declare(:metadata)
+    
     class << self
       @@cache = Cache.new(nil, nil, 250, 300)
       

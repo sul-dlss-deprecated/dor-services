@@ -4,20 +4,28 @@ require 'active_fedora'
 module Dor
   class SuriService
     
-    # If Dor::Config[:mint_suri_ids] is set to true, then this method
-    # returns Dor::Config[:id_namespace]:id_from_suri
+    Config.declare(:suri) do
+  	  url nil
+  	  user nil
+  	  pass nil
+  	  id_namespace 'druid'
+  	  mint_ids false
+    end
+    
+    # If Dor::Config.suri.mint_ids is set to true, then this method
+    # returns Config.suri.id_namespace:id_from_suri
     # Throws an exception if there were any problems
     def self.mint_id
-      unless(Dor::Config[:mint_suri_ids])
+      unless(Config.suri.mint_ids)
         return Fedora::Repository.instance.nextid
       end
       
       #Post with no body
-      resource = RestClient::Resource.new("#{Dor::Config[:suri_url]}/suri2/namespaces/#{Dor::Config[:id_namespace]}/identifiers",
-                                :user => Dor::Config[:suri_user], :password => Dor::Config[:suri_pass])
+      resource = RestClient::Resource.new("#{Config.suri.url}/suri2/namespaces/#{Config.suri.id_namespace}/identifiers",
+                                :user => Config.suri.user, :password => Config.suri.pass)
       id = resource.post('').chomp
 
-      return "#{Dor::Config[:id_namespace]}:#{id.strip}"
+      return "#{Config.suri.id_namespace}:#{id.strip}"
 
 #    rescue Exception => e
 #      Rails.logger.error("Unable to mint id from suri: #{e.to_s}")
