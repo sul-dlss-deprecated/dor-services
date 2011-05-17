@@ -2,6 +2,8 @@ require 'nokogiri'
 require 'rest-client'
 
 handler = Class.new do
+  Dor::Config.metadata.declare(:exist) { url nil }
+  
   def fetch(prefix, identifier)
     query = <<-QUERY
 <?xml version="1.0" encoding="UTF-8"?>
@@ -13,7 +15,7 @@ handler = Class.new do
     </text>
 </query>
     QUERY
-    client = RestClient::Resource.new(Dor::Config[:exist_url])
+    client = RestClient::Resource.new(Dor::Config.metadata.exist.url)
     response = client['db/orbeon/fr'].post(query, :content_type => 'application/xquery')
     doc = Nokogiri::XML(response)
     doc.root.add_namespace_definition('exist','http://exist.sourceforge.net/NS/exist')

@@ -3,12 +3,12 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe Dor::SuriService do
   
   before(:all) do
-    Dor::Config.configure do |config|
-      config.mint_suri_ids = true
-      config.suri_url = 'http://some.suri.host:8080'
-      config.id_namespace = 'druid'
-      config.suri_user = 'suriuser'
-      config.suri_pass = 'suripword'
+    Dor::Config.suri.configure do
+      mint_ids true
+      url 'http://some.suri.host:8080'
+      id_namespace 'druid'
+      user 'suriuser'
+      pass 'suripword'
     end
   end
 
@@ -28,7 +28,7 @@ describe Dor::SuriService do
     it "should mint a druid using RestClient::Resource" do
       @my_client.should_receive(:post).with("").and_return('somestring')
       
-      Dor::SuriService.mint_id.should == "#{Dor::Config[:id_namespace]}:somestring"                                         
+      Dor::SuriService.mint_id.should == "#{Dor::Config.suri.id_namespace}:somestring"                                         
     end
   
     it "should throw log an error and rethrow the exception if Connect fails." do
@@ -43,7 +43,7 @@ describe Dor::SuriService do
   end
   
   it "should use the Fedora->nextpid service if calls to SURI are disabled" do
-    Dor::Config[:mint_suri_ids] = false
+    Dor::Config.suri.configure { mint_ids false }
     Fedora::Repository.stub_chain(:instance, :nextid).and_return('pid:123')
     
     Dor::SuriService.mint_id.should == 'pid:123'

@@ -1,81 +1,28 @@
-require 'active_fedora'
-require 'ostruct'
+require 'mod_cons'
 
 module Dor
-  
-  module Config
-    
-    @configuration ||= {
-      :fedora_url => nil,
-      :fedora_cert_file => nil,
-      :fedora_key_file => nil,
-      :fedora_key_pass => nil,
-      :gsearch_solr_url => nil,
-      :mint_suri_ids => false,
-      :id_namespace => 'changeme',
-      :suri_url => nil,
-      :suri_user => nil,
-      :suri_pass => nil,
-      :solr_url => nil,
-      :workflow_url => nil,
-      :exist_url => nil,
-      :catalog_url => nil
-    }
-    def @configuration.method_missing(sym,*args)
-      property = sym.to_s.sub(/=$/,'').to_sym
-      if self.has_key?(property)
-        if sym.to_s =~ /=$/
-          self[property] = args.first
-        else
-          self[property]
-        end
-      else 
-        raise ::NameError, "Configuration key not found: #{property}"
-      end
-    end
+  Config = ModCons::Configuration.new(:'Dor::Config')
 
-    class << self
-    
-#      attr_reader :configuration
-#      alias_method :config, :configuration
+  Config.declare do
+    fedora do
+      url nil
+      cert_file nil
+      key_file nil
+      key_pass ''
 
-      def [](key)
-        @configuration[key]
-      end
- 
-      def []=(key,value)
-        @configuration[key] = value
-      end
-      
-      def to_hash
-        @configuration.dup
-      end
-      
-      def configure(hash = {})
-        fedora_config = repo_configuration_signature
-        @configuration.merge!(hash.reject { |k,v| @configuration.has_key?(k) == false })
-        yield @configuration if block_given?
-        if fedora_config != repo_configuration_signature
-          temp_v = $-v
-          $-v = nil
-          begin
-            ::Fedora::Repository.register(@configuration.fedora_url)
-            ::Fedora::Connection.const_set(:SSL_CLIENT_CERT_FILE,@configuration.fedora_cert_file)
-            ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_FILE,@configuration.fedora_key_file)
-            ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_PASS,@configuration.fedora_key_pass)
-          ensure
-            $-v = temp_v
-          end
+      config_changed do |fedora|
+        temp_v = $-v
+        $-v = nil
+        begin
+         ::Fedora::Repository.register(fedora.url)
+         ::Fedora::Connection.const_set(:SSL_CLIENT_CERT_FILE,fedora.cert_file)
+         ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_FILE,fedora.key_file)
+         ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_PASS,fedora.key_pass)
+        ensure
+         $-v = temp_v
         end
       end
-
-      private
-      def repo_configuration_signature
-        @configuration.values_at(:fedora_url,:fedora_cert_file,:fedora_key_file,:fedora_key_pass).collect { |v| v.to_s }.join('::')
-      end
-
     end
-    
   end
-  
 end
+

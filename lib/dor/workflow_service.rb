@@ -8,6 +8,8 @@ module Dor
   # - Dor::CREATE_WORKFLOW : true or false.  Can be used to turn of workflow in a particular environment, like development
   # - Dor::WF_URI : The URI to the workflow service.  An example URI is 'http://lyberservices-dev.stanford.edu/workflow'
   module WorkflowService
+
+    Config.declare(:workflow) { url nil }
   
     class << self
       # Creates a workflow for a given object in the repository.  If this particular workflow for this objects exists,
@@ -96,9 +98,9 @@ module Dor
       end
       
       def workflow_resource
-        RestClient::Resource.new(Dor::Config[:workflow_url],
-        :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(Dor::Config[:fedora_cert_file])),
-        :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(Dor::Config[:fedora_key_file]), Dor::Config[:fedora_key_pass]))
+        RestClient::Resource.new(Config.workflow.url,
+        :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(Config.fedora.cert_file)),
+        :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(Config.fedora.key_file), Config.fedora.key_pass))
       end
     end
   end
