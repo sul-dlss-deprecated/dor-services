@@ -44,6 +44,7 @@ Values can also be configured individually:
 - <b>1.0.1</b> Changed descMetadata fetcher to pull based on best available "other ID" instead of "source ID"
 - <b>1.0.2</b> Added caching of metadata (250 records, 5 minute timeout)
 - <b>1.0.3</b> Fix bug in build_datastream
+- <b>1.1.0</b> Switched from hand-rolled configuration object to ModCons-based configuration object
 
 == Copyright
 
