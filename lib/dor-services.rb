@@ -3,6 +3,7 @@ require 'dor/exceptions'
 
 # ActiveFedora Classes
 require 'dor/base'
+require 'dor/item'
 require 'dor/admin_policy_object'
 
 # Services
