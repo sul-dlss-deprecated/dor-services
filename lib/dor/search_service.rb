@@ -29,7 +29,11 @@ module Dor
       end
       
       def gsearch(params)
-        client = RestClient::Resource.new(Dor::Config.gsearch.url)
+        client = RestClient::Resource.new(
+          Config.gsearch.url,
+          :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(Config.fedora.cert_file)),
+          :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(Config.fedora.key_file), Config.fedora.key_pass)
+        )
         query_params = params.merge(:wt => 'json')
         query_string = query_params.collect { |k,v| "#{k}=#{URI.encode(v)}" }.join('&')
         result = JSON.parse(client["select?#{query_string}"].get)

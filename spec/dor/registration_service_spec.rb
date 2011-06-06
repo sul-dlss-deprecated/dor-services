@@ -24,8 +24,8 @@ describe Dor::RegistrationService do
       @mock_repo = mock(Fedora::Repository)
       @mock_repo.stub!(:ingest).and_return(Net::HTTPCreated.new("1.1","201","Created"))
       Fedora::Repository.stub!(:new).and_return(@mock_repo)
-      @mock_dor_base = mock("Dor::Base")
-      Dor::Base.stub!(:load_instance).and_return(@mock_dor_base)
+      @mock_dor_item = mock("Dor::Item")
+      Dor::Item.stub!(:load_instance).and_return(@mock_dor_item)
 
       @params = {
         :object_type => 'item', 
