@@ -42,16 +42,23 @@ module Dor
       end
     end
     
-    def public_xml
+    def public_xml      
       pub = Nokogiri::XML("<publicObject/>").root
       pub['id'] = pid
-      pub.add_child(self.datastreams['identityMetadata'].ng_xml.root)
-      pub.add_child(self.datastreams['contentMetadata'].ng_xml.root)
-      debugger
-      pub.add_child(self.datastreams['rightsMetadata'].ng_xml.root)
+      pub.add_child(self.datastreams['identityMetadata'].ng_xml.root.clone)
+      pub.add_child(self.datastreams['contentMetadata'].ng_xml.root.clone)
+      pub.add_child(self.datastreams['rightsMetadata'].ng_xml.root.clone)
+      pub.add_child(generate_dublin_core.root)
       pub.to_xml
     end
-
+    
+    # Generates Dublin Core from the MODS in the descMetadata datastream using the LoC mods2dc stylesheet
+    # Should not be used for the Fedora DC datastream
+    def generate_dublin_core
+      xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + '/mods2dc.xslt')) )
+      xslt.transform(self.datastreams['descMetadata'].ng_xml)
+    end
+    
     # Self-aware datastream builders
     def build_datastream(datastream, force = false)
       ds = datastreams[datastream]
