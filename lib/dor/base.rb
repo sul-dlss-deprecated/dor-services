@@ -10,6 +10,12 @@ module Dor
     
     attr_reader :workflows
 
+
+    has_metadata :name => "identityMetadata", :type => IdentityMetadataDS
+    has_metadata :name => "descMetadata", :type => ActiveFedora::NokogiriDatastream
+    has_metadata :name => "rightsMetadata", :type => ActiveFedora::NokogiriDatastream
+    has_metadata :name => "technicalMetadata", :type => ActiveFedora::NokogiriDatastream
+    has_metadata :name => "contentMetadata", :type => ActiveFedora::NokogiriDatastream
     has_metadata :name => "DC", :type => SimpleDublinCoreDs
     has_metadata :name => "RELS-EXT", :type => ActiveFedora::NokogiriDatastream
     has_metadata :name => "identityMetadata", :type => IdentityMetadataDS
@@ -34,6 +40,16 @@ module Dor
       else
         nil
       end
+    end
+    
+    def public_xml
+      pub = Nokogiri::XML("<publicObject/>").root
+      pub['id'] = pid
+      pub.add_child(self.datastreams['identityMetadata'].ng_xml.root)
+      pub.add_child(self.datastreams['contentMetadata'].ng_xml.root)
+      debugger
+      pub.add_child(self.datastreams['rightsMetadata'].ng_xml.root)
+      pub.to_xml
     end
 
     # Self-aware datastream builders
