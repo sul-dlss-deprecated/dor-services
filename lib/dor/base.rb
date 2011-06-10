@@ -49,7 +49,7 @@ module Dor
       pub.add_child(self.datastreams['contentMetadata'].ng_xml.root.clone)
       pub.add_child(self.datastreams['rightsMetadata'].ng_xml.root.clone)
       pub.add_child(generate_dublin_core.root)
-      pub.to_xml
+      pub.to_xml {|config| config.no_declaration}
     end
     
     # Generates Dublin Core from the MODS in the descMetadata datastream using the LoC mods2dc stylesheet
@@ -57,6 +57,15 @@ module Dor
     def generate_dublin_core
       xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + '/mods2dc.xslt')) )
       xslt.transform(self.datastreams['descMetadata'].ng_xml)
+    end
+    
+    def publish_metadata
+      DigitalStacksService.transfer_to_document_store(pid, self.datastreams['identityMetadata'].to_xml, 'identityMetadata')
+      DigitalStacksService.transfer_to_document_store(pid, self.datastreams['contentMetadata'].to_xml, 'contentMetadata')
+      DigitalStacksService.transfer_to_document_store(pid, self.datastreams['rightsMetadata'].to_xml, 'rightsMetadata')
+      dc_xml = self.generate_dublin_core.to_xml {|config| config.no_declaration}
+      DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'DC')
+      DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
     end
     
     # Self-aware datastream builders

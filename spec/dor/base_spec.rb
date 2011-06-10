@@ -25,7 +25,7 @@ describe Dor::Base do
   after :all do
     Dor::Config.configure(@saved_configuration)
   end
-  
+      
   it "should be of Type ActiveFedora::Base" do    
     b = Dor::Base.new
     b.should be_kind_of(ActiveFedora::Base)
@@ -52,29 +52,28 @@ describe Dor::Base do
       EquivalentXml.equivalent?(dc, expected_dc).should be
     end
   end
-    
+        
   describe "#public_xml" do
     
     context "produces xml with" do
-      
-       b = Dor::Base.new
+        b = Dor::Base.new
 
-       mods = <<-EOXML
-       <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
-                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  version="3.3"
-                  xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd"/>
-       EOXML
-       descmd_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'descMetadata', :blob => mods)
-       b.add_datastream(descmd_ds)
-       
-       id_ds = IdentityMetadataDS.new(:dsid=> 'identityMetadata', :blob => '<identityMetadata/>')
-       b.add_datastream(id_ds)
-       cm_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'contentMetadata', :blob => '<contentMetadata/>')
-       b.add_datastream(cm_ds)
-       r_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'rightsMetadata', :blob => '<rightsMetadata/>')
-       b.add_datastream(r_ds)
-       p_xml = Nokogiri::XML(b.public_xml)
+        mods = <<-EOXML
+          <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     version="3.3"
+                     xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd"/>
+        EOXML
+        descmd_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'descMetadata', :blob => mods)
+        b.add_datastream(descmd_ds)
+
+        id_ds = IdentityMetadataDS.new(:dsid=> 'identityMetadata', :blob => '<identityMetadata/>')
+        b.add_datastream(id_ds)
+        cm_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'contentMetadata', :blob => '<contentMetadata/>')
+        b.add_datastream(cm_ds)
+        r_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'rightsMetadata', :blob => '<rightsMetadata/>')
+        b.add_datastream(r_ds)
+        p_xml = Nokogiri::XML(b.public_xml)
 
        it "an id attribute" do
          p_xml.at_xpath('/publicObject/@id').value.should =~ /^druid:/
@@ -110,5 +109,39 @@ describe Dor::Base do
     end
   end
   
+  describe "#publish_metadata" do
+    
+    context "copies to the document cache" do
+      
+      it "identityMetadta, contentMetadata, rightsMetadata, generated dublin core, and public xml" do
+        b = Dor::Base.new
+        b.stub!(:pid).and_return('druid:ab123bb4567')
+
+        mods = <<-EOXML
+          <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     version="3.3"
+                     xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd"/>
+        EOXML
+        descmd_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'descMetadata', :blob => mods)
+        b.add_datastream(descmd_ds)
+        id_ds = IdentityMetadataDS.new(:dsid=> 'identityMetadata', :blob => '<identityMetadata/>')
+        b.add_datastream(id_ds)
+        cm_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'contentMetadata', :blob => '<contentMetadata/>')
+        b.add_datastream(cm_ds)
+        r_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'rightsMetadata', :blob => '<rightsMetadata/>')
+        b.add_datastream(r_ds)
+
+        Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123bb4567', /<identityMetadata\/>/, 'identityMetadata')
+        Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123bb4567', /<contentMetadata\/>/, 'contentMetadata')
+        Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123bb4567', /<rightsMetadata\/>/, 'rightsMetadata')
+        Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123bb4567', /<oai_dc:dc/, 'DC')
+        Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123bb4567', /<publicObject/, 'public')
+
+        b.publish_metadata
+      end
+      
+    end
+  end
   
 end
