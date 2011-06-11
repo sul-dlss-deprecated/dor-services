@@ -8,6 +8,12 @@ module Dor
   	  document_cache_storage_root nil
   	  document_cache_host nil
   	  document_cache_user nil
+  	  
+  	  storage_root '/stacks'
+  	  host nil
+  	  user nil
+  	  
+  	  local_workspace_root '/dor'
     end
     
     # TODO copied from lyber-core, but didn't want to create circular dependency for between gems for this one method
@@ -39,7 +45,7 @@ module Dor
         
     def self.transfer_to_document_store(id, content, filename)
       path = self.druid_tree(id)
-      raise "Invalid druid" if(path.nil?)
+      raise "Invalid druid: #{id}" if(path.nil?)
       
       # create the remote directory in the document cache
       remote_document_cache_dir = File.join(Config.stacks.document_cache_storage_root, path)
@@ -50,6 +56,23 @@ module Dor
       Tempfile.open(filename) do |tf| 
         tf.write(content) 
         command = "scp \"#{tf.path}\" #{Config.stacks.document_cache_user}@#{Config.stacks.document_cache_host}:#{remote_document_cache_dir}/#{filename}"
+        self.execute(command)
+      end
+    end
+    
+    def self.shelve_to_stacks(id, files)
+      path = self.druid_tree(id)
+      raise "Invalid druid: #{id}" if(path.nil?)
+      
+      # create the remote directory on the digital stacks
+      remote_storage_dir = File.join(Config.stacks.storage_root, path)
+      command = "ssh #{Config.stacks.user}@#{Config.stacks.host} mkdir -p #{remote_storage_dir}"
+      self.execute(command)
+
+      # copy the contents for the given object from the local workspace directory to the remote directory
+      local_storage_dir = File.join(Config.stacks.local_workspace_root, path)
+      files.each do |file|
+        command = "scp \"#{local_storage_dir}/#{file}\" #{Config.stacks.user}@#{Config.stacks.host}:#{remote_storage_dir}"
         self.execute(command)
       end
     end

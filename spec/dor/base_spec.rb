@@ -144,4 +144,58 @@ describe Dor::Base do
     end
   end
   
+  describe "#shelve" do
+    
+    it "builds a list of filenames eligible for shelving to the Digital Stacks" do
+      b = Dor::Base.new
+      b.stub!(:pid).and_return('druid:ab123bb4567')
+
+      content_md = <<-EOXML
+        <contentMetadata type="googleScannedBook" objectId="druid:ab123bb4567">
+           <resource id="page1" sequence="1" type="page" objectId="druid:rr123ss4567">
+              <attr name="pageType">Title</attr>
+              <attr name="pageNumber">3</attr>
+              <attr name="pageLabel">ii</attr>
+              <attr name="googlePageTag">IMAGE_ON_PAGE,IMPLICIT_PAGE_NUMBER</attr>
+              <file id="00000001.jp2" format="JPEG2000" mimetype="image/jp2" size="169627" shelve="no" deliver="no" preserve="yes">
+                 <imageData height="800" width="1200">
+                 <location type="url">http://service/druid/00000001.jp2</location>
+                 <location type="path">/dor/workspace/...</location>
+                 <checksum type="md5">56dd37697f05073168b9b58ddaccad0a</checksum>
+                 <checksum type="sha1">884b7650725011de8a390800200c9a66</checksum>
+              </file>
+              <file id="1.html" format="text" mimetype="text/html" encoding="UTF-8" dataType="hocr" size="734" shelve="yes" deliver="no" preserve="yes">
+                 <location type="url">http://service/druid/00000001.jp2</location>
+                 <checksum type="md5">60dd37697f05073168b9b58ddaccad0a</checksum>
+                 <checksum type="sha1">324b7650725011de8a390800200c9a66</checksum>
+              </file>
+           </resource>
+           <resource id="page2" sequence="1" type="page" objectId="druid:rr123ss4567">
+               <attr name="pageType">Title</attr>
+               <attr name="pageNumber">3</attr>
+               <attr name="pageLabel">ii</attr>
+               <attr name="googlePageTag">IMAGE_ON_PAGE,IMPLICIT_PAGE_NUMBER</attr>
+               <file id="00000001.jp2" format="JPEG2000" mimetype="image/jp2" size="169627" shelve="no" deliver="no" preserve="yes">
+                  <imageData height="800" width="1200">
+                  <location type="url">http://service/druid/00000001.jp2</location>
+                  <location type="path">/dor/workspace/...</location>
+                  <checksum type="md5">56dd37697f05073168b9b58ddaccad0a</checksum>
+                  <checksum type="sha1">884b7650725011de8a390800200c9a66</checksum>
+               </file>
+               <file id="2.html" format="text" mimetype="text/html" encoding="UTF-8" dataType="hocr" size="734" shelve="yes" deliver="no" preserve="yes">
+                  <location type="url">http://service/druid/00000001.jp2</location>
+                  <checksum type="md5">60dd37697f05073168b9b58ddaccad0a</checksum>
+                  <checksum type="sha1">324b7650725011de8a390800200c9a66</checksum>
+               </file>
+            </resource>
+        </contentMetadata>
+      EOXML
+      c_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'contentMetadata', :blob => content_md)
+      b.add_datastream(c_ds)
+      
+      Dor::DigitalStacksService.should_receive(:shelve_to_stacks).with('druid:ab123bb4567', ['1.html', '2.html'])
+      # TODO figure out best place to keep workspace root
+      b.shelve
+    end
+  end
 end
