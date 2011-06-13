@@ -46,6 +46,7 @@ Values can also be configured individually:
 - <b>1.0.3</b> Fix bug in build_datastream
 - <b>1.1.0</b> Switched from hand-rolled configuration object to ModCons-based configuration object
 - <b>1.1.1</b> Use SSL certificates for gsearch
+- <b>1.1.2</b> Hotfix for missing methods in Dor::Item
 
 == Copyright
 
