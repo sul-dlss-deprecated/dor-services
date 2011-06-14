@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dor-services (1.1.1)
+    dor-services (1.1.2)
       active-fedora (>= 1.2.6)
       guid
       json
@@ -11,6 +11,7 @@ PATH
       rest-client
       ruby-cache
       solr-ruby (>= 0.0.8)
+      systemu
       validatable
 
 GEM
@@ -29,14 +30,14 @@ GEM
       solr-ruby (>= 0.0.6)
       solrizer (> 1.0.0)
       xml-simple (>= 1.0.12)
-    activemodel (3.0.7)
-      activesupport (= 3.0.7)
+    activemodel (3.0.8)
+      activesupport (= 3.0.8)
       builder (~> 2.1.2)
       i18n (~> 0.5.0)
-    activeresource (3.0.7)
-      activemodel (= 3.0.7)
-      activesupport (= 3.0.7)
-    activesupport (3.0.7)
+    activeresource (3.0.8)
+      activemodel (= 3.0.8)
+      activesupport (= 3.0.8)
+    activesupport (3.0.8)
     awesome_print (0.4.0)
     bond (0.4.1)
     builder (2.1.2)
@@ -90,12 +91,13 @@ GEM
       nokogiri
       nokogiri
       nokogiri
-      om
       om (>= 1.0.0)
+      om
       stomp
       xml-simple
     spoon (0.0.1)
     stomp (1.1.8)
+    systemu (2.2.0)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
     validatable (1.6.7)

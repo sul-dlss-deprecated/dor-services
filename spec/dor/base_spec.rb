@@ -14,18 +14,18 @@ describe Dor::Base do
       gsearch.url "http://solr.edu"
       fedora.url "http://fedora.edu"
     end
+    
+    Rails.stub_chain(:logger, :error)
+    ActiveFedora::SolrService.register(Dor::Config.gsearch.url)
+    Fedora::Repository.register(Dor::Config.fedora.url)
+    Fedora::Repository.stub!(:instance).and_return(stub('frepo').as_null_object)
   end
   
   after :all do
     Dor::Config.configure(@saved_configuration)
   end
-  
-  it "should be of Type ActiveFedora::Base" do
-    Rails.stub_chain(:logger, :error)
-    ActiveFedora::SolrService.register(Dor::Config.gsearch.url)
-    Fedora::Repository.register(Dor::Config.fedora.url)
-    Fedora::Repository.stub!(:instance).and_return(stub('frepo').as_null_object)
-    
+      
+  it "should be of Type ActiveFedora::Base" do    
     b = Dor::Base.new
     b.should be_kind_of(ActiveFedora::Base)
     
