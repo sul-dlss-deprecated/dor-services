@@ -54,7 +54,7 @@ module Dor
         end
         
         idmd.objectId = pid
-        idmd.objectCreators << 'dor'
+        idmd.objectCreators << 'DOR'
         idmd.objectLabels << label
         idmd.objectTypes << object_type
         idmd.adminPolicy = admin_policy
