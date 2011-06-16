@@ -35,7 +35,7 @@ module Dor
         nil
       end
     end
-
+    
     # Self-aware datastream builders
     def build_datastream(datastream, force = false)
       ds = datastreams[datastream]
