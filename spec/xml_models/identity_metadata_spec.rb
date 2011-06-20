@@ -29,7 +29,7 @@ describe IdentityMetadata do
   
     it "should serialize empty" do
       test_doc = Nokogiri::XML(@idm.to_xml)
-      correct_doc = Nokogiri::XML(File.read(File.join(@specdir,"test_data/identity_metadata_empty.xml")))
+      correct_doc = Nokogiri::XML(File.read(File.join(@specdir,"fixtures/identity_metadata_empty.xml")))
       test_doc.should be_equivalent_to(correct_doc)
     end
     
@@ -46,7 +46,7 @@ describe IdentityMetadata do
       @data[:tags].each { |tag| @idm.add_tag(tag) }
 
       test_doc = Nokogiri::XML(@idm.to_xml)
-      correct_doc = Nokogiri::XML(File.read(File.join(@specdir,"test_data/identity_metadata_full.xml")))
+      correct_doc = Nokogiri::XML(File.read(File.join(@specdir,"fixtures/identity_metadata_full.xml")))
       
       test_doc.should be_equivalent_to(correct_doc)
     end
@@ -56,7 +56,7 @@ describe IdentityMetadata do
   context "read and parse" do
   
     before :each do
-      @idm = IdentityMetadata.from_xml(File.read(File.join(@specdir,"test_data/identity_metadata_full.xml")))
+      @idm = IdentityMetadata.from_xml(File.read(File.join(@specdir,"fixtures/identity_metadata_full.xml")))
     end
     
     it "should load the proper values" do
@@ -75,7 +75,7 @@ describe IdentityMetadata do
     it "should re-serialize correctly after a change" do
       @idm.add_tag('Test : Added by spec tests')
       test_doc = Nokogiri::XML(@idm.to_xml)
-      correct_doc = Nokogiri::XML(File.read(File.join(@specdir,"test_data/identity_metadata_altered.xml")))
+      correct_doc = Nokogiri::XML(File.read(File.join(@specdir,"fixtures/identity_metadata_altered.xml")))
       
       test_doc.should be_equivalent_to(correct_doc)
     end
