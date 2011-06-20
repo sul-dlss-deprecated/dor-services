@@ -16,7 +16,7 @@ describe IdentityMetadata do
       :citation_creator => 'Eder, Tamara, 1974-',
       :source_id => 'google:STANFORD_342837261527',
       :other_ids => ['barcode:342837261527', 'catkey:129483625', 'uuid:7f3da130-7b02-11de-8a39-0800200c9a66'],
-      :admin_policy => 'druid:hx23ke9928',
+      :admin_policy => 'druid:fg89hi0123',
       :tags => ['Google Books : Phase 1', 'Google Books : Scan source STANFORD']
     }
   end

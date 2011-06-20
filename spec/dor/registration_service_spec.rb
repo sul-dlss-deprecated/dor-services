@@ -19,8 +19,8 @@ describe Dor::RegistrationService do
   context "#register_object" do
   
     before :each do
-      @pid = 'druid:abc123def'
-      Dor::SuriService.stub!(:mint_id).and_return("druid:abc123def")
+      @pid = 'druid:ab123cd4567'
+      Dor::SuriService.stub!(:mint_id).and_return("druid:ab123cd4567")
       @mock_repo = mock(Fedora::Repository)
       @mock_repo.stub!(:ingest).and_return(Net::HTTPCreated.new("1.1","201","Created"))
       Fedora::Repository.stub!(:new).and_return(@mock_repo)
