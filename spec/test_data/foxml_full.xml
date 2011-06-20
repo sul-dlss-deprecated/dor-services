@@ -33,7 +33,7 @@
           <otherId name="barcode">342837261527</otherId>
           <otherId name="catkey">129483625</otherId>
           <otherId name="uuid">7f3da130-7b02-11de-8a39-0800200c9a66</otherId>
-          <adminPolicy>druid:fg89hi0123</adminPolicy>
+          <adminPolicy>druid:fg890hi1234</adminPolicy>
           <tag>Google Books : Phase 1</tag>
           <tag>Google Books : Scan source STANFORD</tag>
         </identityMetadata>
@@ -46,7 +46,7 @@
         <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rel="info:fedora/fedora-system:def/relations-external#" xmlns:hydra="http://projecthydra.org/ns/relations#">
           <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
             <fedora-model:hasModel rdf:resource="info:fedora/testObject"/>
-            <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg89hi0123"/>
+            <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
           </rdf:Description>
         </rdf:RDF>
       </foxml:xmlContent>
