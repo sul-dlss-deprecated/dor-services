@@ -35,6 +35,12 @@ module Dor
       end
     end
     
+    def build_rightsMetadata_datastream(ds)
+      content_ds = self.admin_policy_object.datastreams['defaultObjectRights']
+      ds.label = 'Rights Metadata'
+      ds.ng_xml = content_ds.ng_xml.clone
+    end
+    
     def public_xml      
       pub = Nokogiri::XML("<publicObject/>").root
       pub['id'] = pid
