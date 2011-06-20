@@ -7,7 +7,7 @@ describe Foxml do
   
   before :all do
     @specdir = File.join(File.dirname(__FILE__),"..")
-    @pid = 'druid:abc123def'
+    @pid = 'druid:ab123cd4567'
     @idm = Nokogiri::XML(File.read(File.join(@specdir,"test_data/identity_metadata_full.xml")))
     @admin_policy_object = 'druid:hx23ke9928'
     @label = "Foxml Test Object"

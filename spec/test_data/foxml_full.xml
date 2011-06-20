@@ -1,65 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<foxml:digitalObject PID="druid:abc123def" VERSION="1.1"
-  xmlns:foxml="info:fedora/fedora-system:def/foxml#"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/definitions/1/0/foxml1-1.xsd">
+<foxml:digitalObject xmlns:foxml="info:fedora/fedora-system:def/foxml#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PID="druid:ab123cd4567" VERSION="1.1" xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/definitions/1/0/foxml1-1.xsd">
   <foxml:objectProperties>
     <foxml:property NAME="info:fedora/fedora-system:def/model#state" VALUE="Active"/>
     <foxml:property NAME="info:fedora/fedora-system:def/model#label" VALUE="Foxml Test Object"/>
     <foxml:property NAME="info:fedora/fedora-system:def/model#ownerId" VALUE="dor"/>
   </foxml:objectProperties>
   <foxml:datastream CONTROL_GROUP="X" ID="DC" STATE="A" VERSIONABLE="false">
-    <foxml:datastreamVersion
-      FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/" ID="DC1.0"
-      LABEL="Dublin Core Record for this object" MIMETYPE="text/xml">
-        <foxml:xmlContent>
-          <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/">
-			<dc:title>Foxml Test Object</dc:title>
-	          <dc:identifier>google:STANFORD_342837261527</dc:identifier>
-	          <dc:identifier>barcode:342837261527</dc:identifier>
-	          <dc:identifier>catkey:129483625</dc:identifier>
-	          <dc:identifier>uuid:7f3da130-7b02-11de-8a39-0800200c9a66</dc:identifier>
-			  <dc:identifier>druid:abc123def</dc:identifier>
-		  </oai_dc:dc>
-        </foxml:xmlContent>
+    <foxml:datastreamVersion FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/" ID="DC1.0" LABEL="Dublin Core Record for this object" MIMETYPE="text/xml">
+      <foxml:xmlContent>
+        <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/">
+          <dc:title>Foxml Test Object</dc:title>
+          <dc:identifier>google:STANFORD_342837261527</dc:identifier>
+          <dc:identifier>barcode:342837261527</dc:identifier>
+          <dc:identifier>catkey:129483625</dc:identifier>
+          <dc:identifier>uuid:7f3da130-7b02-11de-8a39-0800200c9a66</dc:identifier>
+          <dc:identifier>druid:ab123cd4567</dc:identifier>
+        </oai_dc:dc>
+      </foxml:xmlContent>
     </foxml:datastreamVersion>
   </foxml:datastream>
   <foxml:datastream CONTROL_GROUP="X" ID="identityMetadata" STATE="A" VERSIONABLE="false">
-    <foxml:datastreamVersion
-      ID="identityMetadata.0" LABEL="Identity Metadata" MIMETYPE="text/xml">
-        <foxml:xmlContent>
-			<identityMetadata>
-			     <objectId>druid:rt923jk342</objectId>
-			     <objectType>item</objectType>
-			     <objectLabel>google download barcode 36105049267078</objectLabel>
-			     <objectCreator>DOR</objectCreator>
-			     <citationTitle>Squirrels of North America</citationTitle>
-			     <citationCreator>Eder, Tamara, 1974-</citationCreator>
-			     <sourceId source="google">STANFORD_342837261527</sourceId>
-			     <otherId name="barcode">342837261527</otherId>
-			     <otherId name="catkey">129483625</otherId>
-			     <otherId name="uuid">7f3da130-7b02-11de-8a39-0800200c9a66</otherId>
-  				 <adminPolicy>druid:hx23ke9928</adminPolicy>
-			     <tag>Google Books : Phase 1</tag>
-			     <tag>Google Books : Scan source STANFORD</tag>
-			</identityMetadata>
-        </foxml:xmlContent>
+    <foxml:datastreamVersion ID="identityMetadata.0" LABEL="Identity Metadata" MIMETYPE="text/xml">
+      <foxml:xmlContent>
+        <identityMetadata>
+          <objectId>druid:rt923jk342</objectId>
+          <objectType>item</objectType>
+          <objectLabel>google download barcode 36105049267078</objectLabel>
+          <objectCreator>DOR</objectCreator>
+          <citationTitle>Squirrels of North America</citationTitle>
+          <citationCreator>Eder, Tamara, 1974-</citationCreator>
+          <sourceId source="google">STANFORD_342837261527</sourceId>
+          <otherId name="barcode">342837261527</otherId>
+          <otherId name="catkey">129483625</otherId>
+          <otherId name="uuid">7f3da130-7b02-11de-8a39-0800200c9a66</otherId>
+          <adminPolicy>druid:hx23ke9928</adminPolicy>
+          <tag>Google Books : Phase 1</tag>
+          <tag>Google Books : Scan source STANFORD</tag>
+        </identityMetadata>
+      </foxml:xmlContent>
     </foxml:datastreamVersion>
   </foxml:datastream>
   <foxml:datastream CONTROL_GROUP="X" ID="RELS-EXT" STATE="A">
-    <foxml:datastreamVersion
-      FORMAT_URI="info:fedora/fedora-system:FedoraRELSExt-1.0" ID="RELS-EXT.0"
-      LABEL="RDF Statements about this object" MIMETYPE="application/rdf+xml">
-        <foxml:xmlContent>
-          <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" 
-              xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rel="info:fedora/fedora-system:def/relations-external#"
-			  xmlns:hydra="http://projecthydra.org/ns/relations#">
-              <rdf:Description rdf:about="info:fedora/druid:abc123def">
-                <fedora-model:hasModel rdf:resource="info:fedora/testObject"/>
-				<hydra:isGovernedBy rdf:resource="info:fedora/druid:hx23ke9928"/>
-              </rdf:Description>
+    <foxml:datastreamVersion FORMAT_URI="info:fedora/fedora-system:FedoraRELSExt-1.0" ID="RELS-EXT.0" LABEL="RDF Statements about this object" MIMETYPE="application/rdf+xml">
+      <foxml:xmlContent>
+        <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rel="info:fedora/fedora-system:def/relations-external#" xmlns:hydra="http://projecthydra.org/ns/relations#">
+          <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
+            <fedora-model:hasModel rdf:resource="info:fedora/testObject"/>
+            <hydra:isGovernedBy rdf:resource="info:fedora/druid:hx23ke9928"/>
+          </rdf:Description>
         </rdf:RDF>
       </foxml:xmlContent>
     </foxml:datastreamVersion>
   </foxml:datastream>
 </foxml:digitalObject>
-}.s
