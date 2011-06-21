@@ -1,14 +1,18 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../foxml_helper')
 require 'equivalent-xml'
+require 'equivalent-xml/rspec_matchers'
 
 describe Dor::Item do
   
   before :all do
+    @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"../fixtures")
     @saved_configuration = Dor::Config.to_hash
     Dor::Config.configure do
       suri.mint_ids false
       gsearch.url "http://solr.edu"
       fedora.url "http://fedora.edu"
+      stacks.local_workspace_root File.join(fixture_dir, "workspace")
     end
 
     Rails.stub_chain(:logger, :error)
@@ -143,46 +147,8 @@ describe Dor::Item do
       b = Dor::Item.new
       b.stub!(:pid).and_return('druid:ab123bb4567')
 
-      content_md = <<-EOXML
-        <contentMetadata type="googleScannedBook" objectId="druid:ab123bb4567">
-           <resource id="page1" sequence="1" type="page" objectId="druid:rr123ss4567">
-              <attr name="pageType">Title</attr>
-              <attr name="pageNumber">3</attr>
-              <attr name="pageLabel">ii</attr>
-              <attr name="googlePageTag">IMAGE_ON_PAGE,IMPLICIT_PAGE_NUMBER</attr>
-              <file id="00000001.jp2" format="JPEG2000" mimetype="image/jp2" size="169627" shelve="no" deliver="no" preserve="yes">
-                 <imageData height="800" width="1200">
-                 <location type="url">http://service/druid/00000001.jp2</location>
-                 <location type="path">/dor/workspace/...</location>
-                 <checksum type="md5">56dd37697f05073168b9b58ddaccad0a</checksum>
-                 <checksum type="sha1">884b7650725011de8a390800200c9a66</checksum>
-              </file>
-              <file id="1.html" format="text" mimetype="text/html" encoding="UTF-8" dataType="hocr" size="734" shelve="yes" deliver="no" preserve="yes">
-                 <location type="url">http://service/druid/00000001.jp2</location>
-                 <checksum type="md5">60dd37697f05073168b9b58ddaccad0a</checksum>
-                 <checksum type="sha1">324b7650725011de8a390800200c9a66</checksum>
-              </file>
-           </resource>
-           <resource id="page2" sequence="1" type="page" objectId="druid:rr123ss4567">
-               <attr name="pageType">Title</attr>
-               <attr name="pageNumber">3</attr>
-               <attr name="pageLabel">ii</attr>
-               <attr name="googlePageTag">IMAGE_ON_PAGE,IMPLICIT_PAGE_NUMBER</attr>
-               <file id="00000001.jp2" format="JPEG2000" mimetype="image/jp2" size="169627" shelve="no" deliver="no" preserve="yes">
-                  <imageData height="800" width="1200">
-                  <location type="url">http://service/druid/00000001.jp2</location>
-                  <location type="path">/dor/workspace/...</location>
-                  <checksum type="md5">56dd37697f05073168b9b58ddaccad0a</checksum>
-                  <checksum type="sha1">884b7650725011de8a390800200c9a66</checksum>
-               </file>
-               <file id="2.html" format="text" mimetype="text/html" encoding="UTF-8" dataType="hocr" size="734" shelve="yes" deliver="no" preserve="yes">
-                  <location type="url">http://service/druid/00000001.jp2</location>
-                  <checksum type="md5">60dd37697f05073168b9b58ddaccad0a</checksum>
-                  <checksum type="sha1">324b7650725011de8a390800200c9a66</checksum>
-               </file>
-            </resource>
-        </contentMetadata>
-      EOXML
+      content_md = File.read(File.join(@fixture_dir,"workspace/ab/123/cd/4567/content_metadata.xml"))
+
       c_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'contentMetadata', :blob => content_md)
       b.add_datastream(c_ds)
       
@@ -190,6 +156,26 @@ describe Dor::Item do
       # TODO figure out best place to keep workspace root
       b.shelve
     end
+  end
+  
+  context "datastream builders" do
+    before(:each) do
+      @item = item_from_foxml(File.read(File.join(@fixture_dir,"item_druid_ab123cd4567.xml")), Dor::Item)
+      @apo  = item_from_foxml(File.read(File.join(@fixture_dir,"apo_druid_fg890hi1234.xml")), Dor::AdminPolicyObject)
+      @item.stub!(:admin_policy_object).and_return(@apo)
+    end
+    
+    it "should build the descMetadata datastream" do
+      Dor::MetadataService.should_receive(:fetch).with('barcode:342837261527')
+      @item.build_datastream('descMetadata')
+    end
+
+    it "should build the contentMetadata datastream" do
+      content_md = File.read(File.join(@fixture_dir,"workspace/ab/123/cd/4567/content_metadata.xml"))
+      @item.build_datastream('contentMetadata')
+      @item.datastreams['contentMetadata'].ng_xml.should be_equivalent_to(Nokogiri::XML(content_md))
+    end
+    
   end
   
 end
