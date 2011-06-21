@@ -39,7 +39,7 @@ module Dor
     # Self-aware datastream builders
     def build_datastream(datastream, force = false)
       ds = datastreams[datastream]
-      if force or (datastreams_in_fedora.has_key?(datastream) == false) or (ds.content.to_s.empty?)
+      if force or ds.new_object? or (ds.content.to_s.empty?)
         proc = "build_#{datastream}_datastream".to_sym
         content = self.send(proc, ds)
         ds.save
