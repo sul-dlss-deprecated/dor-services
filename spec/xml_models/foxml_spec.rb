@@ -7,14 +7,14 @@ describe Foxml do
   
   before :all do
     @specdir = File.join(File.dirname(__FILE__),"..")
-    @pid = 'druid:abc123def'
-    @idm = Nokogiri::XML(File.read(File.join(@specdir,"test_data/identity_metadata_full.xml")))
-    @admin_policy_object = 'druid:hx23ke9928'
+    @pid = 'druid:ab123cd4567'
+    @idm = Nokogiri::XML(File.read(File.join(@specdir,"fixtures/identity_metadata_full.xml")))
+    @admin_policy_object = 'druid:fg890hi1234'
     @label = "Foxml Test Object"
     @model = 'testObject'
     
-    @empty_result = File.read(File.join(@specdir,"test_data/foxml_empty.xml"))
-    @full_result = File.read(File.join(@specdir,"test_data/foxml_full.xml"))
+    @empty_result = File.read(File.join(@specdir,"fixtures/foxml_empty.xml"))
+    @full_result = File.read(File.join(@specdir,"fixtures/item_druid_ab123cd4567.xml"))
   end
   
   it "should initialize empty" do
