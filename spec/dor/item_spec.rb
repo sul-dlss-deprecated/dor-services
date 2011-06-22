@@ -166,14 +166,24 @@ describe Dor::Item do
     end
     
     it "should build the descMetadata datastream" do
-      Dor::MetadataService.should_receive(:fetch).with('barcode:342837261527')
+      Dor::MetadataService.class_eval { class << self; alias_method :_fetch, :fetch; end }
+      Dor::MetadataService.should_receive(:fetch).with('barcode:36105049267078').and_return { Dor::MetadataService._fetch('barcode:36105049267078') }
+      @item.datastreams['descMetadata'].ng_xml.to_s.should be_equivalent_to('<xml/>')
       @item.build_datastream('descMetadata')
+      @item.datastreams['descMetadata'].ng_xml.to_s.should_not be_equivalent_to('<xml/>')
     end
 
     it "should build the contentMetadata datastream" do
       content_md = File.read(File.join(@fixture_dir,"workspace/ab/123/cd/4567/content_metadata.xml"))
+      @item.datastreams['contentMetadata'].ng_xml.to_s.should be_equivalent_to('<xml/>')
       @item.build_datastream('contentMetadata')
       @item.datastreams['contentMetadata'].ng_xml.should be_equivalent_to(Nokogiri::XML(content_md))
+    end
+
+    it "should build the rightsMetadata datastream" do
+      @item.datastreams['rightsMetadata'].ng_xml.to_s.should be_equivalent_to('<xml/>')
+      @item.build_datastream('rightsMetadata')
+      @item.datastreams['rightsMetadata'].ng_xml.to_s.should_not be_equivalent_to('<xml/>')
     end
     
   end
