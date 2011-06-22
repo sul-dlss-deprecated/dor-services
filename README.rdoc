@@ -48,6 +48,7 @@ Values can also be configured individually:
 - <b>1.1.1</b> Use SSL certificates for gsearch
 - <b>1.1.2</b> Hotfix for missing methods in Dor::Item
 - <b>1.1.3</b> Hotfix for misspelled objectCreator in registration service
+- <b>1.1.4</b> Hotfix for malformed URL stem in Workflow service
 
 == Copyright
 
