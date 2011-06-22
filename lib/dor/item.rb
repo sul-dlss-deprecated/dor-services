@@ -26,13 +26,24 @@ module Dor
         return nil
       end
     end
-  
+
+    def build_contentMetadata_datastream(ds)
+      path = File.join(Dor::Config.stacks.local_workspace_root,Dor::DigitalStacksService.druid_tree(self.pid),'content_metadata.xml')
+      ds.ng_xml = Nokogiri::XML(File.read(path))
+    end
+    
     def build_descMetadata_datastream(ds)
       content = fetch_descMetadata_datastream
       unless content.nil?
         ds.label = 'Descriptive Metadata'
         ds.ng_xml = Nokogiri::XML(content)
       end
+    end
+    
+    def build_rightsMetadata_datastream(ds)
+      content_ds = self.admin_policy_object.datastreams['defaultObjectRights']
+      ds.label = 'Rights Metadata'
+      ds.ng_xml = content_ds.ng_xml.clone
     end
     
     def public_xml      

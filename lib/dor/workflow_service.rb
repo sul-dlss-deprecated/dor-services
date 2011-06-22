@@ -46,7 +46,7 @@ module Dor
       #   <process name=\"convert\" status=\"completed\" />"
       def update_workflow_status(repo, druid, workflow, process, status, elapsed = 0, lifecycle = nil)
         xml = create_process_xml(:name => process, :status => status, :elapsed => elapsed.to_s, :lifecycle => lifecycle)
-        workflow_resource["#{druid}/workflows/#{workflow}/#{process}"].put(xml, :content_type => 'application/xml')
+        workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow}/#{process}"].put(xml, :content_type => 'application/xml')
         return true
       end
   

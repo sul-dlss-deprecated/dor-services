@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<foxml:digitalObject xmlns:foxml="info:fedora/fedora-system:def/foxml#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" VERSION="1.1" PID="druid:fg890hi1234" xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/definitions/1/0/foxml1-1.xsd">
+  <foxml:objectProperties>
+    <foxml:property NAME="info:fedora/fedora-system:def/model#state" VALUE="Active"/>
+    <foxml:property NAME="info:fedora/fedora-system:def/model#label" VALUE="Topographical Map"/>
+    <foxml:property NAME="info:fedora/fedora-system:def/model#createdDate" VALUE="2011-04-18T18:18:53.666Z"/>
+    <foxml:property NAME="info:fedora/fedora-system:def/view#lastModifiedDate" VALUE="2011-05-25T22:15:57.593Z"/>
+  </foxml:objectProperties>
+  <foxml:datastream ID="DC" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+    <foxml:datastreamVersion ID="DC1.0" LABEL="Dublin Core Record for this object" CREATED="2011-04-18T18:18:53.666Z" MIMETYPE="text/xml" FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/" SIZE="394">
+      <foxml:xmlContent>
+        <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+          <dc:title>Kitai Topographical Maps</dc:title>
+          <dc:identifier>druid:fg890hi1234</dc:identifier>
+        </oai_dc:dc>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+    <foxml:datastreamVersion ID="DC.1" LABEL="Dublin Core Record for this object" CREATED="2011-04-18T18:19:25.152Z" MIMETYPE="text/xml" FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/" SIZE="427">
+      <foxml:xmlContent>
+        <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+          <dc:title>Kitai Topographical Maps</dc:title>
+          <dc:identifier>druid:fg890hi1234</dc:identifier>
+          <dc:language>eng</dc:language>
+        </oai_dc:dc>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+    <foxml:datastreamVersion ID="DC.2" LABEL="Dublin Core Record for this object" CREATED="2011-05-23T17:03:30.785Z" MIMETYPE="text/xml" FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/" SIZE="421">
+      <foxml:xmlContent>
+        <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+          <dc:title>Topographical Maps</dc:title>
+          <dc:identifier>druid:fg890hi1234</dc:identifier>
+          <dc:language>eng</dc:language>
+        </oai_dc:dc>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+    <foxml:datastreamVersion ID="DC.3" LABEL="Dublin Core Record for this object" CREATED="2011-05-23T17:07:26.157Z" MIMETYPE="text/xml" FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/" SIZE="420">
+      <foxml:xmlContent>
+        <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+          <dc:title>Topographical Map</dc:title>
+          <dc:identifier>druid:fg890hi1234</dc:identifier>
+          <dc:language>eng</dc:language>
+        </oai_dc:dc>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+  </foxml:datastream>
+  <foxml:datastream ID="identityMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+    <foxml:datastreamVersion ID="identityMetadata.0" LABEL="Identity Metadata" CREATED="2011-04-18T18:45:37.109Z" MIMETYPE="text/xml" SIZE="353">
+      <foxml:xmlContent>
+        <identityMetadata>
+          <objectId>druid:fg890hi1234</objectId>
+          <objectType>adminPolicy</objectType>
+          <objectLabel>Kitai Topographical Maps</objectLabel>
+          <objectDescription>Kitai Topographical Map Collection</objectDescription>
+          <otherId name="uuid">cdf30bc1-893d-44ed-b1df-01074194514b</otherId>
+          <tag>AdminPolicy : kitai</tag>
+        </identityMetadata>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+    <foxml:datastreamVersion ID="identityMetadata.1" LABEL="Identity Metadata" CREATED="2011-05-23T17:04:04.652Z" MIMETYPE="text/xml" SIZE="335">
+      <foxml:xmlContent>
+        <identityMetadata>
+          <objectId>druid:fg890hi1234</objectId>
+          <objectType>adminPolicy</objectType>
+          <objectLabel>Topographical Maps</objectLabel>
+          <objectDescription>Topographical Maps</objectDescription>
+          <otherId name="uuid">cdf30bc1-893d-44ed-b1df-01074194514b</otherId>
+          <tag>AdminPolicy : topo maps</tag>
+        </identityMetadata>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+    <foxml:datastreamVersion ID="identityMetadata.2" LABEL="Identity Metadata" CREATED="2011-05-23T17:04:31.969Z" MIMETYPE="text/xml" SIZE="344">
+      <foxml:xmlContent>
+        <identityMetadata>
+          <objectId>druid:fg890hi1234</objectId>
+          <objectType>adminPolicy</objectType>
+          <objectLabel>Topographical Maps</objectLabel>
+          <objectDescription>Topographical Maps</objectDescription>
+          <otherId name="uuid">cdf30bc1-893d-44ed-b1df-01074194514b</otherId>
+          <tag>AdminPolicy : Topographical Maps</tag>
+        </identityMetadata>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+    <foxml:datastreamVersion ID="identityMetadata.3" LABEL="Identity Metadata" CREATED="2011-05-23T17:07:15.558Z" MIMETYPE="text/xml" SIZE="341">
+      <foxml:xmlContent>
+        <identityMetadata>
+          <objectId>druid:fg890hi1234</objectId>
+          <objectType>adminPolicy</objectType>
+          <objectLabel>Topographical Map</objectLabel>
+          <objectDescription>Topographical Map</objectDescription>
+          <otherId name="uuid">cdf30bc1-893d-44ed-b1df-01074194514b</otherId>
+          <tag>AdminPolicy : Topographical Map</tag>
+        </identityMetadata>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+  </foxml:datastream>
+  <foxml:datastream ID="defaultObjectRights" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+    <foxml:datastreamVersion ID="defaultObjectRights.0" LABEL="Default Object Rights" CREATED="2011-04-18T18:51:06.680Z" MIMETYPE="text/xml" SIZE="588">
+      <foxml:xmlContent>
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">This work is in the Public Domain.</human>
+          </copyright>
+          <access type="discover">
+            <world/>
+          </access>
+          <access type="read | deposit | admin">
+            <human>This document is available only to the Stanford faculty, staff and student
+            community</human>
+            <machine>
+              <world/>
+              <group>stanford</group>
+            </machine>
+          </access>
+          <use>
+            <human type="creativecommons">Attribution Share Alike license</human>
+            <machine type="creativecommons">by-sa</machine>
+          </use>
+        </rightsMetadata>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+    <foxml:datastreamVersion ID="defaultObjectRights.1" LABEL="Default Object Rights" CREATED="2011-05-23T17:05:12.621Z" MIMETYPE="text/xml" SIZE="548">
+      <foxml:xmlContent>
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">This work is in the Public Domain.</human>
+          </copyright>
+          <access type="discover">
+            <world/>
+          </access>
+          <access type="read">
+            <human>This document is available only to the Stanford faculty, staff and student
+            community</human>
+            <machine>
+              <group>stanford</group>
+            </machine>
+          </access>
+          <use>
+            <human type="creativecommons">Attribution Share Alike license</human>
+            <machine type="creativecommons">by-sa</machine>
+          </use>
+        </rightsMetadata>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+  </foxml:datastream>
+  <foxml:datastream ID="administrativeMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+    <foxml:datastreamVersion ID="administrativeMetadata.0" LABEL="" CREATED="2011-05-23T17:10:02.643Z" MIMETYPE="text/xml" SIZE="2406">
+      <foxml:xmlContent>
+        <administrativeMetadata>
+          <descMetadata>
+            <format>MODS</format>
+            <source>symphony</source>
+          </descMetadata>
+          <contact id="sunetid:mbklein" type="user">
+            <name>Michael B. Klein</name>
+            <organization>DLSS</organization>
+            <email>mbklein@stanford.edu</email>
+          </contact>
+          <rights>
+            <copyright useDefault="true"/>
+            <use>
+              <defaultLicense override="yes" type="CreativeCommons" value="by-sa"/>
+            </use>
+            <use>
+              <access override="yes"/>
+            </use>
+          </rights>
+          <relationships/>
+          <registration>
+            <itemTag>AdminPolicy : Topographical Map</itemTag>
+            <itemTag>Keyword : topographical</itemTag>
+            <itemTag>Keyword : map</itemTag>
+            <workflow id="digitizationWF">
+              <process id="initiate" lifecycle="registered" status="completed"/>
+              <process id="digitize" status="waiting"/>
+              <process id="start-accession" status="waiting"/>
+            </workflow>
+          </registration>
+          <deposit>
+            <depositStatus>closed</depositStatus>
+            <approval required="no"/>
+            <termsOfDeposit> By depositing stuff you agree... </termsOfDeposit>
+            <embargo default="6 months" maximum="2 years" minimum="0"/>
+          </deposit>
+          <accessioning>
+            <workflow id="accessionWF">
+              <process lifecycle="inprocess" name="start-accession" status="completed"/>
+              <process name="transfer-content" status="waiting"/>
+              <process name="descriptive-metadata" status="waiting"/>
+              <process name="technical-metadata" status="waiting"/>
+              <process name="content-metadata" status="waiting"/>
+              <process name="shelve" status="waiting"/>
+              <process lifecycle="released" name="publish" status="waiting"/>
+              <process name="provenance-metadata" status="waiting"/>
+              <process name="sdr-ingest-transfer" status="waiting"/>
+              <process name="sdr-ingest-deposit" status="waiting"/>
+              <process lifecycle="archived" name="sdr-ingest-archive" status="waiting"/>
+              <process lifecycle="accessioned" name="cleanup" status="waiting"/>
+            </workflow>
+          </accessioning>
+          <preservation> ... storage, replication, audit requirements, e.g. </preservation>
+          <dissemination>
+            <releaseDelayLimit>20 years</releaseDelayLimit>
+          </dissemination>
+        </administrativeMetadata>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+    <foxml:datastreamVersion ID="administrativeMetadata.1" LABEL="Administrative Metadata" CREATED="2011-05-23T17:10:12.593Z" MIMETYPE="text/xml" SIZE="2406">
+      <foxml:xmlContent>
+        <administrativeMetadata>
+          <descMetadata>
+            <format>MODS</format>
+            <source>symphony</source>
+          </descMetadata>
+          <contact id="sunetid:mbklein" type="user">
+            <name>Michael B. Klein</name>
+            <organization>DLSS</organization>
+            <email>mbklein@stanford.edu</email>
+          </contact>
+          <rights>
+            <copyright useDefault="true"/>
+            <use>
+              <defaultLicense override="yes" type="CreativeCommons" value="by-sa"/>
+            </use>
+            <use>
+              <access override="yes"/>
+            </use>
+          </rights>
+          <relationships/>
+          <registration>
+            <itemTag>AdminPolicy : Topographical Map</itemTag>
+            <itemTag>Keyword : topographical</itemTag>
+            <itemTag>Keyword : map</itemTag>
+            <workflow id="digitizationWF">
+              <process id="initiate" lifecycle="registered" status="completed"/>
+              <process id="digitize" status="waiting"/>
+              <process id="start-accession" status="waiting"/>
+            </workflow>
+          </registration>
+          <deposit>
+            <depositStatus>closed</depositStatus>
+            <approval required="no"/>
+            <termsOfDeposit> By depositing stuff you agree... </termsOfDeposit>
+            <embargo default="6 months" maximum="2 years" minimum="0"/>
+          </deposit>
+          <accessioning>
+            <workflow id="accessionWF">
+              <process lifecycle="inprocess" name="start-accession" status="completed"/>
+              <process name="transfer-content" status="waiting"/>
+              <process name="descriptive-metadata" status="waiting"/>
+              <process name="technical-metadata" status="waiting"/>
+              <process name="content-metadata" status="waiting"/>
+              <process name="shelve" status="waiting"/>
+              <process lifecycle="released" name="publish" status="waiting"/>
+              <process name="provenance-metadata" status="waiting"/>
+              <process name="sdr-ingest-transfer" status="waiting"/>
+              <process name="sdr-ingest-deposit" status="waiting"/>
+              <process lifecycle="archived" name="sdr-ingest-archive" status="waiting"/>
+              <process lifecycle="accessioned" name="cleanup" status="waiting"/>
+            </workflow>
+          </accessioning>
+          <preservation> ... storage, replication, audit requirements, e.g. </preservation>
+          <dissemination>
+            <releaseDelayLimit>20 years</releaseDelayLimit>
+          </dissemination>
+        </administrativeMetadata>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+    <foxml:datastreamVersion ID="administrativeMetadata.2" LABEL="Administrative Metadata" CREATED="2011-05-25T22:07:45.161Z" MIMETYPE="text/xml" SIZE="2406">
+      <foxml:xmlContent>
+        <administrativeMetadata>
+          <descMetadata>
+            <format>MODS</format>
+            <source>symphony</source>
+          </descMetadata>
+          <contact id="sunetid:mbklein" type="user">
+            <name>Michael B. Klein</name>
+            <organization>DLSS</organization>
+            <email>mbklein@stanford.edu</email>
+          </contact>
+          <rights>
+            <copyright useDefault="true"/>
+            <use>
+              <defaultLicense override="yes" type="CreativeCommons" value="by-sa"/>
+            </use>
+            <use>
+              <access override="yes"/>
+            </use>
+          </rights>
+          <relationships/>
+          <registration>
+            <itemTag>AdminPolicy : Topographical Map</itemTag>
+            <itemTag>Keyword : topographical</itemTag>
+            <itemTag>Keyword : map</itemTag>
+            <workflow id="digitizationWF">
+              <process id="initiate" lifecycle="registered" status="completed"/>
+              <process id="digitize" status="waiting"/>
+              <process id="start-accession" status="waiting"/>
+            </workflow>
+          </registration>
+          <deposit>
+            <depositStatus>closed</depositStatus>
+            <approval required="no"/>
+            <termsOfDeposit> By depositing stuff you agree... </termsOfDeposit>
+            <embargo default="6 months" maximum="2 years" minimum="0"/>
+          </deposit>
+          <accessioning>
+            <workflow id="accessionWF">
+              <process lifecycle="inprocess" name="start-accession" status="completed"/>
+              <process name="transfer-content" status="waiting"/>
+              <process name="descriptive-metadata" status="waiting"/>
+              <process name="technical-metadata" status="waiting"/>
+              <process name="content-metadata" status="waiting"/>
+              <process name="shelve" status="waiting"/>
+              <process lifecycle="released" name="publish" status="waiting"/>
+              <process name="provenance-metadata" status="waiting"/>
+              <process name="sdr-ingest-transfer" status="waiting"/>
+              <process name="sdr-ingest-deposit" status="waiting"/>
+              <process lifecycle="archived" name="sdr-ingest-archive" status="waiting"/>
+              <process lifecycle="accessioned" name="cleanup" status="waiting"/>
+            </workflow>
+          </accessioning>
+          <preservation> ... storage, replication, audit requirements, e.g. </preservation>
+          <dissemination>
+            <releaseDelayLimit>20 years</releaseDelayLimit>
+          </dissemination>
+        </administrativeMetadata>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+    <foxml:datastreamVersion ID="administrativeMetadata.3" LABEL="Administrative Metadata" CREATED="2011-05-25T22:15:57.593Z" MIMETYPE="text/xml" SIZE="2406">
+      <foxml:xmlContent>
+        <administrativeMetadata>
+          <descMetadata>
+            <format>MODS</format>
+            <source>symphony</source>
+          </descMetadata>
+          <contact id="sunetid:mbklein" type="user">
+            <name>Michael B. Klein</name>
+            <organization>DLSS</organization>
+            <email>mbklein@stanford.edu</email>
+          </contact>
+          <rights>
+            <copyright useDefault="true"/>
+            <use>
+              <defaultLicense override="yes" type="CreativeCommons" value="by-sa"/>
+            </use>
+            <use>
+              <access override="yes"/>
+            </use>
+          </rights>
+          <relationships/>
+          <registration>
+            <itemTag>AdminPolicy : Topographical Map</itemTag>
+            <itemTag>Keyword : topographical</itemTag>
+            <itemTag>Keyword : map</itemTag>
+            <workflow id="digitizationWF">
+              <process id="initiate" lifecycle="registered" status="completed"/>
+              <process id="digitize" status="waiting"/>
+              <process id="start-accession" status="waiting"/>
+            </workflow>
+          </registration>
+          <deposit>
+            <depositStatus>closed</depositStatus>
+            <approval required="no"/>
+            <termsOfDeposit> By depositing stuff you agree... </termsOfDeposit>
+            <embargo default="6 months" maximum="2 years" minimum="0"/>
+          </deposit>
+          <accessioning>
+            <workflow id="accessionWF">
+              <process lifecycle="inprocess" name="start-accession" status="completed"/>
+              <process name="transfer-content" status="waiting"/>
+              <process name="descriptive-metadata" status="waiting"/>
+              <process name="technical-metadata" status="waiting"/>
+              <process name="content-metadata" status="waiting"/>
+              <process name="shelve" status="waiting"/>
+              <process lifecycle="released" name="publish" status="waiting"/>
+              <process name="provenance-metadata" status="waiting"/>
+              <process name="sdr-ingest-transfer" status="waiting"/>
+              <process name="sdr-ingest-deposit" status="waiting"/>
+              <process lifecycle="archived" name="sdr-ingest-archive" status="waiting"/>
+              <process lifecycle="accessioned" name="cleanup" status="waiting"/>
+            </workflow>
+          </accessioning>
+          <preservation> ... storage, replication, audit requirements, e.g. </preservation>
+          <dissemination>
+            <releaseDelayLimit>20 years</releaseDelayLimit>
+          </dissemination>
+        </administrativeMetadata>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+  </foxml:datastream>
+  <foxml:datastream ID="roleMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+    <foxml:datastreamVersion ID="roleMetadata.0" LABEL="Role Metadata" CREATED="2011-05-23T18:07:56.494Z" MIMETYPE="text/xml" SIZE="568">
+      <foxml:xmlContent>
+        <roleMetadata>
+          <role type="manager">
+            <person>
+              <identifier type="sunetid">mbklein</identifier>
+              <name>Klein, Michael</name>
+            </person>
+            <person>
+              <identifier type="sunetid">lmcrae</identifier>
+              <name>McRae, Lynn</name>
+            </person>
+          </role>
+          <role type="depositor">
+            <person>
+              <identifier type="sunetid">labware</identifier>
+              <name>Labware, Hydra</name>
+            </person>
+            <group>
+              <identifier type="workgroup">dlss:labstaff</identifier>
+              <name>Scanning Lab Staff</name>
+            </group>
+          </role>
+        </roleMetadata>
+      </foxml:xmlContent>
+    </foxml:datastreamVersion>
+  </foxml:datastream>
+</foxml:digitalObject>

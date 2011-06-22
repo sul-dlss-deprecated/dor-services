@@ -7,7 +7,7 @@ describe Dor::SearchService do
     @mock_search = mock("RestClient::Resource")
     @mock_search.stub!(:[]).and_return(@mock_search)
     RestClient::Resource.stub!(:new).and_return(@mock_search)
-    @pid = 'druid:abc123def'
+    @pid = 'druid:ab123cd4567'
     @itql = Dor::SearchService::RISEARCH_TEMPLATE
   end
 
