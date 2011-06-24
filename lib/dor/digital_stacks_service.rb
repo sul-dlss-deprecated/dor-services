@@ -55,6 +55,7 @@ module Dor
       # create a temp file containing the content and copy the contents to the remote document cache
       Tempfile.open(filename) do |tf| 
         tf.write(content) 
+        tf.flush
         command = "scp \"#{tf.path}\" #{Config.stacks.document_cache_user}@#{Config.stacks.document_cache_host}:#{remote_document_cache_dir}/#{filename}"
         self.execute(command)
       end
