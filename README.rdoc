@@ -50,6 +50,7 @@ Values can also be configured individually:
 - <b>1.1.3</b> Hotfix for misspelled objectCreator in registration service
 - <b>1.1.4</b> Hotfix for malformed URL stem in Workflow service
 - <b>1.1.5</b> Hotfix for issue in which tempfile was not being flushed before copy (in Dor::Item#shelve)
+- <b>1.2.0</b> Add Dor::Item#initiate_apo_workflow() to initiate named workflows from the APO
 
 == Copyright
 
