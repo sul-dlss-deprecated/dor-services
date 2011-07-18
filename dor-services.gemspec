@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency "om", ">=1.2.0"
   s.add_dependency "rest-client"
   s.add_dependency "validatable"
-  s.add_dependency "guid"
+  s.add_dependency "uuidtools"
   s.add_dependency "json"
   s.add_dependency "ruby-cache"
   s.add_dependency "mod-cons"
