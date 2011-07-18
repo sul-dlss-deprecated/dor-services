@@ -9,11 +9,16 @@ module Dor
     has_metadata :name => "rightsMetadata", :type => ActiveFedora::NokogiriDatastream
     
     def admin_policy_object
-      apo_id = self.datastreams['RELS-EXT'].ng_xml.search('//hydra:isGovernedBy/@rdf:resource').first.value.split(%r{/}).last
-      if apo_id.nil? or apo_id.empty?
+      apo_ref = self.datastreams['RELS-EXT'].ng_xml.search('//hydra:isGovernedBy/@rdf:resource', Foxml::NAMESPACES).first
+      if apo_ref.nil?
         return nil
       else
-        return Dor::AdminPolicyObject.load_instance(apo_id)
+        apo_id = apo_ref.value.split(%r{/}).last
+        if apo_id.empty?
+          return nil
+        else
+          return Dor::AdminPolicyObject.load_instance(apo_id)
+        end
       end
     end
   
@@ -59,7 +64,8 @@ module Dor
     # Generates Dublin Core from the MODS in the descMetadata datastream using the LoC mods2dc stylesheet
     # Should not be used for the Fedora DC datastream
     def generate_dublin_core
-      format = self.admin_policy_object.datastreams['administrativeMetadata'].ng_xml.at('/administrativeMetadata/descMetadata/format').text.downcase
+      apo = self.admin_policy_object
+      format = apo.nil? ? 'mods' : apo.datastreams['administrativeMetadata'].ng_xml.at('/administrativeMetadata/descMetadata/format').text.downcase
       xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/#{format}2dc.xslt")) )
       xslt.transform(self.datastreams['descMetadata'].ng_xml)
     end
