@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
   
 Gem::Specification.new do |s|
   s.name        = "dor-services"
-  s.version     = "1.2.0"
+  s.version     = "1.2.1"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick"]
   s.email       = ["mbklein@stanford.edu"]
@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency "om", ">=1.2.0"
   s.add_dependency "rest-client"
   s.add_dependency "validatable"
-  s.add_dependency "guid"
+  s.add_dependency "uuidtools"
   s.add_dependency "json"
   s.add_dependency "ruby-cache"
   s.add_dependency "mod-cons"

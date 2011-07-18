@@ -1,5 +1,5 @@
 require 'active_fedora'
-require 'guid'
+require 'uuidtools'
 require 'xml_models/foxml'
 require 'xml_models/identity_metadata/identity_metadata'
 
@@ -37,7 +37,7 @@ module Dor
         end
 
         if (other_ids.has_key?(:uuid) or other_ids.has_key?('uuid')) == false
-          other_ids[:uuid] = Guid.new.to_s
+          other_ids[:uuid] = UUIDTools::UUID.timestamp_create.to_s
         end
         
         idmd = IdentityMetadata.new
