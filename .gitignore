@@ -5,3 +5,4 @@ coverage.data
 pkg
 rdoc
 .bundle
+Gemfile.lock
