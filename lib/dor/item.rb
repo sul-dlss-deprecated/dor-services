@@ -59,7 +59,8 @@ module Dor
     # Generates Dublin Core from the MODS in the descMetadata datastream using the LoC mods2dc stylesheet
     # Should not be used for the Fedora DC datastream
     def generate_dublin_core
-      xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + '/mods2dc.xslt')) )
+      format = self.admin_policy_object.datastreams['administrativeMetadata'].ng_xml.at('/administrativeMetadata/descMetadata/format').text.downcase
+      xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/#{format}2dc.xslt")) )
       xslt.transform(self.datastreams['descMetadata'].ng_xml)
     end
     
