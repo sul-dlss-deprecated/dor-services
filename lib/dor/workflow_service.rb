@@ -13,7 +13,7 @@ module Dor
   
     class << self
       # Creates a workflow for a given object in the repository.  If this particular workflow for this objects exists,
-      # it will replace the old workflow with wf_xml passed to this method.     
+      # it will replace the old workflow with wf_xml passed to this method.  You have the option of creating a datastream or not.     
       # Returns true on success.  Caller must handle any exceptions
       #
       # == Parameters
@@ -21,9 +21,13 @@ module Dor
       # - <b>druid</b> - The id of the object
       # - <b>workflow_name</b> - The name of the workflow you want to create
       # - <b>wf_xml</b> - The xml that represents the workflow
+      # - <B>opts</b> - Options Hash where you can set
+      #       :create_ds - If true, a workflow datastream will be created in Fedora.  Set to false if you do not want a datastream to be created
+      #   If you do not pass in an <b>opts</b> Hash, then :create_ds is set to true by default
       # 
-      def create_workflow(repo, druid, workflow_name, wf_xml)
-        workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow_name}"].put(wf_xml, :content_type => 'application/xml')
+      def create_workflow(repo, druid, workflow_name, wf_xml, opts = {:create_ds => true})
+        workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow_name}"].put(wf_xml, :content_type => 'application/xml', 
+                                                                                     :params => {'create-ds' => opts[:create_ds] })
         return true
       end
   
