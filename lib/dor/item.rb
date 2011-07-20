@@ -33,8 +33,10 @@ module Dor
     end
 
     def build_contentMetadata_datastream(ds)
-      path = File.join(Dor::Config.stacks.local_workspace_root,Dor::DigitalStacksService.druid_tree(self.pid),'content_metadata.xml')
-      ds.ng_xml = Nokogiri::XML(File.read(path))
+      path = Druid.new(self.pid).path(Dor::Config.stacks.local_workspace_root)
+      if File.exists?(File.join(path, 'content_metadata.xml'))
+        ds.ng_xml = Nokogiri::XML(File.read(File.join(path, 'content_metadata.xml')))
+      end
     end
     
     def build_descMetadata_datastream(ds)
