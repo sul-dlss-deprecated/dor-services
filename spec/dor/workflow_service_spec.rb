@@ -47,6 +47,13 @@ describe Dor::WorkflowService do
       @mock_resource.should_receive(:put).and_raise(ex)
       lambda{ Dor::WorkflowService.create_workflow(@repo, @druid, 'etdSubmitWF', @wf_xml) }.should raise_error(Exception, "exception thrown")
     end
+    
+    it "sets the create-ds param to the value of the passed in options hash" do
+      @mock_resource.should_receive(:put).with(@wf_xml, :content_type => 'application/xml', 
+                                                :params => {'create-ds' => false}).and_return('')
+      Dor::WorkflowService.create_workflow(@repo, @druid, 'etdSubmitWF', @wf_xml, :create_ds => false)
+    end
+    
   end
   
   describe "#update_workflow_status" do
