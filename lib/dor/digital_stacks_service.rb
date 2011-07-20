@@ -36,11 +36,9 @@ module Dor
     end
     
     def self.druid_tree(druid)
-      if(druid =~ /^druid:([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/)
-        return File.join($1, $2, $3, $4)
-      else
-        return nil
-      end
+      Druid.new(druid).path
+    rescue
+      nil
     end
         
     def self.transfer_to_document_store(id, content, filename)
