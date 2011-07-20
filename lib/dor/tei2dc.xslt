@@ -5,7 +5,7 @@
     xmlns:dcterms="http://purl.org/dc/terms/"
     xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    exclude-result-prefixes="tei"
+    exclude-result-prefixes="tei xsl"
     version="1.0">
     
     <xsl:output xml:space="default" indent="yes"/>
