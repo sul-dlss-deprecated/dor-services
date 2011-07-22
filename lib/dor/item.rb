@@ -77,7 +77,7 @@ module Dor
       DigitalStacksService.transfer_to_document_store(pid, self.datastreams['contentMetadata'].to_xml, 'contentMetadata')
       DigitalStacksService.transfer_to_document_store(pid, self.datastreams['rightsMetadata'].to_xml, 'rightsMetadata')
       dc_xml = self.generate_dublin_core.to_xml {|config| config.no_declaration}
-      DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'DC')
+      DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'dc')
       DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
     end
     
