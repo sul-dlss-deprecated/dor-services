@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
   
 Gem::Specification.new do |s|
   s.name        = "dor-services"
-  s.version     = "1.3.1"
+  s.version     = "1.4.0"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick"]
   s.email       = ["mbklein@stanford.edu"]
