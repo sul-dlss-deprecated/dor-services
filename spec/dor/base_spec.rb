@@ -33,4 +33,8 @@ describe Dor::Base do
     l.should be_kind_of(Dor::Base)
   end
   
+  it "should save DC datastream on reindex" do
+    pending
+  end
+
 end

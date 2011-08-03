@@ -46,6 +46,11 @@ module Dor
       end
       return ds
     end
+    
+    def reindex
+      # Touch the DC datastream to force gsearch to reindex
+      datastreams['DC'].save
+    end
 
   end
 end
