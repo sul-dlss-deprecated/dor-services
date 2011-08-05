@@ -30,7 +30,7 @@ describe Dor::Item do
   
   it "has a contentMetadata datastream" do
     b = Dor::Item.new
-    b.datastreams['contentMetadata'].class.should == ActiveFedora::NokogiriDatastream
+    b.datastreams['contentMetadata'].class.should == ContentMetadataDS
   end
   
   describe "#generate_dublin_core" do
@@ -65,7 +65,7 @@ describe Dor::Item do
 
           id_ds = IdentityMetadataDS.new(:dsid=> 'identityMetadata', :blob => '<identityMetadata/>')
           @b.add_datastream(id_ds)
-          cm_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'contentMetadata', :blob => '<contentMetadata/>')
+          cm_ds = ContentMetadataDS.new(:dsid=> 'contentMetadata', :blob => '<contentMetadata/>')
           @b.add_datastream(cm_ds)
           r_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'rightsMetadata', :blob => '<rightsMetadata/>')
           @b.add_datastream(r_ds)
@@ -124,7 +124,7 @@ describe Dor::Item do
         b.add_datastream(descmd_ds)
         id_ds = IdentityMetadataDS.new(:dsid=> 'identityMetadata', :blob => '<identityMetadata/>')
         b.add_datastream(id_ds)
-        cm_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'contentMetadata', :blob => '<contentMetadata/>')
+        cm_ds = ContentMetadataDS.new(:dsid=> 'contentMetadata', :blob => '<contentMetadata/>')
         b.add_datastream(cm_ds)
         r_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'rightsMetadata', :blob => '<rightsMetadata/>')
         b.add_datastream(r_ds)

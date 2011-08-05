@@ -1,10 +1,11 @@
 require 'dor/base'
+require 'datastreams/content_metadata_ds'
 
 module Dor
   
   class Item < Base
     
-    has_metadata :name => "contentMetadata", :type => ActiveFedora::NokogiriDatastream
+    has_metadata :name => "contentMetadata", :type => ContentMetadataDS
     has_metadata :name => "descMetadata", :type => ActiveFedora::NokogiriDatastream
     has_metadata :name => "rightsMetadata", :type => ActiveFedora::NokogiriDatastream
     
@@ -57,7 +58,7 @@ module Dor
       pub = Nokogiri::XML("<publicObject/>").root
       pub['id'] = pid
       pub.add_child(self.datastreams['identityMetadata'].ng_xml.root.clone)
-      pub.add_child(self.datastreams['contentMetadata'].ng_xml.root.clone)
+      pub.add_child(self.datastreams['contentMetadata'].public_xml.root.clone)
       pub.add_child(self.datastreams['rightsMetadata'].ng_xml.root.clone)
       pub.add_child(generate_dublin_core.root)
       pub.to_xml {|config| config.no_declaration}
