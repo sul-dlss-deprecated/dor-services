@@ -61,7 +61,7 @@ module Dor
       pub.add_child(self.datastreams['contentMetadata'].public_xml.root.clone)
       pub.add_child(self.datastreams['rightsMetadata'].ng_xml.root.clone)
       pub.add_child(generate_dublin_core.root)
-      pub.to_xml {|config| config.no_declaration}
+      Nokogiri::XML(pub.to_xml) { |x| x.noblanks }.to_xml { |config| config.no_declaration }
     end
     
     # Generates Dublin Core from the MODS in the descMetadata datastream using the LoC mods2dc stylesheet
