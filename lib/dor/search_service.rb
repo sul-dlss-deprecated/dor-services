@@ -37,9 +37,9 @@ module Dor
         query_params = params.merge(:wt => 'json')
         query_string = query_params.collect { |k,v| 
           if v.is_a?(Array)
-            v.collect { |vv| "#{k}=#{URI.encode(vv)}" }.join('&')
+            v.collect { |vv| "#{k}=#{URI.encode(vv.to_s)}" }.join('&')
           else
-            "#{k}=#{URI.encode(v)}" 
+            "#{k}=#{URI.encode(v.to_s)}" 
           end
         }.join('&')
         result = JSON.parse(client["select?#{query_string}"].get)
