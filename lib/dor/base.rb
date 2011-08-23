@@ -15,6 +15,17 @@ module Dor
     has_metadata :name => "identityMetadata", :type => IdentityMetadataDS
     has_metadata :name => "technicalMetadata", :type => ActiveFedora::NokogiriDatastream
 
+    # Make a random (and harmless) API-M call to get gsearch to reindex the object
+    def self.touch(pid)
+      client = RestClient::Resource.new(
+        Dor::Config.fedora.url,
+        :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(Dor::Config.fedora.cert_file)),
+        :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(Dor::Config.fedora.key_file), Dor::Config.fedora.key_pass)
+      )
+      response = client["objects/#{pid}/datastreams/DC?dsState=A&ignoreContent=true"].put('', :content_type => 'text/xml')
+      response.code
+    end
+    
     def initialize(attrs = {})
       unless attrs[:pid]
         attrs = attrs.merge!({:pid=>Dor::SuriService.mint_id})  
