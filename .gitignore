@@ -6,3 +6,4 @@ pkg
 rdoc
 .bundle
 Gemfile.lock
+.rvmrc
