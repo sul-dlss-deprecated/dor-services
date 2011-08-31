@@ -91,6 +91,10 @@ module Dor
       DigitalStacksService.shelve_to_stacks(pid, files)
     end
 
+    def sdr_ingest_transfer(agreement_id)
+      SdrIngestServices.transfer(self,agreement_id)
+    end
+
     def initiate_apo_workflow(name)
       wf_xml = admin_policy_object.datastreams['administrativeMetadata'].ng_xml.xpath(%{//workflow[@id="#{name}"]}).first.to_xml
       Dor::WorkflowService.create_workflow('dor',self.pid,name,wf_xml)

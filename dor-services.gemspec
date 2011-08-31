@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency "ruby-cache"
   s.add_dependency "mod-cons"
   s.add_dependency "systemu"
+  s.add_dependency "lyber-utils"
   
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects
