@@ -92,7 +92,11 @@ module Dor
     end
 
     def sdr_ingest_transfer(agreement_id)
-      SdrIngestServices.transfer(self,agreement_id)
+      SdrIngestService.transfer(self,agreement_id)
+    end
+
+    def cleanup()
+      CleanupService.cleanup(self)
     end
 
     def initiate_apo_workflow(name)
