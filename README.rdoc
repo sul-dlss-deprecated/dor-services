@@ -60,7 +60,10 @@ Values can also be configured individually:
                Improve Dor::SearchService.gsearch parameter handling
 - <b>1.5.0</b> Add certificate-aware RSolr::Connection class
                Add Dor::Base.touch(druid) to trigger reindexing without ActiveFedora
-
+- <b>1.6.0</b> Implement SdrIngestService and CleanupService
+               Turn off ActiveFedora's automatic SOLR updating
+               Add MD Toolkit metadata handler workaround for NullPointerException in eXist
+               
 == Copyright
 
 Copyright (c) 2011 Stanford University Library. See LICENSE for details.

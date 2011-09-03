@@ -6,7 +6,6 @@ require 'spec'
 require 'spec/autorun'
 
 require 'rubygems'
-require 'active_fedora'
 require 'dor-services'
 
 Spec::Runner.configure do |config|

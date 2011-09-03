@@ -11,7 +11,7 @@ handler = Class.new do
     <text>
       declare namespace mods="http://www.loc.gov/mods/v3";
       declare variable $identifier as xs:string := "druid:#{identifier}";
-      /mods:mods[mods:identifier/text()=$identifier] | /msDesc[msIdentifier/idno/text()=$identifier]
+      /mods:mods[mods:identifier=$identifier] | /msDesc[msIdentifier/idno=$identifier]
     </text>
 </query>
     QUERY
