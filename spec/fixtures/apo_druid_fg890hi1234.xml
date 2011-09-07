@@ -164,11 +164,15 @@
               <access override="yes"/>
             </use>
           </rights>
-          <relationships/>
+          <relationships xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"></fedora:isMemberOf>
+              <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:zb871zd0767"></fedora:isMemberOfCollection>
+          </relationships>
           <registration>
             <itemTag>AdminPolicy : Topographical Map</itemTag>
             <itemTag>Keyword : topographical</itemTag>
             <itemTag>Keyword : map</itemTag>
+            <agreementId>druid:wr729gb4199</agreementId>
             <workflow id="digitizationWF">
               <process id="initiate" lifecycle="registered" status="completed"/>
               <process id="digitize" status="waiting"/>

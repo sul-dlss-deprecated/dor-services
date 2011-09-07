@@ -39,6 +39,10 @@ module Dor
         if (other_ids.has_key?(:uuid) or other_ids.has_key?('uuid')) == false
           other_ids[:uuid] = UUIDTools::UUID.timestamp_create.to_s
         end
+
+        apo_object = Dor::AdminPolicyObject.load_instance(admin_policy)
+        adm_xml = apo_object.datastreams['administrativeMetadata'].ng_xml
+        agreement_id = adm_xml.at('/administrativeMetadata/registration/agreementId/text()').to_s
         
         idmd = IdentityMetadata.new
 
@@ -58,13 +62,17 @@ module Dor
         idmd.objectLabels << label
         idmd.objectTypes << object_type
         idmd.adminPolicy = admin_policy
+        idmd.agreementId = agreement_id
         other_ids.each_pair { |name,value| idmd.add_identifier(name,value) }
         tags.each { |tag| idmd.add_tag(tag) }
     
         foxml = Foxml.new(pid, label, content_model, idmd.to_xml, parent)
         foxml.admin_policy_object = admin_policy
+        rdf = foxml.xml.at('//rdf:Description', { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' })
+        rels = adm_xml.xpath('/administrativeMetadata/relationships/*')
+        rels.each { |rel| rdf.add_child(rel.clone) }
     
-        repo = Fedora::Repository.new(Config.fedora.url)
+        repo = ActiveFedora.fedora
         http_response = repo.ingest(foxml.to_xml(:undent_datastreams => true))
         result = {
           :response => http_response,

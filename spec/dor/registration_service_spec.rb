@@ -1,4 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../foxml_helper')
 require 'dor/registration_service'
 require 'net/http'
 
@@ -19,13 +20,16 @@ describe Dor::RegistrationService do
   context "#register_object" do
   
     before :each do
+      @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"../fixtures")
       @pid = 'druid:ab123cd4567'
       Dor::SuriService.stub!(:mint_id).and_return("druid:ab123cd4567")
       @mock_repo = mock(Fedora::Repository)
       @mock_repo.stub!(:ingest).and_return(Net::HTTPCreated.new("1.1","201","Created"))
-      Fedora::Repository.stub!(:new).and_return(@mock_repo)
+      ActiveFedora.stub!(:fedora).and_return(@mock_repo)
       @mock_dor_item = mock("Dor::Item")
       Dor::Item.stub!(:load_instance).and_return(@mock_dor_item)
+      @apo  = item_from_foxml(File.read(File.join(@fixture_dir,"apo_druid_fg890hi1234.xml")), Dor::AdminPolicyObject)
+      Dor::AdminPolicyObject.stub!(:load_instance).and_return(@apo)
 
       @params = {
         :object_type => 'item', 
