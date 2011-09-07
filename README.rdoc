@@ -67,6 +67,8 @@ Values can also be configured individually:
 - <b>1.6.2</b> Fixed configuration reference in cleanup spec
 - <b>1.6.3</b> Simplify & speed up MD Toolkit metadata handler queries
 - <b>1.6.4</b> Fix MetadataHandler spec tests to match new MD Toolkit implementation
+- <b>1.7.0</b> LYBERSTRUCTURE-138 Registration - read item-level agreementId from APO
+               LYBERSTRUCTURE-139 Registration - read relationships information from APO
 
 == Copyright
 
