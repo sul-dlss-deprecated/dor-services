@@ -32,8 +32,8 @@ describe Dor::CleanupService do
   end
 
   it "can find the fixtures workspace and export folders" do
-    File.directory?(Dor::Config.sdr.local_workspace_root).should eql true
-    File.directory?(Dor::Config.sdr.local_export_home).should eql true
+    File.directory?(Dor::Config.cleanup.local_workspace_root).should eql true
+    File.directory?(Dor::Config.cleanup.local_export_home).should eql true
   end
 
   it "can remove a directory" do
