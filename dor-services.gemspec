@@ -4,9 +4,9 @@ $:.unshift lib unless $:.include?(lib)
   
 Gem::Specification.new do |s|
   s.name        = "dor-services"
-  s.version     = "1.6.1"
+  s.version     = "1.6.3"
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick"]
+  s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick","Richard Anderson"]
   s.email       = ["mbklein@stanford.edu"]
   s.summary     = "Ruby implmentation of DOR services used by the SULAIR Digital Library"
   s.description = "Contains classes to register objects and initialize workflows"

@@ -9,14 +9,12 @@ handler = Class.new do
 <?xml version="1.0" encoding="UTF-8"?>
 <query xmlns="http://exist.sourceforge.net/NS/exist">
     <text>
-      declare namespace mods="http://www.loc.gov/mods/v3";
-      declare variable $identifier as xs:string := "druid:#{identifier}";
-      /mods:mods[mods:identifier=$identifier] | /msDesc[msIdentifier/idno=$identifier]
+    collection('orbeon/fr')[contains(base-uri(), "#{identifier}")]
     </text>
 </query>
     QUERY
     client = RestClient::Resource.new(Dor::Config.metadata.exist.url)
-    response = client['db/orbeon/fr'].post(query, :content_type => 'application/xquery')
+    response = client['db'].post(query, :content_type => 'application/xquery')
     doc = Nokogiri::XML(response)
     doc.root.add_namespace_definition('exist','http://exist.sourceforge.net/NS/exist')
     result = doc.xpath('/exist:result/*[1]').first

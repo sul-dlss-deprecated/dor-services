@@ -64,7 +64,9 @@ Values can also be configured individually:
                Turn off ActiveFedora's automatic SOLR updating
                Add MD Toolkit metadata handler workaround for NullPointerException in eXist
 - <b>1.6.1</b> Fixed configuration of export directory in specs
-               
+- <b>1.6.2</b> Fixed configuration reference in cleanup spec
+- <b>1.6.3</b> Simplify & speed up MD Toolkit metadata handler queries
+
 == Copyright
 
 Copyright (c) 2011 Stanford University Library. See LICENSE for details.
