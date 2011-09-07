@@ -63,6 +63,7 @@ Values can also be configured individually:
 - <b>1.6.0</b> Implement SdrIngestService and CleanupService
                Turn off ActiveFedora's automatic SOLR updating
                Add MD Toolkit metadata handler workaround for NullPointerException in eXist
+- <b>1.6.1</b> Fixed configuration of export directory in specs
                
 == Copyright
 
