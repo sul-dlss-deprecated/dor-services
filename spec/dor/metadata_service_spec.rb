@@ -71,12 +71,12 @@ describe Dor::MetadataService do
     end
     
     it "should fetch a record based on a druid: prefix" do
-      @mock_resource.should_receive(:post).with(/druid:abc123xyz/, :content_type => 'application/xquery')
+      @mock_resource.should_receive(:post).with(%r{contains\(base-uri\(\), "abc123xyz"\)}, :content_type => 'application/xquery')
       Dor::MetadataService.fetch('druid:abc123xyz').should be_equivalent_to(@mods)
     end
 
     it "should fetch a record based on an mdtoolkit: prefix" do
-      @mock_resource.should_receive(:post).with(/druid:abc123xyz/, :content_type => 'application/xquery')
+      @mock_resource.should_receive(:post).with(%r{contains\(base-uri\(\), "abc123xyz"\)}, :content_type => 'application/xquery')
       Dor::MetadataService.fetch('mdtoolkit:abc123xyz').should be_equivalent_to(@mods)
     end
     
