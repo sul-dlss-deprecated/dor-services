@@ -19,14 +19,16 @@ describe Dor::CleanupService do
       local_export_home File.join(fixture_dir, "export")
    end
 
-    @export_dir = Dor::Config.sdr.local_export_home
-    Dir.mkdir(@export_dir) unless File.directory?(@export_dir)
+    export_dir = Dor::Config.cleanup.local_export_home
+    Dir.mkdir(export_dir) unless File.directory?(export_dir)
     @druid = 'druid:aa123bb4567'
+
   end
   
   it "can access configuration settings" do
     cleanup = Dor::Config.cleanup
     cleanup.local_workspace_root.should eql File.join(@fixture_dir, "workspace")
+    cleanup.local_export_home.should eql File.join(@fixture_dir, "export")
   end
 
   it "can find the fixtures workspace and export folders" do
@@ -35,8 +37,9 @@ describe Dor::CleanupService do
   end
 
   it "can remove a directory" do
-    FileUtils.should_receive(:remove_entry).with(@export_dir)
-    Dor::CleanupService.remove_entry(@export_dir)
+    export_dir = Dor::Config.cleanup.local_export_home
+    FileUtils.should_receive(:remove_entry).with(export_dir)
+    Dor::CleanupService.remove_entry(export_dir)
   end
 
   it "can cleanup an object" do

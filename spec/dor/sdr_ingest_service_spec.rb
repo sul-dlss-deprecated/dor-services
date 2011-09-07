@@ -27,11 +27,13 @@ describe Dor::SdrIngestService do
 
     @druid = 'druid:aa123bb4567'
     @agreement_id = 'druid:xx098yy7654'
+
   end
   
   it "can access configuration settings" do
     sdr = Dor::Config.sdr
     sdr.local_workspace_root.should eql File.join(@fixture_dir, "workspace")
+    sdr.local_export_home.should eql File.join(@fixture_dir, "export")
   end
 
   it "can find the fixtures workspace and export folders" do
