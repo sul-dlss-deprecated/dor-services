@@ -180,7 +180,7 @@ class Foxml
     
     dc = self.dublin_core
     dc.xpath('dc:identifier',NAMESPACES).each { |existing_id| existing_id.remove }
-    new_ids.each do |id|
+    new_ids.uniq.each do |id|
       new_child = @xml.create_element('dc:identifier')
       new_child.content = id
       dc.add_child(new_child)
