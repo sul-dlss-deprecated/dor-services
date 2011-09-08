@@ -116,7 +116,8 @@ class IdentityMetadata
   def build_xml()
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.identityMetadata {
-          self.instance_variables.each do |var_name|
+          field_names = self.instance_variables.sort { |a,b| "#{a}:#{self.instance_variable_get(a).to_s}" <=> "#{b}:#{self.instance_variable_get(b).to_s}"}
+          field_names.each do |var_name|
             unless var_name == "@xml"
               var = self.instance_variable_get(var_name)
               tag_name = var_name[1..-1]
