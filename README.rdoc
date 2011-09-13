@@ -69,6 +69,8 @@ Values can also be configured individually:
 - <b>1.6.4</b> Fix MetadataHandler spec tests to match new MD Toolkit implementation
 - <b>1.7.0</b> LYBERSTRUCTURE-138 Registration - read item-level agreementId from APO
                LYBERSTRUCTURE-139 Registration - read relationships information from APO
+- <b>1.7.1</b> Minor tweaks to FOXML, identity metadata, and content metadata
+               Normalize whitespace in descriptive metadata text fields
 
 == Copyright
 

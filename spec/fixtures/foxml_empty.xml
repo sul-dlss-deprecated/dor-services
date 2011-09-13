@@ -3,7 +3,7 @@
   <foxml:objectProperties>
     <foxml:property NAME="info:fedora/fedora-system:def/model#state" VALUE="Active"/>
     <foxml:property NAME="info:fedora/fedora-system:def/model#label" VALUE=""/>
-    <foxml:property NAME="info:fedora/fedora-system:def/model#ownerId" VALUE="dor"/>
+    <foxml:property NAME="info:fedora/fedora-system:def/model#ownerId" VALUE="DOR"/>
   </foxml:objectProperties>
   <foxml:datastream CONTROL_GROUP="X" ID="DC" STATE="A" VERSIONABLE="false">
     <foxml:datastreamVersion FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/" ID="DC1.0" LABEL="Dublin Core Record for this object" MIMETYPE="text/xml">
