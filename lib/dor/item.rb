@@ -1,5 +1,6 @@
 require 'dor/base'
 require 'datastreams/content_metadata_ds'
+require 'datastreams/ng_tidy'
 
 module Dor
   
@@ -46,6 +47,7 @@ module Dor
       unless content.nil?
         ds.label = 'Descriptive Metadata'
         ds.ng_xml = Nokogiri::XML(content)
+        ds.ng_xml.normalize_text!
       end
     end
     
