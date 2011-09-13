@@ -71,6 +71,7 @@ Values can also be configured individually:
                LYBERSTRUCTURE-139 Registration - read relationships information from APO
 - <b>1.7.1</b> Minor tweaks to FOXML, identity metadata, and content metadata
                Normalize whitespace in descriptive metadata text fields
+- <b>1.7.2</b> Add auto-updating Dor::Config.fedora.safeurl (url with user/pass stripped)
 
 == Copyright
 
