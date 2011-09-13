@@ -221,7 +221,7 @@ class Foxml
   <foxml:objectProperties>
     <foxml:property NAME="info:fedora/fedora-system:def/model#state" VALUE="Active"/>
     <foxml:property NAME="info:fedora/fedora-system:def/model#label" VALUE="$$LABEL$$"/>
-    <foxml:property NAME="info:fedora/fedora-system:def/model#ownerId" VALUE="dor"/>
+    <foxml:property NAME="info:fedora/fedora-system:def/model#ownerId" VALUE="DOR"/>
   </foxml:objectProperties>
   <foxml:datastream CONTROL_GROUP="X" ID="DC" STATE="A" VERSIONABLE="false">
     <foxml:datastreamVersion
