@@ -36,6 +36,7 @@ module Dor
     def build_contentMetadata_datastream(ds)
       path = Druid.new(self.pid).path(Dor::Config.stacks.local_workspace_root)
       if File.exists?(File.join(path, 'content_metadata.xml'))
+        ds.label = 'Content Metadata'
         ds.ng_xml = Nokogiri::XML(File.read(File.join(path, 'content_metadata.xml')))
       end
     end
