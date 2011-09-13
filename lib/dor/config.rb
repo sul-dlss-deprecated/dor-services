@@ -6,11 +6,16 @@ module Dor
   Config.declare do
     fedora do
       url nil
+      safeurl nil
       cert_file nil
       key_file nil
       key_pass ''
 
       config_changed do |fedora|
+        fedora_uri = URI.parse(fedora.url)
+        fedora_uri.user = fedora_uri.password = nil
+        fedora.safeurl fedora_uri.to_s
+        
         temp_v = $-v
         $-v = nil
         begin
