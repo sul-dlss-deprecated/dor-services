@@ -84,7 +84,11 @@ module Dor
       DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'dc')
       DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
     end
-    
+
+    def provenance_metadata(workflow_id, event_text)
+      ProvenanceMetadataService.add_provenance(self, workflow_id, event_text)
+    end
+
     def shelve
       files = [] # doc.xpath("//file").select {|f| f['shelve'] == 'yes'}.map{|f| f['id']}
       self.datastreams['contentMetadata'].ng_xml.xpath('//file').each do |file|

@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<provenanceMetadata objectId="druid:zz207sx2093" xmlns:PREMIS="info:lc/xmlns/premis-v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+  <agent name="Google">
+    <PREMIS:premis version="2.0">
+          <PREMIS:object xsi:type="representation">
+            <PREMIS:objectIdentifier>
+              <PREMIS:objectIdentifierType>barcode</PREMIS:objectIdentifierType>
+              <PREMIS:objectIdentifierValue>STANFORD_36105015298982</PREMIS:objectIdentifierValue>
+            </PREMIS:objectIdentifier>
+            <PREMIS:significantProperties>
+              <PREMIS:significantPropertiesType>file count</PREMIS:significantPropertiesType>
+              <PREMIS:significantPropertiesValue>1114</PREMIS:significantPropertiesValue>
+            </PREMIS:significantProperties>
+            <PREMIS:significantProperties>
+              <PREMIS:significantPropertiesType>page count</PREMIS:significantPropertiesType>
+              <PREMIS:significantPropertiesValue>556</PREMIS:significantPropertiesValue>
+            </PREMIS:significantProperties>
+          </PREMIS:object>
+          <PREMIS:event xmlID="Google_Scan">
+            <PREMIS:eventIdentifier>
+              <PREMIS:eventIdentifierType>Google generated</PREMIS:eventIdentifierType>
+              <PREMIS:eventIdentifierValue>Google_Scan</PREMIS:eventIdentifierValue>
+            </PREMIS:eventIdentifier>
+            <PREMIS:eventType>Scan</PREMIS:eventType>
+            <PREMIS:eventDateTime>2006-07-19T20:24:17</PREMIS:eventDateTime>
+            <PREMIS:eventDetail>Original image capture</PREMIS:eventDetail>
+            <PREMIS:linkingAgentIdentifier>
+              <PREMIS:linkingAgentIdentifierType>AgentID</PREMIS:linkingAgentIdentifierType>
+              <PREMIS:linkingAgentIdentifierValue>Google (Firm)</PREMIS:linkingAgentIdentifierValue>
+            </PREMIS:linkingAgentIdentifier>
+          </PREMIS:event>
+          <PREMIS:event xmlID="Google_Process">
+            <PREMIS:eventIdentifier>
+              <PREMIS:eventIdentifierType>Google generated</PREMIS:eventIdentifierType>
+              <PREMIS:eventIdentifierValue>Google_Process</PREMIS:eventIdentifierValue>
+            </PREMIS:eventIdentifier>
+            <PREMIS:eventType>Process</PREMIS:eventType>
+            <PREMIS:eventDateTime>2007-10-10T06:20:12</PREMIS:eventDateTime>
+            <PREMIS:eventDetail>Refinement and cleaning of raw scanned images using image enhancement techniques</PREMIS:eventDetail>
+            <PREMIS:linkingAgentIdentifier>
+              <PREMIS:linkingAgentIdentifierType>AgentID</PREMIS:linkingAgentIdentifierType>
+              <PREMIS:linkingAgentIdentifierValue>Google (Firm)</PREMIS:linkingAgentIdentifierValue>
+            </PREMIS:linkingAgentIdentifier>
+          </PREMIS:event>
+          <PREMIS:event xmlID="Google_Analyze">
+            <PREMIS:eventIdentifier>
+              <PREMIS:eventIdentifierType>Google generated</PREMIS:eventIdentifierType>
+              <PREMIS:eventIdentifierValue>Google_Analyze</PREMIS:eventIdentifierValue>
+            </PREMIS:eventIdentifier>
+            <PREMIS:eventType>Analyze</PREMIS:eventType>
+            <PREMIS:eventDateTime>2009-09-11T13:02:20</PREMIS:eventDateTime>
+            <PREMIS:eventDetail>Automated quality assessment, extraction of OCR text and metadata, assignment of metadata tags, and page ordering</PREMIS:eventDetail>
+            <PREMIS:linkingAgentIdentifier>
+              <PREMIS:linkingAgentIdentifierType>AgentID</PREMIS:linkingAgentIdentifierType>
+              <PREMIS:linkingAgentIdentifierValue>Google (Firm)</PREMIS:linkingAgentIdentifierValue>
+            </PREMIS:linkingAgentIdentifier>
+          </PREMIS:event>
+          <PREMIS:event xmlID="Google_Convert">
+            <PREMIS:eventIdentifier>
+              <PREMIS:eventIdentifierType>Google generated</PREMIS:eventIdentifierType>
+              <PREMIS:eventIdentifierValue>Google_Convert</PREMIS:eventIdentifierValue>
+            </PREMIS:eventIdentifier>
+            <PREMIS:eventType>Convert</PREMIS:eventType>
+            <PREMIS:eventDateTime>2009-10-13T14:23:02</PREMIS:eventDateTime>
+            <PREMIS:eventDetail>Creation of partner deliverables</PREMIS:eventDetail>
+            <PREMIS:linkingAgentIdentifier>
+              <PREMIS:linkingAgentIdentifierType>AgentID</PREMIS:linkingAgentIdentifierType>
+              <PREMIS:linkingAgentIdentifierValue>Google (Firm)</PREMIS:linkingAgentIdentifierValue>
+            </PREMIS:linkingAgentIdentifier>
+          </PREMIS:event>
+          <PREMIS:agent>
+            <PREMIS:agentIdentifier>
+              <PREMIS:agentIdentifierType>LCNAF</PREMIS:agentIdentifierType>
+              <PREMIS:agentIdentifierValue>Google (Firm)</PREMIS:agentIdentifierValue>
+            </PREMIS:agentIdentifier>
+            <PREMIS:agentType>organization</PREMIS:agentType>
+          </PREMIS:agent>
+        </PREMIS:premis>
+  </agent>
+  <agent name="DOR">
+    <what object="druid:zz207sx2093">
+      <event who="DOR-googleScannedBookWF" when="2010-11-30T20:02:06-0800">Google Scanned Book Workflow</event>
+    </what>
+  </agent>
+</provenanceMetadata>
