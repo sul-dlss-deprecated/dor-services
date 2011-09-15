@@ -33,7 +33,7 @@
 	
 	<xsl:variable name="OBJECTTYPE" select="//foxml:datastream/foxml:datastreamVersion[last()]//identityMetadata/objectType/text()"/>
 
-  <xsl:variable name="INDEXVERSION" select="1.1"/>
+  <xsl:variable name="INDEXVERSION" select="'1.1.2011091501'"/>
 
 	<!-- or any other calculation, default boost is 1.0 -->
 	<xsl:template match="/">
@@ -107,6 +107,11 @@
 
 	<!-- Index DC -->
 	<xsl:template match="oai_dc:dc[ancestor::foxml:datastream[@ID='DC']]">
+		<xsl:for-each select="dc:title|dc:creator|dc:identifier">
+			<field name="dc_{local-name(.)}_text">
+				<xsl:value-of select="text()"/>
+			</field>
+		</xsl:for-each>
 		<xsl:for-each select="./*">
 			<field name="dc_{local-name(.)}_field">
 				<xsl:value-of select="text()"/>
@@ -124,6 +129,15 @@
 		<xsl:for-each select="./sourceId">
 			<field name="dor_id_field">
 				<xsl:value-of select="concat(@source, ':', normalize-space(./text()))"/>
+			</field>
+			<field name="source_id_field">
+				<xsl:value-of select="normalize-space(./text())"/>
+			</field>
+			<field name="identifier_text">
+				<xsl:value-of select="concat(@source, ':', normalize-space(./text()))"/>
+			</field>
+			<field name="identifier_text">
+				<xsl:value-of select="normalize-space(./text())"/>
 			</field>
 		</xsl:for-each>
 		<xsl:for-each select="./otherId">
@@ -168,21 +182,36 @@
 			<field name="mods_{$identifier-label}_identifier_field">
 				<xsl:value-of select="text()"/>
 			</field>
+			<field name="mods_identifier_text">
+				<xsl:value-of select="@displayLabel"/>:<xsl:value-of select="text()"/>
+			</field>
+			<field name="mods_{$identifier-label}_identifier_text">
+				<xsl:value-of select="text()"/>
+			</field>
 		</xsl:for-each>
 		
 		<xsl:for-each select="mods:titleInfo">
-			<field name="mods_titleInfo_field">
+			<xsl:variable name="title-info">
 				<xsl:value-of select="mods:nonSort/text()"/>
 				<xsl:value-of select="mods:title/text()"/>
 				<xsl:if test="mods:subTitle">
 					<xsl:text> : </xsl:text>
 					<xsl:value-of select="mods:subTitle/text()"/>
 				</xsl:if>
+			</xsl:variable>
+			<field name="mods_titleInfo_field">
+				<xsl:value-of select="$title-info"/>
+			</field>
+			<field name="mods_title_text">
+				<xsl:value-of select="$title-info"/>
 			</field>
 		</xsl:for-each>
 		
 		<xsl:for-each select="mods:name">
 			<field name="mods_name_field">
+				<xsl:value-of select="mods:namePart/text()"/>
+			</field>
+			<field name="mods_name_text">
 				<xsl:value-of select="mods:namePart/text()"/>
 			</field>
 		</xsl:for-each>
