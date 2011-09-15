@@ -11,6 +11,16 @@ module Dor
       key_file nil
       key_pass ''
 
+      instance_eval do
+        def client
+          RestClient::Resource.new(
+            self.url,
+            :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(self.cert_file)),
+            :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(self.key_file), self.key_pass)
+          )
+        end
+      end
+
       config_changed do |fedora|
         fedora_uri = URI.parse(fedora.url)
         fedora_uri.user = fedora_uri.password = nil
@@ -30,5 +40,6 @@ module Dor
       end
     end
   end
+    
 end
 
