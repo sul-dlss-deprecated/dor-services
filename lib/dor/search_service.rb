@@ -7,7 +7,18 @@ module Dor
 
     RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'"
 
-    Config.declare(:gsearch) { url nil }
+    Config.declare(:gsearch) { 
+      url nil 
+      instance_eval do
+        def client
+          RestClient::Resource.new(
+            self.url,
+            :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(Config.fedora.cert_file)),
+            :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(Config.fedora.key_file), Config.fedora.key_pass)
+          )
+        end
+      end
+    }
     
     class << self
       
