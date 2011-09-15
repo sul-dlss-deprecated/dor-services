@@ -17,15 +17,29 @@ module Dor
 
     # Make a random (and harmless) API-M call to get gsearch to reindex the object
     def self.touch(*pids)
-      client = RestClient::Resource.new(
-        Dor::Config.fedora.url,
-        :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(Dor::Config.fedora.cert_file)),
-        :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(Dor::Config.fedora.key_file), Dor::Config.fedora.key_pass)
-      )
+      client = Dor::Config.fedora.client
       pids.collect { |pid|
         response = client["objects/#{pid}/datastreams/DC?dsState=A&ignoreContent=true"].put('', :content_type => 'text/xml')
         response.code
       }
+    end
+    
+    def self.get_foxml(pid, interpolate_refs = false)
+      foxml = Nokogiri::XML(Dor::Config.fedora.client["objects/#{pid}/objectXML"].get)
+      if interpolate_refs
+        external_refs = foxml.xpath('//foxml:contentLocation[contains(@REF,"/workflows/")]')
+        external_refs.each do |ref|
+          begin
+            external_doc = Nokogiri::XML(RestClient.get(ref['REF']))
+            external_root = external_doc.root
+            ref.replace('<foxml:xmlContent/>').first.add_child(external_doc.root)
+            external_root.traverse { |node| node.namespace = nil }
+          rescue
+            ref.remove
+          end
+        end
+      end
+      return foxml
     end
     
     def initialize(attrs = {})

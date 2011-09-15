@@ -218,8 +218,8 @@
 		</xsl:apply-templates>
 	</xsl:template>
 
-	<xsl:template match="/workflow">
-		<xsl:param name="workflow-name"/>
+	<xsl:template match="workflow">
+		<xsl:param name="workflow-name" select="ancestor::foxml:datastream/@ID"/>
 		<xsl:variable name="workflow-token">
 			<xsl:call-template name="valid-field-name"><xsl:with-param name="name" select="$workflow-name"/></xsl:call-template>
 		</xsl:variable>
