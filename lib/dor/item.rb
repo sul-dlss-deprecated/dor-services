@@ -56,7 +56,7 @@ module Dor
       ds.label = 'Rights Metadata'
       ds.ng_xml = content_ds.ng_xml.clone
     end
-    
+
     def public_xml      
       pub = Nokogiri::XML("<publicObject/>").root
       pub['id'] = pid
@@ -85,8 +85,30 @@ module Dor
       DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
     end
 
-    def provenance_metadata(workflow_id, event_text)
+    def build_provenanceMetadata_datastream(workflow_id, event_text)
       ProvenanceMetadataService.add_provenance(self, workflow_id, event_text)
+    end
+
+    def build_technicalMetadata_datastream()
+      unless defined? ::JhoveService
+        begin
+          require 'jhove_service'
+        rescue LoadError => e
+          puts e.inspect
+          raise "jhove-service dependency gem was not found.  Please add it to your Gemfile and run bundle install"
+        end
+      end
+      content_dir = Druid.new(self.pid).path(Config.sdr.local_workspace_root)
+      target_dir = File.join(Config.sdr.local_export_home,self.pid)
+      FileUtils.mkdir_p(target_dir)
+      jhove_service = ::JhoveService.new(target_dir)
+      jhove_output_file = jhove_service.run_jhove(content_dir)
+      tech_md_file = jhove_service.create_technical_metadata(jhove_output_file)
+      ds = datastreams['technicalMetadata']
+      ds.label = 'Technical Metadata'
+      ds.ng_xml = Nokogiri::XML(IO.read(tech_md_file))
+      ds.save
+      FileUtils.remove_entry(jhove_output_file) if File.exist?(jhove_output_file)
     end
 
     def shelve

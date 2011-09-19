@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "equivalent-xml", ">=0.2.2"
   s.add_development_dependency "fakeweb"
   s.add_development_dependency "haml"
+  s.add_development_dependency "jhove-service"
   s.add_development_dependency "lyberteam-devel", ">=0.4.1"
   s.add_development_dependency "rake", ">=0.8.7"
   s.add_development_dependency "rcov"

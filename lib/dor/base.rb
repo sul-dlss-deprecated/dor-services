@@ -13,6 +13,7 @@ module Dor
     has_metadata :name => "DC", :type => SimpleDublinCoreDs
     has_metadata :name => "RELS-EXT", :type => ActiveFedora::NokogiriDatastream
     has_metadata :name => "identityMetadata", :type => IdentityMetadataDS
+    has_metadata :name => "provenanceMetadata", :type => ActiveFedora::NokogiriDatastream
     has_metadata :name => "technicalMetadata", :type => ActiveFedora::NokogiriDatastream
 
     # Make a random (and harmless) API-M call to get gsearch to reindex the object

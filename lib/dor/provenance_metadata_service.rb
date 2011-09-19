@@ -16,6 +16,7 @@ module Dor
         ds.ng_xml = update_provenance(old_provenance, workflow_provenance)
       else
         ds = dor_item.datastreams[dsname]
+        ds.label = 'Provenance Metadata'
         ds.ng_xml = workflow_provenance
       end
       ds.save
