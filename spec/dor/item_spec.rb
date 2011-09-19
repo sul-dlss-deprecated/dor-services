@@ -186,6 +186,27 @@ describe Dor::Item do
       @item.datastreams['rightsMetadata'].ng_xml.to_s.should_not be_equivalent_to('<xml/>')
     end
     
+    it "should build the provenanceMetadata datastream" do
+      #puts @item.datastreams.keys.inspect
+      @item.datastreams['provenanceMetadata'].ng_xml.to_s.should be_equivalent_to('<xml/>')
+      @item.build_provenanceMetadata_datastream('workflow_id', 'event_text')
+      #puts @item.datastreams['provenanceMetadata'].ng_xml.to_s
+      @item.datastreams['provenanceMetadata'].ng_xml.to_s.should_not be_equivalent_to('<xml/>')
+    end
+
+    it "should build the technicalMetadata datastream" do
+    @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"../fixtures")
+     Dor::Config.sdr.configure do
+        local_workspace_root File.join(fixture_dir, "workspace")
+        local_export_home File.join(fixture_dir, "export")
+     end
+      @item.datastreams['technicalMetadata'].ng_xml.to_s.should be_equivalent_to('<xml/>')
+      #puts @item.datastreams['technicalMetadata'].ng_xml.to_s
+      @item.build_technicalMetadata_datastream()
+      #puts @item.datastreams['technicalMetadata'].ng_xml.to_s
+      @item.datastreams['technicalMetadata'].ng_xml.to_s.should_not be_equivalent_to('<xml/>')
+    end
+
   end
-  
+
 end

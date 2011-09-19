@@ -13,17 +13,34 @@ module Dor
     has_metadata :name => "DC", :type => SimpleDublinCoreDs
     has_metadata :name => "RELS-EXT", :type => ActiveFedora::NokogiriDatastream
     has_metadata :name => "identityMetadata", :type => IdentityMetadataDS
+    has_metadata :name => "provenanceMetadata", :type => ActiveFedora::NokogiriDatastream
     has_metadata :name => "technicalMetadata", :type => ActiveFedora::NokogiriDatastream
 
     # Make a random (and harmless) API-M call to get gsearch to reindex the object
-    def self.touch(pid)
-      client = RestClient::Resource.new(
-        Dor::Config.fedora.url,
-        :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(Dor::Config.fedora.cert_file)),
-        :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(Dor::Config.fedora.key_file), Dor::Config.fedora.key_pass)
-      )
-      response = client["objects/#{pid}/datastreams/DC?dsState=A&ignoreContent=true"].put('', :content_type => 'text/xml')
-      response.code
+    def self.touch(*pids)
+      client = Dor::Config.fedora.client
+      pids.collect { |pid|
+        response = client["objects/#{pid}/datastreams/DC?dsState=A&ignoreContent=true"].put('', :content_type => 'text/xml')
+        response.code
+      }
+    end
+    
+    def self.get_foxml(pid, interpolate_refs = false)
+      foxml = Nokogiri::XML(Dor::Config.fedora.client["objects/#{pid}/objectXML"].get)
+      if interpolate_refs
+        external_refs = foxml.xpath('//foxml:contentLocation[contains(@REF,"/workflows/")]')
+        external_refs.each do |ref|
+          begin
+            external_doc = Nokogiri::XML(RestClient.get(ref['REF']))
+            external_root = external_doc.root
+            ref.replace('<foxml:xmlContent/>').first.add_child(external_doc.root)
+            external_root.traverse { |node| node.namespace = nil }
+          rescue
+            ref.remove
+          end
+        end
+      end
+      return foxml
     end
     
     def initialize(attrs = {})
@@ -59,8 +76,7 @@ module Dor
     end
     
     def reindex
-      # Touch the DC datastream to force gsearch to reindex
-      datastreams['DC'].save
+      Dor::SearchService.reindex(self.pid)
     end
 
   end

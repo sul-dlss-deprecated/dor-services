@@ -39,8 +39,9 @@ Values can also be configured individually:
 - <b>0.2.0</b> Implemented Dor::WorkflowService as a passthrough to existing DOR web services
 - <b>0.2.1</b> Added support for :object_admin_class parameter in register_object
 - <b>0.3.0</b> Added MetadataService to fetch metadata from various sources (currently Symphony and eXist/MD Toolkit)
-- <b>1.0.0</b> Richer response from Registration Service
-               MD Toolkit metadata handler work with non-MODS metadata
+- <b>1.0.0</b> 
+  - Richer response from Registration Service
+  - MD Toolkit metadata handler work with non-MODS metadata
 - <b>1.0.1</b> Changed descMetadata fetcher to pull based on best available "other ID" instead of "source ID"
 - <b>1.0.2</b> Added caching of metadata (250 records, 5 minute timeout)
 - <b>1.0.3</b> Fix bug in build_datastream
@@ -51,27 +52,37 @@ Values can also be configured individually:
 - <b>1.1.4</b> Hotfix for malformed URL stem in Workflow service
 - <b>1.1.5</b> Hotfix for issue in which tempfile was not being flushed before copy (in Dor::Item#shelve)
 - <b>1.2.0</b> Add Dor::Item#initiate_apo_workflow() to initiate named workflows from the APO
-- <b>1.2.1</b> Add basic TEI header support to Dor::Item#generate_dublin_core; switch from guid to uuidtools 
-               for UUID creation
+- <b>1.2.1</b> Add basic TEI header support to Dor::Item#generate_dublin_core; switch from guid to uuidtools for UUID creation
 - <b>1.3.0</b> Added Druid class for calculation and manipulation of DRUID trees
 - <b>1.3.1</b> Rebased workflow changes that were left out of 1.3.0
 - <b>1.4.0</b> Add reindex method to Dor::Base
-- <b>1.4.1</b> Prettify/shrink public XML
-               Improve Dor::SearchService.gsearch parameter handling
-- <b>1.5.0</b> Add certificate-aware RSolr::Connection class
-               Add Dor::Base.touch(druid) to trigger reindexing without ActiveFedora
-- <b>1.6.0</b> Implement SdrIngestService and CleanupService
-               Turn off ActiveFedora's automatic SOLR updating
-               Add MD Toolkit metadata handler workaround for NullPointerException in eXist
+- <b>1.4.1</b> 
+  - Prettify/shrink public XML
+  - Improve Dor::SearchService.gsearch parameter handling
+- <b>1.5.0</b> 
+  - Add certificate-aware RSolr::Connection class
+  - Add Dor::Base.touch(druid) to trigger reindexing without ActiveFedora
+- <b>1.6.0</b> 
+  - Implement SdrIngestService and CleanupService
+  - Turn off ActiveFedora's automatic SOLR updating
+  - Add MD Toolkit metadata handler workaround for NullPointerException in eXist
 - <b>1.6.1</b> Fixed configuration of export directory in specs
 - <b>1.6.2</b> Fixed configuration reference in cleanup spec
 - <b>1.6.3</b> Simplify & speed up MD Toolkit metadata handler queries
 - <b>1.6.4</b> Fix MetadataHandler spec tests to match new MD Toolkit implementation
-- <b>1.7.0</b> LYBERSTRUCTURE-138 Registration - read item-level agreementId from APO
-               LYBERSTRUCTURE-139 Registration - read relationships information from APO
-- <b>1.7.1</b> Minor tweaks to FOXML, identity metadata, and content metadata
-               Normalize whitespace in descriptive metadata text fields
+- <b>1.7.0</b> 
+  - LYBERSTRUCTURE-138 Registration - read item-level agreementId from APO
+  - LYBERSTRUCTURE-139 Registration - read relationships information from APO
+- <b>1.7.1</b> 
+  - Minor tweaks to FOXML, identity metadata, and content metadata
+  - Normalize whitespace in descriptive metadata text fields
 - <b>1.7.2</b> Add auto-updating Dor::Config.fedora.safeurl (url with user/pass stripped)
+- <b>2.0.0</b> <b>Major Release:</b> 
+  - Service additions: SdrIngest, JHove, Cleanup, ProvenanceMetadata
+  - New functionality: Dor::SearchService#reindex(*pids) uses gsearch's XSLT internally
+  - Code cleanup: Merged redundant RestClient::Resource.new() calls into a single #client method on Dor::Config.fedora and Dor::Config.gsearch
+  - README formatting: Looks better in HTML, worse in text.
+                                  
 
 == Copyright
 

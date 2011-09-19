@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
   
 Gem::Specification.new do |s|
   s.name        = "dor-services"
-  s.version     = "1.7.2"
+  s.version     = "2.0.0"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick","Richard Anderson"]
   s.email       = ["mbklein@stanford.edu"]
@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "equivalent-xml", ">=0.2.2"
   s.add_development_dependency "fakeweb"
   s.add_development_dependency "haml"
+  s.add_development_dependency "jhove-service"
   s.add_development_dependency "lyberteam-devel", ">=0.4.1"
   s.add_development_dependency "rake", ">=0.8.7"
   s.add_development_dependency "rcov"
