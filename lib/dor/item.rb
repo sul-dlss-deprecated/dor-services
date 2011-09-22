@@ -1,6 +1,7 @@
 require 'dor/base'
 require 'datastreams/content_metadata_ds'
 require 'datastreams/ng_tidy'
+require 'tmpdir'
 
 module Dor
   
@@ -9,7 +10,9 @@ module Dor
     has_metadata :name => "contentMetadata", :type => ContentMetadataDS
     has_metadata :name => "descMetadata", :type => ActiveFedora::NokogiriDatastream
     has_metadata :name => "rightsMetadata", :type => ActiveFedora::NokogiriDatastream
-    
+    has_metadata :name => "provenanceMetadata", :type => ActiveFedora::NokogiriDatastream
+    has_metadata :name => "technicalMetadata", :type => ActiveFedora::NokogiriDatastream
+
     def admin_policy_object
       apo_ref = self.datastreams['RELS-EXT'].ng_xml.search('//hydra:isGovernedBy/@rdf:resource', Foxml::NAMESPACES).first
       if apo_ref.nil?
@@ -89,7 +92,7 @@ module Dor
       ProvenanceMetadataService.add_provenance(self, workflow_id, event_text)
     end
 
-    def build_technicalMetadata_datastream()
+    def build_technicalMetadata_datastream(ds)
       unless defined? ::JhoveService
         begin
           require 'jhove_service'
@@ -98,17 +101,17 @@ module Dor
           raise "jhove-service dependency gem was not found.  Please add it to your Gemfile and run bundle install"
         end
       end
-      content_dir = Druid.new(self.pid).path(Config.sdr.local_workspace_root)
-      target_dir = File.join(Config.sdr.local_export_home,self.pid)
-      FileUtils.mkdir_p(target_dir)
-      jhove_service = ::JhoveService.new(target_dir)
-      jhove_output_file = jhove_service.run_jhove(content_dir)
-      tech_md_file = jhove_service.create_technical_metadata(jhove_output_file)
-      ds = datastreams['technicalMetadata']
-      ds.label = 'Technical Metadata'
-      ds.ng_xml = Nokogiri::XML(IO.read(tech_md_file))
-      ds.save
-      FileUtils.remove_entry(jhove_output_file) if File.exist?(jhove_output_file)
+      begin
+        content_dir = Druid.new(self.pid).path(Config.sdr.local_workspace_root)
+        temp_dir = Dir.mktmpdir(self.pid)
+        jhove_service = ::JhoveService.new(temp_dir)
+        jhove_output_file = jhove_service.run_jhove(content_dir)
+        tech_md_file = jhove_service.create_technical_metadata(jhove_output_file)
+        ds.label = 'Technical Metadata'
+        ds.ng_xml = Nokogiri::XML(IO.read(tech_md_file))
+      ensure
+        FileUtils.remove_entry_secure(temp_dir) if File.exist?(temp_dir)
+      end
     end
 
     def shelve
