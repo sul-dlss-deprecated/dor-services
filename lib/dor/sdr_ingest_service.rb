@@ -12,6 +12,7 @@ module Dor
         identityMetadata 'required'
         provenanceMetadata 'required'
         relationshipMetadata 'required'
+        technicalMetadata 'required'
         rightsMetadata 'optional'
         sourceMetadata 'optional'
       end

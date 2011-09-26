@@ -57,7 +57,7 @@ describe Dor::SdrIngestService do
     mock_datastream.should_receive(:content).and_return(metadata_string)
     ds_hash = {ds_name => mock_datastream }
     mock_item = mock("item")
-    mock_item.should_receive(:datastream_names).and_return(ds_hash.keys)
+    mock_item.should_receive(:datastreams_in_fedora).and_return(ds_hash)
     mock_item.should_receive(:datastreams).and_return(ds_hash)
     result = Dor::SdrIngestService.get_datastream_content(mock_item ,ds_name, 'required')
     result.should eql metadata_string
@@ -70,7 +70,7 @@ describe Dor::SdrIngestService do
     mock_datastream.should_receive(:content).never
     ds_hash = {ds_name => mock_datastream }
     mock_item = mock("item")
-    mock_item.should_receive(:datastream_names).and_return(ds_hash.keys)
+    mock_item.should_receive(:datastreams_in_fedora).and_return(ds_hash)
     mock_item.should_receive(:datastreams).never
     result = Dor::SdrIngestService.get_datastream_content(mock_item ,'dummy', 'optional')
     result.should eql nil
@@ -83,7 +83,7 @@ describe Dor::SdrIngestService do
     mock_datastream.should_receive(:content).never
     ds_hash = {ds_name => mock_datastream }
     mock_item = mock("item")
-    mock_item.should_receive(:datastream_names).and_return(ds_hash.keys)
+    mock_item.should_receive(:datastreams_in_fedora).and_return(ds_hash)
     mock_item.should_receive(:datastreams).never
     lambda {Dor::SdrIngestService.get_datastream_content(mock_item ,'dummy', 'required')}.should raise_exception
   end
@@ -109,9 +109,10 @@ describe Dor::SdrIngestService do
     Dor::SdrIngestService.should_receive(:get_datastream_content).with(mock_item,'identityMetadata','required').once.and_return(metadata_string)
     Dor::SdrIngestService.should_receive(:get_datastream_content).with(mock_item,'provenanceMetadata','required').once.and_return(metadata_string)
     Dor::SdrIngestService.should_receive(:get_datastream_content).with(mock_item,'relationshipMetadata','required').once.and_return(metadata_string)
+    Dor::SdrIngestService.should_receive(:get_datastream_content).with(mock_item,'technicalMetadata','required').once.and_return(metadata_string)
     Dor::SdrIngestService.should_receive(:get_datastream_content).with(mock_item,'sourceMetadata','optional').once.and_return(metadata_string)
     Dor::SdrIngestService.should_receive(:get_datastream_content).with(mock_item,'rightsMetadata','optional').once.and_return(metadata_string)
-    Dor::SdrIngestService.should_receive(:export_metadata_string).exactly(7).times
+    Dor::SdrIngestService.should_receive(:export_metadata_string).exactly(8).times
     Dor::SdrIngestService.add_metadata_datastreams(mock_item, mock_bag)
   end
 

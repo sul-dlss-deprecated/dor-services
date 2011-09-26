@@ -84,7 +84,7 @@ Values can also be configured individually:
   - README formatting: Looks better in HTML, worse in text.
 - <b>2.1.0</b> Dor::Item can now build technicalMetadata datastream 
 - <b>2.1.1</b> Workaround for misbehaving ActiveFedora::Base#datastream_names
-                                  
+- <b>2.1.2</b> Add technicalMetadata to sdr_ingest_transfer's datastream list
 
 == Copyright
 
