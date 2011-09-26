@@ -85,7 +85,7 @@ module Dor
     # if non-existant, return nil or raise exception depending on value of required
     def self.get_datastream_content(dor_item, ds_name, required)
       ds = (ds_name == 'relationshipMetadata' ? 'RELS-EXT' : ds_name)
-      if dor_item.datastream_names.include?(ds)
+      if dor_item.datastreams_in_fedora.keys.include?(ds)
         return dor_item.datastreams[ds].content
       elsif (required == 'optional')
         return nil
