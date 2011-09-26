@@ -83,6 +83,7 @@ Values can also be configured individually:
   - Code cleanup: Merged redundant RestClient::Resource.new() calls into a single #client method on Dor::Config.fedora and Dor::Config.gsearch
   - README formatting: Looks better in HTML, worse in text.
 - <b>2.1.0</b> Dor::Item can now build technicalMetadata datastream 
+- <b>2.1.1</b> Workaround for misbehaving ActiveFedora::Base#datastream_names
                                   
 
 == Copyright
