@@ -33,7 +33,7 @@
 	
 	<xsl:variable name="OBJECTTYPE" select="//foxml:datastream/foxml:datastreamVersion[last()]//identityMetadata/objectType/text()"/>
 
-  <xsl:variable name="INDEXVERSION" select="'1.1.2011091501'"/>
+  <xsl:variable name="INDEXVERSION" select="'1.1.2011092801'"/>
 
 	<!-- or any other calculation, default boost is 1.0 -->
 	<xsl:template match="/">
@@ -154,6 +154,9 @@
 			<field name="tag_field">
 				<xsl:value-of select="$text-value"/>
 			</field>
+			<field name="tag_facet">
+				<xsl:value-of select="$text-value"/>
+			</field>
 			<xsl:variable name="tag-name"
 				select="normalize-space(substring-before($text-value, ':'))"/>
 			<xsl:variable name="field-name">
@@ -240,6 +243,25 @@
 -->
 	</xsl:template>
 	
+	<!-- Index content metadata -->
+	<xsl:template match="contentMetadata[ancestor::foxml:datastream[@ID='contentMetadata']]">
+	  <field name="content_type_facet">
+	    <xsl:value-of select="@type"/>
+	  </field>
+	  <xsl:apply-templates/>
+  </xsl:template>
+  
+  <xsl:template match="contentMetadata/resource/file">
+	  <field name="content_file_field">
+	    <xsl:value-of select="@id"/>
+	  </field>
+	  <xsl:if test="@shelve = 'yes'">
+  	  <field name="shelved_content_file_field">
+  	    <xsl:value-of select="@id"/>
+  	  </field>
+  	</xsl:if>
+  </xsl:template>
+  
 	<!-- Workflows -->
 	<xsl:template match="foxml:contentLocation[contains(@REF,'/workflows/')]">
 		<xsl:apply-templates select="document(@REF)/workflow">
