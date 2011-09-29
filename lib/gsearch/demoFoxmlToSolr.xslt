@@ -131,6 +131,9 @@
 		<field name="{$field-name}_id_field">
 			<xsl:value-of select="$doc-pid"/>
 		</field>
+		<field name="{$field-name}_id_facet">
+			<xsl:value-of select="$doc-pid"/>
+		</field>
 <!--
 		<xsl:variable name="doc-query">
 			<xsl:value-of select="$FEDORAROOT"/>/objects?query=pid~<xsl:value-of select="$doc-pid"/>&amp;resultFormat=xml&amp;pid=true&amp;label=true
