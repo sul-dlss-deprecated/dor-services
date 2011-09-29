@@ -40,7 +40,7 @@
 	
 	<xsl:variable name="OBJECTTYPE" select="//foxml:datastream/foxml:datastreamVersion[last()]//identityMetadata/objectType/text()"/>
 
-  <xsl:variable name="INDEXVERSION" select="'1.1.2011092801'"/>
+  <xsl:variable name="INDEXVERSION">1.1.2011092802</xsl:variable>
 
 	<!-- or any other calculation, default boost is 1.0 -->
 	<xsl:template match="/">
@@ -128,18 +128,20 @@
 		<xsl:param name="resource" select="./@rdf:resource"/>
 		<xsl:param name="field-name"/>
 		<xsl:variable name="doc-pid" select="substring-after($resource,'info:fedora/')"></xsl:variable>
+		<field name="{$field-name}_id_field">
+			<xsl:value-of select="$doc-pid"/>
+		</field>
+<!--
 		<xsl:variable name="doc-query">
 			<xsl:value-of select="$FEDORAROOT"/>/objects?query=pid~<xsl:value-of select="$doc-pid"/>&amp;resultFormat=xml&amp;pid=true&amp;label=true
 		</xsl:variable>
 		<xsl:variable name="doc" select="document($doc-query)"/>
-		<field name="{$field-name}_id_field">
-			<xsl:value-of select="$doc-pid"/>
-		</field>
 		<xsl:for-each select="$doc/fedora-types:result/fedora-types:resultList/fedora-types:objectFields/fedora-types:label">
 			<field name="{$field-name}_facet">
 				<xsl:value-of select="./text()"/>
 			</field>
 		</xsl:for-each>
+-->
 	</xsl:template>
 
 	<!-- Index DC -->
