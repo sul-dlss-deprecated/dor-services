@@ -111,40 +111,15 @@
 			</field>
 		</xsl:for-each>
 		
-		<xsl:for-each select="./hydra:isGovernedBy">
-			<xsl:call-template name="external-resource-name">
-				<xsl:with-param name="field-name">governing_apo</xsl:with-param>
-			</xsl:call-template>
-	    </xsl:for-each>
-
-		<xsl:for-each select="./rel:isMemberOfCollection">
-			<xsl:call-template name="external-resource-name">
-				<xsl:with-param name="field-name">owning_collection</xsl:with-param>
-			</xsl:call-template>
-		</xsl:for-each>
-	</xsl:template>
-
-	<xsl:template name="external-resource-name">
-		<xsl:param name="resource" select="./@rdf:resource"/>
-		<xsl:param name="field-name"/>
-		<xsl:variable name="doc-pid" select="substring-after($resource,'info:fedora/')"></xsl:variable>
-		<field name="{$field-name}_id_field">
-			<xsl:value-of select="$doc-pid"/>
-		</field>
-		<field name="{$field-name}_id_facet">
-			<xsl:value-of select="$doc-pid"/>
-		</field>
-<!--
-		<xsl:variable name="doc-query">
-			<xsl:value-of select="$FEDORAROOT"/>/objects?query=pid~<xsl:value-of select="$doc-pid"/>&amp;resultFormat=xml&amp;pid=true&amp;label=true
-		</xsl:variable>
-		<xsl:variable name="doc" select="document($doc-query)"/>
-		<xsl:for-each select="$doc/fedora-types:result/fedora-types:resultList/fedora-types:objectFields/fedora-types:label">
-			<field name="{$field-name}_facet">
-				<xsl:value-of select="./text()"/>
-			</field>
-		</xsl:for-each>
--->
+		<xsl:for-each select="*[@rdf:resource]">
+  		<xsl:variable name="doc-pid" select="substring-after(./@rdf:resource,'info:fedora/')"></xsl:variable>
+  		<field name="{local-name(.)}_id_field">
+  			<xsl:value-of select="$doc-pid"/>
+  		</field>
+  		<field name="{local-name(.)}_id_facet">
+  			<xsl:value-of select="$doc-pid"/>
+  		</field>
+	  </xsl:for-each>
 	</xsl:template>
 
 	<!-- Index DC -->
