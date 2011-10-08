@@ -11,7 +11,7 @@ module Dor
     attr_reader :workflows
 
     has_metadata :name => "DC", :type => SimpleDublinCoreDs
-    has_metadata :name => "RELS-EXT", :type => ActiveFedora::NokogiriDatastream
+    has_metadata :name => "RELS-EXT", :type => ActiveFedora::RelsExtDatastream
     has_metadata :name => "identityMetadata", :type => IdentityMetadataDS
 
     # Make a random (and harmless) API-M call to get gsearch to reindex the object

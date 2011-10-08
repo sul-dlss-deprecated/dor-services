@@ -14,7 +14,7 @@ module Dor
     has_metadata :name => "technicalMetadata", :type => ActiveFedora::NokogiriDatastream
 
     def admin_policy_object
-      apo_ref = self.datastreams['RELS-EXT'].ng_xml.search('//hydra:isGovernedBy/@rdf:resource', Foxml::NAMESPACES).first
+      apo_ref = Array(self.rels_ext.relationships[:self]['hydra_isGovernedBy']).first
       if apo_ref.nil?
         return nil
       else
