@@ -5,6 +5,7 @@ require 'dor/exceptions'
 require 'dor/base'
 require 'dor/item'
 require 'dor/admin_policy_object'
+require 'dor/workflow_object'
 
 # Services
 require 'dor/metadata_service'
