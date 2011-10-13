@@ -7,6 +7,7 @@ require 'spec/autorun'
 
 require 'rubygems'
 require 'dor-services'
+require 'ruby-debug'
 
 Spec::Runner.configure do |config|
   
