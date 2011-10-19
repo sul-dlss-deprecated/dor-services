@@ -23,6 +23,11 @@ class EmbargoMetadataDS < ActiveFedora::NokogiriDatastream
     end
     return builder.doc
   end
+  
+  def initialize(attrs=nil)
+    super
+    @attributes[:versionable] = false
+  end
 
   #################################################################################
   # Convenience methods to get and set embargo properties
