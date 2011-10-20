@@ -64,11 +64,12 @@ describe EmbargoMetadataDS do
   describe "#release_date" do
     
     ds = EmbargoMetadataDS.new
-    ds.release_date = Time.now - 10
+    t = Time.now - 10
+    ds.release_date = t
     
-    it "= sets releaseDate from a Time object" do
+    it "= sets releaseDate from a Time object as the start of day, UTC" do
       rd = Time.parse(ds.term_values(:release_date).first)
-      rd.should < Time.now
+      rd.should == t.beginning_of_day.utc
     end
     
     it "gets the current value of releaseDate as a Time object" do
@@ -114,5 +115,89 @@ describe EmbargoMetadataDS do
       embargo_xml = "<incorrect/>"
       lambda { ds.release_access_node = Nokogiri::XML(embargo_xml) }.should raise_error
     end
+  end
+  
+  describe "Solr indexing" do
+    
+    # <add>
+    #   <doc>
+    #     ...
+    #     <field name="embargo_release_date">2010-03-13T15:26:37Z/DAY</field>
+    #     <field name="embargo_status_field">embargoed</field>
+    #   </doc>
+    # </add>
+    it "the gsearch stylesheet stores embargo status and release date in the solr document" do
+      foxml = <<-EOXML
+      <foxml:digitalObject VERSION="1.1" PID="changeme:99"
+      xmlns:foxml="info:fedora/fedora-system:def/foxml#"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/definitions/1/0/foxml1-1.xsd">
+      <foxml:objectProperties>
+      <foxml:property NAME="info:fedora/fedora-system:def/model#state" VALUE="Active"/>
+      <foxml:property NAME="info:fedora/fedora-system:def/model#ownerId" VALUE="fedoraAdmin"/>
+      <foxml:property NAME="info:fedora/fedora-system:def/model#createdDate" VALUE="2011-10-19T21:37:13.246Z"/>
+      <foxml:property NAME="info:fedora/fedora-system:def/view#lastModifiedDate" VALUE="2011-10-19T21:37:14.735Z"/>
+      </foxml:objectProperties>
+      <foxml:datastream ID="embargoMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+      <foxml:datastreamVersion ID="embargoMetadata.0" LABEL="" CREATED="2011-10-19T21:37:13.573Z" MIMETYPE="text/xml" SIZE="122">
+      <foxml:xmlContent>
+      <embargoMetadata>
+        <status>embargoed</status>
+        <releaseDate>2012-10-19T00:07:00Z</releaseDate>
+        <releaseAccess><blah>does not matter</blah></releaseAccess>
+      </embargoMetadata>
+      </foxml:xmlContent>
+      </foxml:datastreamVersion>
+      </foxml:datastream>
+      </foxml:digitalObject>
+      EOXML
+      
+      xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__)  + '../../../lib/gsearch/demoFoxmlToSolr.xslt')))
+      solr_doc = xslt.transform(Nokogiri::XML(foxml))
+      solr_doc.at_xpath("//add/doc/field[@name='embargo_status_field']").content.should == "embargoed"
+      solr_doc.at_xpath("//add/doc/field[@name='embargo_release_date']").content.should == "2012-10-19T00:07:00Z"
+      #puts solr_doc.to_xml
+    end
+    
+    it "embargo fields are not added to the solr doc if there is no embargoMetadata" do
+      foxml = <<-EOXML
+      <foxml:digitalObject VERSION="1.1" PID="changeme:99"
+      xmlns:foxml="info:fedora/fedora-system:def/foxml#"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/definitions/1/0/foxml1-1.xsd">
+      <foxml:objectProperties>
+      <foxml:property NAME="info:fedora/fedora-system:def/model#state" VALUE="Active"/>
+      <foxml:property NAME="info:fedora/fedora-system:def/model#ownerId" VALUE="fedoraAdmin"/>
+      <foxml:property NAME="info:fedora/fedora-system:def/model#createdDate" VALUE="2011-10-19T21:37:13.246Z"/>
+      <foxml:property NAME="info:fedora/fedora-system:def/view#lastModifiedDate" VALUE="2011-10-19T21:37:14.735Z"/>
+      </foxml:objectProperties>
+      <foxml:datastream ID="embargoMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+      <foxml:datastreamVersion ID="embargoMetadata.0" LABEL="" CREATED="2011-10-19T21:37:13.573Z" MIMETYPE="text/xml" SIZE="122">
+      <foxml:xmlContent>
+      <embargoMetadata>
+        <status></status>
+        <releaseDate></releaseDate>
+        <releaseAccess></releaseAccess>
+      </embargoMetadata>
+      </foxml:xmlContent>
+      </foxml:datastreamVersion>
+      </foxml:datastream>
+      </foxml:digitalObject>
+      EOXML
+      
+      xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__)  + '../../../lib/gsearch/demoFoxmlToSolr.xslt')))
+      solr_doc = xslt.transform(Nokogiri::XML(foxml))
+      #puts solr_doc.to_xml
+      solr_doc.at_xpath("//add/doc/field[@name='embargo_status_field']").should be_nil
+      solr_doc.at_xpath("//add/doc/field[@name='embargo_release_date']").should be_nil
+    end
+    
+    it "indexes embargoMetadata from a complete Foxml document" do
+      xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__)  + '../../../lib/gsearch/demoFoxmlToSolr.xslt')))
+      solr_doc = xslt.transform(Nokogiri::XML(File.new(File.expand_path(File.dirname(__FILE__)  + '/../fixtures/foxml_embargo_md.xml'))))
+      solr_doc.at_xpath("//add/doc/field[@name='embargo_status_field']").content.should == "embargoed"
+      puts solr_doc.to_xml
+    end
+    
   end
 end

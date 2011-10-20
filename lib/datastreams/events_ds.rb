@@ -21,7 +21,7 @@ class EventsDS < ActiveFedora::NokogiriDatastream
   end
   
   # Adds an event to the datastream
-  # @param [String] type loose tag to group events together. Sets the type attribute for the event
+  # @param [String] type a tag used to group events together. Sets the type attribute for the event
   # @param [String] who who is responsible for this event. Sets the who attribute for the event
   # @param [String] message what happened. Sets the content of the event with this message
   def add_event(type, who, message)

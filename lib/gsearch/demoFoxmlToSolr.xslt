@@ -40,7 +40,7 @@
 	
 	<xsl:variable name="OBJECTTYPE" select="//foxml:datastream/foxml:datastreamVersion[last()]//identityMetadata/objectType/text()"/>
 
-  <xsl:variable name="INDEXVERSION">1.2.2011092901</xsl:variable>
+  <xsl:variable name="INDEXVERSION">1.3.2011102001</xsl:variable>
 
 	<!-- or any other calculation, default boost is 1.0 -->
 	<xsl:template match="/">
@@ -277,6 +277,18 @@
   	    <xsl:value-of select="@id"/>
   	  </field>
   	</xsl:if>
+  </xsl:template>
+
+  <!-- Index embargo metadata -->
+  <xsl:template match="embargoMetadata[ancestor::foxml:datastream[@ID='embargoMetadata']]">
+	<xsl:if	test="(status != '') and (releaseDate != '')">
+	  <field name="embargo_status_field">
+	    <xsl:value-of select="status"/>
+	  </field>
+  	  <field name="embargo_release_date">
+  	    <xsl:value-of select="releaseDate"/>
+  	  </field>
+    </xsl:if>
   </xsl:template>
   
 	<!-- Workflows -->
