@@ -1,0 +1,18 @@
+<embargoMetadata>
+	<status>embargoed</status> <!-- waiting | embargoed | released -->
+	<releaseDate>2011-10-12T15:47:52-07:00</releaseDate> <!-- Time#xmlschema -->
+	<releaseAccess>
+		<access type="discover">
+			<machine>
+				<world />
+			</machine>
+		</access>
+		<access type="read">
+			<machine>
+				<world />
+			</machine>
+		</access>
+	</releaseAccess>
+</embargoMetadata>
+
+<!-- From https://consul.stanford.edu/display/chimera/Embargo+management+--+the+embargoMetadata+datastream -->

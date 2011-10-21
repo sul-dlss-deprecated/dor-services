@@ -42,17 +42,18 @@ module Dor
         pids
       end
 
-      def risearch(query)
+      def risearch(query, opts = {})
+        client = Config.fedora.client['risearch']
+        client.options[:timeout] = opts.delete(:timeout)
         query_params = {
           :type => 'tuples',
           :lang => 'itql',
           :format => 'CSV',
           :limit => '1000',
+          :stream => 'on',
           :query => query
-        }
-        
-        client = Config.fedora.client
-        result = client['risearch'].post(query_params)
+        }.merge(opts)
+        result = client.post(query_params)
         result.split(/\n/)[1..-1].collect { |pid| pid.chomp.sub(/^info:fedora\//,'') }
       end
       

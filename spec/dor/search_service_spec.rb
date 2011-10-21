@@ -6,6 +6,7 @@ describe Dor::SearchService do
   before :each do
     @mock_search = mock("RestClient::Resource")
     @mock_search.stub!(:[]).and_return(@mock_search)
+    @mock_search.stub!(:options).and_return({})
     RestClient::Resource.stub!(:new).and_return(@mock_search)
     @pid = 'druid:ab123cd4567'
     @itql = Dor::SearchService::RISEARCH_TEMPLATE

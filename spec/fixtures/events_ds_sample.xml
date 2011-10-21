@@ -1,0 +1,8 @@
+<events>
+  <event type="eems" who="sunetid:jwible" when="2011-02-23T12:41:09-08:00">Request created by Joe Wible</event>
+  <event type="eems" who="sunetid:jwible" when="2011-02-23T12:42:19-08:00">File uploaded by Joe Wible</event>
+  <event type="eems" who="sunetid:jwible" when="2011-02-23T12:42:33-08:00">Request submitted by Joe Wible</event>
+  <event type="eems" who="application:eems" when="2011-02-25T14:31:58-08:00">Symphony record created: 3928817</event>
+  <event type="embargo" who="sunetid:hfrost" when="2011-06-03T09:12:32-08:00">Embargo reset from 2012-03-01 to 2012-06-01 by Hannah Frost</event>
+  <event type="embargo" who="application:embargo" when="2012-06-201T00:11:10-08:00">Embargo released</event>
+</events>

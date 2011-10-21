@@ -4,7 +4,9 @@
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
 	xmlns:exts="xalan://dk.defxws.fedoragsearch.server.GenericOperationsImpl"
 	xmlns:fedora-model="info:fedora/fedora-system:def/model#"
+	xmlns:fedora-types="http://www.fedora.info/definitions/1/0/types/"
 	xmlns:foxml="info:fedora/fedora-system:def/foxml#" xmlns:mods="http://www.loc.gov/mods/v3"
+	xmlns:hydra="http://projecthydra.org/ns/relations#"
 	xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	xmlns:rel="info:fedora/fedora-system:def/relations-external#"
@@ -28,12 +30,17 @@
 	<xsl:param name="FEDORAPASS" select="repositoryName"/>
 	<xsl:param name="TRUSTSTOREPATH" select="repositoryName"/>
 	<xsl:param name="TRUSTSTOREPASS" select="repositoryName"/>
+  <xsl:variable name="scheme" select="substring-before($FEDORASOAP,'//')"/>
+  <xsl:variable name="path" select="substring-before(substring-after($FEDORASOAP,'//'),'/services')"/>
+	<xsl:variable name="FEDORAROOT">
+	  <xsl:value-of select="concat($scheme,'//',$FEDORAUSER,':',$FEDORAPASS,'@',$path)"/>
+	</xsl:variable>
 	<xsl:variable name="PID" select="/foxml:digitalObject/@PID"/>
 	<xsl:variable name="docBoost" select="1.4*2.5"/>
 	
 	<xsl:variable name="OBJECTTYPE" select="//foxml:datastream/foxml:datastreamVersion[last()]//identityMetadata/objectType/text()"/>
 
-  <xsl:variable name="INDEXVERSION" select="'1.1.2011091501'"/>
+  <xsl:variable name="INDEXVERSION">1.3.2011102001</xsl:variable>
 
 	<!-- or any other calculation, default boost is 1.0 -->
 	<xsl:template match="/">
@@ -96,13 +103,23 @@
 	</xsl:template>
 
 	<!-- Index RELS-EXT -->
-	<xsl:template match="rdf:RDF[ancestor::foxml:datastream[@ID='RELS-EXT']]">
+	<xsl:template match="rdf:RDF[ancestor::foxml:datastream[@ID='RELS-EXT']]/rdf:Description">
 		<!-- Grab the cmodel -->
 		<xsl:for-each select="./fedora-model:hasModel">
 			<field name="fedora_has_model_field">
 				<xsl:value-of select="@rdf:resource"/>
 			</field>
 		</xsl:for-each>
+		
+		<xsl:for-each select="*[@rdf:resource]">
+  		<xsl:variable name="doc-pid" select="substring-after(./@rdf:resource,'info:fedora/')"></xsl:variable>
+  		<field name="{local-name(.)}_id_field">
+  			<xsl:value-of select="$doc-pid"/>
+  		</field>
+  		<field name="{local-name(.)}_id_facet">
+  			<xsl:value-of select="$doc-pid"/>
+  		</field>
+	  </xsl:for-each>
 	</xsl:template>
 
 	<!-- Index DC -->
@@ -152,6 +169,9 @@
 		<xsl:for-each select="./tag">
 			<xsl:variable name="text-value" select="normalize-space(./text())"/>
 			<field name="tag_field">
+				<xsl:value-of select="$text-value"/>
+			</field>
+			<field name="tag_facet">
 				<xsl:value-of select="$text-value"/>
 			</field>
 			<xsl:variable name="tag-name"
@@ -240,6 +260,37 @@
 -->
 	</xsl:template>
 	
+	<!-- Index content metadata -->
+	<xsl:template match="contentMetadata[ancestor::foxml:datastream[@ID='contentMetadata']]">
+	  <field name="content_type_facet">
+	    <xsl:value-of select="@type"/>
+	  </field>
+	  <xsl:apply-templates/>
+  </xsl:template>
+  
+  <xsl:template match="contentMetadata/resource/file">
+	  <field name="content_file_field">
+	    <xsl:value-of select="@id"/>
+	  </field>
+	  <xsl:if test="@shelve = 'yes'">
+  	  <field name="shelved_content_file_field">
+  	    <xsl:value-of select="@id"/>
+  	  </field>
+  	</xsl:if>
+  </xsl:template>
+
+  <!-- Index embargo metadata -->
+  <xsl:template match="embargoMetadata[ancestor::foxml:datastream[@ID='embargoMetadata']]">
+	<xsl:if	test="(status != '') and (releaseDate != '')">
+	  <field name="embargo_status_field">
+	    <xsl:value-of select="status"/>
+	  </field>
+  	  <field name="embargo_release_date">
+  	    <xsl:value-of select="releaseDate"/>
+  	  </field>
+    </xsl:if>
+  </xsl:template>
+  
 	<!-- Workflows -->
 	<xsl:template match="foxml:contentLocation[contains(@REF,'/workflows/')]">
 		<xsl:apply-templates select="document(@REF)/workflow">

@@ -85,6 +85,10 @@ Values can also be configured individually:
 - <b>2.1.0</b> Dor::Item can now build technicalMetadata datastream 
 - <b>2.1.1</b> Workaround for misbehaving ActiveFedora::Base#datastream_names
 - <b>2.1.2</b> Add technicalMetadata to sdr_ingest_transfer's datastream list
+- <b>2.2.0</b>
+  - New Datastreams: EmbargoMetadataDS and EventsDS
+  - New Module: Dor::Embargo.  Can be mixed in to Dor objects to add embargo functionality
+  - Gsearch xslt now indexes the embargoMetadata datastream 
 
 == Copyright
 
