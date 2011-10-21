@@ -67,7 +67,7 @@ class EmbargoMetadataDS < ActiveFedora::NokogiriDatastream
     end
     
     term_value_delete(:select => '//embargoMetadata/releaseAccess')
-    ng_xml.root.add_child(new_doc.root)
+    ng_xml.root.add_child(new_doc.root.clone)
   end
   
 end

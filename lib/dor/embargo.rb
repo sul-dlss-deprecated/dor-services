@@ -11,6 +11,7 @@ module Dor
     # Sets embargo status to released in embargoMetadata
     # Modifies rightsMetadata to remove embargoReleaseDate and updates/adds access from embargoMetadata/releaseAccess
     # @param [String] release_agent name of the person, application or thing that released embargo
+    # @note The caller should save the object to fedora to commit the changes
     def release_embargo(release_agent="unknown")
       # Set status to released
       embargo_md = datastreams['embargoMetadata']
