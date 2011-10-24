@@ -56,6 +56,10 @@ describe EmbargoMetadataDS do
       ds.term_values(:status).should == ["released"]
     end
     
+    it "= marks the datastream as dirty" do
+      ds.should be_dirty
+    end
+    
     it "gets the current value of status" do
       ds.status.should == "released"
     end
@@ -70,6 +74,10 @@ describe EmbargoMetadataDS do
     it "= sets releaseDate from a Time object as the start of day, UTC" do
       rd = Time.parse(ds.term_values(:release_date).first)
       rd.should == t.beginning_of_day.utc
+    end
+    
+    it "= marks the datastram as dirty" do
+      ds.should be_dirty
     end
     
     it "gets the current value of releaseDate as a Time object" do
@@ -109,6 +117,7 @@ describe EmbargoMetadataDS do
       ds.release_access_node = Nokogiri::XML(embargo_xml)
       embargo = ds.find_by_terms(:release_access)
       embargo.at_xpath("//releaseAccess/access[@type='read']/machine/world").should be
+      ds.should be_dirty
     end
     
     it "rejects Documents that do not have a root node of releaseAccess" do

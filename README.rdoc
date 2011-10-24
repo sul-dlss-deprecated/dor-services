@@ -88,7 +88,8 @@ Values can also be configured individually:
 - <b>2.2.0</b>
   - New Datastreams: EmbargoMetadataDS and EventsDS
   - New Module: Dor::Embargo.  Can be mixed in to Dor objects to add embargo functionality
-  - Gsearch xslt now indexes the embargoMetadata datastream 
+  - Gsearch xslt now indexes the embargoMetadata datastream
+- <b>2.2.1</b> Mark EmbargoMetadataDS and EventsDS as dirty when their setters are used
 
 == Copyright
 

@@ -28,6 +28,7 @@ class EventsDS < ActiveFedora::NokogiriDatastream
     ev = ng_xml.create_element "event", message, 
       :type => type, :who => who, :when => Time.now.xmlschema
     ng_xml.root.add_child(ev)
+    self.dirty = true
   end
   
   # Finds events with the desired type attribute
