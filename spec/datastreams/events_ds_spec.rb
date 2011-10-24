@@ -49,6 +49,12 @@ describe EventsDS do
       
       ds.find_by_terms(:event).last.content.should == 'Embargo go bye-bye'
     end
+    
+    it "markes the datastream dirty" do
+      ds = EventsDS.from_xml(@dsxml)
+      ds.add_event "embargo", "application:etd-robot", "Embargo go bye-bye"
+      ds.should be_dirty
+    end
   end
   
   describe "#find_events_by_type" do
