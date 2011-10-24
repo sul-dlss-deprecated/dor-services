@@ -90,6 +90,7 @@ Values can also be configured individually:
   - New Module: Dor::Embargo.  Can be mixed in to Dor objects to add embargo functionality
   - Gsearch xslt now indexes the embargoMetadata datastream
 - <b>2.2.1</b> Mark EmbargoMetadataDS and EventsDS as dirty when their setters are used
+- <b>2.2.2</b> Mark rightsMetadata as dirty when embargo is lifted
 
 == Copyright
 

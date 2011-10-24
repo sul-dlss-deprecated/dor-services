@@ -34,6 +34,7 @@ module Dor
         end
       end
       
+      datastreams['rightsMetadata'].dirty = true
       datastreams['events'].add_event("embargo", release_agent, "Embargo released")
     end
   end

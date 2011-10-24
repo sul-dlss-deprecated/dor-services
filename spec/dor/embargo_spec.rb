@@ -94,6 +94,10 @@ describe Dor::Embargo do
         rights.xpath("//rightsMetadata/access[@type='read']/machine/world").size.should == 1
         rights.at_xpath("//rightsMetadata/access[@type='read']/machine/group").should be_nil
       end
+      
+      it "marks the datastream as dirty" do
+        @embargo_item.datastreams['rightsMetadata'].should be_dirty
+      end
     end
     
     it "writes 'embargo released' to event history" do
