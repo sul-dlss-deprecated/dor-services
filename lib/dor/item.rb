@@ -7,11 +7,11 @@ module Dor
   
   class Item < Base
     
-    has_metadata :name => "contentMetadata", :type => ContentMetadataDS
-    has_metadata :name => "descMetadata", :type => ActiveFedora::NokogiriDatastream
-    has_metadata :name => "rightsMetadata", :type => ActiveFedora::NokogiriDatastream
-    has_metadata :name => "provenanceMetadata", :type => ActiveFedora::NokogiriDatastream
-    has_metadata :name => "technicalMetadata", :type => ActiveFedora::NokogiriDatastream
+    has_metadata :name => "contentMetadata", :type => ContentMetadataDS, :label => 'Content Metadata'
+    has_metadata :name => "descMetadata", :type => ActiveFedora::NokogiriDatastream, :label => 'Descriptive Metadata'
+    has_metadata :name => "rightsMetadata", :type => ActiveFedora::NokogiriDatastream, :label => 'Rights Metadata'
+    has_metadata :name => "provenanceMetadata", :type => ActiveFedora::NokogiriDatastream, :label => 'Provenance Metadata'
+    has_metadata :name => "technicalMetadata", :type => ActiveFedora::NokogiriDatastream, :label => 'Technical Metadata'
 
     def admin_policy_object
       apo_ref = Array(self.rels_ext.relationships[:self]['hydra_isGovernedBy']).first
