@@ -1,3 +1,5 @@
+require 'workflow/graph'
+
 class WorkflowProcess
 
   def initialize(workflow, node)
@@ -21,24 +23,42 @@ class WorkflowProcess
     @node.at_xpath('label/text()').to_s
   end
   
+  def batch_limit
+    @node['batch-limit'].to_i
+  end
+  
+  def error_limit
+    @node['error-limit'].to_i
+  end
+  
   def prerequisites
     @node.xpath('prereq').collect do |p| 
-      if (p['repository'].nil? and p['workflow'].nil?) or (p['repository'] == workflow.repository and p['workflow'] == workflow.name)
+      if (p['repository'].nil? and p['workflow'].nil?) or (p['repository'] == @workflow.repository and p['workflow'] == @workflow.name)
         p.text.to_s
       else
-        [(p['repository'] or workflow.repository),(p['workflow'] or workflow.name),p.text.to_s].join(':')
+        [(p['repository'] or @workflow.repository),(p['workflow'] or @workflow.name),p.text.to_s].join(':')
       end
     end
+  end
+  
+  def to_hash
+    {
+      'batch_limit' => self.batch_limit,
+      'error_limit' => self.error_limit,
+      'prerequisite' => self.prerequisites
+    }.reject { |k,v| v.nil? or v == 0 or (v.respond_to?(:empty?) and v.empty?) }
   end
   
 end
 
 class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream 
   
-  define_template :process do |builder,workflow,name,seq,label,lifecycle,prereqs|
-    attrs = {:name => name}
-    attrs[:sequence] = seq unless seq.nil?
-    attrs[:lifecycle] = lifecycle unless lifecycle.nil?
+  define_template :process do |builder,workflow,attrs|
+    prereqs = attrs.delete('prerequisite')
+    if prereqs.is_a?(String)
+      prereqs = prereqs.split(/\s*,\s*/)
+    end
+    attrs.keys.each { |k| attrs[k.to_s.dasherize.to_sym] = attrs.delete(k) }
     builder.process(attrs) do |node|
       prereqs.each do |prereq|
         (repo,wf,prereq_name) = prereq.split(/:/)
@@ -56,50 +76,49 @@ class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream
     end
   end
 
-  def add_process(name, seq, label, lifecycle, prereqs)
-    add_child_node(ng_xml.at_xpath('/workflow'), :process, self, name, seq, label, lifecycle, prereqs)
+  def add_process(attributes)
+    add_child_node(ng_xml.at_xpath('/workflow-def'), :process, self, attributes)
+  end
+  
+  def graph(parent = nil)
+    Workflow::Graph.from_config(self.name, self.configuration, parent)
   end
   
   def processes
-    ng_xml.xpath('/workflow/process').collect do |node|
+    ng_xml.xpath('/workflow-def/process').collect do |node|
       WorkflowProcess.new(self, node)
     end
   end
 
   def name
-    ng_xml.at_xpath('/workflow/@id').to_s
+    ng_xml.at_xpath('/workflow-def/@id').to_s
   end
   
   def repository
-    ng_xml.at_xpath('/workflow/@repository').to_s
+    ng_xml.at_xpath('/workflow-def/@repository').to_s
   end
-  
+
   def configuration
     result = {
       'repository' => repository,
       'name' => name
     }
-    processes.each_pair do |process_name,process|
-      result[process_name] = {
-        'prerequisites' => process.prerequisites.collect { |p| p.name }
-      }
-    end
+    processes.each { |process| result[process.name] = process.to_hash }
+    result
   end
   
   def configuration=(hash)
-    ng_xml = Nokogiri::XML(%{<workflow id="#{hash['name']}" repository="#{hash['repository']}"/>})
+    self.ng_xml = Nokogiri::XML(%{<workflow id="#{hash['name']}" repository="#{hash['repository']}"/>})
     i = 0
     hash.each_pair do |k,v| 
       if v.is_a?(Hash)
-        add_process(k,i+=1,nil,nil,v['prerequisite'])
+        add_process(v.merge({:name => k, :sequence => i+=1}))
       end
     end
   end
   
   def to_yaml
-    s = StringIO.new('')
-    YAML.dump(self.configuration, s)
-    s.string
+    YAML.dump(self.configuration)
   end
   
 end

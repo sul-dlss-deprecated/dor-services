@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   s.add_dependency "mod-cons", ">=0.2.0"
   s.add_dependency "systemu"
   s.add_dependency "lyber-utils"
+  s.add_dependency "ruby-graphviz"
   
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects
