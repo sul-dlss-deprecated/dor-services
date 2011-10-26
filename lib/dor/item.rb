@@ -63,6 +63,7 @@ module Dor
     def public_xml      
       pub = Nokogiri::XML("<publicObject/>").root
       pub['id'] = pid
+      pub['published'] = Time.now.xmlschema
       pub.add_child(self.datastreams['identityMetadata'].ng_xml.root.clone)
       pub.add_child(self.datastreams['contentMetadata'].public_xml.root.clone)
       pub.add_child(self.datastreams['rightsMetadata'].ng_xml.root.clone)
@@ -80,12 +81,15 @@ module Dor
     end
     
     def publish_metadata
-      DigitalStacksService.transfer_to_document_store(pid, self.datastreams['identityMetadata'].to_xml, 'identityMetadata')
-      DigitalStacksService.transfer_to_document_store(pid, self.datastreams['contentMetadata'].to_xml, 'contentMetadata')
-      DigitalStacksService.transfer_to_document_store(pid, self.datastreams['rightsMetadata'].to_xml, 'rightsMetadata')
-      dc_xml = self.generate_dublin_core.to_xml {|config| config.no_declaration}
-      DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'dc')
-      DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
+      rights = datastreams['rightsMetadata'].ng_xml
+      if(rights.at_xpath("//rightsMetadata/access[@type='discovery']/machine/world"))
+        DigitalStacksService.transfer_to_document_store(pid, self.datastreams['identityMetadata'].to_xml, 'identityMetadata')
+        DigitalStacksService.transfer_to_document_store(pid, self.datastreams['contentMetadata'].to_xml, 'contentMetadata')
+        DigitalStacksService.transfer_to_document_store(pid, self.datastreams['rightsMetadata'].to_xml, 'rightsMetadata')
+        dc_xml = self.generate_dublin_core.to_xml {|config| config.no_declaration}
+        DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'dc')
+        DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
+      end
     end
 
     def build_provenanceMetadata_datastream(workflow_id, event_text)

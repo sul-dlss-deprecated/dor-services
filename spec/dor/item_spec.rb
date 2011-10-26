@@ -53,6 +53,8 @@ describe Dor::Item do
         before(:each) do
           @b = Dor::Item.new
           @b.stub!(:pid).and_return('druid:123456')
+          @now = Time.now
+          Time.should_receive(:now).and_return(@now)
 
           mods = <<-EOXML
             <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
@@ -74,6 +76,10 @@ describe Dor::Item do
         
        it "an id attribute" do
          @p_xml.at_xpath('/publicObject/@id').value.should =~ /^druid:123456/
+       end
+       
+       it "a published attribute" do
+         @p_xml.at_xpath('/publicObject/@published').value.should == @now.xmlschema
        end
 
        it "identityMetadata" do
@@ -108,6 +114,33 @@ describe Dor::Item do
   
   describe "#publish_metadata" do
     
+    it "does not publish the object unless rightsMetadata has world discovery access" do
+      item = Dor::Item.new
+      item.stub!(:pid).and_return("druid:ab123bb4567")  
+      rights = <<-EOXML
+        <rightsMetadata objectId="druid:ab123bb4567">
+          <copyright>
+            <human>(c) Copyright 2010 by Sebastian Jeremias Osterfeld</human>
+          </copyright>
+          </access>
+          <access type="read">
+            <machine>
+              <group>stanford:stanford</group>
+            </machine>
+          </access>
+          <use>
+            <machine type="creativeCommons">by-sa</machine>
+            <human type="creativeCommons">CC Attribution Share Alike license</human>
+          </use>
+        </rightsMetadata>
+      EOXML
+      r_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'rightsMetadata', :blob => rights)
+      item.add_datastream(r_ds)
+      Dor::DigitalStacksService.should_not_receive(:transfer_to_document_store)
+
+      item.publish_metadata
+    end
+        
     context "copies to the document cache" do
       
       it "identityMetadta, contentMetadata, rightsMetadata, generated dublin core, and public xml" do
@@ -126,18 +159,18 @@ describe Dor::Item do
         b.add_datastream(id_ds)
         cm_ds = ContentMetadataDS.new(:dsid=> 'contentMetadata', :blob => '<contentMetadata/>')
         b.add_datastream(cm_ds)
-        r_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'rightsMetadata', :blob => '<rightsMetadata/>')
+        rights = "<rightsMetadata><access type='discovery'><machine><world/></machine></access></rightsMetadata>"
+        r_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'rightsMetadata', :blob => rights)
         b.add_datastream(r_ds)
 
         Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123bb4567', /<identityMetadata\/>/, 'identityMetadata')
         Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123bb4567', /<contentMetadata\/>/, 'contentMetadata')
-        Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123bb4567', /<rightsMetadata\/>/, 'rightsMetadata')
+        Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123bb4567', /<rightsMetadata>/, 'rightsMetadata')
         Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123bb4567', /<oai_dc:dc/, 'dc')
         Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123bb4567', /<publicObject/, 'public')
 
         b.publish_metadata
       end
-      
     end
   end
   
