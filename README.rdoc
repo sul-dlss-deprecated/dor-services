@@ -91,7 +91,9 @@ Values can also be configured individually:
   - Gsearch xslt now indexes the embargoMetadata datastream
 - <b>2.2.1</b> Mark EmbargoMetadataDS and EventsDS as dirty when their setters are used
 - <b>2.2.2</b> Mark rightsMetadata as dirty when embargo is lifted
-
+- <b>2.3.0</b> 
+	- Dor::WorkflowService#get_lifecycle
+	- Only publish metadata if rightsMetadata says so
 == Copyright
 
 Copyright (c) 2011 Stanford University Library. See LICENSE for details.
