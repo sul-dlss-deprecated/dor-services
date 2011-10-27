@@ -112,4 +112,24 @@ describe Dor::WorkflowService do
       Dor::WorkflowService.get_workflow_xml('dor', 'druid:123', 'etdSubmitWF').should == xml
     end
   end
+  
+  describe "#get_lifecycle" do
+    it "returns a Time object reprenting when the milestone was reached" do
+      xml = <<-EOXML
+        <lifecycle objectId="druid:ct011cv6501">
+            <milestone date="2010-04-27T11:34:17-0700">registered</milestone>
+            <milestone date="2010-04-29T10:12:51-0700">inprocess</milestone>
+            <milestone date="2010-06-15T16:08:58-0700">released</milestone>
+        </lifecycle>
+      EOXML
+      @mock_resource.should_receive(:get).and_return(xml)
+      Dor::WorkflowService.get_lifecycle('dor', 'druid:123', 'released').beginning_of_day.should == Time.parse('2010-06-15T16:08:58-0700').beginning_of_day
+    end
+    
+    it "returns nil if the milestone hasn't been reached yet" do
+      @mock_resource.should_receive(:get).and_return('<lifecycle/>')
+      Dor::WorkflowService.get_lifecycle('dor', 'druid:abc', 'inprocess').should be_nil
+    end
+
+  end
 end

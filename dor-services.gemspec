@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
   
 Gem::Specification.new do |s|
   s.name        = "dor-services"
-  s.version     = "2.2.2"
+  s.version     = "2.3.0"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick","Richard Anderson"]
   s.email       = ["mbklein@stanford.edu"]
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   s.add_dependency "mod-cons", ">=0.2.0"
   s.add_dependency "systemu"
   s.add_dependency "lyber-utils"
+  s.add_dependency "ruby-graphviz"
   
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects

@@ -92,6 +92,28 @@ module Dor
         return true
       end
       
+      # Returns the Date for a requested milestone from workflow lifecycle
+      # @param [String] repo epository name
+      # @param [String] druid object id
+      # @param [String] milestone name of the milestone being queried for
+      # @return [Time] when the milestone was achieved.  Returns nil if the milestone does not exist
+      # @example_lifecycle_xml An example lifecycle xml from the workflow service. 
+      #   <lifecycle objectId="druid:ct011cv6501">
+      #     <milestone date="2010-04-27T11:34:17-0700">registered</milestone>
+      #     <milestone date="2010-04-29T10:12:51-0700">inprocess</milestone>
+      #     <milestone date="2010-06-15T16:08:58-0700">released</milestone>
+      #   </lifecycle>
+      def get_lifecycle(repo, druid, milestone)
+        lifecycle_xml = workflow_resource["#{repo}/objects/#{druid}/lifecycle"].get
+        doc = Nokogiri::XML(lifecycle_xml)
+        milestone = doc.at_xpath("//lifecycle/milestone[text() = '#{milestone}']")
+        if(milestone)
+          return Time.parse(milestone['date'])
+        end
+          
+        nil
+      end
+      
 #      private
       def create_process_xml(params)
         builder = Nokogiri::XML::Builder.new do |xml|

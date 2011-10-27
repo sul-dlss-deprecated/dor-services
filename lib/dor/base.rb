@@ -10,9 +10,9 @@ module Dor
     
     attr_reader :workflows
 
-    has_metadata :name => "DC", :type => SimpleDublinCoreDs
-    has_metadata :name => "RELS-EXT", :type => ActiveFedora::RelsExtDatastream
-    has_metadata :name => "identityMetadata", :type => IdentityMetadataDS
+    has_metadata :name => "DC", :type => SimpleDublinCoreDs, :label => 'Dublin Core Record for this object'
+    has_metadata :name => "RELS-EXT", :type => ActiveFedora::RelsExtDatastream, :label => 'RDF Statements about this object'
+    has_metadata :name => "identityMetadata", :type => IdentityMetadataDS, :label => 'Identity Metadata'
 
     # Make a random (and harmless) API-M call to get gsearch to reindex the object
     def self.touch(*pids)
