@@ -18,7 +18,7 @@ module Dor
       if apo_ref.nil?
         return nil
       else
-        apo_id = apo_ref.value.split(%r{/}).last
+        apo_id = apo_ref.split(%r{/}).last
         if apo_id.empty?
           return nil
         else
