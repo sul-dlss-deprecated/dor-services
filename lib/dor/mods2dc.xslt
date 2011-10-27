@@ -42,7 +42,7 @@ Version 1.0	2007-05-04 Tracy Meehleib <tmee@loc.gov>
 	<xsl:template match="/">
 		<xsl:choose>
 		<xsl:when test="//mods:modsCollection">			
-			<srw_dc:dcCollection xsi:schemaLocation="info:srw/schema/1/dc-schema http://www.loc.gov/standards/sru/dc-schema.xsd">
+			<srw_dc:dcCollection xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xsi:schemaLocation="info:srw/schema/1/dc-schema http://www.loc.gov/standards/sru/dc-schema.xsd">
 				<xsl:apply-templates/>
 			<xsl:for-each select="mods:modsCollection/mods:mods">			
 				<srw_dc:dc xsi:schemaLocation="info:srw/schema/1/dc-schema http://www.loc.gov/standards/sru/dc-schema.xsd">
@@ -54,7 +54,7 @@ Version 1.0	2007-05-04 Tracy Meehleib <tmee@loc.gov>
 		</xsl:when>
 		<xsl:otherwise>
 			<xsl:for-each select="mods:mods">
-			<oai_dc:dc xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+			<oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
 				<xsl:apply-templates/>
 
 			</oai_dc:dc>
@@ -335,7 +335,7 @@ Version 1.0	2007-05-04 Tracy Meehleib <tmee@loc.gov>
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="mods:location">
+	<xsl:template match="mods:location[mods:url]">
 		<dc:identifier>
 			<xsl:for-each select="mods:url">
 				<xsl:value-of select="."/>
