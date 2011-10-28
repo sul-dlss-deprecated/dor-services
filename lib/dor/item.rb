@@ -26,7 +26,11 @@ module Dor
         end
       end
     end
-  
+
+    def milestones
+      Dor::WorkflowService.get_milestones('dor',self.pid)
+    end
+    
     def fetch_descMetadata_datastream
       candidates = self.identity_metadata.otherIds.collect { |oid| oid.to_s }
       metadata_id = Dor::MetadataService.resolvable(candidates).first
