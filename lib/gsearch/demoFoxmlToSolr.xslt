@@ -40,7 +40,7 @@
 	
 	<xsl:variable name="OBJECTTYPE" select="//foxml:datastream/foxml:datastreamVersion[last()]//identityMetadata/objectType/text()"/>
 
-  <xsl:variable name="INDEXVERSION">1.3.2011102001</xsl:variable>
+  <xsl:variable name="INDEXVERSION">1.3.2011102801</xsl:variable>
 
 	<!-- or any other calculation, default boost is 1.0 -->
 	<xsl:template match="/">
@@ -293,11 +293,25 @@
   
 	<!-- Workflows -->
 	<xsl:template match="foxml:contentLocation[contains(@REF,'/workflows/')]">
+		<!-- 
+			The following is a VERY kludgy way to determine if we're on the first workflow 
+			datastream by making sure there are no preceding datastreams that match this
+			template's xpath.
+		-->
+		<xsl:if test="count(ancestor::foxml:datastream/preceding-sibling::foxml:datastream[descendant::foxml:contentLocation[contains(@REF,'/workflows/')]]) = 0">
+			<xsl:variable name="lifecycle-href"><xsl:value-of select="substring-before(@REF,'/workflows/')"/>/lifecycle</xsl:variable>
+			<xsl:variable name="lifecycle-doc" select="document($lifecycle-href)"/>
+			<xsl:for-each select="$lifecycle-doc/lifecycle/milestone">
+			<field name="lifecycle_field">
+				<xsl:value-of select="text()"/>:<xsl:value-of select="@date"/>
+			</field>
+			</xsl:for-each>
+		</xsl:if>
 		<xsl:apply-templates select="document(@REF)/workflow">
 			<xsl:with-param name="workflow-name" select="ancestor::foxml:datastream/@ID"/>
 		</xsl:apply-templates>
 	</xsl:template>
-
+	
 	<xsl:template match="workflow">
 		<xsl:param name="workflow-name" select="ancestor::foxml:datastream/@ID"/>
 		<xsl:variable name="workflow-token">
