@@ -98,6 +98,9 @@
 			<xsl:value-of select="@ID"/>
 		</field>
 -->
+    <field name="fedora_datastream_version_field">
+      <xsl:value-of select="./foxml:datastreamVersion[last()]/@ID"/>
+    </field>
 		<xsl:apply-templates select="./foxml:datastreamVersion[last()]/foxml:xmlContent"/>
 		<xsl:apply-templates select="./foxml:datastreamVersion[last()]/foxml:contentLocation"/>
 	</xsl:template>

@@ -94,6 +94,12 @@ Values can also be configured individually:
 - <b>2.3.0</b> 
 	- Dor::WorkflowService#get_lifecycle
 	- Only publish metadata if rightsMetadata says so
+- <b>2.4.0</b> 
+	- Reified workflow 
+	- Cleaner MODS2DC transformation
+	- More robust IdentityMetadataDS object
+	- Indexing tweaks
+	
 == Copyright
 
 Copyright (c) 2011 Stanford University Library. See LICENSE for details.
