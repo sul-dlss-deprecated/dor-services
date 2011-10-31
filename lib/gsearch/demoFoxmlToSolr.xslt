@@ -40,7 +40,7 @@
 	
 	<xsl:variable name="OBJECTTYPE" select="//foxml:datastream/foxml:datastreamVersion[last()]//identityMetadata/objectType/text()"/>
 
-  <xsl:variable name="INDEXVERSION">1.3.2011102001</xsl:variable>
+  <xsl:variable name="INDEXVERSION">1.3.2011102802</xsl:variable>
 
 	<!-- or any other calculation, default boost is 1.0 -->
 	<xsl:template match="/">
@@ -98,6 +98,9 @@
 			<xsl:value-of select="@ID"/>
 		</field>
 -->
+    <field name="fedora_datastream_version_field">
+      <xsl:value-of select="./foxml:datastreamVersion[last()]/@ID"/>
+    </field>
 		<xsl:apply-templates select="./foxml:datastreamVersion[last()]/foxml:xmlContent"/>
 		<xsl:apply-templates select="./foxml:datastreamVersion[last()]/foxml:contentLocation"/>
 	</xsl:template>
@@ -123,7 +126,7 @@
 	</xsl:template>
 
 	<!-- Index DC -->
-	<xsl:template match="oai_dc:dc[ancestor::foxml:datastream[@ID='DC']]">
+	<xsl:template match="oai_dc:dc[ancestor::foxml:datastream[@ID='DC'] or (count(ancestor::*) = 0)]">
 		<xsl:for-each select="dc:title|dc:creator|dc:identifier">
 			<field name="dc_{local-name(.)}_text">
 				<xsl:value-of select="text()"/>
@@ -137,7 +140,7 @@
 	</xsl:template>
 	
 	<!-- Index identity metadata -->
-	<xsl:template match="identityMetadata[ancestor::foxml:datastream[@ID='identityMetadata']]">
+	<xsl:template match="identityMetadata[ancestor::foxml:datastream[@ID='identityMetadata'] or (count(ancestor::*) = 0)]">
 		<xsl:for-each select="./objectType">
 			<field name="object_type_field">
 				<xsl:value-of select="./text()"/>
@@ -190,7 +193,7 @@
 	</xsl:template>
 		
 	<!-- Index MODS descriptive metadata -->
-	<xsl:template match="mods:mods[ancestor::foxml:datastream[@ID='descMetadata']]">
+	<xsl:template match="mods:mods[ancestor::foxml:datastream[@ID='descMetadata'] or (count(ancestor::*) = 0)]">
 		<!-- Grab the MODS identifiers -->
 		<xsl:for-each select="./mods:identifier">
 			<xsl:variable name="identifier-label">
@@ -234,6 +237,33 @@
 			<field name="mods_name_text">
 				<xsl:value-of select="mods:namePart/text()"/>
 			</field>
+			<xsl:if test="mods:role/mods:roleTerm[@type='text']">
+				<xsl:variable name="role" select="mods:role/mods:roleTerm[@type='text']/text()"/>
+				<field name="mods_{$role}_field">
+					<xsl:value-of select="mods:namePart/text()"/>
+				</field>
+				<field name="mods_{$role}_text">
+					<xsl:value-of select="mods:namePart/text()"/>
+				</field>
+			</xsl:if>
+		</xsl:for-each>
+		
+		<xsl:for-each select="mods:originInfo/mods:publisher">
+			<field name="mods_publisher_field">
+				<xsl:value-of select="text()"/>
+			</field>
+			<field name="mods_publisher_text">
+				<xsl:value-of select="text()"/>
+			</field>
+		</xsl:for-each>
+
+		<xsl:for-each select="mods:originInfo/mods:place/mods:placeTerm[@type='text']">
+			<field name="mods_origininfo_place_field">
+				<xsl:value-of select="text()"/>
+			</field>
+			<field name="mods_origininfo_place_text">
+				<xsl:value-of select="text()"/>
+			</field>
 		</xsl:for-each>
 		
 		<!-- Index some, but not all, MODS fields -->
@@ -261,7 +291,7 @@
 	</xsl:template>
 	
 	<!-- Index content metadata -->
-	<xsl:template match="contentMetadata[ancestor::foxml:datastream[@ID='contentMetadata']]">
+	<xsl:template match="contentMetadata[ancestor::foxml:datastream[@ID='contentMetadata'] or (count(ancestor::*) = 0)]">
 	  <field name="content_type_facet">
 	    <xsl:value-of select="@type"/>
 	  </field>
@@ -280,7 +310,7 @@
   </xsl:template>
 
   <!-- Index embargo metadata -->
-  <xsl:template match="embargoMetadata[ancestor::foxml:datastream[@ID='embargoMetadata']]">
+  <xsl:template match="embargoMetadata[ancestor::foxml:datastream[@ID='embargoMetadata'] or (count(ancestor::*) = 0)]">
 	<xsl:if	test="(status != '') and (releaseDate != '')">
 	  <field name="embargo_status_field">
 	    <xsl:value-of select="status"/>
@@ -291,13 +321,35 @@
     </xsl:if>
   </xsl:template>
   
+  <!-- Index managed datastreams -->
+	<xsl:template match="foxml:datastream[@CONTROL_GROUP = 'E' or @CONTROL_GROUP = 'M']/foxml:datastreamVersion[last()]/foxml:contentLocation[not(contains(@REF,'/workflows/'))]">
+	<xsl:variable name="path" select="substring-after(substring-after(@REF, '//'),'/')"/>
+  	<xsl:variable name="content-uri">http://localhost:8080/<xsl:value-of select="$path"/></xsl:variable>
+  	<xsl:variable name="content" select="document($content-uri)"/>
+  	<xsl:apply-templates select="$content/*"/>
+  </xsl:template>
+	
 	<!-- Workflows -->
 	<xsl:template match="foxml:contentLocation[contains(@REF,'/workflows/')]">
+		<!-- 
+			The following is a VERY kludgy way to determine if we're on the first workflow 
+			datastream by making sure there are no preceding datastreams that match this
+			template's xpath.
+		-->
+		<xsl:if test="count(ancestor::foxml:datastream/preceding-sibling::foxml:datastream[descendant::foxml:contentLocation[contains(@REF,'/workflows/')]]) = 0">
+			<xsl:variable name="lifecycle-href"><xsl:value-of select="substring-before(@REF,'/workflows/')"/>/lifecycle</xsl:variable>
+			<xsl:variable name="lifecycle-doc" select="document($lifecycle-href)"/>
+			<xsl:for-each select="$lifecycle-doc/lifecycle/milestone">
+			<field name="lifecycle_field">
+				<xsl:value-of select="text()"/>:<xsl:value-of select="@date"/>
+			</field>
+			</xsl:for-each>
+		</xsl:if>
 		<xsl:apply-templates select="document(@REF)/workflow">
 			<xsl:with-param name="workflow-name" select="ancestor::foxml:datastream/@ID"/>
 		</xsl:apply-templates>
 	</xsl:template>
-
+	
 	<xsl:template match="workflow">
 		<xsl:param name="workflow-name" select="ancestor::foxml:datastream/@ID"/>
 		<xsl:variable name="workflow-token">

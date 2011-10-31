@@ -1,28 +1,55 @@
 class IdentityMetadataDS < ActiveFedora::NokogiriDatastream 
-  
+
   set_terminology do |t|
     t.root(:path=>"identityMetadata", :xmlns => '')
-    t.objectId(:index_as=>[:searchable, :displayable, :facetable, :sortable],  :required=>:true, :type=>:string, :namespace_prefix => nil )
-    t.objectType(:index_as=>[:searchable, :displayable, :facetable, :sortable],  :required=>:true, :type=>:string, :namespace_prefix => nil )  
-    t.objectLabel(:index_as=>[:searchable, :displayable, :facetable, :sortable],  :required=>:true, :type=>:string, :namespace_prefix => nil )  
-    t.citationCreator(:index_as=>[:searchable, :displayable, :facetable, :sortable],  :required=>:true, :type=>:string, :namespace_prefix => nil )  
-    t.sourceId(:index_as=>[:searchable,  :displayable, :facetable, :sortable], :attributes=>{:type=>"source"},  :required=>:true, :type=>:string, :namespace_prefix => nil )  
-    t.otherId(:index_as=>[:searchable,  :displayable, :facetable, :sortable], :attributes=>{:type=>"name"},  :required=>:true, :type=>:string, :namespace_prefix => nil )  
-    t.agreementId(:index_as=>[:searchable, :displayable, :facetable, :sortable],  :required=>:true, :type=>:string, :namespace_prefix => nil )  
-    t.tag(:index_as=>[:searchable, :displayable, :facetable, :sortable],  :required=>:true, :type=>:string, :namespace_prefix => nil )  
-    t.citationTitle(:index_as=>[:searchable, :displayable, :facetable, :sortable],  :required=>:true, :type=>:string, :namespace_prefix => nil )  
-    t.objectCreator(:index_as=>[:searchable, :displayable, :facetable, :sortable], :required=>:true, :type=>:string, :namespace_prefix => nil )
-    t.adminPolicy(:index_as=>[:searchable, :displayable, :facetable, :sortable], :required=>:true, :type=>:string, :namespace_prefix => nil )
+    t.objectId :namespace_prefix => nil
+    t.objectType :namespace_prefix => nil
+    t.objectLabel :namespace_prefix => nil
+    t.citationCreator :namespace_prefix => nil
+    t.sourceId :namespace_prefix => nil
+    t.otherId :namespace_prefix => nil
+    t.agreementId :namespace_prefix => nil
+    t.tag :namespace_prefix => nil
+    t.citationTitle :namespace_prefix => nil
+    t.objectCreator :namespace_prefix => nil
+    t.adminPolicy :namespace_prefix => nil
+  end
+  
+  define_template :value do |builder,name,value,attrs|
+    builder.send(name.to_sym, value, attrs)
   end
   
   def self.xml_template
-    builder = Nokogiri::XML::Builder.new do |xml|
-      xml.identityMetadata {
-        xml.citationTitle
-        xml.objectCreator
-      }
-    end
-    return builder.doc
+    Nokogiri::XML('<identityMetadata/>')
   end #self.xml_template
+  
+  def add_value(name, value, attrs={})
+    add_child_node(ng_xml.root, :value, name, value, attrs)
+  end
+  
+  def objectId
+    self.find_by_terms(:objectId).text
+  end
+  
+  def sourceId
+    node = self.find_by_terms(:sourceId).first
+    [node['source'],node.text].join(':')
+  end
+  
+  def sourceId=(value)
+    (source,val) = value.split(/:/,2)
+    node = self.find_by_terms(:sourceId).first || ng_xml.root.add_child('<sourceId/>').first
+    node['source'] = source
+    node.text = val
+  end
+
+  def otherId(type = nil)
+    result = self.find_by_terms(:otherId).to_a
+    if type.nil?
+      result.collect { |n| [n['name'],n.text].join(':') }
+    else
+      result.select { |n| n['name'] == type }.collect { |n| n.text }
+    end
+  end
   
 end #class

@@ -65,11 +65,7 @@ class Graph
         process.node[:fontcolor => 'black', :color => FILL_COLORS['error'], :style => 'diagonals']
       end
     end
-    
-    if @processes.values.select { |p| p.prerequisites.length == 0 }.all? { |p| p.status == 'completed' }
-      @root.color = FILL_COLORS['completed']
-      @root.fontcolor = TEXT_COLORS['completed']
-    end
+
     @root.fontname = 'Helvetica'
     return self
   end
