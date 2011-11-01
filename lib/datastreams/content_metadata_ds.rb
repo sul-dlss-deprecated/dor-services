@@ -1,4 +1,6 @@
-class ContentMetadataDS < ActiveFedora::NokogiriDatastream 
+require 'datastreams/managed_nokogiri_ds'
+
+class ContentMetadataDS < ActiveFedora::ManagedNokogiriDatastream 
   
   def public_xml
     result = self.ng_xml.clone

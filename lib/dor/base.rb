@@ -28,20 +28,22 @@ module Dor
       }
     end
     
-    def self.get_foxml(pid, interpolate_refs = false)
+      def self.get_foxml(pid, interpolate_refs = [])
       client = Dor::Config.fedora.client["objects/#{pid}"]
       foxml = Nokogiri::XML(client["objectXML"].get)
-      if interpolate_refs
+      unless Array(interpolate_refs).empty?
         external_refs = foxml.xpath('//foxml:datastream[@CONTROL_GROUP="E" or @CONTROL_GROUP="M"]/foxml:datastreamVersion/foxml:contentLocation[@REF]')
         external_refs.each do |ref|
           if ref.parent['MIMETYPE'] =~ /xml$/
             begin
                 ds_name = ref.parent.parent['ID']
-                version = ref.parent['CREATED']
-                external_doc = Nokogiri::XML(client["datastreams/#{ds_name}/content?#{version}"].get)
-                external_root = external_doc.root
-                ref.replace('<foxml:xmlContent/>').first.add_child(external_doc.root)
-                external_root.traverse { |node| node.namespace = nil if node.namespace == ref.namespace }
+                if interpolate_refs.any? { |match| match.is_a?(Regexp) ? ds_name =~ match : match.to_s == ds_name }
+                  version = ref.parent['CREATED']
+                  external_doc = Nokogiri::XML(client["datastreams/#{ds_name}/content?#{version}"].get)
+                  external_root = external_doc.root
+                  ref.replace('<foxml:xmlContent/>').first.add_child(external_doc.root)
+                  external_root.traverse { |node| node.namespace = nil if node.namespace == ref.namespace }
+                end
             rescue
               ref.remove
             end
