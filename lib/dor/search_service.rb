@@ -25,18 +25,22 @@ module Dor
       def reindex(*pids)
         fedora_client = Config.fedora.client
         solr_client = Config.gsearch.client
-        xsl = Nokogiri::XSLT(File.read(File.expand_path('../../gsearch/demoFoxmlToSolr.xslt', __FILE__)))
+        xsl_doc = Nokogiri::XML(File.read(File.expand_path('../../gsearch/demoFoxmlToSolr.xslt', __FILE__)))
+        external_refs = xsl_doc.xpath('/xsl:stylesheet/xsl:variable[@name="INDEXED_DATASTREAMS"]/*').collect do |node|
+          node['match'] ? Regexp.compile(node['match']) : node['name']
+        end
+        xsl = Nokogiri::XSLT::Stylesheet.parse_stylesheet_doc(xsl_doc)
         pids.in_groups_of(20, false) do |group|
           doc = Nokogiri::XML('<update/>')
           group.each do |pid|
             begin
-              foxml = Dor::Base.get_foxml(pid,true)
-              doc.root.add_child(xsl.transform(foxml).root)
+              foxml = Dor::Base.get_foxml(pid,external_refs)
+              doc.root.add_child(xsl.transform(foxml, ['INCLUDE_EXTERNALS', 'false()']).root)
             rescue RestClient::ResourceNotFound
               doc.root.add_child("<delete><id>#{pid}</id></delete>")
             end
           end
-          yield group if block_given?
+          yield doc, group if block_given?
           solr_client['update'].post(doc.to_xml, :content_type => 'application/xml')
         end
         pids
