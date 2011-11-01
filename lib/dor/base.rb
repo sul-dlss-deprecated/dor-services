@@ -29,17 +29,22 @@ module Dor
     end
     
     def self.get_foxml(pid, interpolate_refs = false)
-      foxml = Nokogiri::XML(Dor::Config.fedora.client["objects/#{pid}/objectXML"].get)
+      client = Dor::Config.fedora.client["objects/#{pid}"]
+      foxml = Nokogiri::XML(client["objectXML"].get)
       if interpolate_refs
-        external_refs = foxml.xpath('//foxml:contentLocation[contains(@REF,"/workflows/")]')
+        external_refs = foxml.xpath('//foxml:datastream[@CONTROL_GROUP="E" or @CONTROL_GROUP="M"]/foxml:datastreamVersion/foxml:contentLocation[@REF]')
         external_refs.each do |ref|
-          begin
-            external_doc = Nokogiri::XML(RestClient.get(ref['REF']))
-            external_root = external_doc.root
-            ref.replace('<foxml:xmlContent/>').first.add_child(external_doc.root)
-            external_root.traverse { |node| node.namespace = nil }
-          rescue
-            ref.remove
+          if ref.parent['MIMETYPE'] =~ /xml$/
+            begin
+                ds_name = ref.parent.parent['ID']
+                version = ref.parent['CREATED']
+                external_doc = Nokogiri::XML(client["datastreams/#{ds_name}/content?#{version}"].get)
+                external_root = external_doc.root
+                ref.replace('<foxml:xmlContent/>').first.add_child(external_doc.root)
+                external_root.traverse { |node| node.namespace = nil if node.namespace == ref.namespace }
+            rescue
+              ref.remove
+            end
           end
         end
       end
