@@ -40,7 +40,7 @@
 	
 	<xsl:variable name="OBJECTTYPE" select="//foxml:datastream/foxml:datastreamVersion[last()]//identityMetadata/objectType/text()"/>
 
-  <xsl:variable name="INDEXVERSION">1.3.2011102802</xsl:variable>
+  <xsl:variable name="INDEXVERSION">1.3.2011110101</xsl:variable>
 
 	<!-- or any other calculation, default boost is 1.0 -->
 	<xsl:template match="/">
@@ -344,12 +344,12 @@
 		<field name="wf_facet"><xsl:value-of select="$workflow-name"/></field>
 		<field name="wf_wsp_facet"><xsl:value-of select="$workflow-name"/></field>
 		<field name="wf_wps_facet"><xsl:value-of select="$workflow-name"/></field>
-    <xsl:for-each select="process[@status='completed' and @lifecycle]">
-  		<field name="lifecycle_field">
-  			<xsl:value-of select="@lifecycle"/>:<xsl:value-of select="@datetime"/>
-  		</field>
-    </xsl:for-each>
 		<xsl:for-each select="process">
+			<xsl:if test="@status='completed' and @lifecycle">
+	    		<field name="lifecycle_field">
+	    			<xsl:value-of select="@lifecycle"/>:<xsl:value-of select="@datetime"/>
+	    		</field>
+      		</xsl:if>
 			<field name="wf_wsp_facet">
 				<xsl:value-of select="concat($workflow-name,':',@status)"/>
 			</field>

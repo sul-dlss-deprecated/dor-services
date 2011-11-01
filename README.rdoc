@@ -99,6 +99,9 @@ Values can also be configured individually:
 	- Cleaner MODS2DC transformation
 	- More robust IdentityMetadataDS object
 	- Indexing tweaks
+- <b>2.4.1</b> 
+	- Improve Dor::Base.get_foxml()
+	- Index lifecycle directly from workflow processes instead of retrieving lifecycle XML
 	
 == Copyright
 
