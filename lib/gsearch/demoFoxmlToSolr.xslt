@@ -322,7 +322,7 @@
   </xsl:template>
   
   <!-- Index managed datastreams -->
-	<xsl:template match="foxml:datastream[@CONTROL_GROUP = 'E' or @CONTROL_GROUP = 'M']/foxml:datastreamVersion[last()]/foxml:contentLocation[not(contains(@REF,'/workflows/'))]">
+	<xsl:template match="foxml:datastream[@CONTROL_GROUP = 'E' or @CONTROL_GROUP = 'M']/foxml:datastreamVersion[last()][contains(@MIMETYPE, '/xml') or contains(@MIMETYPE, '+xml')]/foxml:contentLocation[not(contains(@REF,'/workflows/'))]">
 	<xsl:variable name="path" select="substring-after(substring-after(@REF, '//'),'/')"/>
   	<xsl:variable name="content-uri">http://localhost:8080/<xsl:value-of select="$path"/></xsl:variable>
   	<xsl:variable name="content" select="document($content-uri)"/>
