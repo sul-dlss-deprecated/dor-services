@@ -102,9 +102,9 @@ Values can also be configured individually:
 - <b>2.4.1</b> 
 	- Improve Dor::Base.get_foxml()
 	- Index lifecycle directly from workflow processes instead of retrieving lifecycle XML
-- <b>2.4.2</b> 
-	- Restrict gsearch stylesheet to pulling XML datastreams
-	
+- <b>2.4.2</b> Restrict gsearch stylesheet to pulling XML datastreams
+- <b>2.5.0</b> Large-scale refactor of gsearch stylesheet and indexing methods
+  
 == Copyright
 
 Copyright (c) 2011 Stanford University Library. See LICENSE for details.
