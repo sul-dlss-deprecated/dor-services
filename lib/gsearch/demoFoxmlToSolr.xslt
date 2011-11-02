@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <!-- $Id: demoFoxmlToLucene.xslt 5734 2006-11-28 11:20:15Z gertsp $ -->
 <xsl:stylesheet version="1.0"
-	exclude-result-prefixes="dc exts xalan fedora-model fedora-types fn foxml hydra oai_dc rdf rel uvalibadmin uvalibdesc xsl" 
+	exclude-result-prefixes="dc dt ex exts fedora-model fedora-types fn foxml hydra oai_dc rdf rel uvalibadmin uvalibdesc xsl" 
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
 	xmlns:exts="xalan://dk.defxws.fedoragsearch.server.GenericOperationsImpl"
-	xmlns:xalan="http://xml.apache.org/xalan"
+	xmlns:ex="http://exslt.org/common"
+	xmlns:dt="http://exslt.org/dates-and-times"
 	xmlns:fedora-model="info:fedora/fedora-system:def/model#"
 	xmlns:fedora-types="http://www.fedora.info/definitions/1/0/types/"
 	xmlns:fn="http://www.w3.org/TR/xpath-functions/"
@@ -26,7 +27,7 @@
        - from datastream by ID, text fetched, if mimetype can be handled
          currently the mimetypes text/plain, text/xml, text/html, application/pdf can be handled.
 	-->
-	<xsl:variable name="INDEXVERSION">2.0.4</xsl:variable>
+	<xsl:variable name="INDEXVERSION">2.0.5</xsl:variable>
 	
 	<xsl:param name="INCLUDE_EXTERNALS" select="true()"/>
 	<xsl:param name="REPOSITORYNAME" select="repositoryName"/>
@@ -48,6 +49,7 @@
 		<ds name="administrativeMetadata"/>
 		<ds name="roleMetadata"/>
 		<ds name="contentMetadata"/>
+		<ds name="rightsMetadata"/>
 		<ds match="WF"/>
 	</xsl:variable>
 	
@@ -123,20 +125,10 @@
 	<xsl:template match="foxml:datastream[foxml:datastreamVersion/foxml:contentLocation]/foxml:datastreamVersion[last()]">
 		<xsl:if test="$INCLUDE_EXTERNALS">
 			<xsl:variable name="ds" select="."/>
-			<xsl:choose>
-				<xsl:when test="contains(system-property('xsl:vendor-url'),'xalan')">
-					<xsl:call-template name="process-datastream">
-						<xsl:with-param name="ds" select="$ds"/>
-						<xsl:with-param name="datastreams" select="xalan:nodeset($DATASTREAM_LIST)"/>
-					</xsl:call-template>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:call-template name="process-datastream">
-						<xsl:with-param name="ds" select="$ds"/>
-						<xsl:with-param name="datastreams" select="$DATASTREAM_LIST"/>
-					</xsl:call-template>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:call-template name="process-datastream">
+				<xsl:with-param name="ds" select="$ds"/>
+				<xsl:with-param name="datastreams" select="ex:node-set($DATASTREAM_LIST)"/>
+			</xsl:call-template>
 		</xsl:if>
 	</xsl:template>
 
@@ -180,6 +172,7 @@
 			</field>
 		</xsl:for-each>
 	</xsl:template>
+
 	<!-- Index DC -->
 	<xsl:template match="oai_dc:dc">
 		<xsl:for-each select="dc:title|dc:creator|dc:identifier">
@@ -193,7 +186,9 @@
 			</field>
 		</xsl:for-each>
 	</xsl:template>
+
 	
+
 	<!-- Index identity metadata -->
 	<xsl:template match="identityMetadata">
 		<xsl:for-each select="./objectType">
@@ -364,14 +359,32 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<!-- Index rights metadata -->
+	<xsl:template match="rightsMetadata">
+		<xsl:if test="access[@type='read']/machine/embargoReleaseDate">
+			<field name="embargo_status_facet">embargoed</field>
+			<field name="embargo_status_field">embargoed</field>
+			<field name="embargo_release_date">
+				<xsl:call-template name="long-enough-date">
+					<xsl:with-param name="date" select="access[@type='read']/machine/embargoReleaseDate/text()"/>
+				</xsl:call-template>
+			</field>
+		</xsl:if>
+	</xsl:template>
+	
 	<!-- Index embargo metadata -->
 	<xsl:template match="embargoMetadata">
 		<xsl:if test="(status != '') and (releaseDate != '')">
+			<field name="embargo_status_facet">
+				<xsl:value-of select="status"/>
+			</field>
 			<field name="embargo_status_field">
 				<xsl:value-of select="status"/>
 			</field>
 			<field name="embargo_release_date">
-				<xsl:value-of select="releaseDate"/>
+				<xsl:call-template name="long-enough-date">
+					<xsl:with-param name="date" select="releaseDate"/>
+				</xsl:call-template>
 			</field>
 		</xsl:if>
 	</xsl:template>
@@ -467,6 +480,19 @@
 	<!-- Utility Templates -->
 	<xsl:template match="text()|@*|processing-instruction()|comment()"/>
 
+	<xsl:template name="long-enough-date">
+		<xsl:param name="date"/>
+		<xsl:variable name="date-format" select="'0000-00-00T00:00:00Z'"/>
+		<xsl:choose>
+			<xsl:when test="string-length($date) &lt; string-length($date-format)">
+				<xsl:value-of select="$date"/><xsl:value-of select="substring($date-format,string-length($date)+1)"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$date"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template name="valid-field-name">
 		<xsl:param name="name"/>
 		<xsl:value-of
