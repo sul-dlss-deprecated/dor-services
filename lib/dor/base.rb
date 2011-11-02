@@ -19,7 +19,7 @@ module Dor
       client = Dor::Config.fedora.client
       pids.collect { |pid|
         response = begin
-          client["objects/#{pid}/datastreams/DC?dsState=A&ignoreContent=true"].put('', :content_type => 'text/xml')
+          client["objects/#{pid}?state=A"].put('', :content_type => 'text/xml')
         rescue RestClient::ResourceNotFound
           doc = Nokogiri::XML('<update><delete><id>#{pid}</id></delete></update>')
           Dor::Config.gsearch.client['update'].post(doc.to_xml, :content_type => 'application/xml')
