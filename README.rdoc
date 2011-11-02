@@ -105,6 +105,7 @@ Values can also be configured individually:
 - <b>2.4.2</b> Restrict gsearch stylesheet to pulling XML datastreams
 - <b>2.5.0</b> Large-scale refactor of gsearch stylesheet and indexing methods
 - <b>2.5.1</b> Use the gsearch REST service for Dor::SearchService.reindex()
+- <b>2.5.2</b> Fix xalan/saxon/libxslt issues in gsearch XSLT
   
 == Copyright
 
