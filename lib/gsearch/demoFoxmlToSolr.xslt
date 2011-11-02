@@ -26,6 +26,7 @@
        - from datastream by ID, text fetched, if mimetype can be handled
          currently the mimetypes text/plain, text/xml, text/html, application/pdf can be handled.
 	-->
+	<xsl:variable name="INDEXVERSION">2.0.3</xsl:variable>
 	
 	<xsl:param name="INCLUDE_EXTERNALS" select="true()"/>
 	<xsl:param name="REPOSITORYNAME" select="repositoryName"/>
@@ -38,8 +39,7 @@
 	<xsl:variable name="docBoost" select="1.4*2.5"/>
 	<xsl:variable name="OBJECTTYPE"
 		select="//foxml:datastream/foxml:datastreamVersion[last()]//identityMetadata/objectType/text()"/>
-	<xsl:variable name="INDEXVERSION">2.0.0</xsl:variable>
-	<xsl:variable name="INDEXED_DATASTREAMS">
+	<xsl:variable name="DATASTREAM_LIST">
 		<ds name="RELS-EXT"/>
 		<ds name="DC"/>
 		<ds name="identityMetadata"/>
@@ -50,6 +50,7 @@
 		<ds name="contentMetadata"/>
 		<ds match="WF"/>
 	</xsl:variable>
+	<xsl:variable name="INDEXED_DATASTREAMS" select="xalan:nodeset($DATASTREAM_LIST)"/>
 
 	<!-- or any other calculation, default boost is 1.0 -->
 	<xsl:template match="/">
@@ -125,12 +126,17 @@
 			<xsl:variable name="ds" select="."/>
 			<xsl:variable name="datastream-name" select="../@ID"/>
 			<xsl:variable name="datastream-ts" select="@CREATED"/>
-			
+			<xsl:variable name="content-location" select="foxml:contentLocation/@REF"/>
 			<xsl:for-each select="$INDEXED_DATASTREAMS/*">
 				<xsl:if test="(@name and (@name = $datastream-name)) or (@match and contains($datastream-name,@match))">
-					<xsl:variable name="content-uri">http://localhost:8080/fedora/objects/<xsl:value-of select="$PID"/>/datastreams/<xsl:value-of select="$datastream-name"/>/content?<xsl:value-of select="$datastream-ts"/></xsl:variable>
-					<xsl:variable name="content" select="document($content-uri)"/>
-					<xsl:apply-templates select="$content/*">
+					<xsl:variable name="content-uri">
+						<xsl:choose>
+							<xsl:when test="contains($content-location, '/fedora/get/')">http://localhost:8080/fedora/<xsl:value-of select="substring-after($content-location,'/fedora/')"/></xsl:when>
+							<xsl:otherwise><xsl:value-of select="$content-location"/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<xsl:message>Retrieving <xsl:value-of select="$content-uri"/></xsl:message>
+					<xsl:apply-templates select="document($content-uri)/*">
 						<xsl:with-param name="datastream-name" select="$datastream-name"/>
 					</xsl:apply-templates>
 				</xsl:if>
