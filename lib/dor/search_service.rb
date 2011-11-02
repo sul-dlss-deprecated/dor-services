@@ -6,7 +6,8 @@ module Dor
   class SearchService
 
     RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'"
-
+    @@index_version = nil
+    
     Config.declare(:gsearch) { 
       rest_url nil
       url nil 
@@ -30,6 +31,14 @@ module Dor
     }
     
     class << self
+      
+      def index_version
+        if @@index_version.nil?
+          xsl_doc = Nokogiri::XML(File.read(File.expand_path('../../gsearch/demoFoxmlToSolr.xslt',__FILE__)))
+          @@index_version = xsl_doc.at_xpath('/xsl:stylesheet/xsl:variable[@name="INDEXVERSION"]/text()').to_s
+        end
+        @@index_version
+      end
       
       def reindex(*pids)
         client = Config.gsearch.rest_client
