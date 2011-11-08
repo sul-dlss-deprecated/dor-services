@@ -14,43 +14,18 @@ module Dor
     has_metadata :name => "RELS-EXT", :type => ActiveFedora::RelsExtDatastream, :label => 'RDF Statements about this object'
     has_metadata :name => "identityMetadata", :type => IdentityMetadataDS, :label => 'Identity Metadata'
 
-    # Make a random (and harmless) API-M call to get gsearch to reindex the object
+    # Make an idempotent API-M call to get gsearch to reindex the object
     def self.touch(*pids)
       client = Dor::Config.fedora.client
       pids.collect { |pid|
         response = begin
           client["objects/#{pid}?state=A"].put('', :content_type => 'text/xml')
         rescue RestClient::ResourceNotFound
-          doc = Nokogiri::XML('<update><delete><id>#{pid}</id></delete></update>')
+          doc = Nokogiri::XML("<update><delete><id>#{pid}</id></delete></update>")
           Dor::Config.gsearch.client['update'].post(doc.to_xml, :content_type => 'application/xml')
         end
         response.code
       }
-    end
-    
-      def self.get_foxml(pid, interpolate_refs = [])
-      client = Dor::Config.fedora.client["objects/#{pid}"]
-      foxml = Nokogiri::XML(client["objectXML"].get)
-      unless Array(interpolate_refs).empty?
-        external_refs = foxml.xpath('//foxml:datastream[@CONTROL_GROUP="E" or @CONTROL_GROUP="M"]/foxml:datastreamVersion/foxml:contentLocation[@REF]')
-        external_refs.each do |ref|
-          if ref.parent['MIMETYPE'] =~ /xml$/
-            begin
-                ds_name = ref.parent.parent['ID']
-                if interpolate_refs.any? { |match| match.is_a?(Regexp) ? ds_name =~ match : match.to_s == ds_name }
-                  version = ref.parent['CREATED']
-                  external_doc = Nokogiri::XML(client["datastreams/#{ds_name}/content?#{version}"].get)
-                  external_root = external_doc.root
-                  ref.replace('<foxml:xmlContent/>').first.add_child(external_doc.root)
-                  external_root.traverse { |node| node.namespace = nil if node.namespace == ref.namespace }
-                end
-            rescue
-              ref.remove
-            end
-          end
-        end
-      end
-      return foxml
     end
     
     def initialize(attrs = {})

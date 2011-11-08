@@ -74,6 +74,7 @@ module Dor
             "#{k}=#{URI.encode(v.to_s)}" 
           end
         }.join('&')
+        puts client["select?#{query_string}"].to_s
         result = JSON.parse(client["select?#{query_string}"].get)
       end
       
