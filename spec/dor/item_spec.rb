@@ -114,7 +114,7 @@ describe Dor::Item do
   
   describe "#publish_metadata" do
     
-    it "does not publish the object unless rightsMetadata has world discovery access" do
+    it "does not publish the object unless rightsMetadata has world discover access" do
       item = Dor::Item.new
       item.stub!(:pid).and_return("druid:ab123bb4567")  
       rights = <<-EOXML
@@ -159,7 +159,7 @@ describe Dor::Item do
         b.add_datastream(id_ds)
         cm_ds = ContentMetadataDS.new(:dsid=> 'contentMetadata', :blob => '<contentMetadata/>')
         b.add_datastream(cm_ds)
-        rights = "<rightsMetadata><access type='discovery'><machine><world/></machine></access></rightsMetadata>"
+        rights = "<rightsMetadata><access type='discover'><machine><world/></machine></access></rightsMetadata>"
         r_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'rightsMetadata', :blob => rights)
         b.add_datastream(r_ds)
 
