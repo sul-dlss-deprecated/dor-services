@@ -82,7 +82,7 @@ module Dor
     
     def publish_metadata
       rights = datastreams['rightsMetadata'].ng_xml
-      if(rights.at_xpath("//rightsMetadata/access[@type='discovery']/machine/world"))
+      if(rights.at_xpath("//rightsMetadata/access[@type='discover']/machine/world"))
         DigitalStacksService.transfer_to_document_store(pid, self.datastreams['identityMetadata'].to_xml, 'identityMetadata')
         DigitalStacksService.transfer_to_document_store(pid, self.datastreams['contentMetadata'].to_xml, 'contentMetadata')
         DigitalStacksService.transfer_to_document_store(pid, self.datastreams['rightsMetadata'].to_xml, 'rightsMetadata')
