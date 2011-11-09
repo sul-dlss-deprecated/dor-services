@@ -3,8 +3,6 @@ require 'uuidtools'
 require 'xml_models/foxml'
 require 'xml_models/identity_metadata/identity_metadata'
 
-require 'dor/search_service'
-
 module Dor
   
   class RegistrationService

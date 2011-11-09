@@ -94,6 +94,7 @@ Values can also be configured individually:
 - <b>2.3.0</b> 
 	- Dor::WorkflowService#get_lifecycle
 	- Only publish metadata if rightsMetadata says so
+- <b>2.3.1</b> Publish public xml when <access type="discover">
 - <b>2.4.0</b> 
 	- Reified workflow 
 	- Cleaner MODS2DC transformation
@@ -106,6 +107,9 @@ Values can also be configured individually:
 - <b>2.5.0</b> Large-scale refactor of gsearch stylesheet and indexing methods
 - <b>2.5.1</b> Use the gsearch REST service for Dor::SearchService.reindex()
 - <b>2.5.2</b> Fix xalan/saxon/libxslt issues in gsearch XSLT
+- <b>2.5.3</b> 
+	- Handle empty <lifecycle> queries instead of a 404 exception
+	- Hotfix for public xml publishing from 2.3.1 
   
 == Copyright
 
