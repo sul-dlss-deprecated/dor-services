@@ -3,11 +3,6 @@ require 'lyber-utils'
 
 module Dor
   class CleanupService
-    Config.declare(:cleanup) do
-  	  local_workspace_root '/dor/workspace'
-      local_export_home '/dor/export'
-    end
-
     # Delete all workspace and export entities for the druid
     # @param [LyberCore::Robots::WorkItem]
     def self.cleanup(dor_item)

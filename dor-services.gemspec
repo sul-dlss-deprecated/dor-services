@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
   
   # Runtime dependencies
-  s.add_dependency "active-fedora", "3.0.4"
+  s.add_dependency "active-fedora", "~>3.0.0"
   s.add_dependency "solr-ruby", ">=0.0.8"
   s.add_dependency "nokogiri", ">=1.4.3.1"
   s.add_dependency "om", ">=1.2.0"
@@ -23,7 +23,6 @@ Gem::Specification.new do |s|
   s.add_dependency "uuidtools"
   s.add_dependency "json"
   s.add_dependency "ruby-cache"
-  s.add_dependency "mod-cons", ">=0.2.0"
   s.add_dependency "systemu"
   s.add_dependency "lyber-utils"
   s.add_dependency "ruby-graphviz"

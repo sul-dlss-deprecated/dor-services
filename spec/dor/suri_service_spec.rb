@@ -3,18 +3,24 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe Dor::SuriService do
   
   before(:all) do
-    Dor::Config.suri.configure do
-      mint_ids true
-      url 'http://some.suri.host:8080'
-      id_namespace 'druid'
-      user 'suriuser'
-      pass 'suripword'
+    Dor::Config.push! do
+      suri do
+        mint_ids true
+        url 'http://some.suri.host:8080'
+        id_namespace 'druid'
+        user 'suriuser'
+        pass 'suripword'
+      end
     end
   end
 
   before(:each) do
     @my_client = mock('restclient')
     RestClient::Resource.stub!(:new).and_return(@my_client)
+  end
+  
+  after(:all) do
+    Dor::Config.pop!
   end
   
   # it "should mint a druid" do
@@ -43,10 +49,11 @@ describe Dor::SuriService do
   end
   
   it "should use the Fedora->nextpid service if calls to SURI are disabled" do
-    Dor::Config.suri.configure { mint_ids false }
+    Dor::Config.push! { suri.mint_ids false }
     Fedora::Repository.stub_chain(:instance, :nextid).and_return('pid:123')
     
     Dor::SuriService.mint_id.should == 'pid:123'
+    Dor::Config.suri.pop
   end
   
   # it "should mint a real id in an integration test" do

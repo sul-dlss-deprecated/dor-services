@@ -9,8 +9,6 @@ module Dor
   # - Dor::WF_URI : The URI to the workflow service.  An example URI is 'http://lyberservices-dev.stanford.edu/workflow'
   module WorkflowService
 
-    Config.declare(:workflow) { url nil }
-  
     class << self
       # Creates a workflow for a given object in the repository.  If this particular workflow for this objects exists,
       # it will replace the old workflow with wf_xml passed to this method.  You have the option of creating a datastream or not.     

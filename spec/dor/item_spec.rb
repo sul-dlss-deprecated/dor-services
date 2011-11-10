@@ -6,8 +6,7 @@ describe Dor::Item do
   
   before :all do
     @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"../fixtures")
-    @saved_configuration = Dor::Config.to_hash
-    Dor::Config.configure do
+    Dor::Config.push! do
       suri.mint_ids false
       gsearch.url "http://solr.edu"
       fedora.url "http://fedora.edu"
@@ -24,7 +23,7 @@ describe Dor::Item do
   end
   
   after :all do
-    Dor::Config.configure(@saved_configuration)
+    Dor::Config.pop!
   end
   
   it "has a contentMetadata datastream" do
@@ -282,15 +281,16 @@ describe Dor::Item do
 
     it "should build the technicalMetadata datastream" do
       @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"../fixtures")
-      Dor::Config.sdr.configure do
-        local_workspace_root File.join(fixture_dir, "workspace")
-        local_export_home File.join(fixture_dir, "export")
+      Dor::Config.push! do
+        sdr.local_workspace_root File.join(fixture_dir, "workspace")
+        sdr.local_export_home File.join(fixture_dir, "export")
       end
       @item.datastreams['technicalMetadata'].ng_xml.to_s.should be_equivalent_to('<xml/>')
       #puts @item.datastreams['technicalMetadata'].ng_xml.to_s
       @item.build_datastream('technicalMetadata')
       #puts @item.datastreams['technicalMetadata'].ng_xml.to_s
       @item.datastreams['technicalMetadata'].ng_xml.to_s.should_not be_equivalent_to('<xml/>')
+      Dor::Config.pop!
     end
 
   end

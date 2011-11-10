@@ -3,19 +3,6 @@ require 'systemu'
 
 module Dor
   class DigitalStacksService
-    
-    Config.declare(:stacks) do
-  	  document_cache_storage_root nil
-  	  document_cache_host nil
-  	  document_cache_user nil
-  	  
-  	  storage_root '/stacks'
-  	  host nil
-  	  user nil
-  	  
-  	  local_workspace_root '/dor'
-    end
-    
     # TODO copied from lyber-core, but didn't want to create circular dependency for between gems for this one method
     # Executes a system command in a subprocess. 
     # The method will return stdout from the command if execution was successful.

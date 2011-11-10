@@ -4,15 +4,12 @@ require 'fakeweb'
 describe Dor::WorkflowObject do
 
   before :all do
-    @old_config = Dor::Config.to_hash
-    Dor.configure do
-      suri.mint_ids false
-    end
+    Dor::Config.push! { suri.mint_ids false }
     Fedora::Repository.stub!(:instance).and_return(stub('frepo').as_null_object)
   end
   
   after :all do
-    Dor.configure @old_config
+    Dor::Config.pop
   end
   
   after :each do

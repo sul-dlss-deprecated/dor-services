@@ -16,8 +16,7 @@ describe Dor::Embargo do
 
   before :all do
     @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"../fixtures")
-    @saved_configuration = Dor::Config.to_hash
-    Dor::Config.configure do
+    Dor::Config.push! do
       suri.mint_ids false
       gsearch.url "http://solr.edu"
       fedora.url "http://fedora.edu"
@@ -27,6 +26,10 @@ describe Dor::Embargo do
     Rails.stub_chain(:logger, :error)
     ActiveFedora::SolrService.register(Dor::Config.gsearch.url)
     Fedora::Repository.register(Dor::Config.fedora.url)
+  end
+  
+  after :all do
+    Dor::Config.pop!
   end
   
   before(:each) do

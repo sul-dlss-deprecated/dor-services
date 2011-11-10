@@ -9,8 +9,7 @@ end
 describe Dor::Base do
   
   before :all do
-    @saved_configuration = Dor::Config.to_hash
-    Dor::Config.configure do
+    Dor::Config.push! do
       suri.mint_ids false
       gsearch.url "http://fedora.edu/solr"
       fedora.url "http://fedora.edu/fedora"
@@ -27,7 +26,7 @@ describe Dor::Base do
   end
   
   after :all do
-    Dor::Config.configure(@saved_configuration)
+    Dor::Config.pop!
   end
       
   it "should be of Type ActiveFedora::Base" do    

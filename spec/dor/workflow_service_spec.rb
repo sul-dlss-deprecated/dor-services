@@ -4,10 +4,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Dor::WorkflowService do  
   before(:all) do
-    @saved_configuration = Dor::Config.to_hash
-    Dor::Config.configure do
-      workflow.url 'https://dortest.stanford.edu/workflow'
-    end
+    Dor::Config.push! { workflow.url = 'https://dortest.stanford.edu/workflow' }
 
     @wf_xml = <<-EOXML
     <workflow id="etdSubmitWF">
@@ -21,7 +18,7 @@ describe Dor::WorkflowService do
   end
   
   after(:all) do
-    Dor::Config.configure(@saved_configuration)
+    Dor::Config.pop!
   end
   
   before(:each) do

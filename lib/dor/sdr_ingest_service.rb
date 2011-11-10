@@ -2,22 +2,6 @@ require 'lyber-utils'
 
 module Dor
   class SdrIngestService
-
-    Config.declare(:sdr) do
-  	  local_workspace_root '/dor/workspace'
-      local_export_home '/dor/export'
-      datastreams do
-        contentMetadata 'required'
-        descMetadata 'required'
-        identityMetadata 'required'
-        provenanceMetadata 'required'
-        relationshipMetadata 'required'
-        technicalMetadata 'required'
-        rightsMetadata 'optional'
-        sourceMetadata 'optional'
-      end
-    end
-
     # Some boilerplace entries for the bagit metadata file
     METADATA_INFO =  {
         'Source-Organization' => 'Stanford University Libraries',

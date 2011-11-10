@@ -1,0 +1,46 @@
+--- 
+:cleanup: 
+  :local_workspace_root: /dor/workspace
+  :local_export_home: /dor/export
+:fedora: 
+  :key_file: 
+  :key_pass: ""
+  :url: 
+  :safeurl: 
+  :cert_file: 
+:gsearch: 
+  :rest_url: 
+  :url: 
+:metadata: 
+  :catalog: 
+    :url: 
+  :exist: 
+    :url: 
+:sdr: 
+  :local_workspace_root: /dor/workspace
+  :local_export_home: /dor/export
+  :datastreams: 
+    :rightsMetadata: optional
+    :descMetadata: required
+    :sourceMetadata: optional
+    :identityMetadata: required
+    :provenanceMetadata: required
+    :relationshipMetadata: required
+    :technicalMetadata: required
+    :contentMetadata: required
+:stacks: 
+  :local_workspace_root: /dor
+  :storage_root: /stacks
+  :document_cache_storage_root: 
+  :host: 
+  :user: 
+  :document_cache_host: 
+  :document_cache_user: 
+:suri: 
+  :pass: 
+  :id_namespace: druid
+  :url: 
+  :user: 
+  :mint_ids: false
+:workflow: 
+  :url: 

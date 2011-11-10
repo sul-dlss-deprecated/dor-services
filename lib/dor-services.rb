@@ -38,7 +38,7 @@ module Dor
       ensure
         $-v = temp_v
       end
-      Dor::Config.configure configuration
+      Dor::Config.configure { |config| config.deep_merge!(configuration) }
       Dor
     end
     

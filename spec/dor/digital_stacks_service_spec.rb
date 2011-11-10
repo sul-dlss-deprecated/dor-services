@@ -2,17 +2,23 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Dor::DigitalStacksService do
   before(:all) do
-    Dor::Config.stacks.configure do
-      document_cache_storage_root '/home/cache'
-  	  document_cache_host 'cache.stanford.edu'
-  	  document_cache_user 'user'
-  	  
-  	  storage_root '/stacks'
-  	  host 'stacks-test.stanford.edu'
-  	  user 'digitaladmin'
-  	  
-  	  local_workspace_root '/workspace'
+    Dor::Config.push! do
+      stacks do
+        document_cache_storage_root '/home/cache'
+    	  document_cache_host 'cache.stanford.edu'
+    	  document_cache_user 'user'
+	    
+    	  storage_root '/stacks'
+    	  host 'stacks-test.stanford.edu'
+    	  user 'digitaladmin'
+	    
+    	  local_workspace_root '/workspace'
+    	end
     end
+  end
+  
+  after(:all) do
+    Dor::Config.pop!
   end
   
   describe ".transfer_to_document_store" do
