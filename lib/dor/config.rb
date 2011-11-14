@@ -1,13 +1,12 @@
 require 'confstruct/configuration'
 
 module Dor
-  Configuration = Confstruct::ConfigClass(YAML.load(File.read(File.expand_path('../config_defaults.yml', __FILE__))))
-  class Configuration
+  class Configuration < Confstruct::Configuration
     def define_dynamic_fields!
       self.deep_merge!({
         :fedora => {
-          :client => lambda { |c| self.make_rest_client c.url },
-          :safeurl => lambda { |c|
+          :client => Confstruct.deferred { |c| self.make_rest_client c.url },
+          :safeurl => Confstruct.deferred { |c|
             begin
               fedora_uri = URI.parse(self.fedora.url)
               fedora_uri.user = fedora_uri.password = nil
@@ -18,10 +17,11 @@ module Dor
           }
         },
         :gsearch => {
-          :rest_client => lambda { |c| self.make_rest_client c.rest_url },
-          :client => lambda { |c| self.make_rest_client c.url }
+          :rest_client => Confstruct.deferred { |c| self.make_rest_client c.rest_url },
+          :client => Confstruct.deferred { |c| self.make_rest_client c.url }
         }
       })
+      self
     end
     
     def configure *args, &block
@@ -52,6 +52,6 @@ module Dor
     end
   end
 
-  Config = Configuration.new.define_dynamic_fields!
+  Config = Configuration.new(YAML.load(File.read(File.expand_path('../config_defaults.yml', __FILE__)))).define_dynamic_fields!
 end
 
