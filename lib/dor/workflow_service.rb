@@ -130,11 +130,7 @@ module Dor
       end
 
       def query_lifecycle(repo, druid)
-        lifecycle_xml = '<lifecycle/>'
-        begin
-          lifecycle_xml = workflow_resource["#{repo}/objects/#{druid}/lifecycle"].get
-        rescue RestClient::ResourceNotFound
-        end
+        lifecycle_xml = workflow_resource["#{repo}/objects/#{druid}/lifecycle"].get
         return Nokogiri::XML(lifecycle_xml)
       end
       
