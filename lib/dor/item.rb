@@ -152,4 +152,5 @@ module Dor
     
   end
 
+  Base.register_type('item', Item)
 end

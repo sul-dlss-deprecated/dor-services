@@ -9,23 +9,45 @@ module Dor
   class Base < ::ActiveFedora::Base
     
     attr_reader :workflows
-
+    @@item_types = {}
+    
     has_metadata :name => "DC", :type => SimpleDublinCoreDs, :label => 'Dublin Core Record for this object'
     has_metadata :name => "RELS-EXT", :type => ActiveFedora::RelsExtDatastream, :label => 'RDF Statements about this object'
     has_metadata :name => "identityMetadata", :type => IdentityMetadataDS, :label => 'Identity Metadata'
 
-    # Make an idempotent API-M call to get gsearch to reindex the object
-    def self.touch(*pids)
-      client = Dor::Config.fedora.client
-      pids.collect { |pid|
-        response = begin
-          client["objects/#{pid}?state=A"].put('', :content_type => 'text/xml')
-        rescue RestClient::ResourceNotFound
-          doc = Nokogiri::XML("<update><delete><id>#{pid}</id></delete></update>")
-          Dor::Config.gsearch.client['update'].post(doc.to_xml, :content_type => 'application/xml')
+    class << self
+      def load(pid, as=nil)
+        if as.nil?
+          return Dor::Base.load_instance(pid)
         end
-        response.code
-      }
+      
+        if as.is_a?(String)
+          as = self.type_for(as)
+        end
+        as.load_instance(pid)
+      end
+    
+      def type_for(item_type)
+        @@item_types[item_type] || Dor::Base
+      end
+    
+      def register_type(item_type, klass)
+        @@item_types[item_type] = klass
+      end
+    
+      # Make an idempotent API-M call to get gsearch to reindex the object
+      def touch(*pids)
+        client = Dor::Config.fedora.client
+        pids.collect { |pid|
+          response = begin
+            client["objects/#{pid}?state=A"].put('', :content_type => 'text/xml')
+          rescue RestClient::ResourceNotFound
+            doc = Nokogiri::XML("<update><delete><id>#{pid}</id></delete></update>")
+            Dor::Config.gsearch.client['update'].post(doc.to_xml, :content_type => 'application/xml')
+          end
+          response.code
+        }
+      end
     end
     
     def initialize(attrs = {})
@@ -40,6 +62,25 @@ module Dor
       @workflows = {}
       configure_defined_datastreams
     end  
+
+    def content(dsid, raw=false)
+      ds = nil
+      data = nil
+      if self.datastreams_in_fedora.keys.include?(dsid)
+        ds = self.datastreams[dsid]
+        data = ds.content
+        if ds.attributes['mimeType'] =~ /xml$/ and not raw
+          begin
+            doc = Nokogiri::XML(data)
+            xslt = Nokogiri::XSLT(File.read(File.expand_path('../identity.xsl', __FILE__)))
+            data = xslt.transform(doc).to_xml
+          rescue
+            # Leave the data the way it is if it can't be transformed
+          end
+        end
+      end
+      return data
+    end
 
     def identity_metadata
       if self.datastreams.has_key?('identityMetadata')
