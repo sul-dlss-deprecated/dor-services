@@ -43,6 +43,9 @@ class WorkflowProcess
   
   def to_hash
     {
+      'label' => self.label,
+      'sequence' => self.sequence,
+      'lifecycle' => self.lifecycle,
       'batch_limit' => self.batch_limit,
       'error_limit' => self.error_limit,
       'prerequisite' => self.prerequisites
@@ -108,10 +111,9 @@ class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream
   end
 
   def configuration
-    result = {
-      'repository' => repository,
-      'name' => name
-    }
+    result = ActiveSupport::OrderedHash.new
+    result['repository'] = repository
+    result['name'] = name
     processes.each { |process| result[process.name] = process.to_hash }
     result
   end
