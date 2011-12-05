@@ -81,7 +81,11 @@ module Dor
     # @raise [Exception] Raises an Exception if the generated DC is empty or has no children
     def generate_dublin_core
       apo = self.admin_policy_object
-      format = apo.nil? ? 'mods' : apo.datastreams['administrativeMetadata'].ng_xml.at('/administrativeMetadata/descMetadata/format').text.downcase
+      format = begin
+        apo.datastreams['administrativeMetadata'].ng_xml.at('/administrativeMetadata/descMetadata/format').text.downcase 
+      rescue 
+        'mods'
+      end
       xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/#{format}2dc.xslt")) )
       dc_doc = xslt.transform(self.datastreams['descMetadata'].ng_xml)
       if(dc_doc.root.nil? || dc_doc.root.children.size == 0)
