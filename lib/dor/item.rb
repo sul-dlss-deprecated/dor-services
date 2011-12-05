@@ -77,22 +77,31 @@ module Dor
     end
     
     # Generates Dublin Core from the MODS in the descMetadata datastream using the LoC mods2dc stylesheet
-    # Should not be used for the Fedora DC datastream
+    #   Should not be used for the Fedora DC datastream
+    # @raise [Exception] Raises an Exception if the generated DC is empty or has no children
     def generate_dublin_core
       apo = self.admin_policy_object
-      format = apo.nil? ? 'mods' : apo.datastreams['administrativeMetadata'].ng_xml.at('/administrativeMetadata/descMetadata/format').text.downcase
+      format = begin
+        apo.datastreams['administrativeMetadata'].ng_xml.at('/administrativeMetadata/descMetadata/format').text.downcase 
+      rescue 
+        'mods'
+      end
       xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/#{format}2dc.xslt")) )
-      xslt.transform(self.datastreams['descMetadata'].ng_xml)
+      dc_doc = xslt.transform(self.datastreams['descMetadata'].ng_xml)
+      if(dc_doc.root.nil? || dc_doc.root.children.size == 0)
+        raise "Dor::Item#generate_dublin_core produced incorrect xml:\n#{dc_doc.to_xml}"
+      end
+      dc_doc
     end
     
     def publish_metadata
       rights = datastreams['rightsMetadata'].ng_xml
       if(rights.at_xpath("//rightsMetadata/access[@type='discover']/machine/world"))
+        dc_xml = self.generate_dublin_core.to_xml {|config| config.no_declaration}
+        DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'dc')
         DigitalStacksService.transfer_to_document_store(pid, self.datastreams['identityMetadata'].to_xml, 'identityMetadata')
         DigitalStacksService.transfer_to_document_store(pid, self.datastreams['contentMetadata'].to_xml, 'contentMetadata')
         DigitalStacksService.transfer_to_document_store(pid, self.datastreams['rightsMetadata'].to_xml, 'rightsMetadata')
-        dc_xml = self.generate_dublin_core.to_xml {|config| config.no_declaration}
-        DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'dc')
         DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
       end
     end
@@ -147,4 +156,5 @@ module Dor
     
   end
 
+  Base.register_type('item', Item)
 end

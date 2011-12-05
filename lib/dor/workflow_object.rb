@@ -24,5 +24,6 @@ module Dor
     end
     
   end
-  
+
+  Base.register_type('workflow', WorkflowObject)
 end

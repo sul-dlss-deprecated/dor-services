@@ -40,7 +40,7 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
     (source,val) = value.split(/:/,2)
     node = self.find_by_terms(:sourceId).first || ng_xml.root.add_child('<sourceId/>').first
     node['source'] = source
-    node.text = val
+    node.content = val
   end
 
   def otherId(type = nil)

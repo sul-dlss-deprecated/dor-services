@@ -1,7 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require File.expand_path(File.dirname(__FILE__) + '/../foxml_helper')
 require 'equivalent-xml'
-require 'equivalent-xml/rspec_matchers'
 
 describe Dor::Item do
   
@@ -45,6 +44,29 @@ describe Dor::Item do
       dc = b.generate_dublin_core
       EquivalentXml.equivalent?(dc, expected_dc).should be
     end
+    
+    it "throws an exception if the generated dc has no root element" do
+      b = Dor::Item.new
+      descmd_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'descMetadata', :blob => '<tei><stuff>ha</stuff></tei')
+      b.add_datastream(descmd_ds)
+      
+      lambda {b.generate_dublin_core}.should raise_error
+    end
+    
+    it "throws an exception if the generated dc has only a root element with no children" do
+      mods = <<-EOXML
+        <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   version="3.3"
+                   xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd" />          
+      EOXML
+      
+      b = Dor::Item.new
+      descmd_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'descMetadata', :blob => mods)
+      b.add_datastream(descmd_ds)
+      
+      lambda {b.generate_dublin_core}.should raise_error
+    end
   end
         
   describe "#public_xml" do
@@ -60,7 +82,9 @@ describe Dor::Item do
             <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                        version="3.3"
-                       xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd"/>
+                       xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd">
+              <mods:identifier type="local" displayLabel="SUL Resource ID">druid:pz263ny9658</mods:identifier>
+            </mods:mods>           
           EOXML
           descmd_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'descMetadata', :blob => mods)
           @b.add_datastream(descmd_ds)
@@ -151,7 +175,9 @@ describe Dor::Item do
           <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                      version="3.3"
-                     xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd"/>
+                     xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd">
+            <mods:identifier type="local" displayLabel="SUL Resource ID">druid:pz263ny9658</mods:identifier>
+          </mods:mods>           
         EOXML
         descmd_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'descMetadata', :blob => mods)
         b.add_datastream(descmd_ds)

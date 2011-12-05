@@ -29,11 +29,15 @@ module Dor
         temp_v = $-v
         $-v = nil
         begin
-         ::ENABLE_SOLR_UPDATES = false
-         ::Fedora::Repository.register(fedora.url)
-         ::Fedora::Connection.const_set(:SSL_CLIENT_CERT_FILE,fedora.cert_file)
-         ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_FILE,fedora.key_file)
-         ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_PASS,fedora.key_pass)
+          if Object.const_defined? :Fedora
+            ::ENABLE_SOLR_UPDATES = false
+            ::Fedora::Repository.register(fedora.url)
+            ::Fedora::Connection.const_set(:SSL_CLIENT_CERT_FILE,fedora.cert_file)
+            ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_FILE,fedora.key_file)
+            ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_PASS,fedora.key_pass)
+          else
+            
+          end
         ensure
          $-v = temp_v
         end

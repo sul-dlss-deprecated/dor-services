@@ -7,5 +7,6 @@ module Dor
     has_metadata :name => "defaultObjectRights", :type => ActiveFedora::NokogiriDatastream, :label => 'Default Object Rights'
     
   end
+  Base.register_type('adminpolicy', AdminPolicyObject)
   
 end

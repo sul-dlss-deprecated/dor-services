@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
   
 Gem::Specification.new do |s|
   s.name        = "dor-services"
-  s.version     = "2.5.3"
+  s.version     = "2.5.4"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick","Richard Anderson"]
   s.email       = ["mbklein@stanford.edu"]
@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
   
   # Runtime dependencies
-  s.add_dependency "active-fedora", "~> 3.0.0"
+  s.add_dependency "active-fedora", "3.0.4"
   s.add_dependency "solr-ruby", ">=0.0.8"
   s.add_dependency "nokogiri", ">=1.4.3.1"
   s.add_dependency "om", ">=1.2.0"
