@@ -34,6 +34,7 @@ module Workflow
     def label         ; @attrs['label']         ; end
     def batch_limit   ; @attrs['batch_limit']   ; end
     def error_limit   ; @attrs['error_limit']   ; end
+    def error_message ; @attrs['errorMessage']  ; end
     def prerequisite  ; @attrs['prerequisite']  ; end
     def status        ; @attrs['status']        ; end
 
