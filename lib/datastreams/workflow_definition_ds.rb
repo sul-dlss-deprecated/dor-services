@@ -1,58 +1,5 @@
 require 'workflow/graph'
-
-class WorkflowProcess
-
-  def initialize(workflow, node)
-    @workflow = workflow
-    @node = node
-  end
-  
-  def name
-    @node['name']
-  end
-  
-  def sequence
-    @node['sequence']
-  end
-  
-  def lifecycle
-    @node['lifecycle']
-  end
-  
-  def label
-    @node.at_xpath('label/text()').to_s
-  end
-  
-  def batch_limit
-    @node['batch-limit'].to_i
-  end
-  
-  def error_limit
-    @node['error-limit'].to_i
-  end
-  
-  def prerequisites
-    @node.xpath('prereq').collect do |p| 
-      if (p['repository'].nil? and p['workflow'].nil?) or (p['repository'] == @workflow.repository and p['workflow'] == @workflow.name)
-        p.text.to_s
-      else
-        [(p['repository'] or @workflow.repository),(p['workflow'] or @workflow.name),p.text.to_s].join(':')
-      end
-    end
-  end
-  
-  def to_hash
-    {
-      'label' => self.label,
-      'sequence' => self.sequence,
-      'lifecycle' => self.lifecycle,
-      'batch_limit' => self.batch_limit,
-      'error_limit' => self.error_limit,
-      'prerequisite' => self.prerequisites
-    }.reject { |k,v| v.nil? or v == 0 or (v.respond_to?(:empty?) and v.empty?) }
-  end
-  
-end
+require 'workflow/process'
 
 class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream 
   
@@ -93,12 +40,12 @@ class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream
   end
   
   def graph(parent = nil)
-    Workflow::Graph.from_config(self.name, self.configuration, parent)
+    Workflow::Graph.from_processes(self.repository, self.name, self.processes, parent)
   end
   
   def processes
     ng_xml.xpath('/workflow-def/process').collect do |node|
-      WorkflowProcess.new(self, node)
+      Workflow::Process.new(self.name, self.repository, node)
     end
   end
 

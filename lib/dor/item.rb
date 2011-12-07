@@ -154,6 +154,10 @@ module Dor
       Dor::WorkflowService.create_workflow('dor',self.pid,name,wf_xml)
     end
     
+    def workflows
+      datastreams.keys.select { |k| k =~ /WF$/ }
+    end
+    
   end
 
   Base.register_type('item', Item)

@@ -63,6 +63,22 @@ module Dor
       configure_defined_datastreams
     end  
 
+    def datastreams_in_fedora #:nodoc:
+      mds = {}
+      self.datastreams_xml['datastream'].each do |ds|
+        ds.merge!({:pid => self.pid, :dsID => ds["dsid"], :dsLabel => ds["label"]})
+        if ds["dsid"] == "RELS-EXT" 
+          mds.merge!({ds["dsid"] => ActiveFedora::RelsExtDatastream.new(ds)})
+        elsif ds["dsid"] =~ /WF$/
+          mds.merge!({ds["dsid"] => WorkflowDs.new(ds)})
+        else
+          mds.merge!({ds["dsid"] => ActiveFedora::Datastream.new(ds)})
+        end
+        mds[ds["dsid"]].new_object = false
+      end
+      mds
+    end
+
     def content(dsid, raw=false)
       ds = nil
       data = nil

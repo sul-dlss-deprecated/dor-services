@@ -111,6 +111,7 @@ Values can also be configured individually:
 	- Handle empty <lifecycle> queries instead of a 404 exception
 	- Hotfix for public xml publishing from 2.3.1 
 - <b>2.5.4</b> Lock ActiveFedora at 2.0.4 for the time being -- higher versions expect a fedora.yml file that we don't provide
+- <b>2.6.0</b> First usable release of reified workflow objects
 
 == Copyright
 

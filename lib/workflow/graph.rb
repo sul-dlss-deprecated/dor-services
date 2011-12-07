@@ -29,6 +29,25 @@ class Graph
     return wf
   end
   
+  def self.from_processes(repo, name, processes, parent = nil)
+    wf = self.new(repo, name, parent)
+    processes.each { |p| 
+      wf.add_process(p.name).status = p.status || 'unknown'
+    }
+    processes.each { |p|
+      p.prerequisite.each { |prereq|
+        prereq.sub!(/^#{repo}:#{name}:/e,'')
+        if wf.processes[prereq]
+          wf.processes[p.name].depends_on(wf.processes[prereq])
+        else
+          wf.processes[p.name].depends_on(wf.add_process(prereq).set_status('external'))
+        end
+      }
+    }
+    wf.finish
+    return wf
+  end
+  
   def initialize(repo, name, parent = nil)
     @repo = repo
     @name = name
