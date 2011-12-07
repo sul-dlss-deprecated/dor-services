@@ -47,7 +47,7 @@ module Workflow
     end
     
     def elapsed
-      @attrs['elapsed'].to_f
+      @attrs['elapsed'].nil? ? nil : @attrs['elapsed'].to_f
     end
         
     def update!(info)
