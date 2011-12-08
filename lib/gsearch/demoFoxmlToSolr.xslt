@@ -27,7 +27,7 @@
        - from datastream by ID, text fetched, if mimetype can be handled
          currently the mimetypes text/plain, text/xml, text/html, application/pdf can be handled.
 	-->
-	<xsl:variable name="INDEXVERSION">2.0.6</xsl:variable>
+	<xsl:variable name="INDEXVERSION">2.0.8</xsl:variable>
 	
 	<xsl:param name="INCLUDE_EXTERNALS" select="true()"/>
 	<xsl:param name="REPOSITORYNAME" select="repositoryName"/>
@@ -40,6 +40,12 @@
 	<xsl:variable name="docBoost" select="1.4*2.5"/>
 	<xsl:variable name="OBJECTTYPE"
 		select="//foxml:datastream/foxml:datastreamVersion[last()]//identityMetadata/objectType/text()"/>
+	<xsl:variable name="first-workflow-url">
+		<xsl:value-of select="//foxml:contentLocation[@TYPE='URL' and contains(@REF, 'workflow/dor/objects')]/@REF"/>
+	</xsl:variable>
+	<xsl:variable name="workflow-stem">
+		<xsl:value-of select="substring-before($first-workflow-url, $PID)"/>
+	</xsl:variable>
 	<xsl:variable name="DATASTREAM_LIST">
 		<ds name="RELS-EXT"/>
 		<ds name="DC"/>
@@ -85,6 +91,7 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</field>
+		<xsl:call-template name="lifecycle"/>
 		<xsl:apply-templates select="*"/>
 	</xsl:template>
 	
@@ -445,6 +452,26 @@
 	</xsl:template>
 	
 	<!-- Workflows -->
+	<xsl:template name="lifecycle">
+		<xsl:variable name="lifecycle-uri" select="concat($workflow-stem, $PID, '/lifecycle')"/>
+		<xsl:message>Retrieving <xsl:value-of select="$lifecycle-uri"/></xsl:message>
+		<xsl:variable name="doc" select="document($lifecycle-uri)"/>
+		<xsl:apply-templates select="$doc/*"/>
+	</xsl:template>
+
+	<xsl:template match="lifecycle">
+		<xsl:for-each select="milestone">
+			<field name="lifecycle_field">
+				<xsl:value-of select="text()"/>:<xsl:value-of select="@date"/>
+			</field>
+			<xsl:if test="position() = last()">
+				<field name="lifecycle_facet">
+					<xsl:value-of select="text()"/>
+				</field>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	
 	<xsl:template match="workflow">
 		<xsl:param name="datastream-name" select="ancestor::foxml:datastream/@ID"/>
 		<xsl:variable name="workflow-name" select="$datastream-name"/>
@@ -463,14 +490,6 @@
 			<xsl:value-of select="$workflow-name"/>
 		</field>
 		<xsl:for-each select="process">
-			<xsl:if test="@status='completed' and @lifecycle">
-				<field name="lifecycle_field">
-					<xsl:value-of select="@lifecycle"/>:<xsl:value-of select="@datetime"/>
-				</field>
-				<field name="lifecycle_facet">
-					<xsl:value-of select="@lifecycle"/>
-				</field>
-			</xsl:if>
 			<field name="wf_wsp_facet">
 				<xsl:value-of select="concat($workflow-name,':',@status)"/>
 			</field>
