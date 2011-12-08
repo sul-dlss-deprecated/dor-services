@@ -27,7 +27,7 @@
        - from datastream by ID, text fetched, if mimetype can be handled
          currently the mimetypes text/plain, text/xml, text/html, application/pdf can be handled.
 	-->
-	<xsl:variable name="INDEXVERSION">2.0.5</xsl:variable>
+	<xsl:variable name="INDEXVERSION">2.0.6</xsl:variable>
 	
 	<xsl:param name="INCLUDE_EXTERNALS" select="true()"/>
 	<xsl:param name="REPOSITORYNAME" select="repositoryName"/>
@@ -268,12 +268,7 @@
 		</xsl:for-each>
 		<xsl:for-each select="mods:titleInfo">
 			<xsl:variable name="title-info">
-				<xsl:value-of select="mods:nonSort/text()"/>
-				<xsl:value-of select="mods:title/text()"/>
-				<xsl:if test="mods:subTitle">
-					<xsl:text> : </xsl:text>
-					<xsl:value-of select="mods:subTitle/text()"/>
-				</xsl:if>
+				<xsl:call-template name="mods-title"/>
 			</xsl:variable>
 			<field name="mods_titleInfo_field">
 				<xsl:value-of select="$title-info"/>
@@ -283,11 +278,14 @@
 			</field>
 		</xsl:for-each>
 		<xsl:for-each select="mods:name">
+			<xsl:variable name="name-info">
+				<xsl:call-template name="mods-name"/>
+			</xsl:variable>
 			<field name="mods_name_field">
-				<xsl:value-of select="mods:namePart/text()"/>
+				<xsl:value-of select="$name-info"/>
 			</field>
 			<field name="mods_name_text">
-				<xsl:value-of select="mods:namePart/text()"/>
+				<xsl:value-of select="$name-info"/>
 			</field>
 			<xsl:if test="mods:role/mods:roleTerm[@type='text']">
 				<xsl:variable name="role" select="mods:role/mods:roleTerm[@type='text']/text()"/>
@@ -340,7 +338,64 @@
 		</xsl:for-each>
 -->
 	</xsl:template>
-	
+
+	<!-- mods-title and mods-name templates cribbed from mods2dc.xslt -->
+	<xsl:template name="mods-title">
+		<xsl:value-of select="mods:nonSort"/>
+		<xsl:if test="mods:nonSort">
+			
+			<xsl:text> </xsl:text>
+		</xsl:if>
+		<xsl:value-of select="mods:title"/>
+		<xsl:if test="mods:subTitle">
+			<xsl:text>: </xsl:text>
+			<xsl:value-of select="mods:subTitle"/>
+		</xsl:if>
+		<xsl:if test="mods:partNumber">
+			
+			<xsl:text>. </xsl:text>
+			<xsl:value-of select="mods:partNumber"/>
+		</xsl:if>
+		<xsl:if test="mods:partName">
+			<xsl:text>. </xsl:text>
+			<xsl:value-of select="mods:partName"/>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template name="mods-name">
+		<xsl:variable name="name">
+			<xsl:for-each select="mods:namePart[not(@type)]">
+				<xsl:value-of select="."/>
+				
+				<xsl:text> </xsl:text>
+			</xsl:for-each>
+			<xsl:value-of select="mods:namePart[@type='family']"/>
+			<xsl:if test="mods:namePart[@type='given']">
+				<xsl:text>, </xsl:text>
+				<xsl:value-of select="mods:namePart[@type='given']"/>
+			</xsl:if>
+			<xsl:if test="mods:namePart[@type='date']">
+				
+				<xsl:text>, </xsl:text>
+				<xsl:value-of select="mods:namePart[@type='date']"/>
+				<xsl:text/>
+			</xsl:if>
+			<xsl:if test="mods:displayForm">
+				<xsl:text> (</xsl:text>
+				<xsl:value-of select="mods:displayForm"/>
+				
+				<xsl:text>) </xsl:text>
+			</xsl:if>
+			<xsl:for-each select="mods:role[mods:roleTerm[@type='text']!='creator']">
+				<xsl:text> (</xsl:text>
+				<xsl:value-of select="normalize-space(.)"/>
+				<xsl:text>) </xsl:text>
+			</xsl:for-each>
+			
+		</xsl:variable>
+		<xsl:value-of select="normalize-space($name)"/>
+	</xsl:template>
+
 	<!-- Index content metadata -->
 	<xsl:template match="contentMetadata">
 		<field name="content_type_facet">
@@ -411,6 +466,9 @@
 			<xsl:if test="@status='completed' and @lifecycle">
 				<field name="lifecycle_field">
 					<xsl:value-of select="@lifecycle"/>:<xsl:value-of select="@datetime"/>
+				</field>
+				<field name="lifecycle_facet">
+					<xsl:value-of select="@lifecycle"/>
 				</field>
 			</xsl:if>
 			<field name="wf_wsp_facet">
@@ -498,4 +556,5 @@
 		<xsl:value-of
 			select="translate($name,' ABCDEFGHIJKLMNOPQRSTUVWXYZ','_abcdefghijklmnopqrstuvwxyz')"/>
 	</xsl:template>
+	
 </xsl:stylesheet>
