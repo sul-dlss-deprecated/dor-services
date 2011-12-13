@@ -27,7 +27,7 @@
        - from datastream by ID, text fetched, if mimetype can be handled
          currently the mimetypes text/plain, text/xml, text/html, application/pdf can be handled.
 	-->
-	<xsl:variable name="INDEXVERSION">2.0.8</xsl:variable>
+	<xsl:variable name="INDEXVERSION">2.0.9</xsl:variable>
 	
 	<xsl:param name="INCLUDE_EXTERNALS" select="true()"/>
 	<xsl:param name="REPOSITORYNAME" select="repositoryName"/>
@@ -408,7 +408,9 @@
 		<field name="content_type_facet">
 			<xsl:value-of select="@type"/>
 		</field>
-		<xsl:apply-templates/>
+		<xsl:apply-templates select="./resource">
+			<xsl:sort data-type="number" select="@sequence"/>
+		</xsl:apply-templates>
 	</xsl:template>
 	<xsl:template match="contentMetadata/resource/file">
 		<field name="content_file_field">
@@ -490,6 +492,7 @@
 			<xsl:value-of select="$workflow-name"/>
 		</field>
 		<xsl:for-each select="process">
+			<xsl:sort select="@datetime" data-type="text"/>				
 			<field name="wf_wsp_facet">
 				<xsl:value-of select="concat($workflow-name,':',@status)"/>
 			</field>
