@@ -1,8 +1,8 @@
 require 'datastreams/workflow_definition_ds'
 
 module Dor
-
   class WorkflowObject < Base
+    
     has_metadata :name => "workflowDefinition", :type => WorkflowDefinitionDs, :label => 'Workflow Definition'
 
     def self.find_by_name(name)
@@ -24,6 +24,4 @@ module Dor
     end
     
   end
-
-  Base.register_type('workflow', WorkflowObject)
 end

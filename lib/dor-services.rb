@@ -1,8 +1,29 @@
+require 'active_fedora'
+
 module Dor
   Dependencies = [
     'dor/config',
     'dor/exceptions',
 
+    # datastreams
+    'datastreams/ng_tidy',
+    'datastreams/content_metadata_ds',
+    'datastreams/embargo_metadata_ds',
+    'datastreams/events_ds',
+    'datastreams/identity_metadata_ds',
+    'datastreams/simple_dublin_core_ds',
+    'datastreams/workflow_definition_ds',
+    'datastreams/workflow_ds',
+    
+    # DOR Concerns
+    'dor/identifiable',
+    'dor/processable',
+    'dor/governable',
+    'dor/describable',
+    'dor/publishable',
+    'dor/shelvable',
+    'dor/preservable',
+    
     # ActiveFedora Classes
     'dor/base',
     'dor/item',

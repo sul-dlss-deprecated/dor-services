@@ -1,6 +1,12 @@
-require 'datastreams/managed_nokogiri_ds'
+class ContentMetadataDS < ActiveFedora::NokogiriDatastream 
 
-class ContentMetadataDS < ActiveFedora::ManagedNokogiriDatastream 
+  set_terminology do
+  end
+  
+  def initialize *args
+    super(*args)
+    self.controlGroup = 'M'
+  end
   
   def public_xml
     result = self.ng_xml.clone
