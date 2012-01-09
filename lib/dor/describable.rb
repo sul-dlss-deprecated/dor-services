@@ -1,6 +1,12 @@
 module Dor
   module Describable
     extend ActiveSupport::Concern
+
+    DESC_MD_FORMATS = {
+      "http://www.tei-c.org/ns/1.0" => 'tei',
+      "http://www.loc.gov/mods/v3" =>  'mods'
+    }
+    class CrosswalkError < Exception; end
     
     included do
       has_metadata :name => "descMetadata", :type => ActiveFedora::NokogiriDatastream, :label => 'Descriptive Metadata', :control_group => 'M'
@@ -29,11 +35,9 @@ module Dor
     #   Should not be used for the Fedora DC datastream
     # @raise [Exception] Raises an Exception if the generated DC is empty or has no children
     def generate_dublin_core
-      apo = self.admin_policy_object
-      format = begin
-        apo.datastreams['administrativeMetadata'].ng_xml.at('/administrativeMetadata/descMetadata/format').text.downcase 
-      rescue 
-        'mods'
+      format = self.metadata_format
+      if format.nil?
+        raise CrosswalkError, "Unknown descMetadata namespace: #{namespace.inspect}"
       end
       xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/#{format}2dc.xslt")) )
       dc_doc = xslt.transform(self.datastreams['descMetadata'].ng_xml)
@@ -41,6 +45,12 @@ module Dor
         raise "Dor::Item#generate_dublin_core produced incorrect xml:\n#{dc_doc.to_xml}"
       end
       dc_doc
+    end
+   
+    def metadata_format
+      desc_md = self.datastreams['descMetadata'].ng_xml
+      return nil if desc_md.nil? or desc_md.root.nil? or desc_md.root.namespace.nil?
+      DESC_MD_FORMATS[desc_md.root.namespace.href]
     end
     
   end
