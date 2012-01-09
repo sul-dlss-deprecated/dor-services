@@ -1,5 +1,7 @@
 module Dor
-  class Item < Base
+  module BasicItem
+    extend ActiveSupport::Concern
+    
     include Identifiable
     include Processable
     include Governable
@@ -7,5 +9,9 @@ module Dor
     include Publishable
     include Shelvable
     include Preservable
+  end
+  
+  class Item < ::ActiveFedora::Base
+    include BasicItem
   end
 end

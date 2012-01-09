@@ -25,7 +25,6 @@ module Dor
     'dor/preservable',
     
     # ActiveFedora Classes
-    'dor/base',
     'dor/item',
     'dor/admin_policy_object',
     'dor/workflow_object',
