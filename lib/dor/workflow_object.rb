@@ -1,7 +1,8 @@
 require 'datastreams/workflow_definition_ds'
 
 module Dor
-  class WorkflowObject < Base
+  class WorkflowObject < ::ActiveFedora::Base
+    include Identifiable
     
     has_metadata :name => "workflowDefinition", :type => WorkflowDefinitionDs, :label => 'Workflow Definition'
 

@@ -1,5 +1,6 @@
 module Dor
-  class AdminPolicyObject < Base
+  class AdminPolicyObject < ::ActiveFedora::Base
+    include Identifiable
     include Governable
     
     has_many :items, :property => :is_governed_by
