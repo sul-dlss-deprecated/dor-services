@@ -220,7 +220,7 @@ describe Dor::Item do
         Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123bb4567', /<oai_dc:dc/, 'dc')
         Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123bb4567', /<publicObject/, 'public')
         Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123bb4567', /<mods:mods/, 'mods')
-
+        
         b.publish_metadata
       end
     end
