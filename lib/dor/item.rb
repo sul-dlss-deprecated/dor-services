@@ -100,7 +100,7 @@ module Dor
     
     def metadata_format
       desc_md = self.datastreams['descMetadata'].ng_xml
-      return nil if desc_md.root.nil? or desc_md.root.namespace.nil?
+      return nil if desc_md.nil? or desc_md.root.nil? or desc_md.root.namespace.nil?
       DESC_MD_FORMATS[desc_md.root.namespace.href]
     end
     
@@ -112,6 +112,9 @@ module Dor
         DigitalStacksService.transfer_to_document_store(pid, self.datastreams['identityMetadata'].to_xml, 'identityMetadata')
         DigitalStacksService.transfer_to_document_store(pid, self.datastreams['contentMetadata'].to_xml, 'contentMetadata')
         DigitalStacksService.transfer_to_document_store(pid, self.datastreams['rightsMetadata'].to_xml, 'rightsMetadata')
+        if self.metadata_format == 'mods'
+          DigitalStacksService.transfer_to_document_store(pid, self.datastreams['descMetadata'].to_xml, 'mods')
+        end
         DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
       end
     end
