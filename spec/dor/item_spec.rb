@@ -95,8 +95,8 @@ describe Dor::Item do
           @b.add_datastream(cm_ds)
           r_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'rightsMetadata', :blob => '<rightsMetadata/>')
           @b.add_datastream(r_ds)
-          
-          @b.rels_ext.blob = <<-EOXML
+
+          @rels = <<-EOXML
             <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:hydra="http://projecthydra.org/ns/relations#">
               <rdf:Description rdf:about="info:fedora/druid:123456">
                 <hydra:isGovernedBy rdf:resource="info:fedora/druid:789012"></hydra:isGovernedBy>
@@ -106,6 +106,8 @@ describe Dor::Item do
               </rdf:Description>
             </rdf:RDF>
           EOXML
+          @b.rels_ext.blob = @rels
+          
           @p_xml = Nokogiri::XML(@b.public_xml)
         end
         
@@ -134,14 +136,20 @@ describe Dor::Item do
        end
        
        it "relationships" do
-         @p_xml.at_xpath('/publicObject/rdf:RDF', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#').should be
+         ns = { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'hydra' => 'http://projecthydra.org/ns/relations#', 
+           'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'fedora-model' => 'info:fedora/fedora-system:def/model#' }
+         @p_xml.at_xpath('/publicObject/rdf:RDF', ns).should be
+         @p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOf', ns).should be
+         @p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOfCollection', ns).should be
+         @p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora-model:hasModel', ns).should_not be
+         @p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/hydra:isGovernedBy', ns).should_not be
        end
        
        it "clones of the content of the other datastreams, keeping the originals in tact" do
          @b.datastreams['identityMetadata'].ng_xml.at_xpath("/identityMetadata").should be
          @b.datastreams['contentMetadata'].ng_xml.at_xpath("/contentMetadata").should be
          @b.datastreams['rightsMetadata'].ng_xml.at_xpath("/rightsMetadata").should be
-         @b.datastreams['RELS-EXT'].content.should be
+         @b.datastreams['RELS-EXT'].blob.should be_equivalent_to @rels
        end
     end
   
