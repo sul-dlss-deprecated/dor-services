@@ -95,6 +95,17 @@ describe Dor::Item do
           @b.add_datastream(cm_ds)
           r_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'rightsMetadata', :blob => '<rightsMetadata/>')
           @b.add_datastream(r_ds)
+          
+          @b.rels_ext.blob = <<-EOXML
+            <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:hydra="http://projecthydra.org/ns/relations#">
+              <rdf:Description rdf:about="info:fedora/druid:123456">
+                <hydra:isGovernedBy rdf:resource="info:fedora/druid:789012"></hydra:isGovernedBy>
+                <fedora-model:hasModel rdf:resource="info:fedora/hydra:commonMetadata"></fedora-model:hasModel>
+                <fedora:isMemberOf rdf:resource="info:fedora/druid:987654"></fedora:isMemberOf>
+                <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:987654"></fedora:isMemberOfCollection>
+              </rdf:Description>
+            </rdf:RDF>
+          EOXML
           @p_xml = Nokogiri::XML(@b.public_xml)
         end
         
@@ -122,10 +133,15 @@ describe Dor::Item do
          @p_xml.at_xpath('/publicObject/oai_dc:dc', 'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/').should be
        end
        
+       it "relationships" do
+         @p_xml.at_xpath('/publicObject/rdf:RDF', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#').should be
+       end
+       
        it "clones of the content of the other datastreams, keeping the originals in tact" do
          @b.datastreams['identityMetadata'].ng_xml.at_xpath("/identityMetadata").should be
          @b.datastreams['contentMetadata'].ng_xml.at_xpath("/contentMetadata").should be
          @b.datastreams['rightsMetadata'].ng_xml.at_xpath("/rightsMetadata").should be
+         @b.datastreams['RELS-EXT'].content.should be
        end
     end
   

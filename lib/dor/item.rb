@@ -78,6 +78,7 @@ module Dor
       pub.add_child(self.datastreams['identityMetadata'].ng_xml.root.clone)
       pub.add_child(self.datastreams['contentMetadata'].public_xml.root.clone)
       pub.add_child(self.datastreams['rightsMetadata'].ng_xml.root.clone)
+      pub.add_child(Nokogiri::XML(self.rels_ext.blob).root.clone)
       pub.add_child(generate_dublin_core.root)
       Nokogiri::XML(pub.to_xml) { |x| x.noblanks }.to_xml { |config| config.no_declaration }
     end
