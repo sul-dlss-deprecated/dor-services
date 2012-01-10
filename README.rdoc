@@ -116,6 +116,7 @@ Values can also be configured individually:
   - Publish MODS descMetadata alongside public XML
   - gsearch style sheet updates
 - <b<2.6.2</b> Add relationship metadata (straight RELS-EXT clone) to public XML
+- <b<2.6.3</b> Filter irrelevant relationships out of public XML
 == Copyright
 
 Copyright (c) 2011 Stanford University Library. See LICENSE for details.
