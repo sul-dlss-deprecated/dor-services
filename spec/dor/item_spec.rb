@@ -106,7 +106,9 @@ describe Dor::Item do
               </rdf:Description>
             </rdf:RDF>
           EOXML
-          @b.rels_ext.blob = @rels
+          @b.datastreams['RELS-EXT'].blob = @rels
+          # Stubbing #content() to match #blob() due to a RelsExtDatastream quirk
+          @b.datastreams['RELS-EXT'].stub!(:content) { @b.datastreams['RELS-EXT'].blob }
           
           @p_xml = Nokogiri::XML(@b.public_xml)
         end

@@ -73,7 +73,7 @@ module Dor
 
     def public_relationships
       include_elements = ['fedora:isMemberOf','fedora:isMemberOfCollection']
-      rels_doc = Nokogiri::XML(self.datastreams['RELS-EXT'].blob)
+      rels_doc = Nokogiri::XML(self.datastreams['RELS-EXT'].content)
       rels_doc.xpath('/rdf:RDF/rdf:Description/*', { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' }).each do |rel|
         unless include_elements.include?([rel.namespace.prefix,rel.name].join(':'))
           rel.next_sibling.remove if rel.next_sibling.content.strip.empty?
@@ -90,7 +90,8 @@ module Dor
       pub.add_child(self.datastreams['identityMetadata'].ng_xml.root.clone)
       pub.add_child(self.datastreams['contentMetadata'].public_xml.root.clone)
       pub.add_child(self.datastreams['rightsMetadata'].ng_xml.root.clone)
-      pub.add_child(public_relationships.root.clone)
+      rels = public_relationships.root
+      pub.add_child(rels.clone) unless rels.nil? # TODO: Should never be nil in practice; working around an ActiveFedora quirk for testing
       pub.add_child(generate_dublin_core.root)
       Nokogiri::XML(pub.to_xml) { |x| x.noblanks }.to_xml { |config| config.no_declaration }
     end
