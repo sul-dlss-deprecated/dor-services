@@ -94,7 +94,6 @@ describe Dor::Item do
           @b.add_datastream(cm_ds)
           r_ds = ActiveFedora::NokogiriDatastream.new(:dsid=> 'rightsMetadata', :blob => '<rightsMetadata/>')
           @b.add_datastream(r_ds)
-
           @rels = <<-EOXML
             <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:hydra="http://projecthydra.org/ns/relations#">
               <rdf:Description rdf:about="info:fedora/druid:123456">
@@ -108,7 +107,6 @@ describe Dor::Item do
           @b.datastreams['RELS-EXT'].blob = @rels
           # Stubbing #content() to match #blob() due to a RelsExtDatastream quirk
           @b.datastreams['RELS-EXT'].stub!(:content) { @b.datastreams['RELS-EXT'].blob }
-          
           @p_xml = Nokogiri::XML(@b.public_xml)
         end
         
@@ -145,7 +143,7 @@ describe Dor::Item do
          @p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora-model:hasModel', ns).should_not be
          @p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/hydra:isGovernedBy', ns).should_not be
        end
-       
+
        it "clones of the content of the other datastreams, keeping the originals in tact" do
          @b.datastreams['identityMetadata'].ng_xml.at_xpath("/identityMetadata").should be
          @b.datastreams['contentMetadata'].ng_xml.at_xpath("/contentMetadata").should be
