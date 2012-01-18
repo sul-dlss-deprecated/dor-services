@@ -27,7 +27,7 @@
        - from datastream by ID, text fetched, if mimetype can be handled
          currently the mimetypes text/plain, text/xml, text/html, application/pdf can be handled.
 	-->
-	<xsl:variable name="INDEXVERSION">2.0.10</xsl:variable>
+	<xsl:variable name="INDEXVERSION">2.1.0</xsl:variable>
 	
 	<xsl:param name="INCLUDE_EXTERNALS" select="true()"/>
 	<xsl:param name="REPOSITORYNAME" select="repositoryName"/>
@@ -479,6 +479,10 @@
 				</field>
 			</xsl:if>
 		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template match="workflows">
+		<xsl:apply-templates select="./workflow"/>
 	</xsl:template>
 	
 	<xsl:template match="workflow">
