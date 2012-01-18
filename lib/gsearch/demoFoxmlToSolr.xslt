@@ -466,6 +466,12 @@
 			<field name="lifecycle_field">
 				<xsl:value-of select="text()"/>:<xsl:value-of select="@date"/>
 			</field>
+			<field>
+			  	<xsl:attribute name="name">
+			  		<xsl:value-of select="concat(text(),'_date')"/>
+			  	</xsl:attribute>
+			  	<xsl:value-of select="@date"/>
+			</field>
 			<xsl:if test="position() = last()">
 				<field name="lifecycle_facet">
 					<xsl:value-of select="text()"/>
