@@ -15,9 +15,9 @@ class EventsDS < ActiveFedora::NokogiriDatastream
     return builder.doc
   end
   
-  def initialize(attrs=nil)
+  def initialize(*args)
     super
-    @attributes[:versionable] = false
+    self.versionable = false
   end
   
   # Adds an event to the datastream

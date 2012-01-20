@@ -24,9 +24,9 @@ class EmbargoMetadataDS < ActiveFedora::NokogiriDatastream
     return builder.doc
   end
   
-  def initialize(attrs=nil)
+  def initialize(*args)
     super
-    @attributes[:versionable] = false
+    self.versionable = false
   end
 
   #################################################################################
