@@ -8,6 +8,7 @@ module Dor
     include Describable
     include Publishable
     include Shelvable
+    include Embargoable
     include Preservable
   end
   

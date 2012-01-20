@@ -1,11 +1,14 @@
-require 'datastreams/embargo_metadata_ds'
-require 'datastreams/events_ds'
-
 module Dor
-  
-  # These methods manipulate the object for embargo purposes
-  # They assume the object has embargoMetadata, rightsMetadata, and events datastreams
-  module Embargo
+  module Embargoable
+    extend ActiveSupport::Concern
+    
+    included do
+      has_metadata :name => 'embargoMetadata', :type => EmbargoMetadataDS, :label => 'Embargo metadata'
+      has_metadata :name => 'events', :type => EventsDS, :label => 'Events' # This should maybe be part of a different concern
+    end
+
+    # These methods manipulate the object for embargo purposes
+    # They assume the object has embargoMetadata, rightsMetadata, and events datastreams
     
     # Manipulates datastreams in the object when embargo is lifted:
     # Sets embargo status to released in embargoMetadata

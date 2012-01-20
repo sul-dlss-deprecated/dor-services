@@ -23,6 +23,7 @@ module Dor
     'dor/describable',
     'dor/publishable',
     'dor/shelvable',
+    'dor/embargoable',
     'dor/preservable',
     
     # ActiveFedora Classes
