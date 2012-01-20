@@ -1,6 +1,7 @@
 module Dor
   module Processable
     extend ActiveSupport::Concern
+    include SolrDocHelper
 
     included do
       self.ds_specs.instance_eval do
@@ -36,6 +37,16 @@ module Dor
     
     def workflows
       datastreams.keys.select { |k| k =~ /WF$/ }
+    end
+    
+    def to_solr(solr_doc=Hash.new, *args)
+      super(solr_doc, *args)
+      self.milestones.each do |milestone|
+        timestamp = milestone[:at].utc.xmlschema
+        add_solr_value(solr_doc, 'lifecycle', "#{milestone[:milestone]}:#{timestamp}", :string, [:searchable, :facetable])
+        add_solr_value(solr_doc, milestone[:milestone], timestamp, :date, [:searchable, :facetable, :sortable])
+      end
+      solr_doc
     end
   end
 end

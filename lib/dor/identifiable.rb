@@ -1,8 +1,10 @@
 module Dor
   module Identifiable
     extend ActiveSupport::Concern
+    include SolrDocHelper
     
     included do
+      has_metadata :name => "DC", :type => SimpleDublinCoreDs, :label => 'Dublin Core Record for this object'
       has_metadata :name => "identityMetadata", :type => IdentityMetadataDS, :label => 'Identity Metadata'
     end
 
@@ -28,6 +30,10 @@ module Dor
         super
       end
     end
-    
+
+    def to_solr(solr_doc=Hash.new)
+      super(solr_doc)
+      add_solr_value(solr_doc, 'dor_services_version', Dor::VERSION, :string)
+    end
   end
 end

@@ -1,6 +1,33 @@
 class ContentMetadataDS < ActiveFedora::NokogiriDatastream 
 
-  set_terminology do
+  set_terminology do |t|
+    t.root :path => 'contentMetadata', :xmlns => '', :namespace_prefix => nil, :index_as => [:not_searchable]
+    t.contentType :path => { :attribute => 'type' }, :namespace_prefix => nil, :index_as => [:not_searchable]
+    t.resource(:namespace_prefix => nil, :index_as => [:not_searchable]) do
+      t.id_ :path => { :attribute => 'id' }, :namespace_prefix => nil
+      t.sequence :path => { :attribute => 'sequence' }, :namespace_prefix => nil, :data_type => :integer
+      t.type_ :path => { :attribute => 'type' }, :namespace_prefix => nil, :index_as => [:displayable]
+      t.attribute(:path => 'attr', :namespace_prefix => nil, :index_as => [:not_searchable]) do
+        t.name :path => { :attribute => 'name' }, :index_as => [:not_searchable]
+      end
+      t.file(:namespace_prefix => nil, :index_as => [:not_searchable]) do
+        t.id_ :path => { :attribute => 'id' }, :namespace_prefix => nil
+        t.format :path => { :attribute => 'format' }, :namespace_prefix => nil, :index_as => [:displayable]
+        t.mimeType :path => { :attribute => 'mimeType' }, :namespace_prefix => nil, :index_as => [:displayable]
+        t.dataType :path => { :attribute => 'dataType' }, :namespace_prefix => nil, :index_as => [:displayable]
+        t.size :path => { :attribute => 'size' }, :namespace_prefix => nil, :data_type => :long, :index_as => [:displayable]
+        t.shelve :path => { :attribute => 'shelve' }, :namespace_prefix => nil, :data_type => :boolean, :index_as => [:not_searchable]
+        t.publish :path => { :attribute => 'publish' }, :namespace_prefix => nil, :data_type => :boolean, :index_as => [:not_searchable]
+        t.preserve :path => { :attribute => 'preserve' }, :namespace_prefix => nil, :data_type => :boolean, :index_as => [:not_searchable]
+        t.checksum(:namespace_prefix => nil) do
+          t.type_ :path => { :attribute => 'type' }, :namespace_prefix => nil
+        end
+      end
+      t.shelved_file(:path => 'file', :attributes => {:shelve=>'yes'}, :namespace_prefix => nil, :index_as => [:not_searchable]) do
+        t.id_ :path => { :attribute => 'id' }, :namespace_prefix => nil, :index_as => [:displayable, :searchable]
+      end
+    end
+    t.shelved_file_id :proxy => [:resource, :shelved_file, :id], :index_as => [:displayable, :searchable]
   end
   
   def initialize *args

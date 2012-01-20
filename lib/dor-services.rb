@@ -6,8 +6,11 @@ module Dor
     'dor/config',
     'dor/exceptions',
 
-    # datastreams
+    # datastream utilities
     'datastreams/ng_tidy',
+    'datastreams/solr_doc_helper',
+    
+    # datastreams
     'datastreams/content_metadata_ds',
     'datastreams/embargo_metadata_ds',
     'datastreams/events_ds',

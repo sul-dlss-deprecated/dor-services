@@ -1,15 +1,16 @@
 class WorkflowDs < ActiveFedora::NokogiriDatastream 
+  include SolrDocHelper
   
   set_terminology do |t|
     t.root(:path=>"workflow", :xmlns => '', :namespace_prefix => nil)
-    t.workflowId(:path=>{:attribute => "id"}, :index_as => [:displayable, :facetable])
+    t.workflowId(:path=>{:attribute => "id"})
     t.process(:path=>'process', :namespace_prefix => nil) {
-      t._name(:path=>{:attribute=>"name"}, :index_as => [:displayable, :facetable, :sortable])
-      t.status(:path=>{:attribute=>"status"}, :index_as => [:displayable, :facetable, :sortable])
-      t.timestamp(:path=>{:attribute=>"datetime"}, :index_as => [:searchable, :sortable])
+      t._name(:path=>{:attribute=>"name"})
+      t.status(:path=>{:attribute=>"status"})
+      t.timestamp(:path=>{:attribute=>"datetime"}, :data_type => :date)
       t.elapsed(:path=>{:attribute=>"elapsed"})
-      t.lifecycle(:path=>{:attribute=>"lifecycle"}, :index_as => [:displayable, :facetable, :sortable])
-      t.attempts(:path=>{:attribute=>"attempts"})
+      t.lifecycle(:path=>{:attribute=>"lifecycle"})
+      t.attempts(:path=>{:attribute=>"attempts"}, :index_as => nil)
     }
   end
 
@@ -35,4 +36,19 @@ class WorkflowDs < ActiveFedora::NokogiriDatastream
     end
   end
     
+  def to_solr(solr_doc=Hash.new, *args)
+    super
+    wf_name = self.workflowId.first
+    add_solr_value(solr_doc, 'wf', wf_name, :string, [:facetable])
+    add_solr_value(solr_doc, 'wf_wps', wf_name, :string, [:facetable])
+    add_solr_value(solr_doc, 'wf_wsp', wf_name, :string, [:facetable])
+    self.find_by_terms(:workflow, :process).sort { |a,b| a['datetime'] <=> b['datetime'] }.each do |process|
+      add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process['name']}", :string, [:facetable])
+      add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process['name']}:#{process['status']}", :string, [:facetable])
+      add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process['status']}", :string, [:facetable])
+      add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process['status']}:#{process['name']}", :string, [:facetable])
+    end
+    solr_doc
+  end
+  
 end
