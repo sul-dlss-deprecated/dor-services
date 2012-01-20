@@ -34,10 +34,18 @@ module Dor
       $-v = nil
       begin
         Object.const_set(:ENABLE_SOLR_UPDATES,false)
-        ::Fedora::Repository.register(config.fedora.url)
-        ::Fedora::Connection.const_set(:SSL_CLIENT_CERT_FILE,config.fedora.cert_file)
-        ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_FILE,config.fedora.key_file)
-        ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_PASS,config.fedora.key_pass)
+        fedora_uri = URI.parse(config.fedora.url)
+        ActiveFedora::RubydoraConnection.connect :url => config.fedora.safeurl, 
+          :user => fedora_uri.user, :password => fedora_uri.password, 
+          :ssl_client_cert => OpenSSL::X509::Certificate.new(File.read(config.fedora.cert_file)), 
+          :ssl_client_key => OpenSSL::PKey::RSA.new(File.read(config.fedora.key_file),config.fedora.key_pass)
+
+          ActiveFedora::SolrService.register config.solrizer.url
+          conn = ActiveFedora::SolrService.instance.conn.connection
+          conn.use_ssl = true
+          conn.cert = OpenSSL::X509::Certificate.new(File.read(config.fedora.cert_file))
+          conn.key = OpenSSL::PKey::RSA.new(File.read(config.fedora.key_file),config.fedora.key_pass)
+          conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
       ensure
         $-v = temp_v
       end
