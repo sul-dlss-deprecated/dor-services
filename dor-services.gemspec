@@ -1,10 +1,11 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
-  
+require 'dor/version'
+
 Gem::Specification.new do |s|
   s.name        = "dor-services"
-  s.version     = "2.6.3"
+  s.version     = Dor::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick","Richard Anderson"]
   s.email       = ["mbklein@stanford.edu"]

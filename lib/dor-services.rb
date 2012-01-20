@@ -2,6 +2,7 @@ require 'active_fedora'
 
 module Dor
   Dependencies = [
+    'dor/version',
     'dor/config',
     'dor/exceptions',
 
