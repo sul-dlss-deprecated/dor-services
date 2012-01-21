@@ -5,7 +5,7 @@ class ContentMetadataDS < ActiveFedora::NokogiriDatastream
     t.contentType :path => { :attribute => 'type' }, :namespace_prefix => nil, :index_as => [:not_searchable]
     t.resource(:namespace_prefix => nil, :index_as => [:not_searchable]) do
       t.id_ :path => { :attribute => 'id' }, :namespace_prefix => nil
-      t.sequence :path => { :attribute => 'sequence' }, :namespace_prefix => nil, :data_type => :integer
+      t.sequence :path => { :attribute => 'sequence' }, :namespace_prefix => nil#, :data_type => :integer
       t.type_ :path => { :attribute => 'type' }, :namespace_prefix => nil, :index_as => [:displayable]
       t.attribute(:path => 'attr', :namespace_prefix => nil, :index_as => [:not_searchable]) do
         t.name :path => { :attribute => 'name' }, :index_as => [:not_searchable]
@@ -15,10 +15,10 @@ class ContentMetadataDS < ActiveFedora::NokogiriDatastream
         t.format :path => { :attribute => 'format' }, :namespace_prefix => nil, :index_as => [:displayable]
         t.mimeType :path => { :attribute => 'mimeType' }, :namespace_prefix => nil, :index_as => [:displayable]
         t.dataType :path => { :attribute => 'dataType' }, :namespace_prefix => nil, :index_as => [:displayable]
-        t.size :path => { :attribute => 'size' }, :namespace_prefix => nil, :data_type => :long, :index_as => [:displayable]
-        t.shelve :path => { :attribute => 'shelve' }, :namespace_prefix => nil, :data_type => :boolean, :index_as => [:not_searchable]
-        t.publish :path => { :attribute => 'publish' }, :namespace_prefix => nil, :data_type => :boolean, :index_as => [:not_searchable]
-        t.preserve :path => { :attribute => 'preserve' }, :namespace_prefix => nil, :data_type => :boolean, :index_as => [:not_searchable]
+        t.size :path => { :attribute => 'size' }, :namespace_prefix => nil, :index_as => [:displayable]#, :data_type => :long
+        t.shelve :path => { :attribute => 'shelve' }, :namespace_prefix => nil, :index_as => [:not_searchable]#, :data_type => :boolean
+        t.publish :path => { :attribute => 'publish' }, :namespace_prefix => nil, :index_as => [:not_searchable]#, :data_type => :boolean
+        t.preserve :path => { :attribute => 'preserve' }, :namespace_prefix => nil, :index_as => [:not_searchable]#, :data_type => :boolean
         t.checksum(:namespace_prefix => nil) do
           t.type_ :path => { :attribute => 'type' }, :namespace_prefix => nil
         end

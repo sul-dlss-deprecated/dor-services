@@ -7,10 +7,10 @@ class WorkflowDs < ActiveFedora::NokogiriDatastream
     t.process(:path=>'process', :namespace_prefix => nil) {
       t._name(:path=>{:attribute=>"name"})
       t.status(:path=>{:attribute=>"status"})
-      t.timestamp(:path=>{:attribute=>"datetime"}, :data_type => :date)
+      t.timestamp(:path=>{:attribute=>"datetime"})#, :data_type => :date)
       t.elapsed(:path=>{:attribute=>"elapsed"})
       t.lifecycle(:path=>{:attribute=>"lifecycle"})
-      t.attempts(:path=>{:attribute=>"attempts"}, :index_as => nil)
+      t.attempts(:path=>{:attribute=>"attempts"}, :index_as => [:not_searchable])
     }
   end
 
