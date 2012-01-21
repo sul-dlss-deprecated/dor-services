@@ -9,7 +9,7 @@ module Dor
     class CrosswalkError < Exception; end
     
     included do
-      has_metadata :name => "descMetadata", :type => ActiveFedora::NokogiriDatastream, :label => 'Descriptive Metadata', :control_group => 'M'
+      has_metadata :name => "descMetadata", :type => DescMetadataDS, :label => 'Descriptive Metadata', :control_group => 'M'
     end
 
     def fetch_descMetadata_datastream

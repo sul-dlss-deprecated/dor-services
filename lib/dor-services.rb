@@ -11,10 +11,13 @@ module Dor
     'datastreams/solr_doc_helper',
     
     # datastreams
+    'datastreams/administrative_metadata_ds',
     'datastreams/content_metadata_ds',
+    'datastreams/desc_metadata_ds',
     'datastreams/embargo_metadata_ds',
     'datastreams/events_ds',
     'datastreams/identity_metadata_ds',
+    'datastreams/role_metadata_ds',
     'datastreams/simple_dublin_core_ds',
     'datastreams/workflow_definition_ds',
     'datastreams/workflow_ds',
