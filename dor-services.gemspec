@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.add_dependency "active-fedora"
   s.add_dependency "solr-ruby", ">=0.0.8"
   s.add_dependency "nokogiri", ">=1.4.3.1"
-  s.add_dependency "om", ">=1.2.0"
+  s.add_dependency "confstruct"
   s.add_dependency "rest-client"
   s.add_dependency "validatable"
   s.add_dependency "uuidtools"
