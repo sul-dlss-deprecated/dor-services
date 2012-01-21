@@ -14,6 +14,11 @@ class WorkflowDs < ActiveFedora::NokogiriDatastream
     }
   end
 
+  def initialize(*args)
+    self.field_mapper = UtcDateFieldMapper.new
+    super
+  end
+  
   def definition
     wfo = Dor::WorkflowObject.find_by_name(self.workflowId.first)
     wfo ? wfo.definition : nil

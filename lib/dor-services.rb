@@ -9,6 +9,7 @@ module Dor
     # datastream utilities
     'datastreams/ng_tidy',
     'datastreams/solr_doc_helper',
+    'datastreams/utc_date_field_mapper',
     
     # datastreams
     'datastreams/administrative_metadata_ds',
