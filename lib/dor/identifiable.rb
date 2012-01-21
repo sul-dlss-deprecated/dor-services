@@ -34,6 +34,7 @@ module Dor
     def to_solr(solr_doc=Hash.new)
       super(solr_doc)
       add_solr_value(solr_doc, 'dor_services_version', Dor::VERSION, :string)
+      solr_doc
     end
   end
 end
