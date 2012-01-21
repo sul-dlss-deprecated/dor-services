@@ -53,7 +53,7 @@ class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream
     ng_xml.at_xpath('/workflow-def/@id').to_s
   end
   
-  def repository
+  def repo
     ng_xml.at_xpath('/workflow-def/@repository').to_s
   end
 
