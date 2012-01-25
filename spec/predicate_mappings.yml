@@ -47,3 +47,8 @@
   http://projecthydra.org/ns/relations#:
     :is_governed_by: isGovernedBy
     
+:predicate_namespaces:
+  :hydra: http://projecthydra.org/ns/relations#
+  :fedora: info:fedora/fedora-system:def/relations-external#
+  :fedora-model: info:fedora/fedora-system:def/model#
+  :oai: http://www.openarchives.org/OAI/2.0/
