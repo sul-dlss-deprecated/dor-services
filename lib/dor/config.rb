@@ -33,7 +33,6 @@ module Dor
       temp_v = $-v
       $-v = nil
       begin
-        Object.const_set(:ENABLE_SOLR_UPDATES,false)
         fedora_uri = URI.parse(config.fedora.url)
         ActiveFedora::RubydoraConnection.connect :url => config.fedora.safeurl, 
           :user => fedora_uri.user, :password => fedora_uri.password, 
