@@ -5,10 +5,10 @@ require 'time'
 class EmbargoMetadataDS < ActiveFedora::NokogiriDatastream
 
   set_terminology do |t|
-    t.root(:path => "embargoMetadata", :xmlns => '', :namespace_prefix => nil)
-    t.status(:namespace_prefix => nil, :index_as => [:searchable, :facetable])
-    t.release_date(:path => "releaseDate", :namespace_prefix => nil)#, :data_type => :date)
-    t.release_access(:path => "releaseAccess", :namespace_prefix => nil)
+    t.root(:path => "embargoMetadata")
+    t.status(:index_as => [:searchable, :facetable])
+    t.release_date(:path => "releaseDate")#, :data_type => :date)
+    t.release_access(:path => "releaseAccess")
   end
   
   # Default EmbargoMetadataDS xml 

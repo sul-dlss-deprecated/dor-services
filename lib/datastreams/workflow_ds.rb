@@ -2,9 +2,9 @@ class WorkflowDs < ActiveFedora::NokogiriDatastream
   include SolrDocHelper
   
   set_terminology do |t|
-    t.root(:path=>"workflow", :xmlns => '', :namespace_prefix => nil)
+    t.root(:path=>"workflow")
     t.workflowId(:path=>{:attribute => "id"})
-    t.process(:path=>'process', :namespace_prefix => nil) {
+    t.process(:path=>'process') {
       t._name(:path=>{:attribute=>"name"})
       t.status(:path=>{:attribute=>"status"})
       t.timestamp(:path=>{:attribute=>"datetime"})#, :data_type => :date)

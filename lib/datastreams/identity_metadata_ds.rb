@@ -2,18 +2,18 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
   include SolrDocHelper
   
   set_terminology do |t|
-    t.root(:path=>"identityMetadata", :xmlns => '')
-    t.objectId :namespace_prefix => nil
-    t.objectType :namespace_prefix => nil, :index_as => [:searchable, :facetable]
-    t.objectLabel :namespace_prefix => nil
-    t.citationCreator :namespace_prefix => nil
-    t.sourceId :namespace_prefix => nil
-    t.otherId :namespace_prefix => nil
-    t.agreementId :namespace_prefix => nil, :index_as => [:searchable, :facetable]
-    t.tag :namespace_prefix => nil, :index_as => [:searchable, :facetable]
-    t.citationTitle :namespace_prefix => nil
-    t.objectCreator :namespace_prefix => nil, :index_as => [:searchable, :facetable]
-    t.adminPolicy :namespace_prefix => nil, :index_as => [:searchable, :facetable]
+    t.root(:path=>"identityMetadata")
+    t.objectId
+    t.objectType :index_as => [:searchable, :facetable]
+    t.objectLabel
+    t.citationCreator
+    t.sourceId
+    t.otherId
+    t.agreementId :index_as => [:searchable, :facetable]
+    t.tag :index_as => [:searchable, :facetable]
+    t.citationTitle
+    t.objectCreator :index_as => [:searchable, :facetable]
+    t.adminPolicy :index_as => [:searchable, :facetable]
   end
   
   define_template :value do |builder,name,value,attrs|

@@ -3,7 +3,7 @@ require 'active_fedora'
 class EventsDS < ActiveFedora::NokogiriDatastream
   
   set_terminology do |t|
-    t.root(:path => "events", :xmlns => '', :namespace_prefix => nil)
+    t.root(:path => "events")
     t.event(:namespace_prefix => nil)
   end
   

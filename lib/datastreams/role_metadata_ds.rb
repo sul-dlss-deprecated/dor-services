@@ -2,27 +2,27 @@ class RoleMetadataDS < ActiveFedora::NokogiriDatastream
   include SolrDocHelper
   
   set_terminology do |t|
-    t.root :path => 'roleMetadata', :xmlns => '', :namespace_prefix => nil
+    t.root :path => 'roleMetadata'
 
-    t.actor :namespace_prefix => nil do
-      t.identifier :namespace_prefix => nil do
-        t.type_ :path => {:attribute => 'type'}, :namespace_prefix => nil
+    t.actor do
+      t.identifier do
+        t.type_ :path => {:attribute => 'type'}
       end
-      t.name :namespace_prefix => nil
+      t.name
     end
-    t.person :ref => [:actor], :path => 'person', :namespace_prefix => nil
-    t.group  :ref => [:actor], :path => 'group', :namespace_prefix => nil
+    t.person :ref => [:actor], :path => 'person'
+    t.group  :ref => [:actor], :path => 'group'
 
-    t.role :namespace_prefix => nil do
+    t.role do
       t.type_ :path => {:attribute => 'type'}
       t.person :ref => [:person]
       t.group  :ref => [:group]
     end
     
-    t.manager    :ref => [:role], :attributes => {:type => 'manager'}, :namespace_prefix => nil
-    t.depositor  :ref => [:role], :attributes => {:type => 'depositor'}, :namespace_prefix => nil
-    t.reviewer   :ref => [:role], :attributes => {:type => 'reviewer'}, :namespace_prefix => nil
-    t.viewer     :ref => [:role], :attributes => {:type => 'viewer'}, :namespace_prefix => nil
+    t.manager    :ref => [:role], :attributes => {:type => 'manager'}
+    t.depositor  :ref => [:role], :attributes => {:type => 'depositor'}
+    t.reviewer   :ref => [:role], :attributes => {:type => 'reviewer'}
+    t.viewer     :ref => [:role], :attributes => {:type => 'viewer'}
   end
 
   def to_solr(solr_doc=Hash.new,*args)
