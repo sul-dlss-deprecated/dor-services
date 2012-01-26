@@ -14,5 +14,6 @@ module Dor
   
   class Item < ::ActiveFedora::Base
     include BasicItem
+    has_object_type 'item'
   end
 end

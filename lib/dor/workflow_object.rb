@@ -4,6 +4,7 @@ module Dor
   class WorkflowObject < ::ActiveFedora::Base
     include Identifiable
     
+    has_object_type 'workflow'
     has_metadata :name => "workflowDefinition", :type => WorkflowDefinitionDs, :label => 'Workflow Definition'
 
     def self.find_by_name(name)

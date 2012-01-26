@@ -8,6 +8,12 @@ module Dor
       has_metadata :name => "identityMetadata", :type => IdentityMetadataDS, :label => 'Identity Metadata'
     end
 
+    module ClassMethods
+      def has_object_type str
+        Dor.registered_classes[str] = self
+      end
+    end
+    
     def identity_metadata
       if self.datastreams.has_key?('identityMetadata')
         IdentityMetadata.from_xml(self.datastreams['identityMetadata'].content)

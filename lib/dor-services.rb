@@ -1,6 +1,41 @@
 require 'active_fedora'
 
 module Dor
+  @@registered_classes = {}
+  mattr_reader :registered_classes
+
+  class << self
+    
+    def configure *args, &block
+      Dor::Config.configure *args, &block
+    end
+    
+    def find pid
+      resp = ActiveFedora::SolrService.instance.conn.query %{id:"#{pid}"}
+      if resp.hits.length == 0
+        return nil
+      end
+      
+      object_type = resp.hits.first[ActiveFedora::SolrService.solr_name('objectType',:string)].first
+      object_class = registered_classes[object_type] || ActiveFedora::Base
+      object_class.load_instance pid
+    end
+
+    def reload!
+      configuration = Dor::Config.to_hash
+      temp_v = $-v
+      $-v = nil
+      begin
+        Dependencies.each { |f| load File.join(File.dirname(__FILE__), "#{f}.rb") }
+      ensure
+        $-v = temp_v
+      end
+      Dor::Config.configure { |config| config.deep_merge!(configuration) }
+      Dor
+    end
+    
+  end
+  
   Dependencies = [
     'dor/version',
     'dor/config',
@@ -51,25 +86,4 @@ module Dor
     'dor/provenance_metadata_service'
   ]
   Dependencies.each { |f| require f }
-  
-  class << self
-    
-    def configure *args, &block
-      Dor::Config.configure *args, &block
-    end
-    
-    def reload!
-      configuration = Dor::Config.to_hash
-      temp_v = $-v
-      $-v = nil
-      begin
-        Dependencies.collect { |f| load File.join(File.dirname(__FILE__), "#{f}.rb") }
-      ensure
-        $-v = temp_v
-      end
-      Dor::Config.configure { |config| config.deep_merge!(configuration) }
-      Dor
-    end
-    
-  end
 end
