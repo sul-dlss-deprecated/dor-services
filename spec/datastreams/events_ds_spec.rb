@@ -25,14 +25,14 @@ describe EventsDS do
     it "creates a simple default with #new" do
       xml = "<events/>"
       
-      ds = EventsDS.new      
+      ds = EventsDS.new nil, 'events'
       ds.to_xml.should be_equivalent_to(xml)
     end    
   end
   
   describe "#add_event" do
     it "appends a new event element to the set of events" do
-      ds = EventsDS.new
+      ds = EventsDS.new nil, 'events'
       ds.add_event "embargo", "application:etd-robot", "Embargo released"
       
       events = ds.find_by_terms(:event)

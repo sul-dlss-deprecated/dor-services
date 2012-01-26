@@ -5,7 +5,7 @@ require 'datastreams/identity_metadata_ds'
 
 describe IdentityMetadataDS do
   context "Marshalling to and from a Fedora Datastream" do
-    before(:each) do      
+    before(:each) do
       @dsxml =<<-EOF
         <identityMetadata>
           <adminPolicy>druid:nk327xn8125</adminPolicy>
@@ -74,7 +74,7 @@ describe IdentityMetadataDS do
     end
     
     it "creates a simple default with #new" do
-      new_doc = IdentityMetadataDS.new
+      new_doc = IdentityMetadataDS.new nil, 'identityMetadata'
       new_doc.to_xml.should be_equivalent_to '<identityMetadata/>'
     end
     
@@ -87,7 +87,7 @@ describe IdentityMetadataDS do
           <tag>Created By : Spec Tests</tag>
         </identityMetadata>
       EOF
-      new_doc = IdentityMetadataDS.new
+      new_doc = IdentityMetadataDS.new nil, 'identityMetadata'
       new_doc.add_value('objectId', 'druid:ab123cd4567')
       new_doc.add_value('otherId', '12345678-abcd-1234-ef01-23456789abcd', { 'name' => 'uuid' })
       new_doc.add_value('otherId', 'ab123cd4567', { 'name' => 'mdtoolkit' })

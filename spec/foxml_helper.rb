@@ -6,7 +6,6 @@ def item_from_foxml(foxml, item_class = Dor::Base)
   }]
   result = item_class.new(:pid => foxml.root['PID'])
   result.label = properties['label']
-  result.inner_object.state = properties['state'][0..0]
   result.owner_id = properties['ownerId']
   xml_streams.each do |stream|
     content_node = stream.xpath('.//foxml:xmlContent/*').first.clone

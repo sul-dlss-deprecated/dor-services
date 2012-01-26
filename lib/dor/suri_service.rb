@@ -8,7 +8,7 @@ module Dor
     # Throws an exception if there were any problems
     def self.mint_id
       unless(Config.suri.mint_ids)
-        return Fedora::Repository.instance.nextid
+        return ActiveFedora.fedora.nextid
       end
       
       #Post with no body

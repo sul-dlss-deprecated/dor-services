@@ -8,6 +8,8 @@
   :url: 
   :safeurl: 
   :cert_file: 
+:solrizer:
+  :url:
 :gsearch: 
   :rest_url: 
   :url: 

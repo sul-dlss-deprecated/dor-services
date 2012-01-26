@@ -23,7 +23,7 @@ describe Dor::RegistrationService do
       @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"../fixtures")
       @pid = 'druid:ab123cd4567'
       Dor::SuriService.stub!(:mint_id).and_return("druid:ab123cd4567")
-      @mock_repo = mock(Fedora::Repository)
+      @mock_repo = mock(Rubydora::Repository)
       @mock_repo.stub!(:ingest).and_return(Net::HTTPCreated.new("1.1","201","Created"))
       ActiveFedora.stub!(:fedora).and_return(@mock_repo)
       @mock_dor_item = mock("Dor::Item")

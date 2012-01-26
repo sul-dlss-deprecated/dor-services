@@ -50,7 +50,7 @@ describe Dor::SuriService do
   
   it "should use the Fedora->nextpid service if calls to SURI are disabled" do
     Dor::Config.push! { suri.mint_ids false }
-    Fedora::Repository.stub_chain(:instance, :nextid).and_return('pid:123')
+    ActiveFedora.fedora.stub!(:nextid).and_return('pid:123')
     
     Dor::SuriService.mint_id.should == 'pid:123'
     Dor::Config.suri.pop

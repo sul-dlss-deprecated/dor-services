@@ -5,7 +5,7 @@ describe Dor::WorkflowObject do
 
   before :all do
     Dor::Config.push! { suri.mint_ids false }
-    Fedora::Repository.stub!(:instance).and_return(stub('frepo').as_null_object)
+    ActiveFedora.stub!(:fedora).and_return(stub('frepo').as_null_object)
   end
   
   after :all do

@@ -1,31 +1,26 @@
-
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require 'dor/item'
-require 'dor/embargo'
 require 'equivalent-xml'
 
-class EmbargoedItem < Dor::Item
-  include Dor::Embargo
-  
-  has_metadata :name => "embargoMetadata", :type => EmbargoMetadataDS
-  has_metadata :name => "events", :type => EventsDS
+class EmbargoedItem < ActiveFedora::Base
+  include Dor::Embargoable
 end
    
 
-describe Dor::Embargo do
+describe Dor::Embargoable do
 
   before :all do
     @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"../fixtures")
     Dor::Config.push! do
       suri.mint_ids false
-      gsearch.url "http://solr.edu"
+      gsearch.url "http://solr.edu/gsearch"
+      solrizer.url "http://solr.edu/solrizer"
       fedora.url "http://fedora.edu"
       stacks.local_workspace_root File.join(fixture_dir, "workspace")
     end
 
     Rails.stub_chain(:logger, :error)
-    ActiveFedora::SolrService.register(Dor::Config.gsearch.url)
-    Fedora::Repository.register(Dor::Config.fedora.url)
+#    ActiveFedora::SolrService.register(Dor::Config.gsearch.url)
+#    Fedora::Repository.register(Dor::Config.fedora.url)
   end
   
   after :all do
@@ -33,7 +28,7 @@ describe Dor::Embargo do
   end
   
   before(:each) do
-    Fedora::Repository.stub!(:instance).and_return(stub('frepo').as_null_object)
+    ActiveFedora.stub!(:fedora).and_return(stub('frepo').as_null_object)
   end
   
   describe "#release_embargo" do
