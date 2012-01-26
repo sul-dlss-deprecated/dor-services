@@ -1,6 +1,7 @@
 module Dor
   module Shelvable
     extend ActiveSupport::Concern
+    include Itemizable
     
     def shelve
       files = [] # doc.xpath("//file").select {|f| f['shelve'] == 'yes'}.map{|f| f['id']}

@@ -28,7 +28,7 @@ module Dor
         jhove_service = ::JhoveService.new(temp_dir)
         jhove_output_file = jhove_service.run_jhove(content_dir)
         tech_md_file = jhove_service.create_technical_metadata(jhove_output_file)
-        ds.label = 'Technical Metadata'
+        ds.dsLabel = 'Technical Metadata'
         ds.ng_xml = Nokogiri::XML(IO.read(tech_md_file))
       ensure
         FileUtils.remove_entry_secure(temp_dir) if File.exist?(temp_dir)

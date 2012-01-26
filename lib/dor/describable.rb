@@ -25,7 +25,7 @@ module Dor
     def build_descMetadata_datastream(ds)
       content = fetch_descMetadata_datastream
       unless content.nil?
-        ds.label = 'Descriptive Metadata'
+        ds.dsLabel = 'Descriptive Metadata'
         ds.ng_xml = Nokogiri::XML(content)
         ds.ng_xml.normalize_text!
       end

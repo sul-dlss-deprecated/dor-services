@@ -60,6 +60,7 @@ module Dor
     
     # DOR Concerns
     'dor/identifiable',
+    'dor/itemizable',
     'dor/processable',
     'dor/governable',
     'dor/describable',
