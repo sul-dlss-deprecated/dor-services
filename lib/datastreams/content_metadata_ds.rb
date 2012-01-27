@@ -1,5 +1,6 @@
 class ContentMetadataDS < ActiveFedora::NokogiriDatastream 
-
+  include SolrDocHelper
+  
   set_terminology do |t|
     t.root :path => 'contentMetadata', :index_as => [:not_searchable]
     t.contentType :path => { :attribute => 'type' }, :index_as => [:not_searchable]
@@ -42,6 +43,22 @@ class ContentMetadataDS < ActiveFedora::NokogiriDatastream
     result.xpath('/contentMetadata/resource/file').xpath('@preserve|@shelve|@publish|@deliver').each { |n| n.remove }
     result.xpath('/contentMetadata/resource/file/checksum').each { |n| n.remove }
     result
+  end
+  
+  # Terminology-based solrization is going to be painfully slow for large
+  # contentMetadata streams. Just select the relevant elements instead.
+  def to_solr(solr_doc=Hash.new,*args)
+    doc = self.ng_xml
+    add_solr_value(solr_doc, "content_type", doc.root['type'], :string, [:facetable])
+    doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
+      resource.xpath('file').each do |file|
+        add_solr_value(solr_doc, "content_file", file['id'])
+        if file['shelve'] == 'yes'
+          add_solr_value(solr_doc, "shelved_content_file", file['id'])
+        end
+      end
+    end
+    solr_doc
   end
   
 end
