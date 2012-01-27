@@ -12,8 +12,13 @@ module Dor
     include Preservable
   end
   
+  class Abstract < ::ActiveFedora::Base
+    include Identifiable
+  end
+
   class Item < ::ActiveFedora::Base
     include BasicItem
     has_object_type 'item'
   end
+  
 end
