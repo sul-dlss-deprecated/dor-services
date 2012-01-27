@@ -27,7 +27,7 @@ module Dor
     # indexed.
     def find pid
       resp = ActiveFedora::SolrService.instance.conn.query %{id:"#{pid}"}
-      return self.load pid if resp.hits.length == 0
+      return self.load_instance pid if resp.hits.length == 0
 
       object_type = resp.hits.first[ActiveFedora::SolrService.solr_name('objectType',:string)].first
       return self.load pid if object_type.nil?
