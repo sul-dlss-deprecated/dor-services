@@ -27,7 +27,7 @@
        - from datastream by ID, text fetched, if mimetype can be handled
          currently the mimetypes text/plain, text/xml, text/html, application/pdf can be handled.
 	-->
-	<xsl:variable name="INDEXVERSION">2.1.0</xsl:variable>
+	<xsl:variable name="INDEXVERSION">2.2.0</xsl:variable>
 	
 	<xsl:param name="INCLUDE_EXTERNALS" select="true()"/>
 	<xsl:param name="REPOSITORYNAME" select="repositoryName"/>
@@ -56,7 +56,8 @@
 		<ds name="roleMetadata"/>
 		<ds name="contentMetadata"/>
 		<ds name="rightsMetadata"/>
-		<ds match="WF"/>
+		<ds name="workflows"/>
+		<!--<ds match="WF"/>-->
 	</xsl:variable>
 	
 	<!-- or any other calculation, default boost is 1.0 -->
@@ -93,6 +94,7 @@
 		</field>
 		<xsl:call-template name="lifecycle"/>
 		<xsl:apply-templates select="*"/>
+		<xsl:call-template name="workflows"/>
 	</xsl:template>
 	
 	<xsl:template match="foxml:objectProperties/foxml:property">
@@ -161,6 +163,11 @@
 		</xsl:for-each>
 	</xsl:template>
 
+	<xsl:template name="workflows">
+		<xsl:variable name="combined-workflow-stream" select="document(concat($workflow-stem,$PID,'/workflows'))"/>
+		<xsl:apply-templates select="$combined-workflow-stream/workflows/workflow"/>
+	</xsl:template>
+	
 	<!-- Index RELS-EXT -->
 	<xsl:template match="rdf:RDF/rdf:Description">
 		<!-- Grab the cmodel -->
@@ -253,6 +260,8 @@
 	
 	<!-- Index MODS descriptive metadata -->
 	<xsl:template match="mods:mods">
+		<field name="metadata_format_field">mods</field>
+		<field name="metadata_format_facet">mods</field>
 		<!-- Grab the MODS identifiers -->
 		<xsl:for-each select="./mods:identifier">
 			<xsl:variable name="identifier-label">
@@ -486,7 +495,7 @@
 	</xsl:template>
 	
 	<xsl:template match="workflow">
-		<xsl:param name="datastream-name" select="ancestor::foxml:datastream/@ID"/>
+		<xsl:param name="datastream-name" select="@id | ancestor::foxml:datastream/@ID"/>
 		<xsl:variable name="workflow-name" select="$datastream-name"/>
 		<xsl:variable name="workflow-token">
 			<xsl:call-template name="valid-field-name">
