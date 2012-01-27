@@ -20,7 +20,7 @@ class ContentMetadataDS < ActiveFedora::NokogiriDatastream
         t.shelve :path => { :attribute => 'shelve' }, :index_as => [:not_searchable]#, :data_type => :boolean
         t.publish :path => { :attribute => 'publish' }, :index_as => [:not_searchable]#, :data_type => :boolean
         t.preserve :path => { :attribute => 'preserve' }, :index_as => [:not_searchable]#, :data_type => :boolean
-        t.checksum(:namespace_prefix => nil) do
+        t.checksum do
           t.type_ :path => { :attribute => 'type' }
         end
       end

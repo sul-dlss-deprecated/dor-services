@@ -4,7 +4,7 @@ class EventsDS < ActiveFedora::NokogiriDatastream
   
   set_terminology do |t|
     t.root(:path => "events")
-    t.event(:namespace_prefix => nil)
+    t.event
   end
   
   # Default EventsDS xml 
