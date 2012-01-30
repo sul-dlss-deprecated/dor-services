@@ -1,6 +1,3 @@
-require 'workflow/graph'
-require 'workflow/process'
-
 class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream 
   
   set_terminology do |t|

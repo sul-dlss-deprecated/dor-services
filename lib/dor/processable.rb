@@ -4,6 +4,7 @@ module Dor
     include SolrDocHelper
 
     included do
+      has_metadata :name => 'workflows', :type => WorkflowDs, :label => 'Workflows'
       self.ds_specs.instance_eval do
         class << self
           alias_method :_retrieve, :[]
@@ -33,10 +34,6 @@ module Dor
 
     def milestones
       Dor::WorkflowService.get_milestones('dor',self.pid)
-    end
-    
-    def workflows
-      datastreams.keys.select { |k| k =~ /WF$/ }
     end
     
     def to_solr(solr_doc=Hash.new, *args)

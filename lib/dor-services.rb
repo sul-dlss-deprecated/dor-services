@@ -60,6 +60,7 @@ module Dor
     'datastreams/ng_tidy',
     'datastreams/solr_doc_helper',
     'datastreams/utc_date_field_mapper',
+    'datastreams/datastream_spec_solrizer',
     
     # datastreams
     'datastreams/administrative_metadata_ds',
@@ -72,7 +73,7 @@ module Dor
     'datastreams/simple_dublin_core_ds',
     'datastreams/workflow_definition_ds',
     'datastreams/workflow_ds',
-    
+
     # DOR Concerns
     'dor/identifiable',
     'dor/itemizable',
@@ -99,7 +100,12 @@ module Dor
     'dor/druid_utils',
     'dor/sdr_ingest_service',
     'dor/cleanup_service',
-    'dor/provenance_metadata_service'
+    'dor/provenance_metadata_service',
+    
+    # Workflow Classes
+    'workflow/graph',
+    'workflow/process',
+    'workflow/document'
   ]
   Dependencies.each { |f| require f }
 end
