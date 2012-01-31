@@ -4,7 +4,7 @@ module Dor
     include ActiveFedora::Relationships
     
     included do
-      belongs_to :admin_policy_object, :property => :is_governed_by
+      belongs_to :admin_policy_object, :class_name => 'Dor::AdminPolicyObject', :property => :is_governed_by
 #      has_relationship 'admin_policy_object', :is_governed_by
     end
   
