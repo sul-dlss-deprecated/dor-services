@@ -49,12 +49,14 @@ class ContentMetadataDS < ActiveFedora::NokogiriDatastream
   # contentMetadata streams. Just select the relevant elements instead.
   def to_solr(solr_doc=Hash.new,*args)
     doc = self.ng_xml
-    add_solr_value(solr_doc, "content_type", doc.root['type'], :string, [:facetable])
-    doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
-      resource.xpath('file').each do |file|
-        add_solr_value(solr_doc, "content_file", file['id'])
-        if file['shelve'] == 'yes'
-          add_solr_value(solr_doc, "shelved_content_file", file['id'])
+    if doc.root['type']
+      add_solr_value(solr_doc, "content_type", doc.root['type'], :string, [:facetable])
+      doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
+        resource.xpath('file').each do |file|
+          add_solr_value(solr_doc, "content_file", file['id'])
+          if file['shelve'] == 'yes'
+            add_solr_value(solr_doc, "shelved_content_file", file['id'])
+          end
         end
       end
     end

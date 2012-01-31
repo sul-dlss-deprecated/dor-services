@@ -39,12 +39,12 @@ module Dor
           :ssl_client_cert => OpenSSL::X509::Certificate.new(File.read(config.fedora.cert_file)), 
           :ssl_client_key => OpenSSL::PKey::RSA.new(File.read(config.fedora.key_file),config.fedora.key_pass)
 
-          ActiveFedora::SolrService.register config.solrizer.url
-          conn = ActiveFedora::SolrService.instance.conn.connection
-          conn.use_ssl = true
-          conn.cert = OpenSSL::X509::Certificate.new(File.read(config.fedora.cert_file))
-          conn.key = OpenSSL::PKey::RSA.new(File.read(config.fedora.key_file),config.fedora.key_pass)
-          conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        ActiveFedora::SolrService.register config.solrizer.url
+        conn = ActiveFedora::SolrService.instance.conn.connection
+        conn.use_ssl = true
+        conn.cert = OpenSSL::X509::Certificate.new(File.read(config.fedora.cert_file))
+        conn.key = OpenSSL::PKey::RSA.new(File.read(config.fedora.key_file),config.fedora.key_pass)
+        conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
       ensure
         $-v = temp_v
       end
