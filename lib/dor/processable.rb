@@ -15,6 +15,11 @@ module Dor
       end
     end
     
+    def initialize *args
+      super *args
+      self.workflows.set_datastream_location
+    end
+    
     # Self-aware datastream builders
     def build_datastream(datastream, force = false)
       ds = datastreams[datastream]

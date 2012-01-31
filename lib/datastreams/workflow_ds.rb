@@ -16,9 +16,15 @@ class WorkflowDs < ActiveFedora::NokogiriDatastream
     }
   end
 
-  def initialize(*args)
+  def initialize *args
     self.field_mapper = UtcDateFieldMapper.new
     super
+    self.mimeType = 'application/xml'
+  end
+
+  def set_datastream_location
+    self.controlGroup = 'E'
+    self.dsLocation = File.join(Dor::Config.workflow.url,"dor/#{self.pid}/workflows")
   end
   
   def workflows
