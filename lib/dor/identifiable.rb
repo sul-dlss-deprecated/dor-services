@@ -14,6 +14,15 @@ module Dor
       end
     end
     
+    def initialize attrs={}
+      if Dor::Config.suri.mint_ids
+        unless attrs[:pid]
+          attrs = attrs.merge!({:pid=>Dor::SuriService.mint_id, :new_object => true})
+        end
+      end
+      super
+    end
+    
     def identity_metadata
       if self.datastreams.has_key?('identityMetadata')
         IdentityMetadata.from_xml(self.datastreams['identityMetadata'].content)
