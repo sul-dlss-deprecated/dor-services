@@ -13,11 +13,15 @@ module Dor
           end
         end
       end
+      after_initialize :set_datastream_location
     end
     
-    def initialize *args
-      super *args
-      self.workflows.set_datastream_location
+    def set_datastream_location
+      if self.workflows.new?
+        workflows.mimeType = 'application/xml'
+        workflows.controlGroup = 'E'
+        workflows.dsLocation = File.join(Dor::Config.workflow.url,"dor/objects/#{self.pid}/workflows")
+      end
     end
     
     # Self-aware datastream builders
