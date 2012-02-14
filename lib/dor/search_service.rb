@@ -55,6 +55,10 @@ module Dor
         result = JSON.parse(client["select?#{query_string}"].get)
       end
       
+      def query *args
+        ActiveFedora::SolrService.instance.conn.query *args
+      end
+      
       def query_by_id(id)
         if id.is_a?(Hash) # Single valued: { :google => 'STANFORD_0123456789' }
           id = id.collect { |*v| v.join(':') }.first
