@@ -55,6 +55,9 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
   
   def to_solr(solr_doc=Hash.new, *args)
     super(solr_doc, *args)
+    digital_object.profile.each_pair do |property,value|
+      add_solr_value(solr_doc, property.underscore, value, property =~ /Date/ ? :date : :string, [:searchable])
+    end
     [self.sourceId, self.otherId].flatten.compact.each { |qid|
       (name,id) = qid.split(/:/,2)
       add_solr_value(solr_doc, "dor_id", id, :string, [:searchable])
