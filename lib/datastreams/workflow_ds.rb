@@ -21,13 +21,32 @@ class WorkflowDs < ActiveFedora::NokogiriDatastream
     super
   end
 
+  def [](wf)
+    node = self.ng_xml.at_xpath "/workflows/workflow[@id = '#{wf}']"
+    node.nil? ? nil : Workflow::Document.new(node.to_xml)
+  end
+  
   def workflows
     self.workflow.nodeset.collect { |wf_node| Workflow::Document.new wf_node.to_xml }
   end
   
+  def graph(dir=nil)
+    result = GraphViz.digraph(self.pid)
+    sg = result.add_graph('rank') { |g| g[:rank => 'same'] }
+    workflows.each do |wf|
+      wf_name = wf.workflowId.first
+      unless wf.nil?
+        g = wf.graph(result)
+        sg.add_node(g.root.id) unless g.nil?
+      end
+    end
+    result['rankdir'] = dir || 'TB'
+    result
+  end
+  
   def to_solr(solr_doc=Hash.new, *args)
-    super
-#    self.workflows.each { |wf| wf.to_solr(solr_doc, *args) }
+    self.workflows.each { |wf| wf.to_solr(solr_doc, *args) }
+    solr_doc
   end
   
 end
