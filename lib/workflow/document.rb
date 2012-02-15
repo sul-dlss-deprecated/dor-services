@@ -1,5 +1,6 @@
 module Workflow
   class Document
+    include SolrDocHelper
     include OM::XML::Document
     
     set_terminology do |t|
@@ -24,9 +25,13 @@ module Workflow
       wfo ? wfo.definition : nil
     end
 
-    def graph(parent = nil)
+    def graph(parent=nil, dir=nil)
       wf_definition = self.definition
-      wf_definition ? Workflow::Graph.from_processes(wf_definition.repo, wf_definition.name, self.processes, parent) : nil
+      result = wf_definition ? Workflow::Graph.from_processes(wf_definition.repo, wf_definition.name, self.processes, parent) : nil
+      unless result.nil?
+        result['rankdir'] = dir || 'TB'
+      end
+      result
     end
 
     def processes
@@ -51,7 +56,13 @@ module Workflow
         add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process['name']}:#{process['status']}", :string, [:facetable])
         add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process['status']}", :string, [:facetable])
         add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process['status']}:#{process['name']}", :string, [:facetable])
+        add_solr_value(solr_doc, 'wf_swp', "#{process['status']}", :string, [:facetable])
+        add_solr_value(solr_doc, 'wf_swp', "#{process['status']}:#{wf_name}", :string, [:facetable])
+        add_solr_value(solr_doc, 'wf_swp', "#{process['status']}:#{wf_name}:#{process['name']}", :string, [:facetable])
       end
+      solr_doc['wf_wps_facet'].uniq!
+      solr_doc['wf_wsp_facet'].uniq!
+      solr_doc['wf_swp_facet'].uniq!
       solr_doc
     end
     
