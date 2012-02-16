@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
   
   # Runtime dependencies
-  s.add_dependency "active-fedora"
+  s.add_dependency "active-fedora", "~>3.3.0"
   s.add_dependency "om", "~>1.5.0"
   s.add_dependency "solr-ruby", ">=0.0.8"
   s.add_dependency "nokogiri", ">=1.4.3.1"
@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
   s.add_dependency "systemu"
   s.add_dependency "lyber-utils"
   s.add_dependency "ruby-graphviz"
+  s.add_dependency "progressbar"
   
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects
