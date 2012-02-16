@@ -54,7 +54,7 @@ module Workflow
       process_nodes = self.find_by_terms(:workflow, :process).sort_by { |x| x['datetime'] }
       status = process_nodes.empty? ? 'empty' : (process_nodes.all? { |n| n['status'] == 'completed' } ? 'completed' : 'active')
       errors = process_nodes.select { |process| process['status'] == 'error' }.count
-      add_solr_value(solr_doc, 'workflow_status', [wf_name,status,errors].join('|'))
+      add_solr_value(solr_doc, 'workflow_status', [wf_name,status,errors].join('|'), :string, [:displayable])
       
       process_nodes.each do |process|
         add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process['name']}", :string, [:facetable])

@@ -53,9 +53,9 @@ class ContentMetadataDS < ActiveFedora::NokogiriDatastream
       add_solr_value(solr_doc, "content_type", doc.root['type'], :string, [:facetable])
       doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
         resource.xpath('file').each do |file|
-          add_solr_value(solr_doc, "content_file", file['id'])
+          add_solr_value(solr_doc, "content_file", file['id'], :string, [:searchable, :displayable])
           if file['shelve'] == 'yes'
-            add_solr_value(solr_doc, "shelved_content_file", file['id'])
+            add_solr_value(solr_doc, "shelved_content_file", file['id'], :string, [:searchable, :displayable])
           end
         end
       end
