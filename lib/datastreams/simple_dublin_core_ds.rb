@@ -20,12 +20,13 @@ class SimpleDublinCoreDs < ActiveFedora::NokogiriDatastream
     return builder.doc
   end
   
-  def to_solr *args
+  def to_solr solr_doc, *args
     # There are a whole bunch of namespace-related things that can go
     # wrong with this terminology. Until it's fixed in OM, ignore them all.
     begin
-      super *args
+      super solr_doc, *args
     rescue 
+      solr_doc
     end
   end
 end
