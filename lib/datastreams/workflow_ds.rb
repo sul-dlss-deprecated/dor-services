@@ -25,6 +25,15 @@ class WorkflowDs < ActiveFedora::NokogiriDatastream
     node = self.ng_xml.at_xpath "/workflows/workflow[@id = '#{wf}']"
     node.nil? ? nil : Workflow::Document.new(node.to_xml)
   end
+
+  def content
+    begin
+      super
+    rescue RuntimeError
+      # Just in case the workflow service 404s
+      '<workflows/>'
+    end
+  end
   
   def workflows
     self.workflow.nodeset.collect { |wf_node| Workflow::Document.new wf_node.to_xml }
