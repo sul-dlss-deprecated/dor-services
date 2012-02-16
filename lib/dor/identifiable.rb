@@ -49,7 +49,7 @@ module Dor
     def to_solr(solr_doc=Hash.new)
       self.assert_content_model
       super(solr_doc)
-      add_solr_value(solr_doc, 'dor_services_version', Dor::VERSION, :string, [:displayable])
+      add_solr_value(solr_doc, 'dor_services_version', Dor::VERSION, :string, [:facetable])
       datastreams.values.each do |ds|
         add_solr_value(solr_doc,'ds_specs',ds.datastream_spec_string,:string,[:displayable])
       end
