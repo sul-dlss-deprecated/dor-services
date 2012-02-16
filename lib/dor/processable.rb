@@ -49,7 +49,8 @@ module Dor
       super(solr_doc, *args)
       self.milestones.each do |milestone|
         timestamp = milestone[:at].utc.xmlschema
-        add_solr_value(solr_doc, 'lifecycle', "#{milestone[:milestone]}:#{timestamp}", :string, [:searchable, :facetable])
+        add_solr_value(solr_doc, 'lifecycle', milestone[:milestone], :string, [:searchable, :facetable])
+        add_solr_value(solr_doc, 'lifecycle', "#{milestone[:milestone]}:#{timestamp}", :string, [:displayable])
         add_solr_value(solr_doc, milestone[:milestone], timestamp, :date, [:searchable, :facetable, :sortable])
       end
       solr_doc

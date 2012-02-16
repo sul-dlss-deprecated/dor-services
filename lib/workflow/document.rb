@@ -51,7 +51,12 @@ module Workflow
       add_solr_value(solr_doc, 'wf', wf_name, :string, [:facetable])
       add_solr_value(solr_doc, 'wf_wps', wf_name, :string, [:facetable])
       add_solr_value(solr_doc, 'wf_wsp', wf_name, :string, [:facetable])
-      self.find_by_terms(:workflow, :process).sort { |a,b| a['datetime'] <=> b['datetime'] }.each do |process|
+      process_nodes = self.find_by_terms(:workflow, :process).sort_by { |x| x['datetime'] }
+      status = process_nodes.empty? ? 'empty' : (process_nodes.all? { |n| n['status'] == 'completed' } ? 'completed' : 'active')
+      errors = process_nodes.select { |process| process['status'] == 'error' }.count
+      add_solr_value(solr_doc, 'workflow_status', [wf_name,status,errors].join('|'))
+      
+      process_nodes.each do |process|
         add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process['name']}", :string, [:facetable])
         add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process['name']}:#{process['status']}", :string, [:facetable])
         add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process['status']}", :string, [:facetable])
@@ -60,9 +65,11 @@ module Workflow
         add_solr_value(solr_doc, 'wf_swp', "#{process['status']}:#{wf_name}", :string, [:facetable])
         add_solr_value(solr_doc, 'wf_swp', "#{process['status']}:#{wf_name}:#{process['name']}", :string, [:facetable])
       end
-      solr_doc['wf_wps_facet'].uniq!
-      solr_doc['wf_wsp_facet'].uniq!
-      solr_doc['wf_swp_facet'].uniq!
+      solr_doc['wf_wps_facet'].uniq!    if solr_doc['wf_wps_facet']
+      solr_doc['wf_wsp_facet'].uniq!    if solr_doc['wf_wsp_facet']
+      solr_doc['wf_swp_facet'].uniq!    if solr_doc['wf_swp_facet']
+      solr_doc['workflow_status'].uniq! if solr_doc['workflow_status']
+      
       solr_doc
     end
     
