@@ -53,6 +53,13 @@ module Dor
       datastreams.values.each do |ds|
         add_solr_value(solr_doc,'ds_specs',ds.datastream_spec_string,:string,[:displayable])
       end
+      self.relationship_predicates[:self].each_pair do |name,prop|
+        self.send(name.to_sym).each do |ref|
+          field_name = ::ActiveFedora::SolrService.solr_name("#{prop.to_s}", :string, :displayable)
+          ::Solrizer::Extractor.insert_solr_field_value(solr_doc,field_name,ref.label) unless solr_doc[field_name]
+        end
+      end
+      
       solr_doc
     end
   end
