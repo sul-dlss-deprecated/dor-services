@@ -20,12 +20,4 @@ module Dor
     include BasicItem
     has_object_type 'item'
   end
-  
-  class Set < Item
-    has_object_type 'set'
-  end
-  
-  class Collection < Set
-    has_object_type 'collection'
-  end
 end

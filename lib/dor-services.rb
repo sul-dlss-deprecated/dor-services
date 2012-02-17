@@ -87,6 +87,8 @@ module Dor
     
     # ActiveFedora Classes
     'dor/item',
+    'dor/set',
+    'dor/collection',
     'dor/admin_policy_object',
     'dor/workflow_object',
 
