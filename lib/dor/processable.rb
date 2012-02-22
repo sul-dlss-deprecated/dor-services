@@ -4,7 +4,7 @@ module Dor
     include SolrDocHelper
 
     included do
-      has_metadata :name => 'workflows', :type => WorkflowDs, :label => 'Workflows'
+      has_metadata :name => 'workflows', :type => WorkflowDs, :label => 'Workflows', :control_group => 'E'
       self.ds_specs.instance_eval do
         class << self
           alias_method :_retrieve, :[]
@@ -13,13 +13,12 @@ module Dor
           end
         end
       end
-      after_initialize :set_datastream_location
+      after_initialize :set_workflows_datastream_location
     end
     
-    def set_datastream_location
+    def set_workflows_datastream_location
       if self.workflows.new?
         workflows.mimeType = 'application/xml'
-        workflows.controlGroup = 'E'
         workflows.dsLocation = File.join(Dor::Config.workflow.url,"dor/objects/#{self.pid}/workflows")
       end
     end

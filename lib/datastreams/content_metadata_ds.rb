@@ -31,11 +31,6 @@ class ContentMetadataDS < ActiveFedora::NokogiriDatastream
     t.shelved_file_id :proxy => [:resource, :shelved_file, :id], :index_as => [:displayable, :searchable]
   end
   
-  def initialize *args
-    super(*args)
-    self.controlGroup = 'M'
-  end
-  
   def public_xml
     result = self.ng_xml.clone
     result.xpath('/contentMetadata/resource[not(file[(@deliver="yes" or @publish="yes")])]').each { |n| n.remove }

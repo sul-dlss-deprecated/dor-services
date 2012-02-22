@@ -1,6 +1,7 @@
 require 'active_fedora'
 
 class EventsDS < ActiveFedora::NokogiriDatastream
+  before_create :ensure_non_versionable
   
   set_terminology do |t|
     t.root(:path => "events")
@@ -15,9 +16,8 @@ class EventsDS < ActiveFedora::NokogiriDatastream
     return builder.doc
   end
   
-  def initialize(*args)
-    super
-    self.versionable = false
+  def ensure_non_versionable
+    self.versionable = "false"
   end
   
   # Adds an event to the datastream
