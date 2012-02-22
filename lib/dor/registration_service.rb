@@ -70,8 +70,8 @@ module Dor
         rels = adm_xml.xpath('/administrativeMetadata/relationships/*')
         rels.each { |rel| rdf.add_child(rel.clone) }
     
-        repo = ActiveFedora.fedora
-        http_response = repo.ingest(foxml.to_xml(:undent_datastreams => true))
+        repo = ActiveFedora.fedora.connection
+        http_response = repo.ingest(:pid => pid, :file => foxml.to_xml(:undent_datastreams => true))
         result = {
           :response => http_response,
           :pid => pid
