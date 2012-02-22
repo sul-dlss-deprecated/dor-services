@@ -51,7 +51,9 @@ module Dor
       super(solr_doc)
       add_solr_value(solr_doc, 'dor_services_version', Dor::VERSION, :string, [:facetable])
       datastreams.values.each do |ds|
-        add_solr_value(solr_doc,'ds_specs',ds.datastream_spec_string,:string,[:displayable])
+        unless ds.new?
+          add_solr_value(solr_doc,'ds_specs',ds.datastream_spec_string,:string,[:displayable])
+        end
       end
       
       all_predicates = Hash[ActiveFedora::Predicates.predicate_mappings.collect { |k,v| v.collect { |s,p| ["#{k}#{p}",s] } }.flatten.in_groups_of(2)]
