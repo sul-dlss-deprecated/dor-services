@@ -140,7 +140,8 @@ Values can also be configured individually:
   - Proper datastream types for Administrative, Content, Descriptive, Embargo, Events,
     Identity, Role, and Workflow metadata. Most classes now use OM terminologies and
     automatic Solrizer term extraction.
-  
+- <b>3.0.1</b> Corrected Gemfile to remove local active_fedora
+
 == Copyright
 
 Copyright (c) 2011 Stanford University Library. See LICENSE for details.
