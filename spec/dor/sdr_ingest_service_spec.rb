@@ -6,17 +6,12 @@ describe Dor::SdrIngestService do
   attr_reader :fixture_dir
 
   before(:all) do
-    # see http://stackoverflow.com/questions/5150483/instance-variable-not-available-inside-a-ruby-block
-    # Access to instance variables depends on how a block is being called.
-    #   If it is called using the yield keyword or the Proc#call method,
-    #   then you'll be able to use your instance variables in the block.
-    #   If it's called using Object#instance_eval or Module#class_eval
-    #   then the context of the block will be changed and you won't be able to access your instance variables.
-    # ModCons is using instance_eval, so you cannot use @fixture_dir in the configure call
     @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"../fixtures")
-    Dor::Config.sdr.configure do
-      local_workspace_root File.join(fixture_dir, "workspace")
-      local_export_home File.join(fixture_dir, "export")
+    Dor::Config.push! do
+      sdr do
+        local_workspace_root File.join(fixture_dir, "workspace")
+        local_export_home File.join(fixture_dir, "export")
+      end
    end
 
     export_dir = Dor::Config.sdr.local_export_home
@@ -28,6 +23,10 @@ describe Dor::SdrIngestService do
     @druid = 'druid:aa123bb4567'
     @agreement_id = 'druid:xx098yy7654'
 
+  end
+  
+  after(:all) do
+    Dor::Config.pop!
   end
   
   it "can access configuration settings" do

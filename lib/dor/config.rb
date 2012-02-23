@@ -1,49 +1,64 @@
-require 'mod_cons'
+require 'confstruct/configuration'
 
 module Dor
-  Config = ModCons::Configuration.new(:'Dor::Config')
+  class Configuration < Confstruct::Configuration
+    def define_dynamic_fields!
+      self.deep_merge!({
+        :fedora => {
+          :client => Confstruct.deferred { |c| self.make_rest_client c.url },
+          :safeurl => Confstruct.deferred { |c|
+            begin
+              fedora_uri = URI.parse(self.fedora.url)
+              fedora_uri.user = fedora_uri.password = nil
+              fedora_uri.to_s
+            rescue URI::InvalidURIError
+              nil
+            end
+          }
+        },
+        :gsearch => {
+          :rest_client => Confstruct.deferred { |c| self.make_rest_client c.rest_url },
+          :client => Confstruct.deferred { |c| self.make_rest_client c.url }
+        }
+      })
+      self
+    end
+    
+    def configure *args, &block
+      super *args, &block
+      register_fedora(self.fedora)
+    end
+    
+    def after_config! config
+      temp_v = $-v
+      $-v = nil
+      begin
+        fedora_uri = URI.parse(config.fedora.url)
+        ActiveFedora::RubydoraConnection.connect :url => config.fedora.safeurl, 
+          :user => fedora_uri.user, :password => fedora_uri.password, 
+          :ssl_client_cert => OpenSSL::X509::Certificate.new(File.read(config.fedora.cert_file)), 
+          :ssl_client_key => OpenSSL::PKey::RSA.new(File.read(config.fedora.key_file),config.fedora.key_pass)
 
-  Config.declare do
-    fedora do
-      url nil
-      safeurl nil
-      cert_file nil
-      key_file nil
-      key_pass ''
-
-      instance_eval do
-        def client
-          RestClient::Resource.new(
-            self.url,
-            :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(self.cert_file)),
-            :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(self.key_file), self.key_pass)
-          )
-        end
+        ActiveFedora::SolrService.register config.solrizer.url
+        conn = ActiveFedora::SolrService.instance.conn.connection
+        conn.use_ssl = true
+        conn.cert = OpenSSL::X509::Certificate.new(File.read(config.fedora.cert_file))
+        conn.key = OpenSSL::PKey::RSA.new(File.read(config.fedora.key_file),config.fedora.key_pass)
+        conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      ensure
+        $-v = temp_v
       end
+      true
+    end
 
-      config_changed do |fedora|
-        fedora_uri = URI.parse(fedora.url)
-        fedora_uri.user = fedora_uri.password = nil
-        fedora.safeurl fedora_uri.to_s
-        
-        temp_v = $-v
-        $-v = nil
-        begin
-          if Object.const_defined? :Fedora
-            ::ENABLE_SOLR_UPDATES = false
-            ::Fedora::Repository.register(fedora.url)
-            ::Fedora::Connection.const_set(:SSL_CLIENT_CERT_FILE,fedora.cert_file)
-            ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_FILE,fedora.key_file)
-            ::Fedora::Connection.const_set(:SSL_CLIENT_KEY_PASS,fedora.key_pass)
-          else
-            
-          end
-        ensure
-         $-v = temp_v
-        end
-      end
+    def make_rest_client(url, cert=Config.fedora.cert_file, key=Config.fedora.key_file, pass=Config.fedora.key_pass)
+      params = {}
+      params[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(cert)) if cert
+      params[:ssl_client_key]  = OpenSSL::PKey::RSA.new(File.read(key), pass) if key
+      RestClient::Resource.new(url, params)
     end
   end
-    
+
+  Config = Configuration.new(YAML.load(File.read(File.expand_path('../config_defaults.yml', __FILE__)))).define_dynamic_fields!
 end
 

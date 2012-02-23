@@ -10,7 +10,7 @@ module Dor
       # workflow_xml = get_workflow_xml(druid, workflow_id)
       workflow_provenance = create_workflow_provenance(druid, workflow_id, event_text)
       dsname = 'provenanceMetadata'
-      if dor_item.datastream_names.include?(dsname)
+      if dor_item.datastreams.keys.include?(dsname)
         ds = dor_item.datastreams[dsname]
         old_provenance = ds.content
         ds.ng_xml = update_provenance(old_provenance, workflow_provenance)

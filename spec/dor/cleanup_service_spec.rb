@@ -14,15 +14,19 @@ describe Dor::CleanupService do
     #   then the context of the block will be changed and you won't be able to access your instance variables.
     # ModCons is using instance_eval, so you cannot use @fixture_dir in the configure call
     @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"../fixtures")
-    Dor::Config.cleanup.configure do
-      local_workspace_root File.join(fixture_dir, "workspace")
-      local_export_home File.join(fixture_dir, "export")
+    Dor::Config.push! do
+      cleanup.local_workspace_root File.join(fixture_dir, "workspace")
+      cleanup.local_export_home File.join(fixture_dir, "export")
    end
 
     export_dir = Dor::Config.cleanup.local_export_home
     Dir.mkdir(export_dir) unless File.directory?(export_dir)
     @druid = 'druid:aa123bb4567'
 
+  end
+  
+  after(:all) do
+    Dor::Config.pop!
   end
   
   it "can access configuration settings" do

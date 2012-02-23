@@ -1,11 +1,8 @@
-require 'workflow/graph'
-require 'workflow/process'
-
 class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream 
   
   set_terminology do |t|
-    t.root(:path => "workflow-def", :xmlns => '', :namespace_prefix => nil)
-    t.process(:namespace_prefix => nil)
+    t.root(:path => "workflow-def", :index_as => [:not_searchable])
+    t.process(:index_as => [:not_searchable])
   end
   
   define_template :process do |builder,workflow,attrs|
@@ -53,7 +50,7 @@ class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream
     ng_xml.at_xpath('/workflow-def/@id').to_s
   end
   
-  def repository
+  def repo
     ng_xml.at_xpath('/workflow-def/@repository').to_s
   end
 

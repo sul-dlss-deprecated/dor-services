@@ -1,18 +1,19 @@
 class IdentityMetadataDS < ActiveFedora::NokogiriDatastream 
-
+  include SolrDocHelper
+  
   set_terminology do |t|
-    t.root(:path=>"identityMetadata", :xmlns => '')
-    t.objectId :namespace_prefix => nil
-    t.objectType :namespace_prefix => nil
-    t.objectLabel :namespace_prefix => nil
-    t.citationCreator :namespace_prefix => nil
-    t.sourceId :namespace_prefix => nil
-    t.otherId :namespace_prefix => nil
-    t.agreementId :namespace_prefix => nil
-    t.tag :namespace_prefix => nil
-    t.citationTitle :namespace_prefix => nil
-    t.objectCreator :namespace_prefix => nil
-    t.adminPolicy :namespace_prefix => nil
+    t.root(:path=>"identityMetadata")
+    t.objectId
+    t.objectType :index_as => [:searchable, :facetable]
+    t.objectLabel
+    t.citationCreator
+    t.sourceId
+    t.otherId
+    t.agreementId :index_as => [:searchable, :facetable]
+    t.tag :index_as => [:searchable, :facetable]
+    t.citationTitle
+    t.objectCreator :index_as => [:searchable, :facetable]
+    t.adminPolicy :index_as => [:searchable, :facetable]
   end
   
   define_template :value do |builder,name,value,attrs|
@@ -33,7 +34,7 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
   
   def sourceId
     node = self.find_by_terms(:sourceId).first
-    [node['source'],node.text].join(':')
+    node ? [node['source'],node.text].join(':') : nil
   end
   
   def sourceId=(value)
@@ -52,4 +53,22 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
     end
   end
   
+  def to_solr(solr_doc=Hash.new, *args)
+    super(solr_doc, *args)
+    digital_object.profile.each_pair do |property,value|
+      add_solr_value(solr_doc, property.underscore, value, property =~ /Date/ ? :date : :string, [:searchable])
+    end
+    [self.sourceId, self.otherId].flatten.compact.each { |qid|
+      (name,id) = qid.split(/:/,2)
+      add_solr_value(solr_doc, "dor_id", id, :string, [:searchable])
+      add_solr_value(solr_doc, "identifier", qid, :string, [:searchable])
+      add_solr_value(solr_doc, "#{name}_id", id, :string, [:searchable])
+    }
+    
+    self.find_by_terms(:tag).each { |tag|
+      (top,rest) = tag.text.split(/:/,2)
+      add_solr_value(solr_doc, "#{top.downcase.strip}_tag", rest.strip, :string, [:searchable, :facetable])
+    }
+    solr_doc
+  end
 end #class

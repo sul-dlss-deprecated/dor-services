@@ -6,25 +6,25 @@ Require the following:
 Configuration is handled through the Dor::Config object:
 
   Dor::Config.configure do
-  	# Basic DOR configuration
-		fedora.url = 'https://dor-dev.stanford.edu/fedora'
-  	gsearch.url = 'http://dor-dev.stanford.edu/solr'
+    # Basic DOR configuration
+    fedora.url = 'https://dor-dev.stanford.edu/fedora'
+    gsearch.url = 'http://dor-dev.stanford.edu/solr'
 
-		# If using SSL certificates
-		fedora do
-		  cert_file = File.dirname(__FILE__) + '/../certs/dummy.crt'
-		  key_file = File.dirname(__FILE__) + '/../certs/dummy.key'
-		  key_pass = 'dummy'
-		end
+    # If using SSL certificates
+    fedora do
+      cert_file = File.dirname(__FILE__) + '/../certs/dummy.crt'
+      key_file = File.dirname(__FILE__) + '/../certs/dummy.key'
+      key_pass = 'dummy'
+    end
 
-		# If using SURI service
-		suri do
-		  mint_ids = true
-		  url = 'http://some.suri.host:8080'
-		  id_namespace = 'druid'
-		  user = 'suriuser'
-		  password = 'suripword'
-		end
+    # If using SURI service
+    suri do
+      mint_ids = true
+      url = 'http://some.suri.host:8080'
+      id_namespace = 'druid'
+      user = 'suriuser'
+      password = 'suripword'
+    end
   end
 
 Values can also be configured individually:
@@ -92,31 +92,55 @@ Values can also be configured individually:
 - <b>2.2.1</b> Mark EmbargoMetadataDS and EventsDS as dirty when their setters are used
 - <b>2.2.2</b> Mark rightsMetadata as dirty when embargo is lifted
 - <b>2.3.0</b> 
-	- Dor::WorkflowService#get_lifecycle
-	- Only publish metadata if rightsMetadata says so
+  - Dor::WorkflowService#get_lifecycle
+  - Only publish metadata if rightsMetadata says so
 - <b>2.3.1</b> Publish public xml when <access type="discover">
 - <b>2.4.0</b> 
-	- Reified workflow 
-	- Cleaner MODS2DC transformation
-	- More robust IdentityMetadataDS object
-	- Indexing tweaks
+  - Reified workflow 
+  - Cleaner MODS2DC transformation
+  - More robust IdentityMetadataDS object
+  - Indexing tweaks
 - <b>2.4.1</b> 
-	- Improve Dor::Base.get_foxml()
-	- Index lifecycle directly from workflow processes instead of retrieving lifecycle XML
+  - Improve Dor::Base.get_foxml()
+  - Index lifecycle directly from workflow processes instead of retrieving lifecycle XML
 - <b>2.4.2</b> Restrict gsearch stylesheet to pulling XML datastreams
 - <b>2.5.0</b> Large-scale refactor of gsearch stylesheet and indexing methods
 - <b>2.5.1</b> Use the gsearch REST service for Dor::SearchService.reindex()
 - <b>2.5.2</b> Fix xalan/saxon/libxslt issues in gsearch XSLT
 - <b>2.5.3</b> 
-	- Handle empty <lifecycle> queries instead of a 404 exception
-	- Hotfix for public xml publishing from 2.3.1 
+  - Handle empty <lifecycle> queries instead of a 404 exception
+  - Hotfix for public xml publishing from 2.3.1 
 - <b>2.5.4</b> Lock ActiveFedora at 3.0.4 for the time being -- higher versions expect a fedora.yml file that we don't provide
 - <b>2.6.0</b> First usable release of reified workflow objects
 - <b>2.6.1</b> 
   - Publish MODS descMetadata alongside public XML
   - gsearch style sheet updates
-- <b<2.6.2</b> Add relationship metadata (straight RELS-EXT clone) to public XML
-- <b<2.6.3</b> Filter irrelevant relationships out of public XML
+- <b>2.6.2</b> Add relationship metadata (straight RELS-EXT clone) to public XML
+- <b>2.6.3</b> Filter irrelevant relationships out of public XML
+- <b>3.0.0</b>
+  - Large-scale refactor of gem architecture
+  - Built directly on ActiveFedora 3.3 and Solrizer
+    - Phasing out fedora-gsearch as the primary index
+    - Proper solrization of content model and relationship assertions
+  - Configuration change from mod-cons to confstruct
+    - Affects dor-services development, but should be invisible to consumers
+  - Dor::Item split into multiple ActiveSupport::Concern modules
+    - Each Concern provides the structure and methods to deal with one particular aspect of the item:
+      - Describable: Descriptive Metadata
+      - Embargoable: Embargoes
+      - Governable: Admin. Policies
+      - Identifiable: Identity Metadata
+      - Itemizable: Content Metadata
+      - Preservable: Preservation
+      - Processable: Workflow
+      - Publishable: Publishing
+      - Shelvable: Shelving
+  - Introduction of Dor::Collection and Dor::Set models
+  - Support for unified "workflows" datastream as well as separate xxxxxxxWF datastreams
+  - Proper datastream types for Administrative, Content, Descriptive, Embargo, Events,
+    Identity, Role, and Workflow metadata. Most classes now use OM terminologies and
+    automatic Solrizer term extraction.
+  
 == Copyright
 
 Copyright (c) 2011 Stanford University Library. See LICENSE for details.
