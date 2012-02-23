@@ -3,13 +3,13 @@ require 'nokogiri'
 require 'time'
 
 class EmbargoMetadataDS < ActiveFedora::NokogiriDatastream
+  before_create :ensure_non_versionable
 
   set_terminology do |t|
-    t.root(:path => "embargoMetadata", :xmlns => '', :namespace_prefix => nil)
-    t.status(:namespace_prefix => nil)
-    t.release_date(:path => "releaseDate", :namespace_prefix => nil)
-    
-    t.release_access(:path => "releaseAccess", :namespace_prefix => nil)
+    t.root(:path => "embargoMetadata")
+    t.status(:index_as => [:searchable, :facetable])
+    t.release_date(:path => "releaseDate")#, :data_type => :date)
+    t.release_access(:path => "releaseAccess")
   end
   
   # Default EmbargoMetadataDS xml 
@@ -24,11 +24,10 @@ class EmbargoMetadataDS < ActiveFedora::NokogiriDatastream
     return builder.doc
   end
   
-  def initialize(attrs=nil)
-    super
-    @attributes[:versionable] = false
+  def ensure_non_versionable
+    self.versionable = "false"
   end
-
+  
   #################################################################################
   # Convenience methods to get and set embargo properties
   # Hides complexity/verbosity of OM TermOperators for simple, non-repeating values 

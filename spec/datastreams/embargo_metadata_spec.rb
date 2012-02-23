@@ -5,7 +5,7 @@ require 'datastreams/embargo_metadata_ds'
 
 describe EmbargoMetadataDS do
   context "Marshalling to and from a Fedora Datastream" do
-    before(:each) do      
+    before(:each) do 
       @dsxml =<<-EOF
             <embargoMetadata>
             	<status>embargoed</status>
@@ -42,14 +42,14 @@ describe EmbargoMetadataDS do
       </embargoMetadata>
       EOF
       
-      ds = EmbargoMetadataDS.new      
+      ds = EmbargoMetadataDS.new nil, 'embargoMetadata'
       ds.to_xml.should be_equivalent_to(emb_xml)
     end    
   end
   
   describe "#status" do
     
-    ds = EmbargoMetadataDS.new
+    ds = EmbargoMetadataDS.new nil, 'embargoMetadata'
     ds.status = "released"
     
     it "= sets status" do
@@ -67,7 +67,7 @@ describe EmbargoMetadataDS do
   
   describe "#release_date" do
     
-    ds = EmbargoMetadataDS.new
+    ds = EmbargoMetadataDS.new nil, 'embargoMetadata'
     t = Time.now - 10
     ds.release_date = t
     
@@ -89,7 +89,7 @@ describe EmbargoMetadataDS do
 
   describe "releaseAccess manipulation" do
     
-    ds = EmbargoMetadataDS.new
+    ds = EmbargoMetadataDS.new nil, 'embargoMetadata'
     nd = ds.release_access_node
 
     it "#release_access_node returns a Nokogiri::XML::Element" do

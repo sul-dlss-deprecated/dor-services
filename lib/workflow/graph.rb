@@ -53,10 +53,10 @@ class Graph
     @name = name
     if parent.nil?
       @graph = GraphViz.new(qname)
-      @root = self.add_node(name)
+      @root = self.add_nodes(name)
     else
       @graph = parent.subgraph(qname)
-      @root = parent.add_node(name)
+      @root = parent.add_nodes(name)
     end
     @graph[:truecolor => true]
     @root.shape = 'plaintext'
@@ -89,6 +89,10 @@ class Graph
     return self
   end
   
+  def inspect
+    "#{self.to_s[0..-2]} #{repo}:#{name} (#{processes.keys.join(', ')})>"
+  end
+  
   def method_missing(sym,*args)
     if @graph.respond_to?(sym)
       @graph.send(sym,*args)
@@ -104,7 +108,7 @@ class Graph
     def initialize(graph, id, name)
       @name = name
       @graph = graph
-      @node = @graph.add_node(id)
+      @node = @graph.add_nodes(id)
       @node.shape = 'box'
       @node.label = name
       @prerequisites = []

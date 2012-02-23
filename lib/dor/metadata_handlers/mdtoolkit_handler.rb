@@ -2,8 +2,6 @@ require 'nokogiri'
 require 'rest-client'
 
 handler = Class.new do
-  Dor::Config.metadata.declare(:exist) { url nil }
-  
   def fetch(prefix, identifier)
     query = <<-QUERY
 <?xml version="1.0" encoding="UTF-8"?>
