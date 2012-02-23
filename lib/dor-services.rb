@@ -10,9 +10,10 @@ module Dor
       Dor::Config.configure *args, &block
     end
     
-    # Dor.load_instance() loads the object and inspects its identityMetadata to 
-    # figure out what class to adapt it to. This is necessary when the object is 
-    # not indexed, or the index is missing the objectType property.
+    # Load an object and inspect its identityMetadata to figure out what class
+    # to adapt it to. This is necessary when the object is not indexed, or the
+    # index is missing the objectType property.
+    # @param [String] pid The object's PID
     def load_instance pid
       obj = Dor::Abstract.load_instance pid
       return nil if obj.new_object?
@@ -21,21 +22,24 @@ module Dor
       obj.adapt_to(object_class)
     end
 
-    # Dor.find() gets objectType information from solr and loads the correct 
-    # class the first time, saving the overhead of using ActiveFedora::Base#adapt_to. 
-    # It falls back to Dor.load() if the item is not in the index, or is improperly
+    # Get objectType information from solr and load the correct class the first time, 
+    # saving the overhead of using ActiveFedora::Base#adapt_to. It falls back to 
+    # Dor.load_instance() if the item is not in the index, or is improperly
     # indexed.
+    # @param [String] pid The object's PID
     def find pid
       resp = ActiveFedora::SolrService.instance.conn.query %{id:"#{pid}"}
       return self.load_instance pid if resp.hits.length == 0
 
-      object_type = Array(resp.hits.first[ActiveFedora::SolrService.solr_name('objectType',:string)]).first
+      solr_doc = resp.hits.first
+      object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType',:string)]).first
       return self.load_instance pid if object_type.nil?
       
       object_class = registered_classes[object_type] || ActiveFedora::Base
       object_class.load_instance pid
     end
 
+    # Reload the entire dor-services gem, preserving configuration info
     def reload!
       configuration = Dor::Config.to_hash
       temp_v = $-v
