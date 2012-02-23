@@ -12,7 +12,7 @@ require 'foxml_helper'
 require 'equivalent-xml'
 
 Spec::Runner.configure do |config|
-  
+
 end
 
 def stub_config

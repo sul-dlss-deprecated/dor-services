@@ -45,6 +45,7 @@ module Dor
         conn.cert = OpenSSL::X509::Certificate.new(File.read(config.fedora.cert_file))
         conn.key = OpenSSL::PKey::RSA.new(File.read(config.fedora.key_file),config.fedora.key_pass)
         conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        ActiveFedora.fedora_config_path ||= File.expand_path('../../../config/dummy.yml', __FILE__)
       ensure
         $-v = temp_v
       end
@@ -59,6 +60,6 @@ module Dor
     end
   end
 
-  Config = Configuration.new(YAML.load(File.read(File.expand_path('../config_defaults.yml', __FILE__)))).define_dynamic_fields!
+  Config = Configuration.new(YAML.load(File.read(File.expand_path('../../../config/config_defaults.yml', __FILE__)))).define_dynamic_fields!
 end
 
