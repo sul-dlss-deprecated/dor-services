@@ -44,6 +44,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "ruby-debug"
   s.add_development_dependency "yard"
  
-  s.files        = Dir.glob("lib/**/*")
+  s.files        = Dir.glob("lib/**/*") + Dir.glob("config/**/*")
   s.require_path = 'lib'
 end
