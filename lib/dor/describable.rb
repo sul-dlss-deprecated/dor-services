@@ -53,7 +53,7 @@ module Dor
       DESC_MD_FORMATS[desc_md.root.namespace.href]
     end
     
-    def to_solr(solr_doc=Hash.new,*args)
+    def to_solr(solr_doc=Hash.new, *args)
       super solr_doc, *args
       add_solr_value(solr_doc, "metadata_format", self.metadata_format, :string, [:searchable, :facetable])
       solr_doc

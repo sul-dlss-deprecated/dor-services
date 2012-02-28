@@ -39,7 +39,7 @@ module Dor
           :ssl_client_cert => OpenSSL::X509::Certificate.new(File.read(config.fedora.cert_file)), 
           :ssl_client_key => OpenSSL::PKey::RSA.new(File.read(config.fedora.key_file),config.fedora.key_pass)
 
-        ActiveFedora::SolrService.register config.solrizer.url
+        ActiveFedora::SolrService.register config.solrizer.url, config.solrizer.opts
         conn = ActiveFedora::SolrService.instance.conn.connection
         conn.use_ssl = true
         conn.cert = OpenSSL::X509::Certificate.new(File.read(config.fedora.cert_file))

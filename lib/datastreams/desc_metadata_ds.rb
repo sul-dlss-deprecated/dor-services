@@ -19,7 +19,7 @@ class DescMetadataDS < ActiveFedora::NokogiriDatastream
     t.topic :index_as => [:searchable]
   end
 
-  def to_solr(solr_doc=Hash.new,*args)
+  def to_solr(solr_doc=Hash.new, *args)
     super(solr_doc,*args)
     ns = { 'mods' => MODS_NS }
     ng_xml.xpath('/mods:mods/mods:identifier',ns).each do |node|

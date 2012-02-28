@@ -42,7 +42,7 @@ class ContentMetadataDS < ActiveFedora::NokogiriDatastream
   
   # Terminology-based solrization is going to be painfully slow for large
   # contentMetadata streams. Just select the relevant elements instead.
-  def to_solr(solr_doc=Hash.new,*args)
+  def to_solr(solr_doc=Hash.new, *args)
     doc = self.ng_xml
     if doc.root['type']
       add_solr_value(solr_doc, "content_type", doc.root['type'], :string, [:facetable])
