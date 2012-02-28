@@ -46,7 +46,7 @@ module Workflow
       end
     end
     
-    def to_solr solr_doc=Hash.new, *args
+    def to_solr(solr_doc=Hash.new, *args)
       wf_name = self.workflowId.first
       add_solr_value(solr_doc, 'wf', wf_name, :string, [:facetable])
       add_solr_value(solr_doc, 'wf_wps', wf_name, :string, [:facetable])

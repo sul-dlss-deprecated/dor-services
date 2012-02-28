@@ -46,7 +46,7 @@ module Dor
       end
     end
 
-    def to_solr(solr_doc=Hash.new)
+    def to_solr(solr_doc=Hash.new, *args)
       self.assert_content_model
       super(solr_doc)
       add_solr_value(solr_doc, 'dor_services_version', Dor::VERSION, :string, [:facetable])
