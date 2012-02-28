@@ -143,6 +143,9 @@ Values can also be configured individually:
 - <b>3.0.1</b> Corrected Gemfile to remove local active_fedora
 - <b>3.0.2</b> Added in missing default configuration files
 - <b>3.0.3</b> Added config directory to gemspec
+- <b>3.0.4</b>
+  - Fix inheritance bug in solrization methods
+  - Declare contentMetadata as control group 'M'
 
 == Copyright
 
