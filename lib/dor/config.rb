@@ -24,11 +24,6 @@ module Dor
       self
     end
     
-    def configure *args, &block
-      super *args, &block
-      register_fedora(self.fedora)
-    end
-    
     def after_config! config
       temp_v = $-v
       $-v = nil
