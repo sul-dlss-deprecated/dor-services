@@ -146,6 +146,9 @@ Values can also be configured individually:
 - <b>3.0.4</b>
   - Fix inheritance bug in solrization methods
   - Declare contentMetadata as control group 'M'
+- <b>3.0.5</b>
+  - Replace Config#define_custom_fields! and Config#after_config! with real callbacks
+  - Make post-configuration callback more tolerant of omitted blocks and values 
 
 == Copyright
 
