@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
    <dc:title xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema">The complete works of Henry George</dc:title>
-   <dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">George, Henry , 1839-1897</dc:creator>
-   <dc:contributor xmlns:dc="http://purl.org/dc/elements/1.1/">George, Henry , 1862-1916</dc:contributor>
+   <dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">George, Henry, 1839-1897</dc:creator>
+   <dc:contributor xmlns:dc="http://purl.org/dc/elements/1.1/">George, Henry, 1862-1916</dc:contributor>
    <dc:type xmlns:dc="http://purl.org/dc/elements/1.1/">Text</dc:type>
    <dc:publisher xmlns:dc="http://purl.org/dc/elements/1.1/">Doubleday, Page</dc:publisher>
    <dc:language xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema">eng</dc:language>
