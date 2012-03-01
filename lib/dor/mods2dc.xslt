@@ -381,6 +381,27 @@ Version 1.0	2007-05-04 Tracy Meehleib <tmee@loc.gov>
 		</xsl:choose>
 	</xsl:template>
 
+
+    <xsl:template match="mods:location[mods:physicalLocation[@type='repository']]">
+        <dc:relation type="repository">
+            <xsl:value-of select="normalize-space(.)"/>
+        </dc:relation>
+    </xsl:template>
+	<xsl:template match="mods:relatedItem[@type='host']">
+      <xsl:choose>
+        <xsl:when test="mods:location/mods:physicalLocation[@type='location']">
+          <dc:relation type="location">
+              <xsl:value-of select="normalize-space(.)"/>
+          </dc:relation>
+        </xsl:when>
+        <xsl:when test="mods:typeOfResource[@collection='yes']">
+          <dc:relation type="collection">
+              <xsl:value-of select="normalize-space(mods:titleInfo/mods:title)"/>
+          </dc:relation>
+        </xsl:when>
+      </xsl:choose>
+    </xsl:template>
+
 	<xsl:template match="mods:accessCondition">
 
 		<dc:rights>
@@ -391,17 +412,17 @@ Version 1.0	2007-05-04 Tracy Meehleib <tmee@loc.gov>
 	<xsl:template name="name">
 		<xsl:variable name="name">
 			<xsl:for-each select="mods:namePart[not(@type)]">
-				<xsl:value-of select="."/>
-
-				<xsl:text> </xsl:text>
+                <xsl:if test="normalize-space(.)!= ''">
+                    <xsl:value-of select="normalize-space(.)"/>
+                    <xsl:text></xsl:text>
+                </xsl:if>
 			</xsl:for-each>
 			<xsl:value-of select="mods:namePart[@type='family']"/>
 			<xsl:if test="mods:namePart[@type='given']">
 				<xsl:text>, </xsl:text>
-				<xsl:value-of select="mods:namePart[@type='given']"/>
+				<xsl:value-of select="normalize-space(mods:namePart[@type='given'])"/>
 			</xsl:if>
 			<xsl:if test="mods:namePart[@type='date']">
-
 				<xsl:text>, </xsl:text>
 				<xsl:value-of select="mods:namePart[@type='date']"/>
 				<xsl:text/>
@@ -409,7 +430,6 @@ Version 1.0	2007-05-04 Tracy Meehleib <tmee@loc.gov>
 			<xsl:if test="mods:displayForm">
 				<xsl:text> (</xsl:text>
 				<xsl:value-of select="mods:displayForm"/>
-
 				<xsl:text>) </xsl:text>
 			</xsl:if>
 			<xsl:for-each select="mods:role[mods:roleTerm[@type='text']!='creator']">

@@ -43,6 +43,17 @@ describe Dor::Describable do
     EquivalentXml.equivalent?(dc, expected_dc).should be
   end
   
+  it "produces dublin core Stanford-specific mapping for repository, collection and location, from the MODS in the descMetadata datastream" do
+    mods = read_fixture('ex2_related_mods.xml')
+    expected_dc = read_fixture('ex2_related_dc.xml')
+    
+    b = DescribableItem.new
+    b.datastreams['descMetadata'].content = mods
+    
+    dc = b.generate_dublin_core
+    EquivalentXml.equivalent?(dc, expected_dc).should be
+  end
+
   it "throws an exception if the generated dc has no root element" do
     b = DescribableItem.new
     b.datastreams['descMetadata'].content = '<tei><stuff>ha</stuff></tei>'
