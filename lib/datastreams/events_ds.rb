@@ -5,7 +5,12 @@ class EventsDS < ActiveFedora::NokogiriDatastream
   
   set_terminology do |t|
     t.root(:path => "events")
-    t.event
+    t.event do
+      t.who :path => { :attribute => "who" }, :index_as => [:displayable, :not_searchable]
+      t.type_ :path => { :attribute => "type" }, :index_as => [:displayable, :not_searchable]
+      t.when :path => { :attribute => "when" }, :index_as => [:displayable, :not_searchable], :data_type => :date
+      t.message :path => "text()", :index_as => [:displayable, :not_searchable]
+    end
   end
   
   # Default EventsDS xml 
