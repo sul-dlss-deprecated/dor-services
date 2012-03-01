@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.name        = "dor-services"
   s.version     = Dor::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick","Richard Anderson"]
+  s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick","Richard Anderson","Renzo Sanchez-Silva"]
   s.email       = ["mbklein@stanford.edu"]
   s.summary     = "Ruby implmentation of DOR services used by the SULAIR Digital Library"
   s.description = "Contains classes to register objects and initialize workflows"
