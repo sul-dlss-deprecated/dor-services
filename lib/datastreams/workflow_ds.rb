@@ -6,12 +6,12 @@ class WorkflowDs < ActiveFedora::NokogiriDatastream
     t.workflow {
       t.workflowId(:path=>{:attribute => "id"})
       t.process {
-        t._name(:path=>{:attribute=>"name"})
-        t.status(:path=>{:attribute=>"status"})
-        t.timestamp(:path=>{:attribute=>"datetime"})#, :data_type => :date)
-        t.elapsed(:path=>{:attribute=>"elapsed"})
-        t.lifecycle(:path=>{:attribute=>"lifecycle"})
-        t.attempts(:path=>{:attribute=>"attempts"}, :index_as => [:not_searchable])
+        t.name_(:path=>{:attribute=>"name"}, :index_as => [:displayable, :not_searchable])
+        t.status(:path=>{:attribute=>"status"}, :index_as => [:displayable, :not_searchable])
+        t.timestamp(:path=>{:attribute=>"datetime"}, :index_as => [:displayable, :not_searchable])#, :data_type => :date)
+        t.elapsed(:path=>{:attribute=>"elapsed"}, :index_as => [:displayable, :not_searchable])
+        t.lifecycle(:path=>{:attribute=>"lifecycle"}, :index_as => [:displayable, :not_searchable])
+        t.attempts(:path=>{:attribute=>"attempts"}, :index_as => [:displayable, :not_searchable])
       }
     }
   end
@@ -54,6 +54,7 @@ class WorkflowDs < ActiveFedora::NokogiriDatastream
   end
   
   def to_solr(solr_doc=Hash.new, *args)
+    super solr_doc, *args
     self.workflows.each { |wf| wf.to_solr(solr_doc, *args) }
     solr_doc
   end
