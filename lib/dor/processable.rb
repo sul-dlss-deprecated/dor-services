@@ -5,7 +5,7 @@ module Dor
 
     included do
       # TODO: Remove placeholder :url parameter once ticket HYDRA-745 is satisfactorily resolved
-      has_metadata :name => 'workflows', :type => WorkflowDs, :label => 'Workflows', :control_group => 'E', :url => 'http://example.edu/'
+      has_metadata :name => 'workflows', :type => WorkflowDs, :label => 'Workflows', :control_group => 'E'
       self.ds_specs.instance_eval do
         class << self
           alias_method :_retrieve, :[]

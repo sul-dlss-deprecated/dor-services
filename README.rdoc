@@ -150,6 +150,12 @@ Values can also be configured individually:
   - Replace Config#define_custom_fields! and Config#after_config! with real callbacks
   - Make post-configuration callback more tolerant of omitted blocks and values 
 
+- <b>3.0.5</b>
+  - Update dependencies to ActiveFedora ~>3.3.2 and confstruct >=0.2.2
+  - Improve indexing of workflows and events datastreams
+  - LYBERSTRUCTURE-108 Name formatting error in DC derived from MODS
+  - LYBERSTRUCTURE-194 MODS2DC transform -- support repository, collection and location mapping to published DC
+  
 == Copyright
 
 Copyright (c) 2011 Stanford University Library. See LICENSE for details.

@@ -7,7 +7,7 @@ module Workflow
       t.root(:path => 'workflow')
       t.workflowId(:path=>{:attribute => "id"})
       t.process {
-        t._name(:path=>{:attribute=>"name"})
+        t.name_(:path=>{:attribute=>"name"})
         t.status(:path=>{:attribute=>"status"})
         t.timestamp(:path=>{:attribute=>"datetime"})#, :data_type => :date)
         t.elapsed(:path=>{:attribute=>"elapsed"})

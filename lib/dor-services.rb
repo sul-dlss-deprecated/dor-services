@@ -27,16 +27,21 @@ module Dor
     # Dor.load_instance() if the item is not in the index, or is improperly
     # indexed.
     # @param [String] pid The object's PID
-    def find pid
-      resp = ActiveFedora::SolrService.instance.conn.query %{id:"#{pid}"}
-      return self.load_instance pid if resp.hits.length == 0
-
-      solr_doc = resp.hits.first
-      object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType',:string)]).first
-      return self.load_instance pid if object_type.nil?
-      
-      object_class = registered_classes[object_type] || ActiveFedora::Base
-      object_class.load_instance pid
+    def find pid, opts={}
+      self.find_all(%{id:"#{pid}"}, opts).first || self.load_instance(pid)
+    end
+    
+    def find_all query, opts={}
+      resp = ActiveFedora::SolrService.instance.conn.query query
+      resp.hits.collect do |solr_doc|
+        object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType',:string)]).first
+        object_class = registered_classes[object_type] || ActiveFedora::Base
+        if opts[:lightweight]
+          object_class.load_instance_from_solr solr_doc['id'], solr_doc
+        else
+          object_class.load_instance solr_doc['id']
+        end
+      end
     end
 
     # Reload the entire dor-services gem, preserving configuration info

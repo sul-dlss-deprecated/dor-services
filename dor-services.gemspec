@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.name        = "dor-services"
   s.version     = Dor::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick","Richard Anderson"]
+  s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick","Richard Anderson","Renzo Sanchez-Silva"]
   s.email       = ["mbklein@stanford.edu"]
   s.summary     = "Ruby implmentation of DOR services used by the SULAIR Digital Library"
   s.description = "Contains classes to register objects and initialize workflows"
@@ -15,11 +15,11 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
   
   # Runtime dependencies
-  s.add_dependency "active-fedora", "~>3.3.0"
+  s.add_dependency "active-fedora", "~>3.3.2"
   s.add_dependency "om", "~>1.5.0"
   s.add_dependency "solr-ruby", ">=0.0.8"
   s.add_dependency "nokogiri", ">=1.4.3.1"
-  s.add_dependency "confstruct"
+  s.add_dependency "confstruct", ">= 0.2.2"
   s.add_dependency "rest-client"
   s.add_dependency "validatable"
   s.add_dependency "uuidtools"
