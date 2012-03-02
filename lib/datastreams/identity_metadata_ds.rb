@@ -8,7 +8,9 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
     t.objectLabel
     t.citationCreator
     t.sourceId
-    t.otherId
+    t.otherId(:path => 'otherId') do
+      t.name_(:path => { :attribute => 'name' })
+    end
     t.agreementId :index_as => [:searchable, :facetable]
     t.tag :index_as => [:searchable, :facetable]
     t.citationTitle
@@ -42,6 +44,7 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
     node = self.find_by_terms(:sourceId).first || ng_xml.root.add_child('<sourceId/>').first
     node['source'] = source
     node.content = val
+    node
   end
 
   def otherId(type = nil)
@@ -51,6 +54,14 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
     else
       result.select { |n| n['name'] == type }.collect { |n| n.text }
     end
+  end
+
+  def add_otherId(other_id)
+    (name,val) = other_id.split(/:/,2)
+    node = ng_xml.root.add_child('<otherId/>').first
+    node['name'] = name
+    node.content = val
+    node
   end
   
   def to_solr(solr_doc=Hash.new, *args)
