@@ -61,7 +61,7 @@ module Dor
       self.relationships.statements.each do |s| 
         field_name = ::ActiveFedora::SolrService.solr_name(all_predicates[s.predicate.to_s], :string, :displayable)
         unless solr_doc[field_name]
-          ref = Dor.find(s.object.to_s.split(/\//).last)
+          ref = Dor.find(s.object.to_s.split(/\//).last, :lightweight => true)
           unless ref.nil?
             ::Solrizer::Extractor.insert_solr_field_value(solr_doc,field_name,ref.label) 
           end

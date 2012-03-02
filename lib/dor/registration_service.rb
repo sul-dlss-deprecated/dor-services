@@ -10,12 +10,12 @@ module Dor
     class << self
       def register_object(params = {})
         [:object_type, :label].each do |required_param|
-          unless params[required_param]
-            raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{self.name}.register_object"
-          end
+          raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{self.name}.register_object" unless params[required_param]
         end
-
-        object_type = params[:object_type]
+        object_type = params[:object_type]        
+        item_class = Dor.registered_classes[object_type]
+        raise Dor::ParameterError, "Unknown item type: '#{object_type}'" if item_class.nil?
+        
         content_model = params[:content_model]
         admin_policy = params[:admin_policy]
         label = params[:label]
@@ -34,49 +34,48 @@ module Dor
           pid = Dor::SuriService.mint_id
         end
 
+        source_id_string = [source_id.keys.first,source_id[source_id.keys.first]].compact.join(':')
+        unless source_id.empty?
+          existing_pid = SearchService.query_by_id("#{source_id_string}").first
+          unless existing_pid.nil?
+            raise Dor::DuplicateIdError.new(existing_pid), "An object with the source ID '#{source_id_string}' has already been registered."
+          end
+        end
+
         if (other_ids.has_key?(:uuid) or other_ids.has_key?('uuid')) == false
           other_ids[:uuid] = UUIDTools::UUID.timestamp_create.to_s
         end
 
-        apo_object = Dor::AdminPolicyObject.load_instance(admin_policy)
-        adm_xml = apo_object.datastreams['administrativeMetadata'].ng_xml
+        apo_object = Dor.find(admin_policy, :lightweight => true)
+        adm_xml = apo_object.administrativeMetadata.ng_xml
         agreement_id = adm_xml.at('/administrativeMetadata/registration/agreementId/text()').to_s
         
-        idmd = IdentityMetadata.new
-
-        unless source_id.empty?
-          source_name = source_id.keys.first
-          source_value = source_id[source_name]
-          existing_pid = SearchService.query_by_id("#{source_name}:#{source_value}").first
-          unless existing_pid.nil?
-            raise Dor::DuplicateIdError.new(existing_pid), "An object with the source ID '#{source_name}:#{source_value}' has already been registered."
-          end
-          idmd.sourceId.source = source_name
-          idmd.sourceId.value = source_value
-        end
+        new_item = item_class.new(:pid => pid)
+        new_item.label = label
+        idmd = new_item.identityMetadata
+        idmd.sourceId = source_id_string
+        idmd.add_value(:objectId, pid)
+        idmd.add_value(:objectCreator, 'DOR')
+        idmd.add_value(:objectLabel, label)
+        idmd.add_value(:objectType, object_type)
+        idmd.add_value(:adminPolicy, admin_policy)
+        idmd.add_value(:agreementId, agreement_id)
+        other_ids.each_pair { |name,value| idmd.add_otherId("#{name}:#{value}") }
+        tags.each { |tag| idmd.add_value(:tag, tag) }
         
-        idmd.objectId = pid
-        idmd.objectCreators << 'DOR'
-        idmd.objectLabels << label
-        idmd.objectTypes << object_type
-        idmd.adminPolicy = admin_policy
-        idmd.agreementId = agreement_id
-        other_ids.each_pair { |name,value| idmd.add_identifier(name,value) }
-        tags.each { |tag| idmd.add_tag(tag) }
-    
-        foxml = Foxml.new(pid, label, content_model, idmd.to_xml, parent)
-        foxml.admin_policy_object = admin_policy
-        rdf = foxml.xml.at('//rdf:Description', { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' })
-        rels = adm_xml.xpath('/administrativeMetadata/relationships/*')
-        rels.each { |rel| rdf.add_child(rel.clone) }
-    
-        repo = ActiveFedora.fedora.connection
-        http_response = repo.ingest(:pid => pid, :file => foxml.to_xml(:undent_datastreams => true))
-        result = {
-          :response => http_response,
-          :pid => pid
-        }
-        return(result)
+        adm_xml.xpath('/administrativeMetadata/relationships/*').each do |rel|
+          short_predicate = ActiveFedora::RelsExtDatastream.short_predicate rel.namespace.href+rel.name
+          if short_predicate.nil?
+            ix = 0
+            ix += 1 while ActiveFedora::Predicates.predicate_mappings[rel.namespace.href].has_key?(short_predicate = :"extra_predicate_#{ix}")
+            ActiveFedora::Predicates.predicate_mappings[rel.namespace.href][short_predicate] = rel.name
+          end
+          new_item.add_relationship short_predicate, rel['resource']
+        end
+
+        new_item.save
+        ActiveFedora.solr.conn.update new_item.to_solr
+        return(new_item)
       end
     end
     
