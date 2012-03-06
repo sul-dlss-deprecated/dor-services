@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.email       = ["mbklein@stanford.edu"]
   s.summary     = "Ruby implmentation of DOR services used by the SULAIR Digital Library"
   s.description = "Contains classes to register objects and initialize workflows"
+  s.executables = ["dor-indexer","dor-indexerd"]
  
   s.required_rubygems_version = ">= 1.3.6"
   
@@ -44,6 +45,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "ruby-debug"
   s.add_development_dependency "yard"
  
-  s.files        = Dir.glob("lib/**/*") + Dir.glob("config/**/*")
+  s.files        = Dir.glob("lib/**/*") + Dir.glob("config/**/*") + Dir.glob('bin/*')
+  s.bindir       = 'bin'
   s.require_path = 'lib'
 end
