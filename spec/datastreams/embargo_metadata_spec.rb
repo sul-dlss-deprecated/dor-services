@@ -162,7 +162,7 @@ describe EmbargoMetadataDS do
       EOXML
       
       xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__)  + '../../../lib/gsearch/demoFoxmlToSolr.xslt')))
-      solr_doc = xslt.transform(Nokogiri::XML(foxml))
+      solr_doc = catch_stdio { xslt.transform(Nokogiri::XML(foxml)) }
       solr_doc.at_xpath("//add/doc/field[@name='embargo_status_field']").content.should == "embargoed"
       solr_doc.at_xpath("//add/doc/field[@name='embargo_release_date']").content.should == "2012-10-19T00:07:00Z"
       #puts solr_doc.to_xml
@@ -195,7 +195,7 @@ describe EmbargoMetadataDS do
       EOXML
       
       xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__)  + '../../../lib/gsearch/demoFoxmlToSolr.xslt')))
-      solr_doc = xslt.transform(Nokogiri::XML(foxml))
+      solr_doc = catch_stdio { xslt.transform(Nokogiri::XML(foxml)) }
       #puts solr_doc.to_xml
       solr_doc.at_xpath("//add/doc/field[@name='embargo_status_field']").should be_nil
       solr_doc.at_xpath("//add/doc/field[@name='embargo_release_date']").should be_nil
@@ -203,7 +203,7 @@ describe EmbargoMetadataDS do
     
     it "indexes embargoMetadata from a complete Foxml document" do
       xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__)  + '../../../lib/gsearch/demoFoxmlToSolr.xslt')))
-      solr_doc = xslt.transform(Nokogiri::XML(File.new(File.expand_path(File.dirname(__FILE__)  + '/../fixtures/foxml_embargo_md.xml'))))
+      solr_doc = catch_stdio { xslt.transform(Nokogiri::XML(File.new(File.expand_path(File.dirname(__FILE__)  + '/../fixtures/foxml_embargo_md.xml')))) }
       solr_doc.at_xpath("//add/doc/field[@name='embargo_status_field']").content.should == "embargoed"
     end
     

@@ -47,6 +47,18 @@ def read_fixture fname
   File.read(File.join(@fixture_dir,fname))
 end
 
+def catch_stdio
+  old_handles = [$stdout.dup, $stderr.dup]
+  begin
+    $stdout.reopen(File.new('/dev/null','w'))
+    $stderr.reopen(File.new('/dev/null','w'))
+    yield
+  ensure
+    $stdout.reopen(IO.new(old_handles[0].fileno,'w'))
+    $stderr.reopen(IO.new(old_handles[1].fileno,'w'))
+  end
+end
+
 module Kernel
   # Suppresses warnings within a given block.
   def with_warnings_suppressed
