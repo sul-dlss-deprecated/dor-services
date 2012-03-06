@@ -1,7 +1,4 @@
-require 'active_fedora'
 require 'uuidtools'
-require 'xml_models/foxml'
-require 'xml_models/identity_metadata/identity_metadata'
 
 module Dor
   

@@ -1,3 +1,4 @@
+module Dor
 module Workflow
   class Process
     attr_reader :repository, :workflow
@@ -61,4 +62,5 @@ module Workflow
       @attrs.reject { |k,v| v.nil? or v == 0 or (v.respond_to?(:empty?) and v.empty?) }
     end
   end
+end
 end

@@ -5,7 +5,7 @@ module Dor
     
     included do
       has_metadata :name => "DC", :type => SimpleDublinCoreDs, :label => 'Dublin Core Record for this object'
-      has_metadata :name => "identityMetadata", :type => IdentityMetadataDS, :label => 'Identity Metadata'
+      has_metadata :name => "identityMetadata", :type => Dor::IdentityMetadataDS, :label => 'Identity Metadata'
     end
 
     module ClassMethods
@@ -25,7 +25,7 @@ module Dor
     
     def identity_metadata
       if self.datastreams.has_key?('identityMetadata')
-        IdentityMetadata.from_xml(self.datastreams['identityMetadata'].content)
+        Dor::IdentityMetadata.from_xml(self.datastreams['identityMetadata'].content)
       else
         nil
       end

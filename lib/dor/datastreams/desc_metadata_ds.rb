@@ -1,3 +1,4 @@
+module Dor
 class DescMetadataDS < ActiveFedora::NokogiriDatastream 
   include SolrDocHelper
   
@@ -68,4 +69,5 @@ class DescMetadataDS < ActiveFedora::NokogiriDatastream
     node.xpath('mods:role[mods:roleTerm[@type="text"]!="creator"]',ns).each { |v| result += " (#{v.text})"}
     result.gsub(/\s+/," ").strip
   end
+end
 end

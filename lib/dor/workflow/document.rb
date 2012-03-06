@@ -1,3 +1,4 @@
+module Dor
 module Workflow
   class Document
     include SolrDocHelper
@@ -74,4 +75,5 @@ module Workflow
     end
     
   end
+end
 end

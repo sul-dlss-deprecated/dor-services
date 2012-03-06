@@ -4,8 +4,8 @@ module Dor
     include Dor::Publishable
     
     included do
-      has_metadata :name => 'embargoMetadata', :type => EmbargoMetadataDS, :label => 'Embargo metadata'
-      has_metadata :name => 'events', :type => EventsDS, :label => 'Events' # This should maybe be part of a different concern
+      has_metadata :name => 'embargoMetadata', :type => Dor::EmbargoMetadataDS, :label => 'Embargo metadata'
+      has_metadata :name => 'events', :type => Dor::EventsDS, :label => 'Events' # This should maybe be part of a different concern
     end
 
     # These methods manipulate the object for embargo purposes
