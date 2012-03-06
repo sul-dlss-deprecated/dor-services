@@ -8,7 +8,6 @@ module Dor
   # - Dor::CREATE_WORKFLOW : true or false.  Can be used to turn of workflow in a particular environment, like development
   # - Dor::WF_URI : The URI to the workflow service.  An example URI is 'http://lyberservices-dev.stanford.edu/workflow'
   module WorkflowService
-
     class << self
       # Creates a workflow for a given object in the repository.  If this particular workflow for this objects exists,
       # it will replace the old workflow with wf_xml passed to this method.  You have the option of creating a datastream or not.     
@@ -116,6 +115,25 @@ module Dor
         doc.xpath("//lifecycle/milestone").collect do |node|
           { :milestone => node.text, :at => Time.parse(node['date']) }
         end
+      end
+
+      def qualify_step(default_repository, default_workflow, step)
+        current = step.split(/:/,3)
+        current.unshift(default_workflow) if current.length < 3
+        current.unshift(default_repository) if current.length < 3
+        current.join(':')
+      end
+      
+      def get_objects_for_workstep completed, waiting, repository=nil, workflow=nil
+        result = nil
+        Array(completed).in_groups_of(2,false).each { |group|
+          uri_string = "workflow_queue?waiting=#{qualify_step(repository,workflow,waiting)}"
+          group.each { |step| uri_string << "&completed=#{qualify_step(repository,workflow,step)}" }
+          resp = workflow_resource[uri_string].get
+          resp_ids = Nokogiri::XML(resp).xpath('//object[@id]').collect { |node| node['id'] }
+          result = result.nil? ? resp_ids : (result & resp_ids)
+        }
+        result || []
       end
       
 #      private
