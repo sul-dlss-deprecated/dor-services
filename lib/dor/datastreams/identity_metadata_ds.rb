@@ -41,11 +41,20 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
   end
   
   def sourceId=(value)
-    (source,val) = value.split(/:/,2)
-    node = self.find_by_terms(:sourceId).first || ng_xml.root.add_child('<sourceId/>').first
-    node['source'] = source
-    node.content = val
-    node
+    node = self.find_by_terms(:sourceId).first
+    unless value.present?
+      node.remove unless node.nil?
+      nil
+    else
+      (source,val) = value.split(/:/,2)
+      unless source.present? and value.present?
+        raise ArgumentError, "Source ID must follow the format namespace:value"
+      end
+      node = ng_xml.root.add_child('<sourceId/>').first if node.nil?
+      node['source'] = source
+      node.content = val
+      node
+    end
   end
 
   def otherId(type = nil)

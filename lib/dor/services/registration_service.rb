@@ -56,9 +56,10 @@ module Dor
         idmd.add_value(:objectLabel, label)
         idmd.add_value(:objectType, object_type)
         idmd.add_value(:adminPolicy, admin_policy)
-        idmd.add_value(:agreementId, agreement_id)
+        idmd.add_value(:agreementId, agreement_id) if agreement_id.present?
         other_ids.each_pair { |name,value| idmd.add_otherId("#{name}:#{value}") }
         tags.each { |tag| idmd.add_value(:tag, tag) }
+        new_item.admin_policy_object_append apo_object
         
         adm_xml.xpath('/administrativeMetadata/relationships/*').each do |rel|
           short_predicate = ActiveFedora::RelsExtDatastream.short_predicate rel.namespace.href+rel.name
