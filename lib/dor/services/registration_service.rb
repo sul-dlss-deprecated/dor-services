@@ -71,6 +71,9 @@ module Dor
           new_item.add_relationship short_predicate, rel['resource']
         end
 
+        Array(params[:seed_datastream]).each { |datastream_name| new_item.build_datastream(datastream_name) }
+        Array(params[:initiate_workflow]).each { |workflow_id| new_item.initiate_apo_workflow(workflow_id) }
+
         new_item.save
         ActiveFedora.solr.conn.update new_item.to_solr
         return(new_item)
