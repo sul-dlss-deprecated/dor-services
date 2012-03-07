@@ -9,6 +9,7 @@ describe Dor::SearchService do
     end
     
     it "should reindex PIDs" do
+      fwanc = FakeWeb.allow_net_connect?
       FakeWeb.allow_net_connect = false
       FakeWeb.register_uri(:get, 'http://dor-dev.stanford.edu/gsearch/rest/?operation=updateIndex&action=fromPid&value=druid:bb110sm8219', :body => 'OK')
       FakeWeb.register_uri(:get, 'http://dor-dev.stanford.edu/gsearch/rest/?operation=updateIndex&action=fromPid&value=druid:bb110sm8210', :body => 'OK')
@@ -17,6 +18,7 @@ describe Dor::SearchService do
       end
       result.should == ['druid:bb110sm8219','druid:bb110sm8210']
       FakeWeb.clean_registry
+      FakeWeb.allow_net_connect = fwanc
     end
   end
   
