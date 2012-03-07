@@ -23,14 +23,6 @@ module Dor
       super
     end
     
-    def identity_metadata
-      if self.datastreams.has_key?('identityMetadata')
-        Dor::IdentityMetadata.from_xml(self.datastreams['identityMetadata'].content)
-      else
-        nil
-      end
-    end
-
     # Syntactic sugar for identifying applied DOR Concerns
     # e.g., obj.is_identifiable? is the same as obj.is_a?(Dor::Identifiable)
     def method_missing sym, *args

@@ -13,7 +13,7 @@ module Dor
     end
 
     def fetch_descMetadata_datastream
-      candidates = self.identity_metadata.otherIds.collect { |oid| oid.to_s }
+      candidates = self.datastreams['identityMetadata'].otherId.collect { |oid| oid.to_s }
       metadata_id = Dor::MetadataService.resolvable(candidates).first
       unless metadata_id.nil?
         return Dor::MetadataService.fetch(metadata_id.to_s)
