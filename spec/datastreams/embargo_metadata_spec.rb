@@ -1,9 +1,9 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require 'nokogiri'
 require 'equivalent-xml'
-require 'datastreams/embargo_metadata_ds'
+require 'dor/datastreams/embargo_metadata_ds'
 
-describe EmbargoMetadataDS do
+describe Dor::EmbargoMetadataDS do
   context "Marshalling to and from a Fedora Datastream" do
     before(:each) do 
       @dsxml =<<-EOF
@@ -27,7 +27,7 @@ describe EmbargoMetadataDS do
     end
     
     it "creates itself from xml" do
-      ds = EmbargoMetadataDS.from_xml(@dsxml)
+      ds = Dor::EmbargoMetadataDS.from_xml(@dsxml)
       ds.term_values(:status).should == ["embargoed"]
       ds.term_values(:release_date).should == ["2011-10-12T15:47:52-07:00"]
       ds.find_by_terms(:release_access).class.should == Nokogiri::XML::NodeSet
@@ -42,14 +42,14 @@ describe EmbargoMetadataDS do
       </embargoMetadata>
       EOF
       
-      ds = EmbargoMetadataDS.new nil, 'embargoMetadata'
+      ds = Dor::EmbargoMetadataDS.new nil, 'embargoMetadata'
       ds.to_xml.should be_equivalent_to(emb_xml)
     end    
   end
   
   describe "#status" do
     
-    ds = EmbargoMetadataDS.new nil, 'embargoMetadata'
+    ds = Dor::EmbargoMetadataDS.new nil, 'embargoMetadata'
     ds.status = "released"
     
     it "= sets status" do
@@ -67,7 +67,7 @@ describe EmbargoMetadataDS do
   
   describe "#release_date" do
     
-    ds = EmbargoMetadataDS.new nil, 'embargoMetadata'
+    ds = Dor::EmbargoMetadataDS.new nil, 'embargoMetadata'
     t = Time.now - 10
     ds.release_date = t
     
@@ -89,7 +89,7 @@ describe EmbargoMetadataDS do
 
   describe "releaseAccess manipulation" do
     
-    ds = EmbargoMetadataDS.new nil, 'embargoMetadata'
+    ds = Dor::EmbargoMetadataDS.new nil, 'embargoMetadata'
     nd = ds.release_access_node
 
     it "#release_access_node returns a Nokogiri::XML::Element" do
@@ -162,7 +162,7 @@ describe EmbargoMetadataDS do
       EOXML
       
       xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__)  + '../../../lib/gsearch/demoFoxmlToSolr.xslt')))
-      solr_doc = xslt.transform(Nokogiri::XML(foxml))
+      solr_doc = catch_stdio { xslt.transform(Nokogiri::XML(foxml)) }
       solr_doc.at_xpath("//add/doc/field[@name='embargo_status_field']").content.should == "embargoed"
       solr_doc.at_xpath("//add/doc/field[@name='embargo_release_date']").content.should == "2012-10-19T00:07:00Z"
       #puts solr_doc.to_xml
@@ -195,7 +195,7 @@ describe EmbargoMetadataDS do
       EOXML
       
       xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__)  + '../../../lib/gsearch/demoFoxmlToSolr.xslt')))
-      solr_doc = xslt.transform(Nokogiri::XML(foxml))
+      solr_doc = catch_stdio { xslt.transform(Nokogiri::XML(foxml)) }
       #puts solr_doc.to_xml
       solr_doc.at_xpath("//add/doc/field[@name='embargo_status_field']").should be_nil
       solr_doc.at_xpath("//add/doc/field[@name='embargo_release_date']").should be_nil
@@ -203,7 +203,7 @@ describe EmbargoMetadataDS do
     
     it "indexes embargoMetadata from a complete Foxml document" do
       xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__)  + '../../../lib/gsearch/demoFoxmlToSolr.xslt')))
-      solr_doc = xslt.transform(Nokogiri::XML(File.new(File.expand_path(File.dirname(__FILE__)  + '/../fixtures/foxml_embargo_md.xml'))))
+      solr_doc = catch_stdio { xslt.transform(Nokogiri::XML(File.new(File.expand_path(File.dirname(__FILE__)  + '/../fixtures/foxml_embargo_md.xml')))) }
       solr_doc.at_xpath("//add/doc/field[@name='embargo_status_field']").content.should == "embargoed"
     end
     

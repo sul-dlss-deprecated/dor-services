@@ -15,7 +15,7 @@ describe Dor::Describable do
   end
   
   it "should have a descMetadata datastream" do
-    @item.datastreams['descMetadata'].should be_a(DescMetadataDS)
+    @item.datastreams['descMetadata'].should be_a(Dor::DescMetadataDS)
   end
   
   it "should know its metadata format" do

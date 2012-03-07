@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-require 'dor/provenance_metadata_service'
+require 'dor/services/provenance_metadata_service'
 
 describe Dor::ProvenanceMetadataService do
 

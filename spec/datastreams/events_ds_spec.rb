@@ -1,8 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require 'datastreams/events_ds'
+require 'dor/datastreams/events_ds'
 require 'equivalent-xml'
 
-describe EventsDS do
+describe Dor::EventsDS do
   
   before(:each) do      
     @dsxml =<<-EOF
@@ -18,21 +18,21 @@ describe EventsDS do
   context "Marshalling to and from a Fedora Datastream" do
     
     it "creates itself from xml" do
-      ds = EventsDS.from_xml(@dsxml)
+      ds = Dor::EventsDS.from_xml(@dsxml)
       ds.find_by_terms(:event).size.should == 4
     end
         
     it "creates a simple default with #new" do
       xml = "<events/>"
       
-      ds = EventsDS.new nil, 'events'
+      ds = Dor::EventsDS.new nil, 'events'
       ds.to_xml.should be_equivalent_to(xml)
     end    
   end
   
   describe "#add_event" do
     it "appends a new event element to the set of events" do
-      ds = EventsDS.new nil, 'events'
+      ds = Dor::EventsDS.new nil, 'events'
       ds.add_event "embargo", "application:etd-robot", "Embargo released"
       
       events = ds.find_by_terms(:event)
@@ -44,14 +44,14 @@ describe EventsDS do
     end
     
     it "keeps events in sorted order" do
-      ds = EventsDS.from_xml(@dsxml)
+      ds = Dor::EventsDS.from_xml(@dsxml)
       ds.add_event "embargo", "application:etd-robot", "Embargo go bye-bye"
       
       ds.find_by_terms(:event).last.content.should == 'Embargo go bye-bye'
     end
     
     it "markes the datastream dirty" do
-      ds = EventsDS.from_xml(@dsxml)
+      ds = Dor::EventsDS.from_xml(@dsxml)
       ds.add_event "embargo", "application:etd-robot", "Embargo go bye-bye"
       ds.should be_dirty
     end
@@ -60,7 +60,7 @@ describe EventsDS do
   describe "#find_events_by_type" do
                 
     it "returns a block with who, timestamp, and message" do
-      ds = EventsDS.from_xml(@dsxml)
+      ds = Dor::EventsDS.from_xml(@dsxml)
       ds.add_event "publish", "application:common-accessioning-robot", "Released to the world"
       
       ds.find_events_by_type("publish") do |who, timestamp, message|
@@ -77,7 +77,7 @@ describe EventsDS do
   
   describe "#each_event" do
     it "returns a block with type, who, timestamp, and message for all events" do
-      ds = EventsDS.from_xml(@dsxml)
+      ds = Dor::EventsDS.from_xml(@dsxml)
       all_types = []
       all_whos = []
       count = 0

@@ -13,10 +13,6 @@ describe Dor::Identifiable do
   end
   
   it "should have an identityMetadata datastream" do
-    @item.datastreams['identityMetadata'].should be_a(IdentityMetadataDS)
-  end
-  
-  it "should provide an identity_metadata legacy wrapper" do
-    @item.identity_metadata.should be_a(IdentityMetadata)
-  end
+    @item.datastreams['identityMetadata'].should be_a(Dor::IdentityMetadataDS)
+  end  
 end

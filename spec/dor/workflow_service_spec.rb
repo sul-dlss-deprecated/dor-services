@@ -129,4 +129,70 @@ describe Dor::WorkflowService do
     end
 
   end
+  
+  describe "#get_objects_for_workstep" do
+    before :all do
+      @repository = "dor"
+      @workflow = "googleScannedBookWF"
+      @completed = "google-download"
+      @waiting = "process-content"
+    end
+    
+    context "a query with one step completed and one waiting" do
+      it "creates the URI string with only the one completed step" do
+        @mock_resource.should_receive(:[]).with("workflow_queue?waiting=#{@repository}:#{@workflow}:#{@waiting}&completed=#{@repository}:#{@workflow}:#{@completed}")
+        @mock_resource.should_receive(:get).and_return(%{<objects count="1"><object id="druid:ab123de4567"/><object id="druid:ab123de9012"/></objects>})
+        Dor::WorkflowService.get_objects_for_workstep(@completed, @waiting, @repository, @workflow).should == ['druid:ab123de4567','druid:ab123de9012']
+      end
+    end
+    
+    context "a query with TWO steps completed and one waiting" do
+      it "creates the URI string with the two completed steps correctly" do
+        second_completed="google-convert"
+        @mock_resource.should_receive(:[]).with("workflow_queue?waiting=#{@repository}:#{@workflow}:#{@waiting}&completed=#{@repository}:#{@workflow}:#{@completed}&completed=#{@repository}:#{@workflow}:#{second_completed}")
+        @mock_resource.should_receive(:get).and_return(%{<objects count="1"><object id="druid:ab123de4567"/><object id="druid:ab123de9012"/></objects>})
+        Dor::WorkflowService.get_objects_for_workstep([@completed,second_completed], @waiting, @repository, @workflow).should == ['druid:ab123de4567','druid:ab123de9012']
+      end
+    end
+  
+    context "a query using qualified workflow names for completed and waiting" do
+      it "creates the URI string with the two completed steps across repositories correctly" do
+        qualified_waiting = "#{@repository}:#{@workflow}:#{@waiting}"
+        qualified_completed = "#{@repository}:#{@workflow}:#{@completed}"
+        repo2 = "sdr"
+        workflow2 = "sdrIngestWF"
+        completed2="complete-deposit"
+        completed3="ingest-transfer"
+        qualified_completed2 = "#{repo2}:#{workflow2}:#{completed2}"
+        qualified_completed3 = "#{repo2}:#{workflow2}:#{completed3}"
+        @mock_resource.should_receive(:[]).with("workflow_queue?waiting=#{qualified_waiting}&completed=#{qualified_completed}&completed=#{qualified_completed2}")
+        @mock_resource.should_receive(:[]).with("workflow_queue?waiting=#{qualified_waiting}&completed=#{qualified_completed3}")
+        @mock_resource.should_receive(:get).and_return(%{<objects count="1"><object id="druid:ab123de4567"/><object id="druid:ab123de9012"/></objects>},%{<objects count="1"><object id="druid:ab123de4567"/><object id="druid:ab123de3456"/></objects>})
+        Dor::WorkflowService.get_objects_for_workstep([qualified_completed, qualified_completed2, qualified_completed3], qualified_waiting).should == ['druid:ab123de4567']
+      end
+      
+      it "creates the URI string with only one completed step passed in as a String" do
+        qualified_waiting = "#{@repository}:#{@workflow}:#{@waiting}"
+        qualified_completed = "#{@repository}:#{@workflow}:#{@completed}"
+        repo2 = "sdr"
+      
+        @mock_resource.should_receive(:[]).with("workflow_queue?waiting=#{qualified_waiting}&completed=#{qualified_completed}")
+        @mock_resource.should_receive(:get).and_return(%{<objects count="1"><object id="druid:ab123de4567"/></objects>})
+        Dor::WorkflowService.get_objects_for_workstep(qualified_completed, qualified_waiting).should == ['druid:ab123de4567']
+      end
+    end
+  end
+  
+  context "get empty workflow queue" do
+    it "returns an empty list if it encounters an empty workflow queue" do
+      repository = "dor"
+      workflow = "googleScannedBookWF"
+      completed = "google-download"
+      waiting = "process-content"
+      @mock_resource.should_receive(:[]).with("workflow_queue?waiting=#{repository}:#{workflow}:#{waiting}&completed=#{repository}:#{workflow}:#{completed}")
+      @mock_resource.should_receive(:get).and_return(%{<objects count="0"/>})
+      Dor::WorkflowService.get_objects_for_workstep(completed, waiting, repository, workflow).should == []
+    end
+  end
+  
 end

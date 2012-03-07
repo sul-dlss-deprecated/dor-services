@@ -16,7 +16,7 @@ describe Dor::Itemizable do
   end
 
   it "has a contentMetadata datastream" do
-    @item.datastreams['contentMetadata'].should be_a(ContentMetadataDS)
+    @item.datastreams['contentMetadata'].should be_a(Dor::ContentMetadataDS)
   end
   
   it "should provide a contentMetadata datastream builder" do
