@@ -1,7 +1,7 @@
 require 'graphviz'
 
+module Dor
 module Workflow
-  
 class Graph
   
   FILL_COLORS = { 'waiting' => "white", 'error' => "#8B0000", 'completed' => "darkgreen", 'unknown' => "#CFCFCF" }
@@ -164,5 +164,5 @@ class Graph
   end
 
 end
-
+end
 end

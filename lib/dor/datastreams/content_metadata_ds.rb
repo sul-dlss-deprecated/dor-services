@@ -1,3 +1,4 @@
+module Dor
 class ContentMetadataDS < ActiveFedora::NokogiriDatastream 
   include SolrDocHelper
   
@@ -58,4 +59,5 @@ class ContentMetadataDS < ActiveFedora::NokogiriDatastream
     solr_doc
   end
   
+end
 end

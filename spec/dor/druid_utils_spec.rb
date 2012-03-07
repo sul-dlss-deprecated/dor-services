@@ -1,5 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require 'dor/druid_utils'
+require 'dor/utils/druid_utils'
 
 describe Druid do
   before (:all) do

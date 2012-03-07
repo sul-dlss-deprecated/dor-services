@@ -1,3 +1,4 @@
+module Dor
 class WorkflowDs < ActiveFedora::NokogiriDatastream 
   include SolrDocHelper
   
@@ -59,4 +60,5 @@ class WorkflowDs < ActiveFedora::NokogiriDatastream
     solr_doc
   end
   
+end
 end

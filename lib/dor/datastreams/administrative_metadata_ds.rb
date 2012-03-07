@@ -1,3 +1,4 @@
+module Dor
 class AdministrativeMetadataDS < ActiveFedora::NokogiriDatastream 
 
   set_terminology do |t|
@@ -27,4 +28,5 @@ class AdministrativeMetadataDS < ActiveFedora::NokogiriDatastream
     end
   end
   
+end
 end

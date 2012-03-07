@@ -1,5 +1,4 @@
-require 'active_fedora'
-
+module Dor
 class EventsDS < ActiveFedora::NokogiriDatastream
   before_create :ensure_non_versionable
   
@@ -60,4 +59,5 @@ class EventsDS < ActiveFedora::NokogiriDatastream
     end
   end
   
+end
 end

@@ -1,3 +1,4 @@
+module Dor
 class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream 
   
   set_terminology do |t|
@@ -77,4 +78,5 @@ class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream
     YAML.dump(self.configuration)
   end
   
+end
 end

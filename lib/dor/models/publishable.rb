@@ -1,4 +1,4 @@
-require 'datastreams/content_metadata_ds'
+require 'dor/datastreams/content_metadata_ds'
 
 module Dor
   module Publishable

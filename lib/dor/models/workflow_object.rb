@@ -1,11 +1,11 @@
-require 'datastreams/workflow_definition_ds'
+require 'dor/datastreams/workflow_definition_ds'
 
 module Dor
   class WorkflowObject < ::ActiveFedora::Base
     include Identifiable
     
     has_object_type 'workflow'
-    has_metadata :name => "workflowDefinition", :type => WorkflowDefinitionDs, :label => 'Workflow Definition'
+    has_metadata :name => "workflowDefinition", :type => Dor::WorkflowDefinitionDs, :label => 'Workflow Definition'
 
     def self.find_by_name(name)
       resp = Dor::SearchService.gsearch :q => %{object_type_field:workflow dc_title_field:"#{name}"}

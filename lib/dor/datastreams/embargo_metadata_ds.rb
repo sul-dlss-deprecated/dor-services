@@ -1,7 +1,4 @@
-require 'active_fedora'
-require 'nokogiri'
-require 'time'
-
+module Dor
 class EmbargoMetadataDS < ActiveFedora::NokogiriDatastream
   before_create :ensure_non_versionable
 
@@ -72,4 +69,5 @@ class EmbargoMetadataDS < ActiveFedora::NokogiriDatastream
     self.dirty = true
   end
   
+end
 end

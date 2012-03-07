@@ -5,7 +5,7 @@ module Dor
     
     included do
       has_metadata :name => "DC", :type => SimpleDublinCoreDs, :label => 'Dublin Core Record for this object'
-      has_metadata :name => "identityMetadata", :type => IdentityMetadataDS, :label => 'Identity Metadata'
+      has_metadata :name => "identityMetadata", :type => Dor::IdentityMetadataDS, :label => 'Identity Metadata'
     end
 
     module ClassMethods
@@ -23,14 +23,6 @@ module Dor
       super
     end
     
-    def identity_metadata
-      if self.datastreams.has_key?('identityMetadata')
-        IdentityMetadata.from_xml(self.datastreams['identityMetadata'].content)
-      else
-        nil
-      end
-    end
-
     # Syntactic sugar for identifying applied DOR Concerns
     # e.g., obj.is_identifiable? is the same as obj.is_a?(Dor::Identifiable)
     def method_missing sym, *args
@@ -61,7 +53,7 @@ module Dor
       self.relationships.statements.each do |s| 
         field_name = ::ActiveFedora::SolrService.solr_name(all_predicates[s.predicate.to_s], :string, :displayable)
         unless solr_doc[field_name]
-          ref = Dor.find(s.object.to_s.split(/\//).last)
+          ref = Dor.find(s.object.to_s.split(/\//).last, :lightweight => true)
           unless ref.nil?
             ::Solrizer::Extractor.insert_solr_field_value(solr_doc,field_name,ref.label) 
           end
