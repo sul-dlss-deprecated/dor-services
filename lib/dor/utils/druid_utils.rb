@@ -22,7 +22,29 @@ class Druid
   end
   
   def mkdir(base)
-    FileUtils.mkdir_p(path(base))
+    new_path = path(base)
+    if(File.symlink? new_path)
+      raise Dor::DifferentContentExistsError, "Unable to create directory, link already exists: #{new_path}"
+    end
+    if(File.directory? new_path)
+      raise Dor::SameContentExistsError, "The directory already exists: #{new_path}"
+    end
+    FileUtils.mkdir_p(new_path)
+  end
+  
+  def mkdir_with_final_link(source, new_base)
+    new_path = path(new_base)
+    if(File.symlink? new_path)
+      raise Dor::SameContentExistsError, "The link already exists: #{new_path}"
+    end
+    if(File.directory? new_path)
+      raise Dor::DifferentContentExistsError, "Unable to create link, directory already exists: #{new_path}"
+    end
+    real_dirs = tree
+    real_dirs.slice!(real_dirs.length - 1)
+    real_path = File.join(new_base, real_dirs)
+    FileUtils.mkdir_p(real_path)
+    FileUtils.ln_s(source, new_path)
   end
   
   def rmdir(base)
