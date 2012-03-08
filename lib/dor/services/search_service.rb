@@ -56,7 +56,7 @@ module Dor
       end
       
       def query *args
-        ActiveFedora::SolrService.instance.conn.query *args
+        ActiveFedora::SolrService.query *args
       end
       
       def query_by_id(id)
