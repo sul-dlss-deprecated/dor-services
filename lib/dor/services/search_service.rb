@@ -55,8 +55,10 @@ module Dor
         result = JSON.parse(client["select?#{query_string}"].get)
       end
       
-      def query *args
-        ActiveFedora::SolrService.query *args
+      def query query, args={}
+        params = args.merge({ :q => query })
+        resp = ActiveFedora.solr.conn.find params
+        resp
       end
       
       def query_by_id(id)
