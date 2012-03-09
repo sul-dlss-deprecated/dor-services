@@ -47,19 +47,6 @@ module Dor
           add_solr_value(solr_doc,'ds_specs',ds.datastream_spec_string,:string,[:displayable])
         end
       end
-      
-      all_predicates = Hash[ActiveFedora::Predicates.predicate_mappings.collect { |k,v| v.collect { |s,p| ["#{k}#{p}",s] } }.flatten.in_groups_of(2)]
-      
-      self.relationships.statements.each do |s| 
-        field_name = ::ActiveFedora::SolrService.solr_name(all_predicates[s.predicate.to_s], :string, :displayable)
-        unless solr_doc[field_name]
-          ref = Dor.find(s.object.to_s.split(/\//).last, :lightweight => true)
-          unless ref.nil?
-            ::Solrizer::Extractor.insert_solr_field_value(solr_doc,field_name,ref.label) 
-          end
-        end
-      end
-      
       solr_doc
     end
   end
