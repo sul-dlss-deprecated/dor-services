@@ -88,7 +88,7 @@ begin
       puts "\nPID: #{@msg.headers["pid"]}\n"
       if ["addDatastream", "addRelationship","ingest","modifyDatastreamByValue","modifyDatastreamByReference","modifyObject","purgeDatastream","purgeRelationship"].include? method
         obj = Dor.find @msg.headers["pid"]
-        ActiveFedora.solr.conn.add obj.to_solr, :commitWithin => 10
+        ActiveFedora.solr.conn.add(obj.to_solr, { :commitWithin => 10000 })
       elsif method == "purgeObject"
         ActiveFedora.solr.conn.delete_by_id(pid)
       else
