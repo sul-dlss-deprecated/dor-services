@@ -160,6 +160,7 @@ Values can also be configured individually:
   - Move Dor::WorkflowService.get_objects_for_workstep from lyber-core
   - Move remaining registration business logic from Argo's registration controller to Dor::RegistrationService
   - Add dor-indexer (console) and dor-indexerd (daemon) executables to reindex objects based on Fedora messages
+- <b>3.1.0</b> Remove inline solrization of relationship referents
 
 == Copyright
 

@@ -32,6 +32,11 @@ module Dor
     end
     
     def find_all query, opts={}
+      if opts[:lightweight] &! ActiveFedora::SolrDigitalObject.instance_methods.include?('repository')
+        Dor.logger.warn ':lightweight option requires ActiveFedora >= 4.0.0. Returning full objects.'
+        opts[:lightweight] = false
+      end
+
       resp = ActiveFedora::SolrService.instance.conn.query query
       resp.hits.collect do |solr_doc|
         object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType',:string)]).first
