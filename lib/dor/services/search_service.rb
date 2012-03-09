@@ -57,7 +57,7 @@ module Dor
       
       def query query, args={}
         params = args.merge({ :q => query })
-        resp = ActiveFedora.solr.conn.find params
+        resp = solr.find params
         resp
       end
       
@@ -68,6 +68,10 @@ module Dor
           id = id.join(':')
         end
         self.risearch(RISEARCH_TEMPLATE % id)
+      end
+      
+      def solr
+        @@solr ||= ActiveFedora.solr.conn.is_a?(RSolr::Client) ? ActiveFedora.solr.conn : Dor::Config.make_solr_connection
       end
 
     end
