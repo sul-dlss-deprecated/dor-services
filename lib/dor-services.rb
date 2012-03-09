@@ -3,6 +3,7 @@ require 'active_fedora'
 module Dor
   @@registered_classes = {}
   mattr_reader :registered_classes
+  INDEX_VERSION_FIELD = 'dor_services_version_facet'
 
   class << self
     
@@ -34,13 +35,13 @@ module Dor
     def find_all query, opts={}
       resp = ActiveFedora::SolrService.query query, opts
       resp.collect do |solr_doc|
+        doc_version = Gem::Version.new(solr_doc[INDEX_VERSION_FIELD].first)
         object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType',:string)]).first
         object_class = registered_classes[object_type] || ActiveFedora::Base
-        if opts[:lightweight]
+        if opts[:lightweight] and doc_version >= Gem::Version.new('3.1.0')
           object_class.load_instance_from_solr solr_doc['id'], solr_doc
         else
-          obj = ActiveFedora::Base.find(solr_doc['id'])
-          obj.adapt_to(object_class) unless obj.nil?
+          load_instance solr_doc['id']
         end
       end
     end
