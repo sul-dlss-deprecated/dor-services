@@ -65,10 +65,23 @@ module Dor
     end
 
     set_callback :configure, :after do |config|
-      ActiveFedora.init
-      if config.solrizer.url.present?
-        ActiveFedora::SolrService.register
-        ActiveFedora::SolrService.instance.instance_variable_set :@conn, self.make_solr_connection
+      if ActiveFedora.respond_to?(:configurator)
+        if config.solrizer.url.present?
+          ActiveFedora::SolrService.register
+          ActiveFedora::SolrService.instance.instance_variable_set :@conn, self.make_solr_connection
+        end
+      else
+        ActiveFedora::RubydoraConnection.connect self.fedora_config
+        ActiveFedora::SolrService.register config.solrizer.url, config.solrizer.opts
+        conn = ActiveFedora::SolrService.instance.conn.connection
+        if config.fedora.cert_file.present?
+          conn.use_ssl = true
+          conn.cert = OpenSSL::X509::Certificate.new(File.read(config.fedora.cert_file))
+          conn.key = OpenSSL::PKey::RSA.new(File.read(config.fedora.key_file),config.fedora.key_pass) if config.fedora.key_file.present?
+          conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        end
+        ActiveFedora.init 
+        ActiveFedora.fedora_config_path = File.expand_path('../../../config/dummy.yml', __FILE__)
       end
     end
 
@@ -94,5 +107,5 @@ module Dor
   end
 
   Config = Configuration.new(YAML.load(File.read(File.expand_path('../../../config/config_defaults.yml', __FILE__))))
-  ActiveFedora.configurator = Config
+  ActiveFedora.configurator = Config if ActiveFedora.respond_to?(:configurator)
 end

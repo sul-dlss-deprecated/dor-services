@@ -22,7 +22,7 @@ describe Dor::SearchService do
     end
   end
   
-  context "#query_by_id" do
+  context ".query_by_id" do
     before :each do
       @pid = 'druid:ab123cd4567'
       @itql = Dor::SearchService::RISEARCH_TEMPLATE
@@ -44,6 +44,14 @@ describe Dor::SearchService do
       real_response.should == JSON.parse(json_response)
     end
     
+  end
+  
+  context ".solr" do
+    it "should use an RSolr connection" do
+      solr = Dor::SearchService.solr
+      solr.should be_a(RSolr::Client)
+      solr.connection.should be_a(RSolr::ClientCert::Connection)
+    end
   end
 
 end

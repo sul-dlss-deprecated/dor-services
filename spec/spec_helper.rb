@@ -11,6 +11,8 @@ require 'ruby-debug'
 require 'foxml_helper'
 require 'equivalent-xml'
 
+ActiveFedora.logger = Logger.new(StringIO.new)
+
 module Dor::SpecHelpers
   def stub_config
     @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"fixtures")
