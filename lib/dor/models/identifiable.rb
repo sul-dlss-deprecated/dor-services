@@ -64,6 +64,17 @@ module Dor
         end
       end
       
+      # Fix for ActiveFedora 3.3 to ensure all date fields are properly formatted as UTC XML Schema datetime strings
+      solr_doc.each_pair { |k,v| 
+        if k =~ /_dt|_date$/
+          if v.is_a?(Array)
+            solr_doc[k] = v.collect { |t| Time.parse(t.to_s).utc.xmlschema }
+          else
+            solr_doc[k] = Time.parse(v.to_s).utc.xmlschema
+          end
+        end
+      }
+      
       solr_doc
     end
   end
