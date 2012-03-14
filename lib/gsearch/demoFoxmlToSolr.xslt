@@ -215,7 +215,7 @@
 				<xsl:value-of select="concat(@source, ':', normalize-space(./text()))"/>
 			</field>
 			<field name="source_id_field">
-				<xsl:value-of select="normalize-space(./text())"/>
+				<xsl:value-of select="concat(@source, ':', normalize-space(./text()))"/>
 			</field>
 			<field name="identifier_text">
 				<xsl:value-of select="concat(@source, ':', normalize-space(./text()))"/>
