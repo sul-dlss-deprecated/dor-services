@@ -102,6 +102,7 @@ module Dor
     'dor/models/shelvable',
     'dor/models/embargoable',
     'dor/models/preservable',
+    'dor/models/assembleable',
     
     # ActiveFedora Classes
     'dor/models/item',

@@ -1,0 +1,19 @@
+<rightsMetadata objectId="druid:ab123bb4567">
+  <copyright>
+    <human>(c) Copyright 2010 by Sebastian Jeremias Osterfeld</human>
+  </copyright>
+  <access type='discover'>
+    <machine>
+      <world/>
+    </machine>
+  </access>
+  <access type="read">
+    <machine>
+      <group>stanford:stanford</group>
+    </machine>
+  </access>
+  <use>
+    <machine type="creativeCommons">by-sa</machine>
+    <human type="creativeCommons">CC Attribution Share Alike license</human>
+  </use>
+</rightsMetadata>
