@@ -15,7 +15,7 @@ describe Dor::SuriService do
   end
 
   before(:each) do
-    @my_client = mock('restclient')
+    @my_client = mock('restclient').as_null_object
     RestClient::Resource.stub!(:new).and_return(@my_client)
   end
   

@@ -1,4 +1,6 @@
 require 'confstruct/configuration'
+require 'rsolr-ext'
+require 'rsolr/client_cert'
 
 module Dor
   class Configuration < Confstruct::Configuration
@@ -32,6 +34,14 @@ module Dor
       RestClient::Resource.new(url, params)
     end
 
+    def make_solr_connection(add_opts={})
+      opts = Config.solrizer.opts.merge(add_opts).merge(
+        :url => Config.solrizer.url,
+        :ssl_cert_file => Config.fedora.cert_file, :ssl_key_file => Config.fedora.key_file, :ssl_key_pass => Config.fedora.key_pass
+      )
+      ::RSolr::ClientCert.connect(opts).extend(RSolr::Ext::Client)
+    end
+    
     set_callback :initialize, :after do |config|
       config.deep_merge!({
         :fedora => {
@@ -55,13 +65,13 @@ module Dor
     end
 
     set_callback :configure, :after do |config|
-      fedora_uri = URI.parse(config.fedora.url)
-      connection_opts = { :url => config.fedora.safeurl, :user => fedora_uri.user, :password => fedora_uri.password }
-      connection_opts[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(config.fedora.cert_file)) if config.fedora.cert_file.present?
-      connection_opts[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(config.fedora.key_file),config.fedora.key_pass) if config.fedora.key_file.present?
-      ActiveFedora::RubydoraConnection.connect connection_opts
-
-      if config.solrizer.url.present?
+      if ActiveFedora.respond_to?(:configurator)
+        if config.solrizer.url.present?
+          ActiveFedora::SolrService.register
+          ActiveFedora::SolrService.instance.instance_variable_set :@conn, self.make_solr_connection
+        end
+      else
+        ActiveFedora::RubydoraConnection.connect self.fedora_config
         ActiveFedora::SolrService.register config.solrizer.url, config.solrizer.opts
         conn = ActiveFedora::SolrService.instance.conn.connection
         if config.fedora.cert_file.present?
@@ -70,13 +80,32 @@ module Dor
           conn.key = OpenSSL::PKey::RSA.new(File.read(config.fedora.key_file),config.fedora.key_pass) if config.fedora.key_file.present?
           conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
         end
+        ActiveFedora.init 
+        ActiveFedora.fedora_config_path = File.expand_path('../../../config/dummy.yml', __FILE__)
       end
+    end
 
-      ActiveFedora.fedora_config_path ||= File.expand_path('../../../config/dummy.yml', __FILE__)
-      true
+    # Act like an ActiveFedora.configurator
+
+    def init *args; end
+    
+    def fedora_config
+      fedora_uri = URI.parse(self.fedora.url)
+      connection_opts = { :url => self.fedora.safeurl, :user => fedora_uri.user, :password => fedora_uri.password }
+      connection_opts[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(self.fedora.cert_file)) if self.fedora.cert_file.present?
+      connection_opts[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(self.fedora.key_file),self.fedora.key_pass) if self.fedora.key_file.present?
+      connection_opts
+    end
+    
+    def solr_config
+      { :url => self.solrizer.url }
+    end
+    
+    def predicate_config
+      YAML.load(File.read(File.expand_path('../../../config/predicate_mappings.yml',__FILE__)))
     end
   end
 
   Config = Configuration.new(YAML.load(File.read(File.expand_path('../../../config/config_defaults.yml', __FILE__))))
+  ActiveFedora.configurator = Config if ActiveFedora.respond_to?(:configurator)
 end
-

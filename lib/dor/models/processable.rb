@@ -27,7 +27,14 @@ module Dor
     # Self-aware datastream builders
     def build_datastream(datastream, force = false)
       ds = datastreams[datastream]
-      if force or ds.new_object? or (ds.content.to_s.empty?)
+      path = Druid.new(self.pid).path(Dor::Config.stacks.local_workspace_root)
+      filename = File.join(path,"#{datastream}.xml")
+      if File.exists?(filename)
+        content = File.read(filename)
+        ds.content = content
+        ds.ng_xml = Nokogiri::XML(content) if ds.respond_to?(:ng_xml)
+        ds.save
+      elsif force or ds.new_object? or (ds.content.to_s.empty?)
         proc = "build_#{datastream}_datastream".to_sym
         if respond_to? proc
           content = self.send(proc, ds)

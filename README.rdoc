@@ -161,6 +161,12 @@ Values can also be configured individually:
   - Move remaining registration business logic from Argo's registration controller to Dor::RegistrationService
   - Add dor-indexer (console) and dor-indexerd (daemon) executables to reindex objects based on Fedora messages
 - <b>3.1.1</b> Remove inline solrization of relationship referents
+- <b>3.2.0</b>
+  - REV-23 Have datastream builders pick up content from workspace if present
+  - Retrofit for ActiveFedora 3.3.2 and 4.0 compatibility
+  - Improve indexing of IdentityMetadata/sourceId
+  - Improved tests
+  - Bug fixes
 
 == Copyright
 

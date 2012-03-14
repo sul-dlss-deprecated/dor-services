@@ -41,12 +41,24 @@ module Dor
     def to_solr(solr_doc=Hash.new, *args)
       self.assert_content_model
       super(solr_doc)
-      add_solr_value(solr_doc, 'dor_services_version', Dor::VERSION, :string, [:facetable])
+      solr_doc[Dor::INDEX_VERSION_FIELD] = Dor::VERSION
       datastreams.values.each do |ds|
         unless ds.new?
           add_solr_value(solr_doc,'ds_specs',ds.datastream_spec_string,:string,[:displayable])
         end
       end
+      
+      # Fix for ActiveFedora 3.3 to ensure all date fields are properly formatted as UTC XML Schema datetime strings
+      solr_doc.each_pair { |k,v| 
+        if k =~ /_dt|_date$/
+          if v.is_a?(Array)
+            solr_doc[k] = v.collect { |t| Time.parse(t.to_s).utc.xmlschema }
+          else
+            solr_doc[k] = Time.parse(v.to_s).utc.xmlschema
+          end
+        end
+      }
+      
       solr_doc
     end
   end

@@ -3,6 +3,7 @@ require 'active_fedora'
 module Dor
   @@registered_classes = {}
   mattr_reader :registered_classes
+  INDEX_VERSION_FIELD = 'dor_services_version_facet'
 
   class << self
     
@@ -15,7 +16,7 @@ module Dor
     # index is missing the objectType property.
     # @param [String] pid The object's PID
     def load_instance pid
-      obj = Dor::Abstract.load_instance pid
+      obj = Dor::Abstract.find pid
       return nil if obj.new_object?
       object_type = obj.identityMetadata.objectType.first
       object_class = registered_classes[object_type] || ActiveFedora::Base
@@ -32,19 +33,21 @@ module Dor
     end
     
     def find_all query, opts={}
-      if opts[:lightweight] &! ActiveFedora::SolrDigitalObject.instance_methods.include?('repository')
-        Dor.logger.warn ':lightweight option requires ActiveFedora >= 4.0.0. Returning full objects.'
-        opts[:lightweight] = false
+      af_version = Gem::Version.new(ActiveFedora::VERSION)
+      if opts[:lightweight] and af_version < Gem::Version.new('4.0.0.rc9')
+        ActiveFedora.logger.warn("Loading of lightweight objects requires ActiveFedora >= 4.0.0")
+        opts.delete(:lightweight)
       end
-
-      resp = ActiveFedora::SolrService.instance.conn.query query
-      resp.hits.collect do |solr_doc|
+      
+      resp = SearchService.query query, opts
+      resp.docs.collect do |solr_doc|
+        doc_version = Gem::Version.new(solr_doc[INDEX_VERSION_FIELD].first)
         object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType',:string)]).first
         object_class = registered_classes[object_type] || ActiveFedora::Base
-        if opts[:lightweight]
+        if opts[:lightweight] and doc_version >= Gem::Version.new('3.1.0')
           object_class.load_instance_from_solr solr_doc['id'], solr_doc
         else
-          object_class.load_instance solr_doc['id']
+          load_instance solr_doc['id']
         end
       end
     end

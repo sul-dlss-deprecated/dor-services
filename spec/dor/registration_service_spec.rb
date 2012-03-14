@@ -20,7 +20,7 @@ describe Dor::RegistrationService do
       Dor::SuriService.stub!(:mint_id).and_return("druid:ab123cd4567")
       @mock_repo = mock(Rubydora::Repository).as_null_object
       ActiveFedora.stub_chain(:fedora,:connection).and_return(@mock_repo)
-      @mock_solr = mock(Solr::Connection).as_null_object
+      @mock_solr = mock(RSolr::Connection).as_null_object
       ActiveFedora.stub_chain(:solr,:conn).and_return(@mock_solr)
       @apo  = instantiate_fixture("druid:fg890hi1234", Dor::AdminPolicyObject)
 

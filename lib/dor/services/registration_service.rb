@@ -75,7 +75,7 @@ module Dor
         Array(params[:initiate_workflow]).each { |workflow_id| new_item.initiate_apo_workflow(workflow_id) }
 
         new_item.save
-        ActiveFedora.solr.conn.update new_item.to_solr
+        Dor::SearchService.solr.add new_item.to_solr
         return(new_item)
       end
     end

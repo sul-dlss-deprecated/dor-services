@@ -11,6 +11,8 @@ require 'ruby-debug'
 require 'foxml_helper'
 require 'equivalent-xml'
 
+ActiveFedora.logger = Logger.new(StringIO.new)
+
 module Dor::SpecHelpers
   def stub_config
     @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"fixtures")
@@ -24,8 +26,6 @@ module Dor::SpecHelpers
     end
 
     Rails.stub_chain(:logger, :error)
-    ActiveFedora::SolrService.register(Dor::Config.gsearch.url)
-    ActiveFedora::RubydoraConnection.connect(:url=>Dor::Config.fedora.url)
     ActiveFedora.stub!(:fedora).and_return(stub('frepo').as_null_object)
   end
 
