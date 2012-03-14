@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
   
   # Runtime dependencies
-  s.add_dependency "active-fedora", "~>4.0.0.rc9"
+  s.add_dependency "active-fedora", ">=3.3.2"
   s.add_dependency "om", "~>1.5.0"
   s.add_dependency "rsolr-ext"
   s.add_dependency "rsolr-client-cert", ">=0.5.1"
