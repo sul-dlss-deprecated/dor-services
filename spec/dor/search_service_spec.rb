@@ -22,10 +22,40 @@ describe Dor::SearchService do
     end
   end
   
+  context ".query" do
+    before :each do
+      ruby_responses = [
+        %{{'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'0','q'=>'dor_id_t:"barcode:9191919191"','wt'=>'ruby','rows'=>'14'}},'response'=>{'numFound'=>14,'start'=>0,'docs'=>[{'id'=>'druid:ab123cd4567'},{'id'=>'druid:pq873fk5453'},{'id'=>'druid:qd999th4309'},{'id'=>'druid:zq003hm6082'},{'id'=>'druid:qr731mn8989'},{'id'=>'druid:vs117gg5172'},{'id'=>'druid:br354rp8638'},{'id'=>'druid:bw800dd6481'},{'id'=>'druid:mb617xf5467'},{'id'=>'druid:wq764nz3597'},{'id'=>'druid:hb776qq7561'},{'id'=>'druid:tj809bn3855'},{'id'=>'druid:yn121yc8869'},{'id'=>'druid:yw068nb3128'}]}}},
+        %{{'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'14','q'=>'dor_id_t:"barcode:9191919191"','wt'=>'ruby','rows'=>'14'}},'response'=>{'numFound'=>11,'start'=>14,'docs'=>[{'id'=>'druid:pr800pd9407'},{'id'=>'druid:hd475xb8847'},{'id'=>'druid:rr637mh2957'},{'id'=>'druid:kz965vx0963'},{'id'=>'druid:th985vs8378'},{'id'=>'druid:sm255pn4484'},{'id'=>'druid:sy394vn4752'},{'id'=>'druid:qs376gx5152'},{'id'=>'druid:dv587vy1434'},{'id'=>'druid:db089gk0831'},{'id'=>'druid:ss837xm7768'}]}}},
+        %{{'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'28','q'=>'dor_id_t:"barcode:9191919191"','wt'=>'ruby','rows'=>'14'}},'response'=>{'numFound'=>0,'docs'=>[]}}}
+      ]
+      FakeWeb.register_uri(:get, "https://dor-dev.stanford.edu/solr/solrizer/select?start=0&fl=id&q=dor_id_t%3A%22barcode%3A9191919191%22&rows=14&wt=ruby", :body => ruby_responses[0])
+      FakeWeb.register_uri(:get, "https://dor-dev.stanford.edu/solr/solrizer/select?start=14&fl=id&q=dor_id_t%3A%22barcode%3A9191919191%22&rows=14&wt=ruby", :body => ruby_responses[1])
+      FakeWeb.register_uri(:get, "https://dor-dev.stanford.edu/solr/solrizer/select?start=28&fl=id&q=dor_id_t%3A%22barcode%3A9191919191%22&rows=14&wt=ruby", :body => ruby_responses[2])
+      FakeWeb.allow_net_connect = false
+    end
+
+    after :each do
+      FakeWeb.clean_registry
+      FakeWeb.allow_net_connect = true
+    end
+    
+    it "should return a single batch of docs without a block" do
+      resp = Dor::SearchService.query('dor_id_t:"barcode:9191919191"', :fl => 'id', :rows => 14)
+      resp.docs.length.should == 14
+    end
+    
+    it "should yield multiple batches of docs with a block" do
+      batch = [14,11]
+      Dor::SearchService.query('dor_id_t:"barcode:9191919191"', :fl => 'id', :rows => 14) do |resp|
+        resp.docs.length.should == batch.shift
+      end
+    end
+  end
+  
   context ".query_by_id" do
     before :each do
       @pid = 'druid:ab123cd4567'
-      @itql = Dor::SearchService::RISEARCH_TEMPLATE
     end
 
     it "should look up an object based on any of its IDs" do

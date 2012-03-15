@@ -57,8 +57,19 @@ module Dor
       
       def query query, args={}
         params = args.merge({ :q => query })
+        params[:start] ||= 0
         resp = solr.find params
-        resp
+        if block_given?
+          cont = true
+          while cont and resp.docs.length > 0
+            cont = yield(resp)
+            params[:rows] ||= resp.docs.length
+            params[:start] += params[:rows]
+            resp = solr.find params
+          end
+        else
+          return resp
+        end
       end
       
       def query_by_id(id)
