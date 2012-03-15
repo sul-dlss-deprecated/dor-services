@@ -82,7 +82,9 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
       end
     end
     if sourceId.present?
-      add_solr_value(solr_doc, "dor_id", sourceId, :string, [:searchable])
+      (name,id) = sourceId.split(/:/,2)
+      add_solr_value(solr_doc, "dor_id", id, :string, [:searchable])
+      add_solr_value(solr_doc, "identifier", sourceId, :string, [:searchable])
       add_solr_value(solr_doc, "source_id", sourceId, :string, [:searchable])
     end
     otherId.compact.each { |qid|
