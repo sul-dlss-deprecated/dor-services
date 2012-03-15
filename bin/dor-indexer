@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'optparse'
 require 'stomp'
+require 'dor-services'
 
 options = {}
 
@@ -87,8 +88,11 @@ begin
       puts @msg.headers.inspect
       puts "\nPID: #{@msg.headers["pid"]}\n"
       if ["addDatastream", "addRelationship","ingest","modifyDatastreamByValue","modifyDatastreamByReference","modifyObject","purgeDatastream","purgeRelationship"].include? method
-        obj = Dor.find @msg.headers["pid"]
-        Dor::SearchService.solr.add(obj.to_solr, { :commitWithin => 10000 })
+        begin
+          obj = Dor.find @msg.headers["pid"]
+          Dor::SearchService.solr.add(obj.to_solr, :add_attributes => {:commitWithin => 10}) unless obj.nil?
+        rescue
+        end
       elsif method == "purgeObject"
         Dor::SearchService.solr.delete_by_id(pid)
       else
