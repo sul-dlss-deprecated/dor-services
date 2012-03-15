@@ -58,12 +58,20 @@ describe Dor::SearchService do
       @pid = 'druid:ab123cd4567'
     end
 
+    after :each do
+      FakeWeb.clean_registry
+    end
+    
     it "should look up an object based on any of its IDs" do
-      pending
+      ruby_responses = [
+        %{{'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'0','q'=>'dor_id_t:"barcode:9191919191"','wt'=>'ruby','rows'=>'1000'}},'response'=>{'numFound'=>25,'start'=>0,'docs'=>[{'id'=>'#{@pid}'},{'id'=>'druid:pq873fk5453'},{'id'=>'druid:qd999th4309'},{'id'=>'druid:zq003hm6082'},{'id'=>'druid:qr731mn8989'},{'id'=>'druid:vs117gg5172'},{'id'=>'druid:br354rp8638'},{'id'=>'druid:bw800dd6481'},{'id'=>'druid:mb617xf5467'},{'id'=>'druid:wq764nz3597'},{'id'=>'druid:hb776qq7561'},{'id'=>'druid:tj809bn3855'},{'id'=>'druid:yn121yc8869'},{'id'=>'druid:yw068nb3128'},{'id'=>'druid:pr800pd9407'},{'id'=>'druid:hd475xb8847'},{'id'=>'druid:rr637mh2957'},{'id'=>'druid:kz965vx0963'},{'id'=>'druid:th985vs8378'},{'id'=>'druid:sm255pn4484'},{'id'=>'druid:sy394vn4752'},{'id'=>'druid:qs376gx5152'},{'id'=>'druid:dv587vy1434'},{'id'=>'druid:db089gk0831'},{'id'=>'druid:ss837xm7768'}]}}},
+        %{{'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'25','q'=>'dor_id_t:"barcode:9191919191"','wt'=>'ruby','rows'=>'1000'}},'response'=>{'numFound'=>25,'start'=>25,'docs'=>[]}}}
+      ]
       id = 'barcode:9191919191'
-      @mock_search.should_receive(:post).with(hash_including(:query => (@itql % id))).and_return("object\ninfo:fedora/#{@pid}\n")
+      FakeWeb.register_uri(:get, "https://dor-dev.stanford.edu/solr/solrizer/select?fl=id&start=0&rows=1000&q=dor_id_t%3A%22barcode%3A9191919191%22&wt=ruby", :body => ruby_responses[0])
+      FakeWeb.register_uri(:get, "https://dor-dev.stanford.edu/solr/solrizer/select?fl=id&start=25&rows=1000&q=dor_id_t%3A%22barcode%3A9191919191%22&wt=ruby", :body => ruby_responses[1])
       result = Dor::SearchService.query_by_id(id)
-      result.should have(1).things
+      result.should have(25).things
       result.should include(@pid)
     end
     
