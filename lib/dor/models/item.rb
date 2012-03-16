@@ -10,6 +10,7 @@ module Dor
     include Shelvable
     include Embargoable
     include Preservable
+    include Assembleable
   end
   
   class Abstract < ::ActiveFedora::Base

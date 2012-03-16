@@ -5,6 +5,7 @@ module Dor
   
   class SearchService
 
+    include Solrizer::FieldNameMapper
     RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'"
     @@index_version = nil
     
@@ -57,8 +58,19 @@ module Dor
       
       def query query, args={}
         params = args.merge({ :q => query })
+        params[:start] ||= 0
         resp = solr.find params
-        resp
+        if block_given?
+          cont = true
+          while cont and resp.docs.length > 0
+            cont = yield(resp)
+            params[:rows] ||= resp.docs.length
+            params[:start] += params[:rows]
+            resp = solr.find params
+          end
+        else
+          return resp
+        end
       end
       
       def query_by_id(id)
@@ -67,7 +79,13 @@ module Dor
         elsif id.is_a?(Array) # Two values: [ 'google', 'STANFORD_0123456789' ]
           id = id.join(':')
         end
-        self.risearch(RISEARCH_TEMPLATE % id)
+        q = %{#{solr_name 'identifier', :string}:"#{id}"}
+        result = []
+        resp = query(q, :fl => 'id', :rows => 1000) do |resp|
+          result += resp.docs.collect { |doc| doc['id'] }
+          true
+        end
+        result
       end
       
       def solr

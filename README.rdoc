@@ -167,7 +167,11 @@ Values can also be configured individually:
   - Improve indexing of IdentityMetadata/sourceId
   - Improved tests
   - Bug fixes
+- <b>3.3.0</b>
+  - Added the Assembleable concern
+  - DruidUtils enhancements to create a link as the final node of a druid tree
+- <b>3.3.1</b> Indexing and SearchService fixes
 
 == Copyright
 
-Copyright (c) 2011 Stanford University Library. See LICENSE for details.
+Copyright (c) 2012 Stanford University Library. See LICENSE for details.

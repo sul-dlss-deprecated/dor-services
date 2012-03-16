@@ -9,5 +9,7 @@ module Dor
       @pid = pid
     end
   end
-  
+  # Raised by utils/druid_utils
+  class SameContentExistsError < Exception; end
+  class DifferentContentExistsError < Exception; end
 end
