@@ -68,8 +68,8 @@ describe Dor::SearchService do
         %{{'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'25','q'=>'dor_id_t:"barcode:9191919191"','wt'=>'ruby','rows'=>'1000'}},'response'=>{'numFound'=>25,'start'=>25,'docs'=>[]}}}
       ]
       id = 'barcode:9191919191'
-      FakeWeb.register_uri(:get, "https://dor-dev.stanford.edu/solr/solrizer/select?fl=id&start=0&rows=1000&q=dor_id_t%3A%22barcode%3A9191919191%22&wt=ruby", :body => ruby_responses[0])
-      FakeWeb.register_uri(:get, "https://dor-dev.stanford.edu/solr/solrizer/select?fl=id&start=25&rows=1000&q=dor_id_t%3A%22barcode%3A9191919191%22&wt=ruby", :body => ruby_responses[1])
+      FakeWeb.register_uri(:get, "https://dor-dev.stanford.edu/solr/solrizer/select?fl=id&start=0&rows=1000&q=identifier_t%3A%22barcode%3A9191919191%22&wt=ruby", :body => ruby_responses[0])
+      FakeWeb.register_uri(:get, "https://dor-dev.stanford.edu/solr/solrizer/select?fl=id&start=25&rows=1000&q=identifier_t%3A%22barcode%3A9191919191%22&wt=ruby", :body => ruby_responses[1])
       result = Dor::SearchService.query_by_id(id)
       result.should have(25).things
       result.should include(@pid)
