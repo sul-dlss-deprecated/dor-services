@@ -6,17 +6,19 @@ module Dor
     # If Dor::Config.suri.mint_ids is set to true, then this method
     # returns Config.suri.id_namespace:id_from_suri
     # Throws an exception if there were any problems
-    def self.mint_id
-      unless(Config.suri.mint_ids)
-        return ActiveFedora.fedora.nextid
+    def self.mint_id quantity=1
+      ids = []
+      if Config.suri.mint_ids
+        #Post with no body
+        resource = RestClient::Resource.new("#{Config.suri.url}/suri2/namespaces/#{Config.suri.id_namespace}/identifiers",
+                                  :user => Config.suri.user, :password => Config.suri.pass)
+        ids = resource["?quantity=#{quantity}"].post('').chomp.split(/\n/).collect { |id| "#{Config.suri.id_namespace}:#{id.strip}" }
+      else
+        repo = ActiveFedora::Base.respond_to?(:connection_for_pid) ? ActiveFedora::Base.connection_for_pid(0) : ActiveFedora.fedora.connection
+        resp = Nokogiri::XML(repo.next_pid :numPIDs => quantity)
+        ids = resp.xpath('/pidList/pid').collect { |node| node.text }
       end
-      
-      #Post with no body
-      resource = RestClient::Resource.new("#{Config.suri.url}/suri2/namespaces/#{Config.suri.id_namespace}/identifiers",
-                                :user => Config.suri.user, :password => Config.suri.pass)
-      id = resource.post('').chomp
-
-      return "#{Config.suri.id_namespace}:#{id.strip}"
+      return quantity > 1 ? ids : ids.first
 
 #    rescue Exception => e
 #      Rails.logger.error("Unable to mint id from suri: #{e.to_s}")

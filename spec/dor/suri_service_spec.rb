@@ -2,39 +2,38 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Dor::SuriService do
   
-  before(:all) do
-    Dor::Config.push! do
-      suri do
-        mint_ids true
-        url 'http://some.suri.host:8080'
-        id_namespace 'druid'
-        user 'suriuser'
-        pass 'suripword'
+  describe "an enabled SuriService" do
+    before(:all) do
+      Dor::Config.push! do
+        suri do
+          mint_ids true
+          url 'http://some.suri.host:8080'
+          id_namespace 'druid'
+          user 'suriuser'
+          pass 'suripword'
+        end
       end
     end
-  end
 
-  before(:each) do
-    @my_client = mock('restclient').as_null_object
-    RestClient::Resource.stub!(:new).and_return(@my_client)
-  end
+    before(:each) do
+      @my_client = mock('restclient').as_null_object
+      RestClient::Resource.stub!(:new).and_return(@my_client)
+    end
   
-  after(:all) do
-    Dor::Config.pop!
-  end
+    after(:all) do
+      Dor::Config.pop!
+    end
   
-  # it "should mint a druid" do
-  #   id = Dor::SuriService.mint_id
-  #   puts id
-  #   id.should_not be_nil
-  #   id.should =~ /^druid:/
-  # end
-  describe "an enabled SuriService" do
-        
     it "should mint a druid using RestClient::Resource" do
-      @my_client.should_receive(:post).with("").and_return('somestring')
-      
-      Dor::SuriService.mint_id.should == "#{Dor::Config.suri.id_namespace}:somestring"                                         
+      @my_client.should_receive(:post).with("").and_return('foo')
+      @my_client.should_receive(:[]).with("?quantity=1").and_return(@my_client)
+      Dor::SuriService.mint_id.should == "#{Dor::Config.suri.id_namespace}:foo" 
+    end
+    
+    it "should mint several druids if a quantity is passed in" do
+      @my_client.should_receive(:post).with("").and_return("foo\nbar\nbaz")
+      @my_client.should_receive(:[]).with("?quantity=3").and_return(@my_client)
+      Dor::SuriService.mint_id(3).should == ["#{Dor::Config.suri.id_namespace}:foo","#{Dor::Config.suri.id_namespace}:bar","#{Dor::Config.suri.id_namespace}:baz"]
     end
   
     it "should throw log an error and rethrow the exception if Connect fails." do
@@ -48,24 +47,49 @@ describe Dor::SuriService do
     
   end
   
-  it "should use the Fedora->nextpid service if calls to SURI are disabled" do
-    Dor::Config.push! { suri.mint_ids false }
-    ActiveFedora.fedora.stub!(:nextid).and_return('pid:123')
+  describe "a disabled SuriService" do
+    before :all do
+      Dor::Config.push! { suri.mint_ids false }
+    end
     
-    Dor::SuriService.mint_id.should == 'pid:123'
-    Dor::Config.suri.pop
+    before :each do
+      @mock_repo = mock(Rubydora::Repository)
+      if ActiveFedora::Base.respond_to? :connection_for_pid
+        ActiveFedora::Base.stub(:connection_for_pid).and_return(@mock_repo)
+      else
+        ActiveFedora.stub_chain(:fedora,:connection).and_return(@mock_repo)
+      end
+    end
+
+    after :all do
+      Dor::Config.pop!
+    end
+    
+    it "should mint a single ID using Fedora's getNextPid API-M service" do
+      xml_response = <<-EOXML
+      <?xml version="1.0" encoding="UTF-8"?>
+      <pidList xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/ https://dor-test.stanford.edu:443/getNextPIDInfo.xsd">
+        <pid>pid:123</pid>
+      </pidList>
+      EOXML
+      @mock_repo.should_receive(:next_pid).with(:numPIDs => 1).and_return(xml_response)
+      Dor::SuriService.mint_id.should == 'pid:123'
+      Dor::Config.suri.pop
+    end
+
+    it "should mint several IDs using Fedora's getNextPid API-M service" do
+      xml_response = <<-EOXML
+      <?xml version="1.0" encoding="UTF-8"?>
+      <pidList xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/ https://dor-test.stanford.edu:443/getNextPIDInfo.xsd">
+        <pid>pid:123</pid>
+        <pid>pid:456</pid>
+        <pid>pid:789</pid>
+      </pidList>
+      EOXML
+      @mock_repo.should_receive(:next_pid).with(:numPIDs => 3).and_return(xml_response)
+      Dor::SuriService.mint_id(3).should == ['pid:123','pid:456','pid:789']
+      Dor::Config.suri.pop
+    end
   end
-  
-  # it "should mint a real id in an integration test" do
-  #   with_warnings_suppressed do
-  #     MINT_SURI_IDS = true
-  #     ID_NAMESPACE = 'druid'
-  #     SURI_URL = 'http://lyberservices-test.stanford.edu:8080'
-  #     SURI_USER = 'hydra-etd'
-  #     SURI_PASSWORD = 'lyberteam'
-  #   end
-  #   
-  #    Dor::SuriService.mint_id.should == ''
-  # end
   
 end
