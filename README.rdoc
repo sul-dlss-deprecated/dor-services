@@ -171,7 +171,8 @@ Values can also be configured individually:
   - Added the Assembleable concern
   - DruidUtils enhancements to create a link as the final node of a druid tree
 - <b>3.3.1</b> Indexing and SearchService fixes
-- <b>3.3.2</b>
+- <b>3.3.2</b> (Unreleased)
+- <b>3.3.3</b>
   - Dor::SuriService.mint_ids() can now generate multiple PIDs with a single call
   - Indexing/Model loading fixes for ActiveFedora 4.0.0rc15
   

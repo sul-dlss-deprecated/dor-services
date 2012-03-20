@@ -26,13 +26,13 @@ describe Dor::SuriService do
   
     it "should mint a druid using RestClient::Resource" do
       @my_client.should_receive(:post).with("").and_return('foo')
-      @my_client.should_receive(:[]).with("?quantity=1").and_return(@my_client)
+      @my_client.should_receive(:[]).with("identifiers?quantity=1").and_return(@my_client)
       Dor::SuriService.mint_id.should == "#{Dor::Config.suri.id_namespace}:foo" 
     end
     
     it "should mint several druids if a quantity is passed in" do
       @my_client.should_receive(:post).with("").and_return("foo\nbar\nbaz")
-      @my_client.should_receive(:[]).with("?quantity=3").and_return(@my_client)
+      @my_client.should_receive(:[]).with("identifiers?quantity=3").and_return(@my_client)
       Dor::SuriService.mint_id(3).should == ["#{Dor::Config.suri.id_namespace}:foo","#{Dor::Config.suri.id_namespace}:bar","#{Dor::Config.suri.id_namespace}:baz"]
     end
   
