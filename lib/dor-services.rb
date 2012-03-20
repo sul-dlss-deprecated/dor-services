@@ -19,7 +19,7 @@ module Dor
       obj = Dor::Abstract.find pid
       return nil if obj.new_object?
       object_type = obj.identityMetadata.objectType.first
-      object_class = registered_classes[object_type] || ActiveFedora::Base
+      object_class = registered_classes[object_type] || Dor::Item
       obj.adapt_to(object_class)
     end
 

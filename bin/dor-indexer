@@ -89,7 +89,7 @@ begin
       puts "\nPID: #{@msg.headers["pid"]}\n"
       if ["addDatastream", "addRelationship","ingest","modifyDatastreamByValue","modifyDatastreamByReference","modifyObject","purgeDatastream","purgeRelationship"].include? method
         begin
-          obj = Dor.find @msg.headers["pid"]
+          obj = Dor.load_instance @msg.headers["pid"]
           Dor::SearchService.solr.add(obj.to_solr, :add_attributes => {:commitWithin => 10}) unless obj.nil?
         rescue
         end
