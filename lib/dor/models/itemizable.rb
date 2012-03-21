@@ -11,6 +11,7 @@ module Dor
       if File.exists?(File.join(path, 'content_metadata.xml'))
         ds.dsLabel = 'Content Metadata'
         ds.ng_xml = Nokogiri::XML(File.read(File.join(path, 'content_metadata.xml')))
+        ds.content = ds.ng_xml.to_xml
       end
     end
     

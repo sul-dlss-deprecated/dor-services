@@ -28,6 +28,7 @@ module Dor
         ds.dsLabel = 'Descriptive Metadata'
         ds.ng_xml = Nokogiri::XML(content)
         ds.ng_xml.normalize_text!
+        ds.content = ds.ng_xml.to_xml
       end
     end
     

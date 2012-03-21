@@ -16,6 +16,7 @@ module Dor
       content_ds = self.admin_policy_object.first.datastreams['defaultObjectRights']
       ds.dsLabel = 'Rights Metadata'
       ds.ng_xml = content_ds.ng_xml.clone
+      ds.content = ds.ng_xml.to_xml
     end
 
     def public_relationships
