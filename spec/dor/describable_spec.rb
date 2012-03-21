@@ -40,7 +40,7 @@ describe Dor::Describable do
     b.datastreams['descMetadata'].content = mods
     
     dc = b.generate_dublin_core
-    EquivalentXml.equivalent?(dc, expected_dc).should be
+    dc.should be_equivalent_to(expected_dc)
   end
   
   it "produces dublin core Stanford-specific mapping for repository, collection and location, from the MODS in the descMetadata datastream" do
