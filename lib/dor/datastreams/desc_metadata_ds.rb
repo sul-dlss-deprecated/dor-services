@@ -18,7 +18,7 @@ class DescMetadataDS < ActiveFedora::NokogiriDatastream
   end
 
   def to_solr(solr_doc=Hash.new, *args)
-    solrize_profile(solr_doc)
+    self.solrize_profile(solr_doc) if self.respond_to?(:solrize_profile)
     solr_doc
   end
 end
