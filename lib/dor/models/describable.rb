@@ -42,6 +42,8 @@ module Dor
       end
       xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/#{format}2dc.xslt")) )
       dc_doc = xslt.transform(self.datastreams['descMetadata'].ng_xml)
+      # Remove empty nodes
+      dc_doc.xpath('/oai_dc:dc/*[count(text()) = 0]').remove
       if(dc_doc.root.nil? || dc_doc.root.children.size == 0)
         raise "Dor::Item#generate_dublin_core produced incorrect xml:\n#{dc_doc.to_xml}"
       end
@@ -57,6 +59,10 @@ module Dor
     def to_solr(solr_doc=Hash.new, *args)
       super solr_doc, *args
       add_solr_value(solr_doc, "metadata_format", self.metadata_format, :string, [:searchable, :facetable])
+      dc_doc = self.generate_dublin_core
+      dc_doc.xpath('/oai_dc:dc/*').each do |node|
+        add_solr_value(solr_doc, "public_dc_#{node.name}", node.text, :string, [:searchable])
+      end
       solr_doc
     end
     
