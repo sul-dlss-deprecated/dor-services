@@ -1,17 +1,19 @@
 <?xml version="1.0"?>
-<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
-   <dc:title xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema">The complete works of Henry George</dc:title>
-   <dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">George, Henry, 1839-1897</dc:creator>
-   <dc:contributor xmlns:dc="http://purl.org/dc/elements/1.1/">George, Henry, 1862-1916</dc:contributor>
-   <dc:type xmlns:dc="http://purl.org/dc/elements/1.1/">Text</dc:type>
-   <dc:publisher xmlns:dc="http://purl.org/dc/elements/1.1/">Doubleday, Page</dc:publisher>
-   <dc:language xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema">eng</dc:language>
+<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+   <dc:title xmlns:srw_dc="info:srw/schema/1/dc-schema">The complete works of Henry George</dc:title>
+   <dc:creator>George, Henry, 1839-1897</dc:creator>
+   <dc:contributor>George, Henry, 1862-1916</dc:contributor>
+   <dc:type>Text</dc:type>
+   <dc:date>1911</dc:date>
+   <dc:date>1911</dc:date>
+   <dc:publisher>Doubleday, Page</dc:publisher>
+   <dc:language xmlns:srw_dc="info:srw/schema/1/dc-schema">eng</dc:language>
    
-   <dc:format xmlns:dc="http://purl.org/dc/elements/1.1/">electronic</dc:format>
-   <dc:description xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema">I. Progress and poverty.--II. Social problems.--III. The land question. Property in land. The condition of labor.--IV. Protection or free trade.--V. A perplexed philosopher [Herbert Spencer]--VI. The science of political economy, books I and II.--VII. The science of political economy, books III to V. "Moses": a lecture.--VIII. Our land and land policy.--IX-X. The life of Henry George, by his son Henry George, jr.</dc:description>
-   <dc:description xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema">On cover: Complete works of Henry George. Fels fund. Library edition.</dc:description>
-   <dc:subject xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema">Economics</dc:subject>
+   <dc:format>electronic</dc:format>
+   <dc:description xmlns:srw_dc="info:srw/schema/1/dc-schema">I. Progress and poverty.--II. Social problems.--III. The land question. Property in land. The condition of labor.--IV. Protection or free trade.--V. A perplexed philosopher [Herbert Spencer]--VI. The science of political economy, books I and II.--VII. The science of political economy, books III to V. "Moses": a lecture.--VIII. Our land and land policy.--IX-X. The life of Henry George, by his son Henry George, jr.</dc:description>
+   <dc:description xmlns:srw_dc="info:srw/schema/1/dc-schema">On cover: Complete works of Henry George. Fels fund. Library edition.</dc:description>
+   <dc:subject xmlns:srw_dc="info:srw/schema/1/dc-schema">Economics</dc:subject>
    
-   <dc:identifier xmlns:dc="http://purl.org/dc/elements/1.1/">druid:pz263ny9658</dc:identifier>
-   <dc:identifier xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema">http://purl.stanford.edu/pz263ny9658</dc:identifier>
+   <dc:identifier>druid:pz263ny9658</dc:identifier>
+   <dc:identifier xmlns:srw_dc="info:srw/schema/1/dc-schema">http://purl.stanford.edu/pz263ny9658</dc:identifier>
 </oai_dc:dc>

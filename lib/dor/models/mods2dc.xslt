@@ -191,7 +191,7 @@ Version 1.0	2007-05-04 Tracy Meehleib <tmee@loc.gov>
 	<xsl:template match="mods:originInfo">
 		<xsl:apply-templates select="*[@point='start']"/>
 		<xsl:for-each
-			select="mods:dateIssued[@point!='start' and @point!='end'] |mods:dateCreated[@point!='start' and @point!='end'] | mods:dateCaptured[@point!='start' and @point!='end'] | mods:dateOther[@point!='start' and @point!='end']">
+			select="mods:dateIssued[(count(@point) = 0) or (@point!='start' and @point!='end')] |mods:dateCreated[(count(@point) = 0) or (@point!='start' and @point!='end')] | mods:dateCaptured[(count(@point) = 0) or (@point!='start' and @point!='end')] | mods:dateOther[(count(@point) = 0) or (@point!='start' and @point!='end')]">
 			<dc:date>
 				<xsl:value-of select="."/>
 			</dc:date>
@@ -454,7 +454,7 @@ Version 1.0	2007-05-04 Tracy Meehleib <tmee@loc.gov>
 		<xsl:value-of select="."/>-<xsl:value-of select="../mods:temporal[@point='end']"/>
 	</xsl:template>
 	
-	<xsl:template match="mods:temporal[@point!='start' and @point!='end']  ">
+	<xsl:template match="mods:temporal[(count(@point) = 0) or (@point!='start' and @point!='end')]  ">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
