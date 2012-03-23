@@ -31,4 +31,22 @@ describe Dor::Configuration do
     @config.fedora.has_key?(:cert_file).should == false
   end
   
+  it "#sanitize" do
+    Dor::Config.should have_key(:ssl)
+    Dor::Config[:ssl].should_not be_empty
+    Dor::Config[:sdr].should have_key(:local_workspace_root)
+
+    config = Dor::Config.sanitize
+    config[:ssl].should be_empty
+    config[:sdr].should_not have_key(:local_workspace_root)
+  end
+  
+  it "#autoconfigure" do
+    FakeWeb.register_uri :get, 'http://example.edu/dor-configuration', :body => Dor::Config.sanitize.to_json
+    @config.fedora.url.should be_nil
+    @config.autoconfigure('http://example.edu/dor-configuration')
+    @config.fedora.url.should_not be_nil
+    @config.fedora.url.should == Dor::Config.fedora.url
+    @config.fedora.client.should be_a(RestClient::Resource)
+  end
 end

@@ -27,6 +27,22 @@ module Dor
       return result
     end
     
+    def autoconfigure(url, cert_file=Config.ssl.cert_file, key_file=Config.ssl.key_file, key_pass=Config.ssl.key_pass)
+      client = make_rest_client(url, cert_file, key_file, key_pass)
+      config = Confstruct::Configuration.symbolize_hash JSON.parse(client.get :accept => 'application/json')
+      self.configure(config)
+    end
+    
+    def sanitize
+      yaml = YAML.dump(self)
+      yaml.gsub!(/^.+!ruby\/object.+$/,"")
+      result = YAML.load(yaml)
+      result[:ssl] = {}
+      # Remove local filesystem references
+      result.keys.each { |opt| result[opt].reject! { |k,v| k.to_s =~ /^local_/ } }
+      result
+    end
+    
     def make_rest_client(url, cert=Config.ssl.cert_file, key=Config.ssl.key_file, pass=Config.ssl.key_pass)
       params = {}
       params[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(cert)) if cert
