@@ -151,9 +151,7 @@ module Dor
       end
       
       def workflow_resource
-        RestClient::Resource.new(Config.workflow.url,
-        :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(Config.fedora.cert_file)),
-        :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read(Config.fedora.key_file), Config.fedora.key_pass))
+        Config.make_rest_client(Config.workflow.url)
       end
     end
   end
