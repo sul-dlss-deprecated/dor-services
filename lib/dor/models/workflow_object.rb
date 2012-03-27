@@ -7,14 +7,8 @@ module Dor
     has_object_type 'workflow'
     has_metadata :name => "workflowDefinition", :type => Dor::WorkflowDefinitionDs, :label => 'Workflow Definition'
 
-    def self.find_by_name(name)
-      resp = Dor::SearchService.gsearch :q => %{object_type_field:workflow dc_title_field:"#{name}"}
-      doc = resp['response']['docs'].first
-      if doc.nil?
-        nil
-      else
-        self.load_instance(doc['id'].to_s)
-      end
+    def self.find_by_name(name, opts={})
+      Dor.find_all(%{objectType_t:"#{self.object_type}" objProfile_objLabel_s:"#{name}"}, opts).first
     end
     
     def definition

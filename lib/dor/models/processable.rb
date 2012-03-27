@@ -33,12 +33,12 @@ module Dor
         content = File.read(filename)
         ds.content = content
         ds.ng_xml = Nokogiri::XML(content) if ds.respond_to?(:ng_xml)
-        ds.save
+        ds.save unless ds.digital_object.new?
       elsif force or ds.new_object? or (ds.content.to_s.empty?)
         proc = "build_#{datastream}_datastream".to_sym
         if respond_to? proc
           content = self.send(proc, ds)
-          ds.save
+          ds.save unless ds.digital_object.new?
         end
       end
       return ds

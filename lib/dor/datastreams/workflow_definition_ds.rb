@@ -1,5 +1,6 @@
 module Dor
 class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream 
+  include SolrDocHelper
   
   set_terminology do |t|
     t.root(:path => "workflow-def", :index_as => [:not_searchable])
@@ -19,7 +20,7 @@ class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream
           prereq_name = repo
           repo = nil
         end
-        if (repo == workflow.repository and wf = workflow.name)
+        if (repo == workflow.repo and wf = workflow.name)
           repo = nil
           wf = nil
         end
@@ -38,13 +39,13 @@ class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream
   end
   
   def graph(parent = nil)
-    Workflow::Graph.from_processes(self.repository, self.name, self.processes, parent)
+    Workflow::Graph.from_processes(self.repo, self.name, self.processes, parent)
   end
   
   def processes
     ng_xml.xpath('/workflow-def/process').collect do |node|
-      Workflow::Process.new(self.name, self.repository, node)
-    end
+      Workflow::Process.new(self.repo, self.name, node)
+    end.sort { |a,b| (a.sequence || 0) <=> (b.sequence || 0) }
   end
 
   def name
@@ -57,7 +58,7 @@ class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream
 
   def configuration
     result = ActiveSupport::OrderedHash.new
-    result['repository'] = repository
+    result['repository'] = repo
     result['name'] = name
     processes.each { |process| result[process.name] = process.to_hash }
     result
@@ -72,6 +73,14 @@ class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream
       end
     end
     self.dirty = true
+  end
+  
+  def to_solr(solr_doc=Hash.new,*args)
+    super(solr_doc,*args)
+    processes.each do |p|
+      add_solr_value(solr_doc, "process", "#{p.name}|#{p.label}", :string, [:displayable])
+    end
+    solr_doc
   end
   
   def to_yaml

@@ -2,12 +2,13 @@
 :cleanup: 
   :local_workspace_root: /dor/workspace
   :local_export_home: /dor/export
-:fedora: 
+:ssl:
+  :cert_file: 
   :key_file: 
   :key_pass: ""
+:fedora: 
   :url: 
   :safeurl: 
-  :cert_file: 
 :solrizer:
   :url:
   :opts: {}

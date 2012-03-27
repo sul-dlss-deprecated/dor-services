@@ -35,11 +35,15 @@ module Workflow
       result
     end
 
+    def [](value)
+      self.processes.find { |p| p.name == value }
+    end
+    
     def processes
-      if self.definition
+      @processes ||= if self.definition
         self.definition.processes.collect do |process|
           node = ng_xml.at("/workflow/process[@name = '#{process.name}']")
-          process.update!(node) unless node.nil?
+          process.update!(node,self) unless node.nil?
           process
         end
       else

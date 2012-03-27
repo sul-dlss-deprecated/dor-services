@@ -1,11 +1,11 @@
 module Dor
 module Workflow
   class Process
-    attr_reader :repository, :workflow
+    attr_reader :owner, :repo, :workflow
   
-    def initialize(repository, workflow, attrs)
+    def initialize(repo, workflow, attrs)
       @workflow = workflow
-      @repository = repository
+      @repo = repo
       if attrs.is_a? Nokogiri::XML::Node
         init_from_node(attrs)
       else
@@ -22,7 +22,7 @@ module Workflow
         'batch_limit' => node['batch-limit'] ? node['batch-limit'].to_i : nil,
         'error_limit' => node['error-limit'] ? node['error-limit'].to_i : nil,
         'prerequisite' => node.xpath('prereq').collect { |p| 
-          repo = (p['repository'].nil? or p['repository'] == @repository) ? nil : p['repository']
+          repo = (p['repository'].nil? or p['repository'] == @repo) ? nil : p['repository']
           wf = (p['workflow'].nil? or p['workflow'] == @workflow) ? nil : p['workflow']
           [repo,wf,p.text.to_s].compact.join(':') 
         }
@@ -39,6 +39,28 @@ module Workflow
     def prerequisite  ; @attrs['prerequisite']  ; end
     def status        ; @attrs['status']        ; end
 
+    def completed?    ; self.status == 'completed' ; end
+    def error?        ; self.status == 'error'     ; end
+    def waiting?      ; self.status == 'waiting'   ; end
+
+    def ready?
+      self.waiting? and self.prerequisite.all? { |pr| (prq = self.owner[pr]) && prq.completed? }
+    end
+    
+    def blocked?
+      self.waiting? and self.prerequisite.any? { |pr| (prq = self.owner[pr]) && (prq.error? or prq.blocked?) }
+    end
+    
+    def state
+      if blocked?
+        'blocked'
+      elsif ready?
+        'ready'
+      else
+        status
+      end
+    end
+    
     def attempts
       @attrs['attempts'].to_i
     end
@@ -51,7 +73,8 @@ module Workflow
       @attrs['elapsed'].nil? ? nil : @attrs['elapsed'].to_f
     end
         
-    def update!(info)
+    def update!(info, new_owner=nil)
+      @owner = new_owner unless new_owner.nil?
       if info.is_a? Nokogiri::XML::Node
         info = Hash[info.attributes.collect { |k,v| [k,v.value] }]
       end

@@ -27,7 +27,23 @@ module Dor
       return result
     end
     
-    def make_rest_client(url, cert=Config.fedora.cert_file, key=Config.fedora.key_file, pass=Config.fedora.key_pass)
+    def autoconfigure(url, cert_file=Config.ssl.cert_file, key_file=Config.ssl.key_file, key_pass=Config.ssl.key_pass)
+      client = make_rest_client(url, cert_file, key_file, key_pass)
+      config = Confstruct::Configuration.symbolize_hash JSON.parse(client.get :accept => 'application/json')
+      self.configure(config)
+    end
+    
+    def sanitize
+      yaml = YAML.dump(self)
+      yaml.gsub!(/^.+!ruby\/object.+$/,"")
+      result = YAML.load(yaml)
+      result[:ssl] = {}
+      # Remove local filesystem references
+      result.keys.each { |opt| result[opt].reject! { |k,v| k.to_s =~ /^local_/ } }
+      result
+    end
+    
+    def make_rest_client(url, cert=Config.ssl.cert_file, key=Config.ssl.key_file, pass=Config.ssl.key_pass)
       params = {}
       params[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(cert)) if cert
       params[:ssl_client_key]  = OpenSSL::PKey::RSA.new(File.read(key), pass) if key
@@ -37,7 +53,7 @@ module Dor
     def make_solr_connection(add_opts={})
       opts = Config.solrizer.opts.merge(add_opts).merge(
         :url => Config.solrizer.url,
-        :ssl_cert_file => Config.fedora.cert_file, :ssl_key_file => Config.fedora.key_file, :ssl_key_pass => Config.fedora.key_pass
+        :ssl_cert_file => Config.ssl.cert_file, :ssl_key_file => Config.ssl.key_file, :ssl_key_pass => Config.ssl.key_pass
       )
       ::RSolr::ClientCert.connect(opts).extend(RSolr::Ext::Client)
     end
@@ -65,20 +81,32 @@ module Dor
     end
 
     set_callback :configure, :after do |config|
+      [:cert_file, :key_file, :key_pass].each do |key|
+        stack = caller.dup
+        stack.shift while stack[0] =~ %r{(active_support/callbacks|dor/config|dor-services)\.rb}
+        if config.fedora[key].present?
+          ActiveSupport::Deprecation.warn "Dor::Config -- fedora.#{key.to_s} is deprecated. Please use ssl.#{key.to_s} instead.", stack
+          config.ssl[key] = config.fedora[key] unless config.ssl[key].present?
+          config.fedora.delete(key)
+        end
+      end
+
       if ActiveFedora.respond_to?(:configurator)
         if config.solrizer.url.present?
           ActiveFedora::SolrService.register
           ActiveFedora::SolrService.instance.instance_variable_set :@conn, self.make_solr_connection
         end
       else
-        ActiveFedora::RubydoraConnection.connect self.fedora_config
-        ActiveFedora::SolrService.register config.solrizer.url, config.solrizer.opts
-        conn = ActiveFedora::SolrService.instance.conn.connection
-        if config.fedora.cert_file.present?
-          conn.use_ssl = true
-          conn.cert = OpenSSL::X509::Certificate.new(File.read(config.fedora.cert_file))
-          conn.key = OpenSSL::PKey::RSA.new(File.read(config.fedora.key_file),config.fedora.key_pass) if config.fedora.key_file.present?
-          conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        ActiveFedora::RubydoraConnection.connect self.fedora_config if self.fedora.url.present?
+        if self.solrizer.url.present?
+          ActiveFedora::SolrService.register config.solrizer.url, config.solrizer.opts
+          conn = ActiveFedora::SolrService.instance.conn.connection
+          if config.ssl.cert_file.present?
+            conn.use_ssl = true
+            conn.cert = OpenSSL::X509::Certificate.new(File.read(config.ssl.cert_file))
+            conn.key = OpenSSL::PKey::RSA.new(File.read(config.ssl.key_file),config.ssl.key_pass) if config.ssl.key_file.present?
+            conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
+          end
         end
         ActiveFedora.init 
         ActiveFedora.fedora_config_path = File.expand_path('../../../config/dummy.yml', __FILE__)
@@ -92,8 +120,8 @@ module Dor
     def fedora_config
       fedora_uri = URI.parse(self.fedora.url)
       connection_opts = { :url => self.fedora.safeurl, :user => fedora_uri.user, :password => fedora_uri.password }
-      connection_opts[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(self.fedora.cert_file)) if self.fedora.cert_file.present?
-      connection_opts[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(self.fedora.key_file),self.fedora.key_pass) if self.fedora.key_file.present?
+      connection_opts[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(self.ssl.cert_file)) if self.ssl.cert_file.present?
+      connection_opts[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(self.ssl.key_file),self.ssl.key_pass) if self.ssl.key_file.present?
       connection_opts
     end
     

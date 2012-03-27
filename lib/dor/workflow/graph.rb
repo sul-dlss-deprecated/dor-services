@@ -4,8 +4,9 @@ module Dor
 module Workflow
 class Graph
   
-  FILL_COLORS = { 'waiting' => "white", 'error' => "#8B0000", 'completed' => "darkgreen", 'unknown' => "#CFCFCF" }
-  TEXT_COLORS = { 'waiting' => "black", 'error' => "white", 'completed' => "white", 'unknown' => "black" }
+  FILL_COLORS = { 'waiting' => "white", 'ready' => "white", 'error' => "#8B0000", 'blocked' => "white", 'completed' => "darkgreen", 'unknown' => "#CFCFCF" }
+  TEXT_COLORS = { 'waiting' => "black", 'ready' => "black", 'error' => "white", 'blocked' => "#8B0000", 'completed' => "white", 'unknown' => "black" }
+  PATTERNS    = { 'waiting' => "diagonals", 'ready' => "filled", 'error' => "filled", 'blocked' => "diagonals", 'completed' => "filled", 'unknown' => "filled" }
   RESERVED_KEYS = ['repository','name']
 
   attr_reader :repo, :name, :processes, :graph, :root
@@ -32,7 +33,7 @@ class Graph
   def self.from_processes(repo, name, processes, parent = nil)
     wf = self.new(repo, name, parent)
     processes.each { |p| 
-      wf.add_process(p.name).status = p.status || 'unknown'
+      wf.add_process(p.name).status = p.state || 'unknown'
     }
     processes.each { |p|
       p.prerequisite.each { |prereq|
@@ -80,9 +81,6 @@ class Graph
       if process.id =~ %r{^#{qname}} and process.prerequisites.length == 0
         (@root << process.node)[:arrowhead => 'none', :arrowtail => 'none', :dir => 'both', :style => 'invisible']
       end
-      if process.all_prerequisites.any? { |p| processes[p].status == 'error' }
-        process.node[:fontcolor => 'black', :color => FILL_COLORS['error'], :style => 'diagonals']
-      end
     end
 
     @root.fontname = 'Helvetica'
@@ -128,7 +126,7 @@ class Graph
       else
         @node.fillcolor = FILL_COLORS[s] || "yellow"
         @node.fontcolor = TEXT_COLORS[s]
-        @node.style = "filled"
+        @node.style = PATTERNS[s]
       end
     end
     

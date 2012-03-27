@@ -9,7 +9,9 @@ module Dor
     end
 
     module ClassMethods
+      attr_reader :object_type
       def has_object_type str
+        @object_type = str
         Dor.registered_classes[str] = self
       end
     end
