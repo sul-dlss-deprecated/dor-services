@@ -1,7 +1,7 @@
 module Dor
 module Workflow
   class Process
-    attr_reader :repo, :workflow
+    attr_reader :owner, :repo, :workflow
   
     def initialize(repo, workflow, attrs)
       @workflow = workflow
@@ -39,6 +39,28 @@ module Workflow
     def prerequisite  ; @attrs['prerequisite']  ; end
     def status        ; @attrs['status']        ; end
 
+    def completed?    ; self.status == 'completed' ; end
+    def error?        ; self.status == 'error'     ; end
+    def waiting?      ; self.status == 'waiting'   ; end
+
+    def ready?
+      self.waiting? and self.prerequisite.all? { |pr| (prq = self.owner[pr]) && prq.completed? }
+    end
+    
+    def blocked?
+      self.waiting? and self.prerequisite.any? { |pr| (prq = self.owner[pr]) && (prq.error? or prq.blocked?) }
+    end
+    
+    def state
+      if blocked?
+        'blocked'
+      elsif ready?
+        'ready'
+      else
+        status
+      end
+    end
+    
     def attempts
       @attrs['attempts'].to_i
     end
@@ -51,7 +73,8 @@ module Workflow
       @attrs['elapsed'].nil? ? nil : @attrs['elapsed'].to_f
     end
         
-    def update!(info)
+    def update!(info, new_owner=nil)
+      @owner = new_owner unless new_owner.nil?
       if info.is_a? Nokogiri::XML::Node
         info = Hash[info.attributes.collect { |k,v| [k,v.value] }]
       end
