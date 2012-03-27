@@ -178,6 +178,12 @@ Values can also be configured individually:
 - <b>3.3.4</b>
   - Properly convert unqualified MODS dates to DC
   - Minor bug fixes
+- <b>3.3.5</b>
+  - Move SSL config options from fedora block to new ssl block
+  - Add Dor::Config#sanitize and Dor::Config#autoconfigure
+  - Fix 'repository'/'repo' conflicts in workflow definition/process objects
+  - Add status booleans (completed? error? blocked? waiting? ready?) to workflow processes
+  - Registration bugfix: Don't try to save datastreams if there's no real object underneath
   
 == Copyright
 
