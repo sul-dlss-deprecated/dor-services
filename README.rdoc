@@ -11,7 +11,7 @@ Configuration is handled through the Dor::Config object:
     gsearch.url = 'http://dor-dev.stanford.edu/solr'
 
     # If using SSL certificates
-    fedora do
+    ssh do
       cert_file = File.dirname(__FILE__) + '/../certs/dummy.crt'
       key_file = File.dirname(__FILE__) + '/../certs/dummy.key'
       key_pass = 'dummy'
