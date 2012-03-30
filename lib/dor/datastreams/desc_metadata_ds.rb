@@ -17,9 +17,5 @@ class DescMetadataDS < ActiveFedora::NokogiriDatastream
     t.topic :index_as => [:searchable]
   end
 
-  def to_solr(solr_doc=Hash.new, *args)
-    self.solrize_profile(solr_doc) if self.respond_to?(:solrize_profile)
-    solr_doc
-  end
 end
 end
