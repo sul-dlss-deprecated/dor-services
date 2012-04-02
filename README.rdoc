@@ -184,7 +184,8 @@ Values can also be configured individually:
   - Fix 'repository'/'repo' conflicts in workflow definition/process objects
   - Add status booleans (completed? error? blocked? waiting? ready?) to workflow processes
   - Registration bugfix: Don't try to save datastreams if there's no real object underneath
-  
+- <b>3.3.6</b> Recover gracefully (with a warning) from ActiveFedora::Base.load_from_solr() exceptions
+
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.
