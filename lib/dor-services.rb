@@ -45,7 +45,12 @@ module Dor
         object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType',:string)]).first
         object_class = registered_classes[object_type] || ActiveFedora::Base
         if opts[:lightweight] and doc_version >= Gem::Version.new('3.1.0')
-          object_class.load_instance_from_solr solr_doc['id'], solr_doc
+          begin
+            object_class.load_instance_from_solr solr_doc['id'], solr_doc
+          rescue Exception => e
+            ActiveFedora.logger.warn("Exception: '#{e.message}' trying to load #{solr_doc['id']} from solr. Loading from Fedora")
+            load_instance(solr_doc['id'])
+          end
         else
           load_instance solr_doc['id']
         end
