@@ -185,6 +185,10 @@ Values can also be configured individually:
   - Add status booleans (completed? error? blocked? waiting? ready?) to workflow processes
   - Registration bugfix: Don't try to save datastreams if there's no real object underneath
 - <b>3.3.6</b> Recover gracefully (with a warning) from ActiveFedora::Base.load_from_solr() exceptions
+- <b>3.3.7</b> 
+  - Load workflows datastream XML directly from workflow service
+  - Use ActiveFedora 4.0.0.rc20 until final 4.0.0 release
+  - Minor solr indexing fixes
 
 == Copyright
 
