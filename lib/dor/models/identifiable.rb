@@ -44,6 +44,7 @@ module Dor
       self.assert_content_model
       super(solr_doc)
       solr_doc[Dor::INDEX_VERSION_FIELD] = Dor::VERSION
+      solr_doc[solr_name('indexed_at',:date)] = Time.now.utc.xmlschema
       datastreams.values.each do |ds|
         unless ds.new?
           add_solr_value(solr_doc,'ds_specs',ds.datastream_spec_string,:string,[:displayable])

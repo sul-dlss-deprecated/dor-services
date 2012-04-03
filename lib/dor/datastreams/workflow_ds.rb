@@ -27,12 +27,27 @@ class WorkflowDs < ActiveFedora::NokogiriDatastream
     node.nil? ? nil : Workflow::Document.new(node.to_xml)
   end
 
+  def ensure_xml_loaded
+    ng_xml
+    self.xml_loaded = true
+  end
+  
+  def ng_xml
+    @ng_xml ||= Nokogiri::XML::Document.parse(content)
+  end
+
   def content
     begin
-      super
-    rescue RuntimeError
-      # Just in case the workflow service 404s
-      '<workflows/>'
+      @content ||= Dor::WorkflowService.get_workflow_xml 'dor', self.pid, nil
+    rescue RestClient::ResourceNotFound
+      xml = Nokogiri::XML(%{<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<workflows objectId="#{self.pid}"/>})
+      self.digital_object.datastreams.keys.each do |dsid|
+        if dsid =~ /WF$/
+          ds_content = Nokogiri::XML(Dor::WorkflowService.get_workflow_xml 'dor', self.pid, dsid)
+          xml.root.add_child(ds_content.root)
+        end
+      end
+      @content ||= xml.to_xml
     end
   end
   

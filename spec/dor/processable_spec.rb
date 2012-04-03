@@ -18,6 +18,11 @@ describe Dor::Processable do
   it "has a workflows datastream" do
     @item.datastreams['workflows'].should be_a(Dor::WorkflowDs)
   end
+
+  it "should load its content directly from the workflow service" do
+    Dor::WorkflowService.should_receive(:get_workflow_xml).with('dor','druid:ab123cd4567',nil)
+    @item.datastreams['workflows'].content
+  end
   
   context "filesystem-based content" do
     before :each do

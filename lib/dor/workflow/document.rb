@@ -22,8 +22,10 @@ module Workflow
     end
     
     def definition
-      wfo = Dor::WorkflowObject.find_by_name(self.workflowId.first)
-      wfo ? wfo.definition : nil
+      @definition ||= begin
+        wfo = Dor::WorkflowObject.find_by_name(self.workflowId.first)
+        wfo ? wfo.definition : nil
+      end
     end
 
     def graph(parent=nil, dir=nil)
