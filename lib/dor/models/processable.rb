@@ -4,16 +4,7 @@ module Dor
     include SolrDocHelper
 
     included do
-      # TODO: Remove placeholder :url parameter once ticket HYDRA-745 is satisfactorily resolved
       has_metadata :name => 'workflows', :type => Dor::WorkflowDs, :label => 'Workflows', :control_group => 'E'
-      self.ds_specs.instance_eval do
-        class << self
-          alias_method :_retrieve, :[]
-          def [](key)
-            self._retrieve(key) || (key =~ /WF$/ ? { :type => Dor::WorkflowDs } : nil)
-          end
-        end
-      end
       after_initialize :set_workflows_datastream_location
     end
     
