@@ -1,6 +1,7 @@
 require 'confstruct/configuration'
 require 'rsolr-ext'
 require 'rsolr/client_cert'
+require 'stomp'
 
 module Dor
   class Configuration < Confstruct::Configuration
@@ -75,12 +76,17 @@ module Dor
         :gsearch => {
           :rest_client => Confstruct.deferred { |c| config.make_rest_client c.rest_url },
           :client => Confstruct.deferred { |c| config.make_rest_client c.url }
+        },
+        :stomp => {
+          :client => Confstruct.deferred { |c| Stomp::Client.new c.user, c.password, c.host, c.port }
         }
       })
       true
     end
 
     set_callback :configure, :after do |config|
+      config[:stomp][:host] ||= URI.parse(config.fedora.url).host rescue nil
+
       [:cert_file, :key_file, :key_pass].each do |key|
         stack = caller.dup
         stack.shift while stack[0] =~ %r{(active_support/callbacks|dor/config|dor-services)\.rb}
