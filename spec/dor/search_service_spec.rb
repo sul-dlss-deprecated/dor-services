@@ -4,21 +4,69 @@ require 'fakeweb'
 describe Dor::SearchService do
 
   context "indexing functions" do
+    before :each do
+      FakeWeb.allow_net_connect = false
+      FakeWeb.register_uri(:get, 'https://dor-dev.stanford.edu/gsearch/rest/?operation=updateIndex&action=fromPid&value=druid:bb110sm8219', :body => 'OK')
+      FakeWeb.register_uri(:get, 'https://dor-dev.stanford.edu/gsearch/rest/?operation=updateIndex&action=fromPid&value=druid:bb110sm8210', :body => 'OK')
+    end
+    
+    after :each do
+      FakeWeb.clean_registry
+      FakeWeb.allow_net_connect = true
+    end
+    
     it "should report an index version" do
       Dor::SearchService.index_version.should =~ /\d+\.\d+\.\d+/
     end
     
     it "should reindex PIDs" do
-      fwanc = FakeWeb.allow_net_connect?
-      FakeWeb.allow_net_connect = false
-      FakeWeb.register_uri(:get, 'https://dor-dev.stanford.edu/gsearch/rest/?operation=updateIndex&action=fromPid&value=druid:bb110sm8219', :body => 'OK')
-      FakeWeb.register_uri(:get, 'https://dor-dev.stanford.edu/gsearch/rest/?operation=updateIndex&action=fromPid&value=druid:bb110sm8210', :body => 'OK')
       result = Dor::SearchService.reindex('druid:bb110sm8219','druid:bb110sm8210') do |group|
         group.should == ['druid:bb110sm8219','druid:bb110sm8210']
       end
       result.should == ['druid:bb110sm8219','druid:bb110sm8210']
+    end
+  end
+
+  context ".risearch" do
+    before :each do
+      FakeWeb.allow_net_connect = false
+      @druids = [['druid:rk464yc0651','druid:xx122nh4588','druid:mj151qw9093','druid:mn144df7801','druid:rx565mb6270'],['druid:tx361mw6047','druid:cm977wg2520','druid:tk695fn1971','druid:jk486qb3656','druid:cd252xn6059'],[]]
+      responses = @druids.collect { |group| { :body => %{"object"\n} + group.collect { |d| "info:fedora/#{d}" }.join("\n") } }
+      FakeWeb.register_uri(:post, 'https://fedoraAdmin:fedoraAdmin@dor-dev.stanford.edu/fedora/risearch', responses)
+    end
+    
+    after :each do
       FakeWeb.clean_registry
-      FakeWeb.allow_net_connect = fwanc
+      FakeWeb.allow_net_connect = true
+    end
+
+    it "should execute a proper resource index search" do
+      query = 'select $object from <#ri> where $object <info:fedora/fedora-system:def/model#label> $label'
+      encoded = 'select%20%24object%20from%20%3C%23ri%3E%20where%20%24object%20%3Cinfo%3Afedora%2Ffedora-system%3Adef%2Fmodel%23label%3E%20%24label'
+      resp = Dor::SearchService.risearch(query, :limit => 5)
+      resp.should == @druids[0]
+      params = FakeWeb.last_request.body.split(/&/)
+      params.should include("query=#{encoded}")
+      params.should include("limit=5")
+      resp = Dor::SearchService.risearch(query, :limit => 5, :offset => 5)
+      params = FakeWeb.last_request.body.split(/&/)
+      params.should include("query=#{encoded}")
+      params.should include("limit=5")
+      params.should include("offset=5")
+      resp.should == @druids[1]
+    end
+    
+    it "should iterate over pids in groups" do
+      receiver = mock('block')
+      receiver.should_receive(:process).with(@druids[0])
+      receiver.should_receive(:process).with(@druids[1])
+      Dor::SearchService.iterate_over_pids(:in_groups_of => 5, :mode => :group) { |x| receiver.process(x) }
+    end
+
+    it "should iterate over pids one at a time" do
+      receiver = mock('block')
+      @druids.flatten.each { |druid| receiver.should_receive(:process).with(druid) }
+      Dor::SearchService.iterate_over_pids(:in_groups_of => 5, :mode => :single) { |x| receiver.process(x) }
     end
   end
   

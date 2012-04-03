@@ -44,10 +44,11 @@ module Dor
       end
       
       def iterate_over_pids(opts = {}, &block)
+        opts[:query] ||= "select $object from <#ri> where $object <info:fedora/fedora-system:def/model#label> $label"
         opts[:in_groups_of] ||= 100
         opts[:mode] ||= :single
         start = 0
-        pids = Dor::SearchService.risearch("select $object from <#ri> where $object <info:fedora/fedora-system:def/model#label> $label limit #{opts[:in_groups_of]} offset #{start}")
+        pids = Dor::SearchService.risearch("#{opts[:query]} limit #{opts[:in_groups_of]} offset #{start}")
         while pids.present?
           if opts[:mode] == :single
             pids.each { |pid| yield pid }
@@ -55,7 +56,7 @@ module Dor
             yield pids
           end
           start += pids.length
-          pids = Dor::SearchService.risearch("select $object from <#ri> where $object <info:fedora/fedora-system:def/model#label> $label limit #{opts[:in_groups_of]} offset #{start}")
+          pids = Dor::SearchService.risearch("#{opts[:query]} limit #{opts[:in_groups_of]} offset #{start}")
         end
       end
       
