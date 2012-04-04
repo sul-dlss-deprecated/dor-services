@@ -189,7 +189,11 @@ Values can also be configured individually:
   - Load workflows datastream XML directly from workflow service
   - Use ActiveFedora 4.0.0.rc20 until final 4.0.0 release
   - Minor solr indexing fixes
-
+- <b>3.4.0</b>
+  - Switch from explicit load to autoload for faster startup
+  - Add Dor::Config.stomp (and Dor::Config.stomp.client)
+  - Add resource-index-based Dor::SearchService.iterate_over_pids
+  
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.
