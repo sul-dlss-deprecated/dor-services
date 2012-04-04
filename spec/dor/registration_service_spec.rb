@@ -19,9 +19,13 @@ describe Dor::RegistrationService do
       @pid = 'druid:ab123cd4567'
       Dor::SuriService.stub!(:mint_id).and_return("druid:ab123cd4567")
       @mock_repo = mock(Rubydora::Repository).as_null_object
-      ActiveFedora.stub_chain(:fedora,:connection).and_return(@mock_repo)
+      if ActiveFedora::Base.respond_to? :connection_for_pid
+        ActiveFedora::Base.stub(:connection_for_pid).and_return(@mock_repo)
+      else
+        ActiveFedora.stub_chain(:fedora,:connection).and_return(@mock_repo)
+      end
       @mock_solr = mock(RSolr::Connection).as_null_object
-      ActiveFedora.stub_chain(:solr,:conn).and_return(@mock_solr)
+      Dor::SearchService.stub(:solr).and_return(@mock_solr)
       @apo  = instantiate_fixture("druid:fg890hi1234", Dor::AdminPolicyObject)
 
       ActiveFedora::Base.class_eval {
