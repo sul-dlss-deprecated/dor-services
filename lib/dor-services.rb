@@ -16,6 +16,7 @@ module Dor
     # index is missing the objectType property.
     # @param [String] pid The object's PID
     def load_instance pid
+      ensure_models_loaded!
       obj = Dor::Abstract.find pid
       return nil if obj.new_object?
       object_type = obj.identityMetadata.objectType.first
@@ -33,6 +34,7 @@ module Dor
     end
     
     def find_all query, opts={}
+      ensure_models_loaded!
       af_version = Gem::Version.new(ActiveFedora::VERSION)
       if opts[:lightweight] and af_version < Gem::Version.new('4.0.0.rc9')
         ActiveFedora.logger.warn("Loading of lightweight objects requires ActiveFedora >= 4.0.0")
@@ -56,81 +58,72 @@ module Dor
         end
       end
     end
-
-    # Reload the entire dor-services gem, preserving configuration info
-    def reload!
-      configuration = Dor::Config.to_hash
-      temp_v = $-v
-      $-v = nil
-      begin
-        Dependencies.each { |f| load File.join(File.dirname(__FILE__), "#{f}.rb") }
-      ensure
-        $-v = temp_v
-      end
-      Dor::Config.configure { |config| config.deep_merge!(configuration) }
-      Dor
-    end
     
+    def ensure_models_loaded!
+      [Item, Set, Collection, AdminPolicyObject, WorkflowObject]
+    end
   end
   
-  Dependencies = [
-    'dor/version',
-    'dor/config',
-    'dor/exceptions',
+  require 'dor/version'
+  require 'dor/config'
+  require 'dor/exceptions'
 
-    # patches, utilities and helpers
-    'dor/utils/druid_utils',
-    'dor/utils/ng_tidy',
-    'dor/utils/solr_doc_helper',
-    'dor/utils/utc_date_field_mapper',
+  # patches, utilities and helpers
+  require 'dor/utils/ng_tidy'
+  require 'dor/utils/solr_doc_helper'
+  require 'dor/utils/utc_date_field_mapper'
     
-    # datastreams
-    'dor/datastreams/administrative_metadata_ds',
-    'dor/datastreams/content_metadata_ds',
-    'dor/datastreams/desc_metadata_ds',
-    'dor/datastreams/embargo_metadata_ds',
-    'dor/datastreams/events_ds',
-    'dor/datastreams/identity_metadata_ds',
-    'dor/datastreams/role_metadata_ds',
-    'dor/datastreams/simple_dublin_core_ds',
-    'dor/datastreams/workflow_definition_ds',
-    'dor/datastreams/workflow_ds',
-    'dor/datastreams/datastream_spec_solrizer',
+  require 'dor/datastreams/datastream_spec_solrizer'
 
-    # DOR Concerns
-    'dor/models/identifiable',
-    'dor/models/itemizable',
-    'dor/models/processable',
-    'dor/models/governable',
-    'dor/models/describable',
-    'dor/models/publishable',
-    'dor/models/shelvable',
-    'dor/models/embargoable',
-    'dor/models/preservable',
-    'dor/models/assembleable',
+  ::Object.autoload :Druid, 'dor/utils/druid_utils'
     
-    # ActiveFedora Classes
-    'dor/models/item',
-    'dor/models/set',
-    'dor/models/collection',
-    'dor/models/admin_policy_object',
-    'dor/models/workflow_object',
+  # datastreams
+  autoload :AdministrativeMetadataDS,  'dor/datastreams/administrative_metadata_ds'
+  autoload :ContentMetadataDS, 'dor/datastreams/content_metadata_ds'
+  autoload :DescMetadataDS,  'dor/datastreams/desc_metadata_ds'
+  autoload :EmbargoMetadataDS, 'dor/datastreams/embargo_metadata_ds'
+  autoload :EventsDS,  'dor/datastreams/events_ds'
+  autoload :IdentityMetadataDS,  'dor/datastreams/identity_metadata_ds'
+  autoload :RoleMetadataDS,  'dor/datastreams/role_metadata_ds'
+  autoload :WorkflowDefinitionDs,  'dor/datastreams/workflow_definition_ds'
+  autoload :WorkflowDs,  'dor/datastreams/workflow_ds'
+  ::Object.autoload :SimpleDublinCoreDs, 'dor/datastreams/simple_dublin_core_ds'
+  
+  # DOR Concerns
+  autoload :Identifiable, 'dor/models/identifiable'
+  autoload :Itemizable, 'dor/models/itemizable'
+  autoload :Processable, 'dor/models/processable'
+  autoload :Governable, 'dor/models/governable'
+  autoload :Describable, 'dor/models/describable'
+  autoload :Publishable, 'dor/models/publishable'
+  autoload :Shelvable, 'dor/models/shelvable'
+  autoload :Embargoable, 'dor/models/embargoable'
+  autoload :Preservable, 'dor/models/preservable'
+  autoload :Assembleable, 'dor/models/assembleable'
+    
+  # ActiveFedora Classes
+  autoload :Abstract, 'dor/models/item'
+  autoload :Item, 'dor/models/item'
+  autoload :Set, 'dor/models/set'
+  autoload :Collection, 'dor/models/collection'
+  autoload :AdminPolicyObject, 'dor/models/admin_policy_object'
+  autoload :WorkflowObject, 'dor/models/workflow_object'
 
-    # Services
-    'dor/services/search_service',
-    'dor/services/metadata_service',
-    'dor/services/registration_service',
-    'dor/services/suri_service',
-    'dor/services/workflow_service',
-    'dor/services/digital_stacks_service',
-    'dor/services/sdr_ingest_service',
-    'dor/services/cleanup_service',
-    'dor/services/provenance_metadata_service',
+  # Services
+  autoload :SearchService, 'dor/services/search_service'
+  autoload :MetadataService, 'dor/services/metadata_service'
+  autoload :RegistrationService, 'dor/services/registration_service'
+  autoload :SuriService, 'dor/services/suri_service'
+  autoload :WorkflowService, 'dor/services/workflow_service'
+  autoload :DigitalStacksService, 'dor/services/digital_stacks_service'
+  autoload :SdrIngestService, 'dor/services/sdr_ingest_service'
+  autoload :CleanupService, 'dor/services/cleanup_service'
+  autoload :ProvenanceMetadataService, 'dor/services/provenance_metadata_service'
     
-    # Workflow Classes
-    'dor/workflow/graph',
-    'dor/workflow/process',
-    'dor/workflow/document'
-  ]
-  Dependencies.each { |f| require f }
+  # Workflow Classes
+  module Workflow
+    autoload :Graph, 'dor/workflow/graph'
+    autoload :Process, 'dor/workflow/process'
+    autoload :Document, 'dor/workflow/document'
+  end
 end

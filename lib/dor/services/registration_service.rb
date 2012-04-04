@@ -6,6 +6,7 @@ module Dor
     
     class << self
       def register_object(params = {})
+        Dor.ensure_models_loaded!
         [:object_type, :label].each do |required_param|
           raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{self.name}.register_object" unless params[required_param]
         end

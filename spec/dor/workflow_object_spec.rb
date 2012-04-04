@@ -6,12 +6,11 @@ describe Dor::WorkflowObject do
   before :all do
     Dor::Config.push! { suri.mint_ids false }
     ActiveFedora.stub!(:fedora).and_return(stub('frepo').as_null_object)
-    @fwanc = FakeWeb.allow_net_connect?
     FakeWeb.allow_net_connect = false
   end
   
   after :all do
-    FakeWeb.allow_net_connect = @fwanc
+    FakeWeb.allow_net_connect = true
     Dor::Config.pop
   end
   

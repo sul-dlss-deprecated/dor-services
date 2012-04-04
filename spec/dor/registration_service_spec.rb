@@ -58,7 +58,7 @@ describe Dor::RegistrationService do
       obj.label.should == @params[:label]
       obj.identityMetadata.sourceId.should == 'barcode:9191919191'
       obj.identityMetadata.otherId.should =~ @params[:other_ids].collect { |*e| e.join(':') }
-      obj.rels_ext.to_xml(true).should be_equivalent_to <<-XML
+      obj.rels_ext.to_rels_ext.should be_equivalent_to <<-XML
       <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#" 
         xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#">
         <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">

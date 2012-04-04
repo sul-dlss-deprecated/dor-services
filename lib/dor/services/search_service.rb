@@ -43,6 +43,23 @@ module Dor
         result.split(/\n/)[1..-1].collect { |pid| pid.chomp.sub(/^info:fedora\//,'') }
       end
       
+      def iterate_over_pids(opts = {}, &block)
+        opts[:query] ||= "select $object from <#ri> where $object <info:fedora/fedora-system:def/model#label> $label"
+        opts[:in_groups_of] ||= 100
+        opts[:mode] ||= :single
+        start = 0
+        pids = Dor::SearchService.risearch("#{opts[:query]} limit #{opts[:in_groups_of]} offset #{start}")
+        while pids.present?
+          if opts[:mode] == :single
+            pids.each { |pid| yield pid }
+          else
+            yield pids
+          end
+          start += pids.length
+          pids = Dor::SearchService.risearch("#{opts[:query]} limit #{opts[:in_groups_of]} offset #{start}")
+        end
+      end
+      
       def gsearch(params)
         client = Config.gsearch.client
         query_params = params.merge(:wt => 'json')
