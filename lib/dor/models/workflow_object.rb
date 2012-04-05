@@ -8,7 +8,7 @@ module Dor
     has_metadata :name => "workflowDefinition", :type => Dor::WorkflowDefinitionDs, :label => 'Workflow Definition'
 
     def self.find_by_name(name, opts={})
-      Dor.find_all(%{objectType_t:"#{self.object_type}" obj_label_t:"#{name}"}, opts).first
+      Dor.find_all(%{objectType_t:"#{self.object_type}" title_facet:"#{name}"}, opts).first
     end
     
     def definition
