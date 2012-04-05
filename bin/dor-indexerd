@@ -45,9 +45,11 @@ end
 
 
 options = {
-  :multiple=>false,
+  :multiple=>ARGV.any? { |arg| arg =~ %r{^/queue/}},
   :dir_mode=>:normal,
   :dir=>'/tmp',
+  :log_dir=>File.join(Dir.pwd,'log'),
+  :log_output=>ARGV.any? { |arg| arg == '-v' },
   :backtrace=>true
 }
 argv_array = []
@@ -57,7 +59,7 @@ ARGV[1..-1].each {|ele| argv_array << ele }
 options[:ARGV] = argv_array
 
 version = '>=0'
-app = Gem.bin_path('dor-services','dor-indexer',version)
-
+#app = Gem.bin_path('dor-services','dor-indexer',version)
+app = File.expand_path('../dor-indexer',__FILE__)
 Daemons.run(app,options)
 

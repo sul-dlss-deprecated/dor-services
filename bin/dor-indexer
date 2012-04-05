@@ -5,7 +5,7 @@ require 'optparse'
 require 'stomp'
 require 'dor-services'
 
-options = {}
+options = { :log_level => Logger::WARN }
 
 optparse = OptionParser.new do|opts|
   opts.banner = "Usage: #{File.basename(__FILE__)} [options]"
@@ -45,6 +45,10 @@ optparse = OptionParser.new do|opts|
     options[:client_id] = client_id
   end
   
+  opts.on('-v', 'Verbose') do
+    options[:log_level] -= 1 if options[:log_level] > 0
+  end
+  
   opts.on('-h', '--help', 'Display this screen') do
     puts opts
     exit
@@ -73,8 +77,8 @@ begin
   @reliable = true
   @clientid = options[:client_id]
   @destination = options[:destination]
-
-
+  Dor.logger.level = ActiveFedora.logger.level = options[:log_level]
+  
   $stderr.print "Connecting to stomp://#{@host}:#{@port} as #{@user}\n"
   @conn = Stomp::Connection.open(@user, @password, @host, @port, @reliable, 5, {"client-id" => @clientid} )
   $stderr.print "Getting output from #{@destination}\n"
@@ -85,20 +89,18 @@ begin
       pid = @msg.headers["pid"]
       method = @msg.headers["methodName"]
 
-      puts @msg.headers.inspect
-      puts "\nPID: #{@msg.headers["pid"]}\n"
-      if ["addDatastream", "addRelationship","ingest","modifyDatastreamByValue","modifyDatastreamByReference","modifyObject","purgeDatastream","purgeRelationship"].include? method
+      if ["addDatastream", "addRelationship","ingest","modifyDatastreamByValue","modifyDatastreamByReference","modifyObject","purgeDatastream","purgeRelationship","reindex"].include? method
         begin
-          obj = Dor.load_instance @msg.headers["pid"]
+          obj = Dor.load_instance pid
           Dor::SearchService.solr.add(obj.to_solr, :add_attributes => {:commitWithin => 10}) unless obj.nil?
         rescue
         end
       elsif method == "purgeObject"
         Dor::SearchService.solr.delete_by_id(pid)
       else
-        $stderr.puts "Unknown Method: #{method}"
+        Dor.logger.warn "Unknown Method: #{method} for PID #{pid}"
       end
-      puts  "updated solr index for #{@msg.headers["pid"]}\n"
+      Dor.logger.info "updated solr index for #{pid}\n"
       @conn.ack @msg.headers["message-id"]
   end
   @conn.join
