@@ -193,6 +193,11 @@ Values can also be configured individually:
   - Switch from explicit load to autoload for faster startup
   - Add Dor::Config.stomp (and Dor::Config.stomp.client)
   - Add resource-index-based Dor::SearchService.iterate_over_pids
+- <b>3.4.1</b>
+  - Fix field name bug in WorkflowObject.find_by_name
+  - Make the indexer queue/worker friendly
+  - Update tests to work with ActiveFedora 4.0
+  - Improve test stubbing to fix false (order-dependent) failures
   
 == Copyright
 

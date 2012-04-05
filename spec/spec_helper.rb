@@ -18,8 +18,12 @@ module Dor::SpecHelpers
     @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"fixtures")
     Dor::Config.push! do
       suri.mint_ids false
-      gsearch.url "http://solr.edu"
-      fedora.url "http://fedora.edu"
+      gsearch do
+        url "http://solr.edu/gsearch"
+        rest_url "http://fedora.edu/gsearch/rest"
+      end
+      solrizer.url "http://solr.edu/solrizer"
+      fedora.url "http://fedora.edu/fedora"
       stacks.local_workspace_root File.join(fixture_dir, "workspace")
       sdr.local_workspace_root File.join(fixture_dir, "workspace")
       sdr.local_export_home File.join(fixture_dir, "export")
