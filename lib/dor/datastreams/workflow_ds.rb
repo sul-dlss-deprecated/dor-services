@@ -70,7 +70,7 @@ class WorkflowDs < ActiveFedora::NokogiriDatastream
   end
   
   def to_solr(solr_doc=Hash.new, *args)
-    super solr_doc, *args
+#    super solr_doc, *args
     self.workflows.each { |wf| wf.to_solr(solr_doc, *args) }
     solr_doc
   end
