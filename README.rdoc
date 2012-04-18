@@ -198,7 +198,8 @@ Values can also be configured individually:
   - Make the indexer queue/worker friendly
   - Update tests to work with ActiveFedora 4.0
   - Improve test stubbing to fix false (order-dependent) failures
-  
+- <b>3.4.2</b>
+  - WorkflowService now requires active_support/core_ext explicitly in order for robots to start  
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.
