@@ -11,6 +11,7 @@ module Dor
     include Embargoable
     include Preservable
     include Assembleable
+    include Upgradable
   end
   
   class Abstract < ::ActiveFedora::Base

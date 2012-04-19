@@ -2,6 +2,7 @@ module Dor
   class AdminPolicyObject < ::ActiveFedora::Base
     include Identifiable
     include Governable
+    include Upgradable
     
     has_relationship 'thing', :property => :is_governed_by, :inbound => :true
     has_object_type 'adminPolicy'
