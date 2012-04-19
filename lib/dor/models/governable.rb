@@ -5,6 +5,7 @@ module Dor
     
     included do
       has_relationship 'admin_policy_object', :is_governed_by
+      has_relationship 'agreement', :has_agreement
       has_relationship 'collection', :is_member_of_collection
       has_relationship 'set', :is_member_of
     end
