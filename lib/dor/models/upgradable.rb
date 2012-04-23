@@ -49,8 +49,10 @@ module Dor
     
     def upgrade!
       Dor::Upgradable.run_upgrade_callbacks(self)
-      self.datastreams.each_pair do |dsid, ds|
-        Dor::Upgradable.run_upgrade_callbacks(ds) unless ds.new?
+      if self.respond_to?(:datastreams)
+        self.datastreams.each_pair do |dsid, ds|
+          Dor::Upgradable.run_upgrade_callbacks(ds) unless ds.new?
+        end
       end
       self.save
     end
