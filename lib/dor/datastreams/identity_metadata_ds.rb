@@ -16,7 +16,6 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
     t.tag :index_as => [:searchable, :facetable]
     t.citationTitle
     t.objectCreator :index_as => [:searchable, :facetable]
-    t.adminPolicy :index_as => [:searchable, :facetable]
   end
   
   define_template :value do |builder,name,value,attrs|

@@ -63,6 +63,10 @@ module Dor
     def ensure_models_loaded!
       [Item, Set, Collection, AdminPolicyObject, WorkflowObject]
     end
+    
+    def root
+      File.dirname(__FILE__)
+    end
   end
   
   require 'dor/version'

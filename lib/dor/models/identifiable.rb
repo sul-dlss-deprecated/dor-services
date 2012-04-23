@@ -2,7 +2,8 @@ module Dor
   module Identifiable
     extend ActiveSupport::Concern
     include SolrDocHelper
-    
+    include Upgradable
+
     included do
       has_metadata :name => "DC", :type => SimpleDublinCoreDs, :label => 'Dublin Core Record for this object'
       has_metadata :name => "identityMetadata", :type => Dor::IdentityMetadataDS, :label => 'Identity Metadata'

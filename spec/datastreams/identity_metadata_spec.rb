@@ -8,8 +8,6 @@ describe Dor::IdentityMetadataDS do
     before(:each) do
       @dsxml =<<-EOF
         <identityMetadata>
-          <adminPolicy>druid:nk327xn8125</adminPolicy>
-          <agreementId>druid:wr729gb4199</agreementId>
           <objectCreator>DOR</objectCreator>
           <objectId>druid:bb110sm8219</objectId>
           <objectLabel>AMERICQVE | SEPTENTRIONALE</objectLabel>
@@ -29,8 +27,6 @@ describe Dor::IdentityMetadataDS do
       @dsdoc.term_values(:objectId).should == ['druid:bb110sm8219']
       @dsdoc.term_values(:objectType).should == ['item']
       @dsdoc.term_values(:objectLabel).should == ['AMERICQVE | SEPTENTRIONALE']
-      @dsdoc.term_values(:adminPolicy).should == ['druid:nk327xn8125']
-      @dsdoc.term_values(:agreementId).should == ['druid:wr729gb4199']
       @dsdoc.term_values(:tag).should =~ ['MDForm : mclaughlin','Project : McLaughlin Maps']
       @dsdoc.term_values(:otherId).should =~ ["bb110sm8219","b382ee92-da77-11e0-9036-0016034322e4"]
       @dsdoc.term_values(:sourceId).should == ['bb110sm8219']
@@ -54,8 +50,6 @@ describe Dor::IdentityMetadataDS do
     it "should be able to set the sourceID" do
       resultxml = <<-EOF
         <identityMetadata>
-          <adminPolicy>druid:nk327xn8125</adminPolicy>
-          <agreementId>druid:wr729gb4199</agreementId>
           <objectCreator>DOR</objectCreator>
           <objectId>druid:bb110sm8219</objectId>
           <objectLabel>AMERICQVE | SEPTENTRIONALE</objectLabel>
