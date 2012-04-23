@@ -3,7 +3,6 @@ require 'dor/datastreams/workflow_definition_ds'
 module Dor
   class WorkflowObject < ::ActiveFedora::Base
     include Identifiable
-    include Upgradable
     include SolrDocHelper
     
     has_object_type 'workflow'
