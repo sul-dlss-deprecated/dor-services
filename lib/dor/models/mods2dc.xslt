@@ -413,6 +413,7 @@ Version 1.0	2007-05-04 Tracy Meehleib <tmee@loc.gov>
 		<xsl:variable name="name">
 			<xsl:for-each select="mods:namePart[not(@type)]">
                 <xsl:if test="normalize-space(.)!= ''">
+                    <xsl:text> </xsl:text>
                     <xsl:value-of select="normalize-space(.)"/>
                     <xsl:text></xsl:text>
                 </xsl:if>
