@@ -14,7 +14,6 @@ class ContentMetadataDS < ActiveFedora::NokogiriDatastream
       end
       t.file(:index_as => [:not_searchable]) do
         t.id_ :path => { :attribute => 'id' }
-        t.format :path => { :attribute => 'format' }, :index_as => [:displayable]
         t.mimeType :path => { :attribute => 'mimeType' }, :index_as => [:displayable]
         t.dataType :path => { :attribute => 'dataType' }, :index_as => [:displayable]
         t.size :path => { :attribute => 'size' }, :index_as => [:displayable]#, :data_type => :long
