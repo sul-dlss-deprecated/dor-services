@@ -33,7 +33,6 @@
           <otherId name="barcode">36105049267078</otherId>
           <otherId name="catkey">129483625</otherId>
           <otherId name="uuid">7f3da130-7b02-11de-8a39-0800200c9a66</otherId>
-          <adminPolicy>druid:fg890hi1234</adminPolicy>
           <tag>Google Books : Phase 1</tag>
           <tag>Google Books : Scan source STANFORD</tag>
         </identityMetadata>

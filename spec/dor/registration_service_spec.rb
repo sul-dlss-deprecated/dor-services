@@ -38,7 +38,6 @@ describe Dor::RegistrationService do
         :content_model => 'googleScannedBook', 
         :admin_policy => 'druid:fg890hi1234', 
         :label => 'Google : Scanned Book 12345', 
-        :agreement_id => 'druid:apu999blr', 
         :source_id => { :barcode => 9191919191 }, 
         :other_ids => { :catkey => '000', :uuid => '111' }, 
         :tags => ['Google : Google Tag!','Google : Other Google Tag!']

@@ -6,6 +6,7 @@ module Workflow
     
     set_terminology do |t|
       t.root(:path => 'workflow')
+      t.repository(:path=>{:attribute => "repository"})
       t.workflowId(:path=>{:attribute => "id"})
       t.process {
         t.name_(:path=>{:attribute=>"name"})
@@ -49,29 +50,42 @@ module Workflow
           process
         end
       else
-        []
+        self.find_by_terms(:workflow, :process).collect do |x| 
+          pnode = Dor::Workflow::Process.new(self.repository, self.workflowId, {})
+          pnode.update!(x,self)
+          pnode
+        end.sort_by(&:datetime)
       end
     end
-    
+
     def to_solr(solr_doc=Hash.new, *args)
       wf_name = self.workflowId.first
       add_solr_value(solr_doc, 'wf', wf_name, :string, [:facetable])
       add_solr_value(solr_doc, 'wf_wps', wf_name, :string, [:facetable])
       add_solr_value(solr_doc, 'wf_wsp', wf_name, :string, [:facetable])
-      process_nodes = self.find_by_terms(:workflow, :process).sort_by { |x| x['datetime'] }
-      status = process_nodes.empty? ? 'empty' : (process_nodes.all? { |n| n['status'] == 'completed' } ? 'completed' : 'active')
-      errors = process_nodes.select { |process| process['status'] == 'error' }.count
+      status = processes.empty? ? 'empty' : (processes.all?(&:completed?) ? 'completed' : 'active')
+      errors = processes.select(&:error?).count
       add_solr_value(solr_doc, 'workflow_status', [wf_name,status,errors].join('|'), :string, [:displayable])
       
-      process_nodes.each do |process|
-        add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process['name']}", :string, [:facetable])
-        add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process['name']}:#{process['status']}", :string, [:facetable])
-        add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process['status']}", :string, [:facetable])
-        add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process['status']}:#{process['name']}", :string, [:facetable])
-        add_solr_value(solr_doc, 'wf_swp', "#{process['status']}", :string, [:facetable])
-        add_solr_value(solr_doc, 'wf_swp', "#{process['status']}:#{wf_name}", :string, [:facetable])
-        add_solr_value(solr_doc, 'wf_swp', "#{process['status']}:#{wf_name}:#{process['name']}", :string, [:facetable])
+      processes.each do |process|
+        if process.status.present?
+          add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}", :string, [:facetable])
+          add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}:#{process.name}", :string, [:facetable])
+          add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}", :string, [:facetable])
+          add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.status}", :string, [:facetable])
+          add_solr_value(solr_doc, 'wf_swp', "#{process.status}", :string, [:facetable])
+          add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}", :string, [:facetable])
+          add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}:#{process.name}", :string, [:facetable])
+          if process.state != process.status
+            add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.state}:#{process.name}", :string, [:facetable])
+            add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.state}", :string, [:facetable])
+            add_solr_value(solr_doc, 'wf_swp', "#{process.state}", :string, [:facetable])
+            add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}", :string, [:facetable])
+            add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}:#{process.name}", :string, [:facetable])
+          end
+        end
       end
+      
       solr_doc['wf_wps_facet'].uniq!    if solr_doc['wf_wps_facet']
       solr_doc['wf_wsp_facet'].uniq!    if solr_doc['wf_wsp_facet']
       solr_doc['wf_swp_facet'].uniq!    if solr_doc['wf_swp_facet']
@@ -80,6 +94,9 @@ module Workflow
       solr_doc
     end
     
+    def inspect
+      "#<#{self.class.name}:#{self.object_id}>"
+    end
   end
 end
 end

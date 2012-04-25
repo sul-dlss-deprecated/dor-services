@@ -63,6 +63,10 @@ module Dor
     def ensure_models_loaded!
       [Item, Set, Collection, AdminPolicyObject, WorkflowObject]
     end
+    
+    def root
+      File.dirname(__FILE__)
+    end
   end
   
   require 'dor/version'
@@ -101,6 +105,7 @@ module Dor
   autoload :Embargoable, 'dor/models/embargoable'
   autoload :Preservable, 'dor/models/preservable'
   autoload :Assembleable, 'dor/models/assembleable'
+  autoload :Upgradable, 'dor/models/upgradable'
     
   # ActiveFedora Classes
   autoload :Abstract, 'dor/models/item'

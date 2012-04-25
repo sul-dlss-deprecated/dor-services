@@ -199,7 +199,19 @@ Values can also be configured individually:
   - Update tests to work with ActiveFedora 4.0
   - Improve test stubbing to fix false (order-dependent) failures
 - <b>3.4.2</b>
-  - WorkflowService now requires active_support/core_ext explicitly in order for robots to start  
+  - WorkflowService now requires active_support/core_ext explicitly in order for robots to start
+- <b>3.5.0</b>
+  - Update active-fedora dependency to final 4.0.0 release
+  - ARGO-24 Show all name parts for author/creator in citation
+  - LYBERSTRUCTURE-205 Deprecate contentMetadata "format" attribute in Common Accessioning
+  - LYBERSTRUCTURE-215 Update objects to a single "workflows" datastream, drop workflow specific datastreams
+  - LYBERSTRUCTURE-224 Drop <agreementId> from identityMetadata; SDR will verify APO instead 
+  - LYBERSTRUCTURE-222 identityMetadata - drop AdminPolicy tag and rely on isGovernedBy relationship
+  - First round of object remediation using Upgradable concern
+  - Add Upgradable concern
+  - Index workflow ready/blocked states
+  - Add workflow name and archive totals to WorkflowObject index
+  
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.

@@ -77,8 +77,9 @@ class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream
   
   def to_solr(solr_doc=Hash.new,*args)
     super(solr_doc,*args)
+    add_solr_value(solr_doc, "workflow_name", self.name, :symbol, [:searchable])
     processes.each do |p|
-      add_solr_value(solr_doc, "process", "#{p.name}|#{p.label}", :string, [:displayable])
+      add_solr_value(solr_doc, "process", "#{p.name}|#{p.label}", :symbol, [:displayable])
     end
     solr_doc
   end
