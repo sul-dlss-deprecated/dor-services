@@ -211,7 +211,8 @@ Values can also be configured individually:
   - Add Upgradable concern
   - Index workflow ready/blocked states
   - Add workflow name and archive totals to WorkflowObject index
-  
+- <b>3.5.1</b> Hotfix for solrizing malformed tags
+
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.
