@@ -78,6 +78,7 @@ module Dor
           :client => Confstruct.deferred { |c| config.make_rest_client c.url }
         },
         :stomp => {
+          :connection => Confstruct.deferred { |c| Stomp::Connection.new c.user, c.password, c.host, c.port, true, 5, { 'client-id' => c.client_id }},
           :client => Confstruct.deferred { |c| Stomp::Client.new c.user, c.password, c.host, c.port }
         }
       })

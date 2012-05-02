@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'optparse'
 require 'stomp'
+require 'timeout'
 require 'dor-services'
 
 options = { :log_level => Logger::WARN }
@@ -12,27 +13,9 @@ optparse = OptionParser.new do|opts|
 
   options[:dor_config] = nil
   opts.on( '--dor-config PATH', 'Load the dor-services configuration file at this path' ) do |path|
+    puts "Configuring dor-services..."
     options[:dor_config] = path
-  end
-
-  options[:port] = 61613
-  opts.on('-p','--port NUM', 'Stomp port') do |port|
-    options[:port] = port
-  end
-
-  options[:host] = 'localhost'
-  opts.on('-o','--host HOSTNAME', 'Host to connect to') do |host|
-    options[:host] = host
-  end
-
-  options[:user] = 'fedoraStomper'
-  opts.on('-u', '--user USERNAME', 'User name for stomp listener') do |user|
-    options[:user] = user
-  end
-
-  options[:password] = 'fedoraStomper'
-  opts.on('-w', '--password PASSWORD', 'Password for stomp listener') do |password|
-    options[:password] = password
+    require options[:dor_config]
   end
 
   options[:destination] = '/topic/fedora.apim.update'
@@ -42,7 +25,7 @@ optparse = OptionParser.new do|opts|
 
   options[:client_id] = "fedora_stomper"
   opts.on('-c', '--client-id ID', 'Stomp client ID') do |client_id|
-    options[:client_id] = client_id
+    Dor::Config.stomp.client_id = client_id
   end
   
   opts.on('-v', 'Verbose') do
@@ -59,10 +42,7 @@ optparse.parse!
 
 begin; require 'rubygems'; rescue; end
 
-if options[:dor_config]
-  puts "Configuring dor-services..."
-  require options[:dor_config]
-else
+unless options[:dor_config]
   $stderr.puts "The --dor-config PATH option is mandatory. Please provide the path to a valid dor-services configuration file."
   exit 1
 end
@@ -70,21 +50,16 @@ end
 puts "loading listener"
 
 begin
-  @port = options[:port] 
-  @host = options[:host]
-  @user = options[:user]
-  @password = options[:password]
-  @reliable = true
   @clientid = options[:client_id]
   @destination = options[:destination]
   Dor.logger.level = ActiveFedora.logger.level = options[:log_level]
   
-  $stderr.print "Connecting to stomp://#{@host}:#{@port} as #{@user}\n"
-  @conn = Stomp::Connection.open(@user, @password, @host, @port, @reliable, 5, {"client-id" => @clientid} )
+  @conn = Dor::Config.stomp.connection
   $stderr.print "Getting output from #{@destination}\n"
   
   @conn.subscribe(@destination, {"activemq.subscriptionName" => @clientid, :ack =>"client" })
   while true
+    Timeout::timeout(300) do
       @msg = @conn.receive
       pid = @msg.headers["pid"]
       method = @msg.headers["methodName"]
@@ -102,6 +77,11 @@ begin
       end
       Dor.logger.info "updated solr index for #{pid}\n"
       @conn.ack @msg.headers["message-id"]
+    rescue Timeout::Error
+      Dor.logger.info "Sending heartbeat"
+      @conn.begin('heartbeat')
+      @conn.commit('heartbeat')
+    end
   end
   @conn.join
 
