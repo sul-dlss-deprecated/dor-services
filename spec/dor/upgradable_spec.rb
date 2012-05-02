@@ -22,20 +22,28 @@ describe Dor::Upgradable do
       end
       
       def self.define_upgrades
-        UpgradableTest::Foo.on_upgrade '1.0.1' do |obj|
+        UpgradableTest::Foo.on_upgrade '1.0.1', 'Signal foo 2' do |obj|
           obj.signal(obj, 'foo_2')
+          true
         end
     
-        UpgradableTest::Foo.on_upgrade '1.0.0' do |obj|
+        UpgradableTest::Foo.on_upgrade '1.0.0', 'Signal foo 1' do |obj|
           obj.signal(obj, 'foo')
+          true
         end
 
-        UpgradableTest::Bar.on_upgrade '1.0.0' do |obj|
+        UpgradableTest::Bar.on_upgrade '1.0.0', 'Signal bar' do |obj|
           obj.signal(obj, 'bar')
+          true
+        end
+        
+        UpgradableTest::Bar.on_upgrade '1.0.1', 'NEVER RUN'  do |obj|
+          false
         end
 
-        UpgradableTest::Baz.on_upgrade '1.0.0' do |obj|
+        UpgradableTest::Baz.on_upgrade '1.0.0', 'Signal baz' do |obj|
           obj.signal(obj, 'baz')
+          true
         end
       end
     end
@@ -50,7 +58,7 @@ describe Dor::Upgradable do
   end
   
   it "should allow callbacks to be defined" do
-    Dor::Upgradable.should_receive(:add_upgrade_callback).exactly(4).times
+    Dor::Upgradable.should_receive(:add_upgrade_callback).exactly(5).times
     UpgradableTest.define_upgrades
   end
   
@@ -88,5 +96,29 @@ describe Dor::Upgradable do
     datastreams['c'].should_not_receive(:signal)
 
     @baz.upgrade!
+  end
+  
+  it "should send event notifications when an upgrade is done" do
+    UpgradableTest.define_upgrades
+    @bar.stub(:add_event)
+    @bar.should_receive(:signal).with(@bar,'bar')
+    @bar.should_receive(:add_event).with('remediation', "UpgradableTest::Bar 1.0.0", "Signal bar")
+    @bar.should_not_receive(:add_event).with('remediation', "UpgradableTest::Bar 1.0.1", "NEVER RUN")
+    @bar.should_receive(:save)
+    @bar.upgrade!
+  end
+  
+  it "should only save if upgrades were run" do
+    UpgradableTest::Foo.on_upgrade '1.0.2', 'This should never run' do
+      if false
+        obj.signal('This will never run')
+        true
+      else
+        false
+      end
+    end
+    @foo.should_not_receive(:signal)
+    @foo.should_not_receive(:save)
+    @foo.upgrade!
   end
 end

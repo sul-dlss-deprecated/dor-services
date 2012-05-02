@@ -21,24 +21,30 @@ module Dor
     # in the dor/migrations/[model] directory. See Dor::Identifiable and
     # dor/migrations/identifiable/* for an example.
       
-    Callback = Struct.new :module, :version, :block
+    Callback = Struct.new :module, :version, :description, :block
 
     mattr_accessor :__upgrade_callbacks
     @@__upgrade_callbacks = []
-    def self.add_upgrade_callback c, v, &b
-      @@__upgrade_callbacks << Callback.new(c, Gem::Version.new(v), b)
+    def self.add_upgrade_callback c, v, d, &b
+      @@__upgrade_callbacks << Callback.new(c, Gem::Version.new(v), d, b)
     end
     
     def self.run_upgrade_callbacks(obj)
       relevant = @@__upgrade_callbacks.select { |c| obj.is_a?(c.module) }.sort_by(&:version)
-      relevant.each { |c| c.block.call(obj) }
-      obj
+      results = relevant.collect do |c| 
+        result = c.block.call(obj)
+        if result and obj.respond_to?(:add_event)
+          obj.add_event 'remediation', "#{c.module.name} #{c.version}", c.description
+        end
+        result
+      end
+      results.any?
     end
     
     def self.included(base)
       base.instance_eval do
-        def self.on_upgrade version, &block
-          Dor::Upgradable.add_upgrade_callback self, version, &block
+        def self.on_upgrade version, desc, &block
+          Dor::Upgradable.add_upgrade_callback self, version, desc, &block
         end
         
         Dir[File.join(Dor.root,'dor','migrations',base.name.split(/::/).last.downcase,'*.rb')].each do |migration|
@@ -48,13 +54,14 @@ module Dor
     end
     
     def upgrade!
-      Dor::Upgradable.run_upgrade_callbacks(self)
+      results = [Dor::Upgradable.run_upgrade_callbacks(self)]
       if self.respond_to?(:datastreams)
         self.datastreams.each_pair do |dsid, ds|
-          Dor::Upgradable.run_upgrade_callbacks(ds) unless ds.new?
+          results << Dor::Upgradable.run_upgrade_callbacks(ds) unless ds.new?
         end
       end
-      self.save
+
+      self.save if results.any?
     end
   end
 end

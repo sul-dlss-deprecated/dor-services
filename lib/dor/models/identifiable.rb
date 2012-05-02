@@ -2,6 +2,7 @@ module Dor
   module Identifiable
     extend ActiveSupport::Concern
     include SolrDocHelper
+    include Eventable
     include Upgradable
 
     included do
