@@ -1,3 +1,5 @@
+require 'equivalent-xml'
+
 module Dor
   module Processable
     extend ActiveSupport::Concern
@@ -16,6 +18,16 @@ module Dor
       end
     end
     
+    def empty_datastream?(datastream)
+      if datastream.new?
+        true 
+      elsif datastream.class.respond_to?(:xml_template)
+        datastream.content.to_s.empty? or EquivalentXml.equivalent?(datastream.content, datastream.class.xml_template)
+      else
+        datastream.content.to_s.empty?
+      end  
+    end
+    
     # Self-aware datastream builders
     def build_datastream(datastream, force = false)
       ds = datastreams[datastream]
@@ -26,7 +38,7 @@ module Dor
         ds.content = content
         ds.ng_xml = Nokogiri::XML(content) if ds.respond_to?(:ng_xml)
         ds.save unless ds.digital_object.new?
-      elsif force or ds.new_object? or (ds.content.to_s.empty?)
+      elsif force or empty_datastream?(ds)
         proc = "build_#{datastream}_datastream".to_sym
         if respond_to? proc
           content = self.send(proc, ds)
