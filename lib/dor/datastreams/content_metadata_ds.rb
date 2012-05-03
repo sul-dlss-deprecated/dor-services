@@ -1,10 +1,11 @@
 module Dor
 class ContentMetadataDS < ActiveFedora::NokogiriDatastream 
+  include Upgradable
   include SolrDocHelper
   
   set_terminology do |t|
     t.root :path => 'contentMetadata', :index_as => [:not_searchable]
-    t.contentType :path => { :attribute => 'type' }, :index_as => [:not_searchable]
+    t.contentType :path => '/contentMetadata/@type', :index_as => [:not_searchable]
     t.resource(:index_as => [:not_searchable]) do
       t.id_ :path => { :attribute => 'id' }
       t.sequence :path => { :attribute => 'sequence' }#, :data_type => :integer
