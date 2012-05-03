@@ -32,10 +32,10 @@ Gem::Specification.new do |s|
   s.add_dependency "lyber-utils"
   s.add_dependency "ruby-graphviz"
   s.add_dependency "progressbar"
+  s.add_dependency "equivalent-xml", ">=0.2.2"
   
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects
-  s.add_development_dependency "equivalent-xml", ">=0.2.2"
   s.add_development_dependency "fakeweb"
   s.add_development_dependency "haml"
   s.add_development_dependency "jhove-service"

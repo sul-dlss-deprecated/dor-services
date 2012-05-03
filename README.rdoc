@@ -212,6 +212,9 @@ Values can also be configured individually:
   - Index workflow ready/blocked states
   - Add workflow name and archive totals to WorkflowObject index
 - <b>3.5.1</b> Hotfix for solrizing malformed tags
+- <b>3.5.2</b> 
+  - Fix empty datastream check in Dor::Processable#build_datastream to include cases where the content
+    is equivalent to the default XML template for the datastream class
 
 == Copyright
 
