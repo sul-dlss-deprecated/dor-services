@@ -1,4 +1,4 @@
-Dor::Identifiable.on_upgrade '3.5.0' do |obj|
+Dor::Identifiable.on_upgrade '3.5.0', 'Assert hydra:isGovernedBy' do |obj|
   # Assign hydra:isGovernedBy based on identityMetadata/adminPolicy
   if obj.admin_policy_object_ids.empty?
     apo_id = self.identityMetadata.adminPolicy.first

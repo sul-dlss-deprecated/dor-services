@@ -1,4 +1,4 @@
-Dor::Processable.on_upgrade '3.5.0' do |obj|
+Dor::Processable.on_upgrade '3.5.0', 'Replace individual *WF datastreams with unified workflows datastream' do |obj|
   run = false
   # Touch workflows datastream to ensure it gets saved
   if obj.workflows.new?
