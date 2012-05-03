@@ -106,7 +106,8 @@ module Dor
   autoload :Preservable, 'dor/models/preservable'
   autoload :Assembleable, 'dor/models/assembleable'
   autoload :Upgradable, 'dor/models/upgradable'
-    
+  autoload :Eventable, 'dor/models/eventable'
+  
   # ActiveFedora Classes
   autoload :Abstract, 'dor/models/item'
   autoload :Item, 'dor/models/item'

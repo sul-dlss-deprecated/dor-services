@@ -14,10 +14,6 @@ Commands:
         status        show status (PID) of application instances
 Options:
         --dor-config PATH          Load the dor-services configuration file at this path
-        -p, --port NUM             Stomp port (default 61613)
-        -o, --host HOSTNAME        Host to connect to
-        -u, --user USERNAME        User name for stomp listener
-        -w, --password PASSWORD    Password for stomp listener
         -d, --destination TOPIC    Topic to listen to (default: /topic/fedora.apim.update)
         -c, --client-id            Stomp client ID (default: fedora_stomper)
         -h, --help                 Display this screen
