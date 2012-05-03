@@ -47,7 +47,7 @@ module Dor
           Dor::Upgradable.add_upgrade_callback self, version, desc, &block
         end
         
-        Dir[File.join(Dor.root,'dor','migrations',base.name.split(/::/).last.downcase,'*.rb')].each do |migration|
+        Dir[File.join(Dor.root,'dor','migrations',base.name.split(/::/).last.underscore,'*.rb')].each do |migration|
           require migration
         end
       end
