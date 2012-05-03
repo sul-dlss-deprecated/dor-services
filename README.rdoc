@@ -215,6 +215,11 @@ Values can also be configured individually:
 - <b>3.5.2</b> 
   - Fix empty datastream check in Dor::Processable#build_datastream to include cases where the content
     is equivalent to the default XML template for the datastream class
+- <b>3.6.0</b>
+  - Add keep-alive heartbeat to dor-indexer
+  - Add contentMetadata/@type migration
+  - Take steps to ensure Upgradables idempotence
+  - Record remediation migrations in events datastream
 
 == Copyright
 
