@@ -61,7 +61,11 @@ module Dor
         end
       end
 
-      self.save if results.any?
+      if results.any?
+        self.save
+      else
+        false
+      end
     end
   end
 end
