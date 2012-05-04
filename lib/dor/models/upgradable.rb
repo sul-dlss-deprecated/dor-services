@@ -36,6 +36,9 @@ module Dor
         if result and event_handler.respond_to?(:add_event)
           event_handler.add_event 'remediation', "#{c.module.name} #{c.version}", c.description
         end
+        if result
+          Dor.logger.info "Applied remediation '#{c.description}' to '#{obj.pid}'"
+        end
         result
       end
       results.any?

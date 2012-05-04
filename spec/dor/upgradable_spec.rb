@@ -6,19 +6,23 @@ describe Dor::Upgradable do
     module UpgradableTest
       class Foo
         include Dor::Upgradable
+        def pid; 'foo'; end
       end
 
       class Bar
         include Dor::Upgradable
+        def pid; 'bar'; end
       end
 
       class Baz < Bar
         def datastreams
           {}
         end
+        def pid; 'baz'; end
       end
       
       class Quux
+        def pid; 'quux'; end
       end
       
       def self.define_upgrades
@@ -67,7 +71,6 @@ describe Dor::Upgradable do
     @foo.should_receive(:save)
     @foo.should_receive(:signal).with(@foo,'foo').ordered
     @foo.should_receive(:signal).with(@foo,'foo_2').ordered
-
     @foo.upgrade!
   end
   
