@@ -97,7 +97,7 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
     self.find_by_terms(:tag).each { |tag|
       (top,rest) = tag.text.split(/:/,2)
       unless rest.nil?
-        add_solr_value(solr_doc, "#{top.downcase.strip}_tag", rest.strip, :string, [:searchable, :facetable])
+        add_solr_value(solr_doc, "#{top.downcase.strip.gsub(/\s/,'_')}_tag", rest.strip, :string, [:searchable, :facetable])
       end
     }
     solr_doc
