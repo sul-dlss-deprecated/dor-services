@@ -15,6 +15,7 @@ class DescMetadataDS < ActiveFedora::NokogiriDatastream
     t.extent :index_as => [:searchable]
     t.scale :index_as => [:searchable]
     t.topic :index_as => [:searchable]
+    t.abstract :index_as=>[:displayable]
   end
 
 end
