@@ -80,8 +80,8 @@ module Dor
     
   require 'dor/datastreams/datastream_spec_solrizer'
 
-  ::Object.autoload :Druid, 'dor/utils/druid_utils'
-    
+  require 'druid-tools'
+
   # datastreams
   autoload :AdministrativeMetadataDS,  'dor/datastreams/administrative_metadata_ds'
   autoload :ContentMetadataDS, 'dor/datastreams/content_metadata_ds'

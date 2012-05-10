@@ -7,7 +7,7 @@ module Dor
     # @param [LyberCore::Robots::WorkItem]
     def self.cleanup(dor_item)
       druid = dor_item.pid
-      workspace_dir = Druid.new(druid).path(Config.cleanup.local_workspace_root)
+      workspace_dir = DruidTools::Druid.new(druid,Config.cleanup.local_workspace_root).path
       self.remove_entry(workspace_dir)
       bag_dir = File.join(Config.cleanup.local_export_home, druid)
       self.remove_entry(bag_dir)

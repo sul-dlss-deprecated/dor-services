@@ -56,7 +56,7 @@ describe Dor::DigitalStacksService do
   describe ".druid_tree" do
     it "creates a druid tree path from a given druid" do
       path = Dor::DigitalStacksService.druid_tree('druid:aa123bb4567')
-      path.should == 'aa/123/bb/4567'
+      path.should == '/aa/123/bb/4567'
     end
   end
   

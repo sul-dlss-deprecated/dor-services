@@ -4,7 +4,7 @@ require 'net/sftp'
 module Dor
   class DigitalStacksService
     def self.druid_tree(druid)
-      Druid.new(druid).path
+      File.expand_path('..',DruidTools::Druid.new(druid,'/').path)
     rescue
       nil
     end
