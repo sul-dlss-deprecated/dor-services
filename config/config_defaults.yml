@@ -38,6 +38,7 @@
     :relationshipMetadata: required
     :technicalMetadata: required
     :contentMetadata: required
+  :rest_url: ""
 :stacks: 
   :local_workspace_root: /dor
   :storage_root: /stacks
