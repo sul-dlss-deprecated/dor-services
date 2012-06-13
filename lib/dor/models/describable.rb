@@ -45,7 +45,7 @@ module Dor
       # Remove empty nodes
       dc_doc.xpath('/oai_dc:dc/*[count(text()) = 0]').remove
       if(dc_doc.root.nil? || dc_doc.root.children.size == 0)
-        raise "Dor::Item#generate_dublin_core produced incorrect xml:\n#{dc_doc.to_xml}"
+        raise CrosswalkError, "Dor::Item#generate_dublin_core produced incorrect xml:\n#{dc_doc.to_xml}"
       end
       dc_doc
     end
