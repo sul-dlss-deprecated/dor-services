@@ -225,6 +225,7 @@ Values can also be configured individually:
   - Ensure correct content model assertions
   - Remediated objects are tagged with the version of dor-services that updated them
 - <b>3.6.2</b> Minor migration and indexing bug fixes
+- <b>3.6.3</b> Hotfix for Describable#generate_dublin_core raising the wrong kind of exception
 
 == Copyright
 

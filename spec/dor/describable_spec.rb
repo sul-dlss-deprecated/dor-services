@@ -58,7 +58,7 @@ describe Dor::Describable do
     b = DescribableItem.new
     b.datastreams['descMetadata'].content = '<tei><stuff>ha</stuff></tei>'
     
-    lambda {b.generate_dublin_core}.should raise_error
+    lambda {b.generate_dublin_core}.should raise_error(Dor::Describable::CrosswalkError)
   end
   
   it "throws an exception if the generated dc has only a root element with no children" do
@@ -72,6 +72,6 @@ describe Dor::Describable do
     b = DescribableItem.new
     b.datastreams['descMetadata'].content = mods
     
-    lambda {b.generate_dublin_core}.should raise_error
+    lambda {b.generate_dublin_core}.should raise_error(Dor::Describable::CrosswalkError)
   end
 end
