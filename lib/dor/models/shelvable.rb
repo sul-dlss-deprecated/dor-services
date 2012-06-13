@@ -2,14 +2,14 @@ module Dor
   module Shelvable
     extend ActiveSupport::Concern
     include Itemizable
-    
+
     def shelve
-      files = [] # doc.xpath("//file").select {|f| f['shelve'] == 'yes'}.map{|f| f['id']}
-      self.datastreams['contentMetadata'].ng_xml.xpath('//file').each do |file|
-        files << file['id'] if(file['shelve'].downcase == 'yes')
-      end
-      
-      DigitalStacksService.shelve_to_stacks(pid, files)
+      change_manifest = Dor::Versioning::FileInventoryDifference.new(self.get_content_diff)
+
+      change_manifest.file_sets(:deleted,  :content).each { |set| DigitalStacksService.remove_from_stacks *set }
+      change_manifest.file_sets(:renamed,  :content).each { |set| DigitalStacksService.rename_in_stacks   *set }
+      change_manifest.file_sets(:modified, :content).each { |set| DigitalStacksService.shelve_to_stacks   *set }
+      change_manifest.file_sets(:added,    :content).each { |set| DigitalStacksService.shelve_to_stacks   *set }
     end
 
   end

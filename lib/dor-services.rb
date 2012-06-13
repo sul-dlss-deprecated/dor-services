@@ -126,7 +126,12 @@ module Dor
   autoload :SdrIngestService, 'dor/services/sdr_ingest_service'
   autoload :CleanupService, 'dor/services/cleanup_service'
   autoload :ProvenanceMetadataService, 'dor/services/provenance_metadata_service'
-    
+  
+  # Versioning Classes
+  module Versioning
+    autoload :FileInventoryDifference, 'dor/versioning/file_inventory_difference'
+  end
+  
   # Workflow Classes
   module Workflow
     autoload :Graph, 'dor/workflow/graph'
