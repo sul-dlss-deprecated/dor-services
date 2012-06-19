@@ -15,7 +15,7 @@ module Dor
     # @param [LyberCore::Robots::WorkItem]
     def self.transfer(dor_item, agreement_id)
       druid = dor_item.pid
-      content_dir = Druid.new(druid).path(Config.sdr.local_workspace_root)
+      content_dir = DruidTools::Druid.new(druid,Config.sdr.local_workspace_root).path
 
       # Create the bag
       bag_dir = File.join(Config.sdr.local_export_home, druid)

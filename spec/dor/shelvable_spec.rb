@@ -10,14 +10,18 @@ describe Dor::Shelvable do
   after(:all)  { unstub_config }
 
   before :each do
-    @item = instantiate_fixture('druid:ab123cd4567', ShelvableItem)
+    @item = ShelvableItem.new :pid => 'druid:gj642zf5650'
+    @item.contentMetadata.content = read_fixture("gj642zf5650_contentMetadata.xml")
+  end
+  
+  after :each do
+    @item.clear_diff_cache
   end
 
   it "builds a list of filenames eligible for shelving to the Digital Stacks" do
-    content_md = read_fixture("workspace/ab/123/cd/4567/content_metadata.xml")
-    @item.contentMetadata.content = content_md
-    Dor::DigitalStacksService.should_receive(:shelve_to_stacks).with('druid:ab123cd4567', ['1.html', '2.html'])
-    # TODO figure out best place to keep workspace root
+    Dor::DigitalStacksService.should_receive(:shelve_to_stacks).with(@item.pid, ['page-3.jpg','page-4.jpg'])
+    Dor::DigitalStacksService.should_receive(:remove_from_stacks).with(@item.pid, ['title.jpg'])
+    Dor::DigitalStacksService.should_receive(:rename_in_stacks).with(@item.pid, [['page-2.jpg','page-2a.jpg']])
     @item.shelve
   end
   

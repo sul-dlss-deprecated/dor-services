@@ -31,9 +31,9 @@ module Dor
     # Self-aware datastream builders
     def build_datastream(datastream, force = false)
       ds = datastreams[datastream]
-      path = Druid.new(self.pid).path(Dor::Config.stacks.local_workspace_root)
-      filename = File.join(path,"#{datastream}.xml")
-      if File.exists?(filename)
+      druid = DruidTools::Druid.new(self.pid, Dor::Config.stacks.local_workspace_root)
+      filename = druid.find_metadata("#{datastream}.xml")
+      if not filename.nil?
         content = File.read(filename)
         ds.content = content
         ds.ng_xml = Nokogiri::XML(content) if ds.respond_to?(:ng_xml)

@@ -36,7 +36,7 @@ describe Dor::Assembleable do
     before(:each) do
       @ai = AssembleableItem.new
       @ai.stub!(:pid).and_return('aa123bb7890')
-      @druid_path = File.join(@temp_workspace, 'aa', '123', 'bb', '7890')
+      @druid_path = File.join(@temp_workspace, 'aa', '123', 'bb', '7890', 'aa123bb7890')
       FileUtils.rm_rf(File.join(@temp_workspace, 'aa'))
     end
     
