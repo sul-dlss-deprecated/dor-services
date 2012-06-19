@@ -23,37 +23,43 @@ module Dor
     end
 
     def self.remove_from_stacks(id, files)
-      path = self.druid_tree(id)
+      unless files.empty?
+        path = self.druid_tree(id)
 
-      remote_storage_dir = File.join(Config.stacks.storage_root, path)
-      Net::SFTP.start(Config.stacks.host,Config.stacks.user,:auth_methods=>['publickey']) do |sftp|
-        files.each { |file| sftp.remove!(File.join(remote_storage_dir,file)) }
+        remote_storage_dir = File.join(Config.stacks.storage_root, path)
+        Net::SFTP.start(Config.stacks.host,Config.stacks.user,:auth_methods=>['publickey']) do |sftp|
+          files.each { |file| sftp.remove!(File.join(remote_storage_dir,file)) }
+        end
       end
     end
     
     def self.rename_in_stacks(id, file_map)
-      path = self.druid_tree(id)
+      unless file_map.empty?
+        path = self.druid_tree(id)
 
-      remote_storage_dir = File.join(Config.stacks.storage_root, path)
-      Net::SFTP.start(Config.stacks.host,Config.stacks.user,:auth_methods=>['publickey']) do |sftp|
-        file_map.each { |source,dest| sftp.rename!(File.join(remote_storage_dir,source),File.join(remote_storage_dir,dest)) }
+        remote_storage_dir = File.join(Config.stacks.storage_root, path)
+        Net::SFTP.start(Config.stacks.host,Config.stacks.user,:auth_methods=>['publickey']) do |sftp|
+          file_map.each { |source,dest| sftp.rename!(File.join(remote_storage_dir,source),File.join(remote_storage_dir,dest)) }
+        end
       end
     end
     
     def self.shelve_to_stacks(id, files)
-      path = self.druid_tree(id)
+      unless files.empty?
+        path = self.druid_tree(id)
 
-      druid = DruidTools::Druid.new(id,Config.stacks.local_workspace_root)
-      remote_storage_dir = File.join(Config.stacks.storage_root, path)
-      Net::SFTP.start(Config.stacks.host,Config.stacks.user,:auth_methods=>['publickey']) do |sftp|
-        # create the remote directory on the digital stacks
-        sftp.session.exec! "mkdir -p #{remote_storage_dir}"
-        # copy the contents for the given object from the local workspace directory to the remote directory
-        uploads = files.collect do |file| 
-          local_file = druid.find_content(file)
-          sftp.upload(local_file, File.join(remote_storage_dir,file))
+        druid = DruidTools::Druid.new(id,Config.stacks.local_workspace_root)
+        remote_storage_dir = File.join(Config.stacks.storage_root, path)
+        Net::SFTP.start(Config.stacks.host,Config.stacks.user,:auth_methods=>['publickey']) do |sftp|
+          # create the remote directory on the digital stacks
+          sftp.session.exec! "mkdir -p #{remote_storage_dir}"
+          # copy the contents for the given object from the local workspace directory to the remote directory
+          uploads = files.collect do |file| 
+            local_file = druid.find_content(file)
+            sftp.upload(local_file, File.join(remote_storage_dir,file))
+          end
+          uploads.each { |upload| upload.wait }
         end
-        uploads.each { |upload| upload.wait }
       end
     end
 

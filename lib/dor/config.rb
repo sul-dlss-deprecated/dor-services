@@ -74,7 +74,7 @@ module Dor
           }
         },
         :sdr => {
-          :rest_client => Confstruct.deferred { |c| config.make_rest_client c.rest_url },
+          :rest_client => Confstruct.deferred { |c| config.make_rest_client c.url },
         },
         :gsearch => {
           :rest_client => Confstruct.deferred { |c| config.make_rest_client c.rest_url },

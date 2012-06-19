@@ -46,7 +46,8 @@ module Versioning
     
     def file_sets(change, groupId=:content)
       self.ng_xml.xpath(self.class.terminology.xpath_for(groupId.to_sym, change.to_sym, :file)).collect do |node|
-        [node['basisPath'],node['otherPath']].select { |s| not ['','same', nil].include?(s) }
+        result = [node['basisPath'],node['otherPath']].select { |s| not ['','same', nil].include?(s) }
+        result.length == 1 ? result.first : result
       end
     end
   end

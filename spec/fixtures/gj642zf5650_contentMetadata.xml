@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<contentMetadata type="sample" objectId="druid:gj642zf5650">
+  <resource type="version" sequence="1" id="version-3">
+    <file datetime="2012-03-26T08:15:11-06:00" size="40873" id="title.jpg" publish="yes" shelve="no" preserve="yes">
+      <checksum type="MD5">1a726cd7963bd6d3ceb10a8c353ec166</checksum>
+      <checksum type="SHA-1">583220e0572640abcd3ddd97393d224e8053a6ad</checksum>
+    </file>
+    <file datetime="2012-03-26T09:35:15-06:00" size="32915" id="page-1.jpg" publish="yes" shelve="yes" preserve="yes">
+      <checksum type="MD5">c1c34634e2f18a354cd3e3e1574c3194</checksum>
+      <checksum type="SHA-1">0616a0bd7927328c364b2ea0b4a79c507ce915ed</checksum>
+    </file>
+    <file datetime="2012-03-26T09:23:36-06:00" size="39450" id="page-2a.jpg" publish="yes" shelve="yes" preserve="yes">
+      <checksum type="MD5">82fc107c88446a3119a51a8663d1e955</checksum>
+      <checksum type="SHA-1">d0857baa307a2e9efff42467b5abd4e1cf40fcd5</checksum>
+    </file>
+    <file datetime="2012-06-12T10:29:40-07:00" size="604522" id="page-3.jpg" publish="no" shelve="yes" preserve="yes">
+      <checksum type="MD5">aa65c7ab45500beaf7150ea490bf316a</checksum>
+      <checksum type="SHA-1">39a628585aaead5e587d38b7b32e0c9ee7800832</checksum>
+    </file>
+    <file datetime="2012-06-12T10:29:43-07:00" size="370440" id="page-4.jpg" publish="yes" shelve="yes" preserve="yes">
+      <checksum type="MD5">9bbb0add72b2c13366e031f1bd382a76</checksum>
+      <checksum type="SHA-1">677b9b1223dc69ee3740a8202f9c2480e699bad4</checksum>
+    </file>
+  </resource>
+</contentMetadata>
