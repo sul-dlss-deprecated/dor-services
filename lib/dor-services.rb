@@ -80,8 +80,8 @@ module Dor
     
   require 'dor/datastreams/datastream_spec_solrizer'
 
-  ::Object.autoload :Druid, 'dor/utils/druid_utils'
-    
+  require 'druid-tools'
+
   # datastreams
   autoload :AdministrativeMetadataDS,  'dor/datastreams/administrative_metadata_ds'
   autoload :ContentMetadataDS, 'dor/datastreams/content_metadata_ds'
@@ -126,7 +126,12 @@ module Dor
   autoload :SdrIngestService, 'dor/services/sdr_ingest_service'
   autoload :CleanupService, 'dor/services/cleanup_service'
   autoload :ProvenanceMetadataService, 'dor/services/provenance_metadata_service'
-    
+  
+  # Versioning Classes
+  module Versioning
+    autoload :FileInventoryDifference, 'dor/versioning/file_inventory_difference'
+  end
+  
   # Workflow Classes
   module Workflow
     autoload :Graph, 'dor/workflow/graph'

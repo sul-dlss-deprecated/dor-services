@@ -25,5 +25,8 @@ describe Dor::Itemizable do
     @item.build_datastream('contentMetadata',true)
     @item.datastreams['contentMetadata'].ng_xml.should be_equivalent_to(content_md)
   end
+  
+  it "should retrieve a content diff" do
+  end
 
 end

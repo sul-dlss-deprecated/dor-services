@@ -23,7 +23,11 @@ module Dor
         end
       end
       begin
-        content_dir = Druid.new(self.pid).path(Config.sdr.local_workspace_root)
+        content_dir = DruidTools::Druid.new(self.pid,Config.sdr.local_workspace_root).content_dir(false)
+        unless File.directory?(content_dir)
+          # For backward compatibility
+          content_dir = File.expand_path('../..',content_dir)
+        end
         temp_dir = Dir.mktmpdir(self.pid)
         jhove_service = ::JhoveService.new(temp_dir)
         jhove_output_file = jhove_service.run_jhove(content_dir)

@@ -1,65 +1,65 @@
-require 'tempfile'
-require 'systemu'
+require 'net/ssh'
+require 'net/sftp'
 
 module Dor
   class DigitalStacksService
-    # TODO copied from lyber-core, but didn't want to create circular dependency for between gems for this one method
-    # Executes a system command in a subprocess. 
-    # The method will return stdout from the command if execution was successful.
-    # The method will raise an exception if if execution fails. 
-    # The exception's message will contain the explaination of the failure.
-    # @param [String] command the command to be executed
-    # @return [String] stdout from the command if execution was successful
-    def self.execute(command)
-      status, stdout, stderr = systemu(command)
-      if (status.exitstatus != 0)
-        raise stderr
-      end
-      return stdout
-    rescue
-      msg = "Command failed to execute: [#{command}] caused by <STDERR =\n#{stderr.split($/).join("\n")}>"
-      msg << "\nSTDOUT =\n#{stdout.split($/).join("\n")}" if (stdout && (stdout.length > 0))
-      raise msg
-    end
-    
     def self.druid_tree(druid)
-      Druid.new(druid).path
+      File.expand_path('..',DruidTools::Druid.new(druid,'/').path)
     rescue
-      nil
+      raise "Invalid druid: #{id}"
     end
         
     def self.transfer_to_document_store(id, content, filename)
       path = self.druid_tree(id)
-      raise "Invalid druid: #{id}" if(path.nil?)
       
       # create the remote directory in the document cache
       remote_document_cache_dir = File.join(Config.stacks.document_cache_storage_root, path)
-      command = "ssh #{Config.stacks.document_cache_user}@#{Config.stacks.document_cache_host} mkdir -p #{remote_document_cache_dir}"
-      self.execute(command)
+      
+      content_io = StringIO.new(content)
+      Net::SFTP.start(Config.stacks.document_cache_host,Config.stacks.document_cache_user,:auth_methods=>['publickey']) do |sftp|
+        sftp.session.exec! "mkdir -p #{remote_document_cache_dir}"
+        sftp.upload!(content_io,File.join(remote_document_cache_dir,filename))
+      end
+    end
 
-      # create a temp file containing the content and copy the contents to the remote document cache
-      Tempfile.open(filename) do |tf| 
-        tf.write(content) 
-        tf.flush
-        command = "scp \"#{tf.path}\" #{Config.stacks.document_cache_user}@#{Config.stacks.document_cache_host}:#{remote_document_cache_dir}/#{filename}"
-        self.execute(command)
+    def self.remove_from_stacks(id, files)
+      unless files.empty?
+        path = self.druid_tree(id)
+
+        remote_storage_dir = File.join(Config.stacks.storage_root, path)
+        Net::SFTP.start(Config.stacks.host,Config.stacks.user,:auth_methods=>['publickey']) do |sftp|
+          files.each { |file| sftp.remove!(File.join(remote_storage_dir,file)) }
+        end
+      end
+    end
+    
+    def self.rename_in_stacks(id, file_map)
+      unless file_map.empty?
+        path = self.druid_tree(id)
+
+        remote_storage_dir = File.join(Config.stacks.storage_root, path)
+        Net::SFTP.start(Config.stacks.host,Config.stacks.user,:auth_methods=>['publickey']) do |sftp|
+          file_map.each { |source,dest| sftp.rename!(File.join(remote_storage_dir,source),File.join(remote_storage_dir,dest)) }
+        end
       end
     end
     
     def self.shelve_to_stacks(id, files)
-      path = self.druid_tree(id)
-      raise "Invalid druid: #{id}" if(path.nil?)
-      
-      # create the remote directory on the digital stacks
-      remote_storage_dir = File.join(Config.stacks.storage_root, path)
-      command = "ssh #{Config.stacks.user}@#{Config.stacks.host} mkdir -p #{remote_storage_dir}"
-      self.execute(command)
+      unless files.empty?
+        path = self.druid_tree(id)
 
-      # copy the contents for the given object from the local workspace directory to the remote directory
-      local_storage_dir = File.join(Config.stacks.local_workspace_root, path)
-      files.each do |file|
-        command = "scp \"#{local_storage_dir}/#{file}\" #{Config.stacks.user}@#{Config.stacks.host}:#{remote_storage_dir}"
-        self.execute(command)
+        druid = DruidTools::Druid.new(id,Config.stacks.local_workspace_root)
+        remote_storage_dir = File.join(Config.stacks.storage_root, path)
+        Net::SFTP.start(Config.stacks.host,Config.stacks.user,:auth_methods=>['publickey']) do |sftp|
+          # create the remote directory on the digital stacks
+          sftp.session.exec! "mkdir -p #{remote_storage_dir}"
+          # copy the contents for the given object from the local workspace directory to the remote directory
+          uploads = files.collect do |file| 
+            local_file = druid.find_content(file)
+            sftp.upload(local_file, File.join(remote_storage_dir,file))
+          end
+          uploads.each { |upload| upload.wait }
+        end
       end
     end
 

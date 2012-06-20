@@ -26,21 +26,21 @@ describe Dor::Processable do
   
   context "filesystem-based content" do
     before :each do
-      @filename = File.join(@fixture_dir, "workspace/ab/123/cd/4567/contentMetadata.xml")
+      @filename = File.join(@fixture_dir, "workspace/ab/123/cd/4567/ab123cd4567/metadata/contentMetadata.xml")
       @content_md = read_fixture("workspace/ab/123/cd/4567/content_metadata.xml")
     end
     
     it "should read datastream content files from the workspace" do
-      File.should_receive(:exists?).with(@filename).and_return(true)
-      File.should_not_receive(:exists?).with(/content_metadata.xml/).and_return(true)
+      File.stub(:exists?).with(@filename).and_return(true)
+      File.should_not_receive(:exists?).with(/content_metadata\.xml/)
       File.should_receive(:read).with(@filename).and_return(@content_md)
       @item.build_datastream('contentMetadata',true)
       @item.datastreams['contentMetadata'].ng_xml.should be_equivalent_to(@content_md)
     end
 
     it "should use the datastream builder if the file doesn't exist" do
-      File.should_receive(:exists?).with(@filename).and_return(false)
-      File.should_receive(:exists?).with(/content_metadata.xml/).and_return(true)
+      File.stub(:exists?).with(/contentMetadata\.xml/).and_return(false)
+      File.should_receive(:exists?).with(/content_metadata\.xml/).and_return(true)
       @item.build_datastream('contentMetadata',true)
       @item.datastreams['contentMetadata'].ng_xml.should be_equivalent_to(@content_md)
     end

@@ -49,7 +49,7 @@ describe Dor::CleanupService do
   it "can cleanup an object" do
     mock_item = mock('item')
     mock_item.should_receive(:pid).and_return(@druid)
-    Dor::CleanupService.should_receive(:remove_entry).once.with(File.join(@fixture_dir,'workspace/aa/123/bb/4567'))
+    Dor::CleanupService.should_receive(:remove_entry).once.with(File.join(@fixture_dir,'workspace/aa/123/bb/4567/aa123bb4567'))
     Dor::CleanupService.should_receive(:remove_entry).once.with(File.join(@fixture_dir,'export/druid:aa123bb4567'))
     Dor::CleanupService.should_receive(:remove_entry).once.with(File.join(@fixture_dir,'export/druid:aa123bb4567.tar'))
     Dor::CleanupService.cleanup(mock_item)
