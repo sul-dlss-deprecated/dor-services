@@ -30,7 +30,6 @@ module Dor
         current_content = self.datastreams['contentMetadata'].content
         qs = [['subset',subset],['version',version]].select { |k,v| v.present? }.collect { |a| a.join('=') }.join('&')
         url = "objects/#{self.pid}/cm-inv-diff?#{qs}"
-        puts sdr_client[url].to_s
         response = sdr_client[url].post(current_content, :content_type => 'application/xml')
         File.open(diff_path,'w') { |f| f.write(response) }
         response

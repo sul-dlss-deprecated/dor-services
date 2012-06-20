@@ -227,6 +227,7 @@ Values can also be configured individually:
 - <b>3.6.2</b> Minor migration and indexing bug fixes
 - <b>3.6.3</b> Hotfix for Describable#generate_dublin_core raising the wrong kind of exception
 - <b>3.6.4</b> Add abstract to descMetadata
+- <b>3.7.0</b> Use Moab versioning service in shelving
 
 == Copyright
 
