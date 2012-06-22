@@ -205,7 +205,7 @@ Values can also be configured individually:
   - ARGO-24 Show all name parts for author/creator in citation
   - LYBERSTRUCTURE-205 Deprecate contentMetadata "format" attribute in Common Accessioning
   - LYBERSTRUCTURE-215 Update objects to a single "workflows" datastream, drop workflow specific datastreams
-  - LYBERSTRUCTURE-224 Drop <agreementId> from identityMetadata; SDR will verify APO instead 
+  - LYBERSTRUCTURE-224 Drop <agreementId> from identityMetadata; SDR will verify APO instead
   - LYBERSTRUCTURE-222 identityMetadata - drop AdminPolicy tag and rely on isGovernedBy relationship
   - First round of object remediation using Upgradable concern
   - Add Upgradable concern
@@ -229,6 +229,7 @@ Values can also be configured individually:
 - <b>3.6.4</b> Add abstract to descMetadata
 - <b>3.7.0</b> Use Moab versioning service in shelving
 - <b>3.7.1</b> Make cm_inv_diff cache aspect-specific
+- <b>3.7.2</b> Add net-sftp dependency
 
 == Copyright
 
