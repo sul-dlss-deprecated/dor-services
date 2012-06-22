@@ -21,7 +21,7 @@ module Dor
     end
     
     def get_content_diff(subset='all', version=nil)
-      basename = version.nil? ? 'cm_inv_diff.xml' : "'cm_inv_diff.#{version}.xml'"
+      basename = version.nil? ? "cm_inv_diff.#{subset}.xml" : "cm_inv_diff.#{subset}.#{version}.xml"
       diff_path = File.join(DruidTools::Druid.new(self.pid,Dor::Config.stacks.local_workspace_root).temp_dir,basename)
       if File.exists? diff_path
         File.read(diff_path)

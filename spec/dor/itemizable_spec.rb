@@ -27,6 +27,7 @@ describe Dor::Itemizable do
   end
   
   it "should retrieve a content diff" do
+    pending
   end
 
 end
