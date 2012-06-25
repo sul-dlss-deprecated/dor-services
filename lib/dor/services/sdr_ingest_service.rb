@@ -6,7 +6,7 @@ module Dor
   class SdrIngestService
 
     def self.transfer(dor_item, agreement_id=nil)
-      druid = dor_item.druid
+      druid = dor_item.pid
       druid_tool = DruidTools::Druid.new(druid,Dor::Config.sdr.local_workspace_root)
       object_dir = Pathname(druid_tool.path)
       signature_catalog = get_signature_catalog(druid_tool)
@@ -51,7 +51,7 @@ module Dor
     # if non-existant, return nil or raise exception depending on value of required
     def self.get_datastream_content(dor_item, ds_name, required)
       ds = (ds_name == 'relationshipMetadata' ? 'RELS-EXT' : ds_name)
-      if dor_item.datastreams_in_fedora.keys.include?(ds)
+      if dor_item.datastreams.keys.include?(ds) and not dor_item.datastreams[ds].new?
         return dor_item.datastreams[ds].content
       elsif (required == 'optional')
         return nil

@@ -47,11 +47,11 @@ describe Dor::SdrIngestService do
     ds_name = 'myMetadata'
     metadata_string = '<metadata/>'
     mock_datastream = mock('datastream')
+    mock_datastream.should_receive(:new?).and_return(false)
     mock_datastream.should_receive(:content).and_return(metadata_string)
     ds_hash = {ds_name => mock_datastream }
     mock_item = mock("item")
-    mock_item.should_receive(:datastreams_in_fedora).and_return(ds_hash)
-    mock_item.should_receive(:datastreams).and_return(ds_hash)
+    mock_item.should_receive(:datastreams).exactly(3).times.and_return(ds_hash)
     result = Dor::SdrIngestService.get_datastream_content(mock_item ,ds_name, 'required')
     result.should eql metadata_string
   end
@@ -63,8 +63,7 @@ describe Dor::SdrIngestService do
     mock_datastream.should_receive(:content).never
     ds_hash = {ds_name => mock_datastream }
     mock_item = mock("item")
-    mock_item.should_receive(:datastreams_in_fedora).and_return(ds_hash)
-    mock_item.should_receive(:datastreams).never
+    mock_item.should_receive(:datastreams).and_return(ds_hash)
     result = Dor::SdrIngestService.get_datastream_content(mock_item ,'dummy', 'optional')
     result.should eql nil
   end
@@ -76,8 +75,7 @@ describe Dor::SdrIngestService do
     mock_datastream.should_receive(:content).never
     ds_hash = {ds_name => mock_datastream }
     mock_item = mock("item")
-    mock_item.should_receive(:datastreams_in_fedora).and_return(ds_hash)
-    mock_item.should_receive(:datastreams).never
+    mock_item.should_receive(:datastreams).and_return(ds_hash)
     lambda {Dor::SdrIngestService.get_datastream_content(mock_item ,'dummy', 'required')}.should raise_exception
   end
 
