@@ -6,8 +6,9 @@ require 'spec'
 require 'spec/autorun'
 
 require 'rubygems'
+require 'rake'
 require 'dor-services'
-require 'ruby-debug'
+#require 'ruby-debug'
 require 'foxml_helper'
 require 'equivalent-xml'
 

@@ -36,7 +36,8 @@ Gem::Specification.new do |s|
   s.add_dependency "net-ssh"
   s.add_dependency "net-sftp"
   s.add_dependency "druid-tools"
-  
+  s.add_dependency "moab-versioning"
+
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects
   s.add_development_dependency "fakeweb"
@@ -47,7 +48,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rcov"
   s.add_development_dependency "rdoc"
   s.add_development_dependency "rspec", "< 2.0" # We're not ready to upgrade to rspec 2
-  s.add_development_dependency "ruby-debug"
+#  s.add_development_dependency "ruby-debug"
   s.add_development_dependency "yard"
  
   s.files        = Dir.glob("lib/**/*") + Dir.glob("config/**/*") + Dir.glob('bin/*')
