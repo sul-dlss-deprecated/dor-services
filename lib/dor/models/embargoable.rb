@@ -20,15 +20,13 @@ module Dor
       embargo_md = datastreams['embargoMetadata']
       embargo_md.status = 'released'
       
-      # Remove embargoReleaseDate from rights
+      # Remove all read acces nodes
       rights_xml = datastreams['rightsMetadata'].ng_xml
-      rights_xml.xpath("//rightsMetadata/access[@type='read']/machine/embargoReleaseDate").remove
+      rights_xml.xpath("//rightsMetadata/access[@type='read']").each { |n| n.remove }
       
       # Replace rights <access> nodes with those from embargoMetadta
       release_access = embargo_md.release_access_node
       release_access.xpath('//releaseAccess/access').each do |new_access|
-        type = new_access['type']
-        rights_xml.xpath("//rightsMetadata/access[@type='#{type}']").remove
         access_sibling = rights_xml.at_xpath("//rightsMetadata/access[last()]")
         if(access_sibling)
           access_sibling.add_next_sibling(new_access.clone)

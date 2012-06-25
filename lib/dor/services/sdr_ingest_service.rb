@@ -1,69 +1,50 @@
+require 'rubygems'
 require 'lyber-utils'
+require 'moab_stanford'
 
 module Dor
   class SdrIngestService
-    # Some boilerplace entries for the bagit metadata file
-    METADATA_INFO =  {
-        'Source-Organization' => 'Stanford University Libraries',
-        'Stanford-Content-Metadata'  =>  'data/metadata/contentMetadata.xml',
-        'Stanford-Identity-Metadata'  =>  'data/metadata/identityMetadata.xml',
-        'Stanford-Provenance-Metadata'  =>  'data/metadata/provenanceMetadata.xml'
-    }
 
-    # Create a bagit object and fill it with content
-    # Then tar it
-    # @param [LyberCore::Robots::WorkItem]
-    def self.transfer(dor_item, agreement_id)
-      druid = dor_item.pid
-      content_dir = DruidTools::Druid.new(druid,Config.sdr.local_workspace_root).path
-
-      # Create the bag
-      bag_dir = File.join(Config.sdr.local_export_home, druid)
-      export_bag = LyberUtils::BagitBag.new(bag_dir)
-
-      # Fill the bag
-      export_bag.add_content_files(content_dir, use_links=true)
-      add_metadata_datastreams(dor_item, export_bag)
-      export_bag.write_metadata_info(metadata_info(druid, agreement_id))
-      export_bag.write_manifests()
-      export_bag.validate()
-
-      unless LyberUtils::FileUtilities.tar_object(bag_dir)
-        raise 'Unable to tar the bag'
-      end
-
+    def self.transfer(dor_item, agreement_id=nil)
+      druid = dor_item.druid
+      druid_tool = DruidTools::Druid.new(druid,Dor::Config.sdr.local_workspace_root)
+      object_dir = Pathname(druid_tool.path)
+      signature_catalog = get_signature_catalog(druid_tool)
+      old_version_id = signature_catalog.version_id
+      new_version_id = old_version_id + 1
+      metadata_dir = Pathname(druid_tool.metadata_dir)
+      extract_datastreams(dor_item, metadata_dir)
+      version_inventory = get_version_inventory(metadata_dir, druid, new_version_id)
+      content_dir = Pathname(druid_tool.content_dir(create=false))
+      content_dir.make_symlink(druid_tool.path('..')) unless content_dir.exist?
+      bag_dir = Pathname(Dor::Config.sdr.local_export_home).join(druid)
+      bagger = Moab::Bagger.new(version_inventory, signature_catalog, object_dir, bag_dir)
+      bagger.fill_bag(package_mode=:depositor)
+      raise 'Unable to tar the bag' unless LyberUtils::FileUtilities.tar_object(bag_dir.to_s)
       # Now bootstrap SDR workflow queue to start SDR robots
       Dor::WorkflowService.create_workflow('sdr', druid, 'sdrIngestWF', read_sdr_workflow_xml(), {:create_ds => false})
     end
 
-    # Read in the XML file needed to initialize the SDR workflow
-    # @return [String]
-    def self.read_sdr_workflow_xml()
-      return IO.read(File.join("#{ROBOT_ROOT}", "config", "workflows", "sdrIngestWF", "sdrIngestWF.xml"))
+    def self.get_signature_catalog(druid_tool)
+      druid = druid_tool.druid
+      sdr_client = Dor::Config.sdr.rest_client
+      url = "objects/#{druid}/manifest/signatureCatalog.xml"
+      response = sdr_client[url].get
+      Moab::SignatureCatalog.parse(response)
+    rescue
+      Moab::SignatureCatalog.new(:digital_object_id => druid, :version_id => 0)
     end
 
-    # For each of the metadata files or datastreams, create a file in in the bag's data/metadata folder
-    # @param[String, LyberUtils::BagitBag]
-    def self.add_metadata_datastreams(dor_item, export_bag)
+    def self.extract_datastreams(dor_item, metadata_dir)
       Config.sdr.datastreams.to_hash.each_pair do |ds_name, required|
-        # ds_name in this context is a symbol, so convert it to a string
-        filename = "#{ds_name.to_s}.xml"
-        metadata_string = self.get_datastream_content(dor_item, ds_name.to_s, required)
-        self.export_metadata_string(metadata_string, filename, export_bag) unless metadata_string.nil?
+        ds_name = ds_name.to_s
+        metadata_file = metadata_dir.join("#{ds_name}.xml")
+        unless metadata_file.exist?
+          metadata_string = self.get_datastream_content(dor_item, ds_name, required)
+          metadata_file.open('w') { |f| f << metadata_string } if metadata_string
+        end
       end
-    end
-
-    # create a link to a metadata file in the bag's data/metadata folder
-    def self.export_metadata_file(metadata_dir, filename, bag)
-      metadata_file = File.join(metadata_dir, filename)
-      bag_metadata_dir = File.join(bag.bag_dir, 'data', 'metadata')
-      if (File.exist?(metadata_file))
-        bag_file = File.join(bag_metadata_dir, filename)
-        File.link(metadata_file, bag_file)
-        return true
-      else
-        return false
-      end
+      true
     end
 
     # return the content of the specied datastream if it exists
@@ -79,21 +60,28 @@ module Dor
       end
     end
 
-    # create a file in the bag's data/metadata folder containing the metadata string
-    # @param[String, String, LyberUtils::BagitBag]
-    def self.export_metadata_string(metadata_string, filename, bag)
-      bag.add_metadata_file_from_string(metadata_string, filename)
+    def self.get_version_inventory(metadata_dir, druid, version_id)
+      version_inventory = get_content_inventory(metadata_dir, druid, version_id)
+      version_inventory.groups << get_metadata_file_group(metadata_dir)
+      version_inventory
     end
 
-    # merge item-specific data into the standard hash of metadata information
-    # @param [String, String]
-    def self.metadata_info(druid, agreement_id)
-       item_info = {
-              'External-Identifier' =>  druid,
-              'Stanford-Agreement-ID'  =>  agreement_id
-      }
-      merged_info = item_info.merge(METADATA_INFO)
-      return merged_info
+    def self.get_content_inventory(metadata_dir, druid, version_id)
+      content_metadata = metadata_dir.join('contentMetadata.xml').read
+      content_inventory = Stanford::ContentInventory.new.inventory_from_cm(content_metadata, druid, subset='preserve', version_id)
+      content_inventory
+    end
+
+    def self.get_metadata_file_group(metadata_dir)
+      file_group = FileGroup.new(:group_id=>'metadata').group_from_directory(metadata_dir)
+      file_group
+    end
+
+
+    # Read in the XML file needed to initialize the SDR workflow
+    # @return [String]
+    def self.read_sdr_workflow_xml()
+      return IO.read(File.join("#{ROBOT_ROOT}", "config", "workflows", "sdrIngestWF", "sdrIngestWF.xml"))
     end
 
   end

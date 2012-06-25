@@ -45,6 +45,12 @@ describe Dor::Embargoable do
             <world/>
           </machine>
         </access>
+        <access type="read">
+          <file id="restricted.doc"/>                                           
+          <machine>
+            <group>stanford</group>
+          </machine>
+        </access>
       </releaseAccess>
       EOXML
       @eds.release_access_node = Nokogiri::XML(@release_access) {|config|config.default_xml.noblanks}
@@ -61,7 +67,7 @@ describe Dor::Embargoable do
             </access>
             <access type="read">                                            
               <machine>
-                <group>stanford:stanford</group>
+                <group>stanford</group>
                 <embargoReleaseDate>2011-10-08</embargoReleaseDate>
               </machine>
             </access>
@@ -87,10 +93,16 @@ describe Dor::Embargoable do
       
       it "replaces/adds access nodes with nodes from embargoMetadata/releaseAccess" do
         rights = @embargo_item.datastreams['rightsMetadata'].ng_xml
-        # There should be one <access type="read"> node.  It should have <world/> access
-        rights.xpath("//rightsMetadata/access[@type='read']").size.should == 1
+
+        rights.xpath("//rightsMetadata/access[@type='read']").size.should == 2
+        rights.xpath("//rightsMetadata/access[@type='discover']").size.should == 1
         rights.xpath("//rightsMetadata/access[@type='read']/machine/world").size.should == 1
-        rights.at_xpath("//rightsMetadata/access[@type='read']/machine/group").should be_nil
+        rights.at_xpath("//rightsMetadata/access[@type='read' and not(file)]/machine/group").should be_nil
+      end
+      
+      it "handles more than one <access type='read'> node in <releaseAccess>, even those with <file> nodes" do
+        rights = @embargo_item.datastreams['rightsMetadata'].ng_xml
+        rights.xpath("//rightsMetadata/access[@type='read']/file").size.should == 1
       end
       
       it "marks the datastream as dirty" do

@@ -230,6 +230,9 @@ Values can also be configured individually:
 - <b>3.7.0</b> Use Moab versioning service in shelving
 - <b>3.7.1</b> Make cm_inv_diff cache aspect-specific
 - <b>3.7.2</b> Add net-sftp dependency
+- <b>3.8.0</b>
+  - Versioning support for sdr-ingest-transfer robot
+  - Embargo release copies all <access type="read"> nodes from embargoMetadata to rightsMetadata
 
 == Copyright
 
