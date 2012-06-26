@@ -233,6 +233,8 @@ Values can also be configured individually:
 - <b>3.8.0</b>
   - Versioning support for sdr-ingest-transfer robot
   - Embargo release copies all <access type="read"> nodes from embargoMetadata to rightsMetadata
+- <b>3.8.1</b> (Unreleased)
+- <b>3.8.2</b> SDR Ingest service hotfixes
 
 == Copyright
 
