@@ -235,6 +235,7 @@ Values can also be configured individually:
   - Embargo release copies all <access type="read"> nodes from embargoMetadata to rightsMetadata
 - <b>3.8.1</b> (Unreleased)
 - <b>3.8.2</b> SDR Ingest service hotfixes
+- <b>3.8.3</b> Fix Timeout...rescue bug in dor-indexer
 
 == Copyright
 
