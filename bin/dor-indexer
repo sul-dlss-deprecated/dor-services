@@ -60,27 +60,29 @@ begin
   @conn.subscribe(@destination, {"activemq.subscriptionName" => @clientid, :ack =>"client" })
   while true
     Timeout::timeout(300) do
-      @msg = @conn.receive
-      pid = @msg.headers["pid"]
-      method = @msg.headers["methodName"]
+      begin
+        @msg = @conn.receive
+        pid = @msg.headers["pid"]
+        method = @msg.headers["methodName"]
 
-      if ["addDatastream", "addRelationship","ingest","modifyDatastreamByValue","modifyDatastreamByReference","modifyObject","purgeDatastream","purgeRelationship","reindex"].include? method
-        begin
-          obj = Dor.load_instance pid
-          Dor::SearchService.solr.add(obj.to_solr, :add_attributes => {:commitWithin => 10}) unless obj.nil?
-        rescue
+        if ["addDatastream", "addRelationship","ingest","modifyDatastreamByValue","modifyDatastreamByReference","modifyObject","purgeDatastream","purgeRelationship","reindex"].include? method
+          begin
+            obj = Dor.load_instance pid
+            Dor::SearchService.solr.add(obj.to_solr, :add_attributes => {:commitWithin => 10}) unless obj.nil?
+          rescue
+          end
+        elsif method == "purgeObject"
+          Dor::SearchService.solr.delete_by_id(pid)
+        else
+          Dor.logger.warn "Unknown Method: #{method} for PID #{pid}"
         end
-      elsif method == "purgeObject"
-        Dor::SearchService.solr.delete_by_id(pid)
-      else
-        Dor.logger.warn "Unknown Method: #{method} for PID #{pid}"
+        Dor.logger.info "updated solr index for #{pid}\n"
+        @conn.ack @msg.headers["message-id"]
+      rescue Timeout::Error
+        Dor.logger.info "Sending heartbeat"
+        @conn.begin('heartbeat')
+        @conn.commit('heartbeat')
       end
-      Dor.logger.info "updated solr index for #{pid}\n"
-      @conn.ack @msg.headers["message-id"]
-    rescue Timeout::Error
-      Dor.logger.info "Sending heartbeat"
-      @conn.begin('heartbeat')
-      @conn.commit('heartbeat')
     end
   end
   @conn.join
