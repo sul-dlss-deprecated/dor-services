@@ -11,6 +11,7 @@ require 'dor-services'
 #require 'ruby-debug'
 require 'foxml_helper'
 require 'equivalent-xml'
+require 'fakeweb'
 
 ActiveFedora.logger = Logger.new(StringIO.new)
 

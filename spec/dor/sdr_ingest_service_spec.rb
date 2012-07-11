@@ -1,6 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require 'fileutils'
-require 'fakeweb'
 
 describe Dor::SdrIngestService do
 
@@ -115,12 +114,12 @@ describe Dor::SdrIngestService do
     druid_tool = DruidTools::Druid.new(druid,Dor::Config.sdr.local_workspace_root)
     resource = Dor::Config.sdr.rest_client["objects/#{druid}/manifest/signatureCatalog.xml"]
     FakeWeb.register_uri(:get, resource.url, :body => "<signatureCatalog/>")
-    Moab::SignatureCatalog.should_receive(:parse).with("<signatureCatalog/>")
     Dor::SdrIngestService.get_signature_catalog(druid_tool)
 
     druid = "druid:zz000zz0000"
     druid_tool = DruidTools::Druid.new(druid,Dor::Config.sdr.local_workspace_root)
-    #Moab::SignatureCatalog.should_receive(:new)
+    resource = Dor::Config.sdr.rest_client["objects/#{druid}/manifest/signatureCatalog.xml"]
+    FakeWeb.register_uri(:get, resource.url, :body => '<signatureCatalog objectId="druid:zz000zz0000" versionId="0" catalogDatetime="" fileCount="0" byteCount="0" blockCount="0"/>')
     catalog = Dor::SdrIngestService.get_signature_catalog(druid_tool)
     catalog.to_xml.should =~ /<signatureCatalog/
     catalog.version_id.should == 0
