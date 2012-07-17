@@ -73,8 +73,13 @@ module Dor
         Array(params[:seed_datastream]).each { |datastream_name| new_item.build_datastream(datastream_name) }
         Array(params[:initiate_workflow]).each { |workflow_id| new_item.initiate_apo_workflow(workflow_id) }
 
+        new_item.assert_content_model
         new_item.save
-        Dor::SearchService.solr.add new_item.to_solr
+        begin
+          new_item.update_index if ::ENABLE_SOLR_UPDATES
+        rescue StandardError => e
+          Dor.logger.warn "Dor::RegistrationService.register_object failed to update solr index for #{new_item.pid}: #<#{e.class.name}: #{e.message}>"
+        end
         return(new_item)
       end
     end

@@ -2,8 +2,9 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'bundler/setup'
-require 'spec'
-require 'spec/autorun'
+require 'rspec'
+require 'rspec/autorun'
+require 'rspec/mocks'
 
 require 'rubygems'
 require 'rake'
@@ -11,8 +12,10 @@ require 'dor-services'
 #require 'ruby-debug'
 require 'foxml_helper'
 require 'equivalent-xml'
+require 'fakeweb'
 
 ActiveFedora.logger = Logger.new(StringIO.new)
+::ENABLE_SOLR_UPDATES = true
 
 module Dor::SpecHelpers
   def stub_config
@@ -50,7 +53,7 @@ module Dor::SpecHelpers
   end
 end
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   config.include Dor::SpecHelpers
 end
 

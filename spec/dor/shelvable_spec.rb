@@ -19,6 +19,7 @@ describe Dor::Shelvable do
   end
 
   it "builds a list of filenames eligible for shelving to the Digital Stacks" do
+    FakeWeb.register_uri :post, "#{Dor::Config.sdr.url}/objects/druid:gj642zf5650/cm-inv-diff?subset=shelve", :body => read_fixture('shelvable_spec_diff.xml')
     Dor::DigitalStacksService.should_receive(:shelve_to_stacks).with(@item.pid, ['page-3.jpg','page-4.jpg'])
     Dor::DigitalStacksService.should_receive(:remove_from_stacks).with(@item.pid, ['title.jpg'])
     Dor::DigitalStacksService.should_receive(:rename_in_stacks).with(@item.pid, [['page-2.jpg','page-2a.jpg']])

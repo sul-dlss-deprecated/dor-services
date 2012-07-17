@@ -5,7 +5,7 @@
       <attr name="pageLabel">ii</attr>
       <attr name="googlePageTag">IMAGE_ON_PAGE,IMPLICIT_PAGE_NUMBER</attr>
       <file id="00000001.jp2" format="JPEG2000" mimetype="image/jp2" size="169627" shelve="no" deliver="no" preserve="yes">
-         <imageData height="800" width="1200">
+         <imageData height="800" width="1200"/>
          <location type="url">http://service/druid/00000001.jp2</location>
          <location type="path">/dor/workspace/...</location>
          <checksum type="md5">56dd37697f05073168b9b58ddaccad0a</checksum>
@@ -23,7 +23,7 @@
        <attr name="pageLabel">ii</attr>
        <attr name="googlePageTag">IMAGE_ON_PAGE,IMPLICIT_PAGE_NUMBER</attr>
        <file id="00000001.jp2" format="JPEG2000" mimetype="image/jp2" size="169627" shelve="no" deliver="no" preserve="yes">
-          <imageData height="800" width="1200">
+          <imageData height="800" width="1200"/>
           <location type="url">http://service/druid/00000001.jp2</location>
           <location type="path">/dor/workspace/...</location>
           <checksum type="md5">56dd37697f05073168b9b58ddaccad0a</checksum>
