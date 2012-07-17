@@ -82,6 +82,8 @@ begin
         Dor.logger.info "Sending heartbeat"
         @conn.begin('heartbeat')
         @conn.commit('heartbeat')
+      rescue Exception => e
+        Dor.logger.warn "failed to update solr index for #{pid}: #<#{e.class.name}: #{e.message}>"
       end
     end
   end

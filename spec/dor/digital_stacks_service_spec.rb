@@ -5,17 +5,19 @@ describe Dor::DigitalStacksService do
     Dor::Config.push! do
       stacks do
         document_cache_storage_root '/home/cache'
-    	  document_cache_host 'cache.stanford.edu'
-    	  document_cache_user 'user'
-	    
-    	  storage_root '/stacks'
-    	  host 'stacks-test.stanford.edu'
-    	  user 'digitaladmin'
-	    
-    	  local_workspace_root '/workspace'
-    	end
+        document_cache_host 'cache.stanford.edu'
+        document_cache_user 'user'
+        
+        storage_root '/stacks'
+        host 'stacks-test.stanford.edu'
+        user 'digitaladmin'
+        
+        local_workspace_root '/workspace'
+      end
     end
-    
+  end
+  
+  before(:each) do    
     @mock_sftp = mock(Net::SFTP)
   end
   

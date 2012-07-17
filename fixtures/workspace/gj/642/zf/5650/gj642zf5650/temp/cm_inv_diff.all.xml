@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileInventoryDifference objectId="druid:gj642zf5650" differenceCount="4" basis="v3-contentMetadata-all" other="new-contentMetadata-all" reportDatetime="2012-07-11T11:21:28Z">
+  <fileGroupDifference groupId="content" differenceCount="4" identical="2" renamed="2" modified="0" deleted="1" added="1">
+    <subset change="identical" count="2">
+      <file change="identical" basisPath="title.jpg" otherPath="same">
+        <fileSignature size="40873" md5="1a726cd7963bd6d3ceb10a8c353ec166" sha1="583220e0572640abcd3ddd97393d224e8053a6ad"/>
+      </file>
+      <file change="identical" basisPath="page-1.jpg" otherPath="same">
+        <fileSignature size="32915" md5="c1c34634e2f18a354cd3e3e1574c3194" sha1="0616a0bd7927328c364b2ea0b4a79c507ce915ed"/>
+      </file>
+    </subset>
+    <subset change="renamed" count="2">
+      <file change="renamed" basisPath="page-2.jpg" otherPath="page-2a.jpg">
+        <fileSignature size="39450" md5="82fc107c88446a3119a51a8663d1e955" sha1="d0857baa307a2e9efff42467b5abd4e1cf40fcd5"/>
+      </file>
+      <file change="renamed" basisPath="page-4.jpg" otherPath="page-3.jpg">
+        <fileSignature size="604522" md5="aa65c7ab45500beaf7150ea490bf316a" sha1="39a628585aaead5e587d38b7b32e0c9ee7800832"/>
+      </file>
+    </subset>
+    <subset change="modified" count="0"/>
+    <subset change="deleted" count="1">
+      <file change="deleted" basisPath="page-3.jpg" otherPath="">
+        <fileSignature size="161869" md5="61f8d9785d23ac0e54e78073efc9aa8f" sha1="636f55d13fe92cdcd8611df11bbd2e9f1c215b5b"/>
+      </file>
+    </subset>
+    <subset change="added" count="1">
+      <file change="added" basisPath="" otherPath="page-4.jpg">
+        <fileSignature size="370440" md5="9bbb0add72b2c13366e031f1bd382a76" sha1="677b9b1223dc69ee3740a8202f9c2480e699bad4"/>
+      </file>
+    </subset>
+  </fileGroupDifference>
+</fileInventoryDifference>
