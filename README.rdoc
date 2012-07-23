@@ -237,6 +237,7 @@ Values can also be configured individually:
 - <b>3.8.2</b> SDR Ingest service hotfixes
 - <b>3.8.3</b> Fix Timeout...rescue bug in dor-indexer
 - <b>3.8.4</b> More robust exception handling in RegistrationService and dor-indexer
+- <b>3.9.0</b> Use options hash for Dor::WorkflowService update workflow and error methods
 
 == Copyright
 
