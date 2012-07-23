@@ -33,21 +33,24 @@ module Dor
       # Returns true on success.  Caller must handle any exceptions
       #
       # == Required Parameters
-      # - <b>repo</b> - The repository the object resides in.  The service recoginzes "dor" and "sdr" at the moment
-      # - <b>druid</b> - The id of the object
-      # - <b>workflow_name</b> - The name of the workflow 
-      # - <b>status</b> - The status that you want to set.  Typical statuses are 'waiting', 'completed', 'error', but could be any string
+      # @param [String] repo The repository the object resides in.  The service recoginzes "dor" and "sdr" at the moment
+      # @param [String] druid The id of the object
+      # @param [String] workflow_name The name of the workflow 
+      # @param [String] status The status that you want to set.  Typical statuses are 'waiting', 'completed', 'error', but could be any string
       # 
       # == Optional Parameters
-      # - <b>elapsed</b> - The number of seconds it took to complete this step. Can have a decimal.  Is set to 0 if not passed in.
-      # - <b>lifecycle</b> - Bookeeping label for this particular workflow step.  Examples are: 'registered', 'shelved'
-      #
+      # - <b>:elapsed</b> - The number of seconds it took to complete this step. Can have a decimal.  Is set to 0 if not passed in.
+      # - <b>:lifecycle</b> - Bookeeping label for this particular workflow step.  Examples are: 'registered', 'shelved'
+      # - <b>:version</b> - Version number of the object
+      # - <b>:note</b> - Any kind of string annotation that you want to attach to the workflow
       # == Http Call
       # The method does an HTTP PUT to the URL defined in Dor::WF_URI.  As an example:
       #   PUT "/dor/objects/pid:123/workflows/GoogleScannedWF/convert"
       #   <process name=\"convert\" status=\"completed\" />"
-      def update_workflow_status(repo, druid, workflow, process, status, elapsed = 0, lifecycle = nil)
-        xml = create_process_xml(:name => process, :status => status, :elapsed => elapsed.to_s, :lifecycle => lifecycle)
+      def update_workflow_status(repo, druid, workflow, process, status, opts = {}) #elapsed = 0, lifecycle = nil)
+        opts = {:elapsed => 0, :lifecycle => nil, :version => 1, :note => nil}.merge!(opts)
+        opts[:elapsed] = opts[:elapsed].to_s
+        xml = create_process_xml({:name => process, :status => status}.merge!(opts))
         workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow}/#{process}"].put(xml, :content_type => 'application/xml')
         return true
       end
@@ -71,22 +74,31 @@ module Dor
       # Updates the status of one step in a workflow to error.      
       # Returns true on success.  Caller must handle any exceptions
       #
-      # == Required Parameters
-      # - <b>repo</b> - The repository the object resides in.  The service recoginzes "dor" and "sdr" at the moment
-      # - <b>druid</b> - The id of the object
-      # - <b>workflow_name</b> - The name of the workflow 
-      # - <b>error_msg</b> - The error message.  Ideally, this is a brief message describing the error
-      # 
-      # == Optional Parameters
-      # - <b>error_txt</b> - A slot to hold more information about the error, like a full stacktrace
+      # @param [String] repo The repository the object resides in.  The service recoginzes "dor" and "sdr" at the moment
+      # @param [String] druid The id of the object
+      # @param [String] workflow_name The name of the workflow 
+      # @param [String] error_msg The error message.  Ideally, this is a brief message describing the error
+      # @param [Hash] opts optional values for the workflow step
+      # @option opts [String] :error_txt A slot to hold more information about the error, like a full stacktrace
+      # @option opts [Integer] :version version number of the object
       #
       # == Http Call
       # The method does an HTTP PUT to the URL defined in Dor::WF_URI.  As an example:
       #   PUT "/dor/objects/pid:123/workflows/GoogleScannedWF/convert"
       #   <process name=\"convert\" status=\"error\" />"
-      def update_workflow_error_status(repo, druid, workflow, process, error_msg, error_txt = nil)
-        xml = create_process_xml(:name => process, :status => 'error', :errorMessage => error_msg, :errorText => error_txt)
+      def update_workflow_error_status(repo, druid, workflow, process, error_msg, opts = {})
+        opts = {:error_txt => nil, :version => 1}.merge!(opts)
+        xml = create_process_xml({:name => process, :status => 'error', :errorMessage => error_msg}.merge!(opts))
         workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow}/#{process}"].put(xml, :content_type => 'application/xml')
+        return true
+      end
+      
+      # Deletes a workflow from a particular repository and druid
+      # @param [String] repo The repository the object resides in.  The service recoginzes "dor" and "sdr" at the moment
+      # @param [String] druid The id of the object to delete the workflow from
+      # @param [String] workflow_name The name of the workflow to be deleted
+      def delete_workflow(repo, druid, workflow)
+        workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow}"].delete
         return true
       end
       

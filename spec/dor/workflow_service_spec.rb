@@ -60,7 +60,7 @@ describe Dor::WorkflowService do
     
     it "should update workflow status and return true if successful" do
       @mock_resource.should_receive(:put).with(@xml_re, { :content_type => 'application/xml' }).and_return('')
-      Dor::WorkflowService.update_workflow_status(@repo, @druid, "etdSubmitWF", "reader-approval", "completed").should be_true
+      Dor::WorkflowService.update_workflow_status(@repo, @druid, "etdSubmitWF", "reader-approval", "completed", :version => 2, :note => 'annotation').should be_true
     end
         
     it "should return false if the PUT to the DOR workflow service throws an exception" do
@@ -73,7 +73,7 @@ describe Dor::WorkflowService do
   describe "#update_workflow_error_status" do
     it "should update workflow status to error and return true if successful" do
       @mock_resource.should_receive(:put).with(/status="error"/, { :content_type => 'application/xml' }).and_return('')
-      Dor::WorkflowService.update_workflow_error_status(@repo, @druid, "etdSubmitWF", "reader-approval", "Some exception", "The optional stacktrace")
+      Dor::WorkflowService.update_workflow_error_status(@repo, @druid, "etdSubmitWF", "reader-approval", "Some exception", :error_txt =>"The optional stacktrace")
     end
         
     it "should return false if the PUT to the DOR workflow service throws an exception" do
@@ -192,6 +192,14 @@ describe Dor::WorkflowService do
       @mock_resource.should_receive(:[]).with("workflow_queue?waiting=#{repository}:#{workflow}:#{waiting}&completed=#{repository}:#{workflow}:#{completed}")
       @mock_resource.should_receive(:get).and_return(%{<objects count="0"/>})
       Dor::WorkflowService.get_objects_for_workstep(completed, waiting, repository, workflow).should == []
+    end
+  end
+  
+  describe "#delete_workflow" do
+    it "sends a delete request to the workflow service" do
+      @mock_resource.should_receive(:[]).with("#{@repo}/objects/#{@druid}/workflows/accessionWF")
+      @mock_resource.should_receive(:delete)
+      Dor::WorkflowService.delete_workflow(@repo, @druid, 'accessionWF')
     end
   end
   
