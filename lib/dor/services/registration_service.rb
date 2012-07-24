@@ -82,6 +82,52 @@ module Dor
         end
         return(new_item)
       end
+      
+      def create_from_request(params)
+        other_ids = Array(params[:other_id]).collect do |id|
+          if id =~ /^symphony:(.+)$/
+            "#{$1.length < 14 ? 'catkey' : 'barcode'}:#{$1}"
+          else
+            id
+          end
+        end
+    
+        if params[:label] == ':auto'
+          params.delete(:label)
+          params.delete('label')
+          metadata_id = Dor::MetadataService.resolvable(other_ids).first
+          params[:label] = Dor::MetadataService.label_for(metadata_id)
+        end
+          
+        dor_params = {
+          :pid                => params[:pid],
+          :admin_policy       => params[:admin_policy],
+          :content_model      => params[:model],
+          :label              => params[:label],
+          :object_type        => params[:object_type],
+          :other_ids          => ids_to_hash(other_ids),
+          :parent             => params[:parent],
+          :source_id          => ids_to_hash(params[:source_id]),
+          :tags               => params[:tag] || [],
+          :seed_datastream    => params[:seed_datastream],
+          :initiate_workflow  => Array(params[:initiate_workflow]) + Array(params[:workflow_id])
+        }
+        dor_params.delete_if { |k,v| v.nil? }
+    
+        dor_obj = self.register_object(dor_params)
+        pid = dor_obj.pid
+        location = URI.parse(Dor::Config.fedora.safeurl.sub(/\/*$/,'/')).merge("objects/#{pid}").to_s
+        reg_response = dor_params.dup.merge({ :location => location, :pid => pid })
+      end
+      
+      private
+      def ids_to_hash(ids)
+        if ids.nil?
+          nil
+        else
+          Hash[Array(ids).collect { |id| id.split(/:/) }]
+        end
+      end
     end
     
   end
