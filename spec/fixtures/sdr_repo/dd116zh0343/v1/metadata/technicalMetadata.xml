@@ -1,0 +1,197 @@
+<technicalMetadata objectId='druid:dd116zh0343' datetime='2012-07-19T22:53:14Z'
+    xmlns:jhove='http://hul.harvard.edu/ois/xml/ns/jhove'
+    xmlns:mix='http://www.loc.gov/mix/v10'
+    xmlns:textmd='info:lc/xmlns/textMD-v3' >
+  <file id='folder1PuSu/story1u.txt'>
+    <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
+    <jhove:format>ASCII</jhove:format>
+    <jhove:status>Well-Formed and valid</jhove:status>
+    <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties>
+      <textmd:textMD>
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id='folder1PuSu/story2r.txt'>
+    <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
+    <jhove:format>ASCII</jhove:format>
+    <jhove:status>Well-Formed and valid</jhove:status>
+    <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties>
+      <textmd:textMD>
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id='folder1PuSu/story3m.txt'>
+    <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
+    <jhove:format>ASCII</jhove:format>
+    <jhove:status>Well-Formed and valid</jhove:status>
+    <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties>
+      <textmd:textMD>
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id='folder1PuSu/story4d.txt'>
+    <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
+    <jhove:format>ASCII</jhove:format>
+    <jhove:status>Well-Formed and valid</jhove:status>
+    <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties>
+      <textmd:textMD>
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id='folder2PdSa/story6u.txt'>
+    <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
+    <jhove:format>ASCII</jhove:format>
+    <jhove:status>Well-Formed and valid</jhove:status>
+    <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties>
+      <textmd:textMD>
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id='folder2PdSa/story7r.txt'>
+    <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
+    <jhove:format>ASCII</jhove:format>
+    <jhove:status>Well-Formed and valid</jhove:status>
+    <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties>
+      <textmd:textMD>
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id='folder2PdSa/story8m.txt'>
+    <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
+    <jhove:format>ASCII</jhove:format>
+    <jhove:status>Well-Formed and valid</jhove:status>
+    <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties>
+      <textmd:textMD>
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id='folder2PdSa/story9d.txt'>
+    <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
+    <jhove:format>ASCII</jhove:format>
+    <jhove:status>Well-Formed and valid</jhove:status>
+    <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties>
+      <textmd:textMD>
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id='folder3PaSd/storyBu.txt'>
+    <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
+    <jhove:format>ASCII</jhove:format>
+    <jhove:status>Well-Formed and valid</jhove:status>
+    <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties>
+      <textmd:textMD>
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id='folder3PaSd/storyCr.txt'>
+    <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
+    <jhove:format>ASCII</jhove:format>
+    <jhove:status>Well-Formed and valid</jhove:status>
+    <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties>
+      <textmd:textMD>
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id='folder3PaSd/storyDm.txt'>
+    <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
+    <jhove:format>ASCII</jhove:format>
+    <jhove:status>Well-Formed and valid</jhove:status>
+    <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties>
+      <textmd:textMD>
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id='folder3PaSd/storyEd.txt'>
+    <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
+    <jhove:format>ASCII</jhove:format>
+    <jhove:status>Well-Formed and valid</jhove:status>
+    <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties>
+      <textmd:textMD>
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+</technicalMetadata>

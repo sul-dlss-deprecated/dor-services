@@ -21,9 +21,13 @@ describe Dor::Preservable do
   end
 
   it "should build the technicalMetadata datastream" do
-    @item.datastreams['technicalMetadata'].ng_xml.should be_equivalent_to('<xml/>')
-    @item.build_datastream('technicalMetadata')
-    @item.datastreams['technicalMetadata'].ng_xml.should_not be_equivalent_to('<xml/>')
+    Dor::TechnicalMetadataService.should_receive(:add_update_technical_metadata).with(@item)
+    @item.build_technicalMetadata_datastream('technicalMetadata')
+  end
+
+  it "should export object for sdr ingest" do
+    Dor::SdrIngestService.should_receive(:transfer).with(@item, nil)
+    @item.sdr_ingest_transfer(nil)
   end
 
 end

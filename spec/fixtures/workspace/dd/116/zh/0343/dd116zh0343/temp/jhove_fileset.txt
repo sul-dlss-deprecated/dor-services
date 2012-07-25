@@ -1,0 +1,6 @@
+folder1PuSu/story5a.txt
+folder2PdSa/storyAa.txt
+folder3PaSd/storyFa.txt
+folder1PuSu/story3m.txt
+folder2PdSa/story8m.txt
+folder3PaSd/storyDm.txt

@@ -1,0 +1,194 @@
+<technicalMetadata xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove" xmlns:mix="http://www.loc.gov/mix/v10" xmlns:textmd="info:lc/xmlns/textMD-v3" objectId="druid:dd116zh0343" datetime="2012-07-20T19:59:09Z">
+  <file id="folder1PuSu/story1u.txt">
+    <jhove:reportingModule xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove" release="1.3" date="2006-09-05">ASCII-hul</jhove:reportingModule>
+    <jhove:format xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">ASCII</jhove:format>
+    <jhove:status xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">Well-Formed and valid</jhove:status>
+    <jhove:mimeType xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">
+      <textmd:textMD xmlns:textmd="info:lc/xmlns/textMD-v3">
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id="folder1PuSu/story2rr.txt">
+    <jhove:reportingModule xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove" release="1.3" date="2006-09-05">ASCII-hul</jhove:reportingModule>
+    <jhove:format xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">ASCII</jhove:format>
+    <jhove:status xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">Well-Formed and valid</jhove:status>
+    <jhove:mimeType xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">
+      <textmd:textMD xmlns:textmd="info:lc/xmlns/textMD-v3">
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id="folder1PuSu/story3m.txt">
+    <jhove:reportingModule xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove" release="1.3" date="2006-09-05">ASCII-hul</jhove:reportingModule>
+    <jhove:format xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">ASCII</jhove:format>
+    <jhove:status xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">Well-Formed and valid</jhove:status>
+    <jhove:mimeType xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">
+      <textmd:textMD xmlns:textmd="info:lc/xmlns/textMD-v3">
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id="folder1PuSu/story5a.txt">
+    <jhove:reportingModule xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove" release="1.3" date="2006-09-05">ASCII-hul</jhove:reportingModule>
+    <jhove:format xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">ASCII</jhove:format>
+    <jhove:status xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">Well-Formed and valid</jhove:status>
+    <jhove:mimeType xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">
+      <textmd:textMD xmlns:textmd="info:lc/xmlns/textMD-v3">
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id="folder2PdSa/story6u.txt">
+    <jhove:reportingModule xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove" release="1.3" date="2006-09-05">ASCII-hul</jhove:reportingModule>
+    <jhove:format xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">ASCII</jhove:format>
+    <jhove:status xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">Well-Formed and valid</jhove:status>
+    <jhove:mimeType xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">
+      <textmd:textMD xmlns:textmd="info:lc/xmlns/textMD-v3">
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id="folder2PdSa/story7rr.txt">
+    <jhove:reportingModule xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove" release="1.3" date="2006-09-05">ASCII-hul</jhove:reportingModule>
+    <jhove:format xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">ASCII</jhove:format>
+    <jhove:status xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">Well-Formed and valid</jhove:status>
+    <jhove:mimeType xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">
+      <textmd:textMD xmlns:textmd="info:lc/xmlns/textMD-v3">
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id="folder2PdSa/story8m.txt">
+    <jhove:reportingModule xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove" release="1.3" date="2006-09-05">ASCII-hul</jhove:reportingModule>
+    <jhove:format xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">ASCII</jhove:format>
+    <jhove:status xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">Well-Formed and valid</jhove:status>
+    <jhove:mimeType xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">
+      <textmd:textMD xmlns:textmd="info:lc/xmlns/textMD-v3">
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id="folder2PdSa/storyAa.txt">
+    <jhove:reportingModule xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove" release="1.3" date="2006-09-05">ASCII-hul</jhove:reportingModule>
+    <jhove:format xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">ASCII</jhove:format>
+    <jhove:status xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">Well-Formed and valid</jhove:status>
+    <jhove:mimeType xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">
+      <textmd:textMD xmlns:textmd="info:lc/xmlns/textMD-v3">
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id="folder3PaSd/storyBu.txt">
+    <jhove:reportingModule xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove" release="1.3" date="2006-09-05">ASCII-hul</jhove:reportingModule>
+    <jhove:format xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">ASCII</jhove:format>
+    <jhove:status xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">Well-Formed and valid</jhove:status>
+    <jhove:mimeType xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">
+      <textmd:textMD xmlns:textmd="info:lc/xmlns/textMD-v3">
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id="folder3PaSd/storyCrr.txt">
+    <jhove:reportingModule xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove" release="1.3" date="2006-09-05">ASCII-hul</jhove:reportingModule>
+    <jhove:format xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">ASCII</jhove:format>
+    <jhove:status xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">Well-Formed and valid</jhove:status>
+    <jhove:mimeType xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">
+      <textmd:textMD xmlns:textmd="info:lc/xmlns/textMD-v3">
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id="folder3PaSd/storyDm.txt">
+    <jhove:reportingModule xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove" release="1.3" date="2006-09-05">ASCII-hul</jhove:reportingModule>
+    <jhove:format xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">ASCII</jhove:format>
+    <jhove:status xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">Well-Formed and valid</jhove:status>
+    <jhove:mimeType xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">
+      <textmd:textMD xmlns:textmd="info:lc/xmlns/textMD-v3">
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+  <file id="folder3PaSd/storyFa.txt">
+    <jhove:reportingModule xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove" release="1.3" date="2006-09-05">ASCII-hul</jhove:reportingModule>
+    <jhove:format xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">ASCII</jhove:format>
+    <jhove:status xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">Well-Formed and valid</jhove:status>
+    <jhove:mimeType xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">text/plain; charset=US-ASCII</jhove:mimeType>
+    <jhove:properties xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">
+      <textmd:textMD xmlns:textmd="info:lc/xmlns/textMD-v3">
+        <textmd:character_info>
+          <textmd:byte_order>big</textmd:byte_order>
+          <textmd:byte_size>8</textmd:byte_size>
+          <textmd:character_size>1</textmd:character_size>
+          <textmd:linebreak>LF</textmd:linebreak>
+        </textmd:character_info>
+      </textmd:textMD>
+    </jhove:properties>
+  </file>
+</technicalMetadata>

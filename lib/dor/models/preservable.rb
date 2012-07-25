@@ -13,31 +13,8 @@ module Dor
       ProvenanceMetadataService.add_provenance(self, workflow_id, event_text)
     end
 
-    def build_technicalMetadata_datastream(ds)
-      unless defined? ::JhoveService
-        begin
-          require 'jhove_service'
-        rescue LoadError => e
-          puts e.inspect
-          raise "jhove-service dependency gem was not found.  Please add it to your Gemfile and run bundle install"
-        end
-      end
-      begin
-        content_dir = DruidTools::Druid.new(self.pid,Config.sdr.local_workspace_root).content_dir(false)
-        unless File.directory?(content_dir)
-          # For backward compatibility
-          content_dir = File.expand_path('../..',content_dir)
-        end
-        temp_dir = Dir.mktmpdir(self.pid)
-        jhove_service = ::JhoveService.new(temp_dir)
-        jhove_output_file = jhove_service.run_jhove(content_dir)
-        tech_md_file = jhove_service.create_technical_metadata(jhove_output_file)
-        ds.dsLabel = 'Technical Metadata'
-        ds.ng_xml = Nokogiri::XML(IO.read(tech_md_file))
-        ds.content = ds.ng_xml.to_xml
-      ensure
-        FileUtils.remove_entry_secure(temp_dir) if File.exist?(temp_dir)
-      end
+    def build_technicalMetadata_datastream(ds=nil)
+      TechnicalMetadataService.add_update_technical_metadata(self)
     end
 
     def sdr_ingest_transfer(agreement_id)
