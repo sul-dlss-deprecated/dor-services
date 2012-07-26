@@ -41,6 +41,13 @@ describe Dor::TechnicalMetadataService do
 
   end
 
+  after(:all) do
+    @object_ids.each do |id|
+      temp_pathname = Pathname(@druid_tool[id].temp_dir(false) )
+      temp_pathname.rmtree if temp_pathname.exist?
+    end
+  end
+
   specify "Dor::TechnicalMetadataService.add_update_technical_metadata" do
     @object_ids.each do |id|
       dor_item = mock(Dor::Item)

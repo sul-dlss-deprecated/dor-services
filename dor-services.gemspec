@@ -42,7 +42,7 @@ Gem::Specification.new do |s|
   # It will not add these as dependencies if you require dor-services for other projects
   s.add_development_dependency "fakeweb"
   s.add_development_dependency "haml"
-  s.add_development_dependency "jhove-service"
+  s.add_development_dependency "jhove-service", ">=0.2.2"
   s.add_development_dependency "lyberteam-devel", ">=0.4.1"
   s.add_development_dependency "rake", ">=0.8.7"
   s.add_development_dependency "rcov"
