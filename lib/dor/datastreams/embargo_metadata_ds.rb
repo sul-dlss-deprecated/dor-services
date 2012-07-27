@@ -58,7 +58,7 @@ class EmbargoMetadataDS < ActiveFedora::NokogiriDatastream
   end
   
   # Sets the embargaAccess node
-  # @param [Nokogiri::XML::Document] new_node Document that will replace the existing releaseAccess node
+  # @param [Nokogiri::XML::Document] new_doc Document that will replace the existing releaseAccess node
   def release_access_node=(new_doc)
     if(new_doc.root.name != 'releaseAccess')
       raise "Trying to replace releaseAccess with a non-releaseAccess document"

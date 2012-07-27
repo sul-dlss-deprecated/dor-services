@@ -34,7 +34,7 @@ module Dor
       self.remove_branch(tarfile)
     end
 
-    # @param [Pathname,String] The full path of the branch to be removed
+    # @param [Pathname,String] pathname The full path of the branch to be removed
     # @return [void] Remove the specified directory and all its children
     def self.remove_branch(pathname)
       pathname = Pathname(pathname) if pathname.instance_of? String

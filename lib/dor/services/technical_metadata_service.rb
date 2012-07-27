@@ -56,7 +56,7 @@ module Dor
       deltas
     end
 
-    # @param [Hash<Symbol,Array>] Sets of filenames grouped by change type for use in performing file or metadata operations
+    # @param [Hash<Symbol,Array>] deltas Sets of filenames grouped by change type for use in performing file or metadata operations
     # @return [Array<String>] The list of filenames for files that are either added or modifed since the previous version
     def self.get_new_files(deltas)
       deltas[:added] + deltas[:modified]
@@ -170,8 +170,10 @@ module Dor
       deltas[:copied].each do |copy|
         master_node = old_file_nodes[copy[:basis][0]] || new_file_nodes[copy[:other][0]]
         copy[:other].each do |path|
-          merged_nodes[path] = dup_node = master_node.dup
-          dup_node.attributes['id'].content = path
+          file_tag = "<file id='#{path}'>"
+          clone = master_node.clone
+          clone.sub!(/<file\s*id.*?["'].*?["'].*?>/, file_tag)
+          merged_nodes[path] = clone
         end
       end
       merged_nodes
@@ -181,13 +183,22 @@ module Dor
     # @return [Hash<String,Nokogiri::XML::Node>] The set of nodes from a technicalMetadata datastream , indexed by filename
     def self.get_file_nodes(technical_metadata)
       file_hash = Hash.new
-      tm_xml_doc = Nokogiri::XML(technical_metadata)
-      nodeset = tm_xml_doc.xpath('/technicalMetadata/file')
-      if nodeset.size > 0
-        nodeset.unlink
-        nodeset.each do |node|
-          path = node.attribute('id').content
-          file_hash[path] = node
+      current_file = Array.new
+      path = nil
+      in_file = false
+      technical_metadata.each_line do |line|
+        if line =~ /^\s*<file.*["'](.*?)["']/
+          current_file << line
+          path = $1
+          in_file = true
+        elsif line =~ /^\s*<\/file>/
+          current_file << line
+          file_hash[path] = current_file.join
+          current_file = Array.new
+          path = nil
+          in_file = false
+        elsif in_file
+          current_file << line
         end
       end
       file_hash
@@ -198,18 +209,15 @@ module Dor
     # @return [String] The finalized technicalMetadata datastream contents for the new object version
     def self.build_technical_metadata(druid, merged_nodes)
       techmd_root = <<-EOF
-      <technicalMetadata objectId='#{druid}' datetime='#{Time.now.utc.iso8601}'
-          xmlns:jhove='http://hul.harvard.edu/ois/xml/ns/jhove'
-          xmlns:mix='http://www.loc.gov/mix/v10'
-          xmlns:textmd='info:lc/xmlns/textMD-v3'
-      />
+<technicalMetadata objectId='#{druid}' datetime='#{Time.now.utc.iso8601}'
+    xmlns:jhove='http://hul.harvard.edu/ois/xml/ns/jhove'
+    xmlns:mix='http://www.loc.gov/mix/v10'
+    xmlns:textmd='info:lc/xmlns/textMD-v3'>
       EOF
-      doc = Nokogiri::XML(techmd_root)
-      merged_nodes.keys.sort.each {|path| doc.root << merged_nodes[path] }
-      xml = doc.to_xml(:indent => 2)
-      # parse and reserialize the result to eliminate redundant namespaces declarations
-      doc = Nokogiri::XML(xml) { |config| config.noblanks.nsclean }
-      doc.to_xml(:indent => 2)
+      doc = techmd_root
+      merged_nodes.keys.sort.each {|path| doc << merged_nodes[path] }
+      doc << "</technicalMetadata>"
+      doc
     end
 
   end

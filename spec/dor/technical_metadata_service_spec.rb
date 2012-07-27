@@ -247,7 +247,7 @@ describe Dor::TechnicalMetadataService do
     nodes = Dor::TechnicalMetadataService.get_file_nodes(techmd)
     nodes.size.should == 6
     nodes.keys.sort.should == ["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
-    nodes["page-1.jpg"].to_xml.should be_equivalent_to(<<-EOF
+    nodes["page-1.jpg"].should be_equivalent_to(<<-EOF
     <file id="page-1.jpg">
       <jhove:reportingModule release="1.2" date="2007-02-13">JPEG-hul</jhove:reportingModule>
       <jhove:format>JPEG</jhove:format>

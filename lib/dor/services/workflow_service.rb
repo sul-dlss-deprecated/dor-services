@@ -34,7 +34,7 @@ module Dor
       #
       # @param [String] repo The repository the object resides in.  The service recoginzes "dor" and "sdr" at the moment
       # @param [String] druid The id of the object
-      # @param [String] workflow_name The name of the workflow 
+      # @param [String] workflow The name of the workflow
       # @param [String] status The status that you want to set.  Typical statuses are 'waiting', 'completed', 'error', but could be any string
       # @param [Hash] opts optional values for the workflow step
       # @option opts [Float] :elapsed The number of seconds it took to complete this step. Can have a decimal.  Is set to 0 if not passed in.
@@ -73,7 +73,7 @@ module Dor
       #
       # @param [String] repo The repository the object resides in.  The service recoginzes "dor" and "sdr" at the moment
       # @param [String] druid The id of the object
-      # @param [String] workflow_name The name of the workflow 
+      # @param [String] workflow The name of the workflow
       # @param [String] error_msg The error message.  Ideally, this is a brief message describing the error
       # @param [Hash] opts optional values for the workflow step
       # @option opts [String] :error_txt A slot to hold more information about the error, like a full stacktrace
@@ -92,7 +92,7 @@ module Dor
       # Deletes a workflow from a particular repository and druid
       # @param [String] repo The repository the object resides in.  The service recoginzes "dor" and "sdr" at the moment
       # @param [String] druid The id of the object to delete the workflow from
-      # @param [String] workflow_name The name of the workflow to be deleted
+      # @param [String] workflow The name of the workflow to be deleted
       def delete_workflow(repo, druid, workflow)
         workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow}"].delete
         return true
@@ -103,7 +103,7 @@ module Dor
       # @param [String] druid object id
       # @param [String] milestone name of the milestone being queried for
       # @return [Time] when the milestone was achieved.  Returns nil if the milestone does not exist
-      # @example_lifecycle_xml An example lifecycle xml from the workflow service. 
+      # @example An example lifecycle xml from the workflow service.
       #   <lifecycle objectId="druid:ct011cv6501">
       #     <milestone date="2010-04-27T11:34:17-0700">registered</milestone>
       #     <milestone date="2010-04-29T10:12:51-0700">inprocess</milestone>
