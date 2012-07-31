@@ -22,3 +22,19 @@ module Dor
     has_object_type 'item'
   end
 end
+
+# Describable  = Descriptive metadata.
+# Embargoable  = Time limits and processes for embargoed materials.
+# Governable   = Relationships to collections and codified administrative policies.
+# Identifiable = Object identity and source metadata.
+# Itemizable   = Hierarchical content metadata.
+# Preservable  = Provenance and technical metadata; preservation repository transfer.
+# Processable  = Workflow.
+# Publishable  = Transfer of metadata to discovery and access systems.
+# Shelvable    = Transfer of content to digital stacks.
+# Upgradable   = Remediation of existing objects when content standards change.
+
+# Required for all DOR objects:
+#   - Identifiable
+#   - Governable
+#   - Describable
