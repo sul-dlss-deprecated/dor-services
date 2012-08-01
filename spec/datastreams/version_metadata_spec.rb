@@ -17,6 +17,15 @@ describe Dor::VersionMetadataDS do
     XML
   }
   
+  let(:first_xml) { <<-XML
+      <versionMetadata>
+        <version versionId="1" tag="1.0.0">
+          <description>Initial Version</description>
+        </version>
+      </versionMetadata>
+    XML
+  }
+  
   describe "Marshalling to and from a Fedora Datastream" do
     
     it "creates itself from xml" do
@@ -25,34 +34,20 @@ describe Dor::VersionMetadataDS do
     end
     
     it "creates a simple default with #new" do
-      xml = "<versionMetadata/>"
-      
       ds = Dor::VersionMetadataDS.new nil, 'versionMetadata'
-      ds.to_xml.should be_equivalent_to(xml)
+      ds.stub!(:pid).and_return('druid:ab123cd4567')
+      ds.to_xml.should be_equivalent_to(first_xml)
     end
   end
   
   describe "#increment_version" do
-    let(:first_xml) { <<-XML
-        <versionMetadata objectId="druid:ab123cd4567">
-          <version versionId="1" tag="1.0.0">
-            <description>Initial Version</description>
-          </version>
-        </versionMetadata>
-      XML
-    }
-    
-    let(:ds) {Dor::VersionMetadataDS.new nil, 'versionMetadata'}
-
-    before(:each) do
-      ds.stub!(:pid).and_return('druid:ab123cd4567')
+    let(:ds) do
+      d = Dor::VersionMetadataDS.new nil, 'versionMetadata'
+      d.save
+      d.stub!(:pid).and_return('druid:ab123cd4567')
+      d
     end
-    
-    it "creates the first version element if no previous versions exist" do      
-      ds.increment_version
-      ds.to_xml.should be_equivalent_to(first_xml)
-    end
-    
+        
     it "appends a new version block with an incremented versionId and converts significance to a tag" do
       v2 = <<-XML
         <versionMetadata objectId="druid:ab123cd4567">
@@ -64,8 +59,6 @@ describe Dor::VersionMetadataDS do
           </version>
         </versionMetadata>
       XML
-      
-      ds.increment_version
       ds.increment_version("minor update", :minor)
       ds.to_xml.should be_equivalent_to(v2)
     end
@@ -82,7 +75,6 @@ describe Dor::VersionMetadataDS do
         </versionMetadata>
       XML
       
-      ds.increment_version
       ds.increment_version("Next Version")
       ds.to_xml.should be_equivalent_to(v2)
     end
@@ -102,11 +94,11 @@ describe Dor::VersionMetadataDS do
     let(:ds) {
       d = Dor::VersionMetadataDS.new nil, 'versionMetadata'
       d.stub!(:pid).and_return('druid:ab123cd4567')
+      d.save
       d
     }
         
     it "updates the current version with the passed in options" do
-      ds.increment_version
       ds.increment_version("minor update") # no tag
       ds.update_current_version :description => 'new text', :significance => :major
       ds.to_xml.should be_equivalent_to( <<-XML
@@ -123,7 +115,6 @@ describe Dor::VersionMetadataDS do
     end
     
     it "changes the previous value of tag with the new passed in version" do
-      ds.increment_version
       ds.increment_version("major update", :major) # Setting tag to 2.0.0
       ds.update_current_version :description => 'now minor update', :significance => :minor
       ds.to_xml.should be_equivalent_to( <<-XML
@@ -140,7 +131,6 @@ describe Dor::VersionMetadataDS do
     end
     
     it "does not do anything if there is only 1 version" do
-      ds.increment_version
       ds.update_current_version :description => 'now minor update', :significance => :minor #should be ignored
       ds.to_xml.should be_equivalent_to( <<-XML
         <versionMetadata objectId="druid:ab123cd4567">
@@ -150,6 +140,13 @@ describe Dor::VersionMetadataDS do
         </versionMetadata>
       XML
       )
+    end
+  end
+  
+  describe "#current_version_id" do
+    it "finds the largest versionId within the versionMetadataDS" do
+      ds = Dor::VersionMetadataDS.from_xml(dsxml)
+      ds.current_version_id.should == '3'
     end
   end
   

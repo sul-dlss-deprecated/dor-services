@@ -93,6 +93,7 @@ module Dor
   autoload :RoleMetadataDS,  'dor/datastreams/role_metadata_ds'
   autoload :WorkflowDefinitionDs,  'dor/datastreams/workflow_definition_ds'
   autoload :WorkflowDs,  'dor/datastreams/workflow_ds'
+  autoload :VersionMetadataDS,  'dor/datastreams/version_metadata_ds'
   ::Object.autoload :SimpleDublinCoreDs, 'dor/datastreams/simple_dublin_core_ds'
   
   # DOR Concerns
@@ -108,6 +109,7 @@ module Dor
   autoload :Assembleable, 'dor/models/assembleable'
   autoload :Upgradable, 'dor/models/upgradable'
   autoload :Eventable, 'dor/models/eventable'
+  autoload :Versionable, 'dor/models/versionable'
   
   # ActiveFedora Classes
   autoload :Abstract, 'dor/models/item'

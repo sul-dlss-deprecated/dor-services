@@ -64,7 +64,11 @@ module Dor
     # Default EventsDS xml 
     def self.xml_template
       builder = Nokogiri::XML::Builder.new do |xml|
-        xml.versionMetadata 
+        xml.versionMetadata {
+          xml.version(:versionId => '1', :tag => '1.0.0') {
+            xml.description 'Initial Version'
+          }
+        }
       end
       return builder.doc
     end
@@ -72,7 +76,7 @@ module Dor
     def ensure_non_versionable
       self.versionable = "false"
     end
-    
+        
     def increment_version(description = nil, significance = nil)
       if( find_by_terms(:version).size == 0)
         v = ng_xml.create_element "version", 
@@ -82,7 +86,7 @@ module Dor
         ng_xml.root.add_child(v)
         v.add_child d
       else
-        current = current_version
+        current = current_version_node
         current_id = current[:versionId].to_i
         current_tag = VersionTag.parse(current[:tag])
         
@@ -101,7 +105,8 @@ module Dor
       self.dirty = true
     end
     
-    def current_version
+    # @return [Nokogiri::XML::Node] Node representing the current version
+    def current_version_node
       versions = find_by_terms(:version)
       versions.max_by {|v| v[:versionId].to_i }
     end
@@ -112,9 +117,10 @@ module Dor
     end
     
     def update_current_version(opts = {})
+      ng_xml.root['objectId'] = pid 
       return if find_by_terms(:version).size == 1
       return if opts.empty?
-      current = current_version
+      current = current_version_node
       if(opts.include? :description)
         d = current.at_xpath('description')
         if(d)
@@ -137,6 +143,11 @@ module Dor
         end
         
       end
+    end
+    
+    # @return [String] The value of the greatest versionId
+    def current_version_id
+      current_version_node[:versionId].to_s
     end
     
   end
