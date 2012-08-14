@@ -66,6 +66,20 @@ module Dor
   
       def get_workflow_xml(repo, druid, workflow)
         workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow}"].get
+      end
+      
+      # Get workflow names into an array for given PID
+      # This method only works when this gem is used in a project that is configured to connect to DOR
+      #
+      # @param [string] pid of druid
+      #
+      # @return [array] list of worklows
+      # e.g. 
+      # Dor::WorkflowService.get_workflows('druid:sr100hp0609')
+      # => ["accessionWF", "assemblyWF", "disseminationWF"]
+      def get_workflows(pid)
+        xml_doc=Nokogiri::XML(get_workflow_xml('dor',pid,''))
+        return xml_doc.xpath('//workflow').collect {|workflow| workflow['id']}
       end    
 
       # Updates the status of one step in a workflow to error.      
