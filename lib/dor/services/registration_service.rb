@@ -10,6 +10,14 @@ module Dor
         [:object_type, :label].each do |required_param|
           raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{self.name}.register_object" unless params[required_param]
         end
+        if params[:label].length<1
+          raise Dor::ParameterError, "label cannot be empty to call #{self.name}.register_object"
+        end
+        if params[:label].length>254
+          raise Dor::ParameterError, "label cannot be longer than 254 chars when calling #{self.name}.register_object"
+        #else
+          #raise 'length:'+params[:label].length
+        end
         object_type = params[:object_type]        
         item_class = Dor.registered_classes[object_type]
         raise Dor::ParameterError, "Unknown item type: '#{object_type}'" if item_class.nil?
