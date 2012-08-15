@@ -115,6 +115,9 @@ module Dor
             end
           end
           new_item.datastreams['rightsMetadata'].content=rights_xml.to_s
+          Dor.logger.debug("Rights is "+rights+" and the rights metadata stream is \n"+rights_xml.to_s)
+        else
+          Dor.logger.debug("No rights specified, rights metadata stream not set")
         end
       
         Array(params[:seed_datastream]).each { |datastream_name| new_item.build_datastream(datastream_name) }
