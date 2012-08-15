@@ -10,6 +10,12 @@ module Dor
         [:object_type, :label].each do |required_param|
           raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{self.name}.register_object" unless params[required_param]
         end
+        if params[:label].length<1
+          raise Dor::ParameterError, "label cannot be empty to call #{self.name}.register_object"
+        end
+        if params[:label].length>254
+          raise Dor::ParameterError, "label cannot be longer than 254 chars when calling #{self.name}.register_object"
+        end
         object_type = params[:object_type]        
         item_class = Dor.registered_classes[object_type]
         raise Dor::ParameterError, "Unknown item type: '#{object_type}'" if item_class.nil?
@@ -30,6 +36,14 @@ module Dor
           end
         else
           pid = Dor::SuriService.mint_id
+        end
+        
+        rights=nil
+        if params[:rights]
+          rights=params[:rights]
+          if not ['world','stanford','dark','default'].include? rights
+            raise Dor:ParameterError,"Unknown rights setting" + rights + "when calling #{self.name}.register_object"
+          end
         end
 
         source_id_string = [source_id.keys.first,source_id[source_id.keys.first]].compact.join(':')
@@ -69,7 +83,40 @@ module Dor
           end
           new_item.add_relationship short_predicate, rel['resource']
         end
-
+        if(rights)
+          rights_xml=apo_object.defaultObjectRights.ng_xml
+          if rights=='world'
+            rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
+              node.children.remove
+              machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
+              world_node=Nokogiri::XML::Node.new('world',rights_xml)
+              node.add_child(machine_node)
+              machine_node.add_child(world_node)
+            end 
+          end
+          if rights=='stanford'
+            rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
+              node.children.remove
+              machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
+              group_node=Nokogiri::XML::Node.new('group',rights_xml)
+              stanford_node=Nokogiri::XML::Node.new('Stanford',rights_xml)
+              node.add_child(machine_node)
+              machine_node.add_child(group_node)
+              group_node.add_child(stanford_node)
+            end
+          end
+          if rights=='dark'
+            rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
+              node.children.remove
+              machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
+              none_node=Nokogiri::XML::Node.new('none',rights_xml)
+              node.add_child(machine_node)
+              machine_node.add_child(none_node)
+            end
+          end
+          new_item.datastreams['rightsMetadata'].ng_xml=rights_xml
+        end
+      
         Array(params[:seed_datastream]).each { |datastream_name| new_item.build_datastream(datastream_name) }
         Array(params[:initiate_workflow]).each { |workflow_id| new_item.initiate_apo_workflow(workflow_id) }
 
