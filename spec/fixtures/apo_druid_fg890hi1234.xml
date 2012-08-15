@@ -101,13 +101,12 @@
             <human type="copyright">This work is in the Public Domain.</human>
           </copyright>
           <access type="discover">
-            <world/>
+			<machine>
+            	<world/>
+			</machine>
           </access>
-          <access type="read | deposit | admin">
-            <human>This document is available only to the Stanford faculty, staff and student
-            community</human>
+          <access type="read">
             <machine>
-              <world/>
               <group>stanford</group>
             </machine>
           </access>

@@ -90,6 +90,79 @@ describe Dor::RegistrationService do
       XML
     end
     
+    it "should set rightsMetadata based on the APO default when passed rights=default" do
+      @params[:rights]='default'
+      Dor.should_receive(:find).with('druid:fg890hi1234', :lightweight => true).and_return(@apo)
+      Dor.stub(:find).and_return(nil)
+      Dor::SearchService.stub!(:query_by_id).and_return([])
+      Dor::Item.any_instance.should_receive(:update_index).and_return(true)
+
+      obj = Dor::RegistrationService.register_object(@params)
+      obj.pid.should == @pid
+      obj.label.should == @params[:label]
+      obj.identityMetadata.sourceId.should == 'barcode:9191919191'
+      obj.identityMetadata.otherId.should =~ @params[:other_ids].collect { |*e| e.join(':') }
+      obj.datastreams['rightsMetadata'].ng_xml.should be_equivalent_to <<-XML
+      <?xml version="1.0"?>
+      <rightsMetadata>
+                <copyright>
+                  <human type="copyright">This work is in the Public Domain.</human>
+                </copyright>
+                <access type="discover">
+                  <machine>
+                    <world/>
+                  </machine
+                </access>
+                <access type="read">
+                  <machine>
+                    <group>stanford</group>
+                  </machine>
+                </access>
+                <use>
+                  <human type="creativecommons">Attribution Share Alike license</human>
+                  <machine type="creativecommons">by-sa</machine>
+                </use>
+              </rightsMetadata>
+      XML
+    end
+    
+    it "should set rightsMetadata based on the APO default but replace read rights to be world when passed rights=world " do
+      @params[:rights]='world'
+      Dor.should_receive(:find).with('druid:fg890hi1234', :lightweight => true).and_return(@apo)
+      Dor.stub(:find).and_return(nil)
+      Dor::SearchService.stub!(:query_by_id).and_return([])
+      Dor::Item.any_instance.should_receive(:update_index).and_return(true)
+
+      obj = Dor::RegistrationService.register_object(@params)
+      obj.pid.should == @pid
+      obj.label.should == @params[:label]
+      obj.identityMetadata.sourceId.should == 'barcode:9191919191'
+      obj.identityMetadata.otherId.should =~ @params[:other_ids].collect { |*e| e.join(':') }
+      obj.datastreams['rightsMetadata'].ng_xml.should be_equivalent_to <<-XML
+      <?xml version="1.0"?>
+      <rightsMetadata>
+                <copyright>
+                  <human type="copyright">This work is in the Public Domain.</human>
+                </copyright>
+                <access type="discover">
+                  <machine>
+                    <world/>
+                  </machine>
+                </access>
+                <access type="read">
+                  <machine>
+                    <world/>
+                  </machine>
+                </access>
+                <use>
+                  <human type="creativecommons">Attribution Share Alike license</human>
+                  <machine type="creativecommons">by-sa</machine>
+                </use>
+              </rightsMetadata>
+      XML
+    end
+  
+    
     it "should raise an exception if a required parameter is missing" do
       @params.delete(:object_type)
       lambda { Dor::RegistrationService.register_object(@params) }.should raise_error(Dor::ParameterError)
@@ -116,5 +189,4 @@ describe Dor::RegistrationService do
       lambda { Dor::RegistrationService.register_object(@params) }.should raise_error(Dor::DuplicateIdError)
     end
   end
-    
 end
