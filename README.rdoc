@@ -243,6 +243,7 @@ Values can also be configured individually:
   - Monkey patch ActiveFedora::RelsExtDatastream.short_predicate to create missing mappings on the fly.
 - <b>3.10.0</b> Added support for setting rights when registering an object.
 - <b>3.10.1</b>Fixed a 1.87->1.93 syntax deprication issue
+- <b>3.10.2</b>Changed the method for setting the rightsMetadata stream to trigger a save
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.

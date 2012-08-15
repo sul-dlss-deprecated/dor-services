@@ -114,7 +114,7 @@ module Dor
               machine_node.add_child(none_node)
             end
           end
-          new_item.datastreams['rightsMetadata'].ng_xml=rights_xml
+          new_item.datastreams['rightsMetadata'].content=rights_xml.to_s
         end
       
         Array(params[:seed_datastream]).each { |datastream_name| new_item.build_datastream(datastream_name) }
