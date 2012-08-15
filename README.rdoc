@@ -241,7 +241,7 @@ Values can also be configured individually:
   - Use options hash for Dor::WorkflowService update workflow and error methods
   - Move REST registration logic from Argo's ObjectsController#create to Dor::RegistrationService#create_from_request
   - Monkey patch ActiveFedora::RelsExtDatastream.short_predicate to create missing mappings on the fly.
-
+- <b>3.10.0</b> Added support for setting rights when registering an object.
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.
