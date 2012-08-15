@@ -41,8 +41,8 @@ module Dor
         rights=nil
         if params[:rights]
           rights=params[:rights]
-          if not ['world','stanford','dark','default'].include? rights
-            raise Dor:ParameterError,"Unknown rights setting" + rights + "when calling #{self.name}.register_object"
+          if not ['world','stanford','dark','default','none'].include? rights
+            raise Dor::ParameterError,"Unknown rights setting" + rights + "when calling #{self.name}.register_object"
           end
         end
 
