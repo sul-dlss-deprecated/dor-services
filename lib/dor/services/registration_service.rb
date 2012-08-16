@@ -99,7 +99,7 @@ module Dor
               node.children.remove
               machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
               group_node=Nokogiri::XML::Node.new('group',rights_xml)
-              stanford_node=Nokogiri::XML::Node.new('Stanford',rights_xml)
+              group_node.content="Stanford"
               node.add_child(machine_node)
               machine_node.add_child(group_node)
               group_node.add_child(stanford_node)
