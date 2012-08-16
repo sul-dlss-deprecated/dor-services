@@ -13,9 +13,6 @@ module Dor
         if params[:label].length<1
           raise Dor::ParameterError, "label cannot be empty to call #{self.name}.register_object"
         end
-        if params[:label].length>254
-          raise Dor::ParameterError, "label cannot be longer than 254 chars when calling #{self.name}.register_object"
-        end
         object_type = params[:object_type]        
         item_class = Dor.registered_classes[object_type]
         raise Dor::ParameterError, "Unknown item type: '#{object_type}'" if item_class.nil?
@@ -57,7 +54,10 @@ module Dor
         if (other_ids.has_key?(:uuid) or other_ids.has_key?('uuid')) == false
           other_ids[:uuid] = UUIDTools::UUID.timestamp_create.to_s
         end
-
+        if label.length>254
+          label=label[0,254]
+        end
+        
         apo_object = Dor.find(admin_policy, :lightweight => true)
         adm_xml = apo_object.administrativeMetadata.ng_xml
         

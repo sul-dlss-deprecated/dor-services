@@ -181,8 +181,9 @@ describe Dor::RegistrationService do
     
     it "should raise an exception if the label is longer than 255 chars" do
       Dor::SearchService.stub!(:query_by_id).and_return([])
-      @params[:label]='a'*255
-      lambda { Dor::RegistrationService.register_object(@params) }.should raise_error(Dor::ParameterError)
+      @params[:label]='a'*256
+      obj= Dor::RegistrationService.register_object(@params)
+      obj.label.should=='a'*254
     end
     it "should raise an exception if registering a duplicate source ID" do
       Dor::SearchService.should_receive(:query_by_id).with('barcode:9191919191').and_return([@pid])
