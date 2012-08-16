@@ -102,7 +102,7 @@ module Dor
               group_node.content="Stanford"
               node.add_child(machine_node)
               machine_node.add_child(group_node)
-              group_node.add_child(stanford_node)
+              
             end
           end
           if rights=='dark'
