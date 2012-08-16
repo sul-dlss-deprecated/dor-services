@@ -160,7 +160,8 @@ module Dor
           :source_id          => ids_to_hash(params[:source_id]),
           :tags               => params[:tag] || [],
           :seed_datastream    => params[:seed_datastream],
-          :initiate_workflow  => Array(params[:initiate_workflow]) + Array(params[:workflow_id])
+          :initiate_workflow  => Array(params[:initiate_workflow]) + Array(params[:workflow_id]),
+          :rights             => params[:rights]
         }
         dor_params.delete_if { |k,v| v.nil? }
     
