@@ -7,7 +7,7 @@ module Dor
     class << self
       def register_object(params = {})
         Dor.ensure_models_loaded!
-        [:object_type, :label].each do |required_param|
+        [:object_type, :label, :source_id].each do |required_param|
           raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{self.name}.register_object" unless params[required_param]
         end
         if params[:label].length<1
@@ -105,7 +105,7 @@ module Dor
               
             end
           end
-          if rights=='dark'
+          if rights=='none'
             rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
               node.children.remove
               machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
@@ -114,6 +114,24 @@ module Dor
               machine_node.add_child(none_node)
             end
           end
+          if rights=='dark'
+            rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
+              node.children.remove
+              machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
+              none_node=Nokogiri::XML::Node.new('none',rights_xml)
+              node.add_child(machine_node)
+              machine_node.add_child(none_node)
+            end
+            #also replace the discovery rights with <machine><none/>
+            rights_xml.search('//rightsMetadata/access[@type=\'discover\']').each do |node|
+              node.children.remove
+              machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
+              none_node=Nokogiri::XML::Node.new('none',rights_xml)
+              node.add_child(machine_node)
+              machine_node.add_child(none_node)
+            end
+          end
+          
           new_item.datastreams['rightsMetadata'].content=rights_xml.to_s
         end
       

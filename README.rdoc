@@ -248,6 +248,7 @@ Values can also be configured individually:
 - <b>3.10.4</b>Found the location where the report parameter from argo was being lost
 - <b>3.10.5</b>Corrected the Stanford entry in rights metadata, and truncate the fedora label if it is too long
 - <b>3.10.6</b>Removed a remnant from the previous change
+- <b>3.10.7</b>source id is now a required parameter for item registration
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.

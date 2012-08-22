@@ -208,6 +208,11 @@ describe Dor::RegistrationService do
       lambda { Dor::RegistrationService.register_object(@params) }.should raise_error(Dor::ParameterError)
     end
     
+    it "should raise an exception if source_id is missing" do
+      @params.delete(:source_id)
+      lambda { Dor::RegistrationService.register_object(@params) }.should raise_error(Dor::ParameterError)
+    end
+    
     it "should raise an exception if registering a duplicate PID" do
       @params[:pid] = @pid
       Dor::SearchService.should_receive(:query_by_id).with('druid:ab123cd4567').and_return([@pid])
