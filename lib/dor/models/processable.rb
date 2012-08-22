@@ -66,5 +66,11 @@ module Dor
       end
       solr_doc
     end
+
+    # Initilizes workflow for the object in the workflow service
+    # @param [String] name of the workflow to be initialized
+    def initialize_workflow(name)
+      Dor::WorkflowService.create_workflow('dor', self.pid, name, Dor::WorkflowObject.initial_workflow(name))
+    end
   end
 end
