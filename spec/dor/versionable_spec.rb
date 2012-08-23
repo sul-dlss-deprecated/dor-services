@@ -15,27 +15,40 @@ describe Dor::Versionable do
       v
     }
     
-    # before(:each) do
-    #   Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
-    #   Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'opened').and_return(false)
-    # end
-        
-    it "checks if an object has been accessioned and not yet opened" do
-      require 'ruby-debug'; debugger
-      i = nil
-      pending
-      obj.open_new_version
+    context "normal behavior" do
+      before(:each) do
+        Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
+        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
+        obj.should_receive(:instantiate_workflow).with('versioningWF')
+        obj.open_new_version
+      end
+
+      it "checks if an object has been accessioned and not yet opened" do
+        # checked in before block
+      end
+
+      it "creates the versionMetadata datastream" do
+        obj.datastreams['versionMetadata'].ng_xml.to_xml.should =~ /Initial Version/
+      end
+
+      it "adds versioningWF" do
+        # checked in before block
+      end
     end
     
-    it "creates the versionMetadata datastream" do
-      pending
-      obj.open_new_version
-      obj.datastreams['versionMetadata'].ng_xml.to_xml.should =~ /Initial Version/
+    context "error handling" do
+      it "raises an exception if it the object has not yet been accessioned" do
+        Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(false)
+        lambda { obj.open_new_version }.should raise_error
+      end
+      
+      it "raises an exception if the object has already been opened" do
+        Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
+        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(Time.new)
+        lambda { obj.open_new_version }.should raise_error
+      end
     end
+  
     
-    it "adds versioningWF" do
-      pending
-      #Dor::WorkflowService.should_receive(:create_workflow).with('dor', dr, 'versioningWF', '<xml/>')
-    end
   end
 end
