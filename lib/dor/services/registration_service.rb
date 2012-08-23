@@ -25,6 +25,7 @@ module Dor
         tags = params[:tags] || []
         parent = params[:parent]
         pid = nil
+        metadata_source=params[:metadata_source]
         if params[:pid]
           pid = params[:pid]
           existing_pid = SearchService.query_by_id(pid).first
@@ -134,7 +135,22 @@ module Dor
           
           new_item.datastreams['rightsMetadata'].content=rights_xml.to_s
         end
+        #create basic mods from the label
+        if(metadata_source=='label')
+          ds=new_item.build_datastream('descMetadata');
+          builder = Nokogiri::XML::Builder.new { |xml|
+            xml.mods( 'xmlns' => 'http://www.loc.gov/mods/v3', 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',:version => '3.3', "xsi:schemaLocation" => 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd'){
+              xml.titleInfo{
+                xml.title label
+              }
+            }
+          }
       
+      ds.content=builder.to_xml
+         
+      end
+        
+        
         Array(params[:seed_datastream]).each { |datastream_name| new_item.build_datastream(datastream_name) }
         Array(params[:initiate_workflow]).each { |workflow_id| new_item.initiate_apo_workflow(workflow_id) }
 
@@ -176,7 +192,8 @@ module Dor
           :tags               => params[:tag] || [],
           :seed_datastream    => params[:seed_datastream],
           :initiate_workflow  => Array(params[:initiate_workflow]) + Array(params[:workflow_id]),
-          :rights             => params[:rights]
+          :rights             => params[:rights],
+          :metadata_source    => params[:metadata_source]
         }
         dor_params.delete_if { |k,v| v.nil? }
     

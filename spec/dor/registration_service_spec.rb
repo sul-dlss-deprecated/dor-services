@@ -198,6 +198,28 @@ describe Dor::RegistrationService do
       XML
     end
     
+    it "should set the descriptive metadata to basic mods using the label as title if passed metadata_source=label " do
+      @params[:metadata_source]='label'
+      Dor.should_receive(:find).with('druid:fg890hi1234', :lightweight => true).and_return(@apo)
+      Dor.stub(:find).and_return(nil)
+      Dor::SearchService.stub!(:query_by_id).and_return([])
+      Dor::Item.any_instance.should_receive(:update_index).and_return(true)
+
+      obj = Dor::RegistrationService.register_object(@params)
+      obj.pid.should == @pid
+      obj.label.should == @params[:label]
+      obj.identityMetadata.sourceId.should == 'barcode:9191919191'
+      obj.identityMetadata.otherId.should =~ @params[:other_ids].collect { |*e| e.join(':') }
+      obj.datastreams['descMetadata'].ng_xml.should be_equivalent_to <<-XML
+      <?xml version="1.0"?>
+      <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+         <titleInfo>
+            <title>Google : Scanned Book 12345</title>
+         </titleInfo>
+      </mods>
+      XML
+    end
+    
     it "should raise an exception if a required parameter is missing" do
       @params.delete(:object_type)
       lambda { Dor::RegistrationService.register_object(@params) }.should raise_error(Dor::ParameterError)
