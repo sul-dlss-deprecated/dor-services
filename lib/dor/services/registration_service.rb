@@ -55,15 +55,16 @@ module Dor
         if (other_ids.has_key?(:uuid) or other_ids.has_key?('uuid')) == false
           other_ids[:uuid] = UUIDTools::UUID.timestamp_create.to_s
         end
+        short_label=label
         if label.length>254
-          label=label[0,254]
+          short_label=label[0,254]
         end
         
         apo_object = Dor.find(admin_policy, :lightweight => true)
         adm_xml = apo_object.administrativeMetadata.ng_xml
         
         new_item = item_class.new(:pid => pid)
-        new_item.label = label
+        new_item.label = short_label
         idmd = new_item.identityMetadata
         idmd.sourceId = source_id_string
         idmd.add_value(:objectId, pid)
