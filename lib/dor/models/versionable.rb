@@ -12,7 +12,7 @@ module Dor
       raise DorException, 'Object already opened for versioning' if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'opened'))
 
       datastreams['versionMetadata'].increment_version
-      instantiate_workflow('versioningWF')
+      initialize_workflow('versioningWF')
     end
     
     def current_version

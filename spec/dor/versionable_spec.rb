@@ -19,7 +19,7 @@ describe Dor::Versionable do
       before(:each) do
         Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
         Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
-        obj.should_receive(:instantiate_workflow).with('versioningWF')
+        obj.should_receive(:initialize_workflow).with('versioningWF')
         obj.open_new_version
       end
 
