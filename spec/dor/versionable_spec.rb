@@ -39,13 +39,13 @@ describe Dor::Versionable do
     context "error handling" do
       it "raises an exception if it the object has not yet been accessioned" do
         Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(false)
-        lambda { obj.open_new_version }.should raise_error
+        lambda { obj.open_new_version }.should raise_error Dor::Exception
       end
       
       it "raises an exception if the object has already been opened" do
         Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
         Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(Time.new)
-        lambda { obj.open_new_version }.should raise_error
+        lambda { obj.open_new_version }.should raise_error Dor::Exception
       end
     end
   

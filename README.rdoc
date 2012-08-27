@@ -255,6 +255,7 @@ Values can also be configured individually:
   - Added Versionable concern
 - <b>3.11.1</b> Include versionable concern with Dor::Item
 - <b>3.11.2</b> Call correct workflow initialization method when opening a new version
+- <b>3.11.2</b> Use correct Dor::Exception when opening a new version
 
 == Copyright
 
