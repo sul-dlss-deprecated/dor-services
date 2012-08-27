@@ -254,6 +254,7 @@ Values can also be configured individually:
   - Dor::WorkflowObject.initial_workflow creates workflow xml from workflow definition objects
   - Added Versionable concern
 - <b>3.11.1</b> Include versionable concern with Dor::Item
+- <b>3.11.2</b> Call correct workflow initialization method when opening a new version
 
 == Copyright
 
