@@ -8,8 +8,8 @@ module Dor
     end
     
     def open_new_version
-      raise DorException, 'Object net yet accessioned' unless(Dor::WorkflowService.get_lifecycle('dor', pid, 'accessioned'))
-      raise DorException, 'Object already opened for versioning' if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'opened'))
+      raise Dor::Exception, 'Object net yet accessioned' unless(Dor::WorkflowService.get_lifecycle('dor', pid, 'accessioned'))
+      raise Dor::Exception, 'Object already opened for versioning' if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'opened'))
 
       datastreams['versionMetadata'].increment_version
       initialize_workflow('versioningWF')
