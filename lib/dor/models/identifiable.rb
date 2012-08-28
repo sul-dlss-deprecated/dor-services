@@ -26,7 +26,18 @@ module Dor
       end
       super
     end
-    
+
+    # helper method to get the tags as an array
+    def tags
+      self.identityMetadata.tag
+    end
+
+    # helper method to get just the content type tag
+    def content_type_tag
+     content_tag=tags.select {|tag| tag.include?('Process : Content Type')}
+     content_tag.size == 1 ? content_tag[0].split(':').last.strip : ""
+    end
+        
     # Syntactic sugar for identifying applied DOR Concerns
     # e.g., obj.is_identifiable? is the same as obj.is_a?(Dor::Identifiable)
     def method_missing sym, *args
@@ -41,7 +52,7 @@ module Dor
         super
       end
     end
-
+    
     def to_solr(solr_doc=Hash.new, *args)
       self.assert_content_model
       super(solr_doc)
