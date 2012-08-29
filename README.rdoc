@@ -257,6 +257,7 @@ Values can also be configured individually:
 - <b>3.11.2</b> Call correct workflow initialization method when opening a new version
 - <b>3.11.3</b> Use correct Dor::Exception when opening a new version
 - <b>3.11.4</b> Add a new 'tags' method to the item, which will return an array of tags; also add a new method to get the tagged content-type
+- <b>3.11.5</b> Bump required version of druid-tools gem to 0.2.1
 
 == Copyright
 
