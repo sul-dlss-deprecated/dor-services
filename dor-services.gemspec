@@ -35,7 +35,7 @@ Gem::Specification.new do |s|
   s.add_dependency "equivalent-xml", ">=0.2.2"
   s.add_dependency "net-ssh"
   s.add_dependency "net-sftp"
-  s.add_dependency "druid-tools"
+  s.add_dependency "druid-tools", ">=0.2.1"
   s.add_dependency "moab-versioning", ">=0.8.7"
 
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
