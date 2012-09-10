@@ -28,6 +28,7 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
   end #self.xml_template
   
   def add_value(name, value, attrs={})
+    self.dirty=true
     add_child_node(ng_xml.root, :value, name, value, attrs)
   end
   
@@ -56,7 +57,13 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
       node
     end
   end
-
+  def tags()
+      result=[]
+      self.ng_xml.search('//tag').each do |node|
+        result << node.content
+      end
+      result
+  end
   def otherId(type = nil)
     result = self.find_by_terms(:otherId).to_a
     if type.nil?
@@ -71,6 +78,7 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
     node = ng_xml.root.add_child('<otherId/>').first
     node['name'] = name
     node.content = val
+    self.dirty=true
     node
   end
   
