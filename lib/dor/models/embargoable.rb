@@ -38,5 +38,14 @@ module Dor
       datastreams['rightsMetadata'].dirty = true
       datastreams['events'].add_event("embargo", release_agent, "Embargo released")
     end
+		def update_embargo(new_date)
+			if not embargoMetadata.status == 'embargoed'
+				raise 'You cannot change the embargo date of an item thant isnt embargoed.'
+			end
+			if new_date.past?
+			  raise 'You cannot set the embargo date to a past date.'
+			end
+			self.embargoMetadata.release_date=new_date
+		end
   end
 end
