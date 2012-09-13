@@ -117,6 +117,66 @@ describe Dor::Embargoable do
         message.should == "Embargo released"
       end
     end
-    
-  end
 end
+
+	describe 'update_embargo' do
+	before(:each) do
+	
+      @embargo_item = EmbargoedItem.new
+      @eds = @embargo_item.datastreams['embargoMetadata']
+      @eds.status = 'embargoed'
+      @eds.release_date = Time.now - 100000
+      @release_access = <<-EOXML
+      <releaseAccess>
+        <access type="read">                                            
+          <machine>
+            <world/>
+          </machine>
+        </access>
+        <access type="read">
+          <file id="restricted.doc"/>                                           
+          <machine>
+            <group>stanford</group>
+          </machine>
+        </access>
+      </releaseAccess>
+      EOXML
+      @eds.release_access_node = Nokogiri::XML(@release_access) {|config|config.default_xml.noblanks}
+      
+      rights_xml = <<-EOXML
+          <rightsMetadata objectId="druid:rt923jk342">
+            <copyright>
+              <human>(c) Copyright [conferral year] by [student name]</human>
+            </copyright>
+            <access type="discover">                                       
+              <machine>
+                <world />
+              </machine>
+            </access>
+            <access type="read">                                            
+              <machine>
+                <group>stanford</group>
+                <embargoReleaseDate>2011-10-08</embargoReleaseDate>
+              </machine>
+            </access>
+            <use>
+              <machine type="creativeCommons" type="code">value</machine>
+            <use>
+          </rightsMetadata>
+      EOXML
+	end
+	it 'should update the embargo date' do
+		  old_embargo_date=@embargo_item.embargoMetadata.release_date
+			@embargo_item.update_embargo(Time.now + 1.month)
+			(@embargo_item.embargoMetadata.release_date == old_embargo_date).should == false
+		end
+		it 'should raise an error if the item isnt embargoed' do
+		
+      @embargo_item.release_embargo('application:embargo-release')
+			lambda{@embargo_item.update_embargo(Time.now + 1.month)}.should raise_error
+		end
+		it 'should raise an exception if the new date is in the past' do
+			lambda{@embargo_item.update_embargo(1.month.ago)}.should raise_error
+		end
+		end
+	end
