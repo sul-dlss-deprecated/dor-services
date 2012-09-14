@@ -18,56 +18,55 @@ describe Dor::Identifiable do
   it "should have an identityMetadata datastream" do
     @item.datastreams['identityMetadata'].should be_a(Dor::IdentityMetadataDS)
   end  
-  describe 'update_source_id' do
+  describe 'set_source_id' do
     it 'should set the source_id if one doesnt exist' do 
       @obj.identityMetadata.sourceId.should == 'google:STANFORD_342837261527'
-      @obj.update_source_id('fake:sourceid')
+      @obj.set_source_id('fake:sourceid')
       @obj.identityMetadata.sourceId.should == 'fake:sourceid'
     end
     it 'should replace the source_id if one exists' do 
-
-      @obj.update_source_id('fake:sourceid')
+      @obj.set_source_id('fake:sourceid')
       @obj.identityMetadata.sourceId.should == 'fake:sourceid'
-      @obj.update_source_id('new:sourceid2')
+      @obj.set_source_id('new:sourceid2')
       @obj.identityMetadata.sourceId.should == 'new:sourceid2'
     end
   end
   
   describe 'add_other_Id' do
     it 'should add an other_id record' do
-      @obj.add_other_Id('mdtoolkit:someid123')
+      @obj.add_other_Id('mdtoolkit','someid123')
       @obj.identityMetadata.otherId('mdtoolkit').first.should == 'someid123'
     end
     it 'should raise an exception if a record of that type already exists' do
-      @obj.add_other_Id('mdtoolkit:someid123')
+      @obj.add_other_Id('mdtoolkit','someid123')
       @obj.identityMetadata.otherId('mdtoolkit').first.should == 'someid123'
-      lambda{@obj.add_other_Id('mdtoolkit:someid123')}.should raise_error
+      lambda{@obj.add_other_Id('mdtoolkit','someid123')}.should raise_error
     end
   end
   
   describe 'update_other_Id' do
     it 'should update an existing id and return true to indicate that it found something to update' do
-      @obj.add_other_Id('mdtoolkit:someid123')
+      @obj.add_other_Id('mdtoolkit','someid123')
       @obj.identityMetadata.otherId('mdtoolkit').first.should == 'someid123'
       #return value should be true when it finds something to update
-      @obj.update_other_Id('mdtoolkit:someotherid234').should == true
+      @obj.update_other_Id('mdtoolkit','someotherid234','someid123').should == true
       @obj.identityMetadata.otherId('mdtoolkit').first.should == 'someotherid234'
     end
     it 'should return false if there was no existing record to update' do
-      @obj.update_other_Id('mdtoolkit:someotherid234').should == false
+      @obj.update_other_Id('mdtoolkit','someotherid234').should == false
     end
   end
   
   describe 'remove_other_Id' do
     it 'should remove an existing otherid when the tag and value match' do
-      @obj.add_other_Id('mdtoolkit:someid123')
+      @obj.add_other_Id('mdtoolkit','someid123')
       @obj.identityMetadata.otherId('mdtoolkit').first.should == 'someid123'
-      @obj.remove_other_Id('mdtoolkit:someid123').should == true
+      @obj.remove_other_Id('mdtoolkit','someid123').should == true
       @obj.identityMetadata.otherId('mdtoolkit').length.should == 0
       @obj.identityMetadata.dirty?.should == true
     end
     it 'should return false if there was nothing to delete' do
-      @obj.remove_other_Id('mdtoolkit:someid123').should == false
+      @obj.remove_other_Id('mdtoolkit','someid123').should == false
       @obj.identityMetadata.dirty?.should == false
     end
   end
