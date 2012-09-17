@@ -19,6 +19,7 @@ module Dor
         ds.label = 'Provenance Metadata'
         ds.ng_xml = workflow_provenance
       end
+			ds.content=ds.ng_xml.to_s
       ds.save
     end
 
