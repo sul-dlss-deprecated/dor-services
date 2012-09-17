@@ -2,8 +2,10 @@ Dor::Identifiable.on_upgrade '3.11.6', 'Fix up invalid URIs in objects' do |obj|
   bad_content_location_uri = begin
     URI.parse(obj.content.contentLocation)
     false
-  rescue
+  rescue URI::InvalidURIError
     true
+  rescue 
+    false
   end
 
   next unless bad_content_location_uri
