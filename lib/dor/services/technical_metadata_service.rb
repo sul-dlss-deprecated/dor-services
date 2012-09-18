@@ -74,8 +74,11 @@ module Dor
     # @return [String] The technicalMetadata datastream from the previous version of the digital object (fetched from SDR storage)
     #   The data is updated to the latest format.
     def self.get_sdr_technical_metadata(druid)
-      sdr_techmd = get_sdr_metadata(druid, "technicalMetadata")
-      return nil if sdr_techmd =~ /No object found/
+      begin
+        sdr_techmd = get_sdr_metadata(druid, "technicalMetadata")
+      rescue RestClient::ResourceNotFound => e
+        return nil
+      end
       if sdr_techmd =~ /<technicalMetadata/
         return sdr_techmd
       elsif sdr_techmd =~ /<jhove/

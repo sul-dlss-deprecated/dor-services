@@ -107,7 +107,7 @@ describe Dor::TechnicalMetadataService do
   specify "Dor::TechnicalMetadataService.get_sdr_technical_metadata" do
     druid = "druid:du000ps9999"
     Dor::TechnicalMetadataService.stub(:get_sdr_metadata).with(druid, "technicalMetadata").
-        and_return('No object found')
+        and_raise(RestClient::ResourceNotFound)
     sdr_techmd = Dor::TechnicalMetadataService.get_sdr_technical_metadata(druid)
     sdr_techmd.should == nil
 
