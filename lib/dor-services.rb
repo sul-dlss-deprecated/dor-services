@@ -129,6 +129,7 @@ module Dor
   autoload :SdrIngestService, 'dor/services/sdr_ingest_service'
   autoload :CleanupService, 'dor/services/cleanup_service'
   autoload :ProvenanceMetadataService, 'dor/services/provenance_metadata_service'
+  autoload :TechnicalMetadataService, 'dor/services/technical_metadata_service'
   
   # Versioning Classes
   module Versioning
