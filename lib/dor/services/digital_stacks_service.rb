@@ -8,6 +8,14 @@ module Dor
     rescue
       raise "Invalid druid: #{id}"
     end
+    
+    # @param String druid id of the object
+    # @return String the directory on the stacks server holding the druid's content
+    def self.stacks_storage_dir(druid)
+      path = self.druid_tree(druid)
+
+      File.join(Config.stacks.storage_root, path)
+    end
         
     def self.transfer_to_document_store(id, content, filename)
       path = self.druid_tree(id)
@@ -24,9 +32,7 @@ module Dor
 
     def self.remove_from_stacks(id, files)
       unless files.empty?
-        path = self.druid_tree(id)
-
-        remote_storage_dir = File.join(Config.stacks.storage_root, path)
+        remote_storage_dir = self.stacks_storage_dir(id)
         Net::SFTP.start(Config.stacks.host,Config.stacks.user,:auth_methods=>['publickey']) do |sftp|
           files.each { |file| sftp.remove!(File.join(remote_storage_dir,file)) }
         end
@@ -35,9 +41,7 @@ module Dor
     
     def self.rename_in_stacks(id, file_map)
       unless file_map.empty?
-        path = self.druid_tree(id)
-
-        remote_storage_dir = File.join(Config.stacks.storage_root, path)
+        remote_storage_dir = self.stacks_storage_dir(id)
         Net::SFTP.start(Config.stacks.host,Config.stacks.user,:auth_methods=>['publickey']) do |sftp|
           file_map.each { |source,dest| sftp.rename!(File.join(remote_storage_dir,source),File.join(remote_storage_dir,dest)) }
         end
@@ -46,10 +50,8 @@ module Dor
     
     def self.shelve_to_stacks(id, files)
       unless files.empty?
-        path = self.druid_tree(id)
-
         druid = DruidTools::Druid.new(id,Config.stacks.local_workspace_root)
-        remote_storage_dir = File.join(Config.stacks.storage_root, path)
+        remote_storage_dir = self.stacks_storage_dir(id)
         Net::SFTP.start(Config.stacks.host,Config.stacks.user,:auth_methods=>['publickey']) do |sftp|
           # create the remote directory on the digital stacks
           sftp.session.exec! "mkdir -p #{remote_storage_dir}"
