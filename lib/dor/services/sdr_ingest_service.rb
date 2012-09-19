@@ -22,7 +22,8 @@ module Dor
       bagger.fill_bag(package_mode=:depositor)
       raise 'Unable to tar the bag' unless LyberUtils::FileUtilities.tar_object(bag_dir.to_s)
       # Now bootstrap SDR workflow queue to start SDR robots
-      dor_item.initialize_workflow('sdrIngestWF')
+      # Set the repo as 'sdr', and do not create a workflows datastream in sedora
+      dor_item.initialize_workflow('sdrIngestWF', 'sdr', false)
     end
 
     def self.get_signature_catalog(druid_tool)
