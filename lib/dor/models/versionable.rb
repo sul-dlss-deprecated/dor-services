@@ -4,7 +4,7 @@ module Dor
     include Processable
     
     included do
-      has_metadata :name => 'versionMetadata', :type => Dor::VersionMetadataDS, :label => 'Version Metadata'
+      has_metadata :name => 'versionMetadata', :type => Dor::VersionMetadataDS, :label => 'Version Metadata', :autocreate => true
     end
     
     def open_new_version
