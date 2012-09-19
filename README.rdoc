@@ -263,6 +263,7 @@ Values can also be configured individually:
    - Autoload the TechnicalMetadataService whenever dor-services is required
    - versionMetadata added at object creation and remediation
 - <b>3.13.0</b> Create a Dor::DigitalStacksService.stacks_storage_dir method
+- <b>3.13.1</b> Patch to create workflows correctly for sdr
 
 == Copyright
 
