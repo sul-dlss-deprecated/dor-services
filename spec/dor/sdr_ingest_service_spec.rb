@@ -105,7 +105,7 @@ describe Dor::SdrIngestService do
     bagger.should_receive(:fill_bag).with(:depositor)
     LyberUtils::FileUtilities.should_receive(:tar_object).with(bag_dir.to_s).and_return(true)
     Dor::SdrIngestService.stub(:read_sdr_workflow_xml).and_return(true)
-    Dor::WorkflowService.should_receive(:create_workflow).with(any_args())
+    dor_item.should_receive(:create_workflow).with('sdrIngestWF')
     Dor::SdrIngestService.transfer(dor_item)
   end
 

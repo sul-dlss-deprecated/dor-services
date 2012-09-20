@@ -69,8 +69,10 @@ module Dor
 
     # Initilizes workflow for the object in the workflow service
     # @param [String] name of the workflow to be initialized
-    def initialize_workflow(name)
-      Dor::WorkflowService.create_workflow('dor', self.pid, name, Dor::WorkflowObject.initial_workflow(name))
+    # @param [String] repo name of the repository to create workflow for
+    # @param [Boolean] create_ds create a 'workflows' datastream in Fedora for the object
+    def initialize_workflow(name, repo='dor', create_ds=true)
+      Dor::WorkflowService.create_workflow(repo, self.pid, name, Dor::WorkflowObject.initial_workflow(name), :create_ds => create_ds)
     end
   end
 end

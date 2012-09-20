@@ -10,8 +10,7 @@ module Dor
     end
   
     def initiate_apo_workflow(name)
-      wf_xml = admin_policy_object.first.datastreams['administrativeMetadata'].ng_xml.xpath(%{//workflow[@id="#{name}"]}).first.to_xml
-      Dor::WorkflowService.create_workflow('dor',self.pid,name,wf_xml, :create_ds => !self.new_object?)
+      self.initialize_workflow(name)
     end
 	def reset_to_apo_default()
         rights_metadata_ds = self.rightsMetadata
