@@ -42,8 +42,9 @@ class EmbargoMetadataDS < ActiveFedora::NokogiriDatastream
   # Sets the release date.  Converts the date to beginning-of-day, UTC to help with Solr indexing
   # @param [Time] rd A Time object represeting the release date.  By default, it is set to now
   def release_date=(rd=Time.now)
-    update_values([:release_date] => rd.beginning_of_day.utc.xmlschema)
-    self.dirty = true
+		update_values([:release_date] => rd.beginning_of_day.utc.xmlschema)
+    	self.content=self.ng_xml.to_s
+		self.dirty = true
   end
   
   # Current releaseDate value

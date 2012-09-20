@@ -45,7 +45,19 @@ module Dor
 			if new_date.past?
 			  raise 'You cannot set the embargo date to a past date.'
 			end
-			self.embargoMetadata.release_date=new_date
+			updated=false
+			self.rightsMetadata.ng_xml.search('//embargoReleaseDate').each do |node|
+				node.content=new_date.beginning_of_day.utc.xmlschema
+				updated=true
+			end
+			self.rightsMetadata.content=self.rightsMetadata.ng_xml.to_s
+			if not updated
+				raise 'No release date in rights metadata, cannot proceed!'
+			end
+			self.embargoMetadata.ng_xml.xpath('//releaseDate').each do |node|
+				node.content=new_date.beginning_of_day.utc.xmlschema
+			end
+			self.embargoMetadata.content=self.embargoMetadata.ng_xml.to_s
 		end
   end
 end
