@@ -264,7 +264,7 @@ Values can also be configured individually:
    - versionMetadata added at object creation and remediation
 - <b>3.13.0</b> Create a Dor::DigitalStacksService.stacks_storage_dir method
 - <b>3.13.1</b> Patch to create workflows correctly for sdr
-
+- <b>3.13.2</b> Embargo Update should update the datastream</b>
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.
