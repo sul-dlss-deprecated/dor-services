@@ -5,6 +5,7 @@ class VersionableItem < ActiveFedora::Base
 end
 
 describe Dor::Versionable do
+	
   describe "#open_new_version" do
     
     let(:dr) { 'ab12cd3456' }
@@ -15,11 +16,17 @@ describe Dor::Versionable do
       v
     }
     
+    let(:ds) { obj.datastreams['versionMetadata'] }
+    
     context "normal behavior" do
       before(:each) do
+        obj.inner_object.stub!(:repository).and_return(stub('frepo').as_null_object)
+        
         Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
         Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
         obj.should_receive(:initialize_workflow).with('versioningWF')
+        obj.stub!(:new_object?).and_return(false)
+        ds.should_receive(:save)
         obj.open_new_version
       end
 
@@ -28,11 +35,19 @@ describe Dor::Versionable do
       end
 
       it "creates the versionMetadata datastream" do
-        obj.datastreams['versionMetadata'].ng_xml.to_xml.should =~ /Initial Version/
+        ds.ng_xml.to_xml.should =~ /Initial Version/
       end
 
       it "adds versioningWF" do
         # checked in before block
+      end
+      
+      it "sets the content with the new ng_xml" do
+        
+      end
+      
+      it "saves the datastream" do
+        
       end
     end
     
