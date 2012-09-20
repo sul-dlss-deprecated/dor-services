@@ -164,6 +164,7 @@ end
             <use>
           </rightsMetadata>
       EOXML
+			ActiveFedora::NokogiriDatastream.any_instance.stub(:save).and_return(true)
 			@embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config|config.default_xml.noblanks}
 	end
 	it 'should update the embargo date' do
