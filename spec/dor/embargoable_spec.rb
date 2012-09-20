@@ -164,6 +164,7 @@ end
             <use>
           </rightsMetadata>
       EOXML
+			@embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config|config.default_xml.noblanks}
 	end
 	it 'should update the embargo date' do
 		  old_embargo_date=@embargo_item.embargoMetadata.release_date
