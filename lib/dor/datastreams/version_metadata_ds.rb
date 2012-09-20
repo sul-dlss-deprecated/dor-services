@@ -143,6 +143,7 @@ module Dor
         end
         
       end
+      self.content = ng_xml.to_s
     end
     
     # @return [String] The value of the greatest versionId

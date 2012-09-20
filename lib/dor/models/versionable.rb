@@ -12,7 +12,10 @@ module Dor
       raise Dor::Exception, 'Object net yet accessioned' unless(Dor::WorkflowService.get_lifecycle('dor', pid, 'accessioned'))
       raise Dor::Exception, 'Object already opened for versioning' if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'opened'))
 
-      datastreams['versionMetadata'].increment_version
+      ds = datastreams['versionMetadata']
+      ds.increment_version
+      ds.content = ds.ng_xml.to_s
+      ds.save unless self.new_object? 
       initialize_workflow('versioningWF')
     end
     
