@@ -51,6 +51,7 @@ module Dor
 				updated=true
 			end
 			self.rightsMetadata.content=self.rightsMetadata.ng_xml.to_s
+			self.rightsMetadata.save
 			if not updated
 				raise 'No release date in rights metadata, cannot proceed!'
 			end
@@ -58,6 +59,7 @@ module Dor
 				node.content=new_date.beginning_of_day.utc.xmlschema
 			end
 			self.embargoMetadata.content=self.embargoMetadata.ng_xml.to_s
+			self.embargoMetadata.save
 		end
   end
 end
