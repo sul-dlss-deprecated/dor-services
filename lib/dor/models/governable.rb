@@ -10,7 +10,7 @@ module Dor
     end
   
     def initiate_apo_workflow(name)
-      self.initialize_workflow(name)
+      self.initialize_workflow(name, 'dor', !self.new_object?)
     end
 	def reset_to_apo_default()
         rights_metadata_ds = self.rightsMetadata

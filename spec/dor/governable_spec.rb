@@ -87,5 +87,13 @@ it 'should add a collection' do
 			@item.remove_collection('druid:oo201oo0002')
 		end
 	end
+	
+	describe "initiate_apo_workflow" do
+	  it "calls Processable.initialize_workflow without creating a datastream when the object is new" do
+	    i = GovernableItem.new
+	    i.should_receive(:initialize_workflow).with('accessionWF', 'dor', false)
+	    i.initiate_apo_workflow('accessionWF')
+	  end
+	end
 
 end
