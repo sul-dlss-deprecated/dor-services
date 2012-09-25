@@ -23,7 +23,7 @@ optparse = OptionParser.new do|opts|
     options[:destination] = destination
   end
   options[:log_name]='dor_indexer'
-  options.on('--log_name') do |filename|
+  opts.on('--log_name') do |filename|
   options[:log_name]=filename
   end
 
