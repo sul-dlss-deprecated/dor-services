@@ -266,7 +266,11 @@ Values can also be configured individually:
 - <b>3.13.1</b> Patch to create workflows correctly for sdr
 - <b>3.13.2</b> Embargo Update should update the datastream</b>
 - <b>3.13.3</b> Another embargo fix</b> 
-- <b>3.13.4</b> initiate_apo_workflow does not create workflows datastream when an object is new</b> 
+- <b>3.13.4</b> initiate_apo_workflow does not create workflows datastream when an object is new</b>
+- <b>3.14.0</b>
+  - technicalMetadata bugfixes
+  - use sul-gems as new Gemfile source
+
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.
