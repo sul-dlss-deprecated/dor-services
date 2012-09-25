@@ -12,15 +12,15 @@ module Dor
     def self.add_update_technical_metadata(dor_item)
       test_jhove_service
       druid = dor_item.pid
-      druid_tool = DruidTools::Druid.new(druid,Dor::Config.sdr.local_workspace_root)
-      deltas = get_file_deltas(dor_item)
+      content_group_diff = get_content_group_diff(dor_item)
+      deltas = get_file_deltas(content_group_diff)
       new_files = get_new_files(deltas)
       old_techmd = get_old_technical_metadata(dor_item)
-      new_techmd = get_new_technical_metadata(druid_tool, new_files, old_techmd)
+      new_techmd = get_new_technical_metadata(druid, new_files, old_techmd)
       if old_techmd.nil?
         # this is version 1 or previous technical metadata was not saved
         final_techmd = new_techmd
-      elsif new_files.size == 0
+      elsif content_group_diff.difference_count == 0
         # there have been no changes to content files from previous version
         return true
       else
@@ -48,10 +48,14 @@ module Dor
 
     # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
     # @return [Hash<Symbol,Array>] Sets of filenames grouped by change type for use in performing file or metadata operations
-    def self.get_file_deltas(dor_item)
+    def self.get_content_group_diff(dor_item)
       inventory_diff_xml = dor_item.get_content_diff('all')
       inventory_diff = Moab::FileInventoryDifference.parse(inventory_diff_xml)
       content_group_diff = inventory_diff.group_difference("content")
+      content_group_diff
+    end
+
+    def self.get_file_deltas(content_group_diff)
       deltas = content_group_diff.file_deltas
       deltas
     end
@@ -121,7 +125,8 @@ module Dor
     # @param [Array<String>] new_files The list of filenames for files that are either added or modifed since the previous version
     # @param [String] old_techmd The technicalMetadata datastream from the previous version of the digital object
     # @return [String] The technicalMetadata datastream for the new files of the new digital object version
-    def self.get_new_technical_metadata(druid_tool, new_files, old_techmd)
+    def self.get_new_technical_metadata(druid, new_files, old_techmd)
+      druid_tool = DruidTools::Druid.new(druid, Dor::Config.sdr.local_workspace_root)
       content_pathname = get_content_pathname(druid_tool)
       temp_dir= druid_tool.temp_dir
       jhove_service = ::JhoveService.new(temp_dir)
@@ -186,6 +191,7 @@ module Dor
     # @return [Hash<String,Nokogiri::XML::Node>] The set of nodes from a technicalMetadata datastream , indexed by filename
     def self.get_file_nodes(technical_metadata)
       file_hash = Hash.new
+      return file_hash if technical_metadata.nil?
       current_file = Array.new
       path = nil
       in_file = false

@@ -35,7 +35,7 @@ describe Dor::TechnicalMetadataService do
       @deltas[id] = @inventory_differences[id].file_deltas
       @new_files[id] = Dor::TechnicalMetadataService.get_new_files(@deltas[id])
       @repo_techmd[id] = @fixtures.join('sdr_repo',id,'v1','metadata', 'technicalMetadata.xml').read
-      @new_file_techmd[id] = Dor::TechnicalMetadataService.get_new_technical_metadata(@druid_tool[id], @new_files[id], @repo_techmd[id])
+      @new_file_techmd[id] = Dor::TechnicalMetadataService.get_new_technical_metadata(druid, @new_files[id], @repo_techmd[id])
       @expected_techmd[id] = Pathname(@druid_tool[id].metadata_dir).join('technicalMetadata.xml').read
     end
 
@@ -52,16 +52,18 @@ describe Dor::TechnicalMetadataService do
     @object_ids.each do |id|
       dor_item = mock(Dor::Item)
       dor_item.stub(:pid).and_return("druid:#{id}")
-      Dor::TechnicalMetadataService.should_receive(:get_file_deltas).with(dor_item).and_return(@deltas[id])
+      Dor::TechnicalMetadataService.should_receive(:get_content_group_diff).with(dor_item).
+          and_return(@inventory_differences[id])
+      Dor::TechnicalMetadataService.should_receive(:get_file_deltas).with(@inventory_differences[id]).and_return(@deltas[id])
       Dor::TechnicalMetadataService.should_receive(:get_old_technical_metadata).with(dor_item).
           and_return(@repo_techmd[id])
       Dor::TechnicalMetadataService.should_receive(:get_new_technical_metadata).with(
-          an_instance_of(DruidTools::Druid), an_instance_of(Array), an_instance_of(String)).
+          dor_item.pid, an_instance_of(Array), an_instance_of(String)).
           and_return(@new_file_techmd[id])
       mock_datastream = mock("datastream")
       ds_hash = {"technicalMetadata" => mock_datastream}
       dor_item.stub(:datastreams).and_return(ds_hash)
-      unless Dor::TechnicalMetadataService.get_new_files(@deltas[id]).size == 0
+      unless @inventory_differences[id].difference_count == 0
         mock_datastream.should_receive(:dsLabel=).with('Technical Metadata')
         mock_datastream.should_receive(:content=).with(/<technicalMetadata/)
         mock_datastream.should_receive(:save)
@@ -70,7 +72,7 @@ describe Dor::TechnicalMetadataService do
     end
   end
 
-  specify "Dor::TechnicalMetadataService.get_file_deltas(dor_item)" do
+  specify "Dor::TechnicalMetadataService.get_content_group_diff(dor_item)" do
     @object_ids.each do |id|
       group_diff = @inventory_differences[id]
       inventory_diff = Moab::FileInventoryDifference.new(
@@ -81,7 +83,20 @@ describe Dor::TechnicalMetadataService do
       inventory_diff.group_differences << group_diff
       dor_item = mock(Dor::Item)
       dor_item.stub(:get_content_diff).with('all').and_return(inventory_diff.to_xml)
-      deltas = Dor::TechnicalMetadataService.get_file_deltas(dor_item)
+      content_group_diff = Dor::TechnicalMetadataService.get_content_group_diff(dor_item)
+      content_group_diff.to_xml.should == group_diff.to_xml
+    end
+  end
+
+  specify "Dor::TechnicalMetadataService.get_file_deltas(content_group_diff)" do
+    @object_ids.each do |id|
+      group_diff = @inventory_differences[id]
+      inventory_diff = Moab::FileInventoryDifference.new(
+          :digital_object_id=>"druid:#{id}",
+          :basis=>"old_content_metadata",
+          :other=>"new_content_metadata"
+      )
+      deltas = Dor::TechnicalMetadataService.get_file_deltas(group_diff)
       deltas.should == @deltas[id]
     end
   end
@@ -158,7 +173,7 @@ describe Dor::TechnicalMetadataService do
   specify "Dor::TechnicalMetadataService.get_new_technical_metadata" do
     @object_ids.each do |id|
       old_techmd = id == 'du000ps9999' ? nil : @repo_techmd[id]
-      new_techmd = Dor::TechnicalMetadataService.get_new_technical_metadata(@druid_tool[id], @new_files[id], old_techmd)
+      new_techmd = Dor::TechnicalMetadataService.get_new_technical_metadata("druid:#{id}", @new_files[id], old_techmd)
       file_nodes = Nokogiri::XML(new_techmd).xpath('//file')
       case id
         when 'dd116zh0343'
