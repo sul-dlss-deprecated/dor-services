@@ -50,7 +50,7 @@ unless options[:dor_config]
   $stderr.puts "The --dor-config PATH option is mandatory. Please provide the path to a valid dor-services configuration file."
   exit 1
 end
-logger = Logger.new(options[:log_name])
+logger = Logger.new("STDOUT)
 puts "loading listener"
 begin
   @clientid = options[:client_id]
