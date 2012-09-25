@@ -6,7 +6,7 @@ require 'stomp'
 require 'timeout'
 require 'dor-services'
 
-options = { :log_level => Logger::WARN }
+options = { :log_level => Logger::DEBUG }
 
 optparse = OptionParser.new do|opts|
   opts.banner = "Usage: #{File.basename(__FILE__)} [options]"
@@ -21,6 +21,10 @@ optparse = OptionParser.new do|opts|
   options[:destination] = '/topic/fedora.apim.update'
   opts.on('-d','--destination TOPIC', 'Topic to listen to') do |destination|
     options[:destination] = destination
+  end
+  options[:log_name]='dor_indexer'
+  options.on('--log_name') do |filename|
+  options[:log_name]=filename
   end
 
   options[:client_id] = "fedora_stomper"
@@ -46,22 +50,29 @@ unless options[:dor_config]
   $stderr.puts "The --dor-config PATH option is mandatory. Please provide the path to a valid dor-services configuration file."
   exit 1
 end
-
+logger = Logger.new(options[:log_name])
 puts "loading listener"
-
 begin
   @clientid = options[:client_id]
   @destination = options[:destination]
-  Dor.logger.level = ActiveFedora.logger.level = options[:log_level]
+  logger.level = ActiveFedora.logger.level = options[:log_level]
   
   @conn = Dor::Config.stomp.connection
-  $stderr.print "Getting output from #{@destination}\n"
+  logger.warn "Getting output from #{@destination}\n"
   
   @conn.subscribe(@destination, {"activemq.subscriptionName" => @clientid, :ack =>"client" })
-  while true
-    Timeout::timeout(300) do
+  while true  
       begin
-        @msg = @conn.receive
+      @msg = nil
+        begin
+        Timeout::timeout(300) do
+        	@msg = @conn.receive
+        end
+        rescue Timeout::Error
+   	      logger.warn "Sending heartbeat"
+        	@conn.begin('heartbeat')
+        	@conn.commit('heartbeat')
+        end
         pid = @msg.headers["pid"]
         method = @msg.headers["methodName"]
 
@@ -74,18 +85,16 @@ begin
         elsif method == "purgeObject"
           Dor::SearchService.solr.delete_by_id(pid)
         else
-          Dor.logger.warn "Unknown Method: #{method} for PID #{pid}"
+        	logger.warn "Unknown Method: #{method} for PID #{pid}"
         end
-        Dor.logger.info "updated solr index for #{pid}\n"
+      		logger.info "updated solr index for #{pid}\n"
         @conn.ack @msg.headers["message-id"]
-      rescue Timeout::Error
-        Dor.logger.info "Sending heartbeat"
-        @conn.begin('heartbeat')
-        @conn.commit('heartbeat')
+      
       rescue Exception => e
-        Dor.logger.warn "failed to update solr index for #{pid}: #<#{e.class.name}: #{e.message}>"
+        #Dor.logger.warn "failed to update solr index for #{pid}: #<#{e.class.name}: #{e.message}>"
+        logger.warn e.inspect
+        logger.warn e.backtrace
       end
-    end
   end
   @conn.join
 
