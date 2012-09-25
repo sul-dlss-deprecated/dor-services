@@ -47,6 +47,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake", ">=0.8.7"
   s.add_development_dependency "rdoc"
   s.add_development_dependency "rspec", "~> 2.6" # We're not ready to upgrade to rspec 2
+  s.add_development_dependency "rspec-mock", ">= 2.11.2"
+  s.add_development_dependency "rspec-expectations", ">= 2.11.2"
   s.add_development_dependency "yard"
  
   s.files        = Dir.glob("lib/**/*") + Dir.glob("config/**/*") + Dir.glob('bin/*')
