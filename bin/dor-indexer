@@ -6,7 +6,7 @@ require 'stomp'
 require 'timeout'
 require 'dor-services'
 
-options = { :log_level => Logger::DEBUG }
+options = { :log_level => Logger::WARN }
 
 optparse = OptionParser.new do|opts|
   opts.banner = "Usage: #{File.basename(__FILE__)} [options]"
@@ -21,10 +21,6 @@ optparse = OptionParser.new do|opts|
   options[:destination] = '/topic/fedora.apim.update'
   opts.on('-d','--destination TOPIC', 'Topic to listen to') do |destination|
     options[:destination] = destination
-  end
-  options[:log_name]='dor_indexer'
-  opts.on('--log_name') do |filename|
-  options[:log_name]=filename
   end
 
   options[:client_id] = "fedora_stomper"
@@ -50,30 +46,29 @@ unless options[:dor_config]
   $stderr.puts "The --dor-config PATH option is mandatory. Please provide the path to a valid dor-services configuration file."
   exit 1
 end
-logger = Logger.new("STDOUT)
+
 puts "loading listener"
+
 begin
   @clientid = options[:client_id]
   @destination = options[:destination]
-  logger.level = ActiveFedora.logger.level = options[:log_level]
+  Dor.logger.level = ActiveFedora.logger.level = options[:log_level]
   
   @conn = Dor::Config.stomp.connection
-  logger.warn "Getting output from #{@destination}\n"
+  $stderr.print "Getting output from #{@destination}\n"
   
   @conn.subscribe(@destination, {"activemq.subscriptionName" => @clientid, :ack =>"client" })
-  while true  
+  while true
+    Timeout::timeout(300) do
+    begin
       begin
-      @msg = nil
-        begin
-        Timeout::timeout(300) do
-        	@msg = @conn.receive
-        end
-        rescue Timeout::Error
-   	      logger.warn "Sending heartbeat"
-        	@conn.begin('heartbeat')
-        	@conn.commit('heartbeat')
-        end
-        pid = @msg.headers["pid"]
+        @msg = @conn.receive
+      rescue Timeout::Error
+        Dor.logger.info "Sending heartbeat"
+        @conn.begin('heartbeat')
+        @conn.commit('heartbeat')
+			end
+	      pid = @msg.headers["pid"]
         method = @msg.headers["methodName"]
 
         if ["addDatastream", "addRelationship","ingest","modifyDatastreamByValue","modifyDatastreamByReference","modifyObject","purgeDatastream","purgeRelationship","reindex"].include? method
@@ -85,16 +80,14 @@ begin
         elsif method == "purgeObject"
           Dor::SearchService.solr.delete_by_id(pid)
         else
-        	logger.warn "Unknown Method: #{method} for PID #{pid}"
+          Dor.logger.warn "Unknown Method: #{method} for PID #{pid}"
         end
-      		logger.info "updated solr index for #{pid}\n"
+        Dor.logger.info "updated solr index for #{pid}\n"
         @conn.ack @msg.headers["message-id"]
-      
       rescue Exception => e
-        #Dor.logger.warn "failed to update solr index for #{pid}: #<#{e.class.name}: #{e.message}>"
-        logger.warn e.inspect
-        logger.warn e.backtrace
+        Dor.logger.warn "failed to update solr index for #{pid}: #<#{e.class.name}: #{e.message}>"
       end
+    end
   end
   @conn.join
 
