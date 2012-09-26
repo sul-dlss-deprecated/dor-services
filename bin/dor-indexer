@@ -52,7 +52,7 @@ puts "loading listener"
 begin
   @clientid = options[:client_id]
   @destination = options[:destination]
-  logger=Logger.new("dor-indexer")
+  logger=Logger.new(STDOUT)
   logger.level = 0
   
   @conn = Dor::Config.stomp.connection
