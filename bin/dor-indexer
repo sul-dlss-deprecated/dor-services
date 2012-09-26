@@ -52,7 +52,7 @@ puts "loading listener"
 begin
   @clientid = options[:client_id]
   @destination = options[:destination]
-  logger=Logger.new('dor-indexer')
+  logger=Logger.new('/home/lyberadmin/argo/current/log/dor-indexer.log')
   logger.level = ActiveFedora.logger.level = options[:log_level]
   
   @conn = Dor::Config.stomp.connection
@@ -65,26 +65,14 @@ begin
       	Timeout::timeout(300) do
         	@msg = @conn.receive
         end
-        pid = @msg.headers["pid"]
-        method = @msg.headers["methodName"]
-
-        if ["addDatastream", "addRelationship","ingest","modifyDatastreamByValue","modifyDatastreamByReference","modifyObject","purgeDatastream","purgeRelationship","reindex"].include? method
-          begin
-            obj = Dor.load_instance pid
-            Dor::SearchService.solr.add(obj.to_solr, :add_attributes => {:commitWithin => 10}) unless obj.nil?
-          rescue
-          end
-        elsif method == "purgeObject"
-          Dor::SearchService.solr.delete_by_id(pid)
+        if @msg.nil?
+        logger.warn 'Recieved a nil message!\n'
         else
-          logger.warn "Unknown Method: #{method} for PID #{pid}"
-        end
-        Dor.logger.info "updated solr index for #{pid}\n"
-        @conn.ack @msg.headers["message-id"]
-      
+				process_message(@msg)
+				end
       rescue Timeout::Error
 				begin
-					logger.info "Sending heartbeat"
+					logger.info "Sending heartbeat\n"
 					@conn.begin('heartbeat')
 					@conn.commit('heartbeat')
 				rescue Exception => e
@@ -93,8 +81,7 @@ begin
 					logger.fatal("Unable to send heartbeat")
 					logger.fatal(body)
 				end
-			end
-	      
+			end   
       rescue Exception => e
       	logger.warn "failed to update solr index for #{pid}: #<#{e.class.name}: #{e.message}>"
       end
@@ -102,5 +89,21 @@ begin
   @conn.join
 rescue Exception => e
 p e
+end
+def process_message (message)
+	pid = message.headers["pid"]
+	method = message.headers["methodName"]
+	if ["addDatastream", "addRelationship","ingest","modifyDatastreamByValue","modifyDatastreamByReference","modifyObject","purgeDatastream","purgeRelationship","reindex"].include? method
+		begin
+			obj = Dor.load_instance pid
+			Dor::SearchService.solr.add(obj.to_solr, :add_attributes => {:commitWithin => 10}) unless obj.nil?
+		end
+	elsif method == "purgeObject"
+		Dor::SearchService.solr.delete_by_id(pid)
+	else
+		logger.warn "Unknown Method: #{method} for PID #{pid}"
+	end
+	Dor.logger.info "updated solr index for #{pid}\n"
+	@conn.ack @msg.headers["message-id"]
 end
 
