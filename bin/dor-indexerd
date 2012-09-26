@@ -40,14 +40,15 @@ if ARGV[0] == 'start' || ARGV[0] == 'restart'
 end
 log_dir=nil
 ARGV.each do |arg|
-	if arg=~ /log_dir/
-		log_dir=arg.split /=/
+	if arg match "log_dir"
+		log_dir=arg.split "="
 		log_dir=log_dir.last
 	end
 end
 if not log_dir
 	File.join(Dir.pwd,'log')
 end
+
 
 options = {
   :multiple=>ARGV.any? { |arg| arg =~ %r{^/queue/}},
