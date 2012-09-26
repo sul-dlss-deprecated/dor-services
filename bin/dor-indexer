@@ -55,7 +55,7 @@ begin
 
   
   @conn = Dor::Config.stomp.connection
-  $stderr.print Time.now.to_s + +" Getting output from #{@destination}\n"
+  $stderr.print Time.now.to_s + " Getting output from #{@destination}\n"
   
   @conn.subscribe(@destination, {"activemq.subscriptionName" => @clientid, :ack =>"client" })
   while true
