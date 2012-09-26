@@ -52,7 +52,7 @@ puts "loading listener"
 begin
   @clientid = options[:client_id]
   @destination = options[:destination]
-  logger=Logger.new('/home/lyberadmin/argo/current/log/dor-indexer')
+  logger=Logger.new(File.join(Dir.pwd,'log/dor-indexer'))
   logger.level = 0
   
   @conn = Dor::Config.stomp.connection
@@ -82,7 +82,7 @@ begin
         else
           logger.warn "Unknown Method: #{method} for PID #{pid}"
         end
-        Dor.logger.info "updated solr index for #{pid}\n"
+        logger.info "updated solr index for #{pid}\n"
         @conn.ack @msg.headers["message-id"]
         end
       rescue Timeout::Error
@@ -94,7 +94,7 @@ begin
 					body = "Unable to send heartbeat to broker\n"
 					body << "\n\nExeption:\n" << he.inspect << "\n" << he.backtrace.join("\n")
 					logger.fatal("Unable to send heartbeat")
-					Dor.logger.fatal(body)
+					logger.fatal(body)
 				end
 			
 	      
