@@ -40,7 +40,7 @@ if ARGV[0] == 'start' || ARGV[0] == 'restart'
 end
 log_dir=nil
 ARGV.each do |arg|
-	if arg match "log_dir"
+	if arg.match "log_dir"
 		log_dir=arg.split "="
 		log_dir=log_dir.last
 	end
