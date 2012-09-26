@@ -38,14 +38,16 @@ if ARGV[0] == 'start' || ARGV[0] == 'restart'
     exit 8
   end
 end
+#4th arg should be --log_dir and 5th is the path.
 log_dir=nil
-ARGV.each do |arg|
-	if arg.match "log_dir"
-		log_dir=arg.split "="
-		log_dir=log_dir.last
-	end
+if ARGV[3]=='--log_dir'
+log_dir=ARGV[4]
+else
+	puts "Log dir not specified"
 end
-if not log_dir
+
+
+if log_dir.empty?
 	File.join(Dir.pwd,'log')
 end
 
@@ -55,7 +57,7 @@ options = {
   :dir_mode=>:normal,
   :dir=>'/tmp',
   :log_dir=> log_dir,
-  :log_output=>ARGV.any? { |arg| arg == '-v' },
+  :log_output=>true,
   :backtrace=>true
 }
 argv_array = []
