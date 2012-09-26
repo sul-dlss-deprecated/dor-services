@@ -38,13 +38,22 @@ if ARGV[0] == 'start' || ARGV[0] == 'restart'
     exit 8
   end
 end
-
+log_dir=nil
+ARGV.each do |arg|
+	if arg=~ /log_dir/
+		log_dir=arg.split /=/
+		log_dir=log_dir.last
+	end
+end
+if not log_dir
+	File.join(Dir.pwd,'log')
+end
 
 options = {
   :multiple=>ARGV.any? { |arg| arg =~ %r{^/queue/}},
   :dir_mode=>:normal,
   :dir=>'/tmp',
-  :log_dir=>File.join(Dir.pwd,'log'),
+  :log_dir=> log_dir,
   :log_output=>ARGV.any? { |arg| arg == '-v' },
   :backtrace=>true
 }
