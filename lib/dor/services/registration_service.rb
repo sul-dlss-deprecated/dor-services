@@ -10,7 +10,8 @@ module Dor
         [:object_type, :label, :source_id].each do |required_param|
           raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{self.name}.register_object" unless params[required_param]
         end
-        if params[:label].length<1
+        metadata_source=params[:metadata_source]
+        if params[:label].length<1 and (metadata_source=='label' || metadata_source=='none')
           raise Dor::ParameterError, "label cannot be empty to call #{self.name}.register_object"
         end
         object_type = params[:object_type]        

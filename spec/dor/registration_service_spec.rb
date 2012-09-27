@@ -225,11 +225,18 @@ describe Dor::RegistrationService do
       lambda { Dor::RegistrationService.register_object(@params) }.should raise_error(Dor::ParameterError)
     end
     
-    it "should raise an exception if the label empty" do
+    it "should raise an exception if the label empty and metadata_source is label or none" do
       @params[:label]=''
+      @params[:metadata_source]='label'
+      Dor::SearchService.stub(:query_by_id).and_return([nil])
       lambda { Dor::RegistrationService.register_object(@params) }.should raise_error(Dor::ParameterError)
     end
-    
+    it "should not raise an exception if the label is empty and metadata_source is mdtoolkit" do
+      @params[:label]=''
+      @params[:metadata_source]='mdtoolkit'
+      Dor::SearchService.stub(:query_by_id).and_return([nil])
+      Dor::RegistrationService.register_object(@params)
+    end
     it "should raise an exception if source_id is missing" do
       @params.delete(:source_id)
       lambda { Dor::RegistrationService.register_object(@params) }.should raise_error(Dor::ParameterError)
