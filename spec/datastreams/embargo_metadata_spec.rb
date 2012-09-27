@@ -45,6 +45,11 @@ describe Dor::EmbargoMetadataDS do
       ds = Dor::EmbargoMetadataDS.new nil, 'embargoMetadata'
       ds.to_xml.should be_equivalent_to(emb_xml)
     end    
+
+    it "should solrize correctly" do
+      ds = Dor::EmbargoMetadataDS.from_xml(@dsxml)
+      ds.to_solr['embargo_release_date_dt'].should include('2011-10-12T22:47:52Z')
+    end
   end
   
   describe "#status" do

@@ -1,5 +1,7 @@
 module Dor
 class EmbargoMetadataDS < ActiveFedora::NokogiriDatastream
+  include SolrDocHelper
+  
   before_create :ensure_non_versionable
 
   set_terminology do |t|
@@ -19,6 +21,13 @@ class EmbargoMetadataDS < ActiveFedora::NokogiriDatastream
       }
     end
     return builder.doc
+  end
+
+  def to_solr solr_doc = {}, *args
+    super
+    add_solr_value(solr_doc, 'embargo_release_date', self.release_date.utc.strftime('%FT%TZ') , :date, [:searchable]) rescue nil
+
+    solr_doc
   end
   
   def ensure_non_versionable
