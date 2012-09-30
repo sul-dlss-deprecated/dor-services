@@ -28,8 +28,12 @@ class SimpleDublinCoreDs < ActiveFedora::NokogiriDatastream
 
       add_solr_value(doc, 'dc_title', self.title.first, :string, [:sortable])
       add_solr_value(doc, 'dc_creator', self.creator.first, :string, [:sortable])
-      self.identifier.each do |i|
-        ns, val = i.split(":")
+      
+      identifiers = {}
+
+      self.identifier.each { |i| ns, val = i.split(":"); identifiers[ns] ||= val }
+
+      identifiers.each do |ns, val|
         add_solr_value(doc, "dc_identifier_#{ns}", val, :string, [:sortable])
       end
 
