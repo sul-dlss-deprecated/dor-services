@@ -59,10 +59,11 @@ module Dor
     def to_solr(solr_doc=Hash.new, *args)
       super(solr_doc, *args)
 
-      sortable_milestones = Hash.new { [] }
+      sortable_milestones = {}
 
       self.milestones.each do |milestone|
         timestamp = milestone[:at].utc.xmlschema
+        sortable_milestones[milestone[:milestone]] ||= []
         sortable_milestones[milestone[:milestone]] << timestamp
         add_solr_value(solr_doc, 'lifecycle', milestone[:milestone], :string, [:searchable, :facetable])
         add_solr_value(solr_doc, 'lifecycle', "#{milestone[:milestone]}:#{timestamp}", :string, [:displayable])
