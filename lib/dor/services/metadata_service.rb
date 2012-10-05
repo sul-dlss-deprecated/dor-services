@@ -23,7 +23,7 @@ module Dor
       
       def register(handler_class)
         ['fetch', 'label', 'prefixes'].each do |method|
-          unless handler_class.instance_methods.include?(method)
+          unless handler_class.instance_methods.include?(method) or handler_class.instance_methods.include?(method.to_sym) 
             raise TypeError, "Metadata handlers must define ##{method.to_s}"
           end
         end
