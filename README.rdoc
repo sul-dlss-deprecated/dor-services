@@ -271,6 +271,7 @@ Values can also be configured individually:
   - technicalMetadata bugfixes
   - use sul-gems as new Gemfile source
 - <b>3.14.1</b> Removed dor indexer and registration no longer requires a valid label if md source is mdtoolkit or symphony"
+- <b>3.14.6</b> Fixed a 1.9 incompatibility that was breaking things in argo</b>
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.
