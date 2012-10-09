@@ -48,4 +48,12 @@ describe Dor::Configuration do
     @config.fedora.url.should == Dor::Config.fedora.url
     @config.fedora.client.should be_a(RestClient::Resource)
   end
+
+  it "configures the Dor::WorkflowService when Dor::Config.configure is called" do
+    @config.configure do
+      workflow.url 'http://mynewurl.edu/workflow'
+    end
+
+    Dor::WorkflowService.workflow_resource.to_s.should == 'http://mynewurl.edu/workflow'
+  end
 end
