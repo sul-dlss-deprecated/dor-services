@@ -25,6 +25,7 @@ module Dor
       ensure
         $-v = temp_v
       end
+      Dor::WorkflowService.configure result.workflow.url
       return result
     end
     

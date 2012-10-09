@@ -8,3 +8,5 @@ rdoc
 Gemfile.lock
 .idea
 spec/fixtures/export
+.rspec
+
