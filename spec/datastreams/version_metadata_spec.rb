@@ -150,10 +150,4 @@ describe Dor::VersionMetadataDS do
     end
   end
   
-  describe "#close_current_version" do
-    it "does something" do
-      pending #might not need
-    end
-  end
-  
 end
