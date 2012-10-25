@@ -8,9 +8,17 @@ module Dor
       has_metadata :name => 'versionMetadata', :type => Dor::VersionMetadataDS, :label => 'Version Metadata', :autocreate => true
     end
     
+    # Increments the version number and initializes versioningWF for the object
+    # @raise [Dor::Exception] if the object hasn't been accessioned, or if a version is already opened
     def open_new_version
       raise Dor::Exception, 'Object net yet accessioned' unless(Dor::WorkflowService.get_lifecycle('dor', pid, 'accessioned'))
-      raise Dor::Exception, 'Object already opened for versioning' if(new_version_open?)
+      if(new_version_open?)
+        if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'submitted'))
+          raise Dor::Exception, 'Recently closed version still needs to be accessioned'
+        else
+          raise Dor::Exception, 'Object already opened for versioning'
+        end
+      end
 
       ds = datastreams['versionMetadata']
       ds.increment_version
@@ -31,13 +39,16 @@ module Dor
       raise Dor::Exception, 'accessionWF already created for versioned object' if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'submitted'))
 
       Dor::WorkflowService.update_workflow_status 'dor', pid, 'versioningWF', 'submit-version', 'completed'
+      # TODO setting start-accession to completed could happen later if we have a universal robot to kick of accessioning across workflows,
+      # or if there's a review step after versioning is closed
+      Dor::WorkflowService.update_workflow_status 'dor', pid, 'versioningWF', 'start-accession', 'completed'
       initialize_workflow 'accessionWF'
     end
 
     # @return [Boolean] true if 'opened' lifecycle is active, false otherwise
     def new_version_open?
-      return false if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'opened').nil?)
-      true
+      return true if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'opened'))
+      false
     end
 
     # Following chart of processes on this consul page: https://consul.stanford.edu/display/chimera/Versioning+workflows

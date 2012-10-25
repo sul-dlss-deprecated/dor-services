@@ -56,13 +56,20 @@ describe Dor::Versionable do
     context "error handling" do
       it "raises an exception if it the object has not yet been accessioned" do
         Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(false)
-        lambda { obj.open_new_version }.should raise_error Dor::Exception
+        expect { obj.open_new_version }.to raise_error(Dor::Exception, 'Object net yet accessioned')
       end
       
       it "raises an exception if the object has already been opened" do
         Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
         Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(Time.new)
-        lambda { obj.open_new_version }.should raise_error Dor::Exception
+        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(nil)
+        expect { obj.open_new_version }.to raise_error(Dor::Exception, 'Object already opened for versioning')
+      end
+
+      it "raises an exception if last version was closed but hasn't finished accessioning" do
+        Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
+        Dor::WorkflowService.should_receive(:get_active_lifecycle).twice.with('dor', dr, /opened|submitted/).and_return(Time.new)
+        expect { obj.open_new_version }.to raise_error(Dor::Exception, 'Recently closed version still needs to be accessioned')
       end
     end
   end
@@ -72,20 +79,20 @@ describe Dor::Versionable do
       pending 'just mocking calls to workflow'
     end
 
-    it "prevents instaniating common-accessioning if version is already closed" do
+    it "sets versioningWF:submit-version and versioningWF:start-accession to completed" do
       pending 'just mocking calls to workflow'
     end
     
     context "error handling" do
       it "raises an exception if the object has not been opened for versioning" do
         Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
-        lambda { obj.close_version }.should raise_error Dor::Exception
+        expect { obj.close_version }.to raise_error Dor::Exception
       end
       
       it "raises an exception if the object has already has an active instance of accesssionWF" do
         Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(Time.new)
         Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(true)
-        lambda { obj.submit_version }.should raise_error Dor::Exception
+        expect { obj.submit_version }.to raise_error Dor::Exception
       end
     end
   end
