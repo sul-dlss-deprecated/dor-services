@@ -258,22 +258,5 @@ describe Dor::RegistrationService do
       Dor::SearchService.should_receive(:query_by_id).with('barcode:9191919191').and_return([@pid])
       lambda { Dor::RegistrationService.register_object(@params) }.should raise_error(Dor::DuplicateIdError)
     end
-  it 'should fetch the label using the metadata id' do
-  	
- 				@params={
-        :object_type => 'item', 
-        :content_model => 'googleScannedBook', 
-        :admin_policy => 'druid:fg890hi1234', 
-        :label => 'Google : Scanned Book 12345', 
-        :source_id => { :barcode => 9191919191 }, 
-        :other_ids => { :mdtoolkit=>'bb870bw0412' }, 
-        :tags => ['Google : Google Tag!','Google : Other Google Tag!']
-      }
-      Dor::RegistrationService.stub(:register_object).and_return(@apo)
-      Dor::Item.stub(:pid).and_return('123')
-      
-      Dor::MetadataService.should_receive(:label_for)
-  		Dor::RegistrationService.create_from_request(@params)
-  	end
   end
 end
