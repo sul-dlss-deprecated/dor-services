@@ -12,6 +12,8 @@ module Dor
     include Preservable
     include Assembleable
     include Versionable
+    include Contentable
+    
   end
   
   class Abstract < ::ActiveFedora::Base

@@ -110,6 +110,7 @@ module Dor
   autoload :Upgradable, 'dor/models/upgradable'
   autoload :Eventable, 'dor/models/eventable'
   autoload :Versionable, 'dor/models/versionable'
+  autoload :Contentable, 'dor/models/contentable'
   
   # ActiveFedora Classes
   autoload :Abstract, 'dor/models/item'
