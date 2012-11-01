@@ -12,12 +12,12 @@ describe Dor::ContentMetadataDS do
     @item.contentMetadata.content='<?xml version="1.0"?>
     <contentMetadata objectId="druid:gw177fc7976" type="map">
     <resource id="0001" sequence="1" type="image">
-    <file format="JPEG2000" id="gw177fc7976_05_0001.jp2" mimetype="image/jp2" preserve="true" publish="true" shelve="true" size="5143883">
+    <file format="JPEG2000" id="gw177fc7976_05_0001.jp2" mimetype="image/jp2" preserve="yes" publish="yes" shelve="yes" size="5143883">
     <imageData height="4580" width="5939"/>
     <checksum type="md5">3d3ff46d98f3d517d0bf086571e05c18</checksum>
     <checksum type="sha1">ca1eb0edd09a21f9dd9e3a89abc790daf4d04916</checksum>
     </file>
-    <file format="TIFF" id="gw177fc7976_00_0001.tif" mimetype="image/tiff" preserve="true" publish="false" shelve="false" size="81630420">
+    <file format="TIFF" id="gw177fc7976_00_0001.tif" mimetype="image/tiff" preserve="yes" publish="no" shelve="no" size="81630420">
     <imageData height="4580" width="5939"/>
     <checksum type="md5">81ccd17bccf349581b779615e82a0366</checksum>
     <checksum type="sha1">12586b624540031bfa3d153299160c4885c3508c</checksum>
@@ -30,9 +30,9 @@ describe Dor::ContentMetadataDS do
     before(:all){
       file={}
       file[:name]='new_file.jp2'
-      file[:shelve]='false'
-      file[:publish]='false'
-      file[:preserve]='false'
+      file[:shelve]='no'
+      file[:publish]='no'
+      file[:preserve]='no'
       @files=Array.new
       @files[0]=file
       Dor::Item.stub(:save).and_return(true)
@@ -70,9 +70,9 @@ describe Dor::ContentMetadataDS do
       it 'should remove one resource and renumber remaining resources' do
         file={}
         file[:name]='new_file.jp2'
-        file[:shelve]='false'
-        file[:publish]='false'
-        file[:preserve]='false'
+        file[:shelve]='no'
+        file[:publish]='no'
+        file[:preserve]='no'
         @files=Array.new
         @files[0]=file
         Dor::Item.stub(:save).and_return(true)
@@ -97,9 +97,9 @@ describe Dor::ContentMetadataDS do
       before(:all){
         @file={}
         @file[:name]='new_file.jp2'
-        @file[:shelve]='false'
-        @file[:publish]='false'
-        @file[:preserve]='false'
+        @file[:shelve]='no'
+        @file[:publish]='no'
+        @file[:preserve]='no'
         @file[:size]='12345'
       }
       it 'should add a file to the resource' do
@@ -109,9 +109,9 @@ describe Dor::ContentMetadataDS do
         files.length.should == 3
         xml.search('//file[@id=\'new_file.jp2\']').length.should == 1
         new_file=xml.search('//file[@id=\'new_file.jp2\']').first
-        new_file['shelve'].should == 'false'
-        new_file['publish'].should == 'false'
-        new_file['preserve'].should == 'false'
+        new_file['shelve'].should == 'no'
+        new_file['publish'].should == 'no'
+        new_file['preserve'].should == 'no'
         new_file['size'].should == '12345'
       end
     end
@@ -119,9 +119,9 @@ describe Dor::ContentMetadataDS do
       before(:all){
         @file={}
         @file[:name]='new_file.jp2'
-        @file[:shelve]='false'
-        @file[:publish]='false'
-        @file[:preserve]='false'
+        @file[:shelve]='no'
+        @file[:publish]='no'
+        @file[:preserve]='no'
         @file[:size]='12345'
       }
       it 'should modify an existing file record' do
@@ -130,9 +130,9 @@ describe Dor::ContentMetadataDS do
         file=xml.search('//file[@id=\'new_file.jp2\']')
         file.length.should ==1
         file=file.first
-        file['shelve'].should == 'false'
-        file['publish'].should == 'false'
-        file['preserve'].should == 'false'
+        file['shelve'].should == 'no'
+        file['publish'].should == 'no'
+        file['preserve'].should == 'no'
         file['size'].should == '12345'
       end
       it 'should error out if there isnt an existing record to modify' do
@@ -151,9 +151,9 @@ describe Dor::ContentMetadataDS do
       it 'should renumber the resources correctly' do
         file={}
         file[:name]='new_file.jp2'
-        file[:shelve]='false'
-        file[:publish]='false'
-        file[:preserve]='false'
+        file[:shelve]='no'
+        file[:publish]='no'
+        file[:preserve]='no'
         @files=Array.new
         @files[0]=file
         @item.contentMetadata.add_resource(@files,'resource',1)
