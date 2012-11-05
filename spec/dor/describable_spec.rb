@@ -39,9 +39,9 @@ describe Dor::Describable do
 		mods = read_fixture('ex1_mods.xml')
 		expected_dc = read_fixture('ex1_dc.xml')
 		
-		b = DescribableItem.new
+		b = Dor::Item.new
 		b.datastreams['descMetadata'].content = mods
-		
+		b.stub(:add_collection_reference).and_return(mods)
 		dc = b.generate_dublin_core
 		dc.should be_equivalent_to(expected_dc)
 	end
@@ -50,9 +50,9 @@ describe Dor::Describable do
 		mods = read_fixture('ex2_related_mods.xml')
 		expected_dc = read_fixture('ex2_related_dc.xml')
 		
-		b = DescribableItem.new
+		b = Dor::Item.new
 		b.datastreams['descMetadata'].content = mods
-		
+		b.stub(:add_collection_reference).and_return(mods)
 		dc = b.generate_dublin_core
 		EquivalentXml.equivalent?(dc, expected_dc).should be
 	end
@@ -63,7 +63,101 @@ describe Dor::Describable do
 		
 		lambda {b.generate_dublin_core}.should raise_error(Dor::Describable::CrosswalkError)
 	end
-	
+	describe 'add_collection_reference' do
+	  it "adds a relatedItem node for the collection if the item is a memeber of a collection" do
+      mods = read_fixture('ex2_related_mods.xml')
+      mods=Nokogiri::XML(mods)
+      mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']').each do |node|
+        node.parent.remove()
+      end
+      relationships=<<-XML
+      <?xml version="1.0"?>
+      <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+        <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
+          <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
+          <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:zb871zd0767"/>
+        </rdf:Description>
+      </rdf:RDF>
+      XML
+      relationships=Nokogiri::XML(relationships)
+      @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
+  		@item.datastreams['descMetadata'].content = mods.to_s
+		  @item.stub(:public_relationships).and_return(relationships)
+		  Dor::Item.stub(:find).and_return(@item)
+  		xml = @item.add_collection_reference
+      xml=Nokogiri::XML(xml)
+      collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
+      collections.length.should == 1
+      collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
+      collection_title.length.should ==1
+      collection_title.first.content.should == 'Slides, IA, Geodesic Domes [1 of 2]'
+    end
+    it "Doesnt add a relatedItem for collection if there is an existing one" do
+      mods = read_fixture('ex2_related_mods.xml')
+      b = instantiate_fixture('druid:ab123cd4567', Dor::Item)
+      relationships=<<-XML
+      <?xml version="1.0"?>
+      <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+        <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
+          <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
+          <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:zb871zd0767"/>
+        </rdf:Description>
+      </rdf:RDF>
+      XML
+      
+      relationships=Nokogiri::XML(relationships)
+  		b.datastreams['descMetadata'].content = mods
+  		b.stub(:public_relationships).and_return(relationships)
+  		xml = b.add_collection_reference
+  		xml=Nokogiri::XML(xml)
+  		collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
+      collections.length.should == 1
+      collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
+      collection_title.length.should == 1
+    end
+  end
+  describe 'get_collection_title' do
+    it 'should get a titleInfo/title' do
+       @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
+       @item.descMetadata.content=<<-XML
+ 						<?xml version="1.0"?>
+ 						<mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+ 							 <titleInfo>
+ 									 <title>Foxml Test Object</title>
+ 								</titleInfo>
+ 						 </mods>
+ 						 XML
+ 			@item.instance_eval{get_collection_title @item}.should == 'Foxml Test Object'
+    end
+    it 'should get the prefered citation if there is one' do
+       @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
+       @item.descMetadata.content=<<-XML
+ 						<?xml version="1.0"?>
+ 						<mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+ 							 <titleInfo>
+ 									 <title>Foxml Test Object</title>
+ 								</titleInfo>
+ 								<note type="preferredCitation">Hello world</note>
+ 						 </mods>
+ 						 XML
+ 			@item.instance_eval{get_collection_title @item}.should == 'Hello world'
+    end
+    it 'should include a subtitle if there is one' do
+       @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
+       @item.descMetadata.content=<<-XML
+ 						<?xml version="1.0"?>
+ 						<mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+ 							 <titleInfo>
+ 									 <title>Foxml Test Object</title>
+ 									 <subTitle>Hello world</note>
+ 								</titleInfo>
+ 						 </mods>
+ 						 XML
+ 			@item.instance_eval{get_collection_title @item}.should == 'Foxml Test Object (Hello world)'
+    end
+  end
+  
+  
 	it "throws an exception if the generated dc has only a root element with no children" do
 		mods = <<-EOXML
 			<mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
@@ -72,7 +166,8 @@ describe Dor::Describable do
 								 xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd" />					 
 		EOXML
 		
-		b = DescribableItem.new
+		b = Dor::Item.new
+		b.stub(:add_collection_reference).and_return(mods)
 		b.datastreams['descMetadata'].content = mods
 		
 		lambda {b.generate_dublin_core}.should raise_error(Dor::Describable::CrosswalkError)

@@ -41,7 +41,7 @@ module Dor
 				raise CrosswalkError, "Unknown descMetadata namespace: #{metadata_namespace.inspect}"
 			end
 			xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/#{format}2dc.xslt")) )
-			dc_doc = xslt.transform(self.datastreams['descMetadata'].ng_xml)
+			dc_doc = xslt.transform(Nokogiri::XML(self.add_collection_reference))
 			# Remove empty nodes
 			dc_doc.xpath('/oai_dc:dc/*[count(text()) = 0]').remove
 			if(dc_doc.root.nil? || dc_doc.root.children.size == 0)
@@ -49,7 +49,39 @@ module Dor
 			end
 			dc_doc
 		end
-	 
+		#returns the desc metadata a relatedItem with information about the collection this object belongs to for use in published mods and mods to DC conversion
+	  def add_collection_reference
+	    relationships=self.public_relationships
+	    xml=self.descMetadata.ng_xml
+	    
+	    collections=relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection')
+	    #if there is an existing relatedItem node with type=host and a child typeOfResource @collection=yes dont add anything
+	    existing_node=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
+      if(existing_node.length>0)
+        return xml.to_s
+      end
+      collections.each do |collection_node|
+        #puts collection_node.inspect
+        druid=collection_node['resource']
+        druid=druid.gsub('info:fedora/','')
+        collection_obj=Dor::Item.find(druid)
+        collection_title = get_collection_title(collection_obj)
+        node=xml.search('//mods:mods')
+        node=node.first
+        related_item_node=Nokogiri::XML::Node.new('relatedItem',xml)
+        related_item_node['type']='host'
+        title_info_node=Nokogiri::XML::Node.new('titleInfo',xml)
+        title_node=Nokogiri::XML::Node.new('title',xml)
+        title_node.content=collection_title
+        type_node=Nokogiri::XML::Node.new('typeOfResource',xml)
+        type_node['collection'] = 'yes'
+        node.add_child(related_item_node)
+        related_item_node.add_child(title_info_node)
+        title_info_node.add_child(title_node)
+        related_item_node.add_child(type_node)
+      end
+      Nokogiri::XML(xml.to_s) {|x| x.noblanks }.to_s
+    end
 		def metadata_namespace
 			desc_md = self.datastreams['descMetadata'].ng_xml
 			if desc_md.nil? or desc_md.root.nil? or desc_md.root.namespace.nil?
@@ -127,6 +159,21 @@ module Dor
 				end
 				return false
 			end
+			def get_collection_title(obj)
+			  xml=self.descMetadata.ng_xml
+			  preferred_citation=xml.search('//mods:mods/mods:note[@type=\'preferredCitation\']','mods' => 'http://www.loc.gov/mods/v3')
+			  title=''
+			  if preferred_citation.length == 1
+			    title=preferred_citation.first.content
+		    else
+		      title=xml.search('//mods:mods/mods:titleInfo/mods:title','mods' => 'http://www.loc.gov/mods/v3').first.content
+		      subtitle=xml.search('//mods:mods/mods:titleInfo/mods:subTitle','mods' => 'http://www.loc.gov/mods/v3')
+		      if(subtitle.length==1)
+		        title+=' ('+subtitle.first.content+')'
+	        end
+	      end
+	      title
+		  end
 		
 	end
 end

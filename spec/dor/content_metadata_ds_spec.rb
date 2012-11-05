@@ -160,5 +160,26 @@ describe Dor::ContentMetadataDS do
         @item.contentMetadata.move_resource('0001','2')
       end
     end
+    describe 'update resource label' do
+      it 'should update an existing label' do
+        @item.contentMetadata.update_resource_label '0001', 'an old label'
+        @item.contentMetadata.update_resource_label '0001', 'label!'
+        xml = @item.contentMetadata.ng_xml
+        labels=xml.search('//resource[@id=\'0001\']/label')
+        labels.length.should ==1
+        labels.first.content.should == 'label!'
+      end
+      it 'should add a new label' do
+         @item.contentMetadata.update_resource_label '0001', 'label!'
+          xml = @item.contentMetadata.ng_xml
+          labels=xml.search('//resource[@id=\'0001\']/label')
+          labels.length.should ==1
+      end
+    end
+    describe 'update_resource_type' do
+      it 'should update an existing type' do
+        @item.contentMetadata.update_resource_label '0001', 'book'
+      end
+    end
   end
 end

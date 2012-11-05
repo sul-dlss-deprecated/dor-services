@@ -56,6 +56,7 @@ describe Dor::Publishable do
     @item.descMetadata.content = @mods
     @item.rightsMetadata.content = @rights
     @item.rels_ext.content = @rels
+    @item.stub(:add_collection_reference).and_return(@mods)
   end
 
   it "has a rightsMetadata datastream" do
