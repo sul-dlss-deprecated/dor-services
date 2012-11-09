@@ -184,6 +184,8 @@ Version 1.0	2007-05-04 Tracy Meehleib <tmee@loc.gov>
 
 	<xsl:template match="mods:abstract | mods:tableOfContents | mods:note">
 		<dc:description>
+			<xsl:copy-of select="@type"/>
+			<xsl:copy-of select="@displayLabel"/>
 			<xsl:value-of select="."/>
 		</dc:description>
 	</xsl:template>
@@ -368,8 +370,12 @@ Version 1.0	2007-05-04 Tracy Meehleib <tmee@loc.gov>
 			<xsl:when test="@type='series'"/>
 			<xsl:otherwise>
 				<dc:relation>
+					<xsl:if test="mods:location/mods:url">
+						<xsl:attribute name="type">url</xsl:attribute>
+						<xsl:attribute name="href"><xsl:value-of select="mods:location/mods:url"/></xsl:attribute>
+					</xsl:if>
 					<xsl:for-each
-						select="mods:titleInfo/mods:title | mods:identifier | mods:location/mods:url">
+						select="mods:titleInfo/mods:title | mods:identifier">
 						<xsl:if test="normalize-space(.)!= ''">
 							<xsl:value-of select="."/>
 
