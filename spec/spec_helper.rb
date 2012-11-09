@@ -3,8 +3,8 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'bundler/setup'
 require 'rspec'
-require 'rspec/autorun'
-require 'rspec/mocks'
+#require 'rspec/autorun'
+#require 'rspec/mocks'
 
 require 'rubygems'
 require 'rake'

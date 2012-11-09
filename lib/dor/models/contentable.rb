@@ -3,7 +3,7 @@ module Dor
     extend ActiveSupport::Concern
 
     #add a file to a resource, not to be confused with add a resource to an object
-    def add_file file, resource, file_name, mime_type=nil,publish='false', shelve='false', preserve='false'
+    def add_file file, resource, file_name, mime_type=nil,publish='no', shelve='no', preserve='no'
       contentMD=self.datastreams['contentMetadata']
       xml=contentMD.ng_xml
       #make sure the resource exists
@@ -52,11 +52,8 @@ module Dor
       md5=Digest::MD5.file(file.path).hexdigest
       sha1=Digest::SHA1.file(file.path).hexdigest
       size=File.size?(file.path)
-      publish='false'
-      preserve='false'
-      shelve='false'
       #update contentmd
-      file_hash={:name=>file_name,:md5 => md5, :publish=>publish, :shelve=> shelve, :preserve => preserve, :size=>size.to_s, :sha1=>sha1}
+      file_hash={:name=>file_name,:md5 => md5, :size=>size.to_s, :sha1=>sha1}
       begin 
         request=sftp.stat!(location)
         sftp.upload!(file.path,location)

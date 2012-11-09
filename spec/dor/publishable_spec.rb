@@ -9,7 +9,7 @@ describe Dor::Publishable do
 
   before(:all) { stub_config   }
   after(:all)  { unstub_config }
-  
+
   before :each do
     @item = instantiate_fixture('druid:ab123cd4567', PublishableItem)
     @apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
@@ -20,9 +20,9 @@ describe Dor::Publishable do
                  version="3.3"
                  xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd">
         <mods:identifier type="local" displayLabel="SUL Resource ID">druid:ab123cd4567</mods:identifier>
-      </mods:mods>           
+      </mods:mods>
     EOXML
-    
+
     @rights = <<-EOXML
       <rightsMetadata objectId="druid:ab123cd4567">
         <copyright>
@@ -40,7 +40,7 @@ describe Dor::Publishable do
         </use>
       </rightsMetadata>
     EOXML
-    
+
     @rels = <<-EOXML
       <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:hydra="http://projecthydra.org/ns/relations#">
         <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
@@ -51,11 +51,12 @@ describe Dor::Publishable do
         </rdf:Description>
       </rdf:RDF>
     EOXML
-    
+
     @item.contentMetadata.content = '<contentMetadata/>'
     @item.descMetadata.content = @mods
     @item.rightsMetadata.content = @rights
     @item.rels_ext.content = @rels
+    @item.stub(:add_collection_reference).and_return(@mods)
   end
 
   it "has a rightsMetadata datastream" do
@@ -68,20 +69,20 @@ describe Dor::Publishable do
     @item.build_datastream('rightsMetadata',true)
     @item.datastreams['rightsMetadata'].ng_xml.to_s.should be_equivalent_to(rights_md)
   end
-  
+
   describe "#public_xml" do
-    
+
     context "produces xml with" do
         before(:each) do
           @now = Time.now
           Time.should_receive(:now).and_return(@now)
           @p_xml = Nokogiri::XML(@item.public_xml)
         end
-        
+
        it "an id attribute" do
          @p_xml.at_xpath('/publicObject/@id').value.should =~ /^druid:ab123cd4567/
        end
-       
+
        it "a published attribute" do
          @p_xml.at_xpath('/publicObject/@published').value.should == @now.xmlschema
        end
@@ -98,12 +99,12 @@ describe Dor::Publishable do
          @p_xml.at_xpath('/publicObject/rightsMetadata').should be
        end
 
-       it "generated dublin core" do         
+       it "generated dublin core" do
          @p_xml.at_xpath('/publicObject/oai_dc:dc', 'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/').should be
        end
-       
+
        it "relationships" do
-         ns = { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'hydra' => 'http://projecthydra.org/ns/relations#', 
+         ns = { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'hydra' => 'http://projecthydra.org/ns/relations#',
            'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'fedora-model' => 'info:fedora/fedora-system:def/model#' }
          @p_xml.at_xpath('/publicObject/rdf:RDF', ns).should be
          @p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOf', ns).should be
@@ -119,7 +120,7 @@ describe Dor::Publishable do
          @item.datastreams['RELS-EXT'].content.should be_equivalent_to @rels
        end
     end
-  
+
 
     describe "#publish_metadata" do
 
@@ -146,16 +147,23 @@ describe Dor::Publishable do
       end
 
       context "copies to the document cache" do
-        it "identityMetadta, contentMetadata, rightsMetadata, generated dublin core, and public xml" do
-          @item.rightsMetadata.content = "<rightsMetadata><access type='discover'><machine><world/></machine></access></rightsMetadata>"
 
+        before(:each) do
           Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123cd4567', /<identityMetadata/, 'identityMetadata')
           Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123cd4567', /<contentMetadata/, 'contentMetadata')
           Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123cd4567', /<rightsMetadata/, 'rightsMetadata')
           Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123cd4567', /<oai_dc:dc/, 'dc')
           Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123cd4567', /<publicObject/, 'public')
           Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123cd4567', /<mods:mods/, 'mods')
+        end
 
+        it "identityMetadta, contentMetadata, rightsMetadata, generated dublin core, and public xml" do
+          @item.rightsMetadata.content = "<rightsMetadata><access type='discover'><machine><world/></machine></access></rightsMetadata>"
+          @item.publish_metadata
+        end
+
+        it "even when rightsMetadata uses xml namespaces" do
+          @item.rightsMetadata.content = %q(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1"><access type='discover'><machine><world/></machine></access></rightsMetadata>)
           @item.publish_metadata
         end
       end

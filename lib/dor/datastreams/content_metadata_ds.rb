@@ -178,7 +178,7 @@ module Dor
       if not file[:md5].nil?
         checksum_node=xml.search('//file[@id=\''+old_file_id+'\']/checksum[@type=\'md5\']').first
         if checksum_node.nil?
-           checksum_node=Nokogiri::XML::Node.new('checksum',xml)
+          checksum_node=Nokogiri::XML::Node.new('checksum',xml)
           file_node.add_child(checksum_node)
         end
         checksum_node['type']='md5'
@@ -192,7 +192,6 @@ module Dor
         end
         checksum_node['type']='sha1'
         checksum_node.content=file[:sha1]
-        
       end
       if file[:size]
         file_node['size']=file[:size]
@@ -233,6 +232,32 @@ module Dor
       self.content=xml.to_s
       self.save
     end
+
+    def update_resource_label resource_name, new_label
+      xml=self.ng_xml
+      resource_node=xml.search('//resource[@id=\''+resource_name+'\']')
+      if(resource_node.length!=1)
+        raise 'Resource not found or duplicate found.'
+      end
+      labels=xml.search('//resource[@id=\''+resource_name+'\']/label')
+      if(labels.length==0)
+        #create a label
+        label_node = Nokogiri::XML::Node.new('label',xml)
+        label_node.content=new_label
+        resource_node.first.add_child(label_node)
+      else
+        labels.first.content=new_label
+      end
+    end
+    def update_resource_type resource, new_type
+      xml=self.ng_xml
+      resource_node=xml.search('//resource[@id=\''+resource_name+'\']')
+      if(resource_node.length!=1)
+        raise 'Resource not found or duplicate found.'
+      end
+      resource_node.first['type']=new_type
+    end
+
     def move_resource resource_name, new_position
       xml=self.ng_xml
       file_node=xml.search('//resource[@id=\''+resource_name+'\']')
@@ -263,6 +288,6 @@ module Dor
           item['sequence']=counter.to_s
         end
       end
-    end
+   end
   end
 end

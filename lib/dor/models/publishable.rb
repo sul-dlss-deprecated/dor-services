@@ -11,7 +11,7 @@ module Dor
     included do
       has_metadata :name => "rightsMetadata", :type => ActiveFedora::NokogiriDatastream, :label => 'Rights Metadata'
     end
-    
+
     def build_rightsMetadata_datastream(ds)
       content_ds = self.admin_policy_object.first.datastreams['defaultObjectRights']
       ds.dsLabel = 'Rights Metadata'
@@ -25,13 +25,13 @@ module Dor
       rels_doc.xpath('/rdf:RDF/rdf:Description/*', { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' }).each do |rel|
         unless include_elements.include?([rel.namespace.prefix,rel.name].join(':'))
           rel.next_sibling.remove if rel.next_sibling.content.strip.empty?
-          rel.remove 
+          rel.remove
         end
       end
       rels_doc
     end
-    
-    def public_xml      
+
+    def public_xml
       pub = Nokogiri::XML("<publicObject/>").root
       pub['id'] = pid
       pub['published'] = Time.now.xmlschema
@@ -43,9 +43,9 @@ module Dor
       pub.add_child(self.generate_dublin_core.root.clone)
       Nokogiri::XML(pub.to_xml) { |x| x.noblanks }.to_xml { |config| config.no_declaration }
     end
-    
+
     def publish_metadata
-      rights = datastreams['rightsMetadata'].ng_xml
+      rights = datastreams['rightsMetadata'].ng_xml.clone.remove_namespaces!
       if(rights.at_xpath("//rightsMetadata/access[@type='discover']/machine/world"))
         dc_xml = self.generate_dublin_core.to_xml {|config| config.no_declaration}
         DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'dc')
@@ -54,7 +54,7 @@ module Dor
         DigitalStacksService.transfer_to_document_store(pid, self.datastreams['rightsMetadata'].to_xml, 'rightsMetadata')
         DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
         if self.metadata_format == 'mods'
-          DigitalStacksService.transfer_to_document_store(pid, self.datastreams['descMetadata'].to_xml, 'mods')
+          DigitalStacksService.transfer_to_document_store(pid, self.add_collection_reference, 'mods')
         end
       end
     end
