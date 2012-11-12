@@ -20,6 +20,7 @@ module Workflow
     
     def initialize node
       self.ng_xml = Nokogiri::XML(node)
+      
     end
     
     def definition

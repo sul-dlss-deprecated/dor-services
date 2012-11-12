@@ -54,9 +54,9 @@ module Dor
 	    relationships=self.public_relationships
 	    xml=self.descMetadata.ng_xml
 	    
-	    collections=relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection')
+	    collections=relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection','fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' 	)
 	    #if there is an existing relatedItem node with type=host and a child typeOfResource @collection=yes dont add anything
-	    existing_node=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
+	    existing_node=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']', 'mods' => 'http://www.loc.gov/mods/v3')
       if(existing_node.length>0)
         return xml.to_s
       end
@@ -66,7 +66,7 @@ module Dor
         druid=druid.gsub('info:fedora/','')
         collection_obj=Dor::Item.find(druid)
         collection_title = get_collection_title(collection_obj)
-        node=xml.search('//mods:mods')
+        node=xml.search('//mods:mods', 'mods' => 'http://www.loc.gov/mods/v3')
         node=node.first
         related_item_node=Nokogiri::XML::Node.new('relatedItem',xml)
         related_item_node['type']='host'

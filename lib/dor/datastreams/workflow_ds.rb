@@ -23,8 +23,14 @@ class WorkflowDs < ActiveFedora::NokogiriDatastream
   end
 
   def [](wf)
-    node = self.ng_xml.at_xpath "/workflows/workflow[@id = '#{wf}']"
-    node.nil? ? nil : Workflow::Document.new(node.to_xml)
+    xml=Dor::WorkflowService.get_workflow_xml('dor', self.pid, wf)
+    xml=Nokogiri::XML(xml)
+    #if no workflow is present, return nil
+    if xml.xpath('workflow').length == 0
+      nil
+    else
+      Workflow::Document.new(xml.to_s)
+    end
   end
 
   def ensure_xml_loaded

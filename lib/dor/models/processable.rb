@@ -60,13 +60,18 @@ module Dor
       super(solr_doc, *args)
 
       sortable_milestones = {}
+      current_version='1'
+      current_version=self.versionMetadata.current_version_id
 
       self.milestones.each do |milestone|
         timestamp = milestone[:at].utc.xmlschema
         sortable_milestones[milestone[:milestone]] ||= []
         sortable_milestones[milestone[:milestone]] << timestamp
         add_solr_value(solr_doc, 'lifecycle', milestone[:milestone], :string, [:searchable, :facetable])
-        add_solr_value(solr_doc, 'lifecycle', "#{milestone[:milestone]}:#{timestamp}", :string, [:displayable])
+        if(not milestone[:version])
+          milestone[:version]=current_version
+        end
+        add_solr_value(solr_doc, 'lifecycle', "#{milestone[:milestone]}:#{timestamp};#{milestone[:version]}", :string, [:displayable])
         add_solr_value(solr_doc, milestone[:milestone], timestamp, :date, [:searchable, :facetable])
       end
 
