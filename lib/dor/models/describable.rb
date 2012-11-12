@@ -66,7 +66,7 @@ module Dor
         druid=druid.gsub('info:fedora/','')
         collection_obj=Dor::Item.find(druid)
         collection_title = get_collection_title(collection_obj)
-        node=xml.search('//mods:mods')
+        node=xml.search('//mods:mods', 'mods' => 'http://www.loc.gov/mods/v3')
         node=node.first
         related_item_node=Nokogiri::XML::Node.new('relatedItem',xml)
         related_item_node['type']='host'
