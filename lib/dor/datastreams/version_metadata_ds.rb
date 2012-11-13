@@ -110,7 +110,14 @@ module Dor
       versions = find_by_terms(:version)
       versions.max_by {|v| v[:versionId].to_i }
     end
-    
+    def current_version_id
+      current_version=current_version_node
+      if current_version.nil?
+        return 1
+      else
+        current_version[:versionId].to_i
+      end
+    end
     def newest_tag
       tags = find_by_terms(:version, :tag)
       tags.map{|t| VersionTag.parse(t.value)}.max
