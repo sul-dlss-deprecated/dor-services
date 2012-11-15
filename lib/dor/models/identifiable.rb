@@ -63,7 +63,24 @@ module Dor
           add_solr_value(solr_doc,'ds_specs',ds.datastream_spec_string,:string,[:displayable])
         end
       end
-      
+
+      rels_doc = Nokogiri::XML(self.datastreams['RELS-EXT'].content)
+       collections=rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection','fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' 	)
+       collections.each do |collection_node| 
+        druid=collection_node['resource']
+        druid=druid.gsub('info:fedora/','')
+        collection_object=Dor.find(druid)
+        add_solr_value(solr_doc, "collection_title", collection_object.label, :string, [:searchable, :facetable])
+       end
+       
+       apos=rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy','hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' 	)
+       apos.each do |apo_node|
+        druid=apo_node['resource']
+        druid=druid.gsub('info:fedora/','')
+        apo_object=Dor.find(druid)
+        add_solr_value(solr_doc, "apo_title", apo_object.label, :string, [:searchable, :facetable])
+       end
+       
       # Fix for ActiveFedora 3.3 to ensure all date fields are properly formatted as UTC XML Schema datetime strings
       solr_doc.each_pair { |k,v| 
         if k =~ /_dt|_date$/

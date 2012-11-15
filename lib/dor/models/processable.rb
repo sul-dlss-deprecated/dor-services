@@ -58,11 +58,12 @@ module Dor
     
     def to_solr(solr_doc=Hash.new, *args)
       super(solr_doc, *args)
-
       sortable_milestones = {}
       current_version='1'
-      current_version=self.versionMetadata.current_version_id
-
+      begin
+      current_version = self.versionMetadata.current_version_id 
+      rescue
+      end
       self.milestones.each do |milestone|
         timestamp = milestone[:at].utc.xmlschema
         sortable_milestones[milestone[:milestone]] ||= []
@@ -72,13 +73,23 @@ module Dor
           milestone[:version]=current_version
         end
         add_solr_value(solr_doc, 'lifecycle', "#{milestone[:milestone]}:#{timestamp};#{milestone[:version]}", :string, [:displayable])
-        add_solr_value(solr_doc, milestone[:milestone], timestamp, :date, [:searchable, :facetable])
       end
 
       sortable_milestones.each do |milestone, unordered_dates|
         dates = unordered_dates.sort
+        #creates the published_dt field and the like
+        add_solr_value(solr_doc, milestone+'_day', DateTime.parse(dates.first).beginning_of_day.utc.xmlschema.split('T').first, :string, [:searchable, :facetable])
+        
+        add_solr_value(solr_doc, milestone, dates.first, :date, [:searchable, :facetable])
+        
+        #fields for OAI havester to sort on
         add_solr_value(solr_doc, "#{milestone}_earliest_dt", dates.first, :date, [:sortable])
         add_solr_value(solr_doc, "#{milestone}_latest_dt", dates.last, :date, [:sortable])
+        
+        #for future faceting
+        add_solr_value(solr_doc, "#{milestone}_earliest", dates.first, :date, [:searchable, :facetable])
+        add_solr_value(solr_doc, "#{milestone}_latest", dates.last, :date, [ :searchable, :facetable])
+        
       end
 
       solr_doc

@@ -1,5 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-
+require File.expand_path(File.dirname(__FILE__) + '/../spec_helper') 
 class ProcessableItem < ActiveFedora::Base
   include Dor::Itemizable
   include Dor::Processable
@@ -47,56 +46,39 @@ describe Dor::Processable do
   end
   describe 'milestones' do
     it 'should build a list of all lifecycle events grouped by version' do
-      xml='<?xml version="1.0" encoding="UTF-8"?>
-      <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
-          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
-              datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
-          <process version="2" elapsed="0.0" archived="true" attempts="1"
-              datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
-          <process version="2" elapsed="0.0" archived="true" attempts="1"
-              datetime="2012-11-06T16:19:02-0800" status="completed" name="provenance-metadata"/>
-          <process version="2" elapsed="0.0" archived="true" attempts="1"
-              datetime="2012-11-06T16:19:05-0800" status="completed" name="remediate-object"/>
-          <process version="2" elapsed="0.0" archived="true" attempts="1"
-              datetime="2012-11-06T16:19:06-0800" status="completed" name="shelve"/>
-          <process version="2" lifecycle="published" elapsed="0.0" archived="true" attempts="1"
-              datetime="2012-11-06T16:19:07-0800" status="completed" name="publish"/>
-          <process version="2" elapsed="0.0" archived="true" attempts="1"
-              datetime="2012-11-06T16:19:09-0800" status="completed" name="sdr-ingest-transfer"/>
-          <process version="2" lifecycle="accessioned" elapsed="0.0" archived="true" attempts="1"
-              datetime="2012-11-06T16:19:10-0800" status="completed" name="cleanup"/>
-          <process version="2" elapsed="0.0" archived="true" attempts="1"
-              datetime="2012-11-06T16:19:13-0800" status="completed" name="rights-metadata"/>
-          <process version="2" lifecycle="described" elapsed="0.0" archived="true" attempts="1"
-              datetime="2012-11-06T16:19:15-0800" status="completed" name="descriptive-metadata"/>
-          <process version="2" elapsed="0.0" archived="true" attempts="2"
-              datetime="2012-11-06T16:19:16-0800" status="completed" name="content-metadata"/>
-          <process elapsed="0.0" attempts="0" datetime="2012-11-06T16:30:03-0800" status="waiting"
-              name="technical-metadata"/>
-          <process elapsed="0.0" attempts="0" datetime="2012-11-06T16:30:03-0800" status="waiting"
-              name="remediate-object"/>
-          <process elapsed="0.0" attempts="0" datetime="2012-11-06T16:30:03-0800" status="waiting"
-              name="shelve"/>
-          <process lifecycle="published" elapsed="0.0" attempts="0" datetime="2012-11-06T16:30:03-0800"
-              status="waiting" name="publish"/>
-          <process elapsed="0.0" attempts="0" datetime="2012-11-06T16:30:03-0800" status="waiting"
-              name="sdr-ingest-transfer"/>
-          <process lifecycle="accessioned" elapsed="0.0" attempts="0" datetime="2012-11-06T16:30:03-0800"
-              status="waiting" name="cleanup"/>
-          <process elapsed="0.0" attempts="0" datetime="2012-11-06T16:30:03-0800" status="waiting"
-              name="content-metadata"/>
-          <process elapsed="0.0" attempts="0" datetime="2012-11-06T16:30:03-0800" status="waiting"
-              name="rights-metadata"/>
-          <process elapsed="0.0" attempts="0" datetime="2012-11-06T16:30:03-0800" status="waiting"
-              name="provenance-metadata"/>
-          <process lifecycle="described" elapsed="0.0" attempts="0" datetime="2012-11-06T16:30:03-0800"
-              status="waiting" name="descriptive-metadata"/>
-          <process lifecycle="submitted" elapsed="0.0" attempts="1" datetime="2012-11-06T16:30:03-0800"
-              status="completed" name="start-accession"/>
-      </workflow>
-      '
-      Dor::WorkflowService.stub(:get_workflow_xml).and_return(xml)
-      puts @item.milestones.inspect
+      
     end
+  end
+  describe 'to_solr' do
+  	it 'should include the semicolon delimited version' do
+  		xml='<?xml version="1.0" encoding="UTF-8"?>
+      <lifecycle objectId="druid:gv054hp4128">
+    <milestone date="2012-01-26T21:06:54-0800" version="2">published</milestone>
+    <milestone date="2012-10-29T16:30:07-0700" version="2">opened</milestone>
+    <milestone date="2012-11-06T16:18:24-0800" version="2">submitted</milestone>
+    <milestone date="2012-11-06T16:19:07-0800" version="2">published</milestone>
+    <milestone date="2012-11-06T16:19:10-0800" version="2">accessioned</milestone>
+    <milestone date="2012-11-06T16:19:15-0800" version="2">described</milestone>
+    <milestone date="2012-11-06T16:21:02-0800">opened</milestone>
+    <milestone date="2012-11-06T16:30:03-0800">submitted</milestone>
+    <milestone date="2012-11-06T16:35:00-0800">described</milestone>
+    <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
+    <milestone date="2012-11-06T16:59:39-0800">published</milestone>
+		</lifecycle>
+      ' 
+      xml=Nokogiri::XML(xml)
+  		@lifecycle_vals=[]
+  		Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
+  		Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
+  		versionMD=mock(Dor::VersionMetadataDS)
+  		versionMD.stub(:current_version_id).and_return(1)
+  		@item.stub(:versionMetadata).and_return(versionMD)
+  		solr_doc=@item.to_solr
+  		lifecycle=solr_doc['lifecycle_display']
+  		#lifecycle_display should have the semicolon delimited version
+  		lifecycle.include?("published:2012-01-27T05:06:54Z;1").should == true
+  		#published date should be the first published date
+  		solr_doc['published_dt'].should == solr_doc['published_earliest_dt']
+  	end 
   end
 end

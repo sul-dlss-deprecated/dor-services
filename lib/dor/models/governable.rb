@@ -12,6 +12,35 @@ module Dor
     def initiate_apo_workflow(name)
       self.initialize_workflow(name, 'dor', !self.new_object?)
     end
+    def ato_solr(solr_doc=Hash.new, *args)
+    xml='<rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+          xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:hydra="http://projecthydra.org/ns/relations#">
+          <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
+            <fedora-model:hasModel rdf:resource="info:fedora/testObject"/>
+            <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
+          </rdf:Description>
+        </rdf:RDF>'
+        
+    puts solr_doc.inspect
+      rels_doc = Nokogiri::XML(xml)#(self.datastreams['RELS-EXT'].content)
+       collections=rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection','fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' 	)
+       collections.each do |collection_node| 
+        druid=collection_node['resource']
+        druid=druid.gsub('info:fedora/','')
+        collection_object=Dor.find(druid)
+        add_solr_value(solr_doc, "collection_title", collection_object.label, :string, [:searchable, :facetable])
+       end
+       
+       apos=rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy','hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' 	)
+       apos.each do |apo|node|
+        druid=apo_node['resource']
+        druid=druid.gsub('info:fedora/','')
+        apo_object=Dor.find(druid)
+        add_solr_value(solr_doc, "apo_title", apo_object.label, :string, [:searchable, :facetable])
+       end
+       solr_doc
+    puts solr_doc.inspect
+    end
 	def reset_to_apo_default()
         rights_metadata_ds = self.rightsMetadata
         #get the apo for this object

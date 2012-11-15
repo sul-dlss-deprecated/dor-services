@@ -213,15 +213,25 @@ module Dor
     def to_solr(solr_doc=Hash.new, *args)
       doc = self.ng_xml
       if doc.root['type']
+    	shelved_file_count=0
+    	content_file_count=0
+    	resource_count=0
         add_solr_value(solr_doc, "content_type", doc.root['type'], :string, [:facetable])
         doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
+        resource_count+=1
           resource.xpath('file').each do |file|
-            add_solr_value(solr_doc, "content_file", file['id'], :string, [:searchable, :displayable])
+            #add_solr_value(solr_doc, "content_file", file['id'], :string, [:searchable, :displayable])
+            content_file_count+=1
             if file['shelve'] == 'yes'
-              add_solr_value(solr_doc, "shelved_content_file", file['id'], :string, [:searchable, :displayable])
+              shelved_file_count+=1
+              #add_solr_value(solr_doc, "shelved_content_file", file['id'], :string, [:searchable, :displayable])
             end
           end
         end
+        add_solr_value(solr_doc, "content_file_count", content_file_count.to_s, :string, [:searchable, :displayable])
+        add_solr_value(solr_doc, "shelved_content_file_count", shelved_file_count.to_s, :string, [:searchable, :displayable])
+		   	add_solr_value(solr_doc, "resource_count", resource_count.to_s, :string, [:searchable, :displayable])
+	
       end
       solr_doc
     end

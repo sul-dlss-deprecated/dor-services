@@ -25,6 +25,7 @@ describe Dor::ContentMetadataDS do
     </resource>
     </contentMetadata>'
     Dor::Item.stub(:find).and_return(@item)
+		
   end
   describe 'add_resource' do
     before(:all){
@@ -85,6 +86,7 @@ describe Dor::ContentMetadataDS do
         resources.first()['sequence'].should == '1'
         
       end
+    end
     end
     describe 'remove_file' do
       it 'should remove the file' do
@@ -181,5 +183,19 @@ describe Dor::ContentMetadataDS do
         @item.contentMetadata.update_resource_label '0001', 'book'
       end
     end
-  end
+    describe 'to_solr' do
+    	it 'should generate a shelved file count' do
+    		doc=@item.contentMetadata.to_solr    
+    		doc['shelved_content_file_count_display'].first.should == '1'
+    	end
+    	it 'should generate a resource count' do
+    		doc=@item.contentMetadata.to_solr
+    		doc['resource_count_display'].first.should == '1'
+    	end
+    	it 'should generate a file count' do
+    		doc=@item.contentMetadata.to_solr
+    		doc['content_file_count_display'].first.should == '2'
+    	end
+    end
+  
 end
