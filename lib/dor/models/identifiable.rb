@@ -58,7 +58,7 @@ module Dor
       super(solr_doc)
       solr_doc[Dor::INDEX_VERSION_FIELD] = Dor::VERSION
       solr_doc[solr_name('indexed_at',:date)] = Time.now.utc.xmlschema
-      solr_doc[solr_name('indexed_day',:string)] = Time.now.beginning_of_day.utc.xmlschema
+      add_solr_value(solr_doc, 'indexed_day', Time.now.beginning_of_day.utc.xmlschema, :string, [:searchable, :facetable])
       datastreams.values.each do |ds|
         unless ds.new?
           add_solr_value(solr_doc,'ds_specs',ds.datastream_spec_string,:string,[:displayable])
