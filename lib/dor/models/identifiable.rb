@@ -69,16 +69,24 @@ module Dor
        collections.each do |collection_node| 
         druid=collection_node['resource']
         druid=druid.gsub('info:fedora/','')
+        begin
         collection_object=Dor.find(druid)
         add_solr_value(solr_doc, "collection_title", collection_object.label, :string, [:searchable, :facetable])
+        rescue
+        add_solr_value(solr_doc, "collection_title", druid, :string, [:searchable, :facetable])
+        end
        end
        
        apos=rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy','hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' 	)
        apos.each do |apo_node|
         druid=apo_node['resource']
         druid=druid.gsub('info:fedora/','')
+        begin
         apo_object=Dor.find(druid)
         add_solr_value(solr_doc, "apo_title", apo_object.label, :string, [:searchable, :facetable])
+        rescue
+        add_solr_value(solr_doc, "apo_title", druid, :string, [:searchable, :facetable])
+        end
        end
        
       # Fix for ActiveFedora 3.3 to ensure all date fields are properly formatted as UTC XML Schema datetime strings
