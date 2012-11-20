@@ -2,6 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 class ProcessableItem < ActiveFedora::Base
   include Dor::Itemizable
   include Dor::Processable
+  include Dor::Versionable
 end
 
 describe Dor::Processable do
@@ -80,6 +81,7 @@ describe Dor::Processable do
   		#published date should be the first published date
   		solr_doc['published_dt'].should == solr_doc['published_earliest_dt']
   		solr_doc['status_display'].first.should == 'v4 Opened'
+  		solr_doc['version_opened_facet'].first.should == '2012-11-07'
   	end
   end
   describe 'status' do

@@ -175,9 +175,8 @@ module Dor
 
       sortable_milestones.each do |milestone, unordered_dates|
         dates = unordered_dates.sort
-        #creates the published_dt field and the like
+        #create the published_dt and published_day fields and the like
         add_solr_value(solr_doc, milestone+'_day', DateTime.parse(dates.first).beginning_of_day.utc.xmlschema.split('T').first, :string, [:searchable, :facetable])
-
         add_solr_value(solr_doc, milestone, dates.first, :date, [:searchable, :facetable])
 
         #fields for OAI havester to sort on
@@ -190,6 +189,12 @@ module Dor
 
       end
       add_solr_value(solr_doc,"status",status,:string, [:displayable])
+      if new_version_open?
+        #add a facetable field for the date when the open version was opened 
+        opened_date=sortable_milestones['opened'].sort.last
+        add_solr_value(solr_doc, "version_opened", DateTime.parse(opened_date).beginning_of_day.utc.xmlschema.split('T').first, :string, [ :searchable, :facetable])
+      end
+      add_solr_value(solr_doc, "current_version", current_version.to_s, :string, [ :displayable , :facetable])
       solr_doc
     end
 
