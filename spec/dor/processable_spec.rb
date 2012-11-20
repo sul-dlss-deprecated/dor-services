@@ -50,7 +50,7 @@ describe Dor::Processable do
     end
   end
   describe 'to_solr' do
-  	it 'should include the semicolon delimited version' do
+  	it 'should include the semicolon delimited version, an earliest published date and a status' do
   		xml='<?xml version="1.0" encoding="UTF-8"?>
       <lifecycle objectId="druid:gv054hp4128">
     <milestone date="2012-01-26T21:06:54-0800" version="2">published</milestone>
@@ -71,14 +71,53 @@ describe Dor::Processable do
   		Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
   		Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
   		versionMD=mock(Dor::VersionMetadataDS)
-  		versionMD.stub(:current_version_id).and_return(1)
+  		versionMD.stub(:current_version_id).and_return(4)
   		@item.stub(:versionMetadata).and_return(versionMD)
   		solr_doc=@item.to_solr
   		lifecycle=solr_doc['lifecycle_display']
   		#lifecycle_display should have the semicolon delimited version
-  		lifecycle.include?("published:2012-01-27T05:06:54Z;1").should == true
+  		lifecycle.include?("published:2012-01-27T05:06:54Z;2").should == true
   		#published date should be the first published date
   		solr_doc['published_dt'].should == solr_doc['published_earliest_dt']
-  	end 
+  		solr_doc['status_display'].first.should == 'v4 Opened'
+  	end
+  end
+  describe 'status' do
+  	it 'should generate a status string' do
+  	xml='<?xml version="1.0" encoding="UTF-8"?>
+      <lifecycle objectId="druid:gv054hp4128">
+    <milestone date="2012-11-06T16:19:15-0800" version="2">described</milestone>
+    <milestone date="2012-11-06T16:21:02-0800">opened</milestone>
+    <milestone date="2012-11-06T16:30:03-0800">submitted</milestone>
+    <milestone date="2012-11-06T16:35:00-0800">described</milestone>
+    <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
+    <milestone date="2012-11-06T16:59:39-0800">published</milestone>
+		</lifecycle>
+      ' 
+      xml=Nokogiri::XML(xml)
+  		@lifecycle_vals=[]
+  		Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
+  		Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
+  		versionMD=mock(Dor::VersionMetadataDS)
+  		versionMD.stub(:current_version_id).and_return(4)
+  		@item.stub(:versionMetadata).and_return(versionMD)
+  		@item.status.should == 'v4 Opened'
+  	end
+  	it 'should generate a status string' do
+  	xml='<?xml version="1.0" encoding="UTF-8"?>
+      <lifecycle objectId="druid:gv054hp4128">
+    <milestone date="2012-11-06T16:19:15-0800" version="2">described</milestone>
+    <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
+		</lifecycle>
+      ' 
+      xml=Nokogiri::XML(xml)
+  		@lifecycle_vals=[]
+  		Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
+  		Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
+  		versionMD=mock(Dor::VersionMetadataDS)
+  		versionMD.stub(:current_version_id).and_return(4)
+  		@item.stub(:versionMetadata).and_return(versionMD)
+  		@item.status.should == 'v3 In process (described, published)'
+  	end
   end
 end

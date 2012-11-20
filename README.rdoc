@@ -275,6 +275,7 @@ Values can also be configured individually:
 - <b>3.15.0</b> Use new dor-workflow-service gem
 - <b>3.16.0</b> Add methods to query and close object versions
 - <b>3.16.5</b>A number of changes to the to_solr methods to remove unneeded stuff and add stuff that makes loading facets more efficient"
+- <b>3.16.8</b>Added the ability to create a status string for and object and added that as an indexed field
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.

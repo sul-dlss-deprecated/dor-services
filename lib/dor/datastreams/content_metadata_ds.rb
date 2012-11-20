@@ -215,10 +215,18 @@ module Dor
       if doc.root['type']
     	shelved_file_count=0
     	content_file_count=0
+    	resource_type_counts={}
     	resource_count=0
         add_solr_value(solr_doc, "content_type", doc.root['type'], :string, [:facetable])
         doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
         resource_count+=1
+        if(resource['type'])
+        	if resource_type_counts[resource['type']]
+						resource_type_counts[resource['type']]+=1        	
+        	else
+        		resource_type_counts[resource['type']]=1
+        	end
+        end
           resource.xpath('file').each do |file|
             #add_solr_value(solr_doc, "content_file", file['id'], :string, [:searchable, :displayable])
             content_file_count+=1
@@ -231,7 +239,9 @@ module Dor
         add_solr_value(solr_doc, "content_file_count", content_file_count.to_s, :string, [:searchable, :displayable])
         add_solr_value(solr_doc, "shelved_content_file_count", shelved_file_count.to_s, :string, [:searchable, :displayable])
 		   	add_solr_value(solr_doc, "resource_count", resource_count.to_s, :string, [:searchable, :displayable])
-	
+				resource_type_counts.each do |key, count|
+				add_solr_value(solr_doc, key+"_resource_count", count.to_s, :string, [:searchable, :displayable])
+				end
       end
       solr_doc
     end

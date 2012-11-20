@@ -196,6 +196,10 @@ describe Dor::ContentMetadataDS do
     		doc=@item.contentMetadata.to_solr
     		doc['content_file_count_display'].first.should == '2'
     	end
+    	it 'should generate a field called image_resource_count' do
+    		doc=@item.contentMetadata.to_solr
+    		doc['image_resource_count_display'].first.should == '1'
+    	end
     end
   
 end
