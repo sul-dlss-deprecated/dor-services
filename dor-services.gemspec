@@ -36,7 +36,7 @@ Gem::Specification.new do |s|
   s.add_dependency "net-ssh"
   s.add_dependency "net-sftp"
   s.add_dependency "druid-tools", ">=0.2.1"
-  s.add_dependency "moab-versioning", ">=1.1.0"
+  s.add_dependency "moab-versioning", ">=1.1.3"
   s.add_dependency "dor-workflow-service"
 
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
