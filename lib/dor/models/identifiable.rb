@@ -64,7 +64,7 @@ module Dor
           add_solr_value(solr_doc,'ds_specs',ds.datastream_spec_string,:string,[:displayable])
         end
       end
-
+      add_solr_value(solr_doc,'title', self.label,:string,[:sortable])
       rels_doc = Nokogiri::XML(self.datastreams['RELS-EXT'].content)
        collections=rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection','fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' 	)
        collections.each do |collection_node| 
