@@ -102,6 +102,10 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
       add_solr_value(solr_doc, "#{name}_id", id, :string, [:searchable])
     }
     
+    add_solr_value(solr_doc, 'creator_title', self.find_by_terms(:objectCreator)+self.find_by_terms(:objectLabel), :string, [:sortable])
+    
+    
+    
     self.find_by_terms(:tag).each { |tag|
       (top,rest) = tag.text.split(/:/,2)
       unless rest.nil?
