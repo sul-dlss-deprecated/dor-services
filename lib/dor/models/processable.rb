@@ -189,7 +189,8 @@ module Dor
 
       end
       add_solr_value(solr_doc,"status",status,:string, [:displayable])
-      if new_version_open?
+      
+      if self.methods.include?('new_version_open?') and new_version_open?
         #add a facetable field for the date when the open version was opened 
         opened_date=sortable_milestones['opened'].sort.last
         add_solr_value(solr_doc, "version_opened", DateTime.parse(opened_date).beginning_of_day.utc.xmlschema.split('T').first, :string, [ :searchable, :facetable])

@@ -5,6 +5,11 @@ class ProcessableItem < ActiveFedora::Base
   include Dor::Versionable
 end
 
+class ProcessableOnlyItem < ActiveFedora::Base
+  include Dor::Itemizable
+  include Dor::Processable
+end
+
 describe Dor::Processable do
   
   before(:all) { stub_config   }
@@ -51,8 +56,8 @@ describe Dor::Processable do
     end
   end
   describe 'to_solr' do
-  	it 'should include the semicolon delimited version, an earliest published date and a status' do
-  		xml='<?xml version="1.0" encoding="UTF-8"?>
+    before :each do
+      xml='<?xml version="1.0" encoding="UTF-8"?>
       <lifecycle objectId="druid:gv054hp4128">
     <milestone date="2012-01-26T21:06:54-0800" version="2">published</milestone>
     <milestone date="2012-10-29T16:30:07-0700" version="2">opened</milestone>
@@ -65,15 +70,16 @@ describe Dor::Processable do
     <milestone date="2012-11-06T16:35:00-0800">described</milestone>
     <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
     <milestone date="2012-11-06T16:59:39-0800">published</milestone>
-		</lifecycle>
-      ' 
+		</lifecycle>' 
       xml=Nokogiri::XML(xml)
   		@lifecycle_vals=[]
   		Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
   		Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
-  		versionMD=mock(Dor::VersionMetadataDS)
-  		versionMD.stub(:current_version_id).and_return(4)
-  		@item.stub(:versionMetadata).and_return(versionMD)
+  		@versionMD=mock(Dor::VersionMetadataDS)
+  		@versionMD.stub(:current_version_id).and_return(4)
+    end
+  	it 'should include the semicolon delimited version, an earliest published date and a status' do
+  		@item.stub(:versionMetadata).and_return(@versionMD)
   		solr_doc=@item.to_solr
   		lifecycle=solr_doc['lifecycle_display']
   		#lifecycle_display should have the semicolon delimited version
@@ -83,6 +89,18 @@ describe Dor::Processable do
   		solr_doc['status_display'].first.should == 'v4 Opened'
   		solr_doc['version_opened_facet'].first.should == '2012-11-07'
   	end
+  	it 'should skip the versioning related steps if the item isnt versionable' do
+  		@item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
+  		@item.stub(:versionMetadata).and_return(@versionMD)
+  		solr_doc=@item.to_solr
+  		lifecycle=solr_doc['lifecycle_display']
+  		#lifecycle_display should have the semicolon delimited version
+  		lifecycle.include?("published:2012-01-27T05:06:54Z;2").should == true
+  		#published date should be the first published date
+  		solr_doc['published_dt'].should == solr_doc['published_earliest_dt']
+  		solr_doc['status_display'].first.should == 'v4 Opened'
+  		solr_doc['version_opened_facet'].nil?.should == true
+	  end
   end
   describe 'status' do
   	it 'should generate a status string' do
