@@ -95,5 +95,60 @@ it 'should add a collection' do
 	    i.initiate_apo_workflow('accessionWF')
 	  end
 	end
-
+	describe 'can_manage_item?' do
+	  it 'should match a group that has rights' do
+      @item.can_manage_item?(['dor-administrator']).should == true
+    end
+    it 'shouldnt match a group that doesnt have rights' do
+      @item.can_manage_item?(['dor-apo-metadata']).should == false
+    end
+  end
+  describe 'can_manage_desc_metadata?' do
+    it 'should match a group that has rights' do
+      @item.can_manage_desc_metadata?(['dor-apo-metadata']).should == true
+    end
+    it 'shouldnt match a group that doesnt have rights' do
+      @item.can_manage_desc_metadata?(['dor-viewers']).should == false
+    end
+  end
+  describe 'can_manage_content?' do
+    it 'should match a group that has rights' do
+      @item.can_manage_content?(['dor-administrator']).should == true
+    end
+    it 'shouldnt match a group that doesnt have rights' do
+      @item.can_manage_content?(['dor-apo-metadata']).should == false
+    end
+  end
+  describe 'can_manage_rights?' do
+    it 'should match a group that has rights' do
+      @item.can_manage_rights?(['dor-administrator']).should == true
+    end
+    it 'shouldnt match a group that doesnt have rights' do
+      @item.can_manage_rights?(['dor-apo-metadata']).should == false
+    end
+  end
+  describe 'can_manage_embargo?' do
+    it 'should match a group that has rights' do
+      @item.can_manage_embargo?(['dor-administrator']).should == true
+    end
+    it 'shouldnt match a group that doesnt have rights' do
+      @item.can_manage_embargo?(['dor-apo-metadata']).should == false
+    end
+  end
+  describe 'can_view_content?' do
+    it 'should match a group that has rights' do
+      @item.can_view_content?(['dor-viewer']).should == true
+    end
+    it 'shouldnt match a group that doesnt have rights' do
+      @item.can_view_content?(['dor-people']).should == false
+    end
+  end
+  describe 'can_view_metadata?' do
+    it 'should match a group that has rights' do
+      @item.can_view_metadata?(['dor-viewer']).should == true
+    end
+    it 'shouldnt match a group that doesnt have rights' do
+      @item.can_view_metadata?(['dor-people']).should == false
+    end
+  end
 end
