@@ -39,7 +39,7 @@ Values can also be configured individually:
 - <b>0.2.0</b> Implemented Dor::WorkflowService as a passthrough to existing DOR web services
 - <b>0.2.1</b> Added support for :object_admin_class parameter in register_object
 - <b>0.3.0</b> Added MetadataService to fetch metadata from various sources (currently Symphony and eXist/MD Toolkit)
-- <b>1.0.0</b> 
+- <b>1.0.0</b>
   - Richer response from Registration Service
   - MD Toolkit metadata handler work with non-MODS metadata
 - <b>1.0.1</b> Changed descMetadata fetcher to pull based on best available "other ID" instead of "source ID"
@@ -56,13 +56,13 @@ Values can also be configured individually:
 - <b>1.3.0</b> Added Druid class for calculation and manipulation of DRUID trees
 - <b>1.3.1</b> Rebased workflow changes that were left out of 1.3.0
 - <b>1.4.0</b> Add reindex method to Dor::Base
-- <b>1.4.1</b> 
+- <b>1.4.1</b>
   - Prettify/shrink public XML
   - Improve Dor::SearchService.gsearch parameter handling
-- <b>1.5.0</b> 
+- <b>1.5.0</b>
   - Add certificate-aware RSolr::Connection class
   - Add Dor::Base.touch(druid) to trigger reindexing without ActiveFedora
-- <b>1.6.0</b> 
+- <b>1.6.0</b>
   - Implement SdrIngestService and CleanupService
   - Turn off ActiveFedora's automatic SOLR updating
   - Add MD Toolkit metadata handler workaround for NullPointerException in eXist
@@ -70,19 +70,19 @@ Values can also be configured individually:
 - <b>1.6.2</b> Fixed configuration reference in cleanup spec
 - <b>1.6.3</b> Simplify & speed up MD Toolkit metadata handler queries
 - <b>1.6.4</b> Fix MetadataHandler spec tests to match new MD Toolkit implementation
-- <b>1.7.0</b> 
+- <b>1.7.0</b>
   - LYBERSTRUCTURE-138 Registration - read item-level agreementId from APO
   - LYBERSTRUCTURE-139 Registration - read relationships information from APO
-- <b>1.7.1</b> 
+- <b>1.7.1</b>
   - Minor tweaks to FOXML, identity metadata, and content metadata
   - Normalize whitespace in descriptive metadata text fields
 - <b>1.7.2</b> Add auto-updating Dor::Config.fedora.safeurl (url with user/pass stripped)
-- <b>2.0.0</b> <b>Major Release:</b> 
+- <b>2.0.0</b> <b>Major Release:</b>
   - Service additions: SdrIngest, JHove, Cleanup, ProvenanceMetadata
   - New functionality: Dor::SearchService#reindex(*pids) uses gsearch's XSLT internally
   - Code cleanup: Merged redundant RestClient::Resource.new() calls into a single #client method on Dor::Config.fedora and Dor::Config.gsearch
   - README formatting: Looks better in HTML, worse in text.
-- <b>2.1.0</b> Dor::Item can now build technicalMetadata datastream 
+- <b>2.1.0</b> Dor::Item can now build technicalMetadata datastream
 - <b>2.1.1</b> Workaround for misbehaving ActiveFedora::Base#datastream_names
 - <b>2.1.2</b> Add technicalMetadata to sdr_ingest_transfer's datastream list
 - <b>2.2.0</b>
@@ -91,28 +91,28 @@ Values can also be configured individually:
   - Gsearch xslt now indexes the embargoMetadata datastream
 - <b>2.2.1</b> Mark EmbargoMetadataDS and EventsDS as dirty when their setters are used
 - <b>2.2.2</b> Mark rightsMetadata as dirty when embargo is lifted
-- <b>2.3.0</b> 
+- <b>2.3.0</b>
   - Dor::WorkflowService#get_lifecycle
   - Only publish metadata if rightsMetadata says so
 - <b>2.3.1</b> Publish public xml when <access type="discover">
-- <b>2.4.0</b> 
-  - Reified workflow 
+- <b>2.4.0</b>
+  - Reified workflow
   - Cleaner MODS2DC transformation
   - More robust IdentityMetadataDS object
   - Indexing tweaks
-- <b>2.4.1</b> 
+- <b>2.4.1</b>
   - Improve Dor::Base.get_foxml()
   - Index lifecycle directly from workflow processes instead of retrieving lifecycle XML
 - <b>2.4.2</b> Restrict gsearch stylesheet to pulling XML datastreams
 - <b>2.5.0</b> Large-scale refactor of gsearch stylesheet and indexing methods
 - <b>2.5.1</b> Use the gsearch REST service for Dor::SearchService.reindex()
 - <b>2.5.2</b> Fix xalan/saxon/libxslt issues in gsearch XSLT
-- <b>2.5.3</b> 
+- <b>2.5.3</b>
   - Handle empty <lifecycle> queries instead of a 404 exception
-  - Hotfix for public xml publishing from 2.3.1 
+  - Hotfix for public xml publishing from 2.3.1
 - <b>2.5.4</b> Lock ActiveFedora at 3.0.4 for the time being -- higher versions expect a fedora.yml file that we don't provide
 - <b>2.6.0</b> First usable release of reified workflow objects
-- <b>2.6.1</b> 
+- <b>2.6.1</b>
   - Publish MODS descMetadata alongside public XML
   - gsearch style sheet updates
 - <b>2.6.2</b> Add relationship metadata (straight RELS-EXT clone) to public XML
@@ -148,7 +148,7 @@ Values can also be configured individually:
   - Declare contentMetadata as control group 'M'
 - <b>3.0.5</b>
   - Replace Config#define_custom_fields! and Config#after_config! with real callbacks
-  - Make post-configuration callback more tolerant of omitted blocks and values 
+  - Make post-configuration callback more tolerant of omitted blocks and values
 - <b>3.0.6</b>
   - Update dependencies to ActiveFedora ~>3.3.2 and confstruct >=0.2.2
   - Improve indexing of workflows and events datastreams
@@ -185,7 +185,7 @@ Values can also be configured individually:
   - Add status booleans (completed? error? blocked? waiting? ready?) to workflow processes
   - Registration bugfix: Don't try to save datastreams if there's no real object underneath
 - <b>3.3.6</b> Recover gracefully (with a warning) from ActiveFedora::Base.load_from_solr() exceptions
-- <b>3.3.7</b> 
+- <b>3.3.7</b>
   - Load workflows datastream XML directly from workflow service
   - Use ActiveFedora 4.0.0.rc20 until final 4.0.0 release
   - Minor solr indexing fixes
@@ -212,7 +212,7 @@ Values can also be configured individually:
   - Index workflow ready/blocked states
   - Add workflow name and archive totals to WorkflowObject index
 - <b>3.5.1</b> Hotfix for solrizing malformed tags
-- <b>3.5.2</b> 
+- <b>3.5.2</b>
   - Fix empty datastream check in Dor::Processable#build_datastream to include cases where the content
     is equivalent to the default XML template for the datastream class
 - <b>3.6.0</b>
@@ -220,7 +220,7 @@ Values can also be configured individually:
   - Add contentMetadata/@type migration
   - Take steps to ensure Upgradables idempotence
   - Record remediation migrations in events datastream
-- <b>3.6.1</b> 
+- <b>3.6.1</b>
   - Restore adminPolicy to identityMetadataDS (for backward compatibility)
   - Ensure correct content model assertions
   - Remediated objects are tagged with the version of dor-services that updated them
@@ -237,7 +237,7 @@ Values can also be configured individually:
 - <b>3.8.2</b> SDR Ingest service hotfixes
 - <b>3.8.3</b> Fix Timeout...rescue bug in dor-indexer
 - <b>3.8.4</b> More robust exception handling in RegistrationService and dor-indexer
-- <b>3.9.0</b> 
+- <b>3.9.0</b>
   - Use options hash for Dor::WorkflowService update workflow and error methods
   - Move REST registration logic from Argo's ObjectsController#create to Dor::RegistrationService#create_from_request
   - Monkey patch ActiveFedora::RelsExtDatastream.short_predicate to create missing mappings on the fly.
@@ -258,14 +258,14 @@ Values can also be configured individually:
 - <b>3.11.3</b> Use correct Dor::Exception when opening a new version
 - <b>3.11.4</b> Add a new 'tags' method to the item, which will return an array of tags; also add a new method to get the tagged content-type
 - <b>3.11.5</b> Bump required version of druid-tools gem to 0.2.1
-- <b>3.12.0</b> Added some update services for identity metadata, rights metadata, and desc metadata 
-- <b>3.12.2</b> 
+- <b>3.12.0</b> Added some update services for identity metadata, rights metadata, and desc metadata
+- <b>3.12.2</b>
    - Autoload the TechnicalMetadataService whenever dor-services is required
    - versionMetadata added at object creation and remediation
 - <b>3.13.0</b> Create a Dor::DigitalStacksService.stacks_storage_dir method
 - <b>3.13.1</b> Patch to create workflows correctly for sdr
 - <b>3.13.2</b> Embargo Update should update the datastream</b>
-- <b>3.13.3</b> Another embargo fix</b> 
+- <b>3.13.3</b> Another embargo fix</b>
 - <b>3.13.4</b> initiate_apo_workflow does not create workflows datastream when an object is new</b>
 - <b>3.14.0</b>
   - technicalMetadata bugfixes
@@ -277,6 +277,7 @@ Values can also be configured individually:
 - <b>3.16.5</b> A number of changes to the to_solr methods to remove unneeded stuff and add stuff that makes loading facets more efficient"
 - <b>3.16.8</b> Added the ability to create a status string for and object and added that as an indexed field
 - <b>3.16.9</b> Using moab-versioning >= 1.1.3
+- <b>3.17.0</b> Versionable#close_version now archives versioningWF workflow.  Requires a new Dor::Config param, dor_services.url
 
 == Copyright
 
