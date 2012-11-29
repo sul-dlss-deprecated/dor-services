@@ -83,14 +83,25 @@ describe Dor::Describable do
       @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
   		@item.datastreams['descMetadata'].content = mods.to_s
 		  @item.stub(:public_relationships).and_return(relationships)
-		  Dor::Item.stub(:find).and_return(@item)
+		  
+		  @collection = instantiate_fixture('druid:ab123cd4567', Dor::Item)
+		  mods=Nokogiri::XML(read_fixture('ex1_mods.xml'))
+      @collection.datastreams['descMetadata'].content = mods.to_s
+      
+		  Dor::Item.stub(:find)do |pid|
+		    if pid == 'druid:ab123cd4567'
+		      @item
+	      else
+	        @collection
+        end
+	    end
   		xml = @item.add_collection_reference
       xml=Nokogiri::XML(xml)
       collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
       collections.length.should == 1
       collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
       collection_title.length.should ==1
-      collection_title.first.content.should == 'Slides, IA, Geodesic Domes [1 of 2]'
+      collection_title.first.content.should == 'complete works of Henry George'
     end
     it "Doesnt add a relatedItem for collection if there is an existing one" do
       mods = read_fixture('ex2_related_mods.xml')
@@ -127,7 +138,8 @@ describe Dor::Describable do
  								</titleInfo>
  						 </mods>
  						 XML
- 			@item.instance_eval{get_collection_title @item}.should == 'Foxml Test Object'
+ 						 
+ 			Dor::Describable.get_collection_title(@item).should == 'Foxml Test Object'
     end
     it 'should get the prefered citation if there is one' do
        @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
@@ -140,7 +152,7 @@ describe Dor::Describable do
  								<note type="preferredCitation">Hello world</note>
  						 </mods>
  						 XML
- 			@item.instance_eval{get_collection_title @item}.should == 'Hello world'
+ 			Dor::Describable.get_collection_title(@item).should == 'Hello world'
     end
     it 'should include a subtitle if there is one' do
        @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
@@ -153,7 +165,7 @@ describe Dor::Describable do
  								</titleInfo>
  						 </mods>
  						 XML
- 			@item.instance_eval{get_collection_title @item}.should == 'Foxml Test Object (Hello world)'
+ 			Dor::Describable.get_collection_title(@item).should == 'Foxml Test Object (Hello world)'
     end
   end
   

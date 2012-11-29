@@ -65,7 +65,7 @@ module Dor
         druid=collection_node['resource']
         druid=druid.gsub('info:fedora/','')
         collection_obj=Dor::Item.find(druid)
-        collection_title = get_collection_title(collection_obj)
+        collection_title = Dor::Describable.get_collection_title(collection_obj)
         node=xml.search('//mods:mods', 'mods' => 'http://www.loc.gov/mods/v3')
         node=node.first
         related_item_node=Nokogiri::XML::Node.new('relatedItem',xml)
@@ -149,18 +149,9 @@ module Dor
 				} 
 				self.descMetadata.content=builder.to_xml
 			end
-			private
-			#generic updater useful for updating things like title or subtitle which can only have a single occurance and must be present
-			def update_simple_field(field,new_val)
-				ds_xml=self.descMetadata.ng_xml
-				ds_xml.search('//'+field,'mods' => 'http://www.loc.gov/mods/v3').each do |node|
-					node.content=new_val
-					return true
-				end
-				return false
-			end
-			def get_collection_title(obj)
-			  xml=self.descMetadata.ng_xml
+			
+			def self.get_collection_title(obj)
+			  xml=obj.descMetadata.ng_xml
 			  preferred_citation=xml.search('//mods:mods/mods:note[@type=\'preferredCitation\']','mods' => 'http://www.loc.gov/mods/v3')
 			  title=''
 			  if preferred_citation.length == 1
@@ -174,6 +165,18 @@ module Dor
 	      end
 	      title
 		  end
+			
+			private
+			#generic updater useful for updating things like title or subtitle which can only have a single occurance and must be present
+			def update_simple_field(field,new_val)
+				ds_xml=self.descMetadata.ng_xml
+				ds_xml.search('//'+field,'mods' => 'http://www.loc.gov/mods/v3').each do |node|
+					node.content=new_val
+					return true
+				end
+				return false
+			end
+			
 		
 	end
 end
