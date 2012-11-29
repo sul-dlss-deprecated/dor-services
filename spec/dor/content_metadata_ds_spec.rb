@@ -200,6 +200,10 @@ describe Dor::ContentMetadataDS do
     		doc=@item.contentMetadata.to_solr
     		doc['image_resource_count_display'].first.should == '1'
     	end
+    	it 'should generate a field called first_shelved_image' do
+  	    doc=@item.contentMetadata.to_solr
+  	    doc['first_shelved_image_display'].first.should == 'gw177fc7976_05_0001.jp2'
+  	  end
     end
   
 end

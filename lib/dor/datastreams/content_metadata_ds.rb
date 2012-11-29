@@ -217,6 +217,7 @@ module Dor
     	content_file_count=0
     	resource_type_counts={}
     	resource_count=0
+    	first_shelved_image=nil
         add_solr_value(solr_doc, "content_type", doc.root['type'], :string, [:facetable])
         doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
         resource_count+=1
@@ -228,11 +229,12 @@ module Dor
         	end
         end
           resource.xpath('file').each do |file|
-            #add_solr_value(solr_doc, "content_file", file['id'], :string, [:searchable, :displayable])
             content_file_count+=1
             if file['shelve'] == 'yes'
               shelved_file_count+=1
-              #add_solr_value(solr_doc, "shelved_content_file", file['id'], :string, [:searchable, :displayable])
+              if first_shelved_image.nil? and file['id'].match(/jp2$/)
+                first_shelved_image=file['id']
+              end
             end
           end
         end
@@ -242,6 +244,9 @@ module Dor
 				resource_type_counts.each do |key, count|
 				add_solr_value(solr_doc, key+"_resource_count", count.to_s, :string, [:searchable, :displayable])
 				end
+				if not first_shelved_image.nil?
+			    add_solr_value(solr_doc, "first_shelved_image", first_shelved_image, :string, [:displayable])
+			  end
       end
       solr_doc
     end
