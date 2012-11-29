@@ -6,9 +6,9 @@ Dor.configure do
     key_file File.join(cert_dir,"spec.key")
     key_pass ''
   end
-  
+
   fedora.url 'http://fedoraUser:fedoraPass@example.edu/fedora'
-  
+
   suri do
     mint_ids true
     id_namespace 'druid'
@@ -16,12 +16,12 @@ Dor.configure do
     user 'hydra-etd'
     pass 'lyberteam'
   end
-  
+
   metadata do
     exist.url 'http://mdtkUser:mdtkPass@example.edu/exist/rest/'
     catalog.url 'http://example.edu/catalog/mods'
   end
-  
+
   gsearch do
     rest_url 'https://example.edu/gsearch/rest'
     url 'https://example.edu/solr/gsearch'
@@ -29,4 +29,5 @@ Dor.configure do
   solrizer.url 'https://example.edu/solr/solrizer'
   workflow.url 'http://example.edu/workflow/'
   sdr.url 'http://example.edu/sdr'
+  dor_services.url 'https://example.edu/dor'
 end

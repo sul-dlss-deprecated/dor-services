@@ -12,9 +12,9 @@ Gem::Specification.new do |s|
   s.summary     = "Ruby implmentation of DOR services used by the SULAIR Digital Library"
   s.description = "Contains classes to register objects and initialize workflows"
   s.executables = ["dor-indexer","dor-indexerd"]
- 
+
   s.required_rubygems_version = ">= 1.3.6"
-  
+
   # Runtime dependencies
 
   s.add_dependency "active-fedora", ">=4.0.0"
@@ -37,7 +37,7 @@ Gem::Specification.new do |s|
   s.add_dependency "net-sftp"
   s.add_dependency "druid-tools", ">=0.2.1"
   s.add_dependency "moab-versioning", ">=1.1.3"
-  s.add_dependency "dor-workflow-service"
+  s.add_dependency "dor-workflow-service", ">=1.1.0"
 
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects
@@ -51,7 +51,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec-mocks", ">= 2.11.2"
   s.add_development_dependency "rspec-expectations", ">= 2.11.2"
   s.add_development_dependency "yard"
- 
+
   s.files        = Dir.glob("lib/**/*") + Dir.glob("config/**/*") + Dir.glob('bin/*')
   s.bindir       = 'bin'
   s.require_path = 'lib'

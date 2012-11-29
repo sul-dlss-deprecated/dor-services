@@ -8,12 +8,12 @@ module Dor
     include ActiveSupport::Callbacks
     define_callbacks :initialize
     define_callbacks :configure
-    
+
     def initialize *args
       super *args
       run_callbacks(:initialize) { }
     end
-    
+
     def configure *args
       result = self
       temp_v = $-v
@@ -25,16 +25,16 @@ module Dor
       ensure
         $-v = temp_v
       end
-      Dor::WorkflowService.configure result.workflow.url
+      Dor::WorkflowService.configure result.workflow.url, :dor_services_url => result.dor_services.url
       return result
     end
-    
+
     def autoconfigure(url, cert_file=Config.ssl.cert_file, key_file=Config.ssl.key_file, key_pass=Config.ssl.key_pass)
       client = make_rest_client(url, cert_file, key_file, key_pass)
       config = Confstruct::Configuration.symbolize_hash JSON.parse(client.get :accept => 'application/json')
       self.configure(config)
     end
-    
+
     def sanitize
       yaml = YAML.dump(self)
       yaml.gsub!(/^.+!ruby\/object.+$/,"")
@@ -44,7 +44,7 @@ module Dor
       result.keys.each { |opt| result[opt].reject! { |k,v| k.to_s =~ /^local_/ } }
       result
     end
-    
+
     def make_rest_client(url, cert=Config.ssl.cert_file, key=Config.ssl.key_file, pass=Config.ssl.key_pass)
       params = {}
       params[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(cert)) if cert
@@ -59,7 +59,7 @@ module Dor
       )
       ::RSolr::ClientCert.connect(opts).extend(RSolr::Ext::Client)
     end
-    
+
     set_callback :initialize, :after do |config|
       config.deep_merge!({
         :fedora => {
@@ -119,7 +119,7 @@ module Dor
             conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
           end
         end
-        ActiveFedora.init 
+        ActiveFedora.init
         ActiveFedora.fedora_config_path = File.expand_path('../../../config/dummy.yml', __FILE__)
       end
     end
@@ -127,7 +127,7 @@ module Dor
     # Act like an ActiveFedora.configurator
 
     def init *args; end
-    
+
     def fedora_config
       fedora_uri = URI.parse(self.fedora.url)
       connection_opts = { :url => self.fedora.safeurl, :user => fedora_uri.user, :password => fedora_uri.password }
@@ -135,11 +135,11 @@ module Dor
       connection_opts[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(self.ssl.key_file),self.ssl.key_pass) if self.ssl.key_file.present?
       connection_opts
     end
-    
+
     def solr_config
       { :url => self.solrizer.url }
     end
-    
+
     def predicate_config
       YAML.load(File.read(File.expand_path('../../../config/predicate_mappings.yml',__FILE__)))
     end
