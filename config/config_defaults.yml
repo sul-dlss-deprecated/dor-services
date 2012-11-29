@@ -1,14 +1,14 @@
---- 
-:cleanup: 
+---
+:cleanup:
   :local_workspace_root: /dor/workspace
   :local_export_home: /dor/export
 :ssl:
-  :cert_file: 
-  :key_file: 
+  :cert_file:
+  :key_file:
   :key_pass: ""
-:fedora: 
-  :url: 
-  :safeurl: 
+:fedora:
+  :url:
+  :safeurl:
 :stomp:
   :host:
   :user: ""
@@ -18,18 +18,18 @@
 :solrizer:
   :url:
   :opts: {}
-:gsearch: 
-  :rest_url: 
-  :url: 
-:metadata: 
-  :catalog: 
-    :url: 
-  :exist: 
-    :url: 
-:sdr: 
+:gsearch:
+  :rest_url:
+  :url:
+:metadata:
+  :catalog:
+    :url:
+  :exist:
+    :url:
+:sdr:
   :local_workspace_root: /dor/workspace
   :local_export_home: /dor/export
-  :datastreams: 
+  :datastreams:
     :rightsMetadata: optional
     :descMetadata: required
     :sourceMetadata: optional
@@ -39,19 +39,21 @@
     :technicalMetadata: required
     :contentMetadata: required
   :rest_url: ""
-:stacks: 
+:stacks:
   :local_workspace_root: /dor
   :storage_root: /stacks
-  :document_cache_storage_root: 
-  :host: 
-  :user: 
-  :document_cache_host: 
-  :document_cache_user: 
-:suri: 
-  :pass: 
+  :document_cache_storage_root:
+  :host:
+  :user:
+  :document_cache_host:
+  :document_cache_user:
+:suri:
+  :pass:
   :id_namespace: druid
-  :url: 
-  :user: 
+  :url:
+  :user:
   :mint_ids: false
-:workflow: 
-  :url: 
+:workflow:
+  :url:
+:dor_services:
+  :url:
