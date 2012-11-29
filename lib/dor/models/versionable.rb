@@ -3,11 +3,11 @@ module Dor
     extend ActiveSupport::Concern
     include Processable
     include Upgradable
-    
+
     included do
       has_metadata :name => 'versionMetadata', :type => Dor::VersionMetadataDS, :label => 'Version Metadata', :autocreate => true
     end
-    
+
     # Increments the version number and initializes versioningWF for the object
     # @raise [Dor::Exception] if the object hasn't been accessioned, or if a version is already opened
     def open_new_version
@@ -23,14 +23,14 @@ module Dor
       ds = datastreams['versionMetadata']
       ds.increment_version
       ds.content = ds.ng_xml.to_s
-      ds.save unless self.new_object? 
+      ds.save unless self.new_object?
       initialize_workflow 'versioningWF'
     end
-    
+
     def current_version
       datastreams['versionMetadata'].current_version_id
     end
-    
+
     # Sets versioningWF:submit-version to completed and initiates accessionWF for the object
     # @raise [Dor::Exception] if the object hasn't been opened for versioning, or if accessionWF has
     #   already been instantiated
@@ -42,6 +42,7 @@ module Dor
       # TODO setting start-accession to completed could happen later if we have a universal robot to kick of accessioning across workflows,
       # or if there's a review step after versioning is closed
       Dor::WorkflowService.update_workflow_status 'dor', pid, 'versioningWF', 'start-accession', 'completed'
+      Dor::WorkflowService.archive_workflow 'dor', pid, 'versioningWF'
       initialize_workflow 'accessionWF'
     end
 
@@ -54,6 +55,6 @@ module Dor
     # Following chart of processes on this consul page: https://consul.stanford.edu/display/chimera/Versioning+workflows
     alias_method :start_version,  :open_new_version
     alias_method :submit_version, :close_version
-    
+
   end
 end
