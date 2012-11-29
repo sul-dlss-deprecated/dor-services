@@ -278,7 +278,7 @@ Values can also be configured individually:
 - <b>3.16.8</b> Added the ability to create a status string for and object and added that as an indexed field
 - <b>3.16.9</b> Using moab-versioning >= 1.1.3
 - <b>3.17.0</b> Versionable#close_version now archives versioningWF workflow.  Requires a new Dor::Config param, dor_services.url
-
+- <b>3.17.1</b> Added roles and a solr field for the first shelved image in an object
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.
