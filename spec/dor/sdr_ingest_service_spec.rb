@@ -1,25 +1,22 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'dor/services/sdr_ingest_service'
+
 require 'fileutils'
 
 describe Dor::SdrIngestService do
 
-  attr_reader :fixture_dir
-
   before(:all) do
-    stub_config
-   # @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"../fixtures")
-   # Dor::Config.push! do
-   #   sdr do
-   #     local_workspace_root File.join(fixture_dir, "workspace")
-   #     local_export_home File.join(fixture_dir, "export")
-   #   end
-   #end
-
-    export_dir = Dor::Config.sdr.local_export_home
-    if (File.exist?(export_dir))
-      FileUtils.rm_r(export_dir)
+    @fixtures=fixtures=Pathname(File.dirname(__FILE__)).join("../fixtures")
+    Dor::Config.push! do
+      sdr.local_workspace_root fixtures.join("workspace").to_s
+      sdr.local_export_home fixtures.join("export").to_s
     end
-    Dir.mkdir(export_dir)
+
+    @export_dir = Pathname(Dor::Config.sdr.local_export_home)
+    if @export_dir.exist? and @export_dir.basename.to_s == 'export'
+      @export_dir.rmtree
+    end
+    @export_dir.mkdir
 
     @druid = 'druid:aa123bb4567'
     @agreement_id = 'druid:xx098yy7654'
@@ -27,14 +24,16 @@ describe Dor::SdrIngestService do
   end
   
   after(:all) do
-    unstub_config
-    #Dor::Config.pop!
+    Dor::Config.pop!
+    if @export_dir.exist? and @export_dir.basename.to_s == 'export'
+      @export_dir.rmtree
+    end
   end
   
   it "can access configuration settings" do
     sdr = Dor::Config.sdr
-    sdr.local_workspace_root.should eql File.join(@fixture_dir, "workspace")
-    sdr.local_export_home.should eql File.join(@fixture_dir, "export")
+    sdr.local_workspace_root.should eql @fixtures.join("workspace").to_s
+    sdr.local_export_home.should eql @fixtures.join("export").to_s
   end
 
   it "can find the fixtures workspace and export folders" do
@@ -79,48 +78,52 @@ describe Dor::SdrIngestService do
   end
 
   specify "SdrIngestService.transfer" do
-    pending "need to fix creation of content subdir symlink"
-    druid = 'druid:ab123cd4567'
-    fixtures = Pathname(@fixture_dir)
-    workspace = fixtures.join('workspace')
-    dor_item = mock('dor item')
-    dor_item.stub(:druid).and_return(druid)
-    druid_tool = DruidTools::Druid.new(druid,workspace.to_s)
-    object_dir = Pathname(druid_tool.path)
-    DruidTools::Druid.should_receive(:new).with(druid,Dor::Config.sdr.local_workspace_root).
-        and_return(druid_tool)
-    signature_catalog = mock("signature catalog")
-    signature_catalog.stub(:version_id).and_return(1)
-    Dor::SdrIngestService.should_receive(:get_signature_catalog).and_return(signature_catalog)
-    metadata_dir = Pathname(druid_tool.path('metadata'))
-    Dor::SdrIngestService.should_receive(:extract_datastreams).with(dor_item,metadata_dir)
-    version_inventory = mock("version inventory")
-    Dor::SdrIngestService.should_receive(:get_version_inventory).with(metadata_dir, druid, 2).
-        and_return(version_inventory)
-    bag_dir = Pathname(Dor::Config.sdr.local_export_home).join(druid)
-    # content_dir.should_receive(:make_symlink)
-    bagger = mock(Moab::Bagger)
-    Moab::Bagger.should_receive(:new).with(version_inventory, signature_catalog, object_dir, bag_dir).
-        and_return(bagger)
-    bagger.should_receive(:fill_bag).with(:depositor)
-    LyberUtils::FileUtilities.should_receive(:tar_object).with(bag_dir.to_s).and_return(true)
-    Dor::SdrIngestService.stub(:read_sdr_workflow_xml).and_return(true)
-    dor_item.should_receive(:create_workflow).with('sdrIngestWF')
+    druid = 'druid:dd116zh0343'
+    dor_item = mock("dor_item")
+    dor_item.should_receive(:initialize_workflow).with('sdrIngestWF', 'sdr', false)
+    dor_item.stub(:pid).and_return(druid)
+    signature_catalog=Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
+    Dor::SdrIngestService.should_receive(:get_signature_catalog).with(druid).
+        and_return(signature_catalog)
+    metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
+    Dor::SdrIngestService.should_receive(:extract_datastreams).with(dor_item, an_instance_of(DruidTools::Druid)).
+        and_return(metadata_dir)
     Dor::SdrIngestService.transfer(dor_item)
+    @fixtures.join('export/dd116zh0343.tar').exist?.should == true
+    files = Array.new
+    @fixtures.join('export/dd116zh0343').find { |f| files << f.relative_path_from(@fixtures).to_s }
+    files.sort.should == [
+        "export/dd116zh0343",
+        "export/dd116zh0343/bag-info.txt",
+        "export/dd116zh0343/bagit.txt",
+        "export/dd116zh0343/data",
+        "export/dd116zh0343/data/content",
+        "export/dd116zh0343/data/content/folder1PuSu",
+        "export/dd116zh0343/data/content/folder1PuSu/story3m.txt",
+        "export/dd116zh0343/data/content/folder1PuSu/story5a.txt",
+        "export/dd116zh0343/data/content/folder3PaSd",
+        "export/dd116zh0343/data/content/folder3PaSd/storyDm.txt",
+        "export/dd116zh0343/data/content/folder3PaSd/storyFa.txt",
+        "export/dd116zh0343/data/metadata",
+        "export/dd116zh0343/data/metadata/contentMetadata.xml",
+        "export/dd116zh0343/data/metadata/tech-generated.xml",
+        "export/dd116zh0343/data/metadata/technicalMetadata.xml",
+        "export/dd116zh0343/data/metadata/versionMetadata.xml",
+        "export/dd116zh0343/manifest-md5.txt",
+        "export/dd116zh0343/manifest-sha1.txt",
+        "export/dd116zh0343/manifest-sha256.txt",
+        "export/dd116zh0343/tagmanifest-md5.txt",
+        "export/dd116zh0343/tagmanifest-sha1.txt",
+        "export/dd116zh0343/tagmanifest-sha256.txt",
+        "export/dd116zh0343/versionAdditions.xml",
+        "export/dd116zh0343/versionInventory.xml"]
   end
 
   specify "SdrIngestService.get_signature_catalog" do
-    druid = "druid:gj642zf5650"
-    druid_tool = DruidTools::Druid.new(druid,Dor::Config.sdr.local_workspace_root)
-    resource = Dor::Config.sdr.rest_client["objects/#{druid}/manifest/signatureCatalog.xml"]
-    FakeWeb.register_uri(:get, resource.url, :body => "<signatureCatalog/>")
-    Dor::SdrIngestService.get_signature_catalog(druid_tool)
-
     druid = "druid:zz000zz0000"
-    druid_tool = DruidTools::Druid.new(druid,Dor::Config.sdr.local_workspace_root)
     resource = Dor::Config.sdr.rest_client["objects/#{druid}/manifest/signatureCatalog.xml"]
     FakeWeb.register_uri(:get, resource.url, :body => '<signatureCatalog objectId="druid:zz000zz0000" versionId="0" catalogDatetime="" fileCount="0" byteCount="0" blockCount="0"/>')
-    catalog = Dor::SdrIngestService.get_signature_catalog(druid_tool)
+    catalog = Dor::SdrIngestService.get_signature_catalog(druid)
     catalog.to_xml.should =~ /<signatureCatalog/
     catalog.version_id.should == 0
   end
@@ -128,6 +131,9 @@ describe Dor::SdrIngestService do
   specify "SdrIngestService.extract_datastreams" do
     dor_item = mock("workitem")
     metadata_dir = mock("metadata dir")
+    workspace = mock("workspace")
+    workspace.stub(:path).with("metadata",true).and_return("metadata_dir")
+    Pathname.should_receive(:new).with("metadata_dir").and_return(metadata_dir)
     metadata_file = mock("metadata path")
     metadata_file.stub(:exist?).and_return(false)
     metadata_dir.should_receive(:join).at_least(5).times.and_return(metadata_file)
@@ -142,7 +148,7 @@ describe Dor::SdrIngestService do
     Dor::SdrIngestService.should_receive(:get_datastream_content).with(dor_item,'technicalMetadata','required').once.and_return(metadata_string)
     Dor::SdrIngestService.should_receive(:get_datastream_content).with(dor_item,'sourceMetadata','optional').once.and_return(metadata_string)
     Dor::SdrIngestService.should_receive(:get_datastream_content).with(dor_item,'rightsMetadata','optional').once.and_return(metadata_string)
-    Dor::SdrIngestService.extract_datastreams(dor_item, metadata_dir)
+    Dor::SdrIngestService.extract_datastreams(dor_item, workspace)
   end
 
   specify "SdrIngestService.get_version_inventory" do
@@ -162,8 +168,7 @@ describe Dor::SdrIngestService do
   end
 
   specify "SdrIngestService.get_content_inventory" do
-    fixtures = Pathname(@fixture_dir)
-    metadata_dir = fixtures.join('workspace/ab/123/cd/4567/ab123cd4567/metadata')
+    metadata_dir = @fixtures.join('workspace/ab/123/cd/4567/ab123cd4567/metadata')
     druid = 'druid:ab123cd4567'
     version_id = 2
     version_inventory = Dor::SdrIngestService.get_content_inventory(metadata_dir, druid, version_id)

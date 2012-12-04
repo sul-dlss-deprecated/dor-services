@@ -26,7 +26,7 @@ describe Dor::TechnicalMetadataService do
     @object_ids.each do |id|
       druid = "druid:#{id}"
       @druid_tool[id] = DruidTools::Druid.new(druid,@workspace_pathname.to_s)
-      repo_content_pathname = @fixtures.join('sdr_repo',id,'v1','content')
+      repo_content_pathname = @fixtures.join('sdr_repo',id,'v0001', 'data','content')
       work_content_pathname = Pathname(@druid_tool[id].content_dir)
       repo_content_inventory = Moab::FileGroup.new(:group_id=>'content').group_from_directory(repo_content_pathname)
       work_content_inventory = Moab::FileGroup.new.group_from_directory(work_content_pathname)
@@ -34,8 +34,8 @@ describe Dor::TechnicalMetadataService do
       @inventory_differences[id].compare_file_groups(repo_content_inventory, work_content_inventory)
       @deltas[id] = @inventory_differences[id].file_deltas
       @new_files[id] = Dor::TechnicalMetadataService.get_new_files(@deltas[id])
-      @repo_techmd[id] = @fixtures.join('sdr_repo',id,'v1','metadata', 'technicalMetadata.xml').read
-      @new_file_techmd[id] = Dor::TechnicalMetadataService.get_new_technical_metadata(druid, @new_files[id], @repo_techmd[id])
+      @repo_techmd[id] = @fixtures.join('sdr_repo',id,'v0001', 'data','metadata', 'technicalMetadata.xml').read
+      @new_file_techmd[id] = Dor::TechnicalMetadataService.get_new_technical_metadata(druid, @new_files[id])
       @expected_techmd[id] = Pathname(@druid_tool[id].metadata_dir).join('technicalMetadata.xml').read
     end
 
@@ -58,7 +58,7 @@ describe Dor::TechnicalMetadataService do
       Dor::TechnicalMetadataService.should_receive(:get_old_technical_metadata).with(dor_item).
           and_return(@repo_techmd[id])
       Dor::TechnicalMetadataService.should_receive(:get_new_technical_metadata).with(
-          dor_item.pid, an_instance_of(Array), an_instance_of(String)).
+          dor_item.pid, an_instance_of(Array)).
           and_return(@new_file_techmd[id])
       mock_datastream = mock("datastream")
       ds_hash = {"technicalMetadata" => mock_datastream}
@@ -172,40 +172,24 @@ describe Dor::TechnicalMetadataService do
 
   specify "Dor::TechnicalMetadataService.get_new_technical_metadata" do
     @object_ids.each do |id|
-      old_techmd = id == 'du000ps9999' ? nil : @repo_techmd[id]
-      new_techmd = Dor::TechnicalMetadataService.get_new_technical_metadata("druid:#{id}", @new_files[id], old_techmd)
+      new_techmd = Dor::TechnicalMetadataService.get_new_technical_metadata("druid:#{id}", @new_files[id])
       file_nodes = Nokogiri::XML(new_techmd).xpath('//file')
       case id
         when 'dd116zh0343'
           file_nodes.size.should == 6
         when 'du000ps9999'
-          file_nodes.size.should == 5
+          file_nodes.size.should == 0
         when 'jq937jp0017'
           file_nodes.size.should == 2
       end
     end
   end
 
-  specify "Dor::TechnicalMetadataService.get_content_pathname(druid_tool)" do
-    %w(dd116zh0343 lg333cp4444).each do |id|
-      druid_tool = DruidTools::Druid.new("druid:#{id}",@workspace_pathname.to_s)
-      content_pathname = Dor::TechnicalMetadataService.get_content_pathname(druid_tool)
-      case id
-        when 'dd116zh0343'
-          # current standard object path
-          content_pathname.to_s.should == "#{@workspace_pathname.to_s}/dd/116/zh/0343/dd116zh0343/content"
-        when 'lg333cp4444'
-          # legacy workspace object
-          content_pathname.to_s.should == "#{@workspace_pathname.to_s}/lg/333/cp/4444"
-      end
-    end
-  end
-
-  specify "Dor::TechnicalMetadataService.get_fileset" do
+  specify "Dor::TechnicalMetadataService.write_fileset" do
     @object_ids.each do |id|
       temp_dir = @druid_tool[id].temp_dir
       new_files = @new_files[id]
-      filename = Dor::TechnicalMetadataService.get_fileset(temp_dir, new_files)
+      filename = Dor::TechnicalMetadataService.write_fileset(temp_dir, new_files)
       if new_files.size > 0
         Pathname(filename).read.should == new_files.join("\n") + "\n"
       else

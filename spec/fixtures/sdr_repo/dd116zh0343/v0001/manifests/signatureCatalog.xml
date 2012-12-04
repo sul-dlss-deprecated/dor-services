@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<signatureCatalog objectId="druid:dd116zh0343" versionId="1" catalogDatetime="2012-11-30T18:39:25Z" fileCount="19" byteCount="202172" blockCount="206">
+  <entry originalVersion="1" groupId="content" storagePath="folder1PuSu/story1u.txt">
+    <fileSignature size="7888" md5="e2837b9f02e0b0b76f526eeb81c7aa7b" sha1="61dfac472b7904e1413e0cbf4de432bda2a97627" sha256="61ee9dedb5ccf38a0d5ff483e3795899bac7caeb4b869fbf0bff5280f0d7814b"/>
+  </entry>
+  <entry originalVersion="1" groupId="content" storagePath="folder1PuSu/story2r.txt">
+    <fileSignature size="5983" md5="dc2be64ae43f1c1db4a068603465955d" sha1="b8a672c1848fc3d13b5f380e15835690e24600e0" sha256="d3235e64fb3c7a749182b08eda3686c2394425ed1ea829e340a340dd4a742801"/>
+  </entry>
+  <entry originalVersion="1" groupId="content" storagePath="folder1PuSu/story3m.txt">
+    <fileSignature size="5951" md5="3d67f52e032e36b641d0cad40816f048" sha1="548f349c79928b6d0996b7ff45990bdce5ee9753" sha256="6e123ae52adb47b31cc1cca65bec147332ad712583383a8dd831665aa99f0998"/>
+  </entry>
+  <entry originalVersion="1" groupId="content" storagePath="folder1PuSu/story4d.txt">
+    <fileSignature size="6307" md5="34f3f646523b0a8504f216483a57bce4" sha1="d498b513add5bb138ed4f6205453a063a2434dc4" sha256="c59182a4a2c4c7655b959d51a5a764b3014f28d28d7436baf405a69b7a8fbfc0"/>
+  </entry>
+  <entry originalVersion="1" groupId="content" storagePath="folder2PdSa/story6u.txt">
+    <fileSignature size="2534" md5="1f15cc786bfe832b2fa1e6f047c500ba" sha1="bf3af01de2afa15719d8c42a4141e3b43d06fef6" sha256="8d6bb4a0b959140ebec39d4a787701fa305b97406297fb56d3be6877594552a2"/>
+  </entry>
+  <entry originalVersion="1" groupId="content" storagePath="folder2PdSa/story7r.txt">
+    <fileSignature size="17074" md5="205271287477c2309512eb664eff9130" sha1="b23aa592ab673030ace6178e29fad3cf6a45bd32" sha256="144390145457834830a727ebc2cc6926b4ec5e07d39100f3f55f55ea30ce6b58"/>
+  </entry>
+  <entry originalVersion="1" groupId="content" storagePath="folder2PdSa/story8m.txt">
+    <fileSignature size="5643" md5="ce474f4c512953f20a8c4c5b92405cf7" sha1="af9cbf5ab4f020a8bb17b180fbd5c41598d89b37" sha256="cd30e9053c874345593f81b7feeaaa34fe0d90080a270547c0a495b36d755339"/>
+  </entry>
+  <entry originalVersion="1" groupId="content" storagePath="folder2PdSa/story9d.txt">
+    <fileSignature size="19599" md5="135cb2db6a35afac590687f452053baf" sha1="e74274d7bc06ef44a408a008f5160b3756cb2ab0" sha256="cd1731ce269c314fea60545deee63a430f3cefc54736ba67c70654703a8d464d"/>
+  </entry>
+  <entry originalVersion="1" groupId="content" storagePath="folder3PaSd/storyBu.txt">
+    <fileSignature size="14964" md5="8f0a828f3e63cd18232c191ab0c5805c" sha1="b6cb7aa60dd07b4dcc6ab709437e574912f25f30" sha256="c0d7d329f4da726b2e6536d5f11d535e359c8c69830525217c453c9a67e4b7d1"/>
+  </entry>
+  <entry originalVersion="1" groupId="content" storagePath="folder3PaSd/storyCr.txt">
+    <fileSignature size="23485" md5="3486492e40b4c342b25ae4f9c64f06ee" sha1="a1654e9d3cf80242cc3669f89fb41b2ec5e62cb7" sha256="2f9e8518246f08937da2c8908bedea6e8e7243e3a6a65a47dc4a8de6ff491832"/>
+  </entry>
+  <entry originalVersion="1" groupId="content" storagePath="folder3PaSd/storyDm.txt">
+    <fileSignature size="25336" md5="233228c7e1f473dad1d2c673157dd809" sha1="83c57f595aa6a72f80d47900cc0d10e589f31ea5" sha256="11160902414c0c4603b3774cec6e86d8308c83b1c62cad86f218e59bdf4f764a"/>
+  </entry>
+  <entry originalVersion="1" groupId="content" storagePath="folder3PaSd/storyEd.txt">
+    <fileSignature size="41765" md5="0e57176032451fd6d0509b6172790b8f" sha1="b191e11dc1768c47852e6d2a235094843be358ff" sha256="82ec8ee9782672278b38fb0ed9d0f8f588a8121d388ae407f54f6537f3b6cb09"/>
+  </entry>
+  <entry originalVersion="1" groupId="metadata" storagePath="contentMetadata.xml">
+    <fileSignature size="3793" md5="be288dd3cd46592fcb96828cb537a245" sha1="69af6de5fc6d1edb64a31ffbd2e9c30c79b40034" sha256="a472c064b9a1494d730d575ae09e480e8b485e28208203dd94710c045ca8ae63"/>
+  </entry>
+  <entry originalVersion="1" groupId="metadata" storagePath="descMetadata.xml">
+    <fileSignature size="3581" md5="b83c60b7f92c9f3de33205b6a7a180a1" sha1="14872a73e9aad29d859c79123b8deb5e418c3db6" sha256="dca666ba28dfdbc69b0d3464b605338c043e8a3b9f084abac571f0bc0863bd46"/>
+  </entry>
+  <entry originalVersion="1" groupId="metadata" storagePath="identityMetadata.xml">
+    <fileSignature size="880" md5="5a01eef164600fa9e46bd39c4e238ea3" sha1="c1968a2c9220485221bfec8bdf339df7d8e43fb1" sha256="78e4f4d21899cd21bf306119df20f81efdf75c2b4346edc35b0280bd90f0b032"/>
+  </entry>
+  <entry originalVersion="1" groupId="metadata" storagePath="provenanceMetadata.xml">
+    <fileSignature size="8532" md5="aa66f3aa50d78d4407e3bd70a056d080" sha1="5d3344d62c44890c1404e3e4a3f1bc505d7e766b" sha256="3025750e7d258ff149045a76e4c871a2809ea1247d9206e1632c755e9cb39335"/>
+  </entry>
+  <entry originalVersion="1" groupId="metadata" storagePath="relationshipMetadata.xml">
+    <fileSignature size="358" md5="ff722eff2c724e3e403b04400a3fdec9" sha1="0028d6d6819ff597c46eb92beff1e643de0edaae" sha256="3e1dc6c8b4a2a29f7f664d1399086632cafaa49e9db63156badc017e862acf56"/>
+  </entry>
+  <entry originalVersion="1" groupId="metadata" storagePath="technicalMetadata.xml">
+    <fileSignature size="8275" md5="6d3ff49c7ac178e72e7c9792559a7297" sha1="0034f6dd7896d8341e9adb5dc2e020fa464d3a60" sha256="6a426b497a5ceb20837a9dd6139e708af4df432108fcea3fdf2610db110fa526"/>
+  </entry>
+  <entry originalVersion="1" groupId="metadata" storagePath="versionMetadata.xml">
+    <fileSignature size="224" md5="6e46b053d05d8672f040c2f28300ca32" sha1="582ac83068914c91fa19aee3312cf0d563813f66" sha256="43a4e113e7feea6b6ab0468365ead63387f20e38560101621284867d71d74475"/>
+  </entry>
+</signatureCatalog>

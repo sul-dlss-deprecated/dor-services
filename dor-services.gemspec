@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
 
   # Runtime dependencies
 
-  s.add_dependency "active-fedora", ">=4.0.0"
+  s.add_dependency "active-fedora", "4.5.3"
   s.add_dependency "om", ">=1.5.0"
   s.add_dependency "rsolr-ext"
   s.add_dependency "rsolr-client-cert", ">=0.5.1"
@@ -35,15 +35,15 @@ Gem::Specification.new do |s|
   s.add_dependency "equivalent-xml", ">=0.2.2"
   s.add_dependency "net-ssh"
   s.add_dependency "net-sftp"
-  s.add_dependency "druid-tools", ">=0.2.1"
-  s.add_dependency "moab-versioning", ">=1.1.3"
+  s.add_dependency "druid-tools", ">=0.2.2 "
+  s.add_dependency "moab-versioning", ">=1.2.0"
   s.add_dependency "dor-workflow-service", ">=1.1.0"
 
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects
   s.add_development_dependency "fakeweb"
   s.add_development_dependency "haml"
-  s.add_development_dependency "jhove-service", ">=0.2.2"
+  s.add_development_dependency "jhove-service", ">=1.0.1  "
   s.add_development_dependency "lyberteam-gems-devel", ">=1.0.0"
   s.add_development_dependency "rake", ">=0.8.7"
   s.add_development_dependency "rdoc"

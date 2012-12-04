@@ -18,14 +18,7 @@ describe Dor::Itemizable do
   it "has a contentMetadata datastream" do
     @item.datastreams['contentMetadata'].should be_a(Dor::ContentMetadataDS)
   end
-  
-  it "should provide a contentMetadata datastream builder" do
-    content_md = read_fixture("workspace/ab/123/cd/4567/content_metadata.xml")
-    @item.datastreams['contentMetadata'].ng_xml.should_not be_equivalent_to(content_md)
-    @item.build_datastream('contentMetadata',true)
-    @item.datastreams['contentMetadata'].ng_xml.should be_equivalent_to(content_md)
-  end
-  
+
   it "should retrieve a content diff" do
     pending
   end

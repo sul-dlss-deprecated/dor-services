@@ -1,33 +1,37 @@
 require 'rubygems'
 require 'lyber-utils'
 require 'moab_stanford'
+require 'dor-services'
 
 module Dor
   class SdrIngestService
 
     def self.transfer(dor_item, agreement_id=nil)
       druid = dor_item.pid
-      druid_tool = DruidTools::Druid.new(druid,Dor::Config.sdr.local_workspace_root)
-      object_dir = Pathname(druid_tool.path)
-      signature_catalog = get_signature_catalog(druid_tool)
-      old_version_id = signature_catalog.version_id
-      new_version_id = old_version_id + 1
-      metadata_dir = Pathname(druid_tool.metadata_dir)
-      extract_datastreams(dor_item, metadata_dir)
+      signature_catalog = get_signature_catalog(druid)
+
+      workspace = DruidTools::Druid.new(druid,Dor::Config.sdr.local_workspace_root)
+      metadata_dir = extract_datastreams(dor_item, workspace)
+
+      new_version_id = signature_catalog.version_id + 1
       version_inventory = get_version_inventory(metadata_dir, druid, new_version_id)
-      content_dir = Pathname(druid_tool.content_dir(create=false))
-      content_dir.make_symlink(druid_tool.path('..')) unless content_dir.exist?
-      bag_dir = Pathname(Dor::Config.sdr.local_export_home).join(druid)
-      bagger = Moab::Bagger.new(version_inventory, signature_catalog, object_dir, bag_dir)
-      bagger.fill_bag(package_mode=:depositor)
-      raise 'Unable to tar the bag' unless LyberUtils::FileUtilities.tar_object(bag_dir.to_s)
-      # Now bootstrap SDR workflow queue to start SDR robots
-      # Set the repo as 'sdr', and do not create a workflows datastream in sedora
+
+      bag_dir = Pathname(Dor::Config.sdr.local_export_home).join(druid.sub('druid:',''))
+      bagger = Moab::Bagger.new(version_inventory, signature_catalog, bag_dir)
+      bagger.reset_bag
+      bag_inventory = bagger.create_bag_inventory(:depositor)
+      content_group = bag_inventory.group('content')
+      content_dir = workspace.find_filelist_parent('content',content_group.path_list)
+      signature_catalog.normalize_group_signatures(content_group, content_dir)
+      bagger.deposit_group('content', content_dir)
+      bagger.deposit_group('metadata', metadata_dir)
+      bagger.create_tagfiles
+      bagger.create_tarfile
+      # Now bootstrap SDR workflow. but do not create the workflows datastream
       dor_item.initialize_workflow('sdrIngestWF', 'sdr', false)
     end
 
-    def self.get_signature_catalog(druid_tool)
-      druid = druid_tool.druid
+    def self.get_signature_catalog(druid)
       sdr_client = Dor::Config.sdr.rest_client
       url = "objects/#{druid}/manifest/signatureCatalog.xml"
       response = sdr_client[url].get
@@ -36,7 +40,8 @@ module Dor
       Moab::SignatureCatalog.new(:digital_object_id => druid, :version_id => 0)
     end
 
-    def self.extract_datastreams(dor_item, metadata_dir)
+    def self.extract_datastreams(dor_item, workspace)
+      metadata_dir = Pathname(workspace.path('metadata',create=true))
       Config.sdr.datastreams.to_hash.each_pair do |ds_name, required|
         ds_name = ds_name.to_s
         metadata_file = metadata_dir.join("#{ds_name}.xml")
@@ -45,7 +50,7 @@ module Dor
           metadata_file.open('w') { |f| f << metadata_string } if metadata_string
         end
       end
-      true
+      metadata_dir
     end
 
     # return the content of the specied datastream if it exists
@@ -76,13 +81,6 @@ module Dor
     def self.get_metadata_file_group(metadata_dir)
       file_group = FileGroup.new(:group_id=>'metadata').group_from_directory(metadata_dir)
       file_group
-    end
-
-
-    # Read in the XML file needed to initialize the SDR workflow
-    # @return [String]
-    def self.read_sdr_workflow_xml()
-      return IO.read(File.join("#{ROBOT_ROOT}", "config", "workflows", "sdrIngestWF", "sdrIngestWF.xml"))
     end
 
   end

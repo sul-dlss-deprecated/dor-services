@@ -44,6 +44,8 @@ describe Dor::Processable do
     end
 
     it "should use the datastream builder if the file doesn't exist" do
+      pending "build_content_datastream method has been deleted from itemizable model.
+         That datastream or file should always exist.  This test should use a different datastream."
       File.stub(:exists?).with(/contentMetadata\.xml/).and_return(false)
       File.should_receive(:exists?).with(/content_metadata\.xml/).and_return(true)
       @item.build_datastream('contentMetadata',true)

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileInventory type="version" objectId="druid:dd116zh0343" versionId="2" inventoryDatetime="2012-11-30T18:21:08Z" fileCount="20" byteCount="189679" blockCount="194">
+  <fileGroup groupId="content" dataSource="/Users/rnanders/Code/Ruby/dor-services/spec/fixtures/workspace/dd/116/zh/0343/dd116zh0343/content" fileCount="12" byteCount="151907" blockCount="153">
+    <file>
+      <fileSignature size="7888" md5="e2837b9f02e0b0b76f526eeb81c7aa7b" sha1="61dfac472b7904e1413e0cbf4de432bda2a97627" sha256="61ee9dedb5ccf38a0d5ff483e3795899bac7caeb4b869fbf0bff5280f0d7814b"/>
+      <fileInstance path="folder1PuSu/story1u.txt" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="5983" md5="dc2be64ae43f1c1db4a068603465955d" sha1="b8a672c1848fc3d13b5f380e15835690e24600e0" sha256="d3235e64fb3c7a749182b08eda3686c2394425ed1ea829e340a340dd4a742801"/>
+      <fileInstance path="folder1PuSu/story2rr.txt" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="5941" md5="1e5579b16888678f24a1b7008ba15f75" sha1="045245ae45508f92ef82f03eb54290dce92fca64" sha256="4ab64ff7c704f483a949c24854bb80aaaf9e196013046dfb8a22076add6eefcd"/>
+      <fileInstance path="folder1PuSu/story3m.txt" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="3614" md5="c7535886a1d0e6d226da322b6ef0bc99" sha1="524deed114c5090af42eae42d0adacb4f212a270" sha256="222884589cb7d04474a79004d95de83008d4b78802b309faa75717f3e6d144a7"/>
+      <fileInstance path="folder1PuSu/story5a.txt" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="2534" md5="1f15cc786bfe832b2fa1e6f047c500ba" sha1="bf3af01de2afa15719d8c42a4141e3b43d06fef6" sha256="8d6bb4a0b959140ebec39d4a787701fa305b97406297fb56d3be6877594552a2"/>
+      <fileInstance path="folder2PdSa/story6u.txt" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="17074" md5="205271287477c2309512eb664eff9130" sha1="b23aa592ab673030ace6178e29fad3cf6a45bd32" sha256="144390145457834830a727ebc2cc6926b4ec5e07d39100f3f55f55ea30ce6b58"/>
+      <fileInstance path="folder2PdSa/story7rr.txt" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="5645" md5="f773d6e161000c5b9f90a96cd071688a" sha1="ed5a5a84d51f94bbd04924bc4c982634ee197a62" sha256="23d063bdf116688a4bea4d0c151d8e6824df15520ba987341cf49322669feb01"/>
+      <fileInstance path="folder2PdSa/story8m.txt" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="10717" md5="aeb1721bbf64aebb3ff58cb05d34bd18" sha1="e29f5847ef5645d60e8c0caf99b3fce5e9f645c9" sha256="021066c750246da730b9db80fc2bfa6c2e3579367719b92e01e35708475c5ba1"/>
+      <fileInstance path="folder2PdSa/storyAa.txt" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="14964" md5="8f0a828f3e63cd18232c191ab0c5805c" sha1="b6cb7aa60dd07b4dcc6ab709437e574912f25f30" sha256="c0d7d329f4da726b2e6536d5f11d535e359c8c69830525217c453c9a67e4b7d1"/>
+      <fileInstance path="folder3PaSd/storyBu.txt" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="23485" md5="3486492e40b4c342b25ae4f9c64f06ee" sha1="a1654e9d3cf80242cc3669f89fb41b2ec5e62cb7" sha256="2f9e8518246f08937da2c8908bedea6e8e7243e3a6a65a47dc4a8de6ff491832"/>
+      <fileInstance path="folder3PaSd/storyCrr.txt" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="25336" md5="90226a21d2dc9185c7b2947cf71c1865" sha1="aae63966b21df4b24cd5cd91021ae55b37811a03" sha256="6988f68714b434bc8171431af3e24b4f51e8cd6e6df466f674aae6ae5f3fc435"/>
+      <fileInstance path="folder3PaSd/storyDm.txt" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="28726" md5="4b4879a7e56b447f0c3826c2f64be603" sha1="686ac9a8e7187718dc1e0d3fa65ab906dff6698a" sha256="ac563455aeb73f3df175f8a7131bfeed566a630456ff606f837e5c2a09609324"/>
+      <fileInstance path="folder3PaSd/storyFa.txt" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+  </fileGroup>
+  <fileGroup groupId="metadata" dataSource="/Users/rnanders/Code/Ruby/dor-services/spec/fixtures/workspace/dd/116/zh/0343/dd116zh0343/metadata" fileCount="8" byteCount="37772" blockCount="41">
+    <file>
+      <fileSignature size="3798" md5="0a2723d39e25c557268f8567174a0d5b" sha1="afa15d8fcfb83d234135b3ed04996038dbde776f" sha256="250c9e5f58574b446a64b0106ba8df585f883dd4b91fc29b0d00f4e449548866"/>
+      <fileInstance path="contentMetadata.xml" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="3581" md5="b83c60b7f92c9f3de33205b6a7a180a1" sha1="14872a73e9aad29d859c79123b8deb5e418c3db6" sha256="dca666ba28dfdbc69b0d3464b605338c043e8a3b9f084abac571f0bc0863bd46"/>
+      <fileInstance path="descMetadata.xml" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="880" md5="5a01eef164600fa9e46bd39c4e238ea3" sha1="c1968a2c9220485221bfec8bdf339df7d8e43fb1" sha256="78e4f4d21899cd21bf306119df20f81efdf75c2b4346edc35b0280bd90f0b032"/>
+      <fileInstance path="identityMetadata.xml" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="8532" md5="aa66f3aa50d78d4407e3bd70a056d080" sha1="5d3344d62c44890c1404e3e4a3f1bc505d7e766b" sha256="3025750e7d258ff149045a76e4c871a2809ea1247d9206e1632c755e9cb39335"/>
+      <fileInstance path="provenanceMetadata.xml" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="358" md5="ff722eff2c724e3e403b04400a3fdec9" sha1="0028d6d6819ff597c46eb92beff1e643de0edaae" sha256="3e1dc6c8b4a2a29f7f664d1399086632cafaa49e9db63156badc017e862acf56"/>
+      <fileInstance path="relationshipMetadata.xml" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="11972" md5="91a93d06d0f25f5a5e33afb13eca75e0" sha1="79a468d8ae0af9113608ed58d60d7bd53fadbb4a" sha256="6adbad65ce8d3684e21b29ba75c4760c4486e79eb0086ba88f6d54c0f0cf1a84"/>
+      <fileInstance path="tech-generated.xml" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="8278" md5="dd65ecc8811cf1e9f59271334dd176d5" sha1="b71c0e8cda0f38e1f876662f0c55058a4632cc7b" sha256="c50c5a1cbc886b965d0e29b25b3c146400b6803391d8563660e7a5b425df5ae4"/>
+      <fileInstance path="technicalMetadata.xml" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+    <file>
+      <fileSignature size="373" md5="c1af94ed907da7dc18ddf1ece5295028" sha1="e0357b5ae8ef7cc49ad223c4fde0a1a2ed048fa2" sha256="2800834a42a1987fba91c19a41e9253b70c4076dd59b641adc9934d36e1516fc"/>
+      <fileInstance path="versionMetadata.xml" datetime="2012-09-18T19:49:44Z"/>
+    </file>
+  </fileGroup>
+</fileInventory>

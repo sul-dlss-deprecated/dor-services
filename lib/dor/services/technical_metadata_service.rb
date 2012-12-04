@@ -16,7 +16,7 @@ module Dor
       deltas = get_file_deltas(content_group_diff)
       new_files = get_new_files(deltas)
       old_techmd = get_old_technical_metadata(dor_item)
-      new_techmd = get_new_technical_metadata(druid, new_files, old_techmd)
+      new_techmd = get_new_technical_metadata(druid, new_files)
       if old_techmd.nil?
         # this is version 1 or previous technical metadata was not saved
         final_techmd = new_techmd
@@ -123,39 +123,24 @@ module Dor
 
     # @param [DruidTools::Druid] druid_tool A wrapper class for the druid identifier.  Used to generate paths
     # @param [Array<String>] new_files The list of filenames for files that are either added or modifed since the previous version
-    # @param [String] old_techmd The technicalMetadata datastream from the previous version of the digital object
     # @return [String] The technicalMetadata datastream for the new files of the new digital object version
-    def self.get_new_technical_metadata(druid, new_files, old_techmd)
-      druid_tool = DruidTools::Druid.new(druid, Dor::Config.sdr.local_workspace_root)
-      content_pathname = get_content_pathname(druid_tool)
-      temp_dir= druid_tool.temp_dir
+    def self.get_new_technical_metadata(druid, new_files)
+      return nil if new_files.size == 0
+      workspace = DruidTools::Druid.new(druid, Dor::Config.sdr.local_workspace_root)
+      content_dir = workspace.find_filelist_parent('content',new_files)
+      temp_dir = workspace.temp_dir
       jhove_service = ::JhoveService.new(temp_dir)
-      jhove_service.digital_object_id=druid_tool.druid
-      if old_techmd.nil? and content_pathname.basename.to_s == 'content'
-        # Run JHOVE against all content files
-        jhove_output_file = jhove_service.run_jhove(content_pathname)
-      else
-        # Run JHOVE against a specified set of files
-        fileset_pathname = get_fileset(temp_dir, new_files)
-        jhove_output_file = jhove_service.run_jhove(content_pathname, fileset_pathname)
-      end
+      jhove_service.digital_object_id=druid
+      fileset_file = write_fileset(temp_dir, new_files)
+      jhove_output_file = jhove_service.run_jhove(content_dir, fileset_file)
       tech_md_file = jhove_service.create_technical_metadata(jhove_output_file)
       IO.read(tech_md_file)
-    end
-
-    # @param [DruidTools::Druid] druid_tool A wrapper class for the druid identifier.  Used to generate paths
-    # @return [Pathname] The pathname of the content folder in the object's workspace area
-    def self.get_content_pathname(druid_tool)
-      content_pathname = Pathname(druid_tool.content_dir(false))
-      # For backward compatibility
-      content_pathname = content_pathname.parent.parent unless content_pathname.directory?
-      content_pathname
     end
 
     # @param [Pathname]  temp_dir  The pathname of the temp folder in the object's workspace area
     # @param [Object] new_files [Array<String>] The list of filenames for files that are either added or modifed since the previous version
     # @return [Pathname] Save the new_files list to a text file and return that file's name
-    def self.get_fileset(temp_dir, new_files)
+    def self.write_fileset(temp_dir, new_files)
       fileset_pathname = Pathname(temp_dir).join('jhove_fileset.txt')
       fileset_pathname.open('w') {|f| f.puts(new_files) }
       fileset_pathname
