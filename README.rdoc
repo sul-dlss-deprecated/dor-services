@@ -279,6 +279,9 @@ Values can also be configured individually:
 - <b>3.16.9</b> Using moab-versioning >= 1.1.3
 - <b>3.17.0</b> Versionable#close_version now archives versioningWF workflow.  Requires a new Dor::Config param, dor_services.url
 - <b>3.17.1</b> Added roles and a solr field for the first shelved image in an object
+- <b>3.17.2</b> Fixed a typo in get_collection_title and some tests that failed to catch the typo
+- <b>3.17.3</b> TechnicalMetadataService and SdrIngestService now find content ok.  Updated gem dependenciies
+- <b>3.17.4</b> SdrIngestService was creating moab manifests that were missing SHA256 checksums
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.
