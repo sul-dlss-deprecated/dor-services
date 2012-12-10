@@ -52,7 +52,7 @@ module Dor
 		#returns the desc metadata a relatedItem with information about the collection this object belongs to for use in published mods and mods to DC conversion
 	  def add_collection_reference
 	    relationships=self.public_relationships
-	    xml=self.descMetadata.ng_xml
+	    xml=Nokogiri::XML(self.descMetadata.ng_xml.to_s)
 	    
 	    collections=relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection','fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' 	)
 	    #if there is an existing relatedItem node with type=host and a child typeOfResource @collection=yes dont add anything
@@ -61,7 +61,6 @@ module Dor
         return xml.to_s
       end
       collections.each do |collection_node|
-        #puts collection_node.inspect
         druid=collection_node['resource']
         druid=druid.gsub('info:fedora/','')
         collection_obj=Dor::Item.find(druid)

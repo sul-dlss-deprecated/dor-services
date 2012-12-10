@@ -96,6 +96,7 @@ describe Dor::Describable do
         end
 	    end
   		xml = @item.add_collection_reference
+  		EquivalentXml.equivalent?(xml,@item.descMetadata.ng_xml.to_s).should == false
       xml=Nokogiri::XML(xml)
       collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
       collections.length.should == 1
