@@ -77,7 +77,7 @@ describe Dor::SdrIngestService do
     lambda {Dor::SdrIngestService.get_datastream_content(mock_item ,'dummy', 'required')}.should raise_exception
   end
 
-  specify "SdrIngestService.transfer" do
+  specify "SdrIngestService.transfer with content changes" do
     druid = 'druid:dd116zh0343'
     dor_item = mock("dor_item")
     dor_item.should_receive(:initialize_workflow).with('sdrIngestWF', 'sdr', false)
@@ -104,6 +104,44 @@ describe Dor::SdrIngestService do
         "export/dd116zh0343/data/content/folder3PaSd",
         "export/dd116zh0343/data/content/folder3PaSd/storyDm.txt",
         "export/dd116zh0343/data/content/folder3PaSd/storyFa.txt",
+        "export/dd116zh0343/data/metadata",
+        "export/dd116zh0343/data/metadata/contentMetadata.xml",
+        "export/dd116zh0343/data/metadata/tech-generated.xml",
+        "export/dd116zh0343/data/metadata/technicalMetadata.xml",
+        "export/dd116zh0343/data/metadata/versionMetadata.xml",
+        "export/dd116zh0343/manifest-md5.txt",
+        "export/dd116zh0343/manifest-sha1.txt",
+        "export/dd116zh0343/manifest-sha256.txt",
+        "export/dd116zh0343/tagmanifest-md5.txt",
+        "export/dd116zh0343/tagmanifest-sha1.txt",
+        "export/dd116zh0343/tagmanifest-sha256.txt",
+        "export/dd116zh0343/versionAdditions.xml",
+        "export/dd116zh0343/versionInventory.xml"]
+  end
+
+  specify "SdrIngestService.transfer with no change in content" do
+    druid = 'druid:dd116zh0343'
+    dor_item = mock("dor_item")
+    dor_item.should_receive(:initialize_workflow).with('sdrIngestWF', 'sdr', false)
+    dor_item.stub(:pid).and_return(druid)
+    signature_catalog=Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
+    Dor::SdrIngestService.should_receive(:get_signature_catalog).with(druid).
+        and_return(signature_catalog)
+    metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
+    v1_content_metadata = @fixtures.join('sdr_repo/dd116zh0343/v0001/data/metadata/contentMetadata.xml')
+    Dor::SdrIngestService.should_receive(:get_content_metadata).with(metadata_dir).
+            and_return(v1_content_metadata.read)
+    Dor::SdrIngestService.should_receive(:extract_datastreams).with(dor_item, an_instance_of(DruidTools::Druid)).
+        and_return(metadata_dir)
+    Dor::SdrIngestService.transfer(dor_item)
+    @fixtures.join('export/dd116zh0343.tar').exist?.should == true
+    files = Array.new
+    @fixtures.join('export/dd116zh0343').find { |f| files << f.relative_path_from(@fixtures).to_s }
+    files.sort.should == [
+        "export/dd116zh0343",
+        "export/dd116zh0343/bag-info.txt",
+        "export/dd116zh0343/bagit.txt",
+        "export/dd116zh0343/data",
         "export/dd116zh0343/data/metadata",
         "export/dd116zh0343/data/metadata/contentMetadata.xml",
         "export/dd116zh0343/data/metadata/tech-generated.xml",

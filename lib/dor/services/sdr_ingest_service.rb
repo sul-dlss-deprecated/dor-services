@@ -18,8 +18,13 @@ module Dor
       new_version_id = signature_catalog.version_id + 1
       version_inventory = get_version_inventory(metadata_dir, druid, new_version_id)
       version_addtions = signature_catalog.version_additions(version_inventory)
-      new_file_list = version_addtions.group('content').path_list
-      content_dir = workspace.find_filelist_parent('content',new_file_list)
+      content_addtions = version_addtions.group('content')
+      if content_addtions.nil? or content_addtions.files.empty?
+        content_dir = nil
+      else
+        new_file_list = content_addtions.path_list
+        content_dir = workspace.find_filelist_parent('content',new_file_list)
+      end
       signature_catalog.normalize_group_signatures(version_inventory.group('content'), content_dir)
       # export the bag (in tar format)
       bag_dir = Pathname(Dor::Config.sdr.local_export_home).join(druid.sub('druid:',''))
@@ -94,9 +99,15 @@ module Dor
     # @return [Moab::FileInventory] Parse the contentMetadata
     #   and generate a new version inventory object containing a content group
     def self.get_content_inventory(metadata_dir, druid, version_id)
-      content_metadata = metadata_dir.join('contentMetadata.xml').read
+      content_metadata = get_content_metadata(metadata_dir)
       content_inventory = Stanford::ContentInventory.new.inventory_from_cm(content_metadata, druid, subset='preserve', version_id)
       content_inventory
+    end
+
+    # @param [Pathname] metadata_dir The location of the the object's metadata files
+    # @return [String] Return the contents of the contentMetadata.xml file from the content directory
+    def self.get_content_metadata(metadata_dir)
+      metadata_dir.join('contentMetadata.xml').read
     end
 
     # @param [Pathname] metadata_dir The location of the the object's metadata files

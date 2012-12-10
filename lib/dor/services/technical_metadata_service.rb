@@ -125,7 +125,7 @@ module Dor
     # @param [Array<String>] new_files The list of filenames for files that are either added or modifed since the previous version
     # @return [String] The technicalMetadata datastream for the new files of the new digital object version
     def self.get_new_technical_metadata(druid, new_files)
-      return nil if new_files.size == 0
+      return nil if new_files.nil? or new_files.empty?
       workspace = DruidTools::Druid.new(druid, Dor::Config.sdr.local_workspace_root)
       content_dir = workspace.find_filelist_parent('content',new_files)
       temp_dir = workspace.temp_dir

@@ -282,8 +282,10 @@ Values can also be configured individually:
 - <b>3.17.2</b> Fixed a typo in get_collection_title and some tests that failed to catch the typo
 - <b>3.17.3</b> TechnicalMetadataService and SdrIngestService now find content ok.  Updated gem dependenciies
 - <b>3.17.4</b> SdrIngestService was creating moab manifests that were missing SHA256 checksums
-- <b>3.17.5</b> AddCollectionReference was causing the ng_xml for the desc metadata in the current item instance to be polluted 
+- <b>3.17.5</b> AddCollectionReference was causing the ng_xml for the desc metadata in the current item instance to be polluted
 - <b>3.17.6</b> Added a predicate mapping for hydrus
+- <b>3.17.7</b> SdrIngestService was not handling case when new version has no new content files
+
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.
