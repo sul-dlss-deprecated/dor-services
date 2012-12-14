@@ -209,6 +209,7 @@ describe Dor::SdrIngestService do
     metadata_dir = @fixtures.join('workspace/ab/123/cd/4567/ab123cd4567/metadata')
     druid = 'druid:ab123cd4567'
     version_id = 2
+
     version_inventory = Dor::SdrIngestService.get_content_inventory(metadata_dir, druid, version_id)
     version_inventory.should be_instance_of Moab::FileInventory
     version_inventory.version_id.should == 2
@@ -217,6 +218,22 @@ describe Dor::SdrIngestService do
     content_group.files.size.should == 2
     # files in the 2nd resource are copied from the first resource
     content_group.files[0].instances.size.should == 2
+
+    # if no content metadata
+    metadata_dir = @fixtures.join('workspace/ab/123/cd/4567/ab123cd4567')
+    version_inventory = Dor::SdrIngestService.get_content_inventory(metadata_dir, druid, version_id)
+    version_inventory.groups.size.should == 0
+  end
+
+  specify "SdrIngestService.get_content_metadata" do
+    metadata_dir = @fixtures.join('workspace/ab/123/cd/4567/ab123cd4567/metadata')
+    content_metadata = Dor::SdrIngestService.get_content_metadata(metadata_dir)
+    content_metadata.should =~ /<contentMetadata /
+
+    # if no content metadata
+    metadata_dir = @fixtures.join('workspace/ab/123/cd/4567/ab123cd4567')
+    content_metadata = Dor::SdrIngestService.get_content_metadata(metadata_dir)
+    content_metadata.should == nil
   end
 
   specify "SdrIngestService.get_metadata_file_group" do

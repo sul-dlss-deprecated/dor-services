@@ -53,16 +53,14 @@ module Dor
     # @param [Dor::Item] dor_item The representation of the digital object
     # @param [DruidTools::Druid] workspace The representation of the item's work area
     # @return [Pathname] Pull all the datastreams specified in the configuration file
-    #   into the workspace's metadata directory
+    #   into the workspace's metadata directory, overwriting existing file if present
     def self.extract_datastreams(dor_item, workspace)
       metadata_dir = Pathname(workspace.path('metadata',create=true))
       Config.sdr.datastreams.to_hash.each_pair do |ds_name, required|
         ds_name = ds_name.to_s
         metadata_file = metadata_dir.join("#{ds_name}.xml")
-        unless metadata_file.exist?
-          metadata_string = self.get_datastream_content(dor_item, ds_name, required)
-          metadata_file.open('w') { |f| f << metadata_string } if metadata_string
-        end
+        metadata_string = self.get_datastream_content(dor_item, ds_name, required)
+        metadata_file.open('w') { |f| f << metadata_string } if metadata_string
       end
       metadata_dir
     end
@@ -100,14 +98,23 @@ module Dor
     #   and generate a new version inventory object containing a content group
     def self.get_content_inventory(metadata_dir, druid, version_id)
       content_metadata = get_content_metadata(metadata_dir)
-      content_inventory = Stanford::ContentInventory.new.inventory_from_cm(content_metadata, druid, subset='preserve', version_id)
-      content_inventory
+      if content_metadata
+        Stanford::ContentInventory.new.inventory_from_cm(content_metadata, druid, subset='preserve', version_id)
+      else
+        FileInventory.new(:type=>"version",:digital_object_id=>druid, :version_id=>version_id)
+
+      end
     end
 
     # @param [Pathname] metadata_dir The location of the the object's metadata files
     # @return [String] Return the contents of the contentMetadata.xml file from the content directory
     def self.get_content_metadata(metadata_dir)
-      metadata_dir.join('contentMetadata.xml').read
+      content_metadata_pathname = metadata_dir.join('contentMetadata.xml')
+      if content_metadata_pathname.exist?
+        content_metadata_pathname.read
+      else
+        nil
+      end
     end
 
     # @param [Pathname] metadata_dir The location of the the object's metadata files
