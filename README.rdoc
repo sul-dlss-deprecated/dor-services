@@ -285,8 +285,8 @@ Values can also be configured individually:
 - <b>3.17.5</b> AddCollectionReference was causing the ng_xml for the desc metadata in the current item instance to be polluted
 - <b>3.17.6</b> Added a predicate mapping for hydrus
 - <b>3.17.7</b> SdrIngestService was not handling case when new version has no new content files
-- <b>3.17.9</b> SdrIngestService was not handling case when object has no contentMetadata.
-                Also now extracts all datastreams from Fedora even if file exists on disk.
+- <b>3.17.9</b> Now extracts all datastreams from Fedora even if file exists on disk.
+- <b>3.17.10</b> SdrIngestService was not handling case when object has no contentMetadata.
 == Copyright
 
 Copyright (c) 2012 Stanford University Library. See LICENSE for details.

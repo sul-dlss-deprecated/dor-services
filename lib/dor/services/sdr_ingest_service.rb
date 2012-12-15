@@ -25,7 +25,10 @@ module Dor
         new_file_list = content_addtions.path_list
         content_dir = workspace.find_filelist_parent('content',new_file_list)
       end
-      signature_catalog.normalize_group_signatures(version_inventory.group('content'), content_dir)
+      content_group = version_inventory.group('content')
+      unless content_group.nil? or content_group.files.empty?
+        signature_catalog.normalize_group_signatures(content_group, content_dir)
+      end
       # export the bag (in tar format)
       bag_dir = Pathname(Dor::Config.sdr.local_export_home).join(druid.sub('druid:',''))
       bagger = Moab::Bagger.new(version_inventory, signature_catalog, bag_dir)
