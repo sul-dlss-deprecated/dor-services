@@ -46,7 +46,7 @@ module Dor
         end
       end
       if require and empty_datastream?(ds)
-        raise 'Required datastream #{datastream} could not be populated!'
+        raise "Required datastream #{datastream} could not be populated!"
       end
       return ds
     end
