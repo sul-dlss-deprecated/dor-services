@@ -29,7 +29,7 @@ module Dor
     end
 
     # Self-aware datastream builders
-    def build_datastream(datastream, force = false)
+    def build_datastream(datastream, force = false, require=false)
       ds = datastreams[datastream]
       druid = DruidTools::Druid.new(self.pid, Dor::Config.stacks.local_workspace_root)
       filename = druid.find_metadata("#{datastream}.xml")
@@ -44,6 +44,9 @@ module Dor
           content = self.send(proc, ds)
           ds.save unless ds.digital_object.new?
         end
+      end
+      if require and empty_datastream?(ds)
+        raise 'Required datastream #{datastream} could not be populated!'
       end
       return ds
     end

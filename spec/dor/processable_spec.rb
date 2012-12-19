@@ -51,12 +51,13 @@ describe Dor::Processable do
       @item.build_datastream('contentMetadata',true)
       @item.datastreams['contentMetadata'].ng_xml.should be_equivalent_to(@content_md)
     end
-  end
-  describe 'milestones' do
-    it 'should build a list of all lifecycle events grouped by version' do
-      
+    
+    it 'should raise an exception if the datastream is required but cannot be generated' do
+      File.stub(:exists?).with(/contentMetadata\.xml/).and_return(false)
+      lambda{@item.build_datastream('contentMetadata',false,true)}.should raise_error
     end
   end
+
   describe 'to_solr' do
     before :each do
       xml='<?xml version="1.0" encoding="UTF-8"?>
