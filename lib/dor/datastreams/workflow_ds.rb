@@ -21,11 +21,20 @@ class WorkflowDs < ActiveFedora::NokogiriDatastream
     self.field_mapper = UtcDateFieldMapper.new
     super
   end
-
+  
+  def get_workflow (wf,repo='dor')
+    xml=Dor::WorkflowService.get_workflow_xml(repo, self.pid, wf)
+    xml=Nokogiri::XML(xml)
+    if xml.xpath('workflow').length == 0
+      nil
+    else
+      Workflow::Document.new(xml.to_s)
+    end
+  end
+  
   def [](wf)
     xml=Dor::WorkflowService.get_workflow_xml('dor', self.pid, wf)
     xml=Nokogiri::XML(xml)
-    #if no workflow is present, return nil
     if xml.xpath('workflow').length == 0
       nil
     else

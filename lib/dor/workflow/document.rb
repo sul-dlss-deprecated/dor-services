@@ -20,7 +20,6 @@ module Workflow
     
     def initialize node
       self.ng_xml = Nokogiri::XML(node)
-      
     end
     
     def definition
@@ -44,6 +43,10 @@ module Workflow
     end
     
     def processes
+      #if the workflow service didnt return any processes, dont return any processes from the reified wf
+      if ng_xml.search("/workflow/process").length == 0
+        return []
+      end
       @processes ||= if self.definition
         self.definition.processes.collect do |process|
           node = ng_xml.at("/workflow/process[@name = '#{process.name}']")
@@ -61,12 +64,13 @@ module Workflow
 
     def to_solr(solr_doc=Hash.new, *args)
       wf_name = self.workflowId.first
+      repo=self.repository.first
       add_solr_value(solr_doc, 'wf', wf_name, :string, [:facetable])
       add_solr_value(solr_doc, 'wf_wps', wf_name, :string, [:facetable])
       add_solr_value(solr_doc, 'wf_wsp', wf_name, :string, [:facetable])
       status = processes.empty? ? 'empty' : (processes.all?(&:completed?) ? 'completed' : 'active')
       errors = processes.select(&:error?).count
-      add_solr_value(solr_doc, 'workflow_status', [wf_name,status,errors].join('|'), :string, [:displayable])
+      add_solr_value(solr_doc, 'workflow_status', [wf_name,status,errors,repo].join('|'), :string, [:displayable])
       
       processes.each do |process|
         if process.status.present?
