@@ -61,7 +61,7 @@ module Dor
         return xml.to_s
       end
       collections.each do |collection_node|
-        druid=collection_node['resource']
+        druid=collection_node['rdf:resource']
         druid=druid.gsub('info:fedora/','')
         collection_obj=Dor::Item.find(druid)
         collection_title = Dor::Describable.get_collection_title(collection_obj)

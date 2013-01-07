@@ -84,7 +84,7 @@ module Dor
             ix += 1 while ActiveFedora::Predicates.predicate_mappings[rel.namespace.href].has_key?(short_predicate = :"extra_predicate_#{ix}")
             ActiveFedora::Predicates.predicate_mappings[rel.namespace.href][short_predicate] = rel.name
           end
-          new_item.add_relationship short_predicate, rel['resource']
+          new_item.add_relationship short_predicate, rel['rdf:resource']
         end
         if(rights)
           rights_xml=apo_object.defaultObjectRights.ng_xml

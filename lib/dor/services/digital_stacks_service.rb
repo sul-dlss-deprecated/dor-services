@@ -58,7 +58,7 @@ module Dor
           # copy the contents for the given object from the local workspace directory to the remote directory
           uploads = files.collect do |file| 
             local_file = druid.find_content(file)
-            sftp.upload(local_file, File.join(remote_storage_dir,file))
+            sftp.upload!(local_file, File.join(remote_storage_dir,file))
           end
           uploads.each { |upload| upload.wait }
         end

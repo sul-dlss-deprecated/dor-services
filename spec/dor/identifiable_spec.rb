@@ -106,4 +106,18 @@ describe Dor::Identifiable do
     @obj.identityMetadata.dirty?.should == true
     end
   end
+  describe 'to_solr' do
+    it 'should generate collection and apo title fields' do
+      xml='<rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+            xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:hydra="http://projecthydra.org/ns/relations#">
+            <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
+              <fedora-model:hasModel rdf:resource="info:fedora/testObject"/>
+              <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
+            </rdf:Description>
+          </rdf:RDF>'
+      @obj.datastreams['RELS-EXT'].stub(:content).and_return(xml)
+      doc=@obj.to_solr
+      doc['apo_title_facet'].first.should == 'druid:fg890hi1234'
+    end
+  end
 end

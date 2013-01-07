@@ -45,7 +45,7 @@ describe Dor::DigitalStacksService do
       Net::SFTP.should_receive(:start).with('stacks-test.stanford.edu','digitaladmin',kind_of(Hash)).and_yield(@mock_sftp)
       @mock_sftp.should_receive(:session).and_return(@mock_sftp)
       @mock_sftp.should_receive(:'exec!').with("mkdir -p /stacks/aa/123/bb/4567")
-      @mock_sftp.should_receive(:'upload').with("/workspace/aa/123/bb/4567/aa123bb4567/content/1.jpg","/stacks/aa/123/bb/4567/1.jpg").and_return(mock('upload').as_null_object)
+      @mock_sftp.should_receive(:'upload!').with("/workspace/aa/123/bb/4567/aa123bb4567/content/1.jpg","/stacks/aa/123/bb/4567/1.jpg").and_return(mock('upload').as_null_object)
       File.should_receive(:exists?).with("/workspace/aa/123/bb/4567/aa123bb4567/content/1.jpg").and_return(true)
       
       files_to_send = ['1.jpg']
