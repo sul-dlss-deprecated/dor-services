@@ -104,6 +104,12 @@ describe Dor::Processable do
   		solr_doc['status_display'].first.should == 'v4 Opened'
   		solr_doc['version_opened_facet'].nil?.should == true
 	  end
+	  it 'should create a last_modified_day facet field' do
+      @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
+  		@item.stub(:versionMetadata).and_return(@versionMD)
+  		solr_doc=@item.to_solr
+  		solr_doc['last_modified_day_facet'].length.should == 1
+    end
   end
   describe 'status' do
   	it 'should generate a status string' do
