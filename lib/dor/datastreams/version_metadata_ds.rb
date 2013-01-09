@@ -1,10 +1,10 @@
 module Dor
-  
+
   class VersionTag
     include Comparable
-    
+
     attr_reader :major, :minor, :admin
-    
+
     def <=>(anOther)
       diff = @major <=> anOther.major
       return diff if diff != 0
@@ -12,7 +12,7 @@ module Dor
       return diff if diff != 0
       @admin <=> anOther.admin
     end
-    
+
     # @param [String] raw_tag the value of the tag attribute from a Version node
     def self.parse(raw_tag)
       unless(raw_tag =~ /(\d+)\.(\d+)\.(\d+)/)
@@ -20,13 +20,13 @@ module Dor
       end
       VersionTag.new $1, $2, $3
     end
-    
+
     def initialize(maj, min, adm)
       @major = maj.to_i
       @minor = min.to_i
       @admin = adm.to_i
     end
-    
+
     # @param [Symbol] sig which part of the version tag to increment
     #  :major, :minor, :admin
     def increment(sig)
@@ -43,17 +43,17 @@ module Dor
       end
       self
     end
-    
+
     def to_s
       "#{@major.to_s}.#{@minor.to_s}.#{admin.to_s}"
     end
   end
-  
+
   class VersionMetadataDS < ActiveFedora::NokogiriDatastream
     before_create :ensure_non_versionable
-      
+
     set_terminology do |t|
-      t.root(:path => "versionMetadata") 
+      t.root(:path => "versionMetadata")
       t.version do
         t.version_id :path => { :attribute => "versionID" }
         t.tag :path => { :attribute => "tag" }
@@ -61,7 +61,7 @@ module Dor
       end
     end
 
-    # Default EventsDS xml 
+    # Default EventsDS xml
     def self.xml_template
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.versionMetadata {
@@ -76,27 +76,30 @@ module Dor
     def ensure_non_versionable
       self.versionable = "false"
     end
-        
+
+    # @param [String] description optional text describing version change
+    # @param [Symbol] :significance optional which part of the version tag to increment
+    #  :major, :minor, :admin (see VersionTag#increment)
     def increment_version(description = nil, significance = nil)
       if( find_by_terms(:version).size == 0)
-        v = ng_xml.create_element "version", 
+        v = ng_xml.create_element "version",
           :versionId => '1', :tag => '1.0.0'
         d = ng_xml.create_element "description", "Initial Version"
-        ng_xml.root['objectId'] = pid  
+        ng_xml.root['objectId'] = pid
         ng_xml.root.add_child(v)
         v.add_child d
       else
         current = current_version_node
         current_id = current[:versionId].to_i
         current_tag = VersionTag.parse(current[:tag])
-        
+
         v = ng_xml.create_element "version", :versionId => (current_id + 1).to_s
         if(significance && current_tag)
           v[:tag] = current_tag.increment(significance).to_s
         end
-        ng_xml.root['objectId'] = pid  
+        ng_xml.root['objectId'] = pid
         ng_xml.root.add_child(v)
-        
+
         if(description)
           d = ng_xml.create_element "description", description
           v.add_child d
@@ -104,12 +107,8 @@ module Dor
       end
       self.dirty = true
     end
-    
-    # @return [Nokogiri::XML::Node] Node representing the current version
-    def current_version_node
-      versions = find_by_terms(:version)
-      versions.max_by {|v| v[:versionId].to_i }
-    end
+
+    # @returns [Fixnum] value of the most current versionId
     def current_version_id
       current_version=current_version_node
       if current_version.nil?
@@ -118,13 +117,13 @@ module Dor
         current_version[:versionId].to_i
       end
     end
-    def newest_tag
-      tags = find_by_terms(:version, :tag)
-      tags.map{|t| VersionTag.parse(t.value)}.max
-    end
-    
+
+    # @param [Hash] opts optional params
+    # @option opts [String] :description describes the version change
+    # @option opts [Symbol] :significance which part of the version tag to increment
+    #  :major, :minor, :admin (see VersionTag#increment)
     def update_current_version(opts = {})
-      ng_xml.root['objectId'] = pid 
+      ng_xml.root['objectId'] = pid
       return if find_by_terms(:version).size == 1
       return if opts.empty?
       current = current_version_node
@@ -133,8 +132,8 @@ module Dor
         if(d)
           d.content = opts[:description]
         else
-          d_node = ng_xml.create_element "description", description
-          current.add_child d
+          d_node = ng_xml.create_element "description", opts[:description]
+          current.add_child d_node
         end
       end
       if(opts.include? :significance)
@@ -148,16 +147,39 @@ module Dor
           current_tag = sorted_tags[sorted_tags.length - 2]           # Get the second greatest tag since we are dropping the current, greatest
           current[:tag] = current_tag.increment(opts[:significance]).to_s
         end
-        
+
       end
       self.content = ng_xml.to_s
     end
-    
+
     # @return [String] The value of the greatest versionId
     def current_version_id
       current_version_node[:versionId].to_s
     end
-    
+
+    # @return [Boolean] returns true if the current version has a tag and a description, false otherwise
+    def current_version_closeable?
+      current = current_version_node
+      if(current[:tag] && current.at_xpath('description'))
+        return true
+      else
+        return false
+      end
+    end
+
+    private
+
+    # @return [Nokogiri::XML::Node] Node representing the current version
+    def current_version_node
+      versions = find_by_terms(:version)
+      versions.max_by {|v| v[:versionId].to_i }
+    end
+
+    def newest_tag
+      tags = find_by_terms(:version, :tag)
+      tags.map{|t| VersionTag.parse(t.value)}.max
+    end
+
   end
-    
+
 end

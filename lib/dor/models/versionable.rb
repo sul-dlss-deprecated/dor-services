@@ -32,9 +32,18 @@ module Dor
     end
 
     # Sets versioningWF:submit-version to completed and initiates accessionWF for the object
+    # @param [Hash] opts optional params
+    # @option opts [String] :description describes the version change
+    # @option opts [Symbol] :significance which part of the version tag to increment
+    #  :major, :minor, :admin (see Dor::VersionTag#increment)
     # @raise [Dor::Exception] if the object hasn't been opened for versioning, or if accessionWF has
-    #   already been instantiated
-    def close_version
+    #   already been instantiated or the current version is missing a tag or description
+    def close_version(opts={})
+      unless(opts.empty?)
+        datastreams['versionMetadata'].update_current_version opts
+      end
+
+      raise Dor::Exception, 'latest version in versionMetadata requires tag and description before it can be closed' unless(datastreams['versionMetadata'].current_version_closeable?)
       raise Dor::Exception, 'Trying to close version on an object not opened for versioning' unless(new_version_open?)
       raise Dor::Exception, 'accessionWF already created for versioned object' if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'submitted'))
 
