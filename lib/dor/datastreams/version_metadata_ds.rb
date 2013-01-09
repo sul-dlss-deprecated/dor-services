@@ -83,7 +83,7 @@ module Dor
     def increment_version(description = nil, significance = nil)
       if( find_by_terms(:version).size == 0)
         v = ng_xml.create_element "version",
-          :versionId => '1', :tag => '1.0.0'
+        :versionId => '1', :tag => '1.0.0'
         d = ng_xml.create_element "description", "Initial Version"
         ng_xml.root['objectId'] = pid
         ng_xml.root.add_child(v)
@@ -112,9 +112,9 @@ module Dor
     def current_version_id
       current_version=current_version_node
       if current_version.nil?
-        return 1
+        return '1'
       else
-        current_version[:versionId].to_i
+        current_version[:versionId].to_s
       end
     end
 
@@ -167,6 +167,20 @@ module Dor
       end
     end
 
+    # @return [String] The tag for the newest version
+    def current_tag
+      current_version_node[:tag].to_s  
+    end
+    
+
+    # @return [String] The description for the current version
+    def current_description
+      desc_node=current_version_node.at_xpath('description')
+      if desc_node
+        return desc_node.content
+      end
+      ''
+    end
     private
 
     # @return [Nokogiri::XML::Node] Node representing the current version
@@ -179,6 +193,9 @@ module Dor
       tags = find_by_terms(:version, :tag)
       tags.map{|t| VersionTag.parse(t.value)}.max
     end
+
+
+
 
   end
 

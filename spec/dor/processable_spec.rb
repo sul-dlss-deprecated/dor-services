@@ -89,7 +89,7 @@ describe Dor::Processable do
   		lifecycle.include?("published:2012-01-27T05:06:54Z;2").should == true
   		#published date should be the first published date
   		solr_doc['published_dt'].should == solr_doc['published_earliest_dt']
-  		solr_doc['status_display'].first.should == 'v4 Opened'
+  		solr_doc['status_display'].first.should == 'v4 In accessioning (described, published)'
   		solr_doc['version_opened_facet'].first.should == '2012-11-07'
   	end
   	it 'should skip the versioning related steps if the item isnt versionable' do
@@ -101,13 +101,14 @@ describe Dor::Processable do
   		lifecycle.include?("published:2012-01-27T05:06:54Z;2").should == true
   		#published date should be the first published date
   		solr_doc['published_dt'].should == solr_doc['published_earliest_dt']
-  		solr_doc['status_display'].first.should == 'v4 Opened'
+  		solr_doc['status_display'].first.should == 'v4 In accessioning (described, published)'
   		solr_doc['version_opened_facet'].nil?.should == true
 	  end
-	  it 'should create a last_modified_day facet field' do
+	  it 'should create a last_modified_day field' do
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
   		@item.stub(:versionMetadata).and_return(@versionMD)
   		solr_doc=@item.to_solr
+  		#the facet field should have a date in it. 
   		solr_doc['last_modified_day_facet'].length.should == 1
     end
   end
@@ -130,7 +131,7 @@ describe Dor::Processable do
   		versionMD=mock(Dor::VersionMetadataDS)
   		versionMD.stub(:current_version_id).and_return(4)
   		@item.stub(:versionMetadata).and_return(versionMD)
-  		@item.status.should == 'v4 Opened'
+  		@item.status.should == 'v4 In accessioning (described, published)'
   	end
   	it 'should generate a status string' do
   	xml='<?xml version="1.0" encoding="UTF-8"?>
@@ -146,7 +147,7 @@ describe Dor::Processable do
   		versionMD=mock(Dor::VersionMetadataDS)
   		versionMD.stub(:current_version_id).and_return(4)
   		@item.stub(:versionMetadata).and_return(versionMD)
-  		@item.status.should == 'v3 In process (described, published)'
+  		@item.status.should == 'v3 In accessioning (described, published)'
   	end
   end
 end

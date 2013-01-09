@@ -69,10 +69,10 @@ module Dor
       status_hash={
         0 => '',
         1 => 'Registered',
-        2 => 'In process',
-        3 => 'In process (described)',
-        4 => 'In process (described, published)',
-        5 => 'In process (described, published, deposited)',
+        2 => 'In accessioning',
+        3 => 'In accessioning (described)',
+        4 => 'In accessioning (described, published)',
+        5 => 'In accessioning (described, published, deposited)',
         6 => 'Accessioned',
         7 => 'Accessioned (indexed)',
         8 => 'Accessioned (indexed, ingested)',
@@ -99,7 +99,7 @@ module Dor
         name=m[:milestone]
         time=m[:at].utc.xmlschema
         version=m[:version]
-        if current or (not current and version==oldest_version)
+        if (current and not version) or (not current and version==oldest_version)
           case name
           when 'registered'
             if status<1
@@ -128,6 +128,7 @@ module Dor
             end
           when 'accessioned'
             if status<6
+              puts version
               status=6
               status_time=time
             end
@@ -142,11 +143,16 @@ module Dor
               status_time=time
             end
           when 'opened'
-            if status<9
-              status=9
+            if status<1
+              status=1
               status_time=time
             end
           end
+        end
+      end
+      if status == 1
+        if (current and current_version.to_i > 1) or (not current and oldest_version.to_i > 1)
+        status = 9
         end
       end
       if current
