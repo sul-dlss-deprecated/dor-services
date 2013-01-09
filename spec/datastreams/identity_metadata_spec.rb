@@ -22,7 +22,13 @@ describe Dor::IdentityMetadataDS do
       
       @dsdoc = Dor::IdentityMetadataDS.from_xml(@dsxml)
     end
-    
+    describe 'tosolr' do
+      it 'should create a cretor_title field' do
+        res={}
+        @dsdoc.to_solr(res)
+        res['creator_title_sort'].first.should == 'DORAMERICQVE | SEPTENTRIONALE'
+      end
+    end
     it "creates itself from xml" do
       @dsdoc.term_values(:objectId).should == ['druid:bb110sm8219']
       @dsdoc.term_values(:objectType).should == ['item']
@@ -91,5 +97,4 @@ describe Dor::IdentityMetadataDS do
       new_doc.otherId.should =~ ['mdtoolkit:ab123cd4567','uuid:12345678-abcd-1234-ef01-23456789abcd']
     end
   end
-
 end
