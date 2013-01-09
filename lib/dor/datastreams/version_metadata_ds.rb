@@ -172,7 +172,24 @@ module Dor
       current_version_node[:tag].to_s  
     end
     
-
+    def tag_for_version(versionId)
+      nodes=self.ng_xml.search('//version[@versionId=\''+versionId+'\']')
+      if nodes.length == 1
+        nodes.first['tag'].to_s
+      else
+        ''
+      end
+    end
+    
+    def description_for_version(versionId)
+      nodes=self.ng_xml.search('//version[@versionId=\''+versionId+'\']')
+      if nodes.length == 1
+        nodes.first.at_xpath('description').content.to_s
+      else
+        ''
+      end
+    end
+    
     # @return [String] The description for the current version
     def current_description
       desc_node=current_version_node.at_xpath('description')
@@ -181,6 +198,7 @@ module Dor
       end
       ''
     end
+    
     private
 
     # @return [Nokogiri::XML::Node] Node representing the current version
@@ -193,10 +211,5 @@ module Dor
       tags = find_by_terms(:version, :tag)
       tags.map{|t| VersionTag.parse(t.value)}.max
     end
-
-
-
-
   end
-
 end

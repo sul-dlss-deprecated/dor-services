@@ -74,12 +74,30 @@ describe Dor::Processable do
     <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
     <milestone date="2012-11-06T16:59:39-0800">published</milestone>
 		</lifecycle>' 
+		dsxml='
+      <versionMetadata objectId="druid:ab123cd4567">
+        <version versionId="1" tag="1.0.0">
+          <description>Initial version</description>
+        </version>
+        <version versionId="2" tag="2.0.0">
+          <description>Replacing main PDF</description>
+        </version>
+        <version versionId="3" tag="2.1.0">
+          <description>Fixed title typo</description>
+        </version>
+        <version versionId="4" tag="2.2.0">
+          <description>Another typo</description>
+        </version>
+      </versionMetadata>
+    '
+    
       xml=Nokogiri::XML(xml)
   		@lifecycle_vals=[]
   		Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
   		Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
-  		@versionMD=mock(Dor::VersionMetadataDS)
-  		@versionMD.stub(:current_version_id).and_return(4)
+  		@versionMD = Dor::VersionMetadataDS.from_xml(dsxml)
+  		#@versionMD=mock(Dor::VersionMetadataDS)
+  		#@versionMD.stub(:current_version_id).and_return(4)
     end
   	it 'should include the semicolon delimited version, an earliest published date and a status' do
   		@item.stub(:versionMetadata).and_return(@versionMD)
@@ -110,6 +128,14 @@ describe Dor::Processable do
   		solr_doc=@item.to_solr
   		#the facet field should have a date in it. 
   		solr_doc['last_modified_day_facet'].length.should == 1
+    end
+    it 'should create a version field for each version, including the version number, tag and description' do
+      @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
+  		@item.stub(:versionMetadata).and_return(@versionMD)
+  		solr_doc=@item.to_solr
+  		#the facet field should have a date in it. 
+  		solr_doc['versions_display'].length.should > 1
+  		solr_doc['versions_display'].include?("4;2.2.0;Another typo").should == true
     end
   end
   describe 'status' do

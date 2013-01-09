@@ -178,4 +178,16 @@ describe Dor::VersionMetadataDS do
       ds.current_description.should == ''
     end
   end
+  describe 'tag_for_version' do
+    it 'should fetch the tag for a version' do
+      ds = Dor::VersionMetadataDS.from_xml(dsxml)
+      ds.tag_for_version('2').should == '2.0.0'
+    end
+  end
+  describe 'description_for_version' do
+    it 'should fetch the description for a version' do
+      ds = Dor::VersionMetadataDS.from_xml(dsxml)
+      ds.description_for_version('3').should == 'Fixed title typo'
+    end
+  end
 end
