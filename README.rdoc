@@ -290,6 +290,7 @@ Values can also be configured individually:
 - <b>3.17.11</b>Workflow was only set up to work with items from the dor repo.
 - <b>3.17.12</b>BuildDatastream can now require the datastream be populated and raise an exception if it isnt
 - <b>3.17.13</b>Fixes all known issues caused by nokogiri 1.56
+- <b>3.18.0</b> Dor::Versionable.close_version changes to deal with tag and description
 == Copyright
 
-Copyright (c) 2012 Stanford University Library. See LICENSE for details.
+Copyright (c) 2013 Stanford University Library. See LICENSE for details.
