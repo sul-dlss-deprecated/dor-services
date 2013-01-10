@@ -172,11 +172,13 @@ module Dor
       rescue
       end
       current_version_num=current_version.to_i
+      if self.methods.include?('versionMetadata')
       #add an entry with version id, tag and description for each version
       while current_version_num > 0
         add_solr_value(solr_doc, 'versions', current_version_num.to_s + ';' + self.versionMetadata.tag_for_version(current_version_num.to_s) + ';' + self.versionMetadata.description_for_version(current_version_num.to_s), :string, [:displayable])
         current_version_num -= 1
       end
+    end
       self.milestones.each do |milestone|
         timestamp = milestone[:at].utc.xmlschema
         sortable_milestones[milestone[:milestone]] ||= []
