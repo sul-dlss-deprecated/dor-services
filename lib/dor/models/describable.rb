@@ -102,7 +102,18 @@ module Dor
 				dc_doc.xpath('/oai_dc:dc/*').each do |node|
 					add_solr_value(solr_doc, "public_dc_#{node.name}", node.text, :string, [:searchable])
 				end
+				creator=''
+				dc_doc.xpath('//dc:creator').each do |node|
+				  creator=node.text
+				end
+				title=''
+				dc_doc.xpath('//dc:title').each do |node|
+				  title=node.text
+				end
+        creator_title=creator+title
+        add_solr_value(solr_doc, 'creator_title', creator_title , :string, [:sortable])
 			rescue CrosswalkError => e
+				raise 'here'
 				ActiveFedora.logger.warn "Cannot index #{self.pid}.descMetadata: #{e.message}"
 			end
 			solr_doc

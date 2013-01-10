@@ -32,7 +32,7 @@ class RoleMetadataDS < ActiveFedora::NokogiriDatastream
       val = [actor.at_xpath('identifier/@type'),actor.at_xpath('identifier/text()')].join ':'
       add_solr_value(solr_doc, "apo_role_#{actor.name}_#{role_type}", val, :string, [:searchable, :facetable])
       add_solr_value(solr_doc, "apo_role_#{role_type}", val, :string, [:searchable, :facetable])
-      if ['manager','depositor'].include? role_type
+      if ['dor-apo-manager','dor-apo-depositor'].include? role_type
         add_solr_value(solr_doc, "apo_register_permissions", val, :string, [:searchable, :facetable])
       end
     end
