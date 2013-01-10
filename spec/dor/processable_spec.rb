@@ -112,14 +112,14 @@ describe Dor::Processable do
   	end
   	it 'should skip the versioning related steps if the item isnt versionable' do
   		@item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
-  		@item.stub(:versionMetadata).and_return(@versionMD)
+  		#@item.stub(:versionMetadata).and_return(@versionMD)
   		solr_doc=@item.to_solr
   		lifecycle=solr_doc['lifecycle_display']
   		#lifecycle_display should have the semicolon delimited version
   		lifecycle.include?("published:2012-01-27T05:06:54Z;2").should == true
   		#published date should be the first published date
   		solr_doc['published_dt'].should == solr_doc['published_earliest_dt']
-  		solr_doc['status_display'].first.should == 'v4 In accessioning (described, published)'
+  		solr_doc['status_display'].first.should == 'v1 In accessioning (described, published)'
   		solr_doc['version_opened_facet'].nil?.should == true
 	  end
 	  it 'should create a last_modified_day field' do
