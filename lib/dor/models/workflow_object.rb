@@ -4,7 +4,7 @@ module Dor
   class WorkflowObject < ::ActiveFedora::Base
     include Identifiable
     include SolrDocHelper
-    
+    include Governable
     @@xml_cache = {}
 
     has_object_type 'workflow'
