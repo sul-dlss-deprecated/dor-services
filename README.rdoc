@@ -291,7 +291,8 @@ Values can also be configured individually:
 - <b>3.17.12</b>BuildDatastream can now require the datastream be populated and raise an exception if it isnt
 - <b>3.17.13</b>Fixes all known issues caused by nokogiri 1.56
 - <b>3.18.0</b> Dor::Versionable.close_version changes to deal with tag and description
-- <b>3.18.4</b> The exception caused by a lack of desc metadata is logged silently 
+- <b>3.18.4</b> The exception caused by a lack of desc metadata is logged silently
+- <b>3.19.0</b> Optional params for version number and starting accessioning when archiving workflow
 == Copyright
 
 Copyright (c) 2013 Stanford University Library. See LICENSE for details.
