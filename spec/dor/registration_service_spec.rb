@@ -42,6 +42,7 @@ describe Dor::RegistrationService do
     end
     
     it "should properly register an object" do
+      @params[:collection] = 'druid:something'
       Dor.should_receive(:find).with('druid:fg890hi1234', :lightweight => true).and_return(@apo)
       Dor.stub(:find).and_return(nil)
       Dor::SearchService.stub!(:query_by_id).and_return([])
@@ -58,7 +59,9 @@ describe Dor::RegistrationService do
         <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
           <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
           <fedora-model:hasModel rdf:resource="info:fedora/afmodel:Dor_Item"/>
+          <fedora:isMemberOf rdf:resource="info:fedora/druid:something"/>
           <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
+          <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:something"/>
           <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:zb871zd0767"/>
         </rdf:Description>
       </rdf:RDF>

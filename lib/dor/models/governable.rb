@@ -57,9 +57,12 @@ module Dor
 
     def add_collection(collection_druid)
       self.add_relationship_by_name('collection','info:fedora/'+collection_druid)
+      self.add_relationship 'isMemberOf', 'info:fedora/' + collection_druid
     end 
+    
     def remove_collection(collection_druid)
       self.remove_relationship_by_name('collection','info:fedora/'+collection_druid)
+      self.remove_relationship 'isMemberOf', 'info:fedora/' + collection_druid
     end
     
     def groups_which_manage_item

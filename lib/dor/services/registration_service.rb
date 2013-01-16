@@ -25,6 +25,7 @@ module Dor
         other_ids = params[:other_ids] || {}
         tags = params[:tags] || []
         parent = params[:parent]
+        collection = params[:collection]
         pid = nil
         metadata_source=params[:metadata_source]
         if params[:pid]
@@ -85,6 +86,9 @@ module Dor
             ActiveFedora::Predicates.predicate_mappings[rel.namespace.href][short_predicate] = rel.name
           end
           new_item.add_relationship short_predicate, rel['rdf:resource']
+        end
+        if collection
+          new_item.add_collection(collection)
         end
         if(rights)
           rights_xml=apo_object.defaultObjectRights.ng_xml
@@ -195,7 +199,8 @@ module Dor
           :seed_datastream    => params[:seed_datastream],
           :initiate_workflow  => Array(params[:initiate_workflow]) + Array(params[:workflow_id]),
           :rights             => params[:rights],
-          :metadata_source    => params[:metadata_source]
+          :metadata_source    => params[:metadata_source],
+          :collection         => params[:collection]
         }
         dor_params.delete_if { |k,v| v.nil? }
     
