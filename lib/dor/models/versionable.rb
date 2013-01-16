@@ -9,9 +9,17 @@ module Dor
     end
 
     # Increments the version number and initializes versioningWF for the object
+    # @param [Hash] opts optional params
+    # @option opts [Boolean] :assume_accessioned If true, does not check whether object has been accessioned.
+    # @option opts [Boolean] :create_workflows_ds If false, initialize_workflow() will not initialize the workflows datastream.
     # @raise [Dor::Exception] if the object hasn't been accessioned, or if a version is already opened
-    def open_new_version
-      raise Dor::Exception, 'Object net yet accessioned' unless(Dor::WorkflowService.get_lifecycle('dor', pid, 'accessioned'))
+    def open_new_version(opts = {})
+      # During local development, we need a way to open a new version
+      # even if the object has not been accessioned.
+      raise(Dor::Exception, 'Object net yet accessioned') unless
+        opts[:assume_accessioned] ||
+        Dor::WorkflowService.get_lifecycle('dor', pid, 'accessioned')
+
       if(new_version_open?)
         if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'submitted'))
           raise Dor::Exception, 'Recently closed version still needs to be accessioned'
@@ -24,7 +32,15 @@ module Dor
       ds.increment_version
       ds.content = ds.ng_xml.to_s
       ds.save unless self.new_object?
-      initialize_workflow 'versioningWF'
+
+      k = :create_workflows_ds
+      if opts.has_key?(k)
+        # During local development, Hydrus (or some other app running Fedora locally)
+        # does not want this call to initialize the workflows datastream.
+        initialize_workflow('versioningWF', 'dor', opts[k])
+      else
+        initialize_workflow('versioningWF')
+      end
     end
 
     def current_version
