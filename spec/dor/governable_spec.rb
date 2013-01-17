@@ -85,6 +85,8 @@ it 'should add a collection' do
 			rels_ext_ds=@item.datastreams['RELS-EXT']
 			@item.find_relationship_by_name('collection').first.should == 'info:fedora/druid:oo201oo0002'
 			@item.remove_collection('druid:oo201oo0002')
+			@item.find_relationship_by_name('collection').length.should == 0
+			puts rels_ext_ds.content.to_s
 		end
 	end
 	
