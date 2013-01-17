@@ -65,6 +65,18 @@ module Dor
       end
     end
 
+    def get_preserved_file file
+      add=Config.content.preservation_server+file
+      uri = URI(add)
+      req = Net::HTTP::Get.new(uri.request_uri)
+      req.basic_auth Config.content.preservation_user, Config.content.preservation_pass
+      res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https') {|http|
+        http.request(req)
+      }
+      res.body
+      
+    end
+
     def get_file file
       druid_tools=DruidTools::Druid.new(self.pid,Config.content.content_base_dir)
       location=druid_tools.path(file)
