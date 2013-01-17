@@ -62,7 +62,9 @@ module Dor
     
     def remove_collection(collection_druid)
       self.remove_relationship_by_name('collection','info:fedora/'+collection_druid)
-      self.remove_relationship :isMemberOf, 'info:fedora/' + collection_druid
+      self.remove_relationship 'isMemberOf', 'info:fedora/' + collection_druid
+      #this works in newer versions of activefedora
+      self.remove_relationship :is_member_of, 'info:fedora/' + collection_druid
     end
     
     def groups_which_manage_item
