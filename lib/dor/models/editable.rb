@@ -67,5 +67,21 @@ module Dor
         ''
       end
     end
+    def default_rights
+      xml=self.defaultObjectRights.ng_xml
+      if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
+        'Stanford'
+      else
+        if xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length ==1
+          'World'
+        else
+          if xml.search('//rightsMetadata/access[@type=\'discover\']/machine/none').length == 1
+            'Dark'
+          else
+            'None'
+          end
+        end
+      end
+    end
   end
 end
