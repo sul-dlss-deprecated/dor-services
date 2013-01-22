@@ -44,7 +44,7 @@ module Dor
       roles
     end
     def use_statement
-      node=self.defaultObjectRights.ng_xml.search('//use/human')
+      node=self.defaultObjectRights.ng_xml.search('//use/human[@type=\'useAndReproduction\']')
       if node.length ==1
         node.first.text()
       else
