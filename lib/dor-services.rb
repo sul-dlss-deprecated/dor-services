@@ -111,6 +111,8 @@ module Dor
   autoload :Eventable, 'dor/models/eventable'
   autoload :Versionable, 'dor/models/versionable'
   autoload :Contentable, 'dor/models/contentable'
+  autoload :Editable, 'dor/models/editable'
+
   
   # ActiveFedora Classes
   autoload :Abstract, 'dor/models/item'

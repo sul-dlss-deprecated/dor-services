@@ -74,7 +74,6 @@ module Dor
         http.request(req)
       }
       res.body
-      
     end
 
     def get_file file
