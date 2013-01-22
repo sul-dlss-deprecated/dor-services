@@ -59,5 +59,13 @@ module Dor
         ''
       end
     end
+    def creative_commons_license
+      node=self.defaultObjectRights.ng_xml.search('//use/machine[@type=\'creativeCommons\']')
+      if node.length == 1
+        node.first.text()
+      else
+        ''
+      end
+    end
   end
 end
