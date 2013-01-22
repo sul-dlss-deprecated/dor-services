@@ -43,5 +43,21 @@ module Dor
       end
       roles
     end
+    def use_statement
+      node=self.defaultObjectRights.ng_xml.search('//use/human')
+      if node.length ==1
+        node.first.text()
+      else
+        ''
+      end
+    end
+    def copyright_statement
+      node=self.defaultObjectRights.ng_xml.search('//copyright/human')
+      if node.length == 1
+        node.first.text()
+      else
+        ''
+      end
+    end
   end
 end
