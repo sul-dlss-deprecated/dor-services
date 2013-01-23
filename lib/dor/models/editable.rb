@@ -25,6 +25,18 @@ module Dor
         nodes.first.delete
       end
     end
+
+    def mods_title
+      node=self.descMetadata.ng_xml.search('//mods:mods/mods:titleInfo/mods:title','mods' => 'http://www.loc.gov/mods/v3')
+      if node.length == 1
+        node.first.text()
+      else
+        ''
+      end
+    end
+    def set_mods_title
+
+    end
     def default_collections 
       cols=[]
       #the local-name bit is to ignore namespaces
@@ -91,6 +103,19 @@ module Dor
       else
         ''
       end
+    end
+    def default_workflows
+      xml=self.administrativeMetadata.ng_xml
+      nodes=xml.search('//registration/workflow')
+      if nodes.length > 0
+        wfs=[]
+        nodes.each do |node|
+          wfs << node['id']
+        end
+        wfs
+      else
+        []
+      end      
     end
   end
 end

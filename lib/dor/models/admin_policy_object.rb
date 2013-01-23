@@ -3,6 +3,7 @@ module Dor
     include Identifiable
     include Governable
     include Editable
+    include Describable
     has_relationship 'thing', :property => :is_governed_by, :inbound => :true
     has_object_type 'adminPolicy'
     has_metadata :name => "administrativeMetadata", :type => Dor::AdministrativeMetadataDS, :label => 'Administrative Metadata'
