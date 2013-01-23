@@ -83,5 +83,14 @@ module Dor
         end
       end
     end
+    def desc_metadata_format
+      xml=self.administrativeMetadata.ng_xml
+      node=xml.search('//descMetadata/format')
+      if node.length == 1
+        node.first.text()
+      else
+        ''
+      end
+    end
   end
 end
