@@ -90,7 +90,7 @@ module Dor
         if collection
           new_item.add_collection(collection)
         end
-        if(rights)
+        if(rights and object_type == 'item' )
           rights_xml=apo_object.defaultObjectRights.ng_xml
           if rights=='world'
             rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|

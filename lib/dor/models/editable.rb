@@ -3,16 +3,31 @@ module Dor
     extend ActiveSupport::Concern
     include ActiveFedora::Relationships
 
-    def add_roleplayer role, entity
+    def add_roleplayer role, entity, type=:workgroup
       xml=self.roleMetadata.ng_xml
+      group='person'
+      if type == :workgroup
+        group='group'
+      end
       nodes = xml.search('/roleMetadata/role[@type=\''+role+'\']')
       if nodes.length > 0
-        node=Nokogiri::XML::Node.new(entity, xml)
-        nodes.first.add_child(node)
+        
+        group_node=Nokogiri::XML::Node.new(group, xml)
+        id_node=Nokogiri::XML::Node.new('identifier', xml)
+        group_node.add_child(id_node)
+        id_node.content=entity
+        id_node['type']=type.to_s
+        nodes.first.add_child(group_node)
       else
+        
         node=Nokogiri::XML::Node.new('role', xml)
         node['type']=role
-        node.add_child(Nokogiri::XML::Node.new(entity, xml))
+        group_node=Nokogiri::XML::Node.new(group, xml)
+        node.add_child group_node
+        id_node=Nokogiri::XML::Node.new('identifier', xml)
+        group_node.add_child(id_node)
+        id_node.content=entity
+        id_node['type']=type.to_s
         xml.search('/roleMetadata').first.add_child(node)
       end
       self.roleMetadata.content=xml.to_s
