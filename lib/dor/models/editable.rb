@@ -3,7 +3,7 @@ module Dor
     extend ActiveSupport::Concern
     include ActiveFedora::Relationships
 
-    def add_role role, entity
+    def add_roleplayer role, entity
       xml=self.roleMetadata.ng_xml
       nodes = xml.search('/roleMetadata/role[@type=\''+role+'\']')
       if nodes.length > 0
@@ -116,6 +116,19 @@ module Dor
       else
         []
       end      
+    end
+    def agreement
+      xml=self.administrativeMetadata.ng_xml
+      nodes=xml.search('//registration/agreement')
+      if nodes.length > 0
+        wfs=[]
+        nodes.each do |node|
+          wfs << node['id']
+        end
+        wfs
+      else
+        []
+      end
     end
   end
 end
