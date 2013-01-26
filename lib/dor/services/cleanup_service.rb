@@ -18,11 +18,24 @@ module Dor
     def self.cleanup_workspace(druid)
       workspace_root_pathname = Pathname(Config.cleanup.local_workspace_root)
       workitem_pathname = Pathname(DruidTools::Druid.new(druid,workspace_root_pathname.to_s).path)
+      cleanup_workspace_content workitem_pathname, workspace_root_pathname
+
+
+      assembly_root = workspace_root_pathname.join('assembly')
+      assembly_item_path = Pathname(DruidTools::Druid.new(druid,assembly_root.to_s).path)
+      if(assembly_item_path.exist?)
+        cleanup_workspace_content assembly_item_path, assembly_root
+      end
+      # Append /assembly to workspace_root_pathname, and see if content exists there
+      # If so, call cleanup_workspace_content with the /assembly pathname object
+    end
+
+    def self.cleanup_workspace_content(workitem_pathname, root_path)
       # if work item's work dir is ab/123/cd/4567/ab123cd4567 then rm -r ab/123/cd/4567
       workitem_parent = workitem_pathname.parent
       self.remove_branch(workitem_parent)
       # now traverse ab/123/cd from bottom, and delete empty directories
-      self.prune_druid_tree(workitem_parent.parent, workspace_root_pathname)
+      self.prune_druid_tree(workitem_parent.parent, root_path)
     end
 
     # @param druid [String] The identifier for the object whose data is to be removed
