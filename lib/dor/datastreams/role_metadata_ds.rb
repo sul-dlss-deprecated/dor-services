@@ -25,6 +25,14 @@ class RoleMetadataDS < ActiveFedora::NokogiriDatastream
     t.reviewer   :ref => [:role], :attributes => {:type => 'reviewer'}
     t.viewer     :ref => [:role], :attributes => {:type => 'viewer'}
   end
+  
+  def self.xml_template
+    Nokogiri::XML::Builder.new do |xml|
+      xml.roleMetadata{
+      }
+    end.doc
+  end
+  
 
   def to_solr(solr_doc=Hash.new, *args)
     self.find_by_xpath('/roleMetadata/role/*').each do |actor|

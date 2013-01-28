@@ -27,6 +27,12 @@ class AdministrativeMetadataDS < ActiveFedora::NokogiriDatastream
       t.releaseDelayLimit
     end
   end
-  
+  define_template :metadata_format do |xml|
+     xml.root {
+       xml.descMetadata{
+       xml.format
+     }
+     }
+   end
 end
 end

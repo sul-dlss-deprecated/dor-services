@@ -11,7 +11,6 @@ module Dor
       end
       nodes = xml.search('/roleMetadata/role[@type=\''+role+'\']')
       if nodes.length > 0
-        
         group_node=Nokogiri::XML::Node.new(group, xml)
         id_node=Nokogiri::XML::Node.new('identifier', xml)
         group_node.add_child(id_node)
@@ -19,7 +18,6 @@ module Dor
         id_node['type']=type.to_s
         nodes.first.add_child(group_node)
       else
-        
         node=Nokogiri::XML::Node.new('role', xml)
         node['type']=role
         group_node=Nokogiri::XML::Node.new(group, xml)
@@ -42,15 +40,10 @@ module Dor
     end
 
     def mods_title
-      node=self.descMetadata.ng_xml.search('//mods:mods/mods:titleInfo/mods:title','mods' => 'http://www.loc.gov/mods/v3')
-      if node.length == 1
-        node.first.text()
-      else
-        ''
-      end
+      return self.descMetadata.term_values(:title_info, :main_title).first
     end
-    def set_mods_title
-
+    def set_mods_title val
+      self.descMetadata.update_values({[:title_info, :main_title]=> val})
     end
     def default_collections 
       cols=[]
@@ -70,29 +63,31 @@ module Dor
       end
       roles
     end
+    
     def use_statement
-      node=self.defaultObjectRights.ng_xml.search('//use/human[@type=\'useAndReproduction\']')
-      if node.length ==1
-        node.first.text()
-      else
-        ''
-      end
+      use=self.defaultObjectRights.use_statement.first
+      use ? use : ''
+    end
+    def set_use_statement val
+      self.defaultObjectRights.update_values({[:use_statement] => val})
     end
     def copyright_statement
-      node=self.defaultObjectRights.ng_xml.search('//copyright/human')
-      if node.length == 1
-        node.first.text()
-      else
-        ''
-      end
+      copy=self.defaultObjectRights.copyright.first
+      copy ? copy : ''
+    end
+    def set_copyright_statement val
+      self.defaultObjectRights.update_values({[:copyright] => val})
     end
     def creative_commons_license
-      node=self.defaultObjectRights.ng_xml.search('//use/machine[@type=\'creativeCommons\']')
-      if node.length == 1
-        node.first.text()
-      else
-        ''
+      cc = self.defaultObjectRights.creative_commons.first
+      cc ? cc : ''
+    end
+    def set_creative_commons_license val
+      if not creative_commons_license
+        #add the nodes
+       self.defaultObjectRights.add_child_node(self.defaultObjectRights.ng_xml.root, :creative_commons)
       end
+      self.defaultObjectRights.update_values({[:creative_commons] => val})
     end
     def default_rights
       xml=self.defaultObjectRights.ng_xml
@@ -111,13 +106,15 @@ module Dor
       end
     end
     def desc_metadata_format
-      xml=self.administrativeMetadata.ng_xml
-      node=xml.search('//descMetadata/format')
-      if node.length == 1
-        node.first.text()
-      else
-        ''
+      format = self.administrativeMetadata.metadata_format.first
+      format ? format : ''
+    end
+    def set_desc_metadata_format format
+      #create the node if it isnt there already
+      if not self.administrativeMetadata.metadata_format.first
+        self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :metadata_format)
       end
+      self.administrativeMetadata.update_values({[:metadata_format] => format})
     end
     def default_workflows
       xml=self.administrativeMetadata.ng_xml
@@ -133,17 +130,8 @@ module Dor
       end      
     end
     def agreement
-      xml=self.administrativeMetadata.ng_xml
-      nodes=xml.search('//registration/agreement')
-      if nodes.length > 0
-        wfs=[]
-        nodes.each do |node|
-          wfs << node['id']
-        end
-        wfs
-      else
-        []
-      end
+     agr = self.administrativeMetadata.term_values(:registration, :agreementId).first
+     agr ? agr : ''
     end
   end
 end
