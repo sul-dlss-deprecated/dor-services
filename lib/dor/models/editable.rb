@@ -118,16 +118,24 @@ module Dor
     end
     def default_workflows
       xml=self.administrativeMetadata.ng_xml
-      nodes=xml.search('//registration/workflow')
+      nodes=self.administrativeMetadata.term_values(:registration, :workflow_id)
       if nodes.length > 0
         wfs=[]
         nodes.each do |node|
-          wfs << node['id']
+          wfs << node
         end
         wfs
       else
         []
       end      
+    end
+    def set_default_workflow wf
+      ds=self.administrativeMetadata
+      if not ds.workflow.first
+        #create the node first
+        ds.add_child_node(ds.ng_xml.root, :workflow)
+      end
+      ds.update_values({[:registration, :workflow_id] => wf})
     end
     def agreement
      agr = self.administrativeMetadata.term_values(:registration, :agreementId).first

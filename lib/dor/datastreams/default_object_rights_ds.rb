@@ -31,6 +31,9 @@ module Dor
           xml.use{
             xml.human(:type => 'useAndReproduction')
           }
+          xml.copyright{
+            xml.human
+          }
         
       }
     end.doc

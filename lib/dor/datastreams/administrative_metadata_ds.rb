@@ -15,6 +15,7 @@ class AdministrativeMetadataDS < ActiveFedora::NokogiriDatastream
       t.itemTag
       t.workflow_id :path => 'workflow/@id', :index_as => [:facetable]
     end
+    t.workflow :path => 'registration/workflow'
     t.deposit :index_as => [:not_searchable]
     
     t.accessioning :index_as => [:not_searchable] do
@@ -28,11 +29,18 @@ class AdministrativeMetadataDS < ActiveFedora::NokogiriDatastream
     end
   end
   define_template :metadata_format do |xml|
-     xml.root {
+     xml.administrativeMetadata {
        xml.descMetadata{
        xml.format
      }
      }
    end
+   define_template :workflow do |xml|
+      xml.administrativeMetadata {
+        xml.registration{
+        xml.workflow
+      }
+      }
+    end
 end
 end

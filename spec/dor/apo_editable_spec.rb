@@ -140,4 +140,10 @@ describe Dor::Editable do
       @empty_item.agreement.should == ''
     end
   end
+  describe 'set_default_workflow' do
+    it 'should set the default workflow' do
+    @item.set_default_workflow 'thisWF'
+    @item.default_workflows.include?('thisWF').should == true
+    end
+  end
 end
