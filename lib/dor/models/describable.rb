@@ -51,6 +51,9 @@ module Dor
 		end
 		#returns the desc metadata a relatedItem with information about the collection this object belongs to for use in published mods and mods to DC conversion
 	  def add_collection_reference
+	    if not self.methods.include? :public_relationships
+        return self.descMetadata.ng_xml.to_s
+      end
 	    relationships=self.public_relationships
 	    xml=Nokogiri::XML(self.descMetadata.ng_xml.to_s)
 	    
