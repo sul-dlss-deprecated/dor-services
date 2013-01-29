@@ -14,6 +14,7 @@ class AdministrativeMetadataDS < ActiveFedora::NokogiriDatastream
       t.agreementId
       t.itemTag
       t.workflow_id :path => 'workflow/@id', :index_as => [:facetable]
+      t.default_collection :path => 'collection/@id'
     end
     t.workflow :path => 'registration/workflow'
     t.deposit :index_as => [:not_searchable]
@@ -28,6 +29,20 @@ class AdministrativeMetadataDS < ActiveFedora::NokogiriDatastream
       t.releaseDelayLimit
     end
   end
+  define_template :default_collection do |xml|
+  xml.administrativeMetadata{
+    xml.registration{
+      xml.collection(:id => '')
+    }
+  }
+  end
+  define_template :agreementId do |xml|
+    xml.administrativeMetadata{
+      xml.registration{
+        xml.agreementId
+      }
+    }
+  end
   define_template :metadata_format do |xml|
      xml.administrativeMetadata {
        xml.descMetadata{
@@ -35,12 +50,26 @@ class AdministrativeMetadataDS < ActiveFedora::NokogiriDatastream
      }
      }
    end
-   define_template :workflow do |xml|
+   define_template :registration do |xml|
       xml.administrativeMetadata {
         xml.registration{
-        xml.workflow
-      }
+          xml.workflow(:id=> '')
+        }
       }
     end
+    define_template :default_collection do |xml|
+        xml.administrativeMetadata {
+          xml.registration{
+            xml.collection
+        }
+        }
+      end
+      def self.xml_template
+        Nokogiri::XML::Builder.new do |xml|
+          xml.administrativeMetadata{
+          }
+        end.doc
+      end
 end
+
 end

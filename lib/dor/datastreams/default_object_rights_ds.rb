@@ -5,8 +5,13 @@ module Dor
       t.root :path => 'rightsMetadata', :index_as => [:not_searchable]
       t.copyright :path => 'copyright/human'
       t.use_statement :path => '/use/human', :argument => 'useAndReproduction'
-      t.use
-      t.creative_commons :path => '/use/machine', :argument => 'creativeCommons'
+      t.use do
+        t.machine
+        t.human
+      end
+        
+      t.creative_commons :path => '/use/machine', :type => 'creativeCommons'
+      
     end
 
     define_template :creative_commons do |xml|

@@ -84,6 +84,7 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
      <fedora-rel:isMemberOfCollection rdf:resource="info:fedora/druid:fz306fj8334"></fedora-rel:isMemberOfCollection>
   </relationships>
   <registration>
+	<collection id="druid:fz306fj8334"></collection>
 	<agreementId>druid:xf765cv5573</agreementId>
     <workflow id="digitizationWF">
       <process lifecycle="registered" name="initiate" status="completed"></process>

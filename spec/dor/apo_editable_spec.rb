@@ -10,16 +10,17 @@ describe Dor::Editable do
   describe 'add_roleplayer' do
     it 'should add a role' do
       @item.add_roleplayer('dor-apo-manager', 'dlss:some-staff')
-      puts @item.roleMetadata.ng_xml.to_s
+      @item.roles.should == {"dor-apo-manager"=>["workgroup:dlss:developers", "workgroup:dlss:pmag-staff", "workgroup:dlss:smpl-staff", "workgroup:dlss:dpg-staff", "workgroup:dlss:argo-access-spec", "sunetid:lmcrae", "workgroup:dlss:some-staff"]}
     end
 
     it 'should create a new role' do
       @item.add_roleplayer('dor-apo-viewer', 'dlss:some-staff')
-      puts @item.roleMetadata.ng_xml.to_s
+      {"dor-apo-manager" => ["workgroup:dlss:developers", "workgroup:dlss:pmag-staff", "workgroup:dlss:smpl-staff", "workgroup:dlss:dpg-staff", "workgroup:dlss:argo-access-spec", "sunetid:lmcrae"],"dor-apo-viewer" => ["workgroup:dlss:some-staff"]}
     end
 
     it 'should work on an empty datastream' do
       @empty_item.add_roleplayer('dor-apo-manager', 'dlss:some-staff')
+      @empty_item.roles.should == {"dor-apo-manager" => ["workgroup:dlss:some-staff"]}
     end
   end
 
@@ -28,6 +29,27 @@ describe Dor::Editable do
       @item.default_collections.should == ['druid:fz306fj8334']
     end
     it 'shouldnt fail on an item with an empty datastream' do
+      @empty_item.default_collections.should == []
+    end
+  end
+  describe 'add_default_collection' do
+    it 'should set the collection values' do
+      @item.add_default_collection 'druid:fz306fj8335'
+      @item.default_collections == ['druid:fz306fj8335']
+    end
+    it 'should work for empty datastreams' do
+      @empty_item.add_default_collection 'druid:fz306fj8335'
+      @empty_item.default_collections == ['druid:fz306fj8335']
+    end
+  end
+  describe 'remove_default_collection' do
+    it 'should remove the collection' do
+      @item.remove_default_collection 'druid:fz306fj8334'
+      @item.default_collections.should == []
+    end
+    it 'should work on an empty datastream' do
+      @empty_item.add_default_collection 'druid:fz306fj8335'
+      @empty_item.remove_default_collection 'druid:fz306fj8335'
       @empty_item.default_collections.should == []
     end
   end
@@ -83,8 +105,18 @@ describe Dor::Editable do
     it 'should find the default object rights' do
       @item.default_rights.should == 'World'
     end
-    it 'shouldnt fail on an item with an empty datastream' do
-      @empty_item.default_rights.should == 'None'
+    it 'should use the OM template if the ds is empty' do
+      @empty_item.default_rights.should == 'World'
+    end
+  end
+  describe 'set_default_rights' do
+    it 'should set default rights' do
+      @item.set_default_rights 'stanford'
+      @item.default_rights.should == 'Stanford'
+    end
+    it 'should work on an empty ds' do
+      @empty_item.set_default_rights 'stanford'
+      @empty_item.default_rights.should == 'Stanford'
     end
   end
   describe 'desc metadata format' do
@@ -115,8 +147,8 @@ describe Dor::Editable do
   end
   describe 'set_mods_title' do
     it 'should set the title' do
-    @item.set_mods_title 'hello world'
-    @item.mods_title.should == 'hello world'
+      @item.set_mods_title 'hello world'
+      @item.mods_title.should == 'hello world'
     end
     it 'should work on an empty datastream' do
       @empty_item.set_mods_title 'hello world'
@@ -127,9 +159,15 @@ describe Dor::Editable do
     it 'should find the default workflows' do
       @item.default_workflows.should == ['digitizationWF']
     end
-    it '' do
+  end
+  describe 'set_copyright_statement' do
+    it 'shoudl work' do
       @item.set_copyright_statement 'hi'
-      puts @item.defaultObjectRights.ng_xml.to_s
+      @item.copyright_statement.should == 'hi'
+    end
+    it 'works on an empty datastream' do
+      @empty_item.set_copyright_statement 'hi'
+      @empty_item.copyright_statement.should == 'hi'
     end
   end
   describe 'agreement' do
@@ -140,10 +178,24 @@ describe Dor::Editable do
       @empty_item.agreement.should == ''
     end
   end
+  describe 'set_agreement' do
+    it 'should work' do
+      @item.set_agreement 'new agreement'
+      @item.agreement.should == 'new agreement'
+    end
+    it 'should work on an empty datastream' do
+      @empty_item.set_agreement 'new agreement'
+      @empty_item.agreement.should == 'new agreement'
+    end
+  end
   describe 'set_default_workflow' do
     it 'should set the default workflow' do
-    @item.set_default_workflow 'thisWF'
-    @item.default_workflows.include?('thisWF').should == true
+      @item.set_default_workflow 'thisWF'
+      @item.default_workflows.include?('thisWF').should == true
+    end
+    it 'should work on an empty ds' do
+      @empty_item.set_default_workflow 'thisWF'
+      @empty_item.default_workflows.include?('thisWF').should == true
     end
   end
 end

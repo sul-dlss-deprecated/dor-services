@@ -43,15 +43,31 @@ module Dor
       return self.descMetadata.term_values(:title_info, :main_title).first
     end
     def set_mods_title val
-      self.descMetadata.update_values({[:title_info, :main_title]=> val})
+      self.descMetadata.update_values({[:title_info, :main_title] => val})
     end
     def default_collections 
-      cols=[]
       #the local-name bit is to ignore namespaces
-      self.administrativeMetadata.ng_xml.xpath('/administrativeMetadata/relationships/*[local-name() =\'isMemberOfCollection\']').each do |rel|
-        cols << rel['rdf:resource'].split(/\//).last
+      ds=administrativeMetadata
+      return ds.term_values(:registration, :default_collection)
+    end
+    def add_default_collection val
+      ds=self.administrativeMetadata
+      xml=ds.ng_xml
+      reg=xml.search('//administrativeMetadata/registration').first
+      if not reg
+        reg=Nokogiri::XML::Node.new('registration',xml)
+        xml.search('/administrativeMetadata').first.add_child(reg)
       end
-      cols
+      node=Nokogiri::XML::Node.new('collection',xml)
+      node['id']=val
+      reg.add_child(node)
+      self.administrativeMetadata.content=xml.to_s
+    end
+    def remove_default_collection val
+      ds=self.administrativeMetadata
+      xml=ds.ng_xml
+      xml.search('//administrativeMetadata/registration/collection[@id=\''+val+'\']').remove
+      self.administrativeMetadata.content=xml.to_s
     end
     def roles
       roles={}
@@ -83,7 +99,7 @@ module Dor
       cc ? cc : ''
     end
     def set_creative_commons_license val
-      if not creative_commons_license
+      if creative_commons_license == ''
         #add the nodes
        self.defaultObjectRights.add_child_node(self.defaultObjectRights.ng_xml.root, :creative_commons)
       end
@@ -105,6 +121,35 @@ module Dor
         end
       end
     end
+    #Doing this with OM would be more concise   
+    def set_default_rights rights
+      ds = self.defaultObjectRights
+      rights_xml=ds.ng_xml
+      rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
+        node.children.remove
+        machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
+        if(rights=='world')
+          world_node=Nokogiri::XML::Node.new(rights,rights_xml)
+          node.add_child(machine_node)
+          machine_node.add_child(world_node)
+        end
+        if rights=='stanford'
+          world_node=Nokogiri::XML::Node.new(rights,rights_xml)
+          node.add_child(machine_node)
+          group_node=Nokogiri::XML::Node.new('group',rights_xml)
+          group_node.content="Stanford"
+          node.add_child(machine_node)
+          machine_node.add_child(group_node)
+        end
+        if rights=='none'
+          none_node=Nokogiri::XML::Node.new('none',rights_xml)
+          node.add_child(machine_node)
+          machine_node.add_child(none_node)
+        end
+      end
+      
+    end
+    
     def desc_metadata_format
       format = self.administrativeMetadata.metadata_format.first
       format ? format : ''
@@ -133,13 +178,21 @@ module Dor
       ds=self.administrativeMetadata
       if not ds.workflow.first
         #create the node first
-        ds.add_child_node(ds.ng_xml.root, :workflow)
+        if not ds.registration.first
+          ds.add_child_node(ds.ng_xml.root, :registration)
+        end
       end
       ds.update_values({[:registration, :workflow_id] => wf})
     end
     def agreement
      agr = self.administrativeMetadata.term_values(:registration, :agreementId).first
      agr ? agr : ''
+    end
+    def set_agreement val
+      if not self.administrativeMetadata.term_values(:registration, :agreementId).first
+        self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :agreementId)
+      end
+      self.administrativeMetadata.update_values({[:registration, :agreementId] => val})
     end
   end
 end
