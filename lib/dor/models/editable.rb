@@ -32,7 +32,7 @@ module Dor
     end
 
     def delete_role role, entity
-      xml=self.datastreams['rolesMetadata'].ng_xml
+      xml=self.roleMetadata.ng_xml
       nodes = xml.search('/roleMetadata/role/'+role)
       if nodes.length > 0
         nodes.first.delete
@@ -147,7 +147,6 @@ module Dor
           machine_node.add_child(none_node)
         end
       end
-      
     end
     
     def desc_metadata_format
