@@ -37,6 +37,7 @@ module Dor
       if nodes.length > 0
         nodes.first.delete
       end
+      self.roleMetadata.content=xml.to_s
     end
 
     def mods_title
