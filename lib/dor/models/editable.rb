@@ -43,7 +43,7 @@ module Dor
     def mods_title
       return self.descMetadata.term_values(:title_info, :main_title).first
     end
-    def set_mods_title val
+    def mods_title=(val)
       self.descMetadata.update_values({[:title_info, :main_title] => val})
     end
     def default_collections 
@@ -85,21 +85,21 @@ module Dor
       use=self.defaultObjectRights.use_statement.first
       use ? use : ''
     end
-    def set_use_statement val
+    def use_statement=(val)
       self.defaultObjectRights.update_values({[:use_statement] => val})
     end
     def copyright_statement
       copy=self.defaultObjectRights.copyright.first
       copy ? copy : ''
     end
-    def set_copyright_statement val
+    def copyright_statement=(val)
       self.defaultObjectRights.update_values({[:copyright] => val})
     end
     def creative_commons_license
       cc = self.defaultObjectRights.creative_commons.first
       cc ? cc : ''
     end
-    def set_creative_commons_license val
+    def creative_commons_license=(val)
       if creative_commons_license == ''
         #add the nodes
        self.defaultObjectRights.add_child_node(self.defaultObjectRights.ng_xml.root, :creative_commons)
@@ -123,7 +123,7 @@ module Dor
       end
     end
     #Doing this with OM would be more concise   
-    def set_default_rights rights
+    def default_rights=(rights)
       ds = self.defaultObjectRights
       rights_xml=ds.ng_xml
       rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
@@ -154,7 +154,7 @@ module Dor
       format = self.administrativeMetadata.metadata_format.first
       format ? format : ''
     end
-    def set_desc_metadata_format format
+    def desc_metadata_format=(format)
       #create the node if it isnt there already
       if not self.administrativeMetadata.metadata_format.first
         self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :metadata_format)
@@ -174,7 +174,7 @@ module Dor
         []
       end      
     end
-    def set_default_workflow wf
+    def default_workflow=(wf)
       ds=self.administrativeMetadata
       xml=ds.ng_xml
       nodes=xml.search('//registration/workflow')
@@ -195,7 +195,7 @@ module Dor
      agr = self.administrativeMetadata.term_values(:registration, :agreementId).first
      agr ? agr : ''
     end
-    def set_agreement val
+    def agreement=(val)
       ds=self.administrativeMetadata
       xml=ds.ng_xml
       nodes=xml.search('//registration/agreementId')

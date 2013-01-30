@@ -70,9 +70,9 @@ describe Dor::Editable do
     end
   end
 
-  describe 'set_use_statement' do
+  describe 'use_statement =' do
     it 'should work' do
-      @item.set_use_statement 'hi'
+      @item.use_statement = 'hi'
       @item.use_statement.should == 'hi'
     end
   end
@@ -85,7 +85,7 @@ describe Dor::Editable do
       @empty_item.copyright_statement.should == ''
     end
   end
-  describe 'set_copyright_statement' do
+  describe 'copyright_statement =' do
   end
   describe 'creative_commons_license' do
     it 'should find the creative commons license' do
@@ -95,9 +95,9 @@ describe Dor::Editable do
       @empty_item.creative_commons_license.should == ''
     end
   end
-  describe 'set_creative_commons_license' do
+  describe 'creative_commons_license =' do
     it 'should work on an empty ds' do
-      @empty_item.set_creative_commons_license 'hi'
+      @empty_item.creative_commons_license = 'hi'
       @empty_item.creative_commons_license.should == 'hi'
     end
   end
@@ -109,13 +109,13 @@ describe Dor::Editable do
       @empty_item.default_rights.should == 'World'
     end
   end
-  describe 'set_default_rights' do
+  describe 'default_rights =' do
     it 'should set default rights' do
-      @item.set_default_rights 'stanford'
+      @item.default_rights = 'stanford'
       @item.default_rights.should == 'Stanford'
     end
     it 'should work on an empty ds' do
-      @empty_item.set_default_rights 'stanford'
+      @empty_item.default_rights = 'stanford'
       @empty_item.default_rights.should == 'Stanford'
     end
   end
@@ -127,13 +127,13 @@ describe Dor::Editable do
       @empty_item.desc_metadata_format.should == ''
     end
   end
-  describe 'set_desc_metadata_format' do
+  describe 'desc_metadata_format=' do
     it 'should set the desc metadata format' do
-      @item.set_desc_metadata_format 'TEI'
+      @item.desc_metadata_format = 'TEI'
       @item.desc_metadata_format.should == 'TEI'
     end
     it 'should set the desc metadata format for an empty datastream' do
-      @empty_item.set_desc_metadata_format 'TEI'
+      @empty_item.desc_metadata_format = 'TEI'
       @empty_item.desc_metadata_format.should == 'TEI'
     end
   end
@@ -145,13 +145,13 @@ describe Dor::Editable do
       @empty_item.mods_title.should == ''
     end
   end
-  describe 'set_mods_title' do
+  describe 'mods_title=' do
     it 'should set the title' do
-      @item.set_mods_title 'hello world'
+      @item.mods_title = 'hello world'
       @item.mods_title.should == 'hello world'
     end
     it 'should work on an empty datastream' do
-      @empty_item.set_mods_title 'hello world'
+      @empty_item.mods_title = 'hello world'
       @empty_item.mods_title.should == 'hello world'
     end
   end
@@ -160,13 +160,13 @@ describe Dor::Editable do
       @item.default_workflows.should == ['digitizationWF']
     end
   end
-  describe 'set_copyright_statement' do
+  describe 'copyright_statement=' do
     it 'shoudl work' do
-      @item.set_copyright_statement 'hi'
+      @item.copyright_statement = 'hi'
       @item.copyright_statement.should == 'hi'
     end
     it 'works on an empty datastream' do
-      @empty_item.set_copyright_statement 'hi'
+      @empty_item.copyright_statement = 'hi'
       @empty_item.copyright_statement.should == 'hi'
     end
   end
@@ -178,23 +178,23 @@ describe Dor::Editable do
       @empty_item.agreement.should == ''
     end
   end
-  describe 'set_agreement' do
+  describe 'agreement=' do
     it 'should work' do
-      @item.set_agreement 'new agreement'
+      @item.agreement = 'new agreement'
       @item.agreement.should == 'new agreement'
     end
     it 'should work on an empty datastream' do
-      @empty_item.set_agreement 'new agreement'
+      @empty_item.agreement = 'new agreement'
       @empty_item.agreement.should == 'new agreement'
     end
   end
-  describe 'set_default_workflow' do
+  describe 'default_workflow=' do
     it 'should set the default workflow' do
-      @item.set_default_workflow 'thisWF'
+      @item.default_workflow = 'thisWF'
       @item.default_workflows.include?('thisWF').should == true
     end
     it 'should work on an empty ds' do
-      @empty_item.set_default_workflow 'thisWF'
+      @empty_item.default_workflow = 'thisWF'
       @empty_item.default_workflows.include?('thisWF').should == true
     end
   end
