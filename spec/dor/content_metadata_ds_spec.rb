@@ -4,8 +4,8 @@ require 'equivalent-xml'
 require 'dor/datastreams/content_metadata_ds'
 
 describe Dor::ContentMetadataDS do
-  before(:all) { stub_config }
-  after(:all)  { unstub_config }
+  before(:each) { stub_config }
+  after(:each)  { unstub_config }
 
   before(:each) do
     @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
@@ -25,7 +25,7 @@ describe Dor::ContentMetadataDS do
     </resource>
     </contentMetadata>'
     Dor::Item.stub(:find).and_return(@item)
-		
+
   end
   describe 'add_resource' do
     before(:all){
@@ -36,8 +36,12 @@ describe Dor::ContentMetadataDS do
       file[:preserve]='no'
       @files=Array.new
       @files[0]=file
-      Dor::Item.stub(:save).and_return(true)
     }
+
+    before(:each) do
+      Dor::Item.stub(:save).and_return(true)
+    end
+
     it 'should add a resource' do
       @item.contentMetadata.add_resource(@files,'resource',1)
       xml=@item.contentMetadata.ng_xml
@@ -84,7 +88,7 @@ describe Dor::ContentMetadataDS do
         resources=xml.search('//resource')
         resources.length.should ==1
         resources.first()['sequence'].should == '1'
-        
+
       end
     end
     end
@@ -185,7 +189,7 @@ describe Dor::ContentMetadataDS do
     end
     describe 'to_solr' do
     	it 'should generate a shelved file count' do
-    		doc=@item.contentMetadata.to_solr    
+    		doc=@item.contentMetadata.to_solr
     		doc['shelved_content_file_count_display'].first.should == '1'
     	end
     	it 'should generate a resource count' do
@@ -205,5 +209,5 @@ describe Dor::ContentMetadataDS do
   	    doc['first_shelved_image_display'].first.should == 'gw177fc7976_05_0001.jp2'
   	  end
     end
-  
+
 end

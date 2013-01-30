@@ -7,7 +7,7 @@ end
 
 describe Dor::Contentable do
 
-  before(:all) { stub_config
+  before(:each) { stub_config
                 Dor.configure do
                     content do
                       content_user 'user'
@@ -16,7 +16,7 @@ describe Dor::Contentable do
                     end
                   end
                 }
-  after(:all)  { unstub_config }
+  after(:each)  { unstub_config }
 
   before(:each) do
     @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
@@ -74,7 +74,7 @@ describe Dor::Contentable do
     it 'should raise an exception if the resource doesnt exist' do
       lambda{@item.add_file(@file,'abc0001','ab123cd4567_descMetadata.xml')}.should raise_error
     end
-          
+
     it 'should work ok if the object was set up using the old directory structure' do
       @sftp.stub(:stat!) do |arg|
         if not arg=~ /desc/ and not arg=~/ab123/
@@ -99,7 +99,7 @@ describe Dor::Contentable do
       end
     end
   end
-  
+
   describe 'replace_file' do
     it 'should update the md5, sha1, and size for the file, and attempt to ftp it to the workspace' do
       @item.replace_file(@file,'gw177fc7976_00_0001.tif')

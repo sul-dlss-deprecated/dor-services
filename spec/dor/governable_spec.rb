@@ -8,8 +8,8 @@ end
 
 describe Dor::Governable do
 
-  before(:all) { stub_config   }
-  after(:all)  { unstub_config }
+  before(:each) { stub_config   }
+  after(:each)  { unstub_config }
 
   before :each do
     @item = instantiate_fixture("druid:oo201oo0001", Dor::AdminPolicyObject)
@@ -22,7 +22,7 @@ describe 'set_read_rights' do
     @item.datastreams['rightsMetadata'].ng_xml=''
     lambda{@item.set_read_rights('World')}.should raise_error
   end
-  it 'should cahnge the read permissions value from <group>stanford</group> to <none/> ' do    
+  it 'should cahnge the read permissions value from <group>stanford</group> to <none/> ' do
     @item.datastreams['rightsMetadata'].ng_xml.should be_equivalent_to <<-XML
     <?xml version="1.0"?>
     <rightsMetadata>
@@ -72,13 +72,13 @@ describe 'set_read_rights' do
   end
   end
   describe 'add_collection' do
-it 'should add a collection' do 
+it 'should add a collection' do
       @item.add_collection('druid:oo201oo0002')
 			rels_ext_ds=@item.datastreams['RELS-EXT']
 			@item.find_relationship_by_name('collection').first.should == 'info:fedora/druid:oo201oo0002'
     end
     end
-	
+
 	describe 'remove_collection' do
 		it 'should delete a collection' do
 			@item.add_collection('druid:oo201oo0002')
@@ -87,7 +87,7 @@ it 'should add a collection' do
 			@item.remove_collection('druid:oo201oo0002')
 		end
 	end
-	
+
 	describe "initiate_apo_workflow" do
 	  it "calls Processable.initialize_workflow without creating a datastream when the object is new" do
 	    i = GovernableItem.new

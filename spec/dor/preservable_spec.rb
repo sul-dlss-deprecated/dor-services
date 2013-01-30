@@ -7,13 +7,13 @@ end
 
 describe Dor::Preservable do
 
-  before(:all) { stub_config   }
-  after(:all)  { unstub_config }
+  before(:each) { stub_config   }
+  after(:each)  { unstub_config }
 
   before(:each) do
     @item = instantiate_fixture('druid:ab123cd4567', PreservableItem)
   end
-  
+
   it "should build the provenanceMetadata datastream" do
     @item.datastreams['provenanceMetadata'].ng_xml.to_s.should be_equivalent_to('<xml/>')
     @item.build_provenanceMetadata_datastream('workflow_id', 'event_text')
