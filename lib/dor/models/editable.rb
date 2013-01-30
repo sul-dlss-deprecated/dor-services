@@ -196,10 +196,21 @@ module Dor
      agr ? agr : ''
     end
     def set_agreement val
-      if not self.administrativeMetadata.term_values(:registration, :agreementId).first
-        self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :agreementId)
+      ds=self.administrativeMetadata
+      xml=ds.ng_xml
+      nodes=xml.search('//registration/agreementId')
+      if nodes.first
+        nodes.first.content=val
+      else
+        nodes=xml.search('//registration')
+        if not nodes.first
+          self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :registration)
+        end
+        nodes=xml.search('//registration')
+        agreement_node=Nokogiri::XML::Node.new('agreementId',xml)
+        agreement_node.content=val
+        nodes.first.add_child(agreement_node)
       end
-      self.administrativeMetadata.update_values({[:registration, :agreementId] => val})
     end
   end
 end
