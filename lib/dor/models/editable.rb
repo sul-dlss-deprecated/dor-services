@@ -176,13 +176,20 @@ module Dor
     end
     def set_default_workflow wf
       ds=self.administrativeMetadata
-      if not ds.workflow.first
-        #create the node first
-        if not ds.registration.first
-          ds.add_child_node(ds.ng_xml.root, :registration)
+      xml=ds.ng_xml
+      nodes=xml.search('//registration/workflow')
+      if nodes.first
+        nodes.first['id']=wf
+      else
+        nodes=xml.search('//registration')
+        if not nodes.first
+          self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :registration)
         end
+        nodes=xml.search('//registration')
+        wf_node=Nokogiri::XML::Node.new('workflow',xml)
+        wf_node['id']=wf
+        nodes.first.add_child(wf_node)
       end
-      ds.update_values({[:registration, :workflow_id] => wf})
     end
     def agreement
      agr = self.administrativeMetadata.term_values(:registration, :agreementId).first
