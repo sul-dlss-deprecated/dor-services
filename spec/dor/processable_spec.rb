@@ -1,8 +1,10 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper') 
+require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+
 class ProcessableItem < ActiveFedora::Base
   include Dor::Itemizable
   include Dor::Processable
   include Dor::Versionable
+  include Dor::Describable
 end
 
 class ProcessableOnlyItem < ActiveFedora::Base
@@ -11,15 +13,15 @@ class ProcessableOnlyItem < ActiveFedora::Base
 end
 
 describe Dor::Processable do
-  
-  before(:all) { stub_config   }
-  after(:all)  { unstub_config }
-  
+
+  before(:each) { stub_config   }
+  after(:each)  { unstub_config }
+
   before :each do
     @item = instantiate_fixture('druid:ab123cd4567', ProcessableItem)
     @item.contentMetadata.content = '<contentMetadata/>'
   end
-  
+
   it "has a workflows datastream" do
     @item.datastreams['workflows'].should be_a(Dor::WorkflowDs)
   end
@@ -28,34 +30,72 @@ describe Dor::Processable do
     Dor::WorkflowService.should_receive(:get_workflow_xml).with('dor','druid:ab123cd4567',nil)
     @item.datastreams['workflows'].content
   end
-  
-  context "filesystem-based content" do
-    before :each do
-      @filename = File.join(@fixture_dir, "workspace/ab/123/cd/4567/ab123cd4567/metadata/contentMetadata.xml")
-      @content_md = read_fixture("workspace/ab/123/cd/4567/content_metadata.xml")
-    end
-    
-    it "should read datastream content files from the workspace" do
-      File.stub(:exists?).with(@filename).and_return(true)
-      File.should_not_receive(:exists?).with(/content_metadata\.xml/)
-      File.should_receive(:read).with(@filename).and_return(@content_md)
-      @item.build_datastream('contentMetadata',true)
-      @item.datastreams['contentMetadata'].ng_xml.should be_equivalent_to(@content_md)
+
+  context "build_datastream()" do
+
+    before(:each) do
+      # Paths to two files with the same content.
+      f1 = "workspace/ab/123/cd/4567/ab123cd4567/metadata/descMetadata.xml"
+      f2 = "workspace/ab/123/cd/4567/desc_metadata.xml"
+      @dm_filename = File.join(@fixture_dir, f1)  # Path used inside build_datastream().
+      @dm_fixture_xml = read_fixture(f2)          # Path to fixture.
+      @dm_builder_xml = @dm_fixture_xml.sub(/FROM_FILE/, 'FROM_BUILDER')
     end
 
-    it "should use the datastream builder if the file doesn't exist" do
-      pending "build_content_datastream method has been deleted from itemizable model.
-         That datastream or file should always exist.  This test should use a different datastream."
-      File.stub(:exists?).with(/contentMetadata\.xml/).and_return(false)
-      File.should_receive(:exists?).with(/content_metadata\.xml/).and_return(true)
-      @item.build_datastream('contentMetadata',true)
-      @item.datastreams['contentMetadata'].ng_xml.should be_equivalent_to(@content_md)
+    context "datastream exists as a file" do
+
+      before(:each) do
+        @item.stub(:find_metadata_file).and_return(@dm_filename)
+        File.stub(:read).and_return(@dm_fixture_xml)
+      end
+
+      it "file newer than datastream: should read content from file" do
+        t = Time.now
+        File.stub(:mtime).and_return(t)
+        @item.descMetadata.stub(:createDate).and_return(t - 99)
+        xml = @dm_fixture_xml
+        @item.descMetadata.ng_xml.should_not be_equivalent_to(xml)
+        @item.build_datastream('descMetadata', true)
+        @item.descMetadata.ng_xml.should be_equivalent_to(xml)
+        @item.descMetadata.ng_xml.should_not be_equivalent_to(@dm_builder_xml)
+      end
+
+      it "file older than datastream: should use the builder" do
+        t = Time.now
+        File.stub(:mtime).and_return(t - 99)
+        @item.descMetadata.stub(:createDate).and_return(t)
+        xml = @dm_builder_xml
+        @item.stub(:fetch_descMetadata_datastream).and_return(xml)
+        @item.descMetadata.ng_xml.should_not be_equivalent_to(xml)
+        @item.build_datastream('descMetadata', true)
+        @item.descMetadata.ng_xml.should be_equivalent_to(xml)
+        @item.descMetadata.ng_xml.should_not be_equivalent_to(@dm_fixture_xml)
+      end
+
     end
-    
-    it 'should raise an exception if the datastream is required but cannot be generated' do
-      File.stub(:exists?).with(/contentMetadata\.xml/).and_return(false)
-      lambda{@item.build_datastream('contentMetadata',false,true)}.should raise_error
+
+    context "datastream does not exist as a file" do
+
+      before(:each) do
+        @item.stub(:find_metadata_file).and_return(nil)
+      end
+
+      it "should use the datastream builder" do
+        xml = @dm_builder_xml
+        @item.stub(:fetch_descMetadata_datastream).and_return(xml)
+        @item.descMetadata.ng_xml.should_not be_equivalent_to(xml)
+        @item.build_datastream('descMetadata')
+        @item.descMetadata.ng_xml.should be_equivalent_to(xml)
+        @item.descMetadata.ng_xml.should_not be_equivalent_to(@dm_fixture_xml)
+      end
+
+      it 'should raise an exception if required datastream cannot be generated' do
+        # Fails because there is no build_contentMetadata_datastream() method.
+        expect { @item.build_datastream('contentMetadata', false, true) }.to raise_error
+      end
+
     end
+
   end
 
   describe 'to_solr' do
@@ -73,7 +113,7 @@ describe Dor::Processable do
     <milestone date="2012-11-06T16:35:00-0800">described</milestone>
     <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
     <milestone date="2012-11-06T16:59:39-0800">published</milestone>
-		</lifecycle>' 
+		</lifecycle>'
 		dsxml='
       <versionMetadata objectId="druid:ab123cd4567">
         <version versionId="1" tag="1.0.0">
@@ -90,7 +130,7 @@ describe Dor::Processable do
         </version>
       </versionMetadata>
     '
-    
+
       xml=Nokogiri::XML(xml)
   		@lifecycle_vals=[]
   		Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
@@ -126,14 +166,14 @@ describe Dor::Processable do
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
   		@item.stub(:versionMetadata).and_return(@versionMD)
   		solr_doc=@item.to_solr
-  		#the facet field should have a date in it. 
+  		#the facet field should have a date in it.
   		solr_doc['last_modified_day_facet'].length.should == 1
     end
     it 'should create a version field for each version, including the version number, tag and description' do
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
   		@item.stub(:versionMetadata).and_return(@versionMD)
   		solr_doc=@item.to_solr
-  		#the facet field should have a date in it. 
+  		#the facet field should have a date in it.
   		solr_doc['versions_display'].length.should > 1
   		solr_doc['versions_display'].include?("4;2.2.0;Another typo").should == true
     end
@@ -149,7 +189,7 @@ describe Dor::Processable do
     <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
     <milestone date="2012-11-06T16:59:39-0800">published</milestone>
 		</lifecycle>
-      ' 
+      '
       xml=Nokogiri::XML(xml)
   		@lifecycle_vals=[]
   		Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
@@ -165,7 +205,7 @@ describe Dor::Processable do
     <milestone date="2012-11-06T16:19:15-0800" version="2">described</milestone>
     <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
 		</lifecycle>
-      ' 
+      '
       xml=Nokogiri::XML(xml)
   		@lifecycle_vals=[]
   		Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)

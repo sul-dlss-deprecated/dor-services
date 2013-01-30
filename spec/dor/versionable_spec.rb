@@ -96,7 +96,7 @@ describe Dor::Versionable do
       ds.increment_version
       obj.close_version :description => 'closing text', :significance => :major
 
-      ds.to_xml.should be_equivalent_to ( <<-XML
+      ds.to_xml.should be_equivalent_to( <<-XML
         <versionMetadata objectId="druid:ab123cd4567">
           <version versionId="1" tag="1.0.0">
             <description>Initial Version</description>
