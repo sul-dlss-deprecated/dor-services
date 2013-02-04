@@ -170,23 +170,32 @@ describe Dor::Editable do
       @empty_item.copyright_statement.should == 'hi'
     end
   end
-  describe 'agreement' do
-    it 'should get an agreement' do
-      @item.agreement.should == 'druid:xf765cv5573'
-    end
-    it 'shouldnt fail on an empty datastream' do
-      @empty_item.agreement.should == ''
+  describe 'purge_roles' do
+    it 'works' do
+      @item.purge_roles
+      @item.roles.should == {}
     end
   end
   describe 'agreement=' do
     it 'should work' do
-      @item.agreement = 'new agreement'
-      @item.agreement.should == 'new agreement'
+      #puts ActiveFedora::Predicates.predicate_config[:predicate_mappings].inspect
+      agr=mock()
+      agr.stub(:pid).and_return('druid:dd327qr3670')
+      @item.stub(:agreement_object).and_return([agr])
+      rels_ext_ds=@item.datastreams['RELS-EXT']
+      @item.agreement = 'druid:new_agreement'
+      xml=Nokogiri::XML(rels_ext_ds.to_rels_ext.to_s)
+      xml.should be_equivalent_to <<-XML
+      <?xml version="1.0" encoding="UTF-8"?>
+      <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:hydra="http://projecthydra.org/ns/relations#">
+        <rdf:Description rdf:about="info:fedora/druid:zt570tx3016">
+          <hydra:isGovernedBy rdf:resource="info:fedora/druid:hv992ry2431"/>
+          <hydra:referencesAgreement rdf:resource="info:fedora/druid:new_agreement"/>
+        </rdf:Description>
+      </rdf:RDF>
+      XML
     end
-    it 'should work on an empty datastream' do
-      @empty_item.agreement = 'new agreement'
-      @empty_item.agreement.should == 'new agreement'
-    end
+
   end
   describe 'default_workflow=' do
     it 'should set the default workflow' do

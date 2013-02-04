@@ -3,6 +3,10 @@ module Dor
     extend ActiveSupport::Concern
     include ActiveFedora::Relationships
 
+    included do
+      has_relationship 'agreement_object', :referencesAgreement 
+    
+    end
     def add_roleplayer role, entity, type=:workgroup
       xml=self.roleMetadata.ng_xml
       group='person'
@@ -31,13 +35,12 @@ module Dor
       self.roleMetadata.content=xml.to_s
     end
 
-    def delete_role role, entity
+    def purge_roles 
       xml=self.roleMetadata.ng_xml
-      nodes = xml.search('/roleMetadata/role/'+role)
-      if nodes.length > 0
-        nodes.first.delete
+      nodes = xml.search('/roleMetadata/role')
+      nodes.each do |node|
+        node.remove
       end
-      self.roleMetadata.content=xml.to_s
     end
 
     def mods_title
@@ -192,25 +195,13 @@ module Dor
       end
     end
     def agreement
-     agr = self.administrativeMetadata.term_values(:registration, :agreementId).first
-     agr ? agr : ''
+      agreement_object.first ? agreement_object.first.pid : ''
     end
     def agreement=(val)
-      ds=self.administrativeMetadata
-      xml=ds.ng_xml
-      nodes=xml.search('//registration/agreementId')
-      if nodes.first
-        nodes.first.content=val
-      else
-        nodes=xml.search('//registration')
-        if not nodes.first
-          self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :registration)
-        end
-        nodes=xml.search('//registration')
-        agreement_node=Nokogiri::XML::Node.new('agreementId',xml)
-        agreement_node.content=val
-        nodes.first.add_child(agreement_node)
-      end
+      #I dont know why, but the remove_relationship doesnt work if it isnt preceeded by a call to relationships_by_name. 
+      self.relationships_by_name.inspect
+      self.remove_relationship :references_agreement, 'info:fedora/' + agreement
+      self.add_relationship(:references_agreement, 'info:fedora/'+val)
     end
   end
 end
