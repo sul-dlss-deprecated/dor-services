@@ -92,7 +92,7 @@ describe Dor::Editable do
       @item.creative_commons_license.should == 'by-nc-sa'
     end
     it 'shouldnt fail on an item with an empty datastream' do
-      @empty_item.creative_commons_license.should == ''
+      @empty_item.creative_commons_license.should == nil
     end
   end
   describe 'creative_commons_license =' do
@@ -124,7 +124,7 @@ describe Dor::Editable do
       @item.desc_metadata_format.should == 'MODS'
     end
     it 'shouldnt fail on an item with an empty datastream' do
-      @empty_item.desc_metadata_format.should == ''
+      @empty_item.desc_metadata_format.should == nil
     end
   end
   describe 'desc_metadata_format=' do

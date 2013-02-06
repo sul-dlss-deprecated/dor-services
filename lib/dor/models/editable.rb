@@ -5,8 +5,12 @@ module Dor
 
     included do
       has_relationship 'agreement_object', :referencesAgreement 
-    
     end
+    #Adds a person or group to a role in the APO role metadata datastream
+    #
+    #@param role [String] the role the group or person will be filed under, ex. dor-apo-manager
+    #@param entity [String] the name of the person or group, ex dlss:developers or sunetid:someone
+    #@param type [Symbol] :workgroup for a group or :person for a person
     def add_roleplayer role, entity, type=:workgroup
       xml=self.roleMetadata.ng_xml
       group='person'
@@ -34,7 +38,7 @@ module Dor
       end
       self.roleMetadata.content=xml.to_s
     end
-
+    #remove all people groups and roles from the APO role metadata datastream
     def purge_roles 
       xml=self.roleMetadata.ng_xml
       nodes = xml.search('/roleMetadata/role')
@@ -49,11 +53,13 @@ module Dor
     def mods_title=(val)
       self.descMetadata.update_values({[:title_info, :main_title] => val})
     end
+    #get all collections listed for this APO, used during registration
+    #@return [Array] array of pids
     def default_collections 
-      #the local-name bit is to ignore namespaces
-      ds=administrativeMetadata
-      return ds.term_values(:registration, :default_collection)
+      return administrativeMetadata.term_values(:registration, :default_collection)
     end
+    #Add a collection to the listing of collections for items governed by this apo. 
+    #@param val [String] pid of the collection, ex. druid:ab123cd4567
     def add_default_collection val
       ds=self.administrativeMetadata
       xml=ds.ng_xml
@@ -67,12 +73,15 @@ module Dor
       reg.add_child(node)
       self.administrativeMetadata.content=xml.to_s
     end
+    
     def remove_default_collection val
       ds=self.administrativeMetadata
       xml=ds.ng_xml
       xml.search('//administrativeMetadata/registration/collection[@id=\''+val+'\']').remove
       self.administrativeMetadata.content=xml.to_s
     end
+    #Get all roles defined in the role metadata, and the people or groups in those roles. Groups are prefixed with 'workgroup:'
+    #@return [Hash] role => ['person','group'] ex. {"dor-apo-manager" => ["workgroup:dlss:developers", "sunetid:lmcrae"]
     def roles
       roles={}
       self.roleMetadata.ng_xml.search('/roleMetadata/role').each do |role|
@@ -85,22 +94,19 @@ module Dor
     end
     
     def use_statement
-      use=self.defaultObjectRights.use_statement.first
-      use ? use : ''
+      self.defaultObjectRights.use_statement.first
     end
     def use_statement=(val)
       self.defaultObjectRights.update_values({[:use_statement] => val})
     end
     def copyright_statement
-      copy=self.defaultObjectRights.copyright.first
-      copy ? copy : ''
+      self.defaultObjectRights.copyright.first
     end
     def copyright_statement=(val)
       self.defaultObjectRights.update_values({[:copyright] => val})
     end
     def creative_commons_license
-      cc = self.defaultObjectRights.creative_commons.first
-      cc ? cc : ''
+      self.defaultObjectRights.creative_commons.first
     end
     def creative_commons_license=(val)
       if creative_commons_license == ''
@@ -109,6 +115,7 @@ module Dor
       end
       self.defaultObjectRights.update_values({[:creative_commons] => val})
     end
+    #@return [String] A description of the rights defined in the default object rights datastream. Can be 'Stanford', 'World', 'Dark' or 'None'
     def default_rights
       xml=self.defaultObjectRights.ng_xml
       if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
@@ -125,7 +132,8 @@ module Dor
         end
       end
     end
-    #Doing this with OM would be more concise   
+    #Set the rights in default object rights
+    #@param rights [String] Stanford, World, Dark, or None
     def default_rights=(rights)
       ds = self.defaultObjectRights
       rights_xml=ds.ng_xml
@@ -154,8 +162,7 @@ module Dor
     end
     
     def desc_metadata_format
-      format = self.administrativeMetadata.metadata_format.first
-      format ? format : ''
+      self.administrativeMetadata.metadata_format.first
     end
     def desc_metadata_format=(format)
       #create the node if it isnt there already
@@ -164,6 +171,8 @@ module Dor
       end
       self.administrativeMetadata.update_values({[:metadata_format] => format})
     end
+    #List of default workflows, used to provide choices at registration
+    #@return [Array] and array of pids, ex ['druid:ab123cd4567']
     def default_workflows
       xml=self.administrativeMetadata.ng_xml
       nodes=self.administrativeMetadata.term_values(:registration, :workflow_id)
@@ -177,6 +186,8 @@ module Dor
         []
       end      
     end
+    #set a single default workflow
+    #@param wf [String] the name of the workflow, ex. 'digitizationWF'
     def default_workflow=(wf)
       ds=self.administrativeMetadata
       xml=ds.ng_xml
@@ -195,11 +206,11 @@ module Dor
       end
     end
     def agreement
-      agreement_object.first ? agreement_object.first.pid : ''
+      agreement_object.first
     end
     def agreement=(val)
       #I dont know why, but the remove_relationship doesnt work if it isnt preceeded by a call to relationships_by_name. 
-      self.relationships_by_name.inspect
+      self.relationships_by_name
       self.remove_relationship :references_agreement, 'info:fedora/' + agreement.to_s
       self.add_relationship(:references_agreement, 'info:fedora/'+val)
     end
