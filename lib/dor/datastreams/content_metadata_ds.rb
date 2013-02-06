@@ -76,7 +76,7 @@ module Dor
       self.save
     end
 
-    def add_resource(files,resource_name, position) 
+    def add_resource(files,resource_name, position,type="file") 
       xml=self.ng_xml
       if xml.search('//resource[@id=\''+resource_name+'\']').length>0
         raise 'resource '+resource_name+' already exists'
@@ -101,7 +101,7 @@ module Dor
       node=Nokogiri::XML::Node.new('resource',xml)
       node['sequence']=position.to_s
       node['id']=resource_name
-      node['type']='file'
+      node['type']=type
       files.each do |file|
         file_node=Nokogiri::XML::Node.new('file',xml)
         file_node['shelve']=file[:shelve] ? file[:shelve] : ''

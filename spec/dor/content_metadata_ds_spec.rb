@@ -42,15 +42,29 @@ describe Dor::ContentMetadataDS do
       Dor::Item.stub(:save).and_return(true)
     end
 
-    it 'should add a resource' do
+    it 'should add a resource with default type="file"' do
       @item.contentMetadata.add_resource(@files,'resource',1)
       xml=@item.contentMetadata.ng_xml
       xml.search('//resource[@id=\'resource\']').length.should ==1
       xml.search('//resource[@id=\'resource\']').each do |node|
         node['id'].should == 'resource'
+        node['type'].should == 'file'
         node['sequence'].should == '1'
       end
     end
+
+    it 'should add a resource with a type="image"' do
+      @item.contentMetadata.add_resource(@files,'resource',1,'image')
+      xml=@item.contentMetadata.ng_xml
+      xml.search('//resource[@id=\'resource\']').length.should ==1
+      xml.search('//resource[@id=\'resource\']').each do |node|
+        node['id'].should == 'resource'
+        node['type'].should == 'image'
+        node['sequence'].should == '1'
+      end
+    end
+
+    
     it 'should add a resource with a checksum' do
       @files[0][:md5]='123456'
       @files[0][:sha1]='56789'
