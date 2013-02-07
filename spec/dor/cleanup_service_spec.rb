@@ -38,7 +38,7 @@ describe Dor::CleanupService do
     @bag_pathname.mkpath
     @tarfile_pathname.open('w') { |file| file.write("test tar\n") }
   end
-  
+
   after(:all) do
     item_root_branch = @workspace_root_pathname.join('aa')
     item_root_branch.rmtree if item_root_branch.exist?
@@ -46,7 +46,7 @@ describe Dor::CleanupService do
     @tarfile_pathname.rmtree if @tarfile_pathname.exist?
     Dor::Config.pop!
   end
-  
+
   it "can access configuration settings" do
     cleanup = Dor::Config.cleanup
     cleanup.local_workspace_root.should eql @fixtures.join("workspace").to_s
@@ -59,7 +59,6 @@ describe Dor::CleanupService do
   end
 
   specify "Dor::CleanupService.cleanup" do
-    Dor::CleanupService.should_receive(:cleanup_workspace).once.with(@druid)
     Dor::CleanupService.should_receive(:cleanup_export).once.with(@druid)
     mock_item = mock('item')
     mock_item.should_receive(:pid).and_return(@druid)
@@ -69,7 +68,7 @@ describe Dor::CleanupService do
   specify "Dor::CleanupService.cleanup_workspace" do
     Dor::CleanupService.should_receive(:remove_branch).once.with(@fixtures.join('workspace/aa/123/bb/4567'))
     Dor::CleanupService.should_receive(:prune_druid_tree).once.with(@workitem_pathname.parent.parent,@workspace_root_pathname)
-    Dor::CleanupService.cleanup_workspace(@druid)
+    Dor::CleanupService.cleanup_workspace_content(@druid, @workspace_root_pathname)
   end
 
   specify "Dor::CleanupService.cleanup_export" do

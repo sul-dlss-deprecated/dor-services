@@ -94,6 +94,7 @@ describe Dor::Versionable do
       obj.stub(:initialize_workflow)
 
       ds.increment_version
+      ds.should_receive(:save)
       obj.close_version :description => 'closing text', :significance => :major
 
       ds.to_xml.should be_equivalent_to( <<-XML
