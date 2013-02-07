@@ -304,6 +304,7 @@ Development and release process:
 - <b>3.18.0</b> Dor::Versionable.close_version changes to deal with tag and description
 - <b>3.18.4</b> The exception caused by a lack of desc metadata is logged silently
 - <b>3.19.0</b> Optional params for version number and starting accessioning when archiving workflow
+- <b>3.22.0</b> Remove assembly directories on cleanup
 == Copyright
 
 Copyright (c) 2013 Stanford University Library. See LICENSE for details.
