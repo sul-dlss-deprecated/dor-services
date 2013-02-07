@@ -5,6 +5,7 @@ module Dor
     include Governable
     include Describable
     include Publishable
+    include Versionable
 
     has_relationship 'member', :is_member_of_collection, :inbound => true
     has_object_type 'collection'
