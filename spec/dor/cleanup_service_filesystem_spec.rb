@@ -35,12 +35,12 @@ describe 'Dor::CleanupService specs that check the file system' do
   end
 
   context "CleanupService.cleanup" do
-    let(:obj1) { stub('object1') }
-    let(:obj2) { stub('object2') }
+    let(:item1) { stub('item1') }
+    let(:item2) { stub('item1') }
 
     before(:each) do
-      obj1.stub(:pid) { druid_1 }
-      obj2.stub(:pid) { druid_2 }
+      item1.stub(:druid) { druid_1 }
+      item2.stub(:druid) { druid_2 }
     end
 
     it "correctly prunes directories" do
@@ -62,14 +62,14 @@ describe 'Dor::CleanupService specs that check the file system' do
       File.should exist(dr1_assembly.path)
 
       # druid_1 cleaned up, including files
-      Dor::CleanupService.cleanup obj1
+      Dor::CleanupService.cleanup item1
       File.should_not exist(dr1_wspace.path)
       File.should_not exist(dr1_assembly.path)
       # But not druid_2
       File.should exist(dr2_wspace.path)
       File.should exist(dr2_assembly.path)
 
-      Dor::CleanupService.cleanup obj2
+      Dor::CleanupService.cleanup item2
       File.should_not exist(dr2_wspace.path)
       File.should_not exist(dr2_assembly.path)
 
@@ -81,7 +81,7 @@ describe 'Dor::CleanupService specs that check the file system' do
       dr1_wspace = DruidTools::Druid.new(druid_1, workspace_dir)
       dr1_wspace.mkdir
 
-      Dor::CleanupService.cleanup obj1
+      Dor::CleanupService.cleanup item1
       File.should_not exist(dr1_wspace.path)
     end
   end
