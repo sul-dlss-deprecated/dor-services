@@ -213,21 +213,21 @@ module Dor
     def to_solr(solr_doc=Hash.new, *args)
       doc = self.ng_xml
       if doc.root['type']
-    	shelved_file_count=0
-    	content_file_count=0
-    	resource_type_counts={}
-    	resource_count=0
-    	first_shelved_image=nil
+        shelved_file_count=0
+        content_file_count=0
+        resource_type_counts={}
+        resource_count=0
+        first_shelved_image=nil
         add_solr_value(solr_doc, "content_type", doc.root['type'], :string, [:facetable])
         doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
-        resource_count+=1
-        if(resource['type'])
-        	if resource_type_counts[resource['type']]
-						resource_type_counts[resource['type']]+=1        	
-        	else
-        		resource_type_counts[resource['type']]=1
-        	end
-        end
+          resource_count+=1
+          if(resource['type'])
+            if resource_type_counts[resource['type']]
+              resource_type_counts[resource['type']]+=1        	
+            else
+              resource_type_counts[resource['type']]=1
+            end
+          end
           resource.xpath('file').each do |file|
             content_file_count+=1
             if file['shelve'] == 'yes'
@@ -240,13 +240,13 @@ module Dor
         end
         add_solr_value(solr_doc, "content_file_count", content_file_count.to_s, :string, [:searchable, :displayable])
         add_solr_value(solr_doc, "shelved_content_file_count", shelved_file_count.to_s, :string, [:searchable, :displayable])
-		   	add_solr_value(solr_doc, "resource_count", resource_count.to_s, :string, [:searchable, :displayable])
-				resource_type_counts.each do |key, count|
-				add_solr_value(solr_doc, key+"_resource_count", count.to_s, :string, [:searchable, :displayable])
-				end
-				if not first_shelved_image.nil?
-			    add_solr_value(solr_doc, "first_shelved_image", first_shelved_image, :string, [:displayable])
-			  end
+        add_solr_value(solr_doc, "resource_count", resource_count.to_s, :string, [:searchable, :displayable])
+        resource_type_counts.each do |key, count|
+          add_solr_value(solr_doc, key+"_resource_count", count.to_s, :string, [:searchable, :displayable])
+        end
+        if not first_shelved_image.nil?
+          add_solr_value(solr_doc, "first_shelved_image", first_shelved_image, :string, [:displayable])
+        end
       end
       solr_doc
     end
@@ -313,6 +313,20 @@ module Dor
           item['sequence']=counter.to_s
         end
       end
-   end
+    end
+    #Set the content type to and the resource types for all resources
+    #@param type [String] the new content type, ex book
+    #@param resource_type [String] the new type for all resources, ex book
+    def set_content_type type, resource_type
+      xml=self.ng_xml
+      xml.search('/contentMetadata').each do |node|
+        node['type']=type
+      end
+      xml.search('//resource').each do |resource|
+        resource['type']=resource_type
+      end
+      self.content=xml.to_s
+    end
   end
+
 end
