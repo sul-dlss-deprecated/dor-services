@@ -109,7 +109,7 @@ module Dor
       self.defaultObjectRights.creative_commons.first
     end
     def creative_commons_license=(val)
-      if creative_commons_license == ''
+      if creative_commons_license == nil
         #add the nodes
        self.defaultObjectRights.add_child_node(self.defaultObjectRights.ng_xml.root, :creative_commons)
       end
