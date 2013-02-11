@@ -42,7 +42,6 @@ describe Dor::Describable do
 
   it "should know its metadata format" do
     FakeWeb.register_uri(:get, "#{Dor::Config.metadata.catalog.url}/?barcode=36105049267078", :body => read_fixture('ab123cd4567_descMetadata.xml'))
-    @item.metadata_format.should be_nil
     @item.build_datastream('descMetadata')
     @item.metadata_format.should == 'mods'
   end

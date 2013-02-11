@@ -206,12 +206,15 @@ module Dor
       end
     end
     def agreement
-      agreement_object.first
+      if agreement_object.first
+        agreement_object.first.pid
+      else
+        ''
+      end
     end
     def agreement=(val)
-      #I dont know why, but the remove_relationship doesnt work if it isnt preceeded by a call to relationships_by_name. 
-      self.relationships_by_name
       self.remove_relationship :references_agreement, 'info:fedora/' + agreement.to_s
+      self.remove_relationship_by_name 'agreement_object', 'info:fedora/' + agreement.to_s
       self.add_relationship(:references_agreement, 'info:fedora/'+val)
     end
   end
