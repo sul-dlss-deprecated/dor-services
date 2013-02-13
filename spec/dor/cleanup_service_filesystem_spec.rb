@@ -58,6 +58,17 @@ describe 'Dor::CleanupService specs that check the file system' do
       create_tempfile dr1_wspace.path
       create_tempfile dr2_assembly.path
 
+      # Setup the export content, remove 'druid:' prefix for bag and export/workspace dir
+      dr1 = druid_1.split(':').last
+      export_prefix_1 = File.join(export_dir, dr1)
+
+      # Create {export_dir}/druid1
+      #        {export_dir}/druid1/tempfile
+      #        {export_dir}/druid1.tar
+      FileUtils.mkdir export_prefix_1
+      create_tempfile export_prefix_1
+      File.new(export_prefix_1 + '.tar', 'w') {|f| f.write 'fake tar junk'}
+
       File.should exist(dr1_wspace.path)
       File.should exist(dr1_assembly.path)
 
@@ -65,6 +76,9 @@ describe 'Dor::CleanupService specs that check the file system' do
       Dor::CleanupService.cleanup item1
       File.should_not exist(dr1_wspace.path)
       File.should_not exist(dr1_assembly.path)
+      File.should_not exist(export_prefix_1)
+      File.should_not exist(export_prefix_1 + '.tar')
+
       # But not druid_2
       File.should exist(dr2_wspace.path)
       File.should exist(dr2_assembly.path)

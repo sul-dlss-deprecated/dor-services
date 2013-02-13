@@ -31,7 +31,8 @@ module Dor
     # @param [String] druid The identifier for the object whose data is to be removed
     # @return [void] remove copy of the data that was exported to preservation core
     def self.cleanup_export(druid)
-      bag_dir = File.join(Config.cleanup.local_export_home, druid)
+      id = druid.split(':').last
+      bag_dir = File.join(Config.cleanup.local_export_home, id)
       self.remove_branch(bag_dir)
       tarfile = "#{bag_dir}.tar"
       self.remove_branch(tarfile)
