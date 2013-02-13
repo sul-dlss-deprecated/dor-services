@@ -28,8 +28,8 @@ describe Dor::CleanupService do
     @workitem_pathname.rmtree if @workitem_pathname.exist?
     @export_pathname = Pathname(Dor::Config.cleanup.local_export_home)
     @export_pathname.rmtree if @export_pathname.exist?
-    @bag_pathname = @export_pathname.join(@druid)
-    @tarfile_pathname = @export_pathname.join(@druid+".tar")
+    @bag_pathname = @export_pathname.join(@druid.split(':').last)
+    @tarfile_pathname = @export_pathname.join(@bag_pathname+".tar")
   end
 
   before(:each) do
@@ -72,8 +72,8 @@ describe Dor::CleanupService do
   end
 
   specify "Dor::CleanupService.cleanup_export" do
-    Dor::CleanupService.should_receive(:remove_branch).once.with(@fixtures.join('export/druid:aa123bb4567').to_s)
-    Dor::CleanupService.should_receive(:remove_branch).once.with(@fixtures.join('export/druid:aa123bb4567.tar').to_s)
+    Dor::CleanupService.should_receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567').to_s)
+    Dor::CleanupService.should_receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567.tar').to_s)
     Dor::CleanupService.cleanup_export(@druid)
   end
 
