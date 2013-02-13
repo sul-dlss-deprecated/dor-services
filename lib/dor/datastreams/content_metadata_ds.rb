@@ -317,13 +317,13 @@ module Dor
     #Set the content type to and the resource types for all resources
     #@param type [String] the new content type, ex book
     #@param resource_type [String] the new type for all resources, ex book
-    def set_content_type type, resource_type
+    def set_content_type old_type, old_resource_type, new_type, new_resource_type
       xml=self.ng_xml
-      xml.search('/contentMetadata').each do |node|
-        node['type']=type
-      end
-      xml.search('//resource').each do |resource|
-        resource['type']=resource_type
+      xml.search('/contentMetadata[@type=\''+old_type+'\']').each do |node|
+        node['type']=new_type
+        xml.search('//resource[@type=\''+old_resource_type+'\']').each do |resource|
+          resource['type']=new_resource_type
+        end
       end
       self.content=xml.to_s
     end

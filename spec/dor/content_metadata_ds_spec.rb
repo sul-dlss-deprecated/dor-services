@@ -207,7 +207,7 @@ describe Dor::ContentMetadataDS do
     end
   describe 'set_content_type' do
     it 'should change the content type and the resource types' do
-      @item.contentMetadata.set_content_type 'book', 'page'
+      @item.contentMetadata.set_content_type 'map', 'image', 'book', 'page'
       @item.contentMetadata.ng_xml.search('//contentMetadata[@type=\'book\']').length.should ==1
       @item.contentMetadata.ng_xml.search('//contentMetadata/resource[@type=\'page\']').length.should ==1
     end
