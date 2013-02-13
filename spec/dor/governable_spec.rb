@@ -22,8 +22,9 @@ describe Dor::Governable do
       @item.datastreams['rightsMetadata'].ng_xml=''
       lambda{@item.set_read_rights('World')}.should raise_error
     end
-    it 'should cahnge the read permissions value from <group>stanford</group> to <none/> ' do    
-      @item.datastreams['rightsMetadata'].ng_xml.should be_equivalent_to <<-XML
+    it 'should set an item to dark, removing the discovery rights' do
+      @item.set_read_rights('dark')
+      @item.rightsMetadata.ng_xml.should be_equivalent_to <<-XML
       <?xml version="1.0"?>
       <rightsMetadata>
       <copyright>
@@ -31,12 +32,12 @@ describe Dor::Governable do
       </copyright>
       <access type="discover">
       <machine>
-      <world/>
+      <none/>
       </machine>
       </access>
       <access type="read">
       <machine>
-      <group>Stanford</group>
+      <none/>
       </machine>
       </access>
       <use>
@@ -45,6 +46,8 @@ describe Dor::Governable do
       </use>
       </rightsMetadata>
       XML
+    end
+    it 'should cahnge the read permissions value from <group>stanford</group> to <none/> ' do    
       #this should work because the find call inside set_read_rights is stubbed to return @obj, so the modifications happen to that, not a fresh instance
       @item.set_read_rights('none')
       @item.datastreams['rightsMetadata'].ng_xml.should be_equivalent_to <<-XML
