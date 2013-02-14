@@ -116,12 +116,16 @@ module Dor
       if creative_commons_license == nil
         self.defaultObjectRights.add_child_node(self.defaultObjectRights.ng_xml.root, :creative_commons)
       end
+      
+      self.defaultObjectRights.update_values({[:creative_commons] => val})
+    end
+    def creative_commons_license_human=(val)
       if creative_commons_license_human == nil
         #add the nodes
-       self.defaultObjectRights.add_child_node(self.defaultObjectRights.ng_xml.root, :creative_commons_human)
+       self.defaultObjectRights.add_child_node(self.defaultObjectRights.ng_xml.root, :creative_commons)
       end
-      self.defaultObjectRights.update_values({[:creative_commons] => machine})
-      self.defaultObjectRights.update_values({[:creative_commons_human] => human})
+      self.defaultObjectRights.update_values({[:creative_commons_human] => val})
+      
     end
     #@return [String] A description of the rights defined in the default object rights datastream. Can be 'Stanford', 'World', 'Dark' or 'None'
     def default_rights

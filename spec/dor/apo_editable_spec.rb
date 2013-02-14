@@ -97,13 +97,22 @@ describe Dor::Editable do
   end
   describe 'creative_commons_human' do
     it 'should find the human readable cc license' do
-      @item.creative_commons_license_human.should == 'Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu.'
+      @item.creative_commons_license_human.should == 'CC Attribution-NonCommercial-ShareAlike 3.0'
     end
   end
   describe 'creative_commons_license =' do
     it 'should work on an empty ds' do
-      @empty_item.creative_commons_license = ['hi', 'greetings']
+      @empty_item.creative_commons_license = ['hi']
       @empty_item.creative_commons_license.should == 'hi'
+    end
+  end
+  describe 'creative_commons_license_human=' do
+    it 'should set the human readable cc license' do
+      @item.creative_commons_license_human='greetings'
+      @item.creative_commons_license_human.should == 'greetings'
+    end
+    it 'should work on an empty ds' do
+      @empty_item.creative_commons_license_human='greetings'
       @empty_item.creative_commons_license_human.should == 'greetings'
     end
   end
