@@ -11,6 +11,8 @@ module Dor
       end
         
       t.creative_commons :path => '/use/machine', :type => 'creativeCommons'
+      t.creative_commons_human :path => '/use/human', :type => 'creativeCommons'
+      
       
     end
 

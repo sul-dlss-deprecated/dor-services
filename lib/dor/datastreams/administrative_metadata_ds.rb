@@ -37,18 +37,17 @@ class AdministrativeMetadataDS < ActiveFedora::NokogiriDatastream
   }
   end
   define_template :agreementId do |xml|
-    xml.administrativeMetadata{
+    xml.administrativeMetadata {
       xml.registration{
         xml.agreementId
       }
     }
   end
   define_template :metadata_format do |xml|
-     xml.administrativeMetadata {
-       xml.descMetadata{
+     xml.descMetadata{
        xml.format
      }
-     }
+  
    end
    define_template :registration do |xml|
       xml.administrativeMetadata {
