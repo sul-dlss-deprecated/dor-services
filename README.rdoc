@@ -305,6 +305,7 @@ Development and release process:
 - <b>3.18.4</b> The exception caused by a lack of desc metadata is logged silently
 - <b>3.19.0</b> Optional params for version number and starting accessioning when archiving workflow
 - <b>3.22.0</b> Remove assembly directories on cleanup
+- <b>3.23.0</b> Always generate brand new provenanceMetadata
 == Copyright
 
 Copyright (c) 2013 Stanford University Library. See LICENSE for details.
