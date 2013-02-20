@@ -66,7 +66,7 @@ module Dor
     end
 
     def get_preserved_file file, version
-      preservation_server=Config.content.sdr_server+'/sdr/objects/'+@object.pid+"/content/"
+      preservation_server=Config.content.sdr_server+'/sdr/objects/'+self.pid+"/content/"
       file=URI.encode(file)
       add=preservation_server+file+"?version="+version
       uri = URI(add)
