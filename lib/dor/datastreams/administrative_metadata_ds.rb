@@ -49,6 +49,11 @@ class AdministrativeMetadataDS < ActiveFedora::NokogiriDatastream
      }
   
    end
+   define_template :metadata_source do |xml|
+      xml.descMetadata{
+       xml.source
+       }
+  end
    define_template :registration do |xml|
       xml.administrativeMetadata {
         xml.registration{

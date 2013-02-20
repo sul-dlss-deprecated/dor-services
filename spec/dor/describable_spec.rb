@@ -51,9 +51,19 @@ describe Dor::Describable do
     @item.stub(:find_metadata_file).and_return(nil)
     Dor::MetadataService.class_eval { class << self; alias_method :_fetch, :fetch; end }
     Dor::MetadataService.should_receive(:fetch).with('barcode:36105049267078').and_return { Dor::MetadataService._fetch('barcode:36105049267078') }
-    @item.datastreams['descMetadata'].ng_xml.to_s.should be_equivalent_to('<xml/>')
+    @item.datastreams['descMetadata'].ng_xml.to_s.should be_equivalent_to('<?xml version="1.0"?>
+          <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+            <titleInfo>
+              <title/>
+            </titleInfo>
+          </mods>')
     @item.build_datastream('descMetadata')
-    @item.datastreams['descMetadata'].ng_xml.to_s.should_not be_equivalent_to('<xml/>')
+    @item.datastreams['descMetadata'].ng_xml.to_s.should_not be_equivalent_to('<?xml version="1.0"?>
+          <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+            <titleInfo>
+              <title/>
+            </titleInfo>
+          </mods>')
   end
 
   it "produces dublin core from the MODS in the descMetadata datastream" do

@@ -92,7 +92,15 @@ module Dor
       end
       roles
     end
-    
+    def metadata_source 
+      self.administrativeMetadata.metadata_source.first
+    end
+    def metadata_source=(val)
+      if metadata_source == nil
+        self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :metadata_source)
+      end
+      self.administrativeMetadata.update_values({[:metadata_source] => val})
+    end
     def use_statement
       self.defaultObjectRights.use_statement.first
     end
@@ -116,7 +124,6 @@ module Dor
       if creative_commons_license == nil
         self.defaultObjectRights.add_child_node(self.defaultObjectRights.ng_xml.root, :creative_commons)
       end
-      
       self.defaultObjectRights.update_values({[:creative_commons] => val})
     end
     def creative_commons_license_human=(val)

@@ -87,6 +87,24 @@ describe Dor::Editable do
   end
   describe 'copyright_statement =' do
   end
+  describe 'metadata_source' do
+    it 'should get the metadata source' do
+      @item.metadata_source.should == 'MDToolkit'
+    end
+    it 'should get nil for an empty datastream' do
+      @empty_item.metadata_source.should == nil
+    end
+  end
+  describe 'metadata_source=' do
+    it 'should set the metadata source' do
+      @item.metadata_source = 'Symphony'
+      @item.metadata_source.should == 'Symphony'
+    end
+    it 'should set the metadata source for an empty datastream' do
+      @empty_item.metadata_source = 'Symphony'
+      @empty_item.metadata_source.should == 'Symphony'
+    end
+  end
   describe 'creative_commons_license' do
     it 'should find the creative commons license' do
       @item.creative_commons_license.should == 'by-nc-sa'
