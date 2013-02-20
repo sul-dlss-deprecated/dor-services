@@ -149,6 +149,16 @@ module Dor
     def default_rights=(rights)
       ds = self.defaultObjectRights
       rights_xml=ds.ng_xml
+      rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
+        node.children.remove
+        if rights=='dark'
+            world_node=Nokogiri::XML::Node.new('none',rights_xml)
+            node.add_child(world_node)
+        else
+            world_node=Nokogiri::XML::Node.new('world',rights_xml)
+          node.add_child(world_node)
+        end
+      end
       rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
         node.children.remove
         machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
@@ -182,6 +192,16 @@ module Dor
         self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :metadata_format)
       end
       self.administrativeMetadata.update_values({[:metadata_format] => format})
+    end
+    def desc_metadata_source
+      self.administrativeMetadata.metadata_source.first
+    end
+    def desc_metadata_source=(source)
+      #create the node if it isnt there already
+      if not self.administrativeMetadata.metadata_source.first
+        self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :metadata_source)
+      end
+      self.administrativeMetadata.update_values({[:metadata_source] => format})
     end
     #List of default workflows, used to provide choices at registration
     #@return [Array] and array of pids, ex ['druid:ab123cd4567']
