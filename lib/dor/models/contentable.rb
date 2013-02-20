@@ -65,15 +65,16 @@ module Dor
       end
     end
 
-    def get_preserved_file file
-      add=Config.content.preservation_server+file
+    def get_preserved_file file, version
+      preservation_server=Config.content.sdr_server+'/sdr/objects/'+@object.pid+"/content/"
+      file=URI.encode(file)
+      add=preservation_server+file+"?version="+version
       uri = URI(add)
       req = Net::HTTP::Get.new(uri.request_uri)
-      req.basic_auth Config.content.preservation_user, Config.content.preservation_pass
+      req.basic_auth Config.content.sdr_user, Config.content.sdr_pass 
       res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https') {|http|
         http.request(req)
       }
-      res.body
     end
 
     def get_file file
@@ -128,7 +129,6 @@ module Dor
     def list_files
       filename='none'
       files=[]
-      puts Config.content.content_server+Config.content.content_user
       sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey']) 
       druid_tools=DruidTools::Druid.new(self.pid,Config.content.content_base_dir)
       location=druid_tools.path(filename).gsub(filename,'')
