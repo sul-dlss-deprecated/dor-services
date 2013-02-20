@@ -1,6 +1,7 @@
 ---
 :cleanup:
   :local_workspace_root: /dor/workspace
+  :local_assembly_root: /dor/assembly
   :local_export_home: /dor/export
 :ssl:
   :cert_file:

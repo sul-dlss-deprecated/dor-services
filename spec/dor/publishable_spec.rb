@@ -7,8 +7,8 @@ end
 
 describe Dor::Publishable do
 
-  before(:all) { stub_config   }
-  after(:all)  { unstub_config }
+  before(:each) { stub_config   }
+  after(:each)  { unstub_config }
 
   before :each do
     @item = instantiate_fixture('druid:ab123cd4567', PublishableItem)

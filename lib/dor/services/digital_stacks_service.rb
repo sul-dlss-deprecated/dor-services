@@ -8,7 +8,7 @@ module Dor
     rescue
       raise "Invalid druid: #{id}"
     end
-    
+
     # @param String druid id of the object
     # @return String the directory on the stacks server holding the druid's content
     def self.stacks_storage_dir(druid)
@@ -16,17 +16,17 @@ module Dor
 
       File.join(Config.stacks.storage_root, path)
     end
-        
+
     def self.transfer_to_document_store(id, content, filename)
       path = self.druid_tree(id)
-      
+
       # create the remote directory in the document cache
       remote_document_cache_dir = File.join(Config.stacks.document_cache_storage_root, path)
-      
+
       content_io = StringIO.new(content)
-      Net::SFTP.start(Config.stacks.document_cache_host,Config.stacks.document_cache_user,:auth_methods=>['publickey']) do |sftp|
-        sftp.session.exec! "mkdir -p #{remote_document_cache_dir}"
-        sftp.upload!(content_io,File.join(remote_document_cache_dir,filename))
+      Net::SSH.start(Config.stacks.document_cache_host,Config.stacks.document_cache_user,:auth_methods=>['publickey']) do |ssh|
+        ssh.exec! "mkdir -p #{remote_document_cache_dir}"
+        ssh.sftp.upload!(content_io,File.join(remote_document_cache_dir,filename))
       end
     end
 
@@ -38,7 +38,7 @@ module Dor
         end
       end
     end
-    
+
     def self.rename_in_stacks(id, file_map)
       unless file_map.empty?
         remote_storage_dir = self.stacks_storage_dir(id)
@@ -47,18 +47,18 @@ module Dor
         end
       end
     end
-    
+
     def self.shelve_to_stacks(id, files)
       unless files.empty?
         druid = DruidTools::Druid.new(id,Config.stacks.local_workspace_root)
         remote_storage_dir = self.stacks_storage_dir(id)
-        Net::SFTP.start(Config.stacks.host,Config.stacks.user,:auth_methods=>['publickey']) do |sftp|
+        Net::SSH.start(Config.stacks.host,Config.stacks.user,:auth_methods=>['publickey']) do |ssh|
           # create the remote directory on the digital stacks
-          sftp.session.exec! "mkdir -p #{remote_storage_dir}"
+          ssh.exec! "mkdir -p #{remote_storage_dir}"
           # copy the contents for the given object from the local workspace directory to the remote directory
-          uploads = files.collect do |file| 
+          uploads = files.collect do |file|
             local_file = druid.find_content(file)
-            sftp.upload!(local_file, File.join(remote_storage_dir,file))
+            ssh.sftp.upload!(local_file, File.join(remote_storage_dir,file))
           end
           uploads.each { |upload| upload.wait }
         end
@@ -68,4 +68,3 @@ module Dor
   end
 
 end
-

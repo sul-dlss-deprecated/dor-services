@@ -59,6 +59,7 @@ module Dor
     def close_version(opts={})
       unless(opts.empty?)
         datastreams['versionMetadata'].update_current_version opts
+        datastreams['versionMetadata'].save
       end
 
       raise Dor::Exception, 'latest version in versionMetadata requires tag and description before it can be closed' unless(datastreams['versionMetadata'].current_version_closeable?)

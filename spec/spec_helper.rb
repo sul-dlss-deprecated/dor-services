@@ -3,8 +3,12 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'bundler/setup'
 require 'rspec'
+require 'awesome_print'
 #require 'rspec/autorun'
 #require 'rspec/mocks'
+
+require 'solrizer'
+Solrizer.logger = Logger.new(StringIO.new)
 
 require 'rubygems'
 require 'rake'
@@ -15,9 +19,10 @@ require 'equivalent-xml'
 require 'fakeweb'
 
 ActiveFedora.logger = Logger.new(StringIO.new)
-::ENABLE_SOLR_UPDATES = true
+# ::ENABLE_SOLR_UPDATES = true
 
 module Dor::SpecHelpers
+
   def stub_config
     @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"fixtures")
     Dor::Config.push! do
@@ -32,8 +37,6 @@ module Dor::SpecHelpers
       sdr.local_workspace_root File.join(fixture_dir, "workspace")
       sdr.local_export_home File.join(fixture_dir, "export")
     end
-
-    Rails.stub_chain(:logger, :error)
     ActiveFedora.stub!(:fedora).and_return(stub('frepo').as_null_object)
   end
 
@@ -51,6 +54,7 @@ module Dor::SpecHelpers
   def read_fixture fname
     File.read(File.join(@fixture_dir,fname))
   end
+
 end
 
 RSpec.configure do |config|
@@ -79,7 +83,5 @@ module Kernel
     $-v = saved_verbosity
   end
 end
-
-Rails = Object.new unless defined? Rails
 
 require 'dor_config'

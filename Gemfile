@@ -7,5 +7,9 @@ gem "rcov", :platform => :ruby_18
 
 gem "debugger", :platform => :ruby_19
 
+group :development do
+  gem 'awesome_print'
+end
+
 # Dependencies are defined in dor-services.gemspec
 gemspec

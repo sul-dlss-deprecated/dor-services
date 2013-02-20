@@ -6,14 +6,14 @@ end
 
 describe Dor::Shelvable do
 
-  before(:all) { stub_config   }
-  after(:all)  { unstub_config }
+  before(:each) { stub_config   }
+  after(:each)  { unstub_config }
 
   before :each do
     @item = ShelvableItem.new :pid => 'druid:gj642zf5650'
     @item.contentMetadata.content = read_fixture("gj642zf5650_contentMetadata.xml")
   end
-  
+
   after :each do
     @item.clear_diff_cache
   end
@@ -25,5 +25,5 @@ describe Dor::Shelvable do
     Dor::DigitalStacksService.should_receive(:rename_in_stacks).with(@item.pid, [['page-2.jpg','page-2a.jpg']])
     @item.shelve
   end
-  
+
 end

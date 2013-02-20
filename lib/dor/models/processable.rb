@@ -20,32 +20,47 @@ module Dor
 
     def empty_datastream?(datastream)
       if datastream.new?
-        true 
+        true
       elsif datastream.class.respond_to?(:xml_template)
         datastream.content.to_s.empty? or EquivalentXml.equivalent?(datastream.content, datastream.class.xml_template)
       else
         datastream.content.to_s.empty?
-      end  
+      end
     end
 
-    # Self-aware datastream builders
-    def build_datastream(datastream, force = false, require=false)
-      ds = datastreams[datastream]
-      druid = DruidTools::Druid.new(self.pid, Dor::Config.stacks.local_workspace_root)
-      filename = druid.find_metadata("#{datastream}.xml")
-      if not filename.nil?
+    # Takes the name of a datastream, as a string.
+    # Tries to find a file for the datastream.
+    # Returns the path to it or nil.
+    def find_metadata_file(datastream)
+      druid = DruidTools::Druid.new(pid, Dor::Config.stacks.local_workspace_root)
+      return druid.find_metadata("#{datastream}.xml")
+    end
+
+    # Takes the name of a datastream, as a string (fooMetadata).
+    # Builds that datastream using the content of a file if such a file
+    # exists and is newer than the object's current datastream; otherwise,
+    # builds the datastream by calling build_fooMetadata_datastream.
+    def build_datastream(datastream, force = false, is_required = false)
+      # See if the datastream exists as a file and if the file's
+      # timestamp is newer than the datastream's timestamp.
+      ds       = datastreams[datastream]
+      filename = find_metadata_file(datastream)
+      use_file = filename && (ds.createDate.nil? || File.mtime(filename) >= ds.createDate)
+      # Build datastream.
+      if use_file
         content = File.read(filename)
         ds.content = content
         ds.ng_xml = Nokogiri::XML(content) if ds.respond_to?(:ng_xml)
         ds.save unless ds.digital_object.new?
       elsif force or empty_datastream?(ds)
-        proc = "build_#{datastream}_datastream".to_sym
-        if respond_to? proc
-          content = self.send(proc, ds)
+        meth = "build_#{datastream}_datastream".to_sym
+        if respond_to?(meth)
+          content = self.send(meth, ds)
           ds.save unless ds.digital_object.new?
         end
       end
-      if require and empty_datastream?(ds)
+      # Check for success.
+      if is_required && empty_datastream?(ds)
         raise "Required datastream #{datastream} could not be populated!"
       end
       return ds
@@ -61,7 +76,7 @@ module Dor
     def status
       current_version='1'
       begin
-        current_version = self.versionMetadata.current_version_id 
+        current_version = self.versionMetadata.current_version_id
       rescue
       end
       status = 0
@@ -77,7 +92,7 @@ module Dor
         7 => 'Accessioned (indexed)',
         8 => 'Accessioned (indexed, ingested)',
         9 => 'Opened'
-      }           
+      }
       status_time=nil
 
       current=false
@@ -95,7 +110,7 @@ module Dor
       if(oldest_version.nil?)
         oldest_version='1'
       end
-      milestones.each do |m| 
+      milestones.each do |m|
         name=m[:milestone]
         time=m[:at].utc.xmlschema
         version=m[:version]
@@ -105,7 +120,7 @@ module Dor
             if status<1
               status=1
               status_time=time
-            end        
+            end
           when 'submitted'
             if status<2
               status=2
@@ -168,7 +183,7 @@ module Dor
       sortable_milestones = {}
       current_version='1'
       begin
-        current_version = self.versionMetadata.current_version_id 
+        current_version = self.versionMetadata.current_version_id
       rescue
       end
       current_version_num=current_version.to_i
@@ -206,9 +221,9 @@ module Dor
 
       end
       add_solr_value(solr_doc,"status",status,:string, [:displayable])
-      
+
       if self.methods.include?('new_version_open?') and new_version_open?
-        #add a facetable field for the date when the open version was opened 
+        #add a facetable field for the date when the open version was opened
         opened_date=sortable_milestones['opened'].sort.last
         add_solr_value(solr_doc, "version_opened", DateTime.parse(opened_date).beginning_of_day.utc.xmlschema.split('T').first, :string, [ :searchable, :facetable])
       end

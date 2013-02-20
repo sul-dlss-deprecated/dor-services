@@ -28,8 +28,8 @@ describe Dor::CleanupService do
     @workitem_pathname.rmtree if @workitem_pathname.exist?
     @export_pathname = Pathname(Dor::Config.cleanup.local_export_home)
     @export_pathname.rmtree if @export_pathname.exist?
-    @bag_pathname = @export_pathname.join(@druid)
-    @tarfile_pathname = @export_pathname.join(@druid+".tar")
+    @bag_pathname = @export_pathname.join(@druid.split(':').last)
+    @tarfile_pathname = @export_pathname.join(@bag_pathname+".tar")
   end
 
   before(:each) do
@@ -38,7 +38,7 @@ describe Dor::CleanupService do
     @bag_pathname.mkpath
     @tarfile_pathname.open('w') { |file| file.write("test tar\n") }
   end
-  
+
   after(:all) do
     item_root_branch = @workspace_root_pathname.join('aa')
     item_root_branch.rmtree if item_root_branch.exist?
@@ -46,7 +46,7 @@ describe Dor::CleanupService do
     @tarfile_pathname.rmtree if @tarfile_pathname.exist?
     Dor::Config.pop!
   end
-  
+
   it "can access configuration settings" do
     cleanup = Dor::Config.cleanup
     cleanup.local_workspace_root.should eql @fixtures.join("workspace").to_s
@@ -59,22 +59,21 @@ describe Dor::CleanupService do
   end
 
   specify "Dor::CleanupService.cleanup" do
-    Dor::CleanupService.should_receive(:cleanup_workspace).once.with(@druid)
     Dor::CleanupService.should_receive(:cleanup_export).once.with(@druid)
     mock_item = mock('item')
-    mock_item.should_receive(:pid).and_return(@druid)
+    mock_item.should_receive(:druid).and_return(@druid)
     Dor::CleanupService.cleanup(mock_item)
   end
 
   specify "Dor::CleanupService.cleanup_workspace" do
     Dor::CleanupService.should_receive(:remove_branch).once.with(@fixtures.join('workspace/aa/123/bb/4567'))
     Dor::CleanupService.should_receive(:prune_druid_tree).once.with(@workitem_pathname.parent.parent,@workspace_root_pathname)
-    Dor::CleanupService.cleanup_workspace(@druid)
+    Dor::CleanupService.cleanup_workspace_content(@druid, @workspace_root_pathname)
   end
 
   specify "Dor::CleanupService.cleanup_export" do
-    Dor::CleanupService.should_receive(:remove_branch).once.with(@fixtures.join('export/druid:aa123bb4567').to_s)
-    Dor::CleanupService.should_receive(:remove_branch).once.with(@fixtures.join('export/druid:aa123bb4567.tar').to_s)
+    Dor::CleanupService.should_receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567').to_s)
+    Dor::CleanupService.should_receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567.tar').to_s)
     Dor::CleanupService.cleanup_export(@druid)
   end
 
@@ -106,7 +105,7 @@ describe Dor::CleanupService do
     @bag_pathname.exist?.should == true
     @tarfile_pathname.exist?.should == true
     mock_item = mock('item')
-    mock_item.should_receive(:pid).and_return(@druid)
+    mock_item.should_receive(:druid).and_return(@druid)
     Dor::CleanupService.cleanup(mock_item)
     @workitem_pathname.parent.parent.parent.parent.exist?.should == false
     @bag_pathname.exist?.should == false

@@ -3,8 +3,9 @@ require 'nokogiri'
 require 'equivalent-xml'
 require 'dor/datastreams/workflow_ds'
   describe Dor::WorkflowDs do
-    before(:all) { stub_config }
-    after(:all)  { unstub_config }
+
+    before(:each) { stub_config }
+    after(:each)  { unstub_config }
 
     before(:each) do
       @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
@@ -38,7 +39,7 @@ require 'dor/datastreams/workflow_ds'
       Dor::WorkflowService.stub(:get_workflow_xml).and_return(xml)
        accessionWF=@item.workflows['accessionWF']
        accessionWF.nil?.should == false
-       
+
       end
       it 'should return nil if the xml is empty' do
       xml=''
@@ -75,7 +76,7 @@ require 'dor/datastreams/workflow_ds'
       Dor::WorkflowService.stub(:get_workflow_xml).and_return(xml)
        accessionWF=@item.workflows.get_workflow 'accessionWF'
        accessionWF.nil?.should == false
-       
+
       end
       it 'should return nil if the xml is empty' do
       xml=''
@@ -89,4 +90,4 @@ require 'dor/datastreams/workflow_ds'
     end
     end
   end
-   
+
