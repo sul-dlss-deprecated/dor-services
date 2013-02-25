@@ -307,6 +307,8 @@ Development and release process:
 - <b>3.21.1</b> Allow user to specify resource type when adding a resource to content metadata
 - <b>3.22.0</b> Remove assembly directories on cleanup
 - <b>3.23.0</b> Always generate brand new provenanceMetadata
+- <b>3.24.0</b> APO editing functionality
+- <b>3.24.1</b> Closing a version no longer archives a workflow
 == Copyright
 
 Copyright (c) 2013 Stanford University Library. See LICENSE for details.
