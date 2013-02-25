@@ -70,7 +70,7 @@ module Dor
       # TODO setting start-accession to completed could happen later if we have a universal robot to kick of accessioning across workflows,
       # or if there's a review step after versioning is closed
       Dor::WorkflowService.update_workflow_status 'dor', pid, 'versioningWF', 'start-accession', 'completed'
-      Dor::WorkflowService.archive_workflow 'dor', pid, 'versioningWF', opts[:version_num]
+  
       initialize_workflow 'accessionWF' if(opts[:start_accession].nil? || opts[:start_accession])
     end
 
