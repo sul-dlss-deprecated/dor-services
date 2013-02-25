@@ -96,10 +96,10 @@ module Dor
       self.administrativeMetadata.metadata_source.first
     end
     def metadata_source=(val)
-      if metadata_source == nil
-        self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :metadata_source)
+      if self.administrativeMetadata.descMetadata == nil
+        self.administrativeMetadata.add_child_node(self.administrativeMetadata, :descMetadata)
       end
-      self.administrativeMetadata.update_values({[:metadata_source] => val})
+      self.administrativeMetadata.update_values({[:descMetadata, :source] => val})
     end
     def use_statement
       self.defaultObjectRights.use_statement.first

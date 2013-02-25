@@ -5,7 +5,10 @@ class AdministrativeMetadataDS < ActiveFedora::NokogiriDatastream
     t.root :path => 'administrativeMetadata', :index_as => [:not_searchable]
     t.metadata_format :path => 'descMetadata/format'
     t.metadata_source :path => 'descMetadata/source'
-    
+    t.descMetadata do
+      t.source
+      t.format
+    end
     # Placeholders for existing defined stanzas to be fleshed out as needed
     t.contact :index_as => [:not_searchable]
     t.rights :index_as => [:not_searchable]
@@ -50,9 +53,11 @@ class AdministrativeMetadataDS < ActiveFedora::NokogiriDatastream
   
    end
    define_template :metadata_source do |xml|
+      xml.administrativeMetadata{
       xml.descMetadata{
        xml.source
        }
+     }
   end
    define_template :registration do |xml|
       xml.administrativeMetadata {

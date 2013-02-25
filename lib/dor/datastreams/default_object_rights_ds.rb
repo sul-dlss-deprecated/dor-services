@@ -4,7 +4,8 @@ module Dor
     set_terminology do |t|
       t.root :path => 'rightsMetadata', :index_as => [:not_searchable]
       t.copyright :path => 'copyright/human'
-      t.use_statement :path => '/use/human', :argument => 'useAndReproduction'
+      t.use_statement :path => '/use/human[@type=\'useAndReproduction\']'
+      
       t.use do
         t.machine
         t.human
@@ -37,6 +38,8 @@ module Dor
           }
           xml.use{
             xml.human(:type => 'useAndReproduction')
+            xml.human(:type => "creativeCommons")
+            xml.machine(:type => "creativeCommons")
           }
           xml.copyright{
             xml.human

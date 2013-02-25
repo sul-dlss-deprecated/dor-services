@@ -101,6 +101,7 @@ describe Dor::Editable do
       @item.metadata_source.should == 'Symphony'
     end
     it 'should set the metadata source for an empty datastream' do
+      @empty_item.desc_metadata_format = 'TEI'
       @empty_item.metadata_source = 'Symphony'
       @empty_item.metadata_source.should == 'Symphony'
     end
@@ -110,7 +111,7 @@ describe Dor::Editable do
       @item.creative_commons_license.should == 'by-nc-sa'
     end
     it 'shouldnt fail on an item with an empty datastream' do
-      @empty_item.creative_commons_license.should == nil
+      @empty_item.creative_commons_license.should == ''
     end
   end
   describe 'creative_commons_human' do
@@ -122,6 +123,13 @@ describe Dor::Editable do
     it 'should work on an empty ds' do
       @empty_item.creative_commons_license = ['hi']
       @empty_item.creative_commons_license.should == 'hi'
+    end
+    it 'shouldnt create multiple use nodes' do
+      @empty_item.creative_commons_license = 'hi'
+      @empty_item.creative_commons_license_human = 'greetings'
+      @empty_item.use_statement = 'this is my use statement'
+      @empty_item.use_statement.should == 'this is my use statement'
+      @empty_item.defaultObjectRights.ng_xml.search("//use").length.should == 1
     end
   end
   describe 'creative_commons_license_human=' do
@@ -211,7 +219,6 @@ describe Dor::Editable do
   end
   describe 'agreement=' do
     it 'should work' do
-      #puts ActiveFedora::Predicates.predicate_config[:predicate_mappings].inspect
       agr=mock()
       agr.stub(:pid).and_return('druid:dd327qr3670')
       @item.stub(:agreement_object).and_return([agr])

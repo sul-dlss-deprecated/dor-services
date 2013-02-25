@@ -96,6 +96,7 @@ describe Dor::Describable do
 
   describe 'add_collection_reference' do
     it "adds a relatedItem node for the collection if the item is a memeber of a collection" do
+      pending
       mods = read_fixture('ex2_related_mods.xml')
       mods=Nokogiri::XML(mods)
       mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']').each do |node|
