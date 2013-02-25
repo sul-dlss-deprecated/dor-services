@@ -22,13 +22,23 @@ module Dor
     end
 
     def set_read_rights(rights)
-      if not ['world','stanford','none'].include? rights
-        raise "Unknown rights setting \'" + rights + "\' when calling #{self.name}.set_read_rights"
+      if not ['world','stanford','none', 'dark'].include? rights
+        raise "Unknown rights setting \'" + rights
       end
       rights_metadata_ds = self.rightsMetadata
       rights_xml=rights_metadata_ds.ng_xml
       if(rights_xml.search('//rightsMetadata/access[@type=\'read\']').length==0)
         raise ('The rights metadata stream doesnt contain an entry for machine read permissions. Consider populating it from the APO before trying to change it.')
+      end
+      rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
+        node.children.remove
+        if rights=='dark'
+            world_node=Nokogiri::XML::Node.new('none',rights_xml)
+            node.add_child(world_node)
+        else
+            world_node=Nokogiri::XML::Node.new('world',rights_xml)
+          node.add_child(world_node)
+        end
       end
       rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
         node.children.remove
@@ -46,7 +56,7 @@ module Dor
           node.add_child(machine_node)
           machine_node.add_child(group_node)
         end
-        if rights=='none'
+        if rights=='none' or rights == 'dark'
           none_node=Nokogiri::XML::Node.new('none',rights_xml)
           node.add_child(machine_node)
           machine_node.add_child(none_node)
@@ -57,9 +67,14 @@ module Dor
 
     def add_collection(collection_druid)
       self.add_relationship_by_name('collection','info:fedora/'+collection_druid)
+      self.add_relationship 'isMemberOf', 'info:fedora/' + collection_druid
     end 
+    
     def remove_collection(collection_druid)
       self.remove_relationship_by_name('collection','info:fedora/'+collection_druid)
+      self.remove_relationship 'isMemberOf', 'info:fedora/' + collection_druid
+      #this works in newer versions of activefedora
+      self.remove_relationship :is_member_of, 'info:fedora/' + collection_druid
     end
     
     def groups_which_manage_item

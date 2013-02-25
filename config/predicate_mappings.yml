@@ -46,7 +46,8 @@
     :oai_item_id: itemID
   http://projecthydra.org/ns/relations#:
     :is_governed_by: isGovernedBy
-    :references_agreement: referencesAgreement 
+    :references_agreement: referencesAgreement
+    :referencesAgreement: referencesAgreement
 :predicate_namespaces:
   :hydra: http://projecthydra.org/ns/relations#
   :fedora: info:fedora/fedora-system:def/relations-external#

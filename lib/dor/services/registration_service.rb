@@ -7,7 +7,7 @@ module Dor
     class << self
       def register_object(params = {})
         Dor.ensure_models_loaded!
-        [:object_type, :label, :source_id].each do |required_param|
+        [:object_type, :label].each do |required_param|
           raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{self.name}.register_object" unless params[required_param]
         end
         metadata_source=params[:metadata_source]
@@ -25,6 +25,7 @@ module Dor
         other_ids = params[:other_ids] || {}
         tags = params[:tags] || []
         parent = params[:parent]
+        collection = params[:collection]
         pid = nil
         metadata_source=params[:metadata_source]
         if params[:pid]
@@ -86,7 +87,10 @@ module Dor
           end
           new_item.add_relationship short_predicate, rel['rdf:resource']
         end
-        if(rights)
+        if collection
+          new_item.add_collection(collection)
+        end
+        if(rights and object_type == 'item' )
           rights_xml=apo_object.defaultObjectRights.ng_xml
           if rights=='world'
             rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
@@ -195,7 +199,8 @@ module Dor
           :seed_datastream    => params[:seed_datastream],
           :initiate_workflow  => Array(params[:initiate_workflow]) + Array(params[:workflow_id]),
           :rights             => params[:rights],
-          :metadata_source    => params[:metadata_source]
+          :metadata_source    => params[:metadata_source],
+          :collection         => params[:collection]
         }
         dor_params.delete_if { |k,v| v.nil? }
     

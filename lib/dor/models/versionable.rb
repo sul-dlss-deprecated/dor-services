@@ -79,6 +79,15 @@ module Dor
       return true if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'opened'))
       false
     end
+    
+    # @return [Boolean] true if the object is in a state that allows it to be modified. States that will allow modification are: has not been submitted for accessioning, has an open version or has sdr-ingest set to hold 
+    def allows_modification?
+      if Dor::WorkflowService.get_lifecycle('dor', pid, 'submitted' ) and not new_version_open? and not Dor::WorkflowService.get_workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer')=='hold'
+        false
+      else
+        true
+      end
+    end
 
     # Following chart of processes on this consul page: https://consul.stanford.edu/display/chimera/Versioning+workflows
     alias_method :start_version,  :open_new_version

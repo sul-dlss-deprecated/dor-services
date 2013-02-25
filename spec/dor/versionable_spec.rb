@@ -128,4 +128,21 @@ describe Dor::Versionable do
       end
     end
   end
+  describe "allows_modification?" do
+    it 'should allow modification if the object hasnt been submitted' do
+      Dor::WorkflowService.stub(:get_lifecycle).and_return(false)
+      obj.allows_modification?.should == true
+    end
+    it 'should allow modification if there is an open version' do
+      Dor::WorkflowService.stub(:get_lifecycle).and_return(true)
+      obj.stub(:new_version_open?).and_return(true)
+      obj.allows_modification?.should == true
+    end
+    it "should allow modification if the item has sdr-ingest-transfer set to hold" do
+      Dor::WorkflowService.stub(:get_lifecycle).and_return(true)
+      obj.stub(:new_version_open?).and_return(false)
+      Dor::WorkflowService.stub(:get_workflow_status).and_return('hold')
+      obj.allows_modification?.should == true
+    end
+  end
 end

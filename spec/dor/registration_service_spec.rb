@@ -37,6 +37,7 @@ describe Dor::RegistrationService do
     end
 
     it "should properly register an object" do
+      @params[:collection] = 'druid:something'
       Dor.should_receive(:find).with('druid:fg890hi1234', :lightweight => true).and_return(@apo)
       Dor.stub(:find).and_return(nil)
       Dor::SearchService.stub!(:query_by_id).and_return([])
@@ -53,7 +54,9 @@ describe Dor::RegistrationService do
         <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
           <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
           <fedora-model:hasModel rdf:resource="info:fedora/afmodel:Dor_Item"/>
+          <fedora:isMemberOf rdf:resource="info:fedora/druid:something"/>
           <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
+          <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:something"/>
           <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:zb871zd0767"/>
         </rdf:Description>
       </rdf:RDF>
@@ -231,10 +234,6 @@ describe Dor::RegistrationService do
       @params[:metadata_source]='mdtoolkit'
       Dor::SearchService.stub(:query_by_id).and_return([nil])
       Dor::RegistrationService.register_object(@params)
-    end
-    it "should raise an exception if source_id is missing" do
-      @params.delete(:source_id)
-      lambda { Dor::RegistrationService.register_object(@params) }.should raise_error(Dor::ParameterError)
     end
 
     it "should raise an exception if registering a duplicate PID" do
