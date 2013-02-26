@@ -35,6 +35,8 @@ Development and release process:
 
   - Fetch latest code and merge as needed.
   - Edit on the develop branch or a feature branch.
+  - Modify version number in lib/dor/version.rb
+  - Edit README.rdoc.
   - Commit changes.
   - Merge and push.
   - Release the gem:
@@ -309,6 +311,8 @@ Development and release process:
 - <b>3.23.0</b> Always generate brand new provenanceMetadata
 - <b>3.24.0</b> APO editing functionality
 - <b>3.24.1</b> Closing a version no longer archives a workflow
+- <b>3.24.2</b> Undoing v3.24.1: closing a version does archive a workflow
+
 == Copyright
 
 Copyright (c) 2013 Stanford University Library. See LICENSE for details.
