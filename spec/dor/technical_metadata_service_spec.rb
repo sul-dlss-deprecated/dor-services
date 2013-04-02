@@ -78,7 +78,8 @@ describe Dor::TechnicalMetadataService do
       inventory_diff = Moab::FileInventoryDifference.new(
           :digital_object_id=>"druid:#{id}",
           :basis=>"old_content_metadata",
-          :other=>"new_content_metadata"
+          :other=>"new_content_metadata",
+          :report_datetime => Time.now.to_s
       )
       inventory_diff.group_differences << group_diff
       dor_item = mock(Dor::Item)

@@ -187,19 +187,21 @@ module Dor
       rescue
       end
       current_version_num=current_version.to_i
-      if self.methods.include?('versionMetadata')
-      #add an entry with version id, tag and description for each version
-      while current_version_num > 0
-        add_solr_value(solr_doc, 'versions', current_version_num.to_s + ';' + self.versionMetadata.tag_for_version(current_version_num.to_s) + ';' + self.versionMetadata.description_for_version(current_version_num.to_s), :string, [:displayable])
-        current_version_num -= 1
+      
+      if self.respond_to?('versionMetadata')
+        #add an entry with version id, tag and description for each version
+        while current_version_num > 0
+          add_solr_value(solr_doc, 'versions', current_version_num.to_s + ';' + self.versionMetadata.tag_for_version(current_version_num.to_s) + ';' + self.versionMetadata.description_for_version(current_version_num.to_s), :string, [:displayable])
+          current_version_num -= 1
+        end
       end
-    end
+      
       self.milestones.each do |milestone|
         timestamp = milestone[:at].utc.xmlschema
         sortable_milestones[milestone[:milestone]] ||= []
         sortable_milestones[milestone[:milestone]] << timestamp
         add_solr_value(solr_doc, 'lifecycle', milestone[:milestone], :string, [:searchable, :facetable])
-        if(not milestone[:version])
+        unless milestone[:version]
           milestone[:version]=current_version
         end
         add_solr_value(solr_doc, 'lifecycle', "#{milestone[:milestone]}:#{timestamp};#{milestone[:version]}", :string, [:displayable])
@@ -222,7 +224,7 @@ module Dor
       end
       add_solr_value(solr_doc,"status",status,:string, [:displayable])
 
-      if self.methods.include?('new_version_open?') and new_version_open?
+      if self.respond_to?('new_version_open?') and new_version_open?
         #add a facetable field for the date when the open version was opened
         opened_date=sortable_milestones['opened'].sort.last
         add_solr_value(solr_doc, "version_opened", DateTime.parse(opened_date).beginning_of_day.utc.xmlschema.split('T').first, :string, [ :searchable, :facetable])

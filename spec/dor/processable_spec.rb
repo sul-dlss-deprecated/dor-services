@@ -170,7 +170,7 @@ describe Dor::Processable do
   		solr_doc['last_modified_day_facet'].length.should == 1
     end
     it 'should create a version field for each version, including the version number, tag and description' do
-      @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
+      @item = instantiate_fixture('druid:ab123cd4567', ProcessableItem)
   		@item.stub(:versionMetadata).and_return(@versionMD)
   		solr_doc=@item.to_solr
   		#the facet field should have a date in it.

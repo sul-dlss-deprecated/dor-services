@@ -36,13 +36,7 @@ module Dor
     end
 
     def sanitize
-      yaml = YAML.dump(self)
-      yaml.gsub!(/^.+!ruby\/object.+$/,"")
-      result = YAML.load(yaml)
-      result[:ssl] = {}
-      # Remove local filesystem references
-      result.keys.each { |opt| result[opt].reject! { |k,v| k.to_s =~ /^local_/ } }
-      result
+      self.dup
     end
 
     def make_rest_client(url, cert=Config.ssl.cert_file, key=Config.ssl.key_file, pass=Config.ssl.key_pass)

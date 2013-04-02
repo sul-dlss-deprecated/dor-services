@@ -10,7 +10,7 @@ describe 'Dor::CleanupService specs that check the file system' do
   let(:druid_1) {'druid:cd456ef7890'}
   let(:druid_2) {'druid:cd456gh1234'}
 
-  before(:all) do
+  before(:each) do
     Dor::Config.push! do |config|
       config.cleanup.local_workspace_root workspace_dir
       config.cleanup.local_export_home export_dir
@@ -23,13 +23,13 @@ describe 'Dor::CleanupService specs that check the file system' do
     FileUtils.mkdir assembly_dir
   end
 
-  after(:all) do
+  after(:each) do
     FileUtils.rm_rf fixture_dir
     Dor::Config.pop!
   end
 
   def create_tempfile(path)
-    File.new(File.join(path, 'tempfile'), 'w') do |tf1|
+    File.open(File.join(path, 'tempfile'), 'w') do |tf1|
       tf1.write 'junk'
     end
   end
@@ -67,7 +67,7 @@ describe 'Dor::CleanupService specs that check the file system' do
       #        {export_dir}/druid1.tar
       FileUtils.mkdir export_prefix_1
       create_tempfile export_prefix_1
-      File.new(export_prefix_1 + '.tar', 'w') {|f| f.write 'fake tar junk'}
+      File.open(export_prefix_1 + '.tar', 'w') {|f| f.write 'fake tar junk'}
 
       File.should exist(dr1_wspace.path)
       File.should exist(dr1_assembly.path)

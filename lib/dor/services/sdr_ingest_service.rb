@@ -58,7 +58,7 @@ module Dor
     # @return [Pathname] Pull all the datastreams specified in the configuration file
     #   into the workspace's metadata directory, overwriting existing file if present
     def self.extract_datastreams(dor_item, workspace)
-      metadata_dir = Pathname(workspace.path('metadata',create=true))
+      metadata_dir = Pathname.new(workspace.path('metadata',create=true))
       Config.sdr.datastreams.to_hash.each_pair do |ds_name, required|
         ds_name = ds_name.to_s
         metadata_file = metadata_dir.join("#{ds_name}.xml")
