@@ -17,8 +17,9 @@ Gem::Specification.new do |s|
 
   # Runtime dependencies
 
-  s.add_dependency "active-fedora", "~>4.5"
-  s.add_dependency "om", ">=1.5.0"
+  s.add_dependency "active-fedora", "~>5.0"
+  s.add_dependency "om"
+  s.add_dependency "solrizer", "~> 2.0"
   s.add_dependency "rsolr-ext"
   s.add_dependency "rsolr-client-cert", ">=0.5.1"
   s.add_dependency "nokogiri", "~>1.5.6"

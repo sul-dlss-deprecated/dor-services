@@ -8,7 +8,6 @@ require 'awesome_print'
 #require 'rspec/mocks'
 
 require 'solrizer'
-Solrizer.logger = Logger.new(StringIO.new)
 
 require 'rubygems'
 require 'rake'
@@ -18,7 +17,6 @@ require 'foxml_helper'
 require 'equivalent-xml'
 require 'fakeweb'
 
-ActiveFedora.logger = Logger.new(StringIO.new)
 # ::ENABLE_SOLR_UPDATES = true
 
 module Dor::SpecHelpers

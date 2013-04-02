@@ -11,6 +11,7 @@ describe Dor::Publishable do
   after(:each)  { unstub_config }
 
   before :each do
+    
     @item = instantiate_fixture('druid:ab123cd4567', PublishableItem)
     @apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
     @item.stub!(:admin_policy_object).and_return([@apo])

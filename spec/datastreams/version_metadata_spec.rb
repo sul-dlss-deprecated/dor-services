@@ -25,6 +25,15 @@ describe Dor::VersionMetadataDS do
       </versionMetadata>
     XML
   }
+
+
+    let(:ds) {
+      d = Dor::VersionMetadataDS.new mock(:pid => 'druid:ab123cd4567', :new? => false, :repository => mock()), 'versionMetadata'
+      d.stub(:new?).and_return(false)
+      d.stub(:datastream_content).and_return(first_xml)
+      d
+    }
+        
   
   describe "Marshalling to and from a Fedora Datastream" do
     
@@ -41,12 +50,6 @@ describe Dor::VersionMetadataDS do
   end
   
   describe "#increment_version" do
-    let(:ds) do
-      d = Dor::VersionMetadataDS.new nil, 'versionMetadata'
-      d.save
-      d.stub!(:pid).and_return('druid:ab123cd4567')
-      d
-    end
         
     it "appends a new version block with an incremented versionId and converts significance to a tag" do
       v2 = <<-XML
@@ -90,14 +93,7 @@ describe Dor::VersionMetadataDS do
         </versionMetadata>
       XML
     }
-    
-    let(:ds) {
-      d = Dor::VersionMetadataDS.new nil, 'versionMetadata'
-      d.stub!(:pid).and_return('druid:ab123cd4567')
-      d.save
-      d
-    }
-        
+
     it "updates the current version with the passed in options" do
       ds.increment_version("minor update") # no tag
       ds.update_current_version :description => 'new text', :significance => :major
