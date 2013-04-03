@@ -4,9 +4,9 @@ module Dor
     include ActiveFedora::Relationships
 
     included do
-      has_relationship 'admin_policy_object', :is_governed_by
-      has_relationship 'collection', :is_member_of_collection
-      has_relationship 'set', :is_member_of
+      belongs_to 'admin_policy_object', :property => :is_governed_by, :class_name => "Dor::AdminPolicyObject"
+      has_and_belongs_to_many :collections, :property => :is_member_of_collection, :class_name => "Dor::Collection"
+      has_and_belongs_to_many :sets, :property => :is_member_of, :class_name => "Dor::Collection"
     end
 
     def initiate_apo_workflow(name)
@@ -62,19 +62,31 @@ module Dor
           machine_node.add_child(none_node)
         end
       end 
-      rights_metadata_ds.dirty=true
     end
 
-    def add_collection(collection_druid)
-      self.add_relationship_by_name('collection','info:fedora/'+collection_druid)
-      self.add_relationship 'isMemberOf', 'info:fedora/' + collection_druid
+    def add_collection(collection_or_druid)
+      collection = case collection_or_druid
+        when String
+          Dor::Collection.find(collection_or_druid)
+        when Dor::Collection
+          collection_or_druid
+      end
+      self.collections << collection
+      self.sets << collection
     end 
     
-    def remove_collection(collection_druid)
-      self.remove_relationship_by_name('collection','info:fedora/'+collection_druid)
-      self.remove_relationship 'isMemberOf', 'info:fedora/' + collection_druid
-      #this works in newer versions of activefedora
-      self.remove_relationship :is_member_of, 'info:fedora/' + collection_druid
+    def remove_collection(collection_or_druid)
+
+      collection = case collection_or_druid
+        when String
+          Dor::Collection.find(collection_or_druid)
+        when Dor::Collection
+          collection_or_druid
+      end
+
+      self.collections.delete(collection)
+      self.sets.delete(collection)
+
     end
     
     def groups_which_manage_item

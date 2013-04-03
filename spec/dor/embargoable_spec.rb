@@ -104,8 +104,8 @@ describe Dor::Embargoable do
         rights.xpath("//rightsMetadata/access[@type='read']/file").size.should == 1
       end
 
-      it "marks the datastream as dirty" do
-        @embargo_item.datastreams['rightsMetadata'].should be_dirty
+      it "marks the datastream as changed" do
+        @embargo_item.datastreams['rightsMetadata'].should be_changed
       end
     end
 

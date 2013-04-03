@@ -4,7 +4,7 @@ module Dor
     include ActiveFedora::Relationships
 
     included do
-      has_relationship 'agreement_object', :referencesAgreement 
+      belongs_to 'agreement_object', :property => :referencesAgreement, :class_name => "Dor::Item"
     end
     #Adds a person or group to a role in the APO role metadata datastream
     #
@@ -252,9 +252,7 @@ module Dor
       end
     end
     def agreement=(val)
-      self.remove_relationship :references_agreement, 'info:fedora/' + agreement.to_s
-      self.remove_relationship_by_name 'agreement_object', 'info:fedora/' + agreement.to_s
-      self.add_relationship(:references_agreement, 'info:fedora/'+val)
+      self.agreement_object = ActiveFedora::Base.find val.to_s, :cast => true
     end
   end
 end

@@ -11,8 +11,17 @@ describe Dor::Governable do
   before(:each) { stub_config   }
   after(:each)  { unstub_config }
 
+  let(:mock_collection) {
+    coll = Dor::Collection.new
+    coll.stub(:new? => false, :new_record? => false, :pid => 'druid:oo201oo0002')
+    coll.stub(:save)
+    coll
+  }
+
   before :each do
     @item = instantiate_fixture("druid:oo201oo0001", Dor::AdminPolicyObject)
+   # @item.stub(:new_record? => false)
+    Dor::Collection.stub(:find).with("druid:oo201oo0002").and_return(mock_collection)
   end
   describe 'set_read_rights' do
     it 'should raise an exception if the rights option doesnt match the accepted values' do
@@ -78,8 +87,7 @@ describe Dor::Governable do
     it 'should add a collection' do 
       @item.add_collection('druid:oo201oo0002')
       rels_ext_ds=@item.datastreams['RELS-EXT']
-      rels_ext_ds.serialize!
-      xml=Nokogiri::XML(rels_ext_ds.content.to_s)
+      xml=Nokogiri::XML(rels_ext_ds.to_rels_ext.to_s)
       xml.should be_equivalent_to <<-XML
       <?xml version="1.0" encoding="UTF-8"?>
              <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#">
@@ -172,7 +180,7 @@ end
 it 'should add a collection' do
       @item.add_collection('druid:oo201oo0002')
 			rels_ext_ds=@item.datastreams['RELS-EXT']
-			@item.find_relationship_by_name('collection').first.should == 'info:fedora/druid:oo201oo0002'
+			@item.collection_ids.should include('druid:oo201oo0002')
     end
     end
 
@@ -180,7 +188,7 @@ it 'should add a collection' do
 		it 'should delete a collection' do
 			@item.add_collection('druid:oo201oo0002')
 			rels_ext_ds=@item.datastreams['RELS-EXT']
-			@item.find_relationship_by_name('collection').first.should == 'info:fedora/druid:oo201oo0002'
+      @item.collection_ids.should include('druid:oo201oo0002')
 			@item.remove_collection('druid:oo201oo0002')
 		end
 	end

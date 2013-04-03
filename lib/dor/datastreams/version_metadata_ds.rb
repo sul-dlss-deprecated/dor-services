@@ -105,7 +105,6 @@ module Dor
           v.add_child d
         end
       end
-      self.dirty = true
     end
 
     # @returns [Fixnum] value of the most current versionId

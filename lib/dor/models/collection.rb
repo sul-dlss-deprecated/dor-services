@@ -7,7 +7,7 @@ module Dor
     include Publishable
     include Versionable
 
-    has_relationship 'member', :is_member_of_collection, :inbound => true
+    has_many :members, :property => :is_member_of_collection, :inbound => true
     has_object_type 'collection'
   end
 end

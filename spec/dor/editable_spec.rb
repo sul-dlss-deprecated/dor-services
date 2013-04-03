@@ -7,6 +7,14 @@ describe Dor::Editable do
     @item = instantiate_fixture("druid_zt570tx3016", Dor::AdminPolicyObject)
     @empty_item = instantiate_fixture("pw570tx3016", Dor::AdminPolicyObject)
   end
+
+    let(:mock_agreement) {
+      agr = Dor::Item.new
+      agr.stub(:new? => false, :new_record? => false, :pid => 'druid:new_agreement')
+      agr.stub(:save)
+      agr
+    }
+
   describe 'add_roleplayer' do
     it 'should add a role' do
       @item.add_roleplayer('dor-apo-manager', 'dlss:some-staff')
@@ -223,6 +231,7 @@ describe Dor::Editable do
       agr.stub(:pid).and_return('druid:dd327qr3670')
       @item.stub(:agreement_object).and_return([agr])
       rels_ext_ds=@item.datastreams['RELS-EXT']
+      ActiveFedora::Base.should_receive(:find).with('druid:new_agreement', :cast => true).and_return(mock_agreement)
       @item.agreement = 'druid:new_agreement'
       xml=Nokogiri::XML(rels_ext_ds.to_rels_ext.to_s)
       xml.should be_equivalent_to <<-XML

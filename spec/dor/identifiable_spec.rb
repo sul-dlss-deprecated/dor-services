@@ -65,7 +65,6 @@ describe Dor::Identifiable do
       item.identityMetadata.otherId('mdtoolkit').first.should == 'someid123'
       item.remove_other_Id('mdtoolkit','someid123').should == true
       item.identityMetadata.otherId('mdtoolkit').length.should == 0
-      item.identityMetadata.should be_changed
     end
     it 'should return false if there was nothing to delete' do
       item.remove_other_Id('mdtoolkit','someid123').should == false

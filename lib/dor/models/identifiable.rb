@@ -128,7 +128,6 @@ module Dor
         if node.content==val or val==nil
           node.content=new_val
           updated=true
-          self.identityMetadata.dirty=true
         end
       end
       return updated
@@ -143,7 +142,6 @@ module Dor
         if node.content===val or val==nil
           node.remove
           removed=true
-          self.identityMetadata.dirty=true
         end
       end
       return removed
@@ -168,7 +166,6 @@ module Dor
         if node.content===tag
           node.remove
           removed=true
-          self.identityMetadata.dirty=true
         end
       end
       return removed
@@ -182,7 +179,6 @@ module Dor
         if node.content==old_tag
           node.content=new_tag
           updated = true
-          self.identityMetadata.dirty=true
         end
       end
       return updated 

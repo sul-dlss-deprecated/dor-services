@@ -7,7 +7,7 @@ module Dor
     include Processable
     include Versionable
 
-    has_relationship 'thing', :property => :is_governed_by, :inbound => :true
+    has_many :things, :property => :is_governed_by, :inbound => :true
     has_object_type 'adminPolicy'
     has_metadata :name => "administrativeMetadata", :type => Dor::AdministrativeMetadataDS, :label => 'Administrative Metadata'
     has_metadata :name => "roleMetadata", :type => Dor::RoleMetadataDS, :label => 'Role Metadata'

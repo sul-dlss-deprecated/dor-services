@@ -50,10 +50,10 @@ describe Dor::EventsDS do
       ds.find_by_terms(:event).last.content.should == 'Embargo go bye-bye'
     end
     
-    it "markes the datastream dirty" do
+    it "markes the datastream changed" do
       ds = Dor::EventsDS.from_xml(@dsxml)
       ds.add_event "embargo", "application:etd-robot", "Embargo go bye-bye"
-      ds.should be_dirty
+      ds.should be_changed
     end
   end
   

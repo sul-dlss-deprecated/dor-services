@@ -22,8 +22,12 @@ describe Dor::RegistrationService do
       @mock_solr = mock(RSolr::Connection).as_null_object
       Dor::SearchService.stub(:solr).and_return(@mock_solr)
       @apo  = instantiate_fixture("druid:fg890hi1234", Dor::AdminPolicyObject)
+      @apo.stub(:new_record? => false)
 
       Dor::Item.any_instance.stub(:save).and_return(true)
+
+
+      Dor.stub(:find).with('druid:fg890hi1234', :lightweight => true).and_return(@apo)
 
       @params = {
         :object_type => 'item',
@@ -36,10 +40,16 @@ describe Dor::RegistrationService do
       }
     end
 
+    let(:mock_collection) {
+      coll = Dor::Collection.new
+      coll.stub(:new? => false, :new_record? => false, :pid => 'druid:something')
+      coll.stub(:save)
+      coll
+    }
+
     it "should properly register an object" do
       @params[:collection] = 'druid:something'
-      Dor.should_receive(:find).with('druid:fg890hi1234', :lightweight => true).and_return(@apo)
-      Dor.stub(:find).and_return(nil)
+      ActiveFedora::Base.should_receive(:find).with('druid:something').and_return(mock_collection)
       Dor::SearchService.stub!(:query_by_id).and_return([])
       Dor::Item.any_instance.should_receive(:update_index).and_return(true)
 
@@ -48,7 +58,7 @@ describe Dor::RegistrationService do
       obj.label.should == @params[:label]
       obj.identityMetadata.sourceId.should == 'barcode:9191919191'
       obj.identityMetadata.otherId.should =~ @params[:other_ids].collect { |*e| e.join(':') }
-      obj.rels_ext.to_rels_ext.should be_equivalent_to <<-XML
+      obj.datastreams['RELS-EXT'].to_rels_ext.should be_equivalent_to <<-XML
       <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#"
         xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#">
         <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
@@ -64,8 +74,6 @@ describe Dor::RegistrationService do
     end
 
     it "should properly register an object even if indexing fails" do
-      Dor.should_receive(:find).with('druid:fg890hi1234', :lightweight => true).and_return(@apo)
-      Dor.stub(:find).and_return(nil)
       Dor::SearchService.stub!(:query_by_id).and_return([])
       Dor::Item.any_instance.stub(:update_index).and_raise("503 Service Unavailable")
       Dor.logger.should_receive(:warn).with(/failed to update solr index for druid:ab123cd4567/)
@@ -90,8 +98,6 @@ describe Dor::RegistrationService do
 
     it "should set rightsMetadata based on the APO default when passed rights=default" do
       @params[:rights]='default'
-      Dor.should_receive(:find).with('druid:fg890hi1234', :lightweight => true).and_return(@apo)
-      Dor.stub(:find).and_return(nil)
       Dor::SearchService.stub!(:query_by_id).and_return([])
       Dor::Item.any_instance.should_receive(:update_index).and_return(true)
 
@@ -126,8 +132,6 @@ describe Dor::RegistrationService do
 
     it "should set rightsMetadata based on the APO default but replace read rights to be world when passed rights=world " do
       @params[:rights]='world'
-      Dor.should_receive(:find).with('druid:fg890hi1234', :lightweight => true).and_return(@apo)
-      Dor.stub(:find).and_return(nil)
       Dor::SearchService.stub!(:query_by_id).and_return([])
       Dor::Item.any_instance.should_receive(:update_index).and_return(true)
 
@@ -162,8 +166,6 @@ describe Dor::RegistrationService do
 
     it "should set rightsMetadata based on the APO default but replace read rights to be world when passed rights=stanford " do
       @params[:rights]='stanford'
-      Dor.should_receive(:find).with('druid:fg890hi1234', :lightweight => true).and_return(@apo)
-      Dor.stub(:find).and_return(nil)
       Dor::SearchService.stub!(:query_by_id).and_return([])
       Dor::Item.any_instance.should_receive(:update_index).and_return(true)
 
@@ -198,8 +200,6 @@ describe Dor::RegistrationService do
 
     it "should set the descriptive metadata to basic mods using the label as title if passed metadata_source=label " do
       @params[:metadata_source]='label'
-      Dor.should_receive(:find).with('druid:fg890hi1234', :lightweight => true).and_return(@apo)
-      Dor.stub(:find).and_return(nil)
       Dor::SearchService.stub!(:query_by_id).and_return([])
       Dor::Item.any_instance.should_receive(:update_index).and_return(true)
 

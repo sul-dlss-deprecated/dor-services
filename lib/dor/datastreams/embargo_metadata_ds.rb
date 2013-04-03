@@ -46,7 +46,6 @@ class EmbargoMetadataDS < ActiveFedora::NokogiriDatastream
 
   def status=(new_status)
     update_values([:status] => new_status)
-    self.dirty = true
   end
 
   def status
@@ -57,8 +56,7 @@ class EmbargoMetadataDS < ActiveFedora::NokogiriDatastream
   # @param [Time] rd A Time object represeting the release date.  By default, it is set to now
   def release_date=(rd=Time.now)
 		update_values([:release_date] => rd.beginning_of_day.utc.xmlschema)
-    	self.content=self.ng_xml.to_s
-		self.dirty = true
+    self.content=self.ng_xml.to_s
   end
 
   # Current releaseDate value
@@ -108,7 +106,6 @@ class EmbargoMetadataDS < ActiveFedora::NokogiriDatastream
 
     term_value_delete(:select => '//embargoMetadata/releaseAccess')
     ng_xml.root.add_child(new_doc.root.clone)
-    self.dirty = true
   end
 
 end

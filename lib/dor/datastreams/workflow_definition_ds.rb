@@ -72,7 +72,6 @@ class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream
         add_process(v.merge({:name => k, :sequence => i+=1}))
       end
     end
-    self.dirty = true
   end
   
   # Creates the xml used by Dor::WorkflowService.create_workflow

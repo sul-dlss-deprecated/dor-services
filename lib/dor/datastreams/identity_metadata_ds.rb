@@ -28,7 +28,6 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
   end #self.xml_template
   
   def add_value(name, value, attrs={})
-    self.dirty=true
     add_child_node(ng_xml.root, :value, name, value, attrs)
   end
   
@@ -78,7 +77,6 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
     node = ng_xml.root.add_child('<otherId/>').first
     node['name'] = name
     node.content = val
-    self.dirty=true
     node
   end
   

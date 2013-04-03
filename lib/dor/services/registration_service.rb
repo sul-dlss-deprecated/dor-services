@@ -76,7 +76,7 @@ module Dor
         idmd.add_value(:adminPolicy, admin_policy)
         other_ids.each_pair { |name,value| idmd.add_otherId("#{name}:#{value}") }
         tags.each { |tag| idmd.add_value(:tag, tag) }
-        new_item.admin_policy_object_append apo_object
+        new_item.admin_policy_object = apo_object
         
         adm_xml.xpath('/administrativeMetadata/relationships/*').each do |rel|
           short_predicate = ActiveFedora::RelsExtDatastream.short_predicate rel.namespace.href+rel.name
