@@ -5,8 +5,47 @@ class EmbargoedItem < ActiveFedora::Base
   include Dor::Embargoable
 end
 
-
 describe Dor::Embargoable do
+
+  let(:release_access) { <<-EOXML
+    <releaseAccess>
+      <access type="read">
+        <machine>
+          <world/>
+        </machine>
+      </access>
+      <access type="read">
+        <file id="restricted.doc"/>
+        <machine>
+          <group>stanford</group>
+        </machine>
+      </access>
+    </releaseAccess>
+    EOXML
+  }
+
+  let(:rights_xml) { <<-EOXML
+    <rightsMetadata objectId="druid:rt923jk342">
+      <copyright>
+        <human>(c) Copyright [conferral year] by [student name]</human>
+      </copyright>
+      <access type="discover">
+        <machine>
+          <world />
+        </machine>
+      </access>
+      <access type="read">
+        <machine>
+          <group>stanford</group>
+          <embargoReleaseDate>2011-10-08</embargoReleaseDate>
+        </machine>
+      </access>
+      <use>
+        <machine type="creativeCommons" type="code">value</machine>
+      </use>
+    </rightsMetadata>
+    EOXML
+  }
 
   before :all do
     @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"../fixtures")
@@ -37,44 +76,8 @@ describe Dor::Embargoable do
       @eds = @embargo_item.datastreams['embargoMetadata']
       @eds.status = 'embargoed'
       @eds.release_date = Time.now - 100000
-      @release_access = <<-EOXML
-      <releaseAccess>
-        <access type="read">
-          <machine>
-            <world/>
-          </machine>
-        </access>
-        <access type="read">
-          <file id="restricted.doc"/>
-          <machine>
-            <group>stanford</group>
-          </machine>
-        </access>
-      </releaseAccess>
-      EOXML
-      @eds.release_access_node = Nokogiri::XML(@release_access) {|config|config.default_xml.noblanks}
+      @eds.release_access_node = Nokogiri::XML(release_access) {|config|config.default_xml.noblanks}
 
-      rights_xml = <<-EOXML
-          <rightsMetadata objectId="druid:rt923jk342">
-            <copyright>
-              <human>(c) Copyright [conferral year] by [student name]</human>
-            </copyright>
-            <access type="discover">
-              <machine>
-                <world />
-              </machine>
-            </access>
-            <access type="read">
-              <machine>
-                <group>stanford</group>
-                <embargoReleaseDate>2011-10-08</embargoReleaseDate>
-              </machine>
-            </access>
-            <use>
-              <machine type="creativeCommons" type="code">value</machine>
-            <use>
-          </rightsMetadata>
-      EOXML
       @embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config|config.default_xml.noblanks}
       @embargo_item.release_embargo('application:embargo-release')
     end
@@ -116,68 +119,73 @@ describe Dor::Embargoable do
         message.should == "Embargo released"
       end
     end
-end
+  end
 
-	describe 'update_embargo' do
-	before(:each) do
+  describe "#release_20_pct_vis_embargo" do
+    let(:embargo_item) {EmbargoedItem.new}
+    let(:eds) { embargo_item.datastreams['embargoMetadata'] }
 
+    before(:each) do
+      eds.status = 'embargoed'
+      eds.release_date = Time.now - 100000
+      eds.release_access_node = Nokogiri::XML(release_access) {|config|config.default_xml.noblanks}
+      embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config|config.default_xml.noblanks}
+      embargo_item.release_20_pct_vis_embargo('application:embargo-release')
+    end
+
+    it "sets the embargo status to released" do
+      eds.twenty_pct_status.should == 'released'
+    end
+
+    context "rightsMetadata modifications" do
+
+      it "replaces stanford group read access to world read access" do
+        rights = embargo_item.datastreams['rightsMetadata'].ng_xml
+
+        rights.xpath("//rightsMetadata/access[@type='read']").size.should == 1
+        rights.xpath("//rightsMetadata/access[@type='discover']").size.should == 1
+        rights.xpath("//rightsMetadata/access[@type='read']/machine/world").size.should == 1
+      end
+
+      it "marks the datastream as dirty" do
+        embargo_item.datastreams['rightsMetadata'].should be_dirty
+      end
+    end
+
+    it "writes 'embargo released' to event history" do
+      events = embargo_item.datastreams['events']
+      events.find_events_by_type("embargo") do |who, timestamp, message|
+        who.should == 'application:embargo-release'
+        message.should == "20% Visibility Embargo released"
+      end
+    end
+  end
+
+  describe '#update_embargo' do
+    before(:each) do
       @embargo_item = EmbargoedItem.new
       @eds = @embargo_item.datastreams['embargoMetadata']
       @eds.status = 'embargoed'
       @eds.release_date = Time.now - 100000
-      @release_access = <<-EOXML
-      <releaseAccess>
-        <access type="read">
-          <machine>
-            <world/>
-          </machine>
-        </access>
-        <access type="read">
-          <file id="restricted.doc"/>
-          <machine>
-            <group>stanford</group>
-          </machine>
-        </access>
-      </releaseAccess>
-      EOXML
-      @eds.release_access_node = Nokogiri::XML(@release_access) {|config|config.default_xml.noblanks}
+      @eds.release_access_node = Nokogiri::XML(release_access) {|config|config.default_xml.noblanks}
 
-      rights_xml = <<-EOXML
-          <rightsMetadata objectId="druid:rt923jk342">
-            <copyright>
-              <human>(c) Copyright [conferral year] by [student name]</human>
-            </copyright>
-            <access type="discover">
-              <machine>
-                <world />
-              </machine>
-            </access>
-            <access type="read">
-              <machine>
-                <group>stanford</group>
-                <embargoReleaseDate>2011-10-08</embargoReleaseDate>
-              </machine>
-            </access>
-            <use>
-              <machine type="creativeCommons" type="code">value</machine>
-            <use>
-          </rightsMetadata>
-      EOXML
-			ActiveFedora::NokogiriDatastream.any_instance.stub(:save).and_return(true)
-			@embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config|config.default_xml.noblanks}
-	end
-	it 'should update the embargo date' do
-		  old_embargo_date=@embargo_item.embargoMetadata.release_date
-			@embargo_item.update_embargo(Time.now + 1.month)
-			(@embargo_item.embargoMetadata.release_date == old_embargo_date).should == false
-		end
-		it 'should raise an error if the item isnt embargoed' do
+      ActiveFedora::NokogiriDatastream.any_instance.stub(:save).and_return(true)
+      @embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config|config.default_xml.noblanks}
+    end
 
+    it 'should update the embargo date' do
+      old_embargo_date=@embargo_item.embargoMetadata.release_date
+      @embargo_item.update_embargo(Time.now + 1.month)
+      (@embargo_item.embargoMetadata.release_date == old_embargo_date).should == false
+    end
+
+    it 'should raise an error if the item isnt embargoed' do
       @embargo_item.release_embargo('application:embargo-release')
-			lambda{@embargo_item.update_embargo(Time.now + 1.month)}.should raise_error
-		end
-		it 'should raise an exception if the new date is in the past' do
-			lambda{@embargo_item.update_embargo(1.month.ago)}.should raise_error
-		end
-		end
-	end
+      lambda{@embargo_item.update_embargo(Time.now + 1.month)}.should raise_error
+    end
+
+    it 'should raise an exception if the new date is in the past' do
+      lambda{@embargo_item.update_embargo(1.month.ago)}.should raise_error
+    end
+  end
+end
