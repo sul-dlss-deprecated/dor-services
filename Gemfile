@@ -13,5 +13,3 @@ end
 
 # Dependencies are defined in dor-services.gemspec
 gemspec
-
-gem "active-fedora", :path => '../active_fedora'
