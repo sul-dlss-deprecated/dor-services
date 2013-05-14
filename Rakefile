@@ -21,14 +21,14 @@ end
 RSpec::Core::RakeTask.new(:functional) do |spec|
 #  spec.libs << 'lib' << 'spec' << 'test'
   spec.pattern = 'spec/**/*_spec.rb', 'test/**/*.rb'
-  spec.rcov = true
-  spec.rcov_opts = %w{--exclude spec\/*,gems\/*,ruby\/* --aggregate coverage.data}
+  #spec.rcov = true
+  #spec.rcov_opts = %w{--exclude spec\/*,gems\/*,ruby\/* --aggregate coverage.data}
 end
 
 RSpec::Core::RakeTask.new(:unit) do |spec|
 #  spec.libs << 'lib' << 'spec'  
   spec.pattern = 'test/**/*.rb'
-  spec.rcov = true
+  #spec.rcov = true
 end
 
 task :rcov => ["functional"] do
