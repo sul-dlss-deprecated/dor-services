@@ -252,7 +252,7 @@ module Dor
       end
     end
     def agreement=(val)
-      self.agreement_object = ActiveFedora::Base.find val.to_s, :cast => true
+      self.agreement_object = Dor::Item.find val.to_s, :cast => true
     end
   end
 end
