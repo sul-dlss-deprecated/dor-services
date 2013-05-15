@@ -39,7 +39,7 @@ module Workflow
     def error_message ; @attrs['errorMessage']  ; end
     def prerequisite  ; @attrs['prerequisite']  ; end
     def status        ; @attrs['status']        ; end
-
+    def note          ; @attrs['note']          ; end
     def completed?    ; self.status == 'completed' ; end
     def error?        ; self.status == 'error'     ; end
     def waiting?      ; self.status == 'waiting'   ; end
