@@ -74,6 +74,8 @@ module Workflow
       
       processes.each do |process|
         if process.status.present?
+          
+          add_solr_value(solr_doc, 'wf_error', "#{wf_name}:#{process.name}:#{process.error_message}") if process.error_message #index the error message without the druid so we hopefully get some overlap
           add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}", :string, [:facetable])
           add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}:#{process.name}", :string, [:facetable])
           add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}", :string, [:facetable])
