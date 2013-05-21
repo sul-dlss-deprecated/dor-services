@@ -154,6 +154,7 @@ module Dor
     #Set the rights in default object rights
     #@param rights [String] Stanford, World, Dark, or None
     def default_rights=(rights)
+      rights=rights.downcase
       ds = self.defaultObjectRights
       rights_xml=ds.ng_xml
       rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
@@ -182,7 +183,7 @@ module Dor
           node.add_child(machine_node)
           machine_node.add_child(group_node)
         end
-        if rights=='none'
+        if rights=='none' || rights == 'dark'
           none_node=Nokogiri::XML::Node.new('none',rights_xml)
           node.add_child(machine_node)
           machine_node.add_child(none_node)

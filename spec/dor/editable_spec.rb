@@ -175,6 +175,19 @@ describe Dor::Editable do
     it 'shouldnt fail on an item with an empty datastream' do
       @empty_item.desc_metadata_format.should == nil
     end
+    it 'should set dark correctly' do
+      @item.default_rights = 'dark'
+      @item.default_rights.should == 'Dark'
+    end
+    it 'setters should be case insensitive' do
+      @item.default_rights = 'Dark'
+      @item.default_rights.should == 'Dark'
+    end
+    it 'should set read rights to none for dark' do
+      @item.default_rights = 'Dark'
+      xml=@item.datastreams['defaultObjectRights'].ng_xml
+      xml.search('//rightsMetadata/access[@type=\'read\']/machine/none').length.should == 1
+    end
   end
   describe 'desc_metadata_format=' do
     it 'should set the desc metadata format' do
