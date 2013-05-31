@@ -1,7 +1,7 @@
 require 'rest-client'
 
 module Dor
-  
+
   # Methods to create and update workflow
   #
   # ==== Required Constants
@@ -10,10 +10,10 @@ module Dor
   module WorkflowService
 
     Config.declare(:workflow) { url nil }
-  
+
     class << self
       # Creates a workflow for a given object in the repository.  If this particular workflow for this objects exists,
-      # it will replace the old workflow with wf_xml passed to this method.  You have the option of creating a datastream or not.     
+      # it will replace the old workflow with wf_xml passed to this method.  You have the option of creating a datastream or not.
       # Returns true on success.  Caller must handle any exceptions
       #
       # == Parameters
@@ -24,22 +24,22 @@ module Dor
       # - <B>opts</b> - Options Hash where you can set
       #       :create_ds - If true, a workflow datastream will be created in Fedora.  Set to false if you do not want a datastream to be created
       #   If you do not pass in an <b>opts</b> Hash, then :create_ds is set to true by default
-      # 
+      #
       def create_workflow(repo, druid, workflow_name, wf_xml, opts = {:create_ds => true})
-        workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow_name}"].put(wf_xml, :content_type => 'application/xml', 
+        workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow_name}"].put(wf_xml, :content_type => 'application/xml',
                                                                                      :params => {'create-ds' => opts[:create_ds] })
         return true
       end
-  
-      # Updates the status of one step in a workflow.      
+
+      # Updates the status of one step in a workflow.
       # Returns true on success.  Caller must handle any exceptions
       #
       # == Required Parameters
       # - <b>repo</b> - The repository the object resides in.  The service recoginzes "dor" and "sdr" at the moment
       # - <b>druid</b> - The id of the object
-      # - <b>workflow_name</b> - The name of the workflow 
+      # - <b>workflow_name</b> - The name of the workflow
       # - <b>status</b> - The status that you want to set.  Typical statuses are 'waiting', 'completed', 'error', but could be any string
-      # 
+      #
       # == Optional Parameters
       # - <b>elapsed</b> - The number of seconds it took to complete this step. Can have a decimal.  Is set to 0 if not passed in.
       # - <b>lifecycle</b> - Bookeeping label for this particular workflow step.  Examples are: 'registered', 'shelved'
@@ -48,12 +48,12 @@ module Dor
       # The method does an HTTP PUT to the URL defined in Dor::WF_URI.  As an example:
       #   PUT "/dor/objects/pid:123/workflows/GoogleScannedWF/convert"
       #   <process name=\"convert\" status=\"completed\" />"
-      def update_workflow_status(repo, druid, workflow, process, status, elapsed = 0, lifecycle = nil)
-        xml = create_process_xml(:name => process, :status => status, :elapsed => elapsed.to_s, :lifecycle => lifecycle)
+      def update_workflow_status(repo, druid, workflow, process, status, elapsed = 0, lifecycle = nil, note = nil)
+        xml = create_process_xml(:name => process, :status => status, :elapsed => elapsed.to_s, :lifecycle => lifecycle, :note => note)
         workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow}/#{process}"].put(xml, :content_type => 'application/xml')
         return true
       end
-  
+
       #
       # Retrieves the process status of the given workflow for the given object identifier
       #
@@ -61,24 +61,24 @@ module Dor
         workflow_md = workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow}"].get
         doc = Nokogiri::XML(workflow_md)
         raise Exception.new("Unable to parse response:\n#{workflow_md}") if(doc.root.nil?)
-    
+
         status = doc.root.at_xpath("//process[@name='#{process}']/@status").content
         return status
       end
-  
+
       def get_workflow_xml(repo, druid, workflow)
         workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow}"].get
-      end    
+      end
 
-      # Updates the status of one step in a workflow to error.      
+      # Updates the status of one step in a workflow to error.
       # Returns true on success.  Caller must handle any exceptions
       #
       # == Required Parameters
       # - <b>repo</b> - The repository the object resides in.  The service recoginzes "dor" and "sdr" at the moment
       # - <b>druid</b> - The id of the object
-      # - <b>workflow_name</b> - The name of the workflow 
+      # - <b>workflow_name</b> - The name of the workflow
       # - <b>error_msg</b> - The error message.  Ideally, this is a brief message describing the error
-      # 
+      #
       # == Optional Parameters
       # - <b>error_txt</b> - A slot to hold more information about the error, like a full stacktrace
       #
@@ -91,7 +91,7 @@ module Dor
         workflow_resource["#{repo}/objects/#{druid}/workflows/#{workflow}/#{process}"].put(xml, :content_type => 'application/xml')
         return true
       end
-      
+
 #      private
       def create_process_xml(params)
         builder = Nokogiri::XML::Builder.new do |xml|
@@ -100,7 +100,7 @@ module Dor
         end
         return builder.to_xml
       end
-      
+
       def workflow_resource
         RestClient::Resource.new(Config.workflow.url,
         :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(File.read(Config.fedora.cert_file)),

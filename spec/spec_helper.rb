@@ -10,7 +10,7 @@ require 'dor-services'
 require 'ruby-debug'
 
 Spec::Runner.configure do |config|
-  
+
 end
 
 module Kernel
@@ -35,4 +35,14 @@ end
 Rails = Object.new unless defined? Rails
 # Rails = Object.new unless(class_exists? 'Rails')
 
-require 'dor_config'
+Dor::Config.configure do
+  workflow.url 'http://lyberservices-dev.stanford.edu/workflow'
+
+  fedora do
+    url 'https://fedoraAdmin:fedoraAdmin@dor-dev.stanford.edu/fedora'
+    cert_file '/Users/wmene/dev/afsgit/lyberteam/etd-robots/config/certs/dlss-dev-test.crt'
+    key_file '/Users/wmene/dev/afsgit/lyberteam/etd-robots/config/certs/dlss-dev-test.key'
+    key_pass ''
+  end
+
+end
