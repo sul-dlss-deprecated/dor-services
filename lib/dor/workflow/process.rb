@@ -41,6 +41,7 @@ module Workflow
     def status        ; @attrs['status']        ; end
     def note          ; @attrs['note']          ; end
     def version       ; @attrs['version']       ; end
+    def priority      ; @attrs['priority']      ; end
     def completed?    ; self.status == 'completed' ; end
     def error?        ; self.status == 'error'     ; end
     def waiting?      ; self.status == 'waiting'   ; end

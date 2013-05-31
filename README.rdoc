@@ -315,6 +315,7 @@ Development and release process:
 - <b>4.0.0</b> ActiveFedora 5 and ruby 1.9.3
 - <b>4.0.1</b> Index accessioning errors, expose workflow notes
 - <b>4.0.2</b> APO rights work with capitalization
+- <b>4.0.5</b> Support for workflow priority
 == Copyright
 
 Copyright (c) 2013 Stanford University Library. See LICENSE for details.
