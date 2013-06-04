@@ -101,7 +101,7 @@ module Dor
           end
         end
       end
-    end 
+
     
 
       # Fix for ActiveFedora 3.3 to ensure all date fields are properly formatted as UTC XML Schema datetime strings
