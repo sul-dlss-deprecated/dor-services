@@ -26,7 +26,7 @@ module Dor
     def self.xml_template
       Nokogiri::XML::Builder.new do |xml|
         xml.rightsMetadata{
-          xml.access(:type => 'discovery'){
+          xml.access(:type => 'discover'){
             xml.machine{
               xml.world
             }

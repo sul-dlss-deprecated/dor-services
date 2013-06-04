@@ -73,7 +73,11 @@ module Dor
           druid=druid.gsub('info:fedora/','')
           begin
             collection_object=Dor.find(druid)
-            add_solr_value(solr_doc, "collection_title", collection_object.label, :string, [:searchable, :facetable])
+            if collection_object.tags.include? 'Project : Hydrus'
+              add_solr_value(solr_doc, "hydrus_collection_title", collection_object.label, :string, [:searchable, :facetable])
+            else
+              add_solr_value(solr_doc, "collection_title", collection_object.label, :string, [:searchable, :facetable])
+            end
           rescue
             add_solr_value(solr_doc, "collection_title", druid, :string, [:searchable, :facetable])
           end
@@ -87,12 +91,18 @@ module Dor
           druid=druid.gsub('info:fedora/','')
           begin
             apo_object=Dor.find(druid)
-            add_solr_value(solr_doc, "apo_title", apo_object.label, :string, [:searchable, :facetable])
+            if apo_object.tags.include? 'Project : Hydrus'
+              add_solr_value(solr_doc, "hydrus_apo_title", apo_object.label, :string, [:searchable, :facetable])
+            else
+              add_solr_value(solr_doc, "apo_title", apo_object.label, :string, [:searchable, :facetable])
+            end
           rescue
             add_solr_value(solr_doc, "apo_title", druid, :string, [:searchable, :facetable])
           end
         end
       end
+    end 
+    
 
       # Fix for ActiveFedora 3.3 to ensure all date fields are properly formatted as UTC XML Schema datetime strings
       solr_doc.each_pair { |k,v| 
