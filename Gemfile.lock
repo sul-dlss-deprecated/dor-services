@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dor-services (4.0.6)
+    dor-services (4.1.0)
       active-fedora (~> 5.6, >= 5.6.3)
       confstruct (>= 0.2.2)
       dor-workflow-service (~> 1.3)
