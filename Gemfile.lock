@@ -1,10 +1,10 @@
 PATH
   remote: .
   specs:
-    dor-services (4.0.5)
+    dor-services (4.0.6)
       active-fedora (~> 5.6, >= 5.6.3)
       confstruct (>= 0.2.2)
-      dor-workflow-service (>= 1.2.1)
+      dor-workflow-service (~> 1.3)
       druid-tools (>= 0.2.3)
       equivalent-xml (>= 0.2.2)
       json
@@ -70,7 +70,7 @@ GEM
       activesupport
     diff-lcs (1.2.4)
     docopt (0.5.0)
-    dor-workflow-service (1.3.0)
+    dor-workflow-service (1.3.1)
       activesupport
       confstruct
       nokogiri
@@ -85,7 +85,7 @@ GEM
     happymapper (0.4.0)
       libxml-ruby (~> 2.0)
     hashery (2.1.0)
-    hooks (0.2.2)
+    hooks (0.3.1)
     i18n (0.6.1)
     jhove-service (1.0.3)
       nokogiri (>= 1.4.3.1)
@@ -110,7 +110,7 @@ GEM
       json
       nokogiri
       systemu
-    multi_json (1.7.5)
+    multi_json (1.7.6)
     net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (2.6.7)
@@ -163,13 +163,13 @@ GEM
     ruby-debug-base (0.10.4)
       linecache (>= 0.3)
     ruby-graphviz (1.0.9)
-    rubydora (1.6.4)
+    rubydora (1.6.5)
       activemodel
       activesupport
       deprecation
       equivalent-xml
       fastercsv
-      hooks (~> 0.2.2)
+      hooks (~> 0.3.0)
       mime-types
       nokogiri
       rest-client
