@@ -6,6 +6,7 @@ module Dor
     include Describable
     include Publishable
     include Versionable
+    include Discoverable
 
     has_many :members, :property => :is_member_of_collection, :inbound => true
     has_object_type 'collection'
