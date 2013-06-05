@@ -24,7 +24,7 @@ module Dor
           :sw_author_7xx_search_facet_facet => stanford_mods_record.sw_addl_authors,
           :sw_author_person_facet_facet => stanford_mods_record.sw_person_authors,
           :sw_author_other_facet_facet => stanford_mods_record.sw_impersonal_authors,
-          :sw_author_sort_facet => stanford_mods_record.sw_sort_author,
+          #:sw_author_sort_facet => stanford_mods_record.sw_sort_author,
           :sw_author_corp_display_facet => stanford_mods_record.sw_corporate_authors,
           :sw_author_meeting_display_facet => stanford_mods_record.sw_meeting_authors,
           :sw_author_person_display_facet => stanford_mods_record.sw_person_authors,
