@@ -6,8 +6,9 @@ coverage.data
 pkg
 rdoc
 .bundle
-Gemfile.lock
 .idea
 spec/fixtures/export
 .rspec
+.ruby-gemset
+.ruby-version
 

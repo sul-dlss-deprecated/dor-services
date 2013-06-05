@@ -19,15 +19,15 @@ describe Dor::WorkflowDefinitionDs do
         </workflow-def>
     EOF
   }
-  
-  let(:ds) { ds = Dor::WorkflowDefinitionDs.from_xml(dsxml) }
-  
+
+  let(:ds) { Dor::WorkflowDefinitionDs.from_xml(dsxml) }
+
   context "Marshalling to and from a Fedora Datastream" do
     it "creates itself from xml" do
       ds.name.should == 'accessionWF'
-    end  
+    end
   end
-  
+
   describe "#initial_workflow" do
     it "creates workflow xml from the definition in its content" do
       expected =<<-EOXML
@@ -40,5 +40,5 @@ describe Dor::WorkflowDefinitionDs do
       ds.initial_workflow.should be_equivalent_to(expected)
     end
   end
-  
+
 end

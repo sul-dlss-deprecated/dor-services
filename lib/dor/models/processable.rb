@@ -187,7 +187,7 @@ module Dor
       rescue
       end
       current_version_num=current_version.to_i
-      
+
       if self.respond_to?('versionMetadata')
         #add an entry with version id, tag and description for each version
         while current_version_num > 0
@@ -195,7 +195,7 @@ module Dor
           current_version_num -= 1
         end
       end
-      
+
       self.milestones.each do |milestone|
         timestamp = milestone[:at].utc.xmlschema
         sortable_milestones[milestone[:milestone]] ||= []
@@ -235,11 +235,15 @@ module Dor
     end
 
     # Initilizes workflow for the object in the workflow service
+    #  It will set the priorty of the new workflow to the current_priority if it is > 0
     # @param [String] name of the workflow to be initialized
     # @param [String] repo name of the repository to create workflow for
     # @param [Boolean] create_ds create a 'workflows' datastream in Fedora for the object
     def initialize_workflow(name, repo='dor', create_ds=true)
-      Dor::WorkflowService.create_workflow(repo, self.pid, name, Dor::WorkflowObject.initial_workflow(name), :create_ds => create_ds)
+      priority = workflows.current_priority
+      opts = { :create_ds => create_ds }
+      opts[:priority] = priority if(priority > 0)
+      Dor::WorkflowService.create_workflow(repo, self.pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
     end
   end
 end
