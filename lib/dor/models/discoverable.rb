@@ -3,7 +3,9 @@ module Dor
     extend ActiveSupport::Concern
     #index gryphondor fields
     require 'stanford-mods'
-    def to_solr doc
+		def to_solr(solr_doc=Hash.new, *args)
+			super solr_doc, *args
+    
       if self.descMetadata and not self.descMetadata.new?
         stanford_mods_record=Stanford::Mods::Record.new
         stanford_mods_record.from_str(self.descMetadata.ng_xml.to_s)
@@ -54,10 +56,10 @@ module Dor
       
         }
         if doc_hash
-          doc = doc.merge(doc_hash)
+          solr_doc = doc.merge(doc_hash)
         end
       end
-      doc
+      solr_doc
     end
   end
 end
