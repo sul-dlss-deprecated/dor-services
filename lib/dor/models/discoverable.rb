@@ -40,7 +40,7 @@ module Dor
            :sw_geographic_facet_facet => stanford_mods_record.geographic_facet,
            :sw_era_facet_facet => stanford_mods_record.era_facet,
 
-          :sw_language => stanford_mods_record.sw_language_facet,
+          :sw_language_facet => stanford_mods_record.sw_language_facet,
           #:sw_physical =>  stanford_mods_record.term_values([:sw_physical_description, :sw_extent]),
           #:sw_summary_search_facet_facet => stanford_mods_record.term_values(:sw_abstract),
           #:sw_toc_search_facet_facet => stanford_mods_record.term_values(:sw_tableOfContents),
