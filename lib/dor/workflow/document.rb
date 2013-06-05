@@ -3,7 +3,7 @@ module Workflow
   class Document
     include SolrDocHelper
     include OM::XML::Document
-    
+
     set_terminology do |t|
       t.root(:path => 'workflow')
       t.repository(:path=>{:attribute => "repository"})
@@ -17,19 +17,20 @@ module Workflow
         t.attempts(:path=>{:attribute=>"attempts"}, :index_as => [:not_searchable])
       }
     end
-    
+
     def initialize node
       self.ng_xml = Nokogiri::XML(node)
     end
     #is this an incomplete workflow with steps that have a priority > 0
     def expedited?
-      processes.each do |proc|
-        if not proc.completed? and proc.priority.to_i > 0
-          return true
-        end
-      end
-      false
+      processes.any? { |proc| !proc.completed? && proc.priority.to_i > 0 }
     end
+
+    # @return [Integer] value of the first > 0 priority.  Defaults to 0
+    def priority
+      processes.map {|proc| proc.priority.to_i }.detect(0) {|p| p > 0}
+    end
+
     def definition
       @definition ||= begin
         wfo = Dor::WorkflowObject.find_by_name(self.workflowId.first)
@@ -49,7 +50,7 @@ module Workflow
     def [](value)
       self.processes.find { |p| p.name == value }
     end
-    
+
     def processes
       #if the workflow service didnt return any processes, dont return any processes from the reified wf
       if ng_xml.search("/workflow/process").length == 0
@@ -62,7 +63,7 @@ module Workflow
           process
         end
       else
-        self.find_by_terms(:workflow, :process).collect do |x| 
+        self.find_by_terms(:workflow, :process).collect do |x|
           pnode = Dor::Workflow::Process.new(self.repository, self.workflowId, {})
           pnode.update!(x,self)
           pnode
@@ -79,10 +80,10 @@ module Workflow
       status = processes.empty? ? 'empty' : (processes.all?(&:completed?) ? 'completed' : 'active')
       errors = processes.select(&:error?).count
       add_solr_value(solr_doc, 'workflow_status', [wf_name,status,errors,repo].join('|'), :string, [:displayable])
-      
+
       processes.each do |process|
         if process.status.present?
-          
+
           add_solr_value(solr_doc, 'wf_error', "#{wf_name}:#{process.name}:#{process.error_message}", :string, [:facetable,:displayable]) if process.error_message #index the error message without the druid so we hopefully get some overlap
           add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}", :string, [:facetable])
           add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}:#{process.name}", :string, [:facetable])
@@ -100,15 +101,15 @@ module Workflow
           end
         end
       end
-      
+
       solr_doc['wf_wps_facet'].uniq!    if solr_doc['wf_wps_facet']
       solr_doc['wf_wsp_facet'].uniq!    if solr_doc['wf_wsp_facet']
       solr_doc['wf_swp_facet'].uniq!    if solr_doc['wf_swp_facet']
       solr_doc['workflow_status'].uniq! if solr_doc['workflow_status']
-      
+
       solr_doc
     end
-    
+
     def inspect
       "#<#{self.class.name}:#{self.object_id}>"
     end
