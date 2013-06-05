@@ -56,7 +56,7 @@ module Dor
       
         }
         if doc_hash
-          solr_doc = doc.merge(doc_hash)
+          solr_doc = solr_doc.merge(doc_hash)
         end
       end
       solr_doc
