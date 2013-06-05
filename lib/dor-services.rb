@@ -113,6 +113,7 @@ module Dor
   autoload :Versionable, 'dor/models/versionable'
   autoload :Contentable, 'dor/models/contentable'
   autoload :Editable, 'dor/models/editable'
+  autoload :Discoverable, 'dor/models/discoverable'
 
   
   # ActiveFedora Classes

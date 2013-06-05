@@ -13,6 +13,7 @@ module Dor
     include Assembleable
     include Versionable
     include Contentable
+    include Discoverable
     
   end
   
