@@ -26,7 +26,8 @@ module Workflow
           repo = (p['repository'].nil? or p['repository'] == @repo) ? nil : p['repository']
           wf = (p['workflow'].nil? or p['workflow'] == @workflow) ? nil : p['workflow']
           [repo,wf,p.text.to_s].compact.join(':')
-        }
+        },
+        'priority' => node['priority'] ? node['priority'].to_i : 0
       }
     end
 
@@ -45,6 +46,11 @@ module Workflow
     def completed?    ; self.status == 'completed' ; end
     def error?        ; self.status == 'error'     ; end
     def waiting?      ; self.status == 'waiting'   ; end
+
+    def archived?
+      return true if(@attrs['archived'] =~ /true$/i)
+      return false
+    end
 
     def ready?
       self.waiting? and (not self.prerequisite.nil?) and self.prerequisite.all? { |pr| (prq = self.owner[pr]) && prq.completed? }
