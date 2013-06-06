@@ -21,7 +21,15 @@ module Workflow
     def initialize node
       self.ng_xml = Nokogiri::XML(node)
     end
-    
+    #is this an incomplete workflow with steps that have a priority > 0
+    def expedited?
+      processes.each do |proc|
+        if not proc.completed? and proc.priority.to_i > 0
+          return true
+        end
+      end
+      false
+    end
     def definition
       @definition ||= begin
         wfo = Dor::WorkflowObject.find_by_name(self.workflowId.first)
