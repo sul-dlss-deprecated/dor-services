@@ -240,7 +240,7 @@ module Dor
     # @param [String] repo name of the repository to create workflow for
     # @param [Boolean] create_ds create a 'workflows' datastream in Fedora for the object
     def initialize_workflow(name, repo='dor', create_ds=true, priority=0)
-      priority = workflows.current_priority
+      priority = workflows.current_priority if priority == 0
       opts = { :create_ds => create_ds }
       opts[:priority] = priority if(priority > 0)
       Dor::WorkflowService.create_workflow(repo, self.pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
