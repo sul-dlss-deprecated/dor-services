@@ -10,6 +10,7 @@ module Dor
         stanford_mods_record=Stanford::Mods::Record.new
         stanford_mods_record.from_str(self.descMetadata.ng_xml.to_s)
         doc_hash = { 
+          :sw_format_facet => stanford_mods_record.format,
           # title fields
           :sw_title_245a_search_facet_facet => stanford_mods_record.sw_short_title,
           :sw_title_245_search_facet_facet => stanford_mods_record.sw_full_title,

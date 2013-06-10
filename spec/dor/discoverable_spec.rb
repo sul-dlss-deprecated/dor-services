@@ -65,6 +65,10 @@ describe 'Dor::Discoverable' do
       @item.to_solr({})[:sw_title_full_display_facet].should == 'San Francisco, Cal.'
       
     end
+    it 'should include translated format' do
+      doc_hash=@item.to_solr({})
+      doc_hash[:sw_format_facet].should == ['Image']
+    end
     
   end
 end
