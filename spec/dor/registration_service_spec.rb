@@ -287,5 +287,12 @@ describe Dor::RegistrationService do
       Dor::SearchService.should_receive(:query_by_id).with('barcode:9191919191').and_return([@pid])
       lambda { Dor::RegistrationService.register_object(@params) }.should raise_error(Dor::DuplicateIdError)
     end
+    it 'should set the workflow priority if one was passed in' do
+      Dor::Item.any_instance.should_receive(:initialize_workflow).with('digitizationWF','dor',false,50)
+      Dor::SearchService.stub(:query_by_id).and_return([nil])
+      @params[:workflow_priority] = 50
+      @params[:initiate_workflow] = 'digitizationWF'
+      Dor::RegistrationService.register_object(@params)
+    end
   end
 end
