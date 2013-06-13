@@ -20,13 +20,9 @@ module Dor
         opts[:assume_accessioned] ||
         Dor::WorkflowService.get_lifecycle('dor', pid, 'accessioned')
 
-      if(new_version_open?)
-        if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'submitted'))
-          raise Dor::Exception, 'Recently closed version still needs to be accessioned'
-        else
-          raise Dor::Exception, 'Object already opened for versioning'
-        end
-      end
+      raise Dor::Exception, 'Object already opened for versioning' if(new_version_open?)
+      raise Dor::Exception, 'Object currently being accessioned' if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'submitted'))
+
 
       ds = datastreams['versionMetadata']
       ds.increment_version

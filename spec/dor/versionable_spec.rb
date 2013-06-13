@@ -26,6 +26,7 @@ describe Dor::Versionable do
       before(:each) do
         Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
         Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
+        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(nil)
         obj.should_receive(:initialize_workflow).with('versioningWF')
         obj.stub!(:new_object?).and_return(false)
         ds.should_receive(:save)
@@ -62,14 +63,14 @@ describe Dor::Versionable do
       it "raises an exception if the object has already been opened" do
         Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
         Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(Time.new)
-        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(nil)
         expect { obj.open_new_version }.to raise_error(Dor::Exception, 'Object already opened for versioning')
       end
 
-      it "raises an exception if last version was closed but hasn't finished accessioning" do
+      it "raises an exception if the object is still being accessioned" do
         Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
-        Dor::WorkflowService.should_receive(:get_active_lifecycle).twice.with('dor', dr, /opened|submitted/).and_return(Time.new)
-        expect { obj.open_new_version }.to raise_error(Dor::Exception, 'Recently closed version still needs to be accessioned')
+        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
+        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(Time.new)
+        expect { obj.open_new_version }.to raise_error(Dor::Exception, 'Object currently being accessioned')
       end
     end
   end
