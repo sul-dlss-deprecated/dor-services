@@ -46,6 +46,7 @@ module Workflow
     def completed?    ; self.status == 'completed' ; end
     def error?        ; self.status == 'error'     ; end
     def waiting?      ; self.status == 'waiting'   ; end
+    def date_time     ;@attrs['datetime']       ; end 
 
     def archived?
       return true if(@attrs['archived'] =~ /true$/i)
