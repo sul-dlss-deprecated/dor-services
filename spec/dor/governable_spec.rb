@@ -256,4 +256,14 @@ it 'should add a collection' do
       @item.can_view_metadata?(['dor-people']).should == false
     end
   end
+  describe 'reapplyAdminPolicyObjectDefaults' do
+    it 'should update rightsMetadata from the APO defaultObjectRights' do
+      @item.rightsMetadata.ng_xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length.should == 1
+      @apo = instantiate_fixture("druid_zt570tx3016", Dor::AdminPolicyObject)
+      @item.should_receive(:admin_policy_object).and_return(@apo)
+      @item.reapplyAdminPolicyObjectDefaults
+      @item.rightsMetadata.ng_xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length.should == 0
+      @item.rightsMetadata.ng_xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length.should == 1
+    end
+  end
 end
