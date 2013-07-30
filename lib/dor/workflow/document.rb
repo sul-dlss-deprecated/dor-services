@@ -17,7 +17,7 @@ module Workflow
         t.attempts(:path=>{:attribute=>"attempts"}, :index_as => [:not_searchable])
       }
     end
-
+    @@definitions={}
     def initialize node
       self.ng_xml = Nokogiri::XML(node)
     end
@@ -33,8 +33,14 @@ module Workflow
 
     def definition
       @definition ||= begin
+        if @@definitions.has_key? self.workflowId.first
+          @@definitions[self.workflowId.first]
+        else
         wfo = Dor::WorkflowObject.find_by_name(self.workflowId.first)
-        wfo ? wfo.definition : nil
+        wf_def=wfo ? wfo.definition : nil
+        @@definitions[self.workflowId.first] = wf_def
+        wf_def
+        end
       end
     end
 

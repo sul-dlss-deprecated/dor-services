@@ -72,7 +72,7 @@ module Dor
         if(druid)
           druid=druid.gsub('info:fedora/','')
           begin
-            collection_object=Dor.find(druid)
+            collection_object=Dor::Collection.find(druid)
             if collection_object.tags.include? 'Project : Hydrus'
               add_solr_value(solr_doc, "hydrus_collection_title", collection_object.label, :string, [:searchable, :facetable])
             else

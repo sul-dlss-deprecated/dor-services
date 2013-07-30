@@ -67,7 +67,7 @@ class WorkflowDs < ActiveFedora::NokogiriDatastream
   end
 
   def workflows
-    self.workflow.nodeset.collect { |wf_node| Workflow::Document.new wf_node.to_xml }
+    @workflows ||= self.workflow.nodeset.collect { |wf_node| Workflow::Document.new wf_node.to_xml }
   end
 
   def graph(dir=nil)
