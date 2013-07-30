@@ -6,6 +6,7 @@ describe 'Dor::Discoverable' do
   before :each do
     @item=instantiate_fixture("cj765pw7168", Dor::Item)
     @item.descMetadata.stub(:new?).and_return(false)
+    @item.stub(:milestones).and_return({})
     @item.descMetadata.stub(:ng_xml).and_return(Nokogiri::XML('
     <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
       <titleInfo>
