@@ -30,6 +30,10 @@ module Workflow
     def priority
       processes.map {|proc| proc.priority.to_i }.detect(0) {|p| p > 0}
     end
+    
+    def active?
+      processes.any? { |proc| !proc.version }
+    end
 
     def definition
       @definition ||= begin
