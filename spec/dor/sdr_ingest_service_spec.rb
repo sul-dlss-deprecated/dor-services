@@ -89,7 +89,6 @@ describe Dor::SdrIngestService do
     Dor::SdrIngestService.should_receive(:extract_datastreams).with(dor_item, an_instance_of(DruidTools::Druid)).
         and_return(metadata_dir)
     Dor::SdrIngestService.transfer(dor_item)
-    @fixtures.join('export/dd116zh0343.tar').exist?.should == true
     files = Array.new
     @fixtures.join('export/dd116zh0343').find { |f| files << f.relative_path_from(@fixtures).to_s }
     files.sort.should == [
@@ -134,7 +133,6 @@ describe Dor::SdrIngestService do
     Dor::SdrIngestService.should_receive(:extract_datastreams).with(dor_item, an_instance_of(DruidTools::Druid)).
         and_return(metadata_dir)
     Dor::SdrIngestService.transfer(dor_item)
-    @fixtures.join('export/dd116zh0343.tar').exist?.should == true
     files = Array.new
     @fixtures.join('export/dd116zh0343').find { |f| files << f.relative_path_from(@fixtures).to_s }
     files.sort.should == [
