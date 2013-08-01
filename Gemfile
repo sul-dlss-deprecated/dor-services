@@ -1,7 +1,8 @@
 source :rubygems
 source "http://sul-gems.stanford.edu"
 
-gem "rsolr", :git => "git://github.com/sul-dlss/rsolr.git", :branch => "nokogiri"
+gem "rsolr", "=1.0.9"
+# :git => "git://github.com/sul-dlss/rsolr.git", :branch => "nokogiri"
 gem "ruby-debug", :platform => :ruby_18
 gem "rcov", :platform => :ruby_18
 
