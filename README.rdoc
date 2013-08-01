@@ -318,6 +318,7 @@ Development and release process:
 - <b>4.0.5</b> Support for workflow priority
 - <b>4.1.1</b> Index gryphondor fields into the argo solr index
 - <b>4.1.2</b> Set workflow priority during item registration
+- <b>4.1.7</b> Cache workflow information for faster indexing
 == Copyright
 
 Copyright (c) 2013 Stanford University Library. See LICENSE for details.
