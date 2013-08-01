@@ -37,7 +37,6 @@ module Dor
       bagger.deposit_group('content', content_dir)
       bagger.deposit_group('metadata', metadata_dir)
       bagger.create_tagfiles
-      bagger.create_tarfile
       # Now bootstrap SDR workflow. but do not create the workflows datastream
       dor_item.initialize_workflow('sdrIngestWF', 'sdr', false)
     end

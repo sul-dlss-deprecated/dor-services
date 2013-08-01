@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dor-services (3.25.0)
+    dor-services (3.25.1)
       active-fedora (~> 4.5)
       activesupport (~> 3.0.0)
       confstruct (>= 0.2.2)
