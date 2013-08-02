@@ -38,7 +38,6 @@ Gem::Specification.new do |s|
   s.add_dependency "druid-tools", ">=0.2.3"
   s.add_dependency "moab-versioning", ">=1.2.1"
   s.add_dependency "dor-workflow-service", "~>1.3"
-  s.add_dependency "activesupport", "~>3.0.0"
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects
   s.add_development_dependency "fakeweb"
