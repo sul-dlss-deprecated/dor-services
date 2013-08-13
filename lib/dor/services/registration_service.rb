@@ -92,54 +92,8 @@ module Dor
         end
         if(rights and ['item','collection'].include? object_type  )
           rights_xml=apo_object.defaultObjectRights.ng_xml
-          if rights=='world'
-            rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
-              node.children.remove
-              machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
-              world_node=Nokogiri::XML::Node.new('world',rights_xml)
-              node.add_child(machine_node)
-              machine_node.add_child(world_node)
-            end 
-          end
-          if rights=='stanford'
-            rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
-              node.children.remove
-              machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
-              group_node=Nokogiri::XML::Node.new('group',rights_xml)
-              group_node.content="Stanford"
-              node.add_child(machine_node)
-              machine_node.add_child(group_node)
-              
-            end
-          end
-          if rights=='none'
-            rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
-              node.children.remove
-              machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
-              none_node=Nokogiri::XML::Node.new('none',rights_xml)
-              node.add_child(machine_node)
-              machine_node.add_child(none_node)
-            end
-          end
-          if rights=='dark'
-            rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
-              node.children.remove
-              machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
-              none_node=Nokogiri::XML::Node.new('none',rights_xml)
-              node.add_child(machine_node)
-              machine_node.add_child(none_node)
-            end
-            #also replace the discovery rights with <machine><none/>
-            rights_xml.search('//rightsMetadata/access[@type=\'discover\']').each do |node|
-              node.children.remove
-              machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
-              none_node=Nokogiri::XML::Node.new('none',rights_xml)
-              node.add_child(machine_node)
-              machine_node.add_child(none_node)
-            end
-          end
-          
           new_item.datastreams['rightsMetadata'].content=rights_xml.to_s
+          new_item.set_read_rights(rights)
         end
         #create basic mods from the label
         if(metadata_source=='label')

@@ -27,9 +27,12 @@ describe Dor::Governable do
     it 'should raise an exception if the rights option doesnt match the accepted values' do
       lambda{@item.set_read_rights('"druid:oo201oo0001"','Something')}.should raise_error
     end
-    it 'should raise an exception if the rights metadata stream is empty' do
-      @item.datastreams['rightsMetadata'].ng_xml=''
-      lambda{@item.set_read_rights('World')}.should raise_error
+    it 'should segfault' do
+      doc=Nokogiri::XML('<oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+        <dc:identifier>druid:ab123cd4567</dc:identifier>
+      </oai_dc:dc>')
+      node=doc.xpath('//element').first
+      new_node=doc.root.clone
     end
     it 'should set an item to dark, removing the discovery rights' do
       @item.set_read_rights('dark')
@@ -47,6 +50,54 @@ describe Dor::Governable do
       <access type="read">
       <machine>
       <none/>
+      </machine>
+      </access>
+      <use>
+      <human type="creativecommons">Attribution Share Alike license</human>
+      <machine type="creativecommons">by-sa</machine>
+      </use>
+      </rightsMetadata>
+      XML
+    end
+    it 'should correctly set a dark item to world' do
+      @item.set_read_rights('dark')
+      @item.rightsMetadata.ng_xml.should be_equivalent_to <<-XML
+      <?xml version="1.0"?>
+      <rightsMetadata>
+      <copyright>
+      <human type="copyright">This work is in the Public Domain.</human>
+      </copyright>
+      <access type="discover">
+      <machine>
+      <none/>
+      </machine>
+      </access>
+      <access type="read">
+      <machine>
+      <none/>
+      </machine>
+      </access>
+      <use>
+      <human type="creativecommons">Attribution Share Alike license</human>
+      <machine type="creativecommons">by-sa</machine>
+      </use>
+      </rightsMetadata>
+      XML
+      @item.set_read_rights('world')
+      @item.rightsMetadata.ng_xml.should be_equivalent_to <<-XML
+      <?xml version="1.0"?>
+      <rightsMetadata>
+      <copyright>
+      <human type="copyright">This work is in the Public Domain.</human>
+      </copyright>
+      <access type="discover">
+      <machine>
+      <world/>
+      </machine>
+      </access>
+      <access type="read">
+      <machine>
+      <world/>
       </machine>
       </access>
       <use>

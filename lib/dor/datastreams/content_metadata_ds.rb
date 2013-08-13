@@ -217,6 +217,7 @@ module Dor
         content_file_count=0
         resource_type_counts={}
         resource_count=0
+        preserved_size=0
         first_shelved_image=nil
         add_solr_value(solr_doc, "content_type", doc.root['type'], :string, [:facetable])
         doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
@@ -236,11 +237,15 @@ module Dor
                 first_shelved_image=file['id']
               end
             end
+            if file['preserve'] == 'yes'
+              preserved_size += file['size'].to_i
+            end
           end
         end
         add_solr_value(solr_doc, "content_file_count", content_file_count.to_s, :string, [:searchable, :displayable])
         add_solr_value(solr_doc, "shelved_content_file_count", shelved_file_count.to_s, :string, [:searchable, :displayable])
         add_solr_value(solr_doc, "resource_count", resource_count.to_s, :string, [:searchable, :displayable])
+        add_solr_value(solr_doc, "preserved_size", resource_count.to_s, :string, [:searchable, :displayable])
         resource_type_counts.each do |key, count|
           add_solr_value(solr_doc, key+"_resource_count", count.to_s, :string, [:searchable, :displayable])
         end

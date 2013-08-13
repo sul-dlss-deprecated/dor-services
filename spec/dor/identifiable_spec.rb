@@ -118,6 +118,9 @@ describe Dor::Identifiable do
           </rdf:RDF>'
       item.datastreams['RELS-EXT'].stub(:content).and_return(xml)
       doc=item.to_solr
+      #doc.keys.sort.each do |key|
+      #  puts "#{key} #{doc[key]}"
+      #end
       doc['apo_title_facet'].first.should == 'druid:fg890hi1234'
     end
   end

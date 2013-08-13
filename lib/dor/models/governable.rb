@@ -22,9 +22,7 @@ module Dor
     end
 
     def set_read_rights(rights)
-      if not ['world','stanford','none', 'dark'].include? rights
-        raise "Unknown rights setting \'" + rights
-      end
+      return if not ['world','stanford','none', 'dark'].include? rights
       rights_metadata_ds = self.rightsMetadata
       rights_xml=rights_metadata_ds.ng_xml
       if(rights_xml.search('//rightsMetadata/access[@type=\'read\']').length==0)
