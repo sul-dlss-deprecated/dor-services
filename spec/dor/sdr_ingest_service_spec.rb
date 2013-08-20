@@ -242,6 +242,25 @@ describe Dor::SdrIngestService do
     Dor::SdrIngestService.get_metadata_file_group(metadata_dir)
   end
 
+  specify "SdrIngestService.verify_version_id" do
+    Dor::SdrIngestService.verify_version_id("/mypath/myfile", expected=2, found=2).should == true
+    lambda{Dor::SdrIngestService.verify_version_id("/mypath/myfile", expected=1, found=2)}.should
+      raise_exception("Version mismatch in /mypath/myfile, expected 1, found 2")
+  end
 
+  specify "SdrIngestService.vmfile_version_id" do
+    metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
+    vmfile = metadata_dir.join("versionMetadata.xml")
+    Dor::SdrIngestService.vmfile_version_id(vmfile).should == 2
+  end
 
+  specify "SdrIngestService.verify_pathname" do
+    metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
+    Dor::SdrIngestService.verify_pathname(metadata_dir).should == true
+    vmfile = metadata_dir.join("versionMetadata.xml")
+    Dor::SdrIngestService.verify_pathname(vmfile).should == true
+    badfile = metadata_dir.join("badfile.xml")
+    lambda{Dor::SdrIngestService.verify_pathname(badfile)}.should  raise_exception(/badfile.xml not found/)
+
+  end
 end
