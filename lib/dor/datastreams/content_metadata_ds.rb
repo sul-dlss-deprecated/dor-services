@@ -245,7 +245,7 @@ module Dor
         add_solr_value(solr_doc, "content_file_count", content_file_count.to_s, :string, [:searchable, :displayable])
         add_solr_value(solr_doc, "shelved_content_file_count", shelved_file_count.to_s, :string, [:searchable, :displayable])
         add_solr_value(solr_doc, "resource_count", resource_count.to_s, :string, [:searchable, :displayable])
-        add_solr_value(solr_doc, "preserved_size", resource_count.to_s, :string, [:searchable, :displayable])
+        add_solr_value(solr_doc, "preserved_size", preserved_size.to_s, :string, [:searchable, :displayable])
         resource_type_counts.each do |key, count|
           add_solr_value(solr_doc, key+"_resource_count", count.to_s, :string, [:searchable, :displayable])
         end

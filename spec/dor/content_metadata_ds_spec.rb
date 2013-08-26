@@ -222,6 +222,10 @@ describe Dor::ContentMetadataDS do
   	    doc=@item.contentMetadata.to_solr
   	    doc['first_shelved_image_display'].first.should == 'gw177fc7976_05_0001.jp2'
   	  end
+      it 'should generate a field call preserved_size_display' do
+  	    doc=@item.contentMetadata.to_solr
+  	    doc['preserved_size_t'].first.should == '86774303'
+      end
     end
   describe 'set_content_type' do
     it 'should change the content type and the resource types' do
