@@ -10,6 +10,7 @@ module Dor
     end
     
     DIFF_FILENAME = 'cm_inv_diff'
+    DIFF_QUERY = DIFF_FILENAME.gsub('_', '-')
 
     # Deletes all cm_inv_diff files in the workspace for the Item
     def clear_diff_cache
@@ -53,7 +54,7 @@ module Dor
         query_string = { :subset => subset.to_s }
         query_string[:version] = version.to_s unless version.nil?
         query_string = URI.encode_www_form(query_string)
-        sdr_query = "objects/#{self.pid}/#{DIFF_FILENAME}?#{query_string}"
+        sdr_query = "objects/#{self.pid}/#{DIFF_QUERY}?#{query_string}"
         response = sdr_client[sdr_query].post(current_content, :content_type => 'application/xml')
         # cache response
         File.open(diff_cache, 'w') { |f| f << response }
