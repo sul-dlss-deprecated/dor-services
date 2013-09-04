@@ -179,10 +179,10 @@ module Dor
         ''
       end
     end
-    
+    # @return [String] The description for the specified version, or empty string if there is no description
     def description_for_version(versionId)
       nodes=self.ng_xml.search('//version[@versionId=\''+versionId+'\']')
-      if nodes.length == 1
+      if nodes.length == 1 and  nodes.first.at_xpath('description')
         nodes.first.at_xpath('description').content.to_s
       else
         ''

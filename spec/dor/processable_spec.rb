@@ -177,6 +177,30 @@ describe Dor::Processable do
   		solr_doc['versions_display'].length.should > 1
   		solr_doc['versions_display'].include?("4;2.2.0;Another typo").should == true
     end
+    it 'should handle a missing description for a version' do
+  		dsxml='
+        <versionMetadata objectId="druid:ab123cd4567">
+          <version versionId="1" tag="1.0.0">
+            <description>Initial version</description>
+          </version>
+          <version versionId="2" tag="2.0.0">
+            <description>Replacing main PDF</description>
+          </version>
+          <version versionId="3" tag="2.1.0">
+            <description>Fixed title typo</description>
+          </version>
+          <version versionId="4" tag="2.2.0">
+          </version>
+        </versionMetadata>
+      '
+      @versionMD = Dor::VersionMetadataDS.from_xml(dsxml)
+      @item = instantiate_fixture('druid:ab123cd4567', ProcessableItem)
+  		@item.stub(:versionMetadata).and_return(@versionMD)
+  		solr_doc=@item.to_solr
+  		#the facet field should have a date in it.
+  		solr_doc['versions_display'].length.should > 1
+  		solr_doc['versions_display'].include?("4;2.2.0;").should == true
+    end
   end
   describe 'status' do
   	it 'should generate a status string' do

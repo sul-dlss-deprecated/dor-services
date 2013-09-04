@@ -321,6 +321,7 @@ Development and release process:
 - <b>4.1.7</b> Cache workflow information for faster indexing
 - <b>4.2.0</b> Nokogiri 1.6.0
 - <b>4.2.1</b> Check for versionmetadata datastream when doing sdr-ingest-transfer
+- <b>4.2.3</b> Fix an exception that occured when a version had no description
 == Copyright
 
 Copyright (c) 2013 Stanford University Library. See LICENSE for details.
