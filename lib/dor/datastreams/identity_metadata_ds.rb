@@ -4,7 +4,7 @@ class IdentityMetadataDS < ActiveFedora::NokogiriDatastream
   
   set_terminology do |t|
     t.root(:path=>"identityMetadata")
-    t.objectId
+    t.objectId :index_as => [:searchable]
     t.objectType :index_as => [:searchable, :facetable]
     t.objectLabel
     t.citationCreator
