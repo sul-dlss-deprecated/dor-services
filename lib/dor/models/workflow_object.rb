@@ -23,7 +23,7 @@ module Dor
       return @@xml_cache[name] if(@@xml_cache.include?(name))
 
       wobj = self.find_by_name(name)
-      wf_xml = wobj.generate_intial_workflow
+      wf_xml = wobj.generate_initial_workflow
       @@xml_cache[name] = wf_xml
     end
 
@@ -44,9 +44,11 @@ module Dor
       solr_doc
     end
 
-    def generate_intial_workflow
+    def generate_initial_workflow
       datastreams['workflowDefinition'].initial_workflow
     end
+
+    alias_method :generate_intial_workflow, :generate_initial_workflow
 
   end
 end
