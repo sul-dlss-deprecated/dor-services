@@ -264,7 +264,7 @@ describe 'delete_identifier' do
 end
 describe 'set_desc_metadata_using_label' do
   it 'should create basic mods using the object label' do
-    @obj.datastreams['descMetadata'].content=''
+    @obj.datastreams['descMetadata'].stub(:content).and_return ''
     @obj.set_desc_metadata_using_label()
     @obj.datastreams['descMetadata'].ng_xml.should be_equivalent_to <<-XML
     <?xml version="1.0"?>

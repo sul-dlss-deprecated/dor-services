@@ -50,7 +50,7 @@ describe Dor::RegistrationService do
 
     it "should properly register an object" do
       @params[:collection] = 'druid:something'
-      ActiveFedora::Base.should_receive(:find).with('druid:something').and_return(mock_collection)
+      Dor::Collection.should_receive(:find).with('druid:something').and_return(mock_collection)
       Dor::SearchService.stub(:query_by_id).and_return([])
       Dor::Item.any_instance.should_receive(:update_index).and_return(true)
 
