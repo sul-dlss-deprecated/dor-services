@@ -11,4 +11,5 @@ spec/fixtures/export
 .rspec
 .ruby-gemset
 .ruby-version
+config/dev-console-env.rb
 

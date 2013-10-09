@@ -43,6 +43,18 @@ Development and release process:
 
       rake dlss_release
 
+== Console
+
+You can start a pry session with the dor-services gem loaded by executing the script at
+./bin/console
+
+It will need the following in order to execute:
+./config/dev_console_env.rb
+./config/certs/robots-dor-dev.crt
+./conig/certs/robots-dor-dev.key
+
+You can basically copy the sul-lyberservices-dev/common-accessioning/current/config/environments/development.rb file and the certs from there too
+
 == Releases
 
 - <b>0.1.1</b> Initial release with basic object registration and query_by_id functionality

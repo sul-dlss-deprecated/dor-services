@@ -18,6 +18,7 @@ require 'dor-services'
 require 'foxml_helper'
 require 'equivalent-xml'
 require 'fakeweb'
+require 'pry'
 
 # ::ENABLE_SOLR_UPDATES = true
 
