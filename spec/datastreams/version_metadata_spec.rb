@@ -28,8 +28,9 @@ describe Dor::VersionMetadataDS do
 
 
   let(:ds) {
-    d = Dor::VersionMetadataDS.new mock(:pid => 'druid:ab123cd4567', :new? => false, :repository => mock()), 'versionMetadata'
+    d = Dor::VersionMetadataDS.new double(:pid => 'druid:ab123cd4567', :new? => false, :repository => double()), 'versionMetadata'
     d.stub(:new?).and_return(false)
+    d.stub(:inline?).and_return true
     d.stub(:datastream_content).and_return(first_xml)
     d
   }
@@ -44,7 +45,7 @@ describe Dor::VersionMetadataDS do
     
     it "creates a simple default with #new" do
       ds = Dor::VersionMetadataDS.new nil, 'versionMetadata'
-      ds.stub!(:pid).and_return('druid:ab123cd4567')
+      ds.stub(:pid).and_return('druid:ab123cd4567')
       ds.to_xml.should be_equivalent_to(first_xml)
     end
   end

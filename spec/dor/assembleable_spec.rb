@@ -27,14 +27,14 @@ describe Dor::Assembleable do
     end
 
     before(:each) do
-      ActiveFedora.stub!(:fedora).and_return(stub('frepo').as_null_object)
+      ActiveFedora.stub(:fedora).and_return(double('frepo').as_null_object)
     end
 
   describe "#initialize_workspace" do
 
     before(:each) do
       @ai = AssembleableItem.new
-      @ai.stub!(:pid).and_return('aa123bb7890')
+      @ai.stub(:pid).and_return('aa123bb7890')
       @druid_path = File.join(@temp_workspace, 'aa', '123', 'bb', '7890', 'aa123bb7890')
       FileUtils.rm_rf(File.join(@temp_workspace, 'aa'))
     end

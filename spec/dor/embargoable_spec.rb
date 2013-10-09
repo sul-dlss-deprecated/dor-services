@@ -66,7 +66,7 @@ describe Dor::Embargoable do
   end
 
   before(:each) do
-    ActiveFedora.stub!(:fedora).and_return(stub('frepo').as_null_object)
+    ActiveFedora.stub(:fedora).and_return(double('frepo').as_null_object)
   end
 
   describe "#release_embargo" do

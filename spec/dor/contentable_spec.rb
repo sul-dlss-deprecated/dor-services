@@ -38,8 +38,8 @@ describe Dor::Contentable do
     Dor::Item.stub(:find).and_return(@item)
     file_path=File.dirname(__FILE__) + '/../fixtures/ab123cd4567_descMetadata.xml'
     DruidTools::Druid.any_instance.stub(:path).and_return('file_path/ab123cd4567/ab123cd4567_descMetadata.xml')
-    @sftp=mock(Net::SFTP)
-    @resp=mock(Net::SFTP::Response)
+    @sftp=double(Net::SFTP)
+    @resp=double(Net::SFTP::Response)
     @resp.stub(:code).and_return(123)
     @resp.stub(:message).and_return('sup')
     @sftp.stub(:stat!) do |arg|

@@ -5,7 +5,7 @@ require 'fileutils'
 
 describe Dor::SdrIngestService do
 
-  before(:all) do
+  before(:each) do
     @fixtures=fixtures=Pathname(File.dirname(__FILE__)).join("../fixtures")
     Dor::Config.push! do
       sdr.local_workspace_root fixtures.join("workspace").to_s
@@ -23,7 +23,7 @@ describe Dor::SdrIngestService do
 
   end
   
-  after(:all) do
+  after(:each) do
     Dor::Config.pop!
     if @export_dir.exist? and @export_dir.basename.to_s == 'export'
       @export_dir.rmtree
@@ -44,11 +44,11 @@ describe Dor::SdrIngestService do
   it "can retrieve content of a required metadata datastream" do
     ds_name = 'myMetadata'
     metadata_string = '<metadata/>'
-    mock_datastream = mock('datastream')
+    mock_datastream = double('datastream')
     mock_datastream.should_receive(:new?).and_return(false)
     mock_datastream.should_receive(:content).and_return(metadata_string)
     ds_hash = {ds_name => mock_datastream }
-    mock_item = mock("item")
+    mock_item = double("item")
     mock_item.should_receive(:datastreams).exactly(3).times.and_return(ds_hash)
     result = Dor::SdrIngestService.get_datastream_content(mock_item ,ds_name, 'required')
     result.should eql metadata_string
@@ -57,10 +57,10 @@ describe Dor::SdrIngestService do
   it "can return nil if optional datastream does not exist in the item" do
     ds_name = 'myMetadata'
     metadata_string = '<metadata/>'
-    mock_datastream = mock('datastream')
+    mock_datastream = double('datastream')
     mock_datastream.should_receive(:content).never
     ds_hash = {ds_name => mock_datastream }
-    mock_item = mock("item")
+    mock_item = double("item")
     mock_item.should_receive(:datastreams).and_return(ds_hash)
     result = Dor::SdrIngestService.get_datastream_content(mock_item ,'dummy', 'optional')
     result.should eql nil
@@ -68,18 +68,18 @@ describe Dor::SdrIngestService do
 
   it "can raise exception if required datastream does not exist in the item" do
     ds_name = 'myMetadata'
-    metadata_string = '<metadata/>'
-    mock_datastream = mock('datastream')
+    metadata_string = '<double/>'
+    mock_datastream = double('datastream')
     mock_datastream.should_receive(:content).never
     ds_hash = {ds_name => mock_datastream }
-    mock_item = mock("item")
+    mock_item = double("item")
     mock_item.should_receive(:datastreams).and_return(ds_hash)
     lambda {Dor::SdrIngestService.get_datastream_content(mock_item ,'dummy', 'required')}.should raise_exception
   end
 
   specify "SdrIngestService.transfer with content changes" do
     druid = 'druid:dd116zh0343'
-    dor_item = mock("dor_item")
+    dor_item = double("dor_item")
     dor_item.should_receive(:initialize_workflow).with('sdrIngestWF', 'sdr', false)
     dor_item.stub(:pid).and_return(druid)
     signature_catalog=Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
@@ -120,7 +120,7 @@ describe Dor::SdrIngestService do
 
   specify "SdrIngestService.transfer with no change in content" do
     druid = 'druid:dd116zh0343'
-    dor_item = mock("dor_item")
+    dor_item = double("dor_item")
     dor_item.should_receive(:initialize_workflow).with('sdrIngestWF', 'sdr', false)
     dor_item.stub(:pid).and_return(druid)
     signature_catalog=Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
@@ -165,12 +165,12 @@ describe Dor::SdrIngestService do
   end
 
   specify "SdrIngestService.extract_datastreams" do
-    dor_item = mock("workitem")
-    metadata_dir = mock("metadata dir")
-    workspace = mock("workspace")
+    dor_item = double("workitem")
+    metadata_dir = double("metadata dir")
+    workspace = double("workspace")
     workspace.stub(:path).with("metadata",true).and_return("metadata_dir")
     Pathname.should_receive(:new).with("metadata_dir").and_return(metadata_dir)
-    metadata_file = mock("metadata path")
+    metadata_file = double("metadata path")
     metadata_file.stub(:exist?).and_return(false)
     metadata_dir.should_receive(:join).at_least(5).times.and_return(metadata_file)
     metadata_file.should_receive(:open).at_least(5).times
@@ -188,7 +188,7 @@ describe Dor::SdrIngestService do
   end
 
   specify "SdrIngestService.get_version_inventory" do
-    metadata_dir = mock(Pathname)
+    metadata_dir = double(Pathname)
     druid = 'druid:ab123cd4567'
     version_id = 2
     version_inventory = Moab::FileInventory.new()
@@ -235,8 +235,8 @@ describe Dor::SdrIngestService do
   end
 
   specify "SdrIngestService.get_metadata_file_group" do
-    metadata_dir = mock(Pathname)
-    file_group = mock(Moab::FileGroup)
+    metadata_dir = double(Pathname)
+    file_group = double(Moab::FileGroup)
     FileGroup.should_receive(:new).with({:group_id=>'metadata'}).and_return(file_group)
     file_group.should_receive(:group_from_directory).with(metadata_dir)
     Dor::SdrIngestService.get_metadata_file_group(metadata_dir)

@@ -1,8 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Dor::Editable do
-  before(:all) { stub_config   }
-  after(:all)  { unstub_config }
+  before(:each) { stub_config   }
+  after(:each)  { unstub_config }
   before :each do
     @item = instantiate_fixture("druid_zt570tx3016", Dor::AdminPolicyObject)
     @empty_item = instantiate_fixture("pw570tx3016", Dor::AdminPolicyObject)
@@ -240,11 +240,12 @@ describe Dor::Editable do
   end
   describe 'agreement=' do
     it 'should work' do
-      agr=mock()
+      agr=double()
       agr.stub(:pid).and_return('druid:dd327qr3670')
       @item.stub(:agreement_object).and_return([agr])
       rels_ext_ds=@item.datastreams['RELS-EXT']
-      ActiveFedora::Base.should_receive(:find).with('druid:new_agreement', :cast => true).and_return(mock_agreement)
+      ActiveFedora::Base.should_receive(:find_one).with('druid:new_agreement', true).and_return(mock_agreement)
+      
       @item.agreement = 'druid:new_agreement'
       xml=Nokogiri::XML(rels_ext_ds.to_rels_ext.to_s)
       xml.should be_equivalent_to <<-XML

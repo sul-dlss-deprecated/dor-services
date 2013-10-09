@@ -28,7 +28,7 @@ describe Dor::Preservable do
       druid = 'druid:aa123bb4567'
       obj = PreservableItem.new
       obj.stub(:pid) { druid }
-      obj.inner_object.stub!(:repository).and_return(stub('frepo').as_null_object)
+      obj.inner_object.stub(:repository).and_return(double('frepo').as_null_object)
 
       obj.build_provenanceMetadata_datastream(workflow_id, event_text)
       wp_xml = obj.datastreams['provenanceMetadata'].ng_xml

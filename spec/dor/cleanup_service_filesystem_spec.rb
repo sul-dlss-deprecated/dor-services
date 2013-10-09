@@ -35,8 +35,8 @@ describe 'Dor::CleanupService specs that check the file system' do
   end
 
   context "CleanupService.cleanup" do
-    let(:item1) { stub('item1') }
-    let(:item2) { stub('item1') }
+    let(:item1) { double('item1') }
+    let(:item2) { double('item1') }
 
     before(:each) do
       item1.stub(:druid) { druid_1 }

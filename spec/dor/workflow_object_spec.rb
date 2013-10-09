@@ -4,7 +4,7 @@ describe Dor::WorkflowObject do
 
   # before :all do
   #   Dor::Config.push! { suri.mint_ids false }
-  #   ActiveFedora.stub!(:fedora).and_return(stub('frepo').as_null_object)
+  #   ActiveFedora.stub(:fedora).and_return(stub('frepo').as_null_object)
   #   FakeWeb.allow_net_connect = false
   # end
   # 
@@ -23,7 +23,7 @@ describe Dor::WorkflowObject do
   #   empty_response = JSON.parse('{"responseHeader":{"status":0,"QTime":4,"params":{"q":"object_type_field:workflow dc_title_field:missingWF","wt":"json"}},"response":{"numFound":0,"start":0,"docs":[]}}')
   #   FakeWeb.register_uri(:get, 'http://dor-dev.stanford.edu/solr/select?q=object_type_field:workflow%20dc_title_field:%22accessionWF%22&wt=json', :body => solr_response)
   #   FakeWeb.register_uri(:get, %r[http://dor-dev\.stanford\.edu/select/?\?.+], :body => empty_response)
-  #   Dor::WorkflowObject.stub!(:load_instance, Dor::WorkflowObject.new)
+  #   Dor::WorkflowObject.stub(:load_instance, Dor::WorkflowObject.new)
   #   Dor::WorkflowObject.find_by_name('accessionWF').should be_kind_of(Dor::WorkflowObject)
   #   Dor::WorkflowObject.find_by_name('missingWF').should be_nil
   # end

@@ -6,13 +6,17 @@ require 'fakeweb'
 
 describe Dor::TechnicalMetadataService do
 
-  before(:all) do
+  before(:each) do    
     @fixtures=fixtures=Pathname(File.dirname(__FILE__)).join("../fixtures")
     Dor::Config.push! do
       sdr.local_workspace_root fixtures.join("workspace").to_s
     end
+  end
+  
+  before(:each) do
+    @fixtures=fixtures=Pathname(File.dirname(__FILE__)).join("../fixtures")
     @sdr_repo = @fixtures.join('sdr_repo')
-    @workspace_pathname = Pathname(Dor::Config.sdr.local_workspace_root)
+    @workspace_pathname = Pathname(fixtures.join("workspace").to_s)
 
     @object_ids = %w(dd116zh0343 du000ps9999 jq937jp0017)
     @druid_tool = Hash.new
@@ -41,6 +45,11 @@ describe Dor::TechnicalMetadataService do
 
   end
 
+
+  after(:each) do
+    Dor::Config.pop!
+  end
+
   after(:all) do
     @object_ids.each do |id|
       temp_pathname = Pathname(@druid_tool[id].temp_dir(false) )
@@ -50,7 +59,7 @@ describe Dor::TechnicalMetadataService do
 
   specify "Dor::TechnicalMetadataService.add_update_technical_metadata" do
     @object_ids.each do |id|
-      dor_item = mock(Dor::Item)
+      dor_item = double(Dor::Item)
       dor_item.stub(:pid).and_return("druid:#{id}")
       Dor::TechnicalMetadataService.should_receive(:get_content_group_diff).with(dor_item).
           and_return(@inventory_differences[id])
@@ -60,7 +69,7 @@ describe Dor::TechnicalMetadataService do
       Dor::TechnicalMetadataService.should_receive(:get_new_technical_metadata).with(
           dor_item.pid, an_instance_of(Array)).
           and_return(@new_file_techmd[id])
-      mock_datastream = mock("datastream")
+      mock_datastream = double("datastream")
       ds_hash = {"technicalMetadata" => mock_datastream}
       dor_item.stub(:datastreams).and_return(ds_hash)
       unless @inventory_differences[id].difference_count == 0
@@ -82,7 +91,7 @@ describe Dor::TechnicalMetadataService do
           :report_datetime => Time.now.to_s
       )
       inventory_diff.group_differences << group_diff
-      dor_item = mock(Dor::Item)
+      dor_item = double(Dor::Item)
       dor_item.stub(:get_content_diff).with('all').and_return(inventory_diff.to_xml)
       content_group_diff = Dor::TechnicalMetadataService.get_content_group_diff(dor_item)
       content_group_diff.to_xml.should == group_diff.to_xml
@@ -109,7 +118,7 @@ describe Dor::TechnicalMetadataService do
 
   specify "Dor::TechnicalMetadataService.get_old_technical_metadata(dor_item)" do
     druid = 'druid:dd116zh0343'
-    dor_item = mock(Dor::Item)
+    dor_item = double(Dor::Item)
     dor_item.stub(:pid).and_return(druid)
     tech_md = "<technicalMetadata/>"
     Dor::TechnicalMetadataService.should_receive(:get_sdr_technical_metadata).with(druid).and_return(tech_md,nil)
@@ -134,7 +143,7 @@ describe Dor::TechnicalMetadataService do
 
     Dor::TechnicalMetadataService.stub(:get_sdr_metadata).with(druid, "technicalMetadata").
         and_return('<jhove/>')
-    jhove_service = mock(JhoveService)
+    jhove_service = double(JhoveService)
     JhoveService.stub(:new).and_return(jhove_service)
     jhove_service.stub(:upgrade_technical_metadata).and_return("upgraded techmd")
     sdr_techmd = Dor::TechnicalMetadataService.get_sdr_technical_metadata(druid)
@@ -142,8 +151,8 @@ describe Dor::TechnicalMetadataService do
   end
 
   specify "Dor::TechnicalMetadataService.get_dor_technical_metadata" do
-    dor_item = mock(Dor::Item)
-    tech_ds = mock("techmd datastream")
+    dor_item = double(Dor::Item)
+    tech_ds = double("techmd datastream")
     tech_ds.stub(:content).and_return('<technicalMetadata/>')
     datastreams = {'technicalMetadata'=>tech_ds}
     dor_item.stub(:datastreams).and_return(datastreams)
@@ -157,7 +166,7 @@ describe Dor::TechnicalMetadataService do
     dor_techmd.should == '<technicalMetadata/>'
 
     tech_ds.stub(:content).and_return('<jhove/>')
-    jhove_service = mock(JhoveService)
+    jhove_service = double(JhoveService)
     JhoveService.stub(:new).and_return(jhove_service)
     jhove_service.stub(:upgrade_technical_metadata).and_return("upgraded techmd")
     dor_techmd = Dor::TechnicalMetadataService.get_dor_technical_metadata(dor_item)
