@@ -140,7 +140,6 @@ describe Dor::SearchService do
     it "should use an RSolr connection" do
       solr = Dor::SearchService.solr
       solr.should be_a(RSolr::Client)
-      solr.connection.should be_a(RSolr::ClientCert::Connection)
     end
   end
 

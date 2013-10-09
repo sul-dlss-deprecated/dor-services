@@ -50,7 +50,7 @@ module Dor
       opts = Config.solrizer.opts.merge(add_opts).merge(
         :url => Config.solrizer.url
       )
-      ::RSolr::Ext::Client.connect(opts)
+      ::RSolr::Ext.connect(opts)
     end
 
     set_callback :initialize, :after do |config|
