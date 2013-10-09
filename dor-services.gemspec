@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency "active-fedora", "~>5.6", ">=5.6.3"
   s.add_dependency "om"
   s.add_dependency "solrizer", "~> 2.0"
-  s.add_dependency "active_support"
+  s.add_dependency "activesupport"
   s.add_dependency "rsolr-ext"
   s.add_dependency "nokogiri", ">= 1.6.0"
   s.add_dependency "confstruct", ">= 0.2.2"
