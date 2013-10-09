@@ -169,7 +169,7 @@ describe Dor::Embargoable do
       @eds.release_date = Time.now - 100000
       @eds.release_access_node = Nokogiri::XML(release_access) {|config|config.default_xml.noblanks}
 
-      ActiveFedora::NokogiriDatastream.any_instance.stub(:save).and_return(true)
+      ActiveFedora::OmDatastream.any_instance.stub(:save).and_return(true)
       @embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config|config.default_xml.noblanks}
     end
 

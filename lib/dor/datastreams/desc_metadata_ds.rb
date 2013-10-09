@@ -1,5 +1,5 @@
 module Dor
-class DescMetadataDS < ActiveFedora::NokogiriDatastream 
+class DescMetadataDS < ActiveFedora::OmDatastream 
   include SolrDocHelper
   
   MODS_NS = 'http://www.loc.gov/mods/v3'

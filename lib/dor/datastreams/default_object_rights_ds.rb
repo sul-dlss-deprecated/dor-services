@@ -1,5 +1,5 @@
 module Dor
-  class DefaultObjectRightsDS < ActiveFedora::NokogiriDatastream 
+  class DefaultObjectRightsDS < ActiveFedora::OmDatastream 
 
     set_terminology do |t|
       t.root :path => 'rightsMetadata', :index_as => [:not_searchable]

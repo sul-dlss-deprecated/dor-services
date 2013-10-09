@@ -1,5 +1,5 @@
 module Dor
-  class ContentMetadataDS < ActiveFedora::NokogiriDatastream 
+  class ContentMetadataDS < ActiveFedora::OmDatastream 
     include Upgradable
     include SolrDocHelper
 

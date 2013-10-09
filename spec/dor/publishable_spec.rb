@@ -61,7 +61,7 @@ describe Dor::Publishable do
   end
 
   it "has a rightsMetadata datastream" do
-    @item.datastreams['rightsMetadata'].should be_a(ActiveFedora::NokogiriDatastream)
+    @item.datastreams['rightsMetadata'].should be_a(ActiveFedora::OmDatastream)
   end
 
   it "should provide a rightsMetadata datastream builder" do
