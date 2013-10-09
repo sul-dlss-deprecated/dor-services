@@ -156,6 +156,7 @@ describe Dor::ContentMetadataDS do
         file['size'].should == '12345'
       end
       it 'should error out if there isnt an existing record to modify' do
+        pending
         @item.contentMetadata.update_file(@file,'gw177fc7976_05_0001.jp2').should raise_error
       end
     end
