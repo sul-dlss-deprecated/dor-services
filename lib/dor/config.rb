@@ -1,7 +1,7 @@
 require 'confstruct/configuration'
 require 'rsolr-ext'
-require 'rsolr/client_cert'
 require 'stomp'
+require 'yaml'
 
 module Dor
   class Configuration < Confstruct::Configuration
@@ -48,10 +48,9 @@ module Dor
 
     def make_solr_connection(add_opts={})
       opts = Config.solrizer.opts.merge(add_opts).merge(
-        :url => Config.solrizer.url,
-        :ssl_cert_file => Config.ssl.cert_file, :ssl_key_file => Config.ssl.key_file, :ssl_key_pass => Config.ssl.key_pass
+        :url => Config.solrizer.url
       )
-      ::RSolr::ClientCert.connect(opts).extend(RSolr::Ext::Client)
+      ::RSolr::Ext::Client.connect(opts)
     end
 
     set_callback :initialize, :after do |config|
