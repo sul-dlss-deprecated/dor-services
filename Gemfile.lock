@@ -214,9 +214,7 @@ DEPENDENCIES
   rake (>= 0.8.7)
   rcov
   rdoc
-  rspec (~> 2.6)
-  rspec-expectations (>= 2.11.2)
-  rspec-mocks (>= 2.11.2)
+  rspec (~> 2.14)
   ruby-debug
   simplecov
   yard
