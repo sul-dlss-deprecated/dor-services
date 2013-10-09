@@ -148,7 +148,7 @@ describe Dor::Embargoable do
       end
 
       it "marks the datastream as dirty" do
-        embargo_item.datastreams['rightsMetadata'].should be_dirty
+        embargo_item.datastreams['rightsMetadata'].should be_content_changed
       end
     end
 

@@ -67,7 +67,7 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
 
   def twenty_pct_status=(new_status)
     update_values([:twenty_pct_status] => new_status)
-    self.dirty = true
+    content_will_change!
   end
 
   def twenty_pct_status
@@ -78,7 +78,7 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
   # @param [Time] rd A Time object represeting the release date.  By default, it is set to now
   def twenty_pct_release_date=(rd=Time.now)
     update_values([:twenty_pct_release_date] => rd.beginning_of_day.utc.xmlschema)
-    self.dirty = true
+    content_will_change!
   end
 
   # Current twentyPctVisibilityReleaseDate value
