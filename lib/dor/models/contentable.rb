@@ -10,7 +10,7 @@ module Dor
       if xml.search('//resource[@id=\''+resource+'\']').length == 0
         raise 'resource doesnt exist.'
       end
-      sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey']) 
+      sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey'])
       druid_tools=DruidTools::Druid.new(self.pid,Config.content.content_base_dir)
       location=druid_tools.path(file_name)
       oldlocation=location.gsub('/'+self.pid.gsub('druid:',''),'')
@@ -19,7 +19,7 @@ module Dor
       size=File.size?(file.path)
       #update contentmd
       file_hash={:name=>file_name,:md5 => md5, :publish=>publish, :shelve=> shelve, :preserve => preserve, :size=>size.to_s, :sha1=>sha1, :mime_type => mime_type}
-      begin 
+      begin
         request=sftp.stat!(location.gsub(file_name,''))
         begin
           request=sftp.stat!(location)
@@ -28,7 +28,7 @@ module Dor
           sftp.upload!(file.path,location)
           self.contentMetadata.add_file file_hash,resource
         end
-      rescue Net::SFTP::StatusException 
+      rescue Net::SFTP::StatusException
         #the directory layout doesnt match the new style, so use the old style.
         begin
           request=sftp.stat!(oldlocation)
@@ -43,7 +43,7 @@ module Dor
     end
 
     def replace_file file,file_name
-      sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey']) 
+      sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey'])
       item=Dor::Item.find(self.pid)
       druid_tools=DruidTools::Druid.new(self.pid,Config.content.content_base_dir)
       location=druid_tools.path(file_name)
@@ -54,12 +54,12 @@ module Dor
       size=File.size?(file.path)
       #update contentmd
       file_hash={:name=>file_name,:md5 => md5, :size=>size.to_s, :sha1=>sha1}
-      begin 
+      begin
         request=sftp.stat!(location)
         sftp.upload!(file.path,location)
         #this doesnt allow renaming files
         item.contentMetadata.update_file(file_hash, file_name)
-      rescue 
+      rescue
         sftp.upload!(file.path,oldlocation)
         item.contentMetadata.update_file(file_hash, file_name)
       end
@@ -71,7 +71,7 @@ module Dor
       add=preservation_server+file+"?version="+version
       uri = URI(add)
       req = Net::HTTP::Get.new(uri.request_uri)
-      req.basic_auth Config.content.sdr_user, Config.content.sdr_pass 
+      req.basic_auth Config.content.sdr_user, Config.content.sdr_pass
       res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https') {|http|
         http.request(req)
       }
@@ -81,7 +81,7 @@ module Dor
       druid_tools=DruidTools::Druid.new(self.pid,Config.content.content_base_dir)
       location=druid_tools.path(file)
       oldlocation=location.gsub('/'+file,'').gsub('/'+self.pid.gsub('druid:',''),'')+'/'+file
-      sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey']) 
+      sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey'])
       begin
         data=sftp.download!(location)
       rescue
@@ -92,7 +92,7 @@ module Dor
       druid_tools=DruidTools::Druid.new(self.pid,Config.content.content_base_dir)
       location=druid_tools.path(filename)
       oldlocation=location.gsub('/'+self.pid.gsub('druid:',''),'')
-      sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey']) 
+      sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey'])
       begin
         data=sftp.remove!(location)
       rescue
@@ -108,7 +108,7 @@ module Dor
       druid_tools=DruidTools::Druid.new(self.pid,Config.content.content_base_dir)
       location=druid_tools.path(old_name)
       oldlocation=location.gsub('/'+self.pid.gsub('druid:',''),'')
-      sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey']) 
+      sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey'])
       begin
         data=sftp.rename!(location,location.gsub(old_name,new_name))
       rescue
@@ -123,13 +123,13 @@ module Dor
         self.remove_file(file['id'])
       end
       #remove the resource record from the metadata and renumber the resource sequence
-      self.contentMetadata.remove_resource resource_name       
+      self.contentMetadata.remove_resource resource_name
     end
     #list files in the workspace
     def list_files
       filename='none'
       files=[]
-      sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey']) 
+      sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey'])
       druid_tools=DruidTools::Druid.new(self.pid,Config.content.content_base_dir)
       location=druid_tools.path(filename).gsub(filename,'')
       oldlocation=location.gsub('/'+self.pid.gsub('druid:',''),'')
@@ -137,7 +137,7 @@ module Dor
         sftp.dir.entries(location, "*") do |file|
           files<<file.name
         end
-      rescue 
+      rescue
         begin
           sftp.dir.glob(oldlocation, "*") do |file|
             files<<file.name
@@ -148,5 +148,32 @@ module Dor
       end
       return files
     end
+
+    # Appends contentMetadata file resources from the source object to this object
+    def copy_file_resources source_obj, logger = nil
+      primary_cm = contentMetadata.ng_xml
+      base_id = primary_cm.at_xpath('/contentMetadata/@objectId').value
+      max_sequence =  primary_cm.at_xpath('/contentMetadata/resource[last()]/@sequence').value.to_i
+
+      source_cm = source_obj.contentMetadata.ng_xml
+      source_cm.xpath('/contentMetadata/resource').each do |old_resource|
+        # Skip resources that contain file ids that already exist in this object
+        # TODO may not be necessary since we'll only save the primary after all resources from a secondary are copied over
+        if old_resource.xpath('file/@id').any? { |old_file_id| primary_cm.at_xpath("//file[@id = '#{old_file_id.value}']") }
+          logger.warn "Files already exist in primary object: #{this.pid} . Skipping resource from source object: #{source_obj.pid} with resource id: #{old_resource['id']}." if(logger)
+          next
+        end
+        max_sequence += 1
+        resource_copy = old_resource.clone
+        if old_resource['type']
+          resource_copy['id'] = "#{old_resource['type']}_#{max_sequence}"
+        else
+          resource_copy['id'] = "#{base_id}_#{max_sequence}"
+        end
+        resource_copy['sequence'] = "#{max_sequence}"
+        primary_cm.at_xpath('/contentMetadata/resource[last()]').add_next_sibling resource_copy
+      end
+    end
+
   end
 end
