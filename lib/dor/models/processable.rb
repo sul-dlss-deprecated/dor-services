@@ -78,7 +78,7 @@ module Dor
     def milestones
       Dor::WorkflowService.get_milestones('dor',self.pid)
     end
-    def status
+    def status(include_time=false)
       current_version='1'
       begin
         current_version = self.versionMetadata.current_version_id
@@ -86,8 +86,9 @@ module Dor
       end
       status = 0
       version = ''
+      #verbage we want to use to describe an item when it has completed a particular step
       status_hash={
-        0 => '',
+        0 => 'Unknown Status', #if there are no milestones for the current version, someone likely messed up the versioning process.
         1 => 'Registered',
         2 => 'In accessioning',
         3 => 'In accessioning (described)',
@@ -98,90 +99,48 @@ module Dor
         8 => 'Accessioned (indexed, ingested)',
         9 => 'Opened'
       }
+      #milestones from accesioning and the order they happen in
+      steps={
+        'registered' => 1,
+        'submitted' => 2,
+        'described' => 3,
+        'published' => 4,
+        'deposited' => 5,
+        'accessioned' => 6,
+        'indexed' => 7,
+        'shelved' => 8,
+        'opened' => 1
+      }
       status_time=nil
 
       current=false
       versions=[]
       result=""
+      current_milestones = []
+      #only get steps that are part of accessioning and part of the current version. That can mean they were archived with the current version number, or they might be active (no version number)
       milestones.each do |m|
-        if m[:version]
-          versions << m[:version]
-        else
-          current=true
+        if steps.keys.include?(m[:milestone]) and (m[:version].nil? or m[:version] == current_version)
+          current_milestones << m unless m[:milestone] == 'registered' and current_version.to_i > 1
         end
       end
-      versions.sort
-      oldest_version=versions.last
-      if(oldest_version.nil?)
-        oldest_version='1'
-      end
-      milestones.each do |m|
+      status = 0
+      status_time = ''
+      #for each milestone in the current version, see if it comes after the current 'last' step, if so, make it the last and record the date/time
+      current_milestones.each do |m|
         name=m[:milestone]
         time=m[:at].utc.xmlschema
-        version=m[:version]
-        if (current and not version) or (not current and version==oldest_version)
-          case name
-          when 'registered'
-            if status<1
-              status=1
-              status_time=time
-            end
-          when 'submitted'
-            if status<2
-              status=2
-              status_time=time
-            end
-          when 'described'
-            if status<3
-              status=3
-              status_time=time
-            end
-          when 'published'
-            if status<4
-              status=4
-              status_time=time
-            end
-          when 'deposited'
-            if status<5
-              status=5
-              status_time=time
-            end
-          when 'accessioned'
-            if status<6
-              puts version
-              status=6
-              status_time=time
-            end
-          when 'indexed'
-            if status<7
-              status=7
-              status_time=time
-            end
-          when 'shelved'
-            if status<8
-              status=8
-              status_time=time
-            end
-          when 'opened'
-            if status<1
-              status=1
-              status_time=time
-            end
+        if steps.keys.include? name
+          if steps[name] > status
+            status = steps[name]
+            status_time=time
           end
         end
       end
-      if status == 1
-        if (current and current_version.to_i > 1) or (not current and oldest_version.to_i > 1)
-        status = 9
-        end
-      end
-      if current
-        result='v'+current_version.to_s+' '+status_hash[status].to_s
-      else
-        result='v'+oldest_version+' '+status_hash[status].to_s
-      end
+      #use the translation table to get the appropriate verbage for the latest step
+      result='v'+current_version.to_s+' '+status_hash[status].to_s
+      result +=" #{format_date(status_time)}" if include_time
       result
-    end
+  end
 
     def to_solr(solr_doc=Hash.new, *args)
       super(solr_doc, *args)
@@ -250,6 +209,20 @@ module Dor
       opts[:priority] = priority if(priority > 0)
       Dor::WorkflowService.create_workflow(repo, self.pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
     end
+    private
+    #handles formating utc date/time to human readable
+    def format_date datetime
+      begin
+        zone = ActiveSupport::TimeZone.new("Pacific Time (US & Canada)")
+        d = datetime.is_a?(Time) ? datetime : DateTime.parse(datetime).in_time_zone(zone)
+        I18n.l(d)
+      rescue
+        d = datetime.is_a?(Time) ? datetime : Time.parse(datetime.to_s)
+        d.strftime('%Y-%m-%d %I:%M%p')
+      end
+    end
   end
+
+  
 end
 

@@ -323,6 +323,7 @@ Development and release process:
 - <b>4.2.1</b> Check for versionmetadata datastream when doing sdr-ingest-transfer
 - <b>4.2.3</b> Fix an exception that occured when a version had no description
 - <b>4.3.0</b> Add some missing hydrus solr fields
+- <b>4.3.2</b> Bug fixes and refactoring of object status logic
 == Copyright
 
 Copyright (c) 2013 Stanford University Library. See LICENSE for details.

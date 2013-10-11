@@ -102,140 +102,236 @@ describe Dor::Processable do
     before :each do
       xml='<?xml version="1.0" encoding="UTF-8"?>
       <lifecycle objectId="druid:gv054hp4128">
-    <milestone date="2012-01-26T21:06:54-0800" version="2">published</milestone>
-    <milestone date="2012-10-29T16:30:07-0700" version="2">opened</milestone>
-    <milestone date="2012-11-06T16:18:24-0800" version="2">submitted</milestone>
-    <milestone date="2012-11-06T16:19:07-0800" version="2">published</milestone>
-    <milestone date="2012-11-06T16:19:10-0800" version="2">accessioned</milestone>
-    <milestone date="2012-11-06T16:19:15-0800" version="2">described</milestone>
-    <milestone date="2012-11-06T16:21:02-0800">opened</milestone>
-    <milestone date="2012-11-06T16:30:03-0800">submitted</milestone>
-    <milestone date="2012-11-06T16:35:00-0800">described</milestone>
-    <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
-    <milestone date="2012-11-06T16:59:39-0800">published</milestone>
-		</lifecycle>'
-		dsxml='
+      <milestone date="2012-01-26T21:06:54-0800" version="2">published</milestone>
+      <milestone date="2012-10-29T16:30:07-0700" version="2">opened</milestone>
+      <milestone date="2012-11-06T16:18:24-0800" version="2">submitted</milestone>
+      <milestone date="2012-11-06T16:19:07-0800" version="2">published</milestone>
+      <milestone date="2012-11-06T16:19:10-0800" version="2">accessioned</milestone>
+      <milestone date="2012-11-06T16:19:15-0800" version="2">described</milestone>
+      <milestone date="2012-11-06T16:21:02-0800">opened</milestone>
+      <milestone date="2012-11-06T16:30:03-0800">submitted</milestone>
+      <milestone date="2012-11-06T16:35:00-0800">described</milestone>
+      <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
+      <milestone date="2012-11-06T16:59:39-0800">published</milestone>
+      </lifecycle>'
+      dsxml='
       <versionMetadata objectId="druid:ab123cd4567">
-        <version versionId="1" tag="1.0.0">
-          <description>Initial version</description>
-        </version>
-        <version versionId="2" tag="2.0.0">
-          <description>Replacing main PDF</description>
-        </version>
-        <version versionId="3" tag="2.1.0">
-          <description>Fixed title typo</description>
-        </version>
-        <version versionId="4" tag="2.2.0">
-          <description>Another typo</description>
-        </version>
+      <version versionId="1" tag="1.0.0">
+      <description>Initial version</description>
+      </version>
+      <version versionId="2" tag="2.0.0">
+      <description>Replacing main PDF</description>
+      </version>
+      <version versionId="3" tag="2.1.0">
+      <description>Fixed title typo</description>
+      </version>
+      <version versionId="4" tag="2.2.0">
+      <description>Another typo</description>
+      </version>
       </versionMetadata>
-    '
+      '
 
       xml=Nokogiri::XML(xml)
-  		@lifecycle_vals=[]
-  		Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
-  		Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
-  		@versionMD = Dor::VersionMetadataDS.from_xml(dsxml)
+      @lifecycle_vals=[]
+      Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
+      Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
+      @versionMD = Dor::VersionMetadataDS.from_xml(dsxml)
     end
-  	it 'should include the semicolon delimited version, an earliest published date and a status' do
-  		@item.stub(:versionMetadata).and_return(@versionMD)
-  		solr_doc=@item.to_solr
-  		lifecycle=solr_doc['lifecycle_display']
-  		#lifecycle_display should have the semicolon delimited version
-  		lifecycle.include?("published:2012-01-27T05:06:54Z;2").should == true
-  		#published date should be the first published date
-  		solr_doc['published_dt'].should == solr_doc['published_earliest_dt']
-  		solr_doc['status_display'].first.should == 'v4 In accessioning (described, published)'
-  		solr_doc['version_opened_facet'].first.should == '2012-11-07'
-  	end
-  	it 'should skip the versioning related steps if a new version hasnt been opened' do
-  		@item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
+    it 'should include the semicolon delimited version, an earliest published date and a status' do
+      @item.stub(:versionMetadata).and_return(@versionMD)
+      solr_doc=@item.to_solr
+      lifecycle=solr_doc['lifecycle_display']
+      #lifecycle_display should have the semicolon delimited version
+      lifecycle.include?("published:2012-01-27T05:06:54Z;2").should == true
+      #published date should be the first published date
+      solr_doc['published_dt'].should == solr_doc['published_earliest_dt']
+      solr_doc['status_display'].first.should == 'v4 In accessioning (described, published)'
+      solr_doc['version_opened_facet'].first.should == '2012-11-07'
+    end
+    it 'should skip the versioning related steps if a new version hasnt been opened' do
+      @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
       Dor::WorkflowService.stub(:query_lifecycle).and_return(Nokogiri::XML('<?xml version="1.0" encoding="UTF-8"?>
       <lifecycle objectId="druid:gv054hp4128">
-    <milestone date="2012-11-06T16:30:03-0800">submitted</milestone>
-    <milestone date="2012-11-06T16:35:00-0800">described</milestone>
-    <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
-    <milestone date="2012-11-06T16:59:39-0800">published</milestone>
-		</lifecycle>'))
+      <milestone date="2012-11-06T16:30:03-0800">submitted</milestone>
+      <milestone date="2012-11-06T16:35:00-0800">described</milestone>
+      <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
+      <milestone date="2012-11-06T16:59:39-0800">published</milestone>
+      </lifecycle>'))
       solr_doc=@item.to_solr
-  		solr_doc['version_opened_facet'].nil?.should == true
-	  end
-	  it 'should create a last_modified_day field' do
+      solr_doc['version_opened_facet'].nil?.should == true
+    end
+    it 'should create a last_modified_day field' do
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
-  		@item.stub(:versionMetadata).and_return(@versionMD)
-  		solr_doc=@item.to_solr
-  		#the facet field should have a date in it.
-  		solr_doc['last_modified_day_facet'].length.should == 1
+      @item.stub(:versionMetadata).and_return(@versionMD)
+      solr_doc=@item.to_solr
+      #the facet field should have a date in it.
+      solr_doc['last_modified_day_facet'].length.should == 1
     end
     it 'should create a version field for each version, including the version number, tag and description' do
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableItem)
-  		@item.stub(:versionMetadata).and_return(@versionMD)
-  		solr_doc=@item.to_solr
-  		#the facet field should have a date in it.
-  		solr_doc['versions_display'].length.should > 1
-  		solr_doc['versions_display'].include?("4;2.2.0;Another typo").should == true
+      @item.stub(:versionMetadata).and_return(@versionMD)
+      solr_doc=@item.to_solr
+      #the facet field should have a date in it.
+      solr_doc['versions_display'].length.should > 1
+      solr_doc['versions_display'].include?("4;2.2.0;Another typo").should == true
     end
     it 'should handle a missing description for a version' do
-  		dsxml='
-        <versionMetadata objectId="druid:ab123cd4567">
-          <version versionId="1" tag="1.0.0">
-            <description>Initial version</description>
-          </version>
-          <version versionId="2" tag="2.0.0">
-            <description>Replacing main PDF</description>
-          </version>
-          <version versionId="3" tag="2.1.0">
-            <description>Fixed title typo</description>
-          </version>
-          <version versionId="4" tag="2.2.0">
-          </version>
-        </versionMetadata>
+      dsxml='
+      <versionMetadata objectId="druid:ab123cd4567">
+      <version versionId="1" tag="1.0.0">
+      <description>Initial version</description>
+      </version>
+      <version versionId="2" tag="2.0.0">
+      <description>Replacing main PDF</description>
+      </version>
+      <version versionId="3" tag="2.1.0">
+      <description>Fixed title typo</description>
+      </version>
+      <version versionId="4" tag="2.2.0">
+      </version>
+      </versionMetadata>
       '
       @versionMD = Dor::VersionMetadataDS.from_xml(dsxml)
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableItem)
-  		@item.stub(:versionMetadata).and_return(@versionMD)
-  		solr_doc=@item.to_solr
-  		#the facet field should have a date in it.
-  		solr_doc['versions_display'].length.should > 1
-  		solr_doc['versions_display'].include?("4;2.2.0;").should == true
+      @item.stub(:versionMetadata).and_return(@versionMD)
+      solr_doc=@item.to_solr
+      #the facet field should have a date in it.
+      solr_doc['versions_display'].length.should > 1
+      solr_doc['versions_display'].include?("4;2.2.0;").should == true
     end
   end
   describe 'status' do
-  	it 'should generate a status string' do
-  	xml='<?xml version="1.0" encoding="UTF-8"?>
+    it 'should generate a status string' do
+      xml='<?xml version="1.0" encoding="UTF-8"?>
       <lifecycle objectId="druid:gv054hp4128">
-    <milestone date="2012-11-06T16:19:15-0800" version="2">described</milestone>
-    <milestone date="2012-11-06T16:21:02-0800">opened</milestone>
-    <milestone date="2012-11-06T16:30:03-0800">submitted</milestone>
-    <milestone date="2012-11-06T16:35:00-0800">described</milestone>
-    <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
-    <milestone date="2012-11-06T16:59:39-0800">published</milestone>
-		</lifecycle>
+      <milestone date="2012-11-06T16:19:15-0800" version="2">described</milestone>
+      <milestone date="2012-11-06T16:21:02-0800">opened</milestone>
+      <milestone date="2012-11-06T16:30:03-0800">submitted</milestone>
+      <milestone date="2012-11-06T16:35:00-0800">described</milestone>
+      <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
+      <milestone date="2012-11-06T16:59:39-0800">published</milestone>
+      </lifecycle>
       '
       xml=Nokogiri::XML(xml)
-  		@lifecycle_vals=[]
-  		Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
-  		Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
-  		versionMD=double(Dor::VersionMetadataDS)
-  		versionMD.stub(:current_version_id).and_return(4)
-  		@item.stub(:versionMetadata).and_return(versionMD)
-  		@item.status.should == 'v4 In accessioning (described, published)'
-  	end
-  	it 'should generate a status string' do
-  	xml='<?xml version="1.0" encoding="UTF-8"?>
+      @lifecycle_vals=[]
+      Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
+      Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
+      versionMD=double(Dor::VersionMetadataDS)
+      versionMD.stub(:current_version_id).and_return('4')
+      @item.stub(:versionMetadata).and_return(versionMD)
+      @item.status.should == 'v4 In accessioning (described, published)'
+    end
+    it 'should generate a status string' do
+      xml='<?xml version="1.0" encoding="UTF-8"?>
       <lifecycle objectId="druid:gv054hp4128">
-    <milestone date="2012-11-06T16:19:15-0800" version="2">described</milestone>
-    <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
-		</lifecycle>
+      <milestone date="2012-11-06T16:19:15-0800" version="2">described</milestone>
+      <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
+      </lifecycle>
       '
       xml=Nokogiri::XML(xml)
-  		@lifecycle_vals=[]
-  		Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
-  		Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
-  		versionMD=double(Dor::VersionMetadataDS)
-  		versionMD.stub(:current_version_id).and_return(4)
-  		@item.stub(:versionMetadata).and_return(versionMD)
-  		@item.status.should == 'v3 In accessioning (described, published)'
-  	end
+      @lifecycle_vals=[]
+      Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
+      Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
+      versionMD=double(Dor::VersionMetadataDS)
+      versionMD.stub(:current_version_id).and_return('3')
+      @item.stub(:versionMetadata).and_return(versionMD)
+      @item.status.should == 'v3 In accessioning (described, published)'
+    end
+    it 'should generate a status string' do
+      xml='<?xml version="1.0" encoding="UTF-8"?>
+      <lifecycle objectId="druid:gv054hp4128">
+      <milestone date="2012-11-06T16:19:15-0800" version="2">described</milestone>
+      <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
+      </lifecycle>
+      '
+      xml=Nokogiri::XML(xml)
+      @lifecycle_vals=[]
+      Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
+      Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
+      versionMD=mock(Dor::VersionMetadataDS)
+      versionMD.stub(:current_version_id).and_return('3')
+      @item.stub(:versionMetadata).and_return(versionMD)
+      @item.status.should == 'v3 In accessioning (described, published)'
+    end
+    it 'should handle a v2 accessioned object' do
+      xml='<?xml version="1.0"?>
+      <lifecycle objectId="druid:bd504dj1946">
+      <milestone date="2013-04-03T15:01:57-0700">registered</milestone>
+      <milestone date="2013-04-03T16:20:19-0700">digitized</milestone>
+      <milestone date="2013-04-16T14:18:20-0700" version="1">submitted</milestone>
+      <milestone date="2013-04-16T14:32:54-0700" version="1">described</milestone>
+      <milestone date="2013-04-16T14:55:10-0700" version="1">published</milestone>
+      <milestone date="2013-07-21T05:27:23-0700" version="1">deposited</milestone>
+      <milestone date="2013-07-21T05:28:09-0700" version="1">accessioned</milestone>
+      <milestone date="2013-08-15T11:59:16-0700" version="2">opened</milestone>
+      <milestone date="2013-10-01T12:01:07-0700" version="2">submitted</milestone>
+      <milestone date="2013-10-01T12:01:24-0700" version="2">described</milestone>
+      <milestone date="2013-10-01T12:05:38-0700" version="2">published</milestone>
+      <milestone date="2013-10-01T12:10:56-0700" version="2">deposited</milestone>
+      <milestone date="2013-10-01T12:11:10-0700" version="2">accessioned</milestone>
+      </lifecycle>'
+      xml=Nokogiri::XML(xml)
+      @lifecycle_vals=[]
+      Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
+      Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
+      versionMD=mock(Dor::VersionMetadataDS)
+      versionMD.stub(:current_version_id).and_return('2')
+      @item.stub(:versionMetadata).and_return(versionMD)
+      @item.status.should == 'v2 Accessioned'
+
+    end
+    it 'should give a status of unknown if there arent any lifecycles for the current version, which indicates some malfunction in workflow.' do
+      xml='<?xml version="1.0"?>
+      <lifecycle objectId="druid:bd504dj1946">
+      <milestone date="2013-04-03T15:01:57-0700">registered</milestone>
+      <milestone date="2013-04-03T16:20:19-0700">digitized</milestone>
+      <milestone date="2013-04-16T14:18:20-0700" version="1">submitted</milestone>
+      <milestone date="2013-04-16T14:32:54-0700" version="1">described</milestone>
+      <milestone date="2013-04-16T14:55:10-0700" version="1">published</milestone>
+      <milestone date="2013-07-21T05:27:23-0700" version="1">deposited</milestone>
+      <milestone date="2013-07-21T05:28:09-0700" version="1">accessioned</milestone>
+      <milestone date="2013-08-15T11:59:16-0700" version="2">opened</milestone>
+      <milestone date="2013-10-01T12:01:07-0700" version="2">submitted</milestone>
+      <milestone date="2013-10-01T12:01:24-0700" version="2">described</milestone>
+      <milestone date="2013-10-01T12:05:38-0700" version="2">published</milestone>
+      <milestone date="2013-10-01T12:10:56-0700" version="2">deposited</milestone>
+      <milestone date="2013-10-01T12:11:10-0700" version="2">accessioned</milestone>
+      </lifecycle>'
+      xml=Nokogiri::XML(xml)
+      @lifecycle_vals=[]
+      Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
+      Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
+      versionMD=mock(Dor::VersionMetadataDS)
+      versionMD.stub(:current_version_id).and_return('3')
+      @item.stub(:versionMetadata).and_return(versionMD)
+      @item.status.should == 'v3 Unknown Status'
+    end
+    it 'should include a formatted date/time if one is requested' do
+      xml='<?xml version="1.0"?>
+      <lifecycle objectId="druid:bd504dj1946">
+      <milestone date="2013-04-03T15:01:57-0700">registered</milestone>
+      <milestone date="2013-04-03T16:20:19-0700">digitized</milestone>
+      <milestone date="2013-04-16T14:18:20-0700" version="1">submitted</milestone>
+      <milestone date="2013-04-16T14:32:54-0700" version="1">described</milestone>
+      <milestone date="2013-04-16T14:55:10-0700" version="1">published</milestone>
+      <milestone date="2013-07-21T05:27:23-0700" version="1">deposited</milestone>
+      <milestone date="2013-07-21T05:28:09-0700" version="1">accessioned</milestone>
+      <milestone date="2013-08-15T11:59:16-0700" version="2">opened</milestone>
+      <milestone date="2013-10-01T12:01:07-0700" version="2">submitted</milestone>
+      <milestone date="2013-10-01T12:01:24-0700" version="2">described</milestone>
+      <milestone date="2013-10-01T12:05:38-0700" version="2">published</milestone>
+      <milestone date="2013-10-01T12:10:56-0700" version="2">deposited</milestone>
+      <milestone date="2013-10-01T12:11:10-0700" version="2">accessioned</milestone>
+      </lifecycle>'
+      xml=Nokogiri::XML(xml)
+      @lifecycle_vals=[]
+      Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
+      Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
+      versionMD=mock(Dor::VersionMetadataDS)
+      versionMD.stub(:current_version_id).and_return('2')
+      @item.stub(:versionMetadata).and_return(versionMD)
+      @item.status(true).should == 'v2 Accessioned 2013-10-01 07:11PM'
+    end
+    
   end
 end
