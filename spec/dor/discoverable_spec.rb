@@ -1,8 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe 'Dor::Discoverable' do
-  before(:all) { stub_config   }
-  after(:all)  { unstub_config }
+  before(:each) { stub_config   }
+  after(:each)  { unstub_config }
   before :each do
     @item=instantiate_fixture("cj765pw7168", Dor::Item)
     @item.descMetadata.stub(:new?).and_return(false)

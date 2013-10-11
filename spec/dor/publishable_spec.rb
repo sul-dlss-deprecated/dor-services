@@ -14,7 +14,7 @@ describe Dor::Publishable do
     
     @item = instantiate_fixture('druid:ab123cd4567', PublishableItem)
     @apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
-    @item.stub!(:admin_policy_object).and_return([@apo])
+    @item.stub(:admin_policy_object).and_return([@apo])
     @mods = <<-EOXML
       <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -61,7 +61,7 @@ describe Dor::Publishable do
   end
 
   it "has a rightsMetadata datastream" do
-    @item.datastreams['rightsMetadata'].should be_a(ActiveFedora::NokogiriDatastream)
+    @item.datastreams['rightsMetadata'].should be_a(ActiveFedora::OmDatastream)
   end
 
   it "should provide a rightsMetadata datastream builder" do

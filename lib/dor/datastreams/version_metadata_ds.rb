@@ -49,7 +49,7 @@ module Dor
     end
   end
 
-  class VersionMetadataDS < ActiveFedora::NokogiriDatastream
+  class VersionMetadataDS < ActiveFedora::OmDatastream
     before_create :ensure_non_versionable
 
     set_terminology do |t|

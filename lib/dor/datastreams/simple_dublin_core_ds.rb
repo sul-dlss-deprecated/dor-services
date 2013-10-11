@@ -1,4 +1,4 @@
-class SimpleDublinCoreDs < ActiveFedora::NokogiriDatastream 
+class SimpleDublinCoreDs < ActiveFedora::OmDatastream 
   
   set_terminology do |t|
     t.root(:path=>"dc", :xmlns=>"http://www.openarchives.org/OAI/2.0/oai_dc/", :schema=>"http://cosimo.stanford.edu/standards/oai_dc/v2/oai_dc.xsd", :namespace_prefix => 'oai_dc', :index_as => [:not_searchable])

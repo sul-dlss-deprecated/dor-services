@@ -1,5 +1,5 @@
 module Dor
-class WorkflowDefinitionDs < ActiveFedora::NokogiriDatastream 
+class WorkflowDefinitionDs < ActiveFedora::OmDatastream 
   include SolrDocHelper
   
   set_terminology do |t|

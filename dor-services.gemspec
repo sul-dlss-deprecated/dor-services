@@ -20,8 +20,8 @@ Gem::Specification.new do |s|
   s.add_dependency "active-fedora", "~>5.6", ">=5.6.3"
   s.add_dependency "om"
   s.add_dependency "solrizer", "~> 2.0"
+  s.add_dependency "activesupport"
   s.add_dependency "rsolr-ext"
-  s.add_dependency "rsolr-client-cert", ">=0.5.1"
   s.add_dependency "nokogiri", ">= 1.6.0"
   s.add_dependency "confstruct", ">= 0.2.2"
   s.add_dependency "rest-client"
@@ -49,9 +49,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "lyberteam-gems-devel", ">=1.0.0"
   s.add_development_dependency "rake", ">=0.8.7"
   s.add_development_dependency "rdoc"
-  s.add_development_dependency "rspec", "~> 2.6" # We're not ready to upgrade to rspec 2
-  s.add_development_dependency "rspec-mocks", ">= 2.11.2"
-  s.add_development_dependency "rspec-expectations", ">= 2.11.2"
+  s.add_development_dependency "rspec", "~> 2.14"
   s.add_development_dependency "yard"
 
   s.files        = Dir.glob("lib/**/*") + Dir.glob("config/**/*") + Dir.glob('bin/*')

@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe Dor::Workflow::Document do
   before(:each) do
     #stub the wf definition. The workflow document updates the processes in the definition with the values from the xml.
-    @wf_definition=mock(Dor::WorkflowObject)
+    @wf_definition=double(Dor::WorkflowObject)
     wf_definition_procs=[]
     wf_definition_procs << Dor::Workflow::Process.new('accessionWF','dor',{'name'=>'hello', 'lifecycle'=>'lc','status'=>'stat', 'sequence'=>'1'})
     wf_definition_procs << Dor::Workflow::Process.new('accessionWF','dor',{'name'=>'goodbye','status'=>'waiting', 'sequence'=>'2'})

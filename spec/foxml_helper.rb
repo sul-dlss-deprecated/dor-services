@@ -13,12 +13,12 @@ def item_from_foxml(foxml, item_class = Dor::Base)
     dsid = stream['ID']
     ds = result.datastreams[dsid]
     if ds.nil?
-      ds = ActiveFedora::NokogiriDatastream.new(result,dsid)
+      ds = ActiveFedora::OmDatastream.new(result,dsid)
       result.add_datastream(ds)
     end
   
     
-    if ds.is_a?(ActiveFedora::NokogiriDatastream)
+    if ds.is_a?(ActiveFedora::OmDatastream)
       result.datastreams[dsid] = ds.class.from_xml(Nokogiri::XML(content), ds)
     elsif ds.is_a?(ActiveFedora::RelsExtDatastream)
       result.datastreams[dsid] = ds.class.from_xml(content, ds)
@@ -32,7 +32,7 @@ def item_from_foxml(foxml, item_class = Dor::Base)
 
   # stub item and datastream repo access methods
   result.datastreams.each_pair do |dsid,ds|
-    if ds.is_a?(ActiveFedora::NokogiriDatastream) and not ds.is_a?(Dor::WorkflowDs)
+    if ds.is_a?(ActiveFedora::OmDatastream) and not ds.is_a?(Dor::WorkflowDs)
       ds.instance_eval do
 #        def content       ; self.ng_xml.to_s                 ; end
 #        def content=(val) ; self.ng_xml = Nokogiri::XML(val) ; end

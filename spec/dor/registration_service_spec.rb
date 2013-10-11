@@ -12,14 +12,14 @@ describe Dor::RegistrationService do
 
     before :each do
       @pid = 'druid:ab123cd4567'
-      Dor::SuriService.stub!(:mint_id).and_return("druid:ab123cd4567")
-      @mock_repo = mock(Rubydora::Repository).as_null_object
+      Dor::SuriService.stub(:mint_id).and_return("druid:ab123cd4567")
+      @mock_repo = double(Rubydora::Repository).as_null_object
       if ActiveFedora::Base.respond_to? :connection_for_pid
         ActiveFedora::Base.stub(:connection_for_pid).and_return(@mock_repo)
       else
         ActiveFedora.stub_chain(:fedora,:connection).and_return(@mock_repo)
       end
-      @mock_solr = mock(RSolr::Connection).as_null_object
+      @mock_solr = double(RSolr::Connection).as_null_object
       Dor::SearchService.stub(:solr).and_return(@mock_solr)
       @apo  = instantiate_fixture("druid:fg890hi1234", Dor::AdminPolicyObject)
       @apo.stub(:new_record? => false)
@@ -50,8 +50,8 @@ describe Dor::RegistrationService do
 
     it "should properly register an object" do
       @params[:collection] = 'druid:something'
-      ActiveFedora::Base.should_receive(:find).with('druid:something').and_return(mock_collection)
-      Dor::SearchService.stub!(:query_by_id).and_return([])
+      Dor::Collection.should_receive(:find).with('druid:something').and_return(mock_collection)
+      Dor::SearchService.stub(:query_by_id).and_return([])
       Dor::Item.any_instance.should_receive(:update_index).and_return(true)
 
       obj = Dor::RegistrationService.register_object(@params)
@@ -75,7 +75,7 @@ describe Dor::RegistrationService do
     end
 
     it "should properly register an object even if indexing fails" do
-      Dor::SearchService.stub!(:query_by_id).and_return([])
+      Dor::SearchService.stub(:query_by_id).and_return([])
       Dor::Item.any_instance.stub(:update_index).and_raise("503 Service Unavailable")
       Dor.logger.should_receive(:warn).with(/failed to update solr index for druid:ab123cd4567/)
 
@@ -99,7 +99,7 @@ describe Dor::RegistrationService do
 
     it "should set rightsMetadata based on the APO default when passed rights=default" do
       @params[:rights]='default'
-      Dor::SearchService.stub!(:query_by_id).and_return([])
+      Dor::SearchService.stub(:query_by_id).and_return([])
       Dor::Item.any_instance.should_receive(:update_index).and_return(true)
 
       obj = Dor::RegistrationService.register_object(@params)
@@ -133,7 +133,7 @@ describe Dor::RegistrationService do
 
     it "should set rightsMetadata based on the APO default but replace read rights to be world when passed rights=world " do
       @params[:rights]='world'
-      Dor::SearchService.stub!(:query_by_id).and_return([])
+      Dor::SearchService.stub(:query_by_id).and_return([])
       Dor::Item.any_instance.should_receive(:update_index).and_return(true)
 
       obj = Dor::RegistrationService.register_object(@params)
@@ -166,7 +166,7 @@ describe Dor::RegistrationService do
     end
     it "should set rightsMetadata based on the APO default but replace read rights to be world when passed rights=world " do
       @params[:rights]='world'
-      Dor::SearchService.stub!(:query_by_id).and_return([])
+      Dor::SearchService.stub(:query_by_id).and_return([])
       Dor::Item.any_instance.should_receive(:update_index).and_return(true)
 
       obj = Dor::RegistrationService.register_object(@params)
@@ -201,7 +201,7 @@ describe Dor::RegistrationService do
     it "should set rightsMetadata based on the APO default but replace read rights even if it is a collection" do
       @params[:rights]='stanford'
       @params[:object_type]='collection'
-      Dor::SearchService.stub!(:query_by_id).and_return([])
+      Dor::SearchService.stub(:query_by_id).and_return([])
       Dor::Collection.any_instance.should_receive(:update_index).and_return(true)
 
       obj = Dor::RegistrationService.register_object(@params)
@@ -235,7 +235,7 @@ describe Dor::RegistrationService do
 
     it "should set the descriptive metadata to basic mods using the label as title if passed metadata_source=label " do
       @params[:metadata_source]='label'
-      Dor::SearchService.stub!(:query_by_id).and_return([])
+      Dor::SearchService.stub(:query_by_id).and_return([])
       Dor::Item.any_instance.should_receive(:update_index).and_return(true)
 
       obj = Dor::RegistrationService.register_object(@params)
@@ -278,7 +278,7 @@ describe Dor::RegistrationService do
     end
 
     it "should raise an exception if the label is longer than 255 chars" do
-      Dor::SearchService.stub!(:query_by_id).and_return([])
+      Dor::SearchService.stub(:query_by_id).and_return([])
       @params[:label]='a'*256
       obj= Dor::RegistrationService.register_object(@params)
       obj.label.should=='a'*254

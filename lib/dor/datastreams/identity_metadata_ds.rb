@@ -1,5 +1,5 @@
 module Dor
-class IdentityMetadataDS < ActiveFedora::NokogiriDatastream 
+class IdentityMetadataDS < ActiveFedora::OmDatastream 
   include SolrDocHelper
   
   set_terminology do |t|

@@ -18,8 +18,8 @@ describe Dor::DigitalStacksService do
   end
 
   before(:each) do
-    @mock_ssh  = mock(Net::SSH)
-    @mock_sftp = mock(Net::SFTP)
+    @mock_ssh  = double(Net::SSH)
+    @mock_sftp = double(Net::SFTP)
   end
 
   after(:all) do
@@ -29,7 +29,7 @@ describe Dor::DigitalStacksService do
   describe ".transfer_to_document_store" do
 
     it "copies the given metadata to the document cache in the Digital Stacks" do
-      mock_io = mock('sftp response')
+      mock_io = double('sftp response')
       mock_io.stub(:[]).and_return(mock_io)
 
       Net::SSH.should_receive(:start).with('cache.stanford.edu','user',kind_of(Hash)).and_yield(@mock_ssh)
@@ -46,7 +46,7 @@ describe Dor::DigitalStacksService do
       Net::SSH.should_receive(:start).with('stacks-test.stanford.edu','digitaladmin',kind_of(Hash)).and_yield(@mock_ssh)
       @mock_ssh.should_receive(:'exec!').with("mkdir -p /stacks/aa/123/bb/4567")
       @mock_ssh.should_receive(:sftp).and_return(@mock_ssh)
-      @mock_ssh.should_receive(:'upload!').with("/workspace/aa/123/bb/4567/aa123bb4567/content/1.jpg","/stacks/aa/123/bb/4567/1.jpg").and_return(mock('upload').as_null_object)
+      @mock_ssh.should_receive(:'upload!').with("/workspace/aa/123/bb/4567/aa123bb4567/content/1.jpg","/stacks/aa/123/bb/4567/1.jpg").and_return(double('upload').as_null_object)
       File.should_receive(:exists?).with("/workspace/aa/123/bb/4567/aa123bb4567/content/1.jpg").and_return(true)
 
       files_to_send = ['1.jpg']

@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe Dor::SuriService do
   
   describe "an enabled SuriService" do
-    before(:all) do
+    before(:each) do
       Dor::Config.push! do
         suri do
           mint_ids true
@@ -16,11 +16,11 @@ describe Dor::SuriService do
     end
 
     before(:each) do
-      @my_client = mock('restclient').as_null_object
-      RestClient::Resource.stub!(:new).and_return(@my_client)
+      @my_client = double('restclient').as_null_object
+      RestClient::Resource.stub(:new).and_return(@my_client)
     end
   
-    after(:all) do
+    after(:each) do
       Dor::Config.pop!
     end
   
@@ -53,7 +53,7 @@ describe Dor::SuriService do
     end
     
     before :each do
-      @mock_repo = mock(Rubydora::Repository)
+      @mock_repo = double(Rubydora::Repository)
       if ActiveFedora::Base.respond_to? :connection_for_pid
         ActiveFedora::Base.stub(:connection_for_pid).and_return(@mock_repo)
       else

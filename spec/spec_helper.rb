@@ -37,7 +37,7 @@ module Dor::SpecHelpers
       sdr.local_workspace_root File.join(fixture_dir, "workspace")
       sdr.local_export_home File.join(fixture_dir, "export")
     end
-    ActiveFedora.stub!(:fedora).and_return(stub('frepo').as_null_object)
+    ActiveFedora.stub(:fedora).and_return(double('frepo').as_null_object)
   end
 
   def unstub_config

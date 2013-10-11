@@ -136,8 +136,6 @@ describe Dor::Processable do
   		Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
   		Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
   		@versionMD = Dor::VersionMetadataDS.from_xml(dsxml)
-  		#@versionMD=mock(Dor::VersionMetadataDS)
-  		#@versionMD.stub(:current_version_id).and_return(4)
     end
   	it 'should include the semicolon delimited version, an earliest published date and a status' do
   		@item.stub(:versionMetadata).and_return(@versionMD)
@@ -218,7 +216,7 @@ describe Dor::Processable do
   		@lifecycle_vals=[]
   		Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
   		Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
-  		versionMD=mock(Dor::VersionMetadataDS)
+  		versionMD=double(Dor::VersionMetadataDS)
   		versionMD.stub(:current_version_id).and_return(4)
   		@item.stub(:versionMetadata).and_return(versionMD)
   		@item.status.should == 'v4 In accessioning (described, published)'
@@ -234,7 +232,7 @@ describe Dor::Processable do
   		@lifecycle_vals=[]
   		Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
   		Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
-  		versionMD=mock(Dor::VersionMetadataDS)
+  		versionMD=double(Dor::VersionMetadataDS)
   		versionMD.stub(:current_version_id).and_return(4)
   		@item.stub(:versionMetadata).and_return(versionMD)
   		@item.status.should == 'v3 In accessioning (described, published)'

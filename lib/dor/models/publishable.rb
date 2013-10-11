@@ -9,7 +9,7 @@ module Dor
     include Itemizable
 
     included do
-      has_metadata :name => "rightsMetadata", :type => ActiveFedora::NokogiriDatastream, :label => 'Rights Metadata'
+      has_metadata :name => "rightsMetadata", :type => ActiveFedora::OmDatastream, :label => 'Rights Metadata'
     end
 
     def build_rightsMetadata_datastream(ds)

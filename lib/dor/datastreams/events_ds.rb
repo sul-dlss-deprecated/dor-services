@@ -1,5 +1,5 @@
 module Dor
-class EventsDS < ActiveFedora::NokogiriDatastream
+class EventsDS < ActiveFedora::OmDatastream
   before_create :ensure_non_versionable
   
   set_terminology do |t|

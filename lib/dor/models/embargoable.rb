@@ -66,7 +66,7 @@ module Dor
         rights_xml.root.add_child(world_doc.root.clone)
       end
 
-      datastreams['rightsMetadata'].dirty = true
+      datastreams['rightsMetadata'].content_will_change!
       datastreams['events'].add_event("embargo", release_agent, "20% Visibility Embargo released")
     end
 

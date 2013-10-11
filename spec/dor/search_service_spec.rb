@@ -59,14 +59,14 @@ describe Dor::SearchService do
     end
 
     it "should iterate over pids in groups" do
-      receiver = mock('block')
+      receiver = double('block')
       receiver.should_receive(:process).with(@druids[0])
       receiver.should_receive(:process).with(@druids[1])
       Dor::SearchService.iterate_over_pids(:in_groups_of => 5, :mode => :group) { |x| receiver.process(x) }
     end
 
     it "should iterate over pids one at a time" do
-      receiver = mock('block')
+      receiver = double('block')
       @druids.flatten.each { |druid| receiver.should_receive(:process).with(druid) }
       Dor::SearchService.iterate_over_pids(:in_groups_of => 5, :mode => :single) { |x| receiver.process(x) }
     end
@@ -140,7 +140,6 @@ describe Dor::SearchService do
     it "should use an RSolr connection" do
       solr = Dor::SearchService.solr
       solr.should be_a(RSolr::Client)
-      solr.connection.should be_a(RSolr::ClientCert::Connection)
     end
   end
 

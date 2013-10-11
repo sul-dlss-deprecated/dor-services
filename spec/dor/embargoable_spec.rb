@@ -66,7 +66,7 @@ describe Dor::Embargoable do
   end
 
   before(:each) do
-    ActiveFedora.stub!(:fedora).and_return(stub('frepo').as_null_object)
+    ActiveFedora.stub(:fedora).and_return(double('frepo').as_null_object)
   end
 
   describe "#release_embargo" do
@@ -148,7 +148,7 @@ describe Dor::Embargoable do
       end
 
       it "marks the datastream as dirty" do
-        embargo_item.datastreams['rightsMetadata'].should be_dirty
+        embargo_item.datastreams['rightsMetadata'].should be_content_changed
       end
     end
 
@@ -169,7 +169,7 @@ describe Dor::Embargoable do
       @eds.release_date = Time.now - 100000
       @eds.release_access_node = Nokogiri::XML(release_access) {|config|config.default_xml.noblanks}
 
-      ActiveFedora::NokogiriDatastream.any_instance.stub(:save).and_return(true)
+      ActiveFedora::OmDatastream.any_instance.stub(:save).and_return(true)
       @embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config|config.default_xml.noblanks}
     end
 

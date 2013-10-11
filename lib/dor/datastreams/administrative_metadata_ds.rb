@@ -1,5 +1,5 @@
 module Dor
-class AdministrativeMetadataDS < ActiveFedora::NokogiriDatastream 
+class AdministrativeMetadataDS < ActiveFedora::OmDatastream 
 
   set_terminology do |t|
     t.root :path => 'administrativeMetadata', :index_as => [:not_searchable]

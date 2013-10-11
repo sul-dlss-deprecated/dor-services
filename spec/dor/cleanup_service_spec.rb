@@ -60,7 +60,7 @@ describe Dor::CleanupService do
 
   specify "Dor::CleanupService.cleanup" do
     Dor::CleanupService.should_receive(:cleanup_export).once.with(@druid)
-    mock_item = mock('item')
+    mock_item = double('item')
     mock_item.should_receive(:druid).and_return(@druid)
     Dor::CleanupService.cleanup(mock_item)
   end
@@ -104,7 +104,7 @@ describe Dor::CleanupService do
     @workitem_pathname.join('content').exist?.should == true
     @bag_pathname.exist?.should == true
     @tarfile_pathname.exist?.should == true
-    mock_item = mock('item')
+    mock_item = double('item')
     mock_item.should_receive(:druid).and_return(@druid)
     Dor::CleanupService.cleanup(mock_item)
     @workitem_pathname.parent.parent.parent.parent.exist?.should == false

@@ -10,14 +10,14 @@ describe Dor::Versionable do
 
   let(:obj) {
     v = VersionableItem.new
-    v.stub!(:pid).and_return(dr)
+    v.stub(:pid).and_return(dr)
     v
   }
 
   let(:ds) { obj.datastreams['versionMetadata'] }
 
   before(:each) do
-    obj.inner_object.stub!(:repository).and_return(stub('frepo').as_null_object)
+    obj.inner_object.stub(:repository).and_return(double('frepo').as_null_object)
   end
 
   describe "#open_new_version" do
@@ -28,7 +28,7 @@ describe Dor::Versionable do
         Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
         Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(nil)
         obj.should_receive(:initialize_workflow).with('versioningWF')
-        obj.stub!(:new_object?).and_return(false)
+        obj.stub(:new_object?).and_return(false)
         ds.should_receive(:save)
         obj.open_new_version
       end
@@ -85,7 +85,7 @@ describe Dor::Versionable do
     end
 
     it "sets tag and description if passed in as optional paramaters" do
-      ds.stub!(:pid).and_return('druid:ab123cd4567')
+      ds.stub(:pid).and_return('druid:ab123cd4567')
       Dor::WorkflowService.stub(:get_active_lifecycle).and_return(true, false)
 
       # Stub out calls to update and archive workflow
