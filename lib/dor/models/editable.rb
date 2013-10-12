@@ -4,7 +4,7 @@ module Dor
     include ActiveFedora::Relationships
 
     included do
-      belongs_to 'agreement_object', :property => :referencesAgreement, :class_name => "Dor::Item"
+      belongs_to :agreement_object, :property => :referencesAgreement, :class_name => "Dor::Item"
     end
     #Adds a person or group to a role in the APO role metadata datastream
     #
