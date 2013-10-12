@@ -84,7 +84,11 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
     super(solr_doc, *args)
     if digital_object.respond_to?(:profile)
       digital_object.profile.each_pair do |property,value|
-        add_solr_value(solr_doc, property.underscore, value, property =~ /Date/ ? :date : :string, [:searchable])
+        if property =~ /Date/
+          add_solr_value(solr_doc, property.underscore,  Time.parse(value).utc.xmlschema, :date, [:searchable])
+        else
+          add_solr_value(solr_doc, property.underscore, value, property =~ /Date/ ? :date : :string, [:searchable])
+        end
       end
     end
     if sourceId.present?
