@@ -72,7 +72,6 @@ module Dor
   # patches, utilities and helpers
   require 'dor/utils/ng_tidy'
   require 'dor/utils/solr_doc_helper'
-  require 'dor/utils/utc_date_field_mapper'
   require 'dor/utils/predicate_patch'
     
   require 'dor/datastreams/datastream_spec_solrizer'
