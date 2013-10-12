@@ -5,7 +5,6 @@ module Dor
   
   class SearchService
 
-    include Solrizer::FieldNameMapper
     RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'"
     @@index_version = nil
     
