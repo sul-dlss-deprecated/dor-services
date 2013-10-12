@@ -41,7 +41,7 @@ module Dor
       resp.docs.collect do |solr_doc|
         doc_version = solr_doc[INDEX_VERSION_FIELD].first rescue '0.0.0'
         doc_version = Gem::Version.new(doc_version)
-        object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType',:string)]).first
+        object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType',:facetable)]).first
         object_class = registered_classes[object_type] || ActiveFedora::Base
         if opts[:lightweight] and doc_version >= Gem::Version.new('3.1.0')
           begin
