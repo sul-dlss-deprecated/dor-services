@@ -121,7 +121,7 @@ describe Dor::Identifiable do
       #doc.keys.sort.each do |key|
       #  puts "#{key} #{doc[key]}"
       #end
-      doc['apo_title_facet'].first.should == 'druid:fg890hi1234'
+      doc[Solrizer.solr_name('apo_title', :facetable)].first.should == 'druid:fg890hi1234'
     end
   end
 end

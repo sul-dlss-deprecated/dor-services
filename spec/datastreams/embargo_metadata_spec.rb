@@ -53,8 +53,8 @@ describe Dor::EmbargoMetadataDS do
 
     it "should solrize correctly" do
       ds = Dor::EmbargoMetadataDS.from_xml(dsxml)
-      ds.to_solr['embargo_release_date_dt'].should include('2011-10-12T22:47:52Z')
-      ds.to_solr['twenty_pct_visibility_release_date_dt'].should include('2016-10-12T22:47:52Z')
+      ds.to_solr[Solrizer.solr_name('embargo_release_date', :searchable)].should include('2011-10-12T22:47:52Z')
+      ds.to_solr[Solrizer.solr_name('twenty_pct_visibility_release_date', :searchable)].should include('2016-10-12T22:47:52Z')
     end
   end
 

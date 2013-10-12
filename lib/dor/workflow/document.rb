@@ -115,9 +115,9 @@ module Workflow
         end
       end
 
-      solr_doc['wf_wps_facet'].uniq!    if solr_doc['wf_wps_facet']
-      solr_doc['wf_wsp_facet'].uniq!    if solr_doc['wf_wsp_facet']
-      solr_doc['wf_swp_facet'].uniq!    if solr_doc['wf_swp_facet']
+      solr_doc[Solrizer.solr_name('wf_wps', :facetable)].uniq!    if solr_doc[Solrizer.solr_name('wf_wps', :facetable)]
+      solr_doc[Solrizer.solr_name('wf_wsp', :facetable)].uniq!    if solr_doc[Solrizer.solr_name('wf_wsp', :facetable)]
+      solr_doc[Solrizer.solr_name('wf_swp', :facetable)].uniq!    if solr_doc[Solrizer.solr_name('wf_swp', :facetable)]
       solr_doc['workflow_status'].uniq! if solr_doc['workflow_status']
 
       solr_doc
