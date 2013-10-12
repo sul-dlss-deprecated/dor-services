@@ -32,7 +32,7 @@ class EventsDS < ActiveFedora::OmDatastream
     ev = ng_xml.create_element "event", message, 
       :type => type, :who => who, :when => Time.now.xmlschema
     ng_xml.root.add_child(ev)
-    content_will_change!
+    ng_xml_will_change!
   end
   
   # Finds events with the desired type attribute
