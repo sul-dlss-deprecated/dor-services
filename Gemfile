@@ -7,6 +7,7 @@ group :development do
   gem "rcov", :platform => :ruby_18
   gem "simplecov", :platform => [:ruby_19, :ruby_20]
   gem "debugger", :platform => :ruby_19
+  gem 'byebug', :platform => :mri_20
 end
 
 # Dependencies are defined in dor-services.gemspec
