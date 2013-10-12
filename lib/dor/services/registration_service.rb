@@ -115,6 +115,12 @@ module Dor
         Array(params[:initiate_workflow]).each { |workflow_id| new_item.initialize_workflow(workflow_id, 'dor', !new_item.new_object?, workflow_priority)}
 
         new_item.assert_content_model
+
+        new_item.class.ancestors.select { |x| x.respond_to? :to_class_uri }.each do |parent_class|
+          next if parent_class == ActiveFedora::Base
+          new_item.add_relationship(:has_model, parent_class.to_class_uri)
+        end
+
         new_item.save
         begin
           new_item.update_index if ::ENABLE_SOLR_UPDATES
