@@ -126,7 +126,7 @@ describe Dor::Workflow::Document do
       d=Dor::Workflow::Document.new(xml)   
       d.stub(:definition).and_return(@wf_definition)  
       doc=d.to_solr
-      doc['workflow_status_display'].first.should == 'accessionWF|active|0|dor'
+      doc[Solrizer.solr_name('workflow_status', :displayable)].first.should == 'accessionWF|active|0|dor'
     end
 
     it 'should index the right workflow status (completed) when all steps are completed or skipped' do
@@ -185,7 +185,7 @@ describe Dor::Workflow::Document do
       d=Dor::Workflow::Document.new(xml)   
       d.stub(:definition).and_return(@wf_definition)  
       doc=d.to_solr
-      doc['wf_error_display'].first.should == 'accessionWF:technical-metadata:druid:gv054hp4128 - Item error; caused by 413 Request Entity Too Large:'
+      doc[Solrizer.solr_name('wf_error', :displayable)].first.should == 'accessionWF:technical-metadata:druid:gv054hp4128 - Item error; caused by 413 Request Entity Too Large:'
     end
   end
 end

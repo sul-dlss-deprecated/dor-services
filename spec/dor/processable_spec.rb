@@ -145,13 +145,13 @@ describe Dor::Processable do
     it 'should include the semicolon delimited version, an earliest published date and a status' do
       @item.stub(:versionMetadata).and_return(@versionMD)
       solr_doc=@item.to_solr
-      lifecycle=solr_doc['lifecycle_display']
+      lifecycle=solr_doc[Solrizer.solr_name('lifecycle', :displayable)]
       #lifecycle_display should have the semicolon delimited version
       lifecycle.include?("published:2012-01-27T05:06:54Z;2").should == true
       #published date should be the first published date
-      solr_doc['published_dt'].should == solr_doc['published_earliest_dt']
-      solr_doc['status_display'].first.should == 'v4 In accessioning (described, published)'
-      solr_doc['version_opened_facet'].first.should == '2012-11-07'
+      solr_doc[Solrizer.solr_name('published', :type => :date)].should == solr_doc[Solrizer.solr_name('published_earliest', :type => :date)]
+      solr_doc[Solrizer.solr_name('status', :displayable)].first.should == 'v4 In accessioning (described, published)'
+      solr_doc[Solrizer.solr_name('version_opened', :facetable)].first.should == '2012-11-07'
     end
     it 'should skip the versioning related steps if a new version hasnt been opened' do
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
@@ -163,22 +163,22 @@ describe Dor::Processable do
       <milestone date="2012-11-06T16:59:39-0800">published</milestone>
       </lifecycle>'))
       solr_doc=@item.to_solr
-      solr_doc['version_opened_facet'].nil?.should == true
+      solr_doc[Solrizer.solr_name('version_opened', :facetable)].should be_nil
     end
     it 'should create a last_modified_day field' do
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
       @item.stub(:versionMetadata).and_return(@versionMD)
       solr_doc=@item.to_solr
       #the facet field should have a date in it.
-      solr_doc['last_modified_day_facet'].length.should == 1
+      solr_doc[Solrizer.solr_name('last_modified_day', :facetable)].length.should == 1
     end
     it 'should create a version field for each version, including the version number, tag and description' do
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableItem)
       @item.stub(:versionMetadata).and_return(@versionMD)
       solr_doc=@item.to_solr
       #the facet field should have a date in it.
-      solr_doc['versions_display'].length.should > 1
-      solr_doc['versions_display'].include?("4;2.2.0;Another typo").should == true
+      solr_doc[Solrizer.solr_name('versions', :displayable)].length.should > 1
+      solr_doc[Solrizer.solr_name('versions', :displayable)].include?("4;2.2.0;Another typo").should == true
     end
     it 'should handle a missing description for a version' do
       dsxml='
@@ -201,8 +201,8 @@ describe Dor::Processable do
       @item.stub(:versionMetadata).and_return(@versionMD)
       solr_doc=@item.to_solr
       #the facet field should have a date in it.
-      solr_doc['versions_display'].length.should > 1
-      solr_doc['versions_display'].include?("4;2.2.0;").should == true
+      solr_doc[Solrizer.solr_name('versions', :displayable)].length.should > 1
+      solr_doc[Solrizer.solr_name('versions', :displayable)].include?("4;2.2.0;").should == true
     end
   end
   describe 'status' do

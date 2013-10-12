@@ -103,7 +103,7 @@ module Dor
       self.assert_content_model
       super(solr_doc)
       solr_doc[Dor::INDEX_VERSION_FIELD] = Dor::VERSION
-      solr_doc[solr_name('indexed_at',:date)] = Time.now.utc.xmlschema
+      solr_doc[solr_name('indexed_at', :type => :date)] = Time.now.utc.xmlschema
       add_solr_value(solr_doc, 'indexed_day', Time.now.beginning_of_day.utc.xmlschema, :string, [:searchable, :facetable])
       datastreams.values.each do |ds|
         unless ds.new?

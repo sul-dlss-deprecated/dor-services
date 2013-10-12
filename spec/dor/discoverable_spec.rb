@@ -47,8 +47,8 @@ describe 'Dor::Discoverable' do
       #doc_hash[:sw_author_sort_facet].should == "\uFFFF San Francisco Cal"
     end
     it 'should merge the hash with the existing hash' do
-      doc_hash=@item.to_solr({:title_facet => "title"})
-      doc_hash[:title_facet].should == 'title'
+      doc_hash=@item.to_solr({Solrizer.solr_name('title', :facetable) => "title"})
+      doc_hash[Solrizer.solr_name('title', :facetable)].should == 'title'
       doc_hash[:sw_pub_date_facet].should == '1900'
     end
     it 'should not error if there is no descMD' do
