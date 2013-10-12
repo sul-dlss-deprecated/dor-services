@@ -1,7 +1,6 @@
 module Dor
   module Governable
     extend ActiveSupport::Concern
-    include ActiveFedora::Relationships
 
     included do
       belongs_to :admin_policy_object, :property => :is_governed_by, :class_name => "Dor::AdminPolicyObject"
