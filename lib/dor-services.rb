@@ -36,11 +36,6 @@ module Dor
     
     def find_all query, opts={}
       ensure_models_loaded!
-      af_version = Gem::Version.new(ActiveFedora::VERSION)
-      if opts[:lightweight] and af_version < Gem::Version.new('4.0.0.rc9')
-        ActiveFedora.logger.warn("Loading of lightweight objects requires ActiveFedora >= 4.0.0")
-        opts.delete(:lightweight)
-      end
       
       resp = SearchService.query query, opts
       resp.docs.collect do |solr_doc|
