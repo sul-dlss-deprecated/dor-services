@@ -4,7 +4,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
   
   set_terminology do |t|
     t.root(:path=>"identityMetadata")
-    t.objectId :index_as => [:searchable]
+    t.objectId :index_as => [:symbol, :searchable]
     t.objectType :index_as => [:searchable, :facetable]
     t.objectLabel
     t.citationCreator
@@ -89,15 +89,15 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
     end
     if sourceId.present?
       (name,id) = sourceId.split(/:/,2)
-      add_solr_value(solr_doc, "dor_id", id, :string, [:searchable])
-      add_solr_value(solr_doc, "identifier", sourceId, :string, [:searchable])
-      add_solr_value(solr_doc, "source_id", sourceId, :string, [:searchable])
+      add_solr_value(solr_doc, "dor_id", id, :string, [:searchable, :facetable])
+      add_solr_value(solr_doc, "identifier", sourceId, :string, [:searchable, :facetable])
+      add_solr_value(solr_doc, "source_id", sourceId, :string, [:searchable, :facetable])
     end
     otherId.compact.each { |qid|
       (name,id) = qid.split(/:/,2)
-      add_solr_value(solr_doc, "dor_id", id, :string, [:searchable])
-      add_solr_value(solr_doc, "identifier", qid, :string, [:searchable])
-      add_solr_value(solr_doc, "#{name}_id", id, :string, [:searchable])
+      add_solr_value(solr_doc, "dor_id", id, :string, [:searchable, :facetable])
+      add_solr_value(solr_doc, "identifier", qid, :string, [:searchable, :facetable])
+      add_solr_value(solr_doc, "#{name}_id", id, :string, [:searchable, :facetable])
     }
         
     self.find_by_terms(:tag).each { |tag|
