@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'rake'
 require 'bundler'
+require 'bundler/gem_tasks'
 
 Dir.glob('lib/tasks/*.rake').each { |r| import r }
 
@@ -40,8 +41,4 @@ task :clean do
 end
 
 task :default => [:rcov, :doc]
-
-# To release the gem to the DLSS gemserver, run 'rake dlss_release'
-require 'dlss/rake/dlss_release'
-Dlss::Release.new
 

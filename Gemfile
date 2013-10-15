@@ -1,5 +1,4 @@
 source 'https://rubygems.org'
-source "http://sul-gems.stanford.edu"
 
 #gem "rsolr", :git => "git://github.com/sul-dlss/rsolr.git", :branch => "nokogiri"
 group :development do
