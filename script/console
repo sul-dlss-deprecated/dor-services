@@ -24,11 +24,12 @@ end
 
 check_config_and_boot
 
-#################
+silence_warnings do
+  begin
+    require 'pry'
+    IRB = Pry
+  rescue LoadError
+  end
+end
 
-
-
-
-
-Pry.start binding
-# Pry session started with dor-services gem loaded
+IRB.start

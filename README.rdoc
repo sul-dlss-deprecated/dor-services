@@ -46,7 +46,7 @@ Development and release process:
 == Console
 
 You can start a pry session with the dor-services gem loaded by executing the script at
-./bin/console
+./script/console
 
 It will need the following in order to execute:
 ./config/dev_console_env.rb
@@ -54,6 +54,8 @@ It will need the following in order to execute:
 ./conig/certs/robots-dor-dev.key
 
 You can basically copy the sul-lyberservices-dev/common-accessioning/current/config/environments/development.rb file and the certs from there too
+
+This is located in the ./script subdirectory so that it does not get installed by clients of the gem
 
 == Releases
 
