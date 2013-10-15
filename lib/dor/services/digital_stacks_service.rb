@@ -65,6 +65,12 @@ module Dor
       end
     end
 
+    def self.remove_stacks_dir(id)
+      remote_storage_dir = self.stacks_storage_dir(id)
+      Net::SSH.start(Config.stacks.host,Config.stacks.user,:auth_methods=>['publickey']) do |ssh|
+        ssh.exec! "rm -r #{remote_storage_dir}"
+      end
+    end
   end
 
 end

@@ -77,4 +77,12 @@ describe Dor::DigitalStacksService do
     end
   end
 
+  describe ".remove_stacks_dir" do
+    it "deletes the stacks directory" do
+      Net::SSH.should_receive(:start).with('stacks-test.stanford.edu','digitaladmin',kind_of(Hash)).and_yield(@mock_ssh)
+      @mock_ssh.should_receive(:'exec!').with("rm -r /stacks/aa/123/bb/4567")
+      Dor::DigitalStacksService.remove_stacks_dir('druid:aa123bb4567')
+    end
+  end
+
 end
