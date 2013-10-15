@@ -46,7 +46,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "fakeweb"
   s.add_development_dependency "haml"
   s.add_development_dependency "jhove-service", ">=1.0.1  "
-  s.add_development_dependency "lyberteam-gems-devel", ">=1.0.0"
   s.add_development_dependency "rake", ">=0.8.7"
   s.add_development_dependency "rdoc"
   s.add_development_dependency "rspec", "~> 2.14"
