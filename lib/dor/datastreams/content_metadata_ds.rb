@@ -247,6 +247,7 @@ module Dor
         add_solr_value(solr_doc, "resource_count", resource_count.to_s, :string, [:searchable, :displayable])
         add_solr_value(solr_doc, "preserved_size", preserved_size.to_s, :string, [:searchable, :displayable])
         resource_type_counts.each do |key, count|
+          add_solr_value(solr_doc, "resource_types", key, :string, [:symbol])
           add_solr_value(solr_doc, key+"_resource_count", count.to_s, :string, [:searchable, :displayable])
         end
         if not first_shelved_image.nil?

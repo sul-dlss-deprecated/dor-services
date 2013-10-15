@@ -100,14 +100,14 @@ module Workflow
           add_solr_value(solr_doc, 'wf_error', "#{wf_name}:#{process.name}:#{process.error_message}", :string, [:facetable,:displayable]) if process.error_message #index the error message without the druid so we hopefully get some overlap
           add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}", :string, [:facetable])
           add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}:#{process.name}", :string, [:facetable])
-          add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}", :string, [:facetable])
-          add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.status}", :string, [:facetable])
+          add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}", :string, [:facetable, :symbol])
+          add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.status}", :string, [:facetable, :symbol])
           add_solr_value(solr_doc, 'wf_swp', "#{process.status}", :string, [:facetable])
           add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}", :string, [:facetable])
           add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}:#{process.name}", :string, [:facetable])
           if process.state != process.status
             add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.state}:#{process.name}", :string, [:facetable])
-            add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.state}", :string, [:facetable])
+            add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.state}", :string, [:facetable, :symbol])
             add_solr_value(solr_doc, 'wf_swp', "#{process.state}", :string, [:facetable])
             add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}", :string, [:facetable])
             add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}:#{process.name}", :string, [:facetable])
@@ -115,6 +115,7 @@ module Workflow
         end
       end
 
+      solr_doc[Solrizer.solr_name('wf_wps', :symbol)].uniq!    if solr_doc[Solrizer.solr_name('wf_wps', :symbol)]
       solr_doc[Solrizer.solr_name('wf_wps', :facetable)].uniq!    if solr_doc[Solrizer.solr_name('wf_wps', :facetable)]
       solr_doc[Solrizer.solr_name('wf_wsp', :facetable)].uniq!    if solr_doc[Solrizer.solr_name('wf_wsp', :facetable)]
       solr_doc[Solrizer.solr_name('wf_swp', :facetable)].uniq!    if solr_doc[Solrizer.solr_name('wf_swp', :facetable)]
