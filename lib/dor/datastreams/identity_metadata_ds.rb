@@ -95,7 +95,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
       (name,id) = sourceId.split(/:/,2)
       add_solr_value(solr_doc, "dor_id", id, :string, [:searchable, :facetable])
       add_solr_value(solr_doc, "identifier", sourceId, :string, [:searchable, :facetable])
-      add_solr_value(solr_doc, "source_id", sourceId, :string, [:searchable, :facetable])
+      add_solr_value(solr_doc, "source_id", sourceId, :string, [:searchable, :facetable, :symbol])
     end
     otherId.compact.each { |qid|
       (name,id) = qid.split(/:/,2)
