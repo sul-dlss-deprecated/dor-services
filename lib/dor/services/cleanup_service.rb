@@ -9,6 +9,10 @@ module Dor
     # @return [void] Delete all workspace and export entities for the druid
     def self.cleanup(dor_item)
       druid = dor_item.druid
+      cleanup_by_druid druid
+    end
+
+    def self.cleanup_by_druid(druid)
       cleanup_workspace_content(druid, Config.cleanup.local_workspace_root)
       cleanup_workspace_content(druid, Config.cleanup.local_assembly_root)
       cleanup_export(druid)

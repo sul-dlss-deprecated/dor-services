@@ -2,15 +2,15 @@ require 'json'
 require 'active_support/core_ext'
 
 module Dor
-  
+
   class SearchService
 
     include Solrizer::FieldNameMapper
     RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'"
     @@index_version = nil
-    
+
     class << self
-      
+
       def index_version
         if @@index_version.nil?
           xsl_doc = Nokogiri::XML(File.read(File.expand_path('../../../gsearch/demoFoxmlToSolr.xslt',__FILE__)))
@@ -18,7 +18,7 @@ module Dor
         end
         @@index_version
       end
-      
+
       def reindex(*pids)
         client = Config.gsearch.rest_client
         pids.in_groups_of(20, false) do |group|
@@ -42,7 +42,7 @@ module Dor
         result = client.post(query_params)
         result.split(/\n/)[1..-1].collect { |pid| pid.chomp.sub(/^info:fedora\//,'') }
       end
-      
+
       def iterate_over_pids(opts = {}, &block)
         opts[:query] ||= "select $object from <#ri> where $object <info:fedora/fedora-system:def/model#label> $label"
         opts[:in_groups_of] ||= 100
@@ -59,20 +59,20 @@ module Dor
           pids = Dor::SearchService.risearch("#{opts[:query]} limit #{opts[:in_groups_of]} offset #{start}")
         end
       end
-      
+
       def gsearch(params)
         client = Config.gsearch.client
         query_params = params.merge(:wt => 'json')
-        query_string = query_params.collect { |k,v| 
+        query_string = query_params.collect { |k,v|
           if v.is_a?(Array)
             v.collect { |vv| "#{k}=#{URI.encode(vv.to_s)}" }.join('&')
           else
-            "#{k}=#{URI.encode(v.to_s)}" 
+            "#{k}=#{URI.encode(v.to_s)}"
           end
         }.join('&')
         result = JSON.parse(client["select?#{query_string}"].get)
       end
-      
+
       def query query, args={}
         params = args.merge({ :q => query })
         params[:start] ||= 0
@@ -89,7 +89,7 @@ module Dor
           return resp
         end
       end
-      
+
       def query_by_id(id)
         if id.is_a?(Hash) # Single valued: { :google => 'STANFORD_0123456789' }
           id = id.collect { |*v| v.join(':') }.first
@@ -104,13 +104,28 @@ module Dor
         end
         result
       end
-      
+
       def solr
         @@solr ||= ActiveFedora.solr.conn.is_a?(RSolr::Client) ? ActiveFedora.solr.conn : Dor::Config.make_solr_connection
       end
 
+      # @return String druid of the SDR Graveyard APO
+      #   nil if APO does not exist in the currently configured environment
+      def sdr_graveyard_apo_druid
+        @@sdr_graveyard_apo ||= find_sdr_graveyard_apo_druid
+      end
+
+      def find_sdr_graveyard_apo_druid
+        r = Dor::SearchService.query('dc_title_t:"SDR Graveyard"', :fl => 'id')
+        if r.docs.empty?
+          nil
+        else
+          r.docs.first[:id]
+        end
+      end
+
     end
-    
+
   end
-  
+
 end
