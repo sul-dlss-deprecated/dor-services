@@ -64,7 +64,7 @@ describe Dor::ContentMetadataDS do
       end
     end
 
-    
+
     it 'should add a resource with a checksum' do
       @files[0][:md5]='123456'
       @files[0][:sha1]='56789'
@@ -156,8 +156,7 @@ describe Dor::ContentMetadataDS do
         file['size'].should == '12345'
       end
       it 'should error out if there isnt an existing record to modify' do
-        pending
-        @item.contentMetadata.update_file(@file,'gw177fc7976_05_0001.jp2').should raise_error
+        expect { @item.contentMetadata.update_file(@file,'gw177fc7976_05_0001_different.jp2')}.to raise_error
       end
     end
     describe 'rename_file' do

@@ -7,11 +7,11 @@ module Dor
   INDEX_VERSION_FIELD = 'dor_services_version_facet'
 
   class << self
-    
+
     def configure *args, &block
       Dor::Config.configure *args, &block
     end
-    
+
     # Load an object and inspect its identityMetadata to figure out what class
     # to adapt it to. This is necessary when the object is not indexed, or the
     # index is missing the objectType property.
@@ -25,15 +25,15 @@ module Dor
       obj.adapt_to(object_class)
     end
 
-    # Get objectType information from solr and load the correct class the first time, 
-    # saving the overhead of using ActiveFedora::Base#adapt_to. It falls back to 
+    # Get objectType information from solr and load the correct class the first time,
+    # saving the overhead of using ActiveFedora::Base#adapt_to. It falls back to
     # Dor.load_instance() if the item is not in the index, or is improperly
     # indexed.
     # @param [String] pid The object's PID
     def find pid, opts={}
       self.find_all(%{id:"#{pid}"}, opts).first || self.load_instance(pid)
     end
-    
+
     def find_all query, opts={}
       ensure_models_loaded!
       af_version = Gem::Version.new(ActiveFedora::VERSION)
@@ -41,7 +41,7 @@ module Dor
         ActiveFedora.logger.warn("Loading of lightweight objects requires ActiveFedora >= 4.0.0")
         opts.delete(:lightweight)
       end
-      
+
       resp = SearchService.query query, opts
       resp.docs.collect do |solr_doc|
         doc_version = solr_doc[INDEX_VERSION_FIELD].first rescue '0.0.0'
@@ -60,16 +60,16 @@ module Dor
         end
       end
     end
-    
+
     def ensure_models_loaded!
       [Item, Set, Collection, AdminPolicyObject, WorkflowObject]
     end
-    
+
     def root
       File.dirname(__FILE__)
     end
   end
-  
+
   require 'dor/version'
   require 'dor/config'
   require 'dor/exceptions'
@@ -79,7 +79,7 @@ module Dor
   require 'dor/utils/solr_doc_helper'
   require 'dor/utils/utc_date_field_mapper'
   require 'dor/utils/predicate_patch'
-    
+
   require 'dor/datastreams/datastream_spec_solrizer'
 
   require 'druid-tools'
@@ -97,7 +97,7 @@ module Dor
   autoload :VersionMetadataDS,  'dor/datastreams/version_metadata_ds'
   autoload :DefaultObjectRightsDS,  'dor/datastreams/default_object_rights_ds'
   ::Object.autoload :SimpleDublinCoreDs, 'dor/datastreams/simple_dublin_core_ds'
-  
+
   # DOR Concerns
   autoload :Identifiable, 'dor/models/identifiable'
   autoload :Itemizable, 'dor/models/itemizable'
@@ -116,7 +116,7 @@ module Dor
   autoload :Editable, 'dor/models/editable'
   autoload :Discoverable, 'dor/models/discoverable'
 
-  
+
   # ActiveFedora Classes
   autoload :Abstract, 'dor/models/item'
   autoload :Item, 'dor/models/item'
@@ -136,12 +136,13 @@ module Dor
   autoload :CleanupService, 'dor/services/cleanup_service'
   autoload :ProvenanceMetadataService, 'dor/services/provenance_metadata_service'
   autoload :TechnicalMetadataService, 'dor/services/technical_metadata_service'
-  
+  autoload :MergeService, 'dor/services/merge_service'
+
   # Versioning Classes
   module Versioning
     autoload :FileInventoryDifference, 'dor/versioning/file_inventory_difference'
   end
-  
+
   # Workflow Classes
   module Workflow
     autoload :Graph, 'dor/workflow/graph'

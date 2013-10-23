@@ -151,6 +151,9 @@ module Dor
 
     # Appends contentMetadata file resources from the source object to this object
     def copy_file_resources source_obj, logger = nil
+      if logger.nil?
+        logger = Logger.new(STDOUT)
+      end
       primary_cm = contentMetadata.ng_xml
       base_id = primary_cm.at_xpath('/contentMetadata/@objectId').value
       max_sequence =  primary_cm.at_xpath('/contentMetadata/resource[last()]/@sequence').value.to_i
@@ -160,7 +163,7 @@ module Dor
         # Skip resources that contain file ids that already exist in this object
         # TODO may not be necessary since we'll only save the primary after all resources from a secondary are copied over
         if old_resource.xpath('file/@id').any? { |old_file_id| primary_cm.at_xpath("//file[@id = '#{old_file_id.value}']") }
-          logger.warn "Files already exist in primary object: #{this.pid} . Skipping resource from source object: #{source_obj.pid} with resource id: #{old_resource['id']}." if(logger)
+          logger.warn "Files already exist in primary object: #{self.pid} . Skipping resource from source object: #{source_obj.pid} with resource id: #{old_resource['id']}."
           next
         end
         max_sequence += 1
@@ -174,6 +177,21 @@ module Dor
         primary_cm.at_xpath('/contentMetadata/resource[last()]').add_next_sibling resource_copy
       end
     end
+
+    def decomission
+      # remove isMember relationships
+      clear_relationship :is_member_of
+      # remove isGovernedBy relationship
+      clear_relationship :is_governed_by
+      # add isGovernedBy to graveyard APO druid:sw909tc7852
+      # SEARCH BY dc title for 'SDR Graveyard'
+      add_relationship :is_governed_by, Dor::SearchService.sdr_graveyard_apo_druid
+      # eliminate contentMetadata. set it to <contentMetadata/> ?
+      contentMetadata.content = '<contentMetadata/>'
+      # eliminate rightsMetadata. set it to <rightsMetadata/> ?
+      rightsMetadata.content = '<rightsMetadata/>'
+    end
+
 
   end
 end
