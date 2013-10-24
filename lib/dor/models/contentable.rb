@@ -149,38 +149,51 @@ module Dor
       return files
     end
 
-    # Appends contentMetadata file resources from the source object to this object
-    def copy_file_resources source_obj, logger = nil
+    # Appends contentMetadata file resources from the source objects to this object
+    # @param [Array<String>] source_obj_pids ids of the secondary objects that will get their contentMetadata merged into this one
+    # @param [Logger] logger optional logger to record warnings.  Otherwise, warnings get sent to STDOUT
+    def copy_file_resources source_obj_pids, logger = nil
       if logger.nil?
         logger = Logger.new(STDOUT)
       end
       primary_cm = contentMetadata.ng_xml
       base_id = primary_cm.at_xpath('/contentMetadata/@objectId').value
-      max_sequence =  primary_cm.at_xpath('/contentMetadata/resource[last()]/@sequence').value.to_i
+      max_sequence = primary_cm.at_xpath('/contentMetadata/resource[last()]/@sequence').value.to_i
 
-      source_cm = source_obj.contentMetadata.ng_xml
-      source_cm.xpath('/contentMetadata/resource').each do |old_resource|
-        # Skip resources that contain file ids that already exist in this object
-        # TODO may not be necessary since we'll only save the primary after all resources from a secondary are copied over
-        if old_resource.xpath('file/@id').any? { |old_file_id| primary_cm.at_xpath("//file[@id = '#{old_file_id.value}']") }
-          logger.warn "Files already exist in primary object: #{self.pid} . Skipping resource from source object: #{source_obj.pid} with resource id: #{old_resource['id']}."
-          next
+      source_obj_pids.each do |src_pid|
+        source_obj = Dor::Item.find src_pid
+        source_cm = source_obj.contentMetadata.ng_xml
+        source_cm.xpath('/contentMetadata/resource').each do |old_resource|
+          # Skip resources that contain file ids that already exist in this object
+          # TODO may not be necessary since we'll only save the primary after all resources from a secondary are copied over
+          if old_resource.xpath('file/@id').any? { |old_file_id| primary_cm.at_xpath("//file[@id = '#{old_file_id.value}']") }
+            logger.warn "Files already exist in primary object: #{self.pid} . Skipping resource from source object: #{source_obj.pid} with resource id: #{old_resource['id']}."
+            next
+          end
+          max_sequence += 1
+          resource_copy = old_resource.clone
+          resource_copy['sequence'] = "#{max_sequence}"
+
+          if old_resource['type']
+            resource_copy['id'] = "#{old_resource['type']}_#{max_sequence}"
+          else
+            resource_copy['id'] = "#{base_id}_#{max_sequence}"
+          end
+
+          lbl = old_resource.at_xpath 'label'
+          if lbl && lbl.text =~ /^(.*)\s+\d+$/
+            resource_copy.at_xpath('label').content = "#{$1} #{max_sequence}"
+          end
+          primary_cm.at_xpath('/contentMetadata/resource[last()]').add_next_sibling resource_copy
         end
-        max_sequence += 1
-        resource_copy = old_resource.clone
-        if old_resource['type']
-          resource_copy['id'] = "#{old_resource['type']}_#{max_sequence}"
-        else
-          resource_copy['id'] = "#{base_id}_#{max_sequence}"
-        end
-        resource_copy['sequence'] = "#{max_sequence}"
-        primary_cm.at_xpath('/contentMetadata/resource[last()]').add_next_sibling resource_copy
       end
     end
 
+    # Clears RELS-EXT relationships, sets the isGovernedBy relationship to the SDR Graveyard APO,
     def decomission
-      # remove isMember relationships
+      # remove isMemberOf and isMemberOfCollection relationships
       clear_relationship :is_member_of
+      clear_relationship :is_member_of_collection
       # remove isGovernedBy relationship
       clear_relationship :is_governed_by
       # add isGovernedBy to graveyard APO druid:sw909tc7852
@@ -191,7 +204,5 @@ module Dor
       # eliminate rightsMetadata. set it to <rightsMetadata/> ?
       rightsMetadata.content = '<rightsMetadata/>'
     end
-
-
   end
 end
