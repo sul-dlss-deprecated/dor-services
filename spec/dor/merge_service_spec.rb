@@ -15,15 +15,15 @@ describe Dor::MergeService do
 
   let(:primary) {
     c = MergeableItem.new
-    c.stub!(:pid).and_return(primary_pid)
-    c.inner_object.stub!(:repository).and_return(stub('frepo').as_null_object)
+    c.stub(:pid).and_return(primary_pid)
+    c.inner_object.stub(:repository).and_return(double('frepo').as_null_object)
     c
   }
 
   let(:secondary) {
     c = MergeableItem.new
-    c.stub!(:pid).and_return(secondary_pid)
-    c.inner_object.stub!(:repository).and_return(stub('frepo').as_null_object)
+    c.stub(:pid).and_return(secondary_pid)
+    c.inner_object.stub(:repository).and_return(double('frepo').as_null_object)
     c
   }
 
@@ -64,6 +64,8 @@ describe Dor::MergeService do
       </contentMetadata>
       XML
 
+      Dor::Item.stub(:find).with(primary_pid) { primary }
+      Dor::Item.stub(:find).with(secondary_pid) { secondary }
       pri_druid_tree.mkdir
       create_tempfile pri_druid_tree.path, 'image_a.jp2'
     end
@@ -85,7 +87,7 @@ describe Dor::MergeService do
       sec_druid_tree.mkdir
       create_tempfile sec_druid_tree.path, 'sec_image.jp2'
 
-      ms = Dor::MergeService.new primary, secondary
+      ms = Dor::MergeService.new primary_pid, [secondary_pid]
       ms.copy_workspace_content
 
       druid_primary = DruidTools::Druid.new primary_pid, Dor::Config.stacks.local_workspace_root
