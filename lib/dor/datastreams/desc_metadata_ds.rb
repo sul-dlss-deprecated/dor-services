@@ -6,9 +6,9 @@ class DescMetadataDS < ActiveFedora::OmDatastream
   set_terminology do |t|
     t.root :path => 'mods', :xmlns => MODS_NS, :index_as => [:not_searchable]
     t.originInfo :index_as => [:not_searchable] do
-      t.publisher :index_as => [:searchable, :displayable]
+      t.publisher :index_as => [:searchable, :stored_searchable]
       t.place :index_as => [:not_searchable] do
-        t.placeTerm :attributes => {:type => 'text'}, :index_as => [:searchable, :displayable]
+        t.placeTerm :attributes => {:type => 'text'}, :index_as => [:searchable, :stored_searchable]
       end
     end
     t.title_info(:path=>"titleInfo") {

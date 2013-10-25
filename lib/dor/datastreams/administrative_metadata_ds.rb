@@ -4,7 +4,8 @@ class AdministrativeMetadataDS < ActiveFedora::OmDatastream
   set_terminology do |t|
     t.root :path => 'administrativeMetadata', :index_as => [:not_searchable]
     t.metadata_format :path => 'descMetadata/format'
-    t.metadata_source :path => 'descMetadata/source'
+    t.admin_metadata_format :path => 'descMetadata/format', :index_as => [:symbol]
+    t.metadata_source :path => 'descMetadata/source'. :index_as => [:symbol]
     t.descMetadata do
       t.source
       t.format
@@ -16,7 +17,7 @@ class AdministrativeMetadataDS < ActiveFedora::OmDatastream
     t.registration :index_as => [:not_searchable] do
       t.agreementId
       t.itemTag
-      t.workflow_id :path => 'workflow/@id', :index_as => [:facetable]
+      t.workflow_id :path => 'workflow/@id', :index_as => [:symbol, :facetable]
       t.default_collection :path => 'collection/@id'
     end
     t.workflow :path => 'registration/workflow'
