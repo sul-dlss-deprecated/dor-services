@@ -8,7 +8,8 @@ module Dor
     # @param [LyberCore::Robots::WorkItem] dor_item The DOR work item whose workspace should be cleaned up
     # @return [void] Delete all workspace and export entities for the druid
     def self.cleanup(dor_item)
-      druid = dor_item.druid
+      druid = dor_item.druid if dor_item.respond_to? :druid
+      druid ||= dor_item.id
       cleanup_workspace_content(druid, Config.cleanup.local_workspace_root)
       cleanup_workspace_content(druid, Config.cleanup.local_assembly_root)
       cleanup_export(druid)
