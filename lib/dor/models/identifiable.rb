@@ -61,7 +61,7 @@ module Dor
       self.assert_content_model
       super(solr_doc)
       solr_doc[Dor::INDEX_VERSION_FIELD] = Dor::VERSION
-      solr_doc[solr_name('indexed_at',:date)] = Time.now.utc.xmlschema
+      solr_doc[solr_name('indexed_at', :type => :date)] = Time.now.utc.xmlschema
       add_solr_value(solr_doc, 'indexed_day', Time.now.beginning_of_day.utc.xmlschema, :string, [:searchable, :facetable])
       datastreams.values.each do |ds|
         unless ds.new?
@@ -75,47 +75,45 @@ module Dor
         druid=apo_node['rdf:resource']
         if druid
           druid=druid.gsub('info:fedora/','')
-          puts druid
           if @@apo_hash.has_key? druid or @@hydrus_apo_hash.has_key? druid
-            add_solr_value(solr_doc, "hydrus_apo_title", @@hydrus_apo_hash[druid], :string, [:searchable, :facetable]) if @@hydrus_apo_hash.has_key? druid
-            add_solr_value(solr_doc, "apo_title", @@apo_hash[druid] , :string, [:searchable, :facetable]) if @@apo_hash.has_key? druid 
+            add_solr_value(solr_doc, "hydrus_apo_title", @@hydrus_apo_hash[druid], :string, [:searchable, :facetable, :displayable]) if @@hydrus_apo_hash.has_key? druid
+            add_solr_value(solr_doc, "apo_title", @@apo_hash[druid] , :string, [:searchable, :facetable, :displayable]) if @@apo_hash.has_key? druid 
           else
             begin
               apo_object=Dor.find(druid)
               if apo_object.tags.include? 'Project : Hydrus'
-                add_solr_value(solr_doc, "hydrus_apo_title", apo_object.label, :string, [:searchable, :facetable])
+                add_solr_value(solr_doc, "hydrus_apo_title", apo_object.label, :string, [:searchable, :facetable, :displayable])
                 @@hydrus_apo_hash[druid]=apo_object.label
               else
-                add_solr_value(solr_doc, "apo_title", apo_object.label, :string, [:searchable, :facetable])
+                add_solr_value(solr_doc, "apo_title", apo_object.label, :string, [:searchable, :facetable, :displayable])
                 @@apo_hash[druid]=apo_object.label
               end
             rescue
-              add_solr_value(solr_doc, "apo_title", druid, :string, [:searchable, :facetable])
+              add_solr_value(solr_doc, "apo_title", druid, :string, [:searchable, :facetable, :displayable])
             end
           end
         end
       end
       collections=rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection','fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' 	)
       collections.each do |collection_node| 
-        puts 'here'
         druid=collection_node['rdf:resource']
         if(druid)
           druid=druid.gsub('info:fedora/','')
           if @@collection_hash.has_key? druid or @@hydrus_collection_hash.has_key? druid
-            add_solr_value(solr_doc, "hydrus_collection_title", @@hydrus_collection_hash[druid], :string, [:searchable, :facetable]) if @@hydrus_collection_hash.has_key? druid
-            add_solr_value(solr_doc, "collection_title", @@collection_hash[druid], :string, [:searchable, :facetable]) if @@collection_hash.has_key? druid
+            add_solr_value(solr_doc, "hydrus_collection_title", @@hydrus_collection_hash[druid], :string, [:searchable, :facetable, :displayable]) if @@hydrus_collection_hash.has_key? druid
+            add_solr_value(solr_doc, "collection_title", @@collection_hash[druid], :string, [:searchable, :facetable, :displayable]) if @@collection_hash.has_key? druid
           else
             begin
               collection_object=Dor.find(druid)
               if collection_object.tags.include? 'Project : Hydrus'
-                add_solr_value(solr_doc, "hydrus_collection_title", collection_object.label, :string, [:searchable, :facetable])
+                add_solr_value(solr_doc, "hydrus_collection_title", collection_object.label, :string, [:searchable, :facetable, :displayable])
                 @@hydrus_collection_hash[druid]=collection_object.label
               else
-                add_solr_value(solr_doc, "collection_title", collection_object.label, :string, [:searchable, :facetable])
+                add_solr_value(solr_doc, "collection_title", collection_object.label, :string, [:searchable, :facetable, :displayable])
                 @@collection_hash[druid]=collection_object.label
               end
             rescue
-              add_solr_value(solr_doc, "collection_title", druid, :string, [:searchable, :facetable])
+              add_solr_value(solr_doc, "collection_title", druid, :string, [:searchable, :facetable, :displayable])
             end
           end
         end

@@ -205,27 +205,27 @@ describe Dor::ContentMetadataDS do
     describe 'to_solr' do
     	it 'should generate a shelved file count' do
     		doc=@item.contentMetadata.to_solr
-    		doc['shelved_content_file_count_display'].first.should == '1'
+    		doc[Solrizer.solr_name('shelved_content_file_count', :displayable)].first.should == '1'
     	end
     	it 'should generate a resource count' do
     		doc=@item.contentMetadata.to_solr
-    		doc['resource_count_display'].first.should == '1'
+    		doc[Solrizer.solr_name('resource_count', :displayable)].first.should == '1'
     	end
     	it 'should generate a file count' do
     		doc=@item.contentMetadata.to_solr
-    		doc['content_file_count_display'].first.should == '2'
+    		doc[Solrizer.solr_name('content_file_count', :displayable)].first.should == '2'
     	end
     	it 'should generate a field called image_resource_count' do
     		doc=@item.contentMetadata.to_solr
-    		doc['image_resource_count_display'].first.should == '1'
+    		doc[Solrizer.solr_name('image_resource_count', :displayable)].first.should == '1'
     	end
     	it 'should generate a field called first_shelved_image' do
   	    doc=@item.contentMetadata.to_solr
-  	    doc['first_shelved_image_display'].first.should == 'gw177fc7976_05_0001.jp2'
+  	    doc[Solrizer.solr_name('first_shelved_image', :displayable)].first.should == 'gw177fc7976_05_0001.jp2'
   	  end
       it 'should generate a field call preserved_size_display' do
   	    doc=@item.contentMetadata.to_solr
-  	    doc['preserved_size_t'].first.should == '86774303'
+  	    doc[Solrizer.solr_name('preserved_size', :searchable)].first.should == '86774303'
       end
     end
   describe 'set_content_type' do
