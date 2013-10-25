@@ -5,7 +5,7 @@ class AdministrativeMetadataDS < ActiveFedora::OmDatastream
     t.root :path => 'administrativeMetadata', :index_as => [:not_searchable]
     t.metadata_format :path => 'descMetadata/format'
     t.admin_metadata_format :path => 'descMetadata/format', :index_as => [:symbol]
-    t.metadata_source :path => 'descMetadata/source'. :index_as => [:symbol]
+    t.metadata_source :path => 'descMetadata/source', :index_as => [:symbol]
     t.descMetadata do
       t.source
       t.format
