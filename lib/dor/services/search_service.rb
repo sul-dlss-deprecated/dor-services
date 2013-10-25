@@ -11,11 +11,7 @@ module Dor
     class << self
       
       def index_version
-        if @@index_version.nil?
-          xsl_doc = Nokogiri::XML(File.read(File.expand_path('../../../gsearch/demoFoxmlToSolr.xslt',__FILE__)))
-          @@index_version = xsl_doc.at_xpath('/xsl:stylesheet/xsl:variable[@name="INDEXVERSION"]/text()').to_s
-        end
-        @@index_version
+        Dor::VERSION
       end
       
       def reindex(*pids)
