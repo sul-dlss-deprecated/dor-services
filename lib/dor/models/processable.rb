@@ -181,8 +181,8 @@ module Dor
       sortable_milestones.each do |milestone, unordered_dates|
         dates = unordered_dates.sort
         #create the published_dt and published_day fields and the like
-        add_solr_value(solr_doc, milestone+'_day', DateTime.parse(dates.last).beginning_of_day.utc.xmlschema.split('T').first, :string, [:searchable, :facetable])
-        add_solr_value(solr_doc, milestone, dates.first, :date, [:searchable, :facetable])
+        add_solr_value(solr_doc, milestone+'_day', DateTime.parse(dates.last).beginning_of_day.utc.xmlschema.split('T').first, :string, [:searchable, :stored_searchable, :facetable])
+        add_solr_value(solr_doc, milestone, dates.first, :date, [:searchable, :facetable, :stored_searchable])
 
         #fields for OAI havester to sort on
         add_solr_value(solr_doc, "#{milestone}_earliest_dt", dates.first, :date, [:sortable])

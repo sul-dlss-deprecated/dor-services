@@ -153,11 +153,11 @@ module Dor
 
 		def to_solr(solr_doc=Hash.new, *args)
 			super solr_doc, *args
-			add_solr_value(solr_doc, "metadata_format", self.metadata_format, :string, [:searchable, :facetable])
+			add_solr_value(solr_doc, "metadata_format", self.metadata_format, :string, [:symbol, :searchable, :facetable])
 			begin
 				dc_doc = self.generate_dublin_core
 				dc_doc.xpath('/oai_dc:dc/*').each do |node|
-					add_solr_value(solr_doc, "public_dc_#{node.name}", node.text, :string, [:searchable])
+					add_solr_value(solr_doc, "public_dc_#{node.name}", node.text, :string, [:stored_searchable])
 				end
 				creator=''
 				dc_doc.xpath('//dc:creator').each do |node|

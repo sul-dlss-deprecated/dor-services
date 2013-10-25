@@ -6,7 +6,8 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
 
   set_terminology do |t|
     t.root(:path => "embargoMetadata")
-    t.status(:index_as => [:searchable, :facetable])
+    t.status
+    t.embargo_status(:path => 'status', :index_as => [:symbol])
     t.release_date(:path => "releaseDate")
     t.release_access(:path => "releaseAccess")
     t.twenty_pct_status( :path => "twentyPctVisibilityStatus", :index_as => [:searchable, :facetable])
@@ -29,8 +30,8 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
 
   def to_solr solr_doc = {}, *args
     super
-    add_solr_value(solr_doc, 'embargo_release_date', self.release_date.utc.strftime('%FT%TZ') , :date, [:searchable]) rescue nil
-    add_solr_value(solr_doc, 'twenty_pct_visibility_release_date', self.twenty_pct_release_date.utc.strftime('%FT%TZ') , :date, [:searchable]) rescue nil
+    add_solr_value(solr_doc, 'embargo_release_date', self.release_date.utc.strftime('%FT%TZ') , :date, [:stored_searchable]) rescue nil
+    add_solr_value(solr_doc, 'twenty_pct_visibility_release_date', self.twenty_pct_release_date.utc.strftime('%FT%TZ') , :date, [:displayable, :searchable]) rescue nil
 
     solr_doc
   end
