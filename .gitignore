@@ -11,5 +11,5 @@ spec/fixtures/export
 .rspec
 .ruby-gemset
 .ruby-version
-config/dev-console-env.rb
+config/dev_console_env.rb
 spec/fixtures/workspace/*/*/*/*/*/temp/
