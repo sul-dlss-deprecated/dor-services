@@ -152,10 +152,7 @@ module Dor
     # Appends contentMetadata file resources from the source objects to this object
     # @param [Array<String>] source_obj_pids ids of the secondary objects that will get their contentMetadata merged into this one
     # @param [Logger] logger optional logger to record warnings.  Otherwise, warnings get sent to STDOUT
-    def copy_file_resources source_obj_pids, logger = nil
-      if logger.nil?
-        logger = Logger.new(STDOUT)
-      end
+    def copy_file_resources source_obj_pids
       primary_cm = contentMetadata.ng_xml
       base_id = primary_cm.at_xpath('/contentMetadata/@objectId').value
       max_sequence = primary_cm.at_xpath('/contentMetadata/resource[last()]/@sequence').value.to_i
@@ -163,16 +160,35 @@ module Dor
       source_obj_pids.each do |src_pid|
         source_obj = Dor::Item.find src_pid
         source_cm = source_obj.contentMetadata.ng_xml
+
+        # Copy the resources from each source object
         source_cm.xpath('/contentMetadata/resource').each do |old_resource|
-          # Skip resources that contain file ids that already exist in this object
-          # TODO may not be necessary since we'll only save the primary after all resources from a secondary are copied over
-          if old_resource.xpath('file/@id').any? { |old_file_id| primary_cm.at_xpath("//file[@id = '#{old_file_id.value}']") }
-            logger.warn "Files already exist in primary object: #{self.pid} . Skipping resource from source object: #{source_obj.pid} with resource id: #{old_resource['id']}."
-            next
-          end
           max_sequence += 1
           resource_copy = old_resource.clone
           resource_copy['sequence'] = "#{max_sequence}"
+
+          # look for filename collisions with the primary object
+          resource_copy.xpath('file').each do |secondary_file|
+            if primary_file = primary_cm.at_xpath("//file[@id = '#{secondary_file["id"]}']")
+              # create Hashes of checksum type to checksum value
+              secondary_checksums = Hash[secondary_file.xpath('checksum').map {|node| [node['type'], node.text] } ]
+              primary_checksums = Hash[primary_file.xpath('checksum').map {|node| [node['type'], node.text] } ]
+              # TODO generate missing primary or secondary checksum nodes
+
+              if secondary_checksums.keys.any? {|type| secondary_checksums[type] == primary_checksums[type] }
+                raise Dor::Exception.new "Exact file (name and checksum) '#{secondary_file['id']}' from secondary object #{src_pid} already exist in primary object: #{self.pid}"
+              else
+                # None of the checksums match, so append the sequence number to the file name to avoid collision
+                #   append sequence number before file extension
+                #   append to end of filename when no file extension
+                if secondary_file['id'] =~ /^(.*)\.(.*)$/
+                  secondary_file['id'] = "#{$1}_#{max_sequence}.#{$2}"
+                else
+                  secondary_file['id'] = "#{secondary_file['id']}_#{max_sequence}"
+                end
+              end
+            end
+          end
 
           if old_resource['type']
             resource_copy['id'] = "#{old_resource['type']}_#{max_sequence}"
