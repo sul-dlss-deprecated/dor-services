@@ -26,13 +26,13 @@ module Dor
       unless @primary.allows_modification?
         raise Dor::Exception.new "Primary object is not editable: #{@primary.pid}"
       end
-      if ( non_editable = (@secondary_objs.detect? {|obj| ! obj.allows_modification? } ))
+      if ( non_editable = (@secondary_objs.detect {|obj| ! obj.allows_modification? } ))
         raise Dor::Exception.new "Secondary object is not editable: #{non_editable.pid}"
       end
     end
 
     def move_metadata_and_content
-      @primary.copy_file_resources secondary_druids, @logger
+      @primary.copy_file_resources @secondary_pids
       @primary.save
       copy_workspace_content
     end
