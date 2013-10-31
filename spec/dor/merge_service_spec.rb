@@ -3,6 +3,7 @@ require 'tmpdir'
 
 class MergeableItem < ActiveFedora::Base
   include Dor::Itemizable
+  include Dor::Contentable
 end
 
 
@@ -61,6 +62,15 @@ describe Dor::MergeService do
             <checksum type="sha1">ca1eb0edd09a21f9dd9e3a89abc790daf4d04916</checksum>
           </file>
         </resource>
+        <resource id="image_2" sequence="2" type="image">
+          <attr name="mergedFromPid">druid:ab123cd0002</attr>
+          <attr name="mergedFromResource">ab123cd0002_1</attr>
+          <file format="JPEG2000" id="image_a_2.jp2" mimetype="image/jp2" preserve="yes" publish="yes" shelve="yes" size="5143883">
+            <imageData height="4580" width="5939"/>
+            <checksum type="md5">3d3ff46d98f3d517d0bf086571e05c18</checksum>
+            <checksum type="sha1">ca1eb0edd09a21f9dd9e3a89abc790daf4d04916</checksum>
+          </file>
+        </resource>
       </contentMetadata>
       XML
 
@@ -75,7 +85,7 @@ describe Dor::MergeService do
       <?xml version="1.0"?>
       <contentMetadata objectId="ab123cd0002" type="map">
         <resource id="ab123cd0002_1" sequence="1" type="image">
-          <file format="JPEG2000" id="sec_image.jp2" mimetype="image/jp2" preserve="yes" publish="yes" shelve="yes" size="5143883">
+          <file format="JPEG2000" id="image_a.jp2" mimetype="image/jp2" preserve="yes" publish="yes" shelve="yes" size="5143883">
             <imageData height="4580" width="5939"/>
             <checksum type="md5">3d3ff46d98f3d517d0bf086571e05c18</checksum>
             <checksum type="sha1">ca1eb0edd09a21f9dd9e3a89abc790daf4d04916</checksum>
@@ -85,14 +95,15 @@ describe Dor::MergeService do
       XML
 
       sec_druid_tree.mkdir
-      create_tempfile sec_druid_tree.path, 'sec_image.jp2'
+      create_tempfile sec_druid_tree.path, 'image_a.jp2'
 
       ms = Dor::MergeService.new primary_pid, [secondary_pid]
       ms.copy_workspace_content
 
       druid_primary = DruidTools::Druid.new primary_pid, Dor::Config.stacks.local_workspace_root
-      expect(druid_primary.find_content 'sec_image.jp2').to_not be_nil
-      expect(druid_primary.find_content 'sec_image.jp2').to match(/sec_image.jp2/)
+      expect(druid_primary.find_content 'image_a.jp2').to_not be_nil
+      expect(druid_primary.find_content 'image_a_2.jp2').to_not be_nil
+      expect(druid_primary.find_content 'image_a_2.jp2').to match(/image_a_2.jp2/)
     end
   end
 

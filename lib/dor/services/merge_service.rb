@@ -43,12 +43,21 @@ module Dor
       pri_file = @primary.contentMetadata.resource(0).file(0).id.first
       pri_druid = DruidTools::Druid.new @primary.pid, Dor::Config.stacks.local_workspace_root
       dest_path = pri_druid.find_filelist_parent 'content', pri_file
+      primary_cm = @primary.contentMetadata.ng_xml
 
       @secondary_objs.each do |secondary|
+
         sec_druid = DruidTools::Druid.new secondary.pid, Dor::Config.stacks.local_workspace_root
-        secondary.contentMetadata.ng_xml.xpath("//file/@id").map {|id| id.value }.each do |file_id|
-          copy_path = sec_druid.find_content file_id
-          FileUtils.cp copy_path, dest_path
+        secondary.contentMetadata.ng_xml.xpath("//resource").each do |src_resource|
+          primary_resource = primary_cm.at_xpath "//resource[attr[@name = 'mergedFromPid']/text() = '#{secondary.pid}' and
+                                                             attr[@name = 'mergedFromResource']/text() = '#{src_resource['id']}' ]"
+          sequence = primary_resource['sequence']
+          src_resource.xpath("//file/@id").map {|id| id.value }.each do |file_id|
+            copy_path = sec_druid.find_content file_id
+            new_name = secondary.new_secondary_file_name(file_id, sequence)
+            # TODO verify new_name exists in primary_cm?
+            FileUtils.cp(copy_path, File.join(dest_path, "/#{new_name}"))
+          end
         end
       end
     end
