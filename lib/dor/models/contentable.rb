@@ -167,26 +167,13 @@ module Dor
           resource_copy = old_resource.clone
           resource_copy['sequence'] = "#{max_sequence}"
 
+          # Append sequence number to each secondary filename, then
           # look for filename collisions with the primary object
           resource_copy.xpath('file').each do |secondary_file|
-            if primary_file = primary_cm.at_xpath("//file[@id = '#{secondary_file["id"]}']")
-              # create Hashes of checksum type to checksum value
-              secondary_checksums = Hash[secondary_file.xpath('checksum').map {|node| [node['type'], node.text] } ]
-              primary_checksums = Hash[primary_file.xpath('checksum').map {|node| [node['type'], node.text] } ]
-              # TODO generate missing primary or secondary checksum nodes
+            secondary_file['id'] = new_secondary_file_name(secondary_file['id'], max_sequence)
 
-              if secondary_checksums.keys.any? {|type| secondary_checksums[type] == primary_checksums[type] }
-                raise Dor::Exception.new "Exact file (name and checksum) '#{secondary_file['id']}' from secondary object #{src_pid} already exist in primary object: #{self.pid}"
-              else
-                # None of the checksums match, so append the sequence number to the file name to avoid collision
-                #   append sequence number before file extension
-                #   append to end of filename when no file extension
-                if secondary_file['id'] =~ /^(.*)\.(.*)$/
-                  secondary_file['id'] = "#{$1}_#{max_sequence}.#{$2}"
-                else
-                  secondary_file['id'] = "#{secondary_file['id']}_#{max_sequence}"
-                end
-              end
+            if primary_cm.at_xpath("//file[@id = '#{secondary_file["id"]}']")
+              raise Dor::Exception.new "File '#{secondary_file['id']}' from secondary object #{src_pid} already exist in primary object: #{self.pid}"
             end
           end
 
@@ -200,8 +187,22 @@ module Dor
           if lbl && lbl.text =~ /^(.*)\s+\d+$/
             resource_copy.at_xpath('label').content = "#{$1} #{max_sequence}"
           end
+
           primary_cm.at_xpath('/contentMetadata/resource[last()]').add_next_sibling resource_copy
+          attr_node = primary_cm.create_element 'attr', src_pid, :name => 'mergedFromPid'
+          resource_copy.first_element_child.add_previous_sibling attr_node
+          attr_node = primary_cm.create_element 'attr', old_resource['id'], :name => 'mergedFromResource'
+          resource_copy.first_element_child.add_previous_sibling attr_node
         end
+      end
+      self.contentMetadata.content_will_change!
+    end
+
+    def new_secondary_file_name old_name, sequence_num
+      if old_name =~ /^(.*)\.(.*)$/
+        return "#{$1}_#{sequence_num}.#{$2}"
+      else
+        return "#{old_name}_#{sequence_num}"
       end
     end
 
