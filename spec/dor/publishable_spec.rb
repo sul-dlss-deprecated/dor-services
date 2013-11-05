@@ -11,7 +11,7 @@ describe Dor::Publishable do
   after(:each)  { unstub_config }
 
   before :each do
-    
+
     @item = instantiate_fixture('druid:ab123cd4567', PublishableItem)
     @apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
     @item.stub(:admin_policy_object).and_return([@apo])
@@ -125,26 +125,51 @@ describe Dor::Publishable do
 
     describe "#publish_metadata" do
 
-      it "does not publish the object unless rightsMetadata has world discover access" do
-        @item.rightsMetadata.content = <<-EOXML
-          <rightsMetadata objectId="druid:ab123cd4567">
-            <copyright>
-              <human>(c) Copyright 2010 by Sebastian Jeremias Osterfeld</human>
-            </copyright>
-            </access>
-            <access type="read">
-              <machine>
-                <group>stanford:stanford</group>
-              </machine>
-            </access>
-            <use>
-              <machine type="creativeCommons">by-sa</machine>
-              <human type="creativeCommons">CC Attribution Share Alike license</human>
-            </use>
-          </rightsMetadata>
-        EOXML
-        Dor::DigitalStacksService.should_not_receive(:transfer_to_document_store)
-        @item.publish_metadata
+      context "with no world discover access in rightsMetadata" do
+
+        let(:purl_root) { Dir.mktmpdir }
+
+        before(:each) do
+          @item.rightsMetadata.content = <<-EOXML
+            <rightsMetadata objectId="druid:ab123cd4567">
+              <copyright>
+                <human>(c) Copyright 2010 by Sebastian Jeremias Osterfeld</human>
+              </copyright>
+              </access>
+              <access type="read">
+                <machine>
+                  <group>stanford:stanford</group>
+                </machine>
+              </access>
+              <use>
+                <machine type="creativeCommons">by-sa</machine>
+                <human type="creativeCommons">CC Attribution Share Alike license</human>
+              </use>
+            </rightsMetadata>
+          EOXML
+
+          Dor::Config.push! {|config| config.stacks.local_document_cache_root purl_root}
+        end
+
+        after(:each) do
+          FileUtils.remove_entry purl_root
+          Dor::Config.pop!
+        end
+
+        it "does not publish the object" do
+          Dor::DigitalStacksService.should_not_receive(:transfer_to_document_store)
+          @item.publish_metadata
+        end
+
+        it "removes the item's content from the Purl document cache" do
+          # create druid tree and content in purl root
+          druid1 = DruidTools::Druid.new @item.pid, purl_root
+          druid1.mkdir
+          File.open(File.join(druid1.path, 'tmpfile'), 'w') {|f| f.write "junk" }
+
+          @item.publish_metadata
+          expect(File).to_not exist(druid1.path)
+        end
       end
 
       context "copies to the document cache" do
