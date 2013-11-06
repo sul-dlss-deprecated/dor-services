@@ -206,8 +206,9 @@ module Dor
       end
     end
 
-    # Clears RELS-EXT relationships, sets the isGovernedBy relationship to the SDR Graveyard APO,
-    def decomission
+    # Clears RELS-EXT relationships, sets the isGovernedBy relationship to the SDR Graveyard APO
+    # @param [String] tag optional String of text that is concatenated to the identityMetadata/tag "Decomissioned : "
+    def decomission tag = nil
       # remove isMemberOf and isMemberOfCollection relationships
       clear_relationship :is_member_of
       clear_relationship :is_member_of_collection
@@ -215,11 +216,12 @@ module Dor
       clear_relationship :is_governed_by
       # add isGovernedBy to graveyard APO druid:sw909tc7852
       # SEARCH BY dc title for 'SDR Graveyard'
-      add_relationship :is_governed_by, Dor::SearchService.sdr_graveyard_apo_druid
+      add_relationship :is_governed_by, ActiveFedora::Base.find(Dor::SearchService.sdr_graveyard_apo_druid)
       # eliminate contentMetadata. set it to <contentMetadata/> ?
       contentMetadata.content = '<contentMetadata/>'
       # eliminate rightsMetadata. set it to <rightsMetadata/> ?
       rightsMetadata.content = '<rightsMetadata/>'
+      add_tag "Decommissioned : #{tag}"
     end
   end
 end

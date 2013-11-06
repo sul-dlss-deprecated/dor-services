@@ -79,13 +79,13 @@ module Dor
       end
     end
 
-    # remove content from stacks
+    # Remove content from stacks
     # TODO might set workflow status in future for robot to do
     def unshelve
       DigitalStacksService.remove_stacks_dir @current_secondary.pid
     end
 
-    # Push altered metadata to purl
+    # Withdraw item from Purl
     # TODO might set workflow status in future for robot to do
     def unpublish
       @current_secondary.publish_metadata
