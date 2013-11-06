@@ -48,6 +48,8 @@
   :user:
   :document_cache_host:
   :document_cache_user:
+  :local_stacks_root: /stacks
+  :local_document_cache_root: /purl
 :suri:
   :pass:
   :id_namespace: druid

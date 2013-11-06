@@ -34,6 +34,8 @@ Dor::Config.configure do
     storage_root '/stacks'
     host 'host'
     user ''
+    local_stacks_root '/stacks'
+    local_document_cache_root '/purl'
   end
 
   gsearch.url 'https://host/solr/gsearch'
