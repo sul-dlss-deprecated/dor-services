@@ -82,7 +82,7 @@ module Dor
     # Remove content from stacks
     # TODO might set workflow status in future for robot to do
     def unshelve
-      DigitalStacksService.remove_stacks_dir @current_secondary.pid
+      DigitalStacksService.prune_stacks_dir @current_secondary.pid
     end
 
     # Withdraw item from Purl
