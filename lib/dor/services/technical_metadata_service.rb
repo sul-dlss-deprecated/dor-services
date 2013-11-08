@@ -47,7 +47,7 @@ module Dor
     end
 
     # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
-    # @return [Hash<Symbol,Array>] Sets of filenames grouped by change type for use in performing file or metadata operations
+    # @return [FileGroupDifference] The differences between two versions of a group of files
     def self.get_content_group_diff(dor_item)
       inventory_diff_xml = dor_item.get_content_diff('all')
       inventory_diff = Moab::FileInventoryDifference.parse(inventory_diff_xml)
@@ -55,6 +55,8 @@ module Dor
       content_group_diff
     end
 
+    # @param [FileGroupDifference] content_group_diff
+    # @return [Hash<Symbol,Array>] Sets of filenames grouped by change type for use in performing file or metadata operations
     def self.get_file_deltas(content_group_diff)
       deltas = content_group_diff.file_deltas
       deltas
@@ -154,20 +156,24 @@ module Dor
       old_file_nodes = get_file_nodes(old_techmd)
       new_file_nodes = get_file_nodes(new_techmd)
       merged_nodes = Hash.new
-      deltas[:added].each do |path|
-        merged_nodes[path] = new_file_nodes[path]
+      deltas[:identical].each do |path|
+        merged_nodes[path] = old_file_nodes[path]
       end
       deltas[:modified].each do |path|
         merged_nodes[path] = new_file_nodes[path]
       end
-      deltas[:copied].each do |copy|
-        master_node = old_file_nodes[copy[:basis][0]] || new_file_nodes[copy[:other][0]]
-        copy[:other].each do |path|
-          file_tag = "<file id='#{path}'>"
-          clone = master_node.clone
-          clone.sub!(/<file\s*id.*?["'].*?["'].*?>/, file_tag)
-          merged_nodes[path] = clone
-        end
+      deltas[:added].each do |path|
+        merged_nodes[path] = new_file_nodes[path]
+      end
+      deltas[:renamed].each do |oldpath,newpath|
+        clone = old_file_nodes[oldpath].clone
+        clone.sub!(/<file\s*id.*?["'].*?["'].*?>/, "<file id='#{newpath}'>")
+        merged_nodes[newpath] = clone
+      end
+      deltas[:copyadded].each do |oldpath,newpath|
+        clone = old_file_nodes[oldpath].clone
+        clone.sub!(/<file\s*id.*?["'].*?["'].*?>/, "<file id='#{newpath}'>")
+        merged_nodes[newpath] = clone
       end
       merged_nodes
     end

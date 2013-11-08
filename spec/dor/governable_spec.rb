@@ -138,15 +138,12 @@ describe Dor::Governable do
     it 'should include a rights facet' do
       @item.stub(:milestones).and_return({})
       @item.set_read_rights('world')
-      puts @item.rightsMetadata.ng_xml.to_s
       solr_doc=@item.to_solr
       solr_doc['rights_facet'].should == ['World']
     end
     it 'should shouldnt error if there is nothing in the datastream' do
       @item.stub(:milestones).and_return({})
-      @item.stub(:rightsMetadata).and_return(ActiveFedora::OmDatastream.new)
-      puts @item.rightsMetadata.ng_xml.to_s
-      
+      @item.stub(:rightsMetadata).and_return(ActiveFedora::OmDatastream.new)      
       solr_doc=@item.to_solr
       solr_doc['rights_facet'].should == [""]
     end
