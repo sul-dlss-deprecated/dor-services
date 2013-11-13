@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'bundler/setup'
+Bundler.require(:default, :development)
+
+def check_config_and_boot
+  config_dir = File.expand_path(File.dirname(__FILE__) + "/../config")
+
+  environment_file = config_dir + '/dev_console_env.rb'
+  unless File.exists? environment_file
+    puts "Unable to start console. #{environment_file} missing"
+    exit
+  end
+
+  cert_dir = config_dir + "/certs"
+  if (Dir.glob cert_dir + '/*.key').empty? || (Dir.glob cert_dir + '/*.crt').empty?
+    puts "Unable to start console.  Keys or Certs are missing from #{cert_dir}"
+    exit
+  end
+
+  require config_dir + "/dev_console_env"
+end
+
+check_config_and_boot
+
+silence_warnings do
+  begin
+    require 'pry'
+    IRB = Pry
+  rescue LoadError
+  end
+end
+
+IRB.start

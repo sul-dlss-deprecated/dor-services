@@ -1,8 +1,23 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require File.expand_path(File.dirname(__FILE__) + '/../../lib/dor/models/contentable')
+require 'net/sftp'
+
 
 class ContentableItem < ActiveFedora::Base
   include Dor::Contentable
+end
+
+class SpecNode
+  include ActiveFedora::Relationships
+  include ActiveFedora::SemanticNode
+
+  attr_accessor :pid
+  def initialize (params={})
+    self.pid = params[:pid]
+  end
+  def internal_uri
+    'info:fedora/' + pid.to_s
+  end
 end
 
 describe Dor::Contentable do
@@ -139,6 +154,55 @@ describe Dor::Contentable do
     it 'should use sftp to remove the file and update the metadata' do
       @sftp.stub(:remove!)
       @item.remove_file('gw177fc7976_05_0001.jp2')
+    end
+  end
+
+  describe "#decomission" do
+
+    let(:dummy_obj) {
+      node = SpecNode.new
+      node.stub(:rels_ext).and_return(double("rels_ext", :content_will_change! => true, :content=>''))
+      node.pid = 'old:apo'
+      node
+    }
+
+    let(:obj) do
+      o = Dor::Item.new
+      o.add_relationship :is_member_of, dummy_obj
+      o.add_relationship :is_governed_by, dummy_obj
+      o.decomission
+      o
+    end
+
+    let(:graveyard_apo) do
+      node = SpecNode.new
+      node.stub(:rels_ext).and_return(double("rels_ext", :content_will_change! => true, :content=>''))
+      node.pid = 'new:apo'
+      node
+    end
+
+    before(:each) do
+      Dor::SearchService.stub(:sdr_graveyard_apo_druid)
+      ActiveFedora::Base.stub(:find) { graveyard_apo }
+    end
+
+    it "removes existing isMemberOf and isGovernedBy relationships" do
+      expect(obj.relationships(:is_member_of_collection)).to be_empty
+      expect(obj.relationships(:is_member_of)).to be_empty
+      expect(obj.relationships(:is_governed_by)).to_not include('info:fedora/old:apo')
+    end
+
+    it "adds an isGovernedBy relationship to the SDR graveyard APO" do
+      expect(obj.relationships(:is_governed_by)).to eq(["info:fedora/new:apo"])
+    end
+
+    it "clears out rightsMetadata and contentMetadata" do
+      expect(obj.rightsMetadata.content).to eq('<rightsMetadata/>')
+      expect(obj.contentMetadata.content).to eq('<contentMetadata/>')
+    end
+
+    it "adds a 'Decommissioned: tag" do
+      expect(obj.identityMetadata.tags).to include('Decommissioned : ')
     end
   end
 end

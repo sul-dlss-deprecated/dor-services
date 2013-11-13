@@ -37,7 +37,7 @@ Gem::Specification.new do |s|
   s.add_dependency "net-ssh"
   s.add_dependency "net-sftp"
   s.add_dependency "druid-tools", ">=0.2.3"
-  s.add_dependency "moab-versioning", ">=1.2.1"
+  s.add_dependency "moab-versioning", "1.3.0"
   s.add_dependency "stanford-mods", ">=0.0.14"
   s.add_dependency "dor-workflow-service", "~>1.3"
 

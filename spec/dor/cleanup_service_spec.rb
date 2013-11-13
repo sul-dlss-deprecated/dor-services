@@ -65,12 +65,6 @@ describe Dor::CleanupService do
     Dor::CleanupService.cleanup(mock_item)
   end
 
-  specify "Dor::CleanupService.cleanup_workspace" do
-    Dor::CleanupService.should_receive(:remove_branch).once.with(@fixtures.join('workspace/aa/123/bb/4567'))
-    Dor::CleanupService.should_receive(:prune_druid_tree).once.with(@workitem_pathname.parent.parent,@workspace_root_pathname)
-    Dor::CleanupService.cleanup_workspace_content(@druid, @workspace_root_pathname)
-  end
-
   specify "Dor::CleanupService.cleanup_export" do
     Dor::CleanupService.should_receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567').to_s)
     Dor::CleanupService.should_receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567.tar').to_s)
@@ -88,16 +82,6 @@ describe Dor::CleanupService do
     @bag_pathname.exist?.should == true
     @bag_pathname.should_receive(:rmtree)
     Dor::CleanupService.remove_branch(@bag_pathname)
-  end
-
-  specify "Dor::CleanupService.prune_druid_tree" do
-    @workitem_pathname.parent.rmtree
-    @workitem_pathname.parent.parent.exist?.should == true
-    @workitem_pathname.parent.parent.parent.exist?.should == true
-    @workitem_pathname.parent.parent.parent.parent.exist?.should == true
-    Dor::CleanupService.prune_druid_tree( @workitem_pathname.parent.parent,@workspace_root_pathname)
-    @workitem_pathname.parent.parent.parent.parent.exist?.should == false
-    @workspace_root_pathname.exist?.should == true
   end
 
   it "can do a complete cleanup" do

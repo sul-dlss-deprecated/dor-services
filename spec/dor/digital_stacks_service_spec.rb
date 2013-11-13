@@ -1,79 +1,101 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Dor::DigitalStacksService do
-  before(:all) do
-    Dor::Config.push! do
-      stacks do
-        document_cache_storage_root '/home/cache'
-        document_cache_host 'cache.stanford.edu'
-        document_cache_user 'user'
 
-        storage_root '/stacks'
-        host 'stacks-test.stanford.edu'
-        user 'digitaladmin'
-
-        local_workspace_root '/workspace'
-      end
-    end
-  end
+  let(:purl_root) { Dir.mktmpdir }
+  let(:stacks_root) { Dir.mktmpdir }
+  let(:workspace_root) { Dir.mktmpdir }
 
   before(:each) do
     @mock_ssh  = double(Net::SSH)
     @mock_sftp = double(Net::SFTP)
+    Dor::Config.push! {|c| c.stacks.local_document_cache_root purl_root}
+    Dor::Config.push! {|c| c.stacks.local_stacks_root stacks_root}
+    Dor::Config.push! {|c| c.stacks.local_workspace_root workspace_root}
+
   end
 
-  after(:all) do
+  after(:each) do
+    FileUtils.remove_entry purl_root
+    FileUtils.remove_entry stacks_root
+    FileUtils.remove_entry workspace_root
     Dor::Config.pop!
   end
 
   describe ".transfer_to_document_store" do
 
     it "copies the given metadata to the document cache in the Digital Stacks" do
-      mock_io = double('sftp response')
-      mock_io.stub(:[]).and_return(mock_io)
-
-      Net::SSH.should_receive(:start).with('cache.stanford.edu','user',kind_of(Hash)).and_yield(@mock_ssh)
-      @mock_ssh.should_receive(:'exec!').with("mkdir -p /home/cache/aa/123/bb/4567")
-      @mock_ssh.should_receive(:sftp).and_return(@mock_ssh)
-      @mock_ssh.should_receive(:'upload!').with(kind_of(StringIO),"/home/cache/aa/123/bb/4567/someMd")
-
+      dr = DruidTools::PurlDruid.new 'druid:aa123bb4567', purl_root
+      item_root = dr.path(nil,true)
       Dor::DigitalStacksService.transfer_to_document_store('druid:aa123bb4567', '<xml/>', 'someMd')
+      file_path = dr.find_content('someMd')
+      expect(file_path).to match(/4567\/someMd$/)
+      expect(IO.read(file_path)).to eq('<xml/>')
     end
+
   end
 
   describe ".shelve_to_stacks" do
     it "copies the content to the digital stacks" do
-      Net::SSH.should_receive(:start).with('stacks-test.stanford.edu','digitaladmin',kind_of(Hash)).and_yield(@mock_ssh)
-      @mock_ssh.should_receive(:'exec!').with("mkdir -p /stacks/aa/123/bb/4567")
-      @mock_ssh.should_receive(:sftp).and_return(@mock_ssh)
-      @mock_ssh.should_receive(:'upload!').with("/workspace/aa/123/bb/4567/aa123bb4567/content/1.jpg","/stacks/aa/123/bb/4567/1.jpg").and_return(double('upload').as_null_object)
-      File.should_receive(:exists?).with("/workspace/aa/123/bb/4567/aa123bb4567/content/1.jpg").and_return(true)
+      dr = DruidTools::Druid.new 'druid:aa123bb4567', workspace_root
+      File.open(File.join(dr.content_dir, '1.jpg'), 'w') {|f| f.write 'junk'}
+      File.open(File.join(dr.content_dir, '2.pdf'), 'w') {|f| f.write 'junk'}
 
-      files_to_send = ['1.jpg']
-      Dor::DigitalStacksService.shelve_to_stacks('druid:aa123bb4567', files_to_send)
+      Dor::DigitalStacksService.shelve_to_stacks 'druid:aa123bb4567', ['1.jpg', '2.pdf']
+      dr = DruidTools::StacksDruid.new 'druid:aa123bb4567', stacks_root
+      expect(dr.find_content('1.jpg')).to match(/4567\/1.jpg$/)
+      expect(dr.find_content('2.pdf')).to match(/4567\/2.pdf$/)
     end
 
-    it "deletes content from the digital stacks" do
-      Net::SFTP.should_receive(:start).with('stacks-test.stanford.edu','digitaladmin',kind_of(Hash)).and_yield(@mock_sftp)
-      @mock_sftp.should_receive(:'remove!').with("/stacks/aa/123/bb/4567/1.jpg")
 
-      files_to_remove = ['1.jpg']
-      Dor::DigitalStacksService.remove_from_stacks('druid:aa123bb4567', files_to_remove)
-    end
+  end
+
+  describe "rename_in_stacks" do
+    let(:dr) { DruidTools::StacksDruid.new 'druid:aa123bb4567', stacks_root }
+    let(:item_root) { dr.path(nil,true) }
 
     it "renames content in the digital stacks" do
-      Net::SFTP.should_receive(:start).with('stacks-test.stanford.edu','digitaladmin',kind_of(Hash)).and_yield(@mock_sftp)
-      @mock_sftp.should_receive(:'rename!').with("/stacks/aa/123/bb/4567/1.jpg","/stacks/aa/123/bb/4567/2.jpg")
+      File.open(File.join(item_root, '1.jpg'), 'w') {|f| f.write 'junk'}
 
       files_to_rename = [['1.jpg','2.jpg']]
       Dor::DigitalStacksService.rename_in_stacks('druid:aa123bb4567', files_to_rename)
+      expect(dr.find_content('1.jpg')).to be_nil
+      expect(File).to exist(dr.find_content('2.jpg'))
     end
   end
 
-  describe ".druid_tree" do
-    it "creates a druid tree path from a given druid" do
-      path = Dor::DigitalStacksService.druid_tree('druid:aa123bb4567')
-      path.should == '/aa/123/bb/4567'
+  describe ".remove_from_stacks" do
+    let(:dr) { DruidTools::StacksDruid.new 'druid:aa123bb4567', stacks_root }
+    let(:item_root) { dr.path(nil,true) }
+    let(:files_to_remove) { ['1.jpg', '2.pdf'] }
+
+    it "deletes content from the digital stacks by druid and file names" do
+      File.open(File.join(item_root, '1.jpg'), 'w') {|f| f.write 'junk'}
+      File.open(File.join(item_root, '2.pdf'), 'w') {|f| f.write 'junk'}
+
+      Dor::DigitalStacksService.remove_from_stacks('druid:aa123bb4567', files_to_remove)
+      expect(dr.find_content('1.jpg')).to be_nil
+      expect(dr.find_content('2.pdf')).to be_nil
+    end
+
+    it "skips files that do not exist without raising an exception" do
+      File.open(File.join(item_root, '2.pdf'), 'w') {|f| f.write 'junk'}
+
+      Dor::DigitalStacksService.remove_from_stacks('druid:aa123bb4567', files_to_remove)
+      expect(dr.find_content('2.pdf')).to be_nil
+    end
+  end
+
+  describe ".prune_stacks_dir" do
+    it "prunes the stacks directory" do
+      dr = DruidTools::StacksDruid.new 'druid:aa123bb4567', stacks_root
+      item_root = dr.path(nil,true)
+      File.open(File.join(item_root, 'somefile'), 'w') {|f| f.write 'junk'}
+
+      Dor::DigitalStacksService.prune_stacks_dir 'druid:aa123bb4567'
+      item_pathname = Pathname item_root
+      expect(File).to_not exist(item_pathname)
+      expect(File).to_not exist(item_pathname.parent)
     end
   end
 

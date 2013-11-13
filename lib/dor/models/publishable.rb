@@ -44,6 +44,8 @@ module Dor
       Nokogiri::XML(pub.to_xml) { |x| x.noblanks }.to_xml { |config| config.no_declaration }
     end
 
+    # Copies this object's public_xml to the Purl document cache if it is world discoverable
+    #  otherwise, it prunes the object's metadata from the document cache
     def publish_metadata
       rights = datastreams['rightsMetadata'].ng_xml.clone.remove_namespaces!
       if(rights.at_xpath("//rightsMetadata/access[@type='discover']/machine/world"))
@@ -56,6 +58,9 @@ module Dor
         if self.metadata_format == 'mods'
           DigitalStacksService.transfer_to_document_store(pid, self.add_collection_reference, 'mods')
         end
+      else
+        # Clear out the document cache for this item
+        DigitalStacksService.prune_purl_dir pid
       end
     end
 

@@ -18,6 +18,8 @@ require 'dor-services'
 require 'foxml_helper'
 require 'equivalent-xml'
 require 'fakeweb'
+require 'pry'
+require 'tmpdir'
 
 # ::ENABLE_SOLR_UPDATES = true
 
@@ -34,6 +36,8 @@ module Dor::SpecHelpers
       solrizer.url "http://solr.edu/solrizer"
       fedora.url "http://fedora.edu/fedora"
       stacks.local_workspace_root File.join(fixture_dir, "workspace")
+      stacks.local_stacks_root File.join(fixture_dir, "stacks")
+      stacks.local_document_cache_root File.join(fixture_dir, "purl")
       sdr.local_workspace_root File.join(fixture_dir, "workspace")
       sdr.local_export_home File.join(fixture_dir, "export")
     end
