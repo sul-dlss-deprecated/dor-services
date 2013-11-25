@@ -134,6 +134,21 @@ describe Dor::Governable do
       XML
     end
   end
+  describe 'to_solr' do
+    it 'should include a rights facet' do
+      @item.stub(:milestones).and_return({})
+      @item.set_read_rights('world')
+      solr_doc=@item.to_solr
+      solr_doc['rights_facet'].should == ['World']
+    end
+    it 'should shouldnt error if there is nothing in the datastream' do
+      @item.stub(:milestones).and_return({})
+      @item.stub(:rightsMetadata).and_return(ActiveFedora::OmDatastream.new)
+      solr_doc=@item.to_solr
+      solr_doc['rights_facet'].should == [""]
+    end
+    
+  end
   describe 'add_collection' do
     it 'should add a collection' do 
       @item.add_collection('druid:oo201oo0002')

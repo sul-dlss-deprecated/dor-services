@@ -195,6 +195,7 @@ module Dor
       end
       add_solr_value(solr_doc, "current_version", current_version.to_s, :string, [ :displayable , :facetable])
       add_solr_value(solr_doc, "last_modified_day", self.modified_date.to_s.split('T').first, :string, [ :facetable ])
+      add_solr_value(solr_doc, "rights", rights, :string, [:facetable])
       solr_doc
     end
 
