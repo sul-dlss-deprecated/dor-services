@@ -277,10 +277,12 @@ describe 'set_desc_metadata_using_label' do
 
   end
   it 'should throw an exception if there is content in the descriptive metadata stream' do
+    #@obj.stub(:descMetadata).and_return(ActiveFedora::OmDatastream.new)
+    @obj.descMetadata.stub(:new?).and_return(false)
     lambda{@obj.set_desc_metadata_using_label()}.should raise_error
   end
   it 'should run if there is content in the descriptive metadata stream and force is true' do
-    @obj.set_desc_metadata_using_label(true)
+    @obj.set_desc_metadata_using_label(false)
     @obj.datastreams['descMetadata'].ng_xml.should be_equivalent_to <<-XML
     <?xml version="1.0"?>
     <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">

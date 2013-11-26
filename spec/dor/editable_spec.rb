@@ -270,4 +270,18 @@ describe Dor::Editable do
       @empty_item.default_workflows.include?('thisWF').should == true
     end
   end
+  describe 'to_solr' do
+    it 'should make a solr doc' do
+      @item.stub(:milestones).and_return({})
+      @item.stub(:agreement).and_return('druid:agreement')
+      solr_doc = @item.to_solr
+      solr_doc["default_rights_facet"].should == ['World']
+      solr_doc["agreement_facet"].should == ['druid:agreement']
+      solr_doc["default_collections_facet"].should == ["druid:fz306fj8334"]
+      solr_doc["default_workflows_facet"].should == ['digitizationWF']
+      solr_doc["use_statement_display"].should == ["Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu."]
+      solr_doc["copyright_statement_display"].should == ["Additional copyright info"]
+      
+    end
+  end
 end

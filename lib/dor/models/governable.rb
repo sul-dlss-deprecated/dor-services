@@ -90,8 +90,9 @@ module Dor
       rightsMetadata.content=admin_policy_object.datastreams['defaultObjectRights'].content
     end
     def rights
+        return nil unless self.respond_to? :rightsMetadata
         xml=self.rightsMetadata.ng_xml
-        return nil if not xml.search('//rightsMetadata').length == 1
+        return nil if xml.search('//rightsMetadata').length != 1
         if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
           'Stanford'
         else
