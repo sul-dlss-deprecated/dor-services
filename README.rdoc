@@ -338,6 +338,7 @@ This is located in the ./script subdirectory so that it does not get installed b
 - <b>4.2.3</b> Fix an exception that occured when a version had no description
 - <b>4.3.0</b> Add some missing hydrus solr fields
 - <b>4.3.2</b> Bug fixes and refactoring of object status logic
+- <b>4.4.3</b> Use moab 1.3.1
 == Copyright
 
 Copyright (c) 2013 Stanford University Library. See LICENSE for details.
