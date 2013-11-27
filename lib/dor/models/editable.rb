@@ -8,6 +8,7 @@ module Dor
     end
     
     def to_solr(solr_doc=Hash.new, *args)
+      super(solr_doc, *args)
       add_solr_value(solr_doc, "default_rights", default_rights, :string, [:facetable])
       add_solr_value(solr_doc, "agreement", agreement, :string, [:facetable])
       add_solr_value(solr_doc, "default_collections", default_collections, :string, [:facetable])

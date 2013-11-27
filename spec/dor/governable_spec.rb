@@ -140,6 +140,7 @@ describe Dor::Governable do
       @item.set_read_rights('world')
       solr_doc=@item.to_solr
       solr_doc['rights_facet'].should == ['World']
+      solr_doc[:id].should == @item.pid
     end
     it 'should shouldnt error if there is nothing in the datastream' do
       @item.stub(:milestones).and_return({})
