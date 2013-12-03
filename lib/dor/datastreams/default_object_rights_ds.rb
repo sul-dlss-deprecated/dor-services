@@ -3,8 +3,8 @@ module Dor
 
     set_terminology do |t|
       t.root :path => 'rightsMetadata', :index_as => [:not_searchable]
-      t.copyright :path => 'copyright/human'
-      t.use_statement :path => '/use/human[@type=\'useAndReproduction\']'
+      t.copyright :path => 'copyright/human', :index_as => [:facetable]
+      t.use_statement :path => '/use/human[@type=\'useAndReproduction\']', :index_as => [:facetable]
       
       t.use do
         t.machine

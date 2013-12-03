@@ -17,7 +17,7 @@ class AdministrativeMetadataDS < ActiveFedora::OmDatastream
       t.agreementId
       t.itemTag
       t.workflow_id :path => 'workflow/@id', :index_as => [:facetable]
-      t.default_collection :path => 'collection/@id'
+      t.default_collection :path => 'collection/@id', :index_as => [:facetable]
     end
     t.workflow :path => 'registration/workflow'
     t.deposit :index_as => [:not_searchable]

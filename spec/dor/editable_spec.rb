@@ -274,13 +274,14 @@ describe Dor::Editable do
     it 'should make a solr doc' do
       @item.stub(:milestones).and_return({})
       @item.stub(:agreement).and_return('druid:agreement')
+      @item.stub(:agreement_object).and_return(true)
       solr_doc = @item.to_solr
       solr_doc["default_rights_facet"].should == ['World']
       solr_doc["agreement_facet"].should == ['druid:agreement']
-      solr_doc["default_collections_facet"].should == ["druid:fz306fj8334"]
-      solr_doc["default_workflows_facet"].should == ['digitizationWF']
-      solr_doc["use_statement_display"].should == ["Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu."]
-      solr_doc["copyright_statement_display"].should == ["Additional copyright info"]
+      solr_doc["registration_default_collection_facet"].should == ["druid:fz306fj8334"]
+      solr_doc["registration_workflow_id_facet"].should == ['digitizationWF']
+      solr_doc["rightsMetadata_use_statement_facet"].should == ["Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu."]
+      solr_doc["copyright_facet"].should == ["Additional copyright info"]
       
     end
   end

@@ -10,13 +10,7 @@ module Dor
     def to_solr(solr_doc=Hash.new, *args)
       super(solr_doc, *args)
       add_solr_value(solr_doc, "default_rights", default_rights, :string, [:facetable])
-      add_solr_value(solr_doc, "agreement", agreement, :string, [:facetable])
-      add_solr_value(solr_doc, "default_collections", default_collections, :string, [:facetable])
-      add_solr_value(solr_doc, "default_workflows", default_workflows, :string, [:facetable])
-      add_solr_value(solr_doc, "use_statement", use_statement, :string, [:displayable])
-      add_solr_value(solr_doc, "copyright_statement", copyright_statement, :string, [:displayable])
-        
-    
+      add_solr_value(solr_doc, "agreement", agreement, :string, [:facetable]) if agreement_object
       solr_doc
     end
     #Adds a person or group to a role in the APO role metadata datastream
