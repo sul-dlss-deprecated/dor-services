@@ -65,7 +65,7 @@ module Dor
     end
     #call the dor services app to have it publish the metadata
     def publish_metadata_remotely
-      dor_services = RestClient::Resource.new(Config.dor_services.url+"/objects/#{pid}/publish")
+      dor_services = RestClient::Resource.new(Config.dor_services.url+"/v1/objects/#{pid}/publish")
       dor_services.post ''
       dor_services.url
     end
