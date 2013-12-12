@@ -203,7 +203,7 @@ describe Dor::Publishable do
   end
   describe 'publish remotely' do
   before(:each) do
-    Dor::Config.push! {|config| config.dor_services.url 'https://lyberservices-test.stanford.edu/dor/v1'}
+    Dor::Config.push! {|config| config.dor_services.url 'https://lyberservices-test.stanford.edu/dor'}
     
     RestClient::Resource.any_instance.stub(:post)
   end
