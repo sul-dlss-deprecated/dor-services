@@ -1,12 +1,12 @@
 PATH
   remote: .
   specs:
-    dor-services (4.4.5)
+    dor-services (4.4.8)
       active-fedora (~> 5.6, >= 5.6.3)
       activesupport
       confstruct (>= 0.2.2)
       dor-workflow-service (~> 1.4)
-      druid-tools (>= 0.2.3)
+      druid-tools (>= 0.3.0)
       equivalent-xml (>= 0.2.2)
       json
       lyber-utils
