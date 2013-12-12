@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
 
   # Runtime dependencies
-
+  s.add_dependency "rdf", "1.0.10.2"
   s.add_dependency "active-fedora", "~>5.6", ">=5.6.3"
   s.add_dependency "om"
   s.add_dependency "solrizer", "~> 2.0"
@@ -37,7 +37,7 @@ Gem::Specification.new do |s|
   s.add_dependency "net-ssh"
   s.add_dependency "net-sftp"
   s.add_dependency "druid-tools", ">=0.3.0"
-  s.add_dependency "moab-versioning", ">=1.3.1"
+  s.add_dependency "moab-versioning", "=1.3.1"
   s.add_dependency "stanford-mods", ">=0.0.14"
   s.add_dependency "dor-workflow-service", "~>1.4"
 
