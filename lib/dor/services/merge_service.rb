@@ -2,16 +2,16 @@ module Dor
 
   class MergeService
 
-    def MergeService.merge_into_primary primary_druid, secondary_druids, logger = nil
+    def MergeService.merge_into_primary primary_druid, secondary_druids, tag, logger = nil
       # TODO test the secondary_obj to see if we've processed it already
-      merge_service = Dor::MergeService.new primary_druid, secondary_druids, logger
+      merge_service = Dor::MergeService.new primary_druid, secondary_druids, tag, logger
       merge_service.check_objects_editable
       merge_service.move_metadata_and_content
       merge_service.decomission_secondaries
       # kick off commonAccessioning for the primary?
     end
 
-    def initialize primary_druid, secondary_pids, logger = nil
+    def initialize primary_druid, secondary_pids, tag, logger = nil
       @primary = Dor::Item.find primary_druid
       @secondary_pids = secondary_pids
       @secondary_objs = secondary_pids.map {|pid|  Dor::Item.find pid }
@@ -20,6 +20,7 @@ module Dor
       else
         @logger = logger
       end
+      @tag = tag
     end
 
     def check_objects_editable
@@ -66,12 +67,13 @@ module Dor
       @secondary_objs.each do |secondary_obj|
         begin
           @current_secondary = secondary_obj
-          @current_secondary.decomission
+          @current_secondary.decomission @tag
           @current_secondary.save
 
           unshelve
           unpublish
           Dor::CleanupService.cleanup_by_druid @current_secondary.pid
+          Dor::WorkflowService.archive_active_workflow 'dor', @current_secondary.pid
         rescue => e
           @logger.error "Unable to decomission #{@current_secondary.pid} with primary object #{@primary.pid}: #{e.inspect}"
           @logger.error e.backtrace.join("\n")

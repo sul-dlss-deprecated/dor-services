@@ -89,7 +89,24 @@ module Dor
     def reapplyAdminPolicyObjectDefaults
       rightsMetadata.content=admin_policy_object.datastreams['defaultObjectRights'].content
     end
-    
+    def rights
+        return nil unless self.respond_to? :rightsMetadata
+        xml=self.rightsMetadata.ng_xml
+        return nil if xml.search('//rightsMetadata').length != 1
+        if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
+          'Stanford'
+        else
+          if xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length ==1
+            'World'
+          else
+            if xml.search('//rightsMetadata/access[@type=\'discover\']/machine/none').length == 1
+              'Dark'
+            else
+              'None'
+            end
+          end
+      end
+    end
     def groups_which_manage_item
       ['dor-administrator','dor-apo-manager', 'dor-apo-depositor']
     end

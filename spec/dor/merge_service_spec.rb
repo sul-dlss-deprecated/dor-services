@@ -97,7 +97,7 @@ describe Dor::MergeService do
       sec_druid_tree.mkdir
       create_tempfile sec_druid_tree.path, 'image_a.jp2'
 
-      ms = Dor::MergeService.new primary_pid, [secondary_pid]
+      ms = Dor::MergeService.new primary_pid, [secondary_pid], 'some tag'
       ms.copy_workspace_content
 
       druid_primary = DruidTools::Druid.new primary_pid, Dor::Config.stacks.local_workspace_root

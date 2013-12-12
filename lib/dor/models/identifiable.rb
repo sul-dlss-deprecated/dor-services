@@ -75,7 +75,6 @@ module Dor
         druid=apo_node['rdf:resource']
         if druid
           druid=druid.gsub('info:fedora/','')
-          puts druid
           if @@apo_hash.has_key? druid or @@hydrus_apo_hash.has_key? druid
             add_solr_value(solr_doc, "hydrus_apo_title", @@hydrus_apo_hash[druid], :string, [:searchable, :facetable]) if @@hydrus_apo_hash.has_key? druid
             add_solr_value(solr_doc, "apo_title", @@apo_hash[druid] , :string, [:searchable, :facetable]) if @@apo_hash.has_key? druid 
@@ -97,7 +96,6 @@ module Dor
       end
       collections=rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection','fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' 	)
       collections.each do |collection_node| 
-        puts 'here'
         druid=collection_node['rdf:resource']
         if(druid)
           druid=druid.gsub('info:fedora/','')

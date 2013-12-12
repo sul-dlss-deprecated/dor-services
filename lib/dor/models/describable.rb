@@ -51,7 +51,7 @@ module Dor
 		end
 		#returns the desc metadata a relatedItem with information about the collection this object belongs to for use in published mods and mods to DC conversion
 	  def add_collection_reference
-	    if not self.methods.include? :public_relationships and not self.methods.include? 'public_relationships' 
+	    if not self.methods.include? :public_relationships
         return self.descMetadata.ng_xml.to_s
       end
 	    relationships=self.public_relationships
@@ -148,7 +148,7 @@ module Dor
 			
 			def set_desc_metadata_using_label(force=false)	
 				ds=self.descMetadata
-				if(ds.content.length>30 and force==false)#22 is the length of <?xml version="1.0"?>
+				unless force or ds.new?#22 is the length of <?xml version="1.0"?>
 					raise 'Cannot proceed, there is already content in the descriptive metadata datastream.'+ds.content.to_s
 				end
 				label=self.label

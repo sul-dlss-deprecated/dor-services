@@ -6,6 +6,13 @@ module Dor
     included do
       belongs_to 'agreement_object', :property => :referencesAgreement, :class_name => "Dor::Item"
     end
+    
+    def to_solr(solr_doc=Hash.new, *args)
+      super(solr_doc, *args)
+      add_solr_value(solr_doc, "default_rights", default_rights, :string, [:facetable])
+      add_solr_value(solr_doc, "agreement", agreement, :string, [:facetable]) if agreement_object
+      solr_doc
+    end
     #Adds a person or group to a role in the APO role metadata datastream
     #
     #@param role [String] the role the group or person will be filed under, ex. dor-apo-manager
@@ -246,7 +253,7 @@ module Dor
       end
     end
     def agreement
-      if agreement_object.first
+      if agreement_object and agreement_object.first
         agreement_object.first.pid
       else
         ''
@@ -256,4 +263,5 @@ module Dor
       self.agreement_object = Dor::Item.find val.to_s, :cast => true
     end
   end
+
 end
