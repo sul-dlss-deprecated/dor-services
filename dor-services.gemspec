@@ -7,11 +7,13 @@ Gem::Specification.new do |s|
   s.name        = "dor-services"
   s.version     = Dor::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick","Richard Anderson","Renzo Sanchez-Silva"]
+  s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick","Richard Anderson","Renzo Sanchez-Silva", 'Darren Hardy']
   s.email       = ["mbklein@stanford.edu"]
   s.summary     = "Ruby implmentation of DOR services used by the SULAIR Digital Library"
   s.description = "Contains classes to register objects and initialize workflows"
   s.executables = ["dor-indexer","dor-indexerd"]
+  s.licenses    = ['ALv2', 'Stanford University']
+  s.homepage    = 'https://github.com/sul-dlss/dor-services'
 
   s.required_rubygems_version = ">= 1.3.6"
 
