@@ -297,7 +297,7 @@
               </maintenanceAndUpdateFrequency>
             </MD_MaintenanceInformation>
           </resourceMaintenance>
-          <descriptiveKeywords xlink:href="http://geonames.org/6252001">
+          <descriptiveKeywords xlink:href="http://sws.geonames.org/6252001">
             <MD_Keywords>
               <keyword>
                 <gco:CharacterString>United States</gco:CharacterString>

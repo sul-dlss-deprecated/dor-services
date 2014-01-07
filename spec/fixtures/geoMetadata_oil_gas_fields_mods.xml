@@ -90,8 +90,8 @@
             <gml:upperCorner>-78.085007 69.4325</gml:upperCorner>
           </gml:Envelope>
         </gml:boundedBy>
-        <dc:coverage rdf:resource="http://geonames.org/6252001" dc:language="eng" dc:title="United States"/>
-        <dc:coverage rdf:resource="http://geonames.org/5332921" dc:language="eng" dc:title="California"/>
+        <dc:coverage rdf:resource="http://sws.geonames.org/6252001" dc:language="eng" dc:title="United States"/>
+        <dc:coverage rdf:resource="http://sws.geonames.org/5332921" dc:language="eng" dc:title="California"/>
       </rdf:Description>
     </rdf:RDF>
   </extension>
