@@ -33,15 +33,7 @@ Values can also be configured individually:
 
 Development and release process:
 
-  - Fetch latest code and merge as needed.
-  - Edit on the develop branch or a feature branch.
-  - Modify version number in lib/dor/version.rb
-  - Edit README.rdoc.
-  - Commit changes.
-  - Merge and push.
-  - Release the gem:
-
-      rake dlss_release
+  See the consul page for it at: https://consul.stanford.edu/display/dlssdev/How+to+release+and+use+a+DLSS+gem+to+the+gemserver
 
 == Console
 
