@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
 
   # Runtime dependencies
-  s.add_dependency "rdf", "1.0.10.2"
+  s.add_dependency "rdf", "1.0.9"
   s.add_dependency "active-fedora", "~>5.6", ">=5.6.3"
   s.add_dependency "om"
   s.add_dependency "solrizer", "~> 2.0"
