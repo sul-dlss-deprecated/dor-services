@@ -9,7 +9,7 @@ module Dor
   # The datastream is packaged using RDF to identify the optional ISO 19139 feature catalog
   # @see http://www.isotc211.org
   # @author Darren Hardy
-  class GeoMetadataDS < ActiveFedora::NokogiriDatastream 
+  class GeoMetadataDS < ActiveFedora::OmDatastream 
     include SolrDocHelper
     
     attr_accessor :geometryType, :zipName, :purl
@@ -38,7 +38,7 @@ module Dor
     XSLT_DC = Nokogiri::XSLT(File.new(
                                File.expand_path(
                                  File.dirname(__FILE__) + '/../models/mods2dc.xslt')))
-    # @see http://ruby-doc.org/gems/docs/o/om-1.8.0/OM/XML/Document/ClassMethods.html#method-i-set_terminology
+    # @see https://github.com/projecthydra/om/wiki/Tame-your-XML-with-OM
     set_terminology do |t|
       t.root :path => '', #'/gmd:MD_Metadata', 
         'xmlns:gmd' => NS[:gmd], 
