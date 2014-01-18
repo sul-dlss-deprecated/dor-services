@@ -8,8 +8,7 @@ module Dor
     included do
       has_metadata  :name => 'geoMetadata', 
                     :type => Dor::GeoMetadataDS, 
-                    :label => 'Geographic Information Metadata in ISO 19139', 
-                    :format => 'gmd',
+                    :label => 'Geographic Information Metadata in ISO 19139/19110', 
                     :control_group => 'M'
     end
     

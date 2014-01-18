@@ -4,11 +4,15 @@ require 'scanf'
 require 'uri'
 
 module Dor
+
   # GeoMetadataDS is a Fedora datastream for geographic metadata. It uses
-  # the ISO 19139 metadata standard schema - a metadata standard for Geographic Information
-  # The datastream is packaged using RDF to identify the optional ISO 19139 feature catalog
+  # the ISO 19139 metadata standard schema - a metadata standard for 
+  # Geographic Information. The datastream is packaged using RDF to identify 
+  # the optional ISO 19110 feature catalog
+  #
   # @see http://www.isotc211.org
   # @author Darren Hardy
+  
   class GeoMetadataDS < ActiveFedora::OmDatastream 
     include SolrDocHelper
     

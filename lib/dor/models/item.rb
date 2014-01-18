@@ -14,6 +14,7 @@ module Dor
     include Versionable
     include Contentable
     include Discoverable
+    include Geoable
     
   end
   
@@ -37,6 +38,7 @@ end
 # Publishable  = Transfer of metadata to discovery and access systems.
 # Shelvable    = Transfer of content to digital stacks.
 # Upgradable   = Remediation of existing objects when content standards change.
+# Geoable      = Descriptive metadata for GIS using ISO 19139/19110
 
 # Required for all DOR objects:
 #   - Identifiable
