@@ -343,6 +343,7 @@ This is located in the +./script+ subdirectory so that it does not get installed
 - <b>4.4.12</b> 
 - <b>4.4.13</b> 
 - <b>4.4.14</b> Major cleanup of Gemfiles and README, passes all tests
+- <b>4.4.15</b> Added support for Geoable and GeoMetadataDS
 
 == Copyright
 
