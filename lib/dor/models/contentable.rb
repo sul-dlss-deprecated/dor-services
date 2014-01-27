@@ -151,7 +151,6 @@ module Dor
 
     # Appends contentMetadata file resources from the source objects to this object
     # @param [Array<String>] source_obj_pids ids of the secondary objects that will get their contentMetadata merged into this one
-    # @param [Logger] logger optional logger to record warnings.  Otherwise, warnings get sent to STDOUT
     def copy_file_resources source_obj_pids
       primary_cm = contentMetadata.ng_xml
       base_id = primary_cm.at_xpath('/contentMetadata/@objectId').value

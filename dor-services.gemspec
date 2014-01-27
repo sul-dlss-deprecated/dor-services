@@ -16,40 +16,43 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
 
   # Runtime dependencies
-  s.add_dependency "rdf", "1.0.9"
-  s.add_dependency "active-fedora", "~>5.6", ">=5.6.3"
-  s.add_dependency "om"
-  s.add_dependency "solrizer", "~> 2.0"
-  s.add_dependency "activesupport"
-  s.add_dependency "rsolr-ext"
-  s.add_dependency "nokogiri", ">= 1.6.0"
-  s.add_dependency "confstruct", ">= 0.2.2"
-  s.add_dependency "rest-client"
-  s.add_dependency "validatable"
-  s.add_dependency "uuidtools"
-  s.add_dependency "json"
-  s.add_dependency "ruby-cache"
-  s.add_dependency "systemu"
-  s.add_dependency "lyber-utils"
-  s.add_dependency "ruby-graphviz"
-  s.add_dependency "progressbar"
-  s.add_dependency "equivalent-xml", ">=0.2.2"
-  s.add_dependency "net-ssh"
-  s.add_dependency "net-sftp"
-  s.add_dependency "druid-tools", ">=0.3.0"
-  s.add_dependency "moab-versioning", "=1.3.1"
-  s.add_dependency "stanford-mods", ">=0.0.14"
-  s.add_dependency "dor-workflow-service", "~>1.4"
+  s.add_dependency 'active-fedora', '~> 5.7.1'
+  s.add_dependency 'activesupport', '~> 3.2.16'
+  s.add_dependency 'confstruct', '~> 0.2.2'
+  s.add_dependency 'equivalent-xml', '~> 0.2.2'
+  s.add_dependency 'json', '~> 1.8.1'
+  s.add_dependency 'net-sftp', '~> 2.1.2'
+  s.add_dependency 'net-ssh', '~> 2.7.0'
+  s.add_dependency 'nokogiri', '1.6.0'
+  s.add_dependency 'om', '~> 1.8.0'
+  s.add_dependency 'progressbar', '~> 0.21.0'
+  s.add_dependency 'rdf', '~> 1.0.9.0' # 1.0.10 breaks
+  s.add_dependency 'rest-client', '~> 1.6.7'
+  s.add_dependency 'rsolr-ext', '~> 1.0.3'
+  s.add_dependency 'ruby-cache', '~> 0.3.0'
+  s.add_dependency 'ruby-graphviz', '~> 1.0.9'
+  s.add_dependency 'rubydora', '~> 1.6.5'
+  s.add_dependency 'solrizer', '~> 2.0'
+  s.add_dependency 'systemu', '~> 2.6.0'
+  s.add_dependency 'uuidtools', '~> 2.1.4'
+  s.add_dependency 'validatable', '~> 1.6.7'
+
+  # Stanford dependencies
+  s.add_dependency 'dor-workflow-service', '~> 1.4.0'
+  s.add_dependency 'druid-tools', '~> 0.3.0'
+  s.add_dependency 'lyber-utils', '~> 0.1.2'
+  s.add_dependency 'moab-versioning', '1.3.1' # 1.3.2 fails
+  s.add_dependency 'stanford-mods', '~> 0.0.14'
 
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects
-  s.add_development_dependency "fakeweb"
-  s.add_development_dependency "haml"
-  s.add_development_dependency "jhove-service", ">=1.0.1  "
-  s.add_development_dependency "rake", ">=0.8.7"
-  s.add_development_dependency "rdoc"
-  s.add_development_dependency "rspec", "~> 2.14"
-  s.add_development_dependency "yard"
+  s.add_development_dependency 'fakeweb', '~> 1.3.0'
+  s.add_development_dependency 'haml', '~> 4.0.4'
+  s.add_development_dependency 'jhove-service', '~> 1.0.1'
+  s.add_development_dependency 'rake', '~> 0.8.7'
+  s.add_development_dependency 'rdoc', '~> 4.0.1'
+  s.add_development_dependency 'rspec', '~> 2.14.1'
+  s.add_development_dependency 'yard', '~> 0.8.7'
 
   s.files        = Dir.glob("lib/**/*") + Dir.glob("config/**/*") + Dir.glob('bin/*')
   s.bindir       = 'bin'
