@@ -1,9 +1,10 @@
 = dor-services
 
 Require the following:
+
   require 'dor-services'
 
-Configuration is handled through the Dor::Config object:
+Configuration is handled through the +Dor::Config+ object:
 
   Dor::Config.configure do
     # Basic DOR configuration
@@ -31,31 +32,25 @@ Values can also be configured individually:
 
   Dor::Config.suri.mint_ids(true)
 
-Development and release process:
+== Development and release process
 
-  - Fetch latest code and merge as needed.
-  - Edit on the develop branch or a feature branch.
-  - Modify version number in lib/dor/version.rb
-  - Edit README.rdoc.
-  - Commit changes.
-  - Merge and push.
-  - Release the gem:
-
-      rake dlss_release
+See the consul page for it at: https://consul.stanford.edu/display/dlssdev/How+to+release+and+use+a+DLSS+gem+to+the+gemserver
 
 == Console
 
 You can start a pry session with the dor-services gem loaded by executing the script at
-./script/console
+
+  ./script/console
 
 It will need the following in order to execute:
-./config/dev_console_env.rb
-./config/certs/robots-dor-dev.crt
-./conig/certs/robots-dor-dev.key
 
-You can basically copy the sul-lyberservices-dev/common-accessioning/current/config/environments/development.rb file and the certs from there too
+  ./config/dev_console_env.rb
+  ./config/certs/robots-dor-dev.crt
+  ./conig/certs/robots-dor-dev.key
 
-This is located in the ./script subdirectory so that it does not get installed by clients of the gem
+You can basically copy the +sul-lyberservices-dev:common-accessioning/current/config/environments/development.rb+ file and the certs from there too
+
+This is located in the +./script+ subdirectory so that it does not get installed by clients of the gem
 
 == Releases
 
@@ -339,9 +334,15 @@ This is located in the ./script subdirectory so that it does not get installed b
 - <b>4.3.0</b> Add some missing hydrus solr fields
 - <b>4.3.2</b> Bug fixes and refactoring of object status logic
 - <b>4.4.3</b> Use moab 1.3.1
-- <b>4.4.6</b> Use OM for APO specific indexing
-- <b>4.4.13</b> Added geoMetadata datastream
-- <b>4.4.14</b> Default Item is Geoable
+- <b>4.4.6</b> call super in Editable.to_solr
+- <b>4.4.7</b> Use OM to index APO data
+- <b>4.4.8</b> Fix a broken migration
+- <b>4.4.9</b> add remote publishing via dor-services-app
+- <b>4.4.10</b> 
+- <b>4.4.11</b> 
+- <b>4.4.12</b> 
+- <b>4.4.13</b> 
+- <b>4.4.14</b> Major cleanup of Gemfiles and README, passes all tests
 
 == Copyright
 

@@ -78,7 +78,7 @@ module Dor
     end
 
     # @param [String] description optional text describing version change
-    # @param [Symbol] :significance optional which part of the version tag to increment
+    # @param [Symbol] significance optional which part of the version tag to increment
     #  :major, :minor, :admin (see VersionTag#increment)
     def increment_version(description = nil, significance = nil)
       if( find_by_terms(:version).size == 0)
@@ -107,7 +107,7 @@ module Dor
       end
     end
 
-    # @returns [Fixnum] value of the most current versionId
+    # @return [Fixnum] value of the most current versionId
     def current_version_id
       current_version=current_version_node
       if current_version.nil?

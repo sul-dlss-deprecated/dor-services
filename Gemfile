@@ -6,9 +6,9 @@ group :development do
   gem "ruby-debug", :platform => :ruby_18
   gem "rcov", :platform => :ruby_18
   gem "simplecov", :platform => [:ruby_19, :ruby_20]
-  gem "debugger", :platform => :ruby_19
+  gem "debugger", '1.6.3', :platform => :ruby_19
   gem "pry"
-  gem "pry-debugger", :platform => :ruby_19
+  gem "pry-debugger", '0.2.2', :platform => :ruby_19
 end
 
 # Dependencies are defined in dor-services.gemspec

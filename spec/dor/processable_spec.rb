@@ -248,7 +248,7 @@ describe Dor::Processable do
       @lifecycle_vals=[]
       Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
       Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
-      versionMD=mock(Dor::VersionMetadataDS)
+      versionMD=double(Dor::VersionMetadataDS)
       versionMD.stub(:current_version_id).and_return('3')
       @item.stub(:versionMetadata).and_return(versionMD)
       @item.status.should == 'v3 In accessioning (described, published)'
@@ -274,7 +274,7 @@ describe Dor::Processable do
       @lifecycle_vals=[]
       Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
       Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
-      versionMD=mock(Dor::VersionMetadataDS)
+      versionMD=double(Dor::VersionMetadataDS)
       versionMD.stub(:current_version_id).and_return('2')
       @item.stub(:versionMetadata).and_return(versionMD)
       @item.status.should == 'v2 Accessioned'
@@ -301,7 +301,7 @@ describe Dor::Processable do
       @lifecycle_vals=[]
       Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
       Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
-      versionMD=mock(Dor::VersionMetadataDS)
+      versionMD=double(Dor::VersionMetadataDS)
       versionMD.stub(:current_version_id).and_return('3')
       @item.stub(:versionMetadata).and_return(versionMD)
       @item.status.should == 'v3 Unknown Status'
@@ -327,7 +327,7 @@ describe Dor::Processable do
       @lifecycle_vals=[]
       Dor::WorkflowService.stub(:query_lifecycle).and_return(xml)
       Dor::Workflow::Document.any_instance.stub(:to_solr).and_return(nil)
-      versionMD=mock(Dor::VersionMetadataDS)
+      versionMD=double(Dor::VersionMetadataDS)
       versionMD.stub(:current_version_id).and_return('2')
       @item.stub(:versionMetadata).and_return(versionMD)
       @item.status(true).should == 'v2 Accessioned 2013-10-01 07:11PM'
