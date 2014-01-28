@@ -14,21 +14,19 @@ module Dor
     
     attr_accessor :geometryType, :zipName, :purl
   
+    # namespaces
     NS = {
       :rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
       :gco => 'http://www.isotc211.org/2005/gco',
       :gmd => 'http://www.isotc211.org/2005/gmd',
       :gfc => 'http://www.isotc211.org/2005/gfc'
-      # :gml => 'http://www.opengis.net/gml/3.2',
-      # :gmx => 'http://www.isotc211.org/2005/gmx',
-      # :gsr => 'http://www.isotc211.org/2005/gsr',
-      # :gss => 'http://www.isotc211.org/2005/gss',
-      # :gts => 'http://www.isotc211.org/2005/gts',
-      # :srv => 'http://www.isotc211.org/2005/srv'
     }
-    NS_XSD = NS.keys.collect {|k| "#{NS[k]} #{NS[k]}/#{k}.xsd"}
     
+    # hash with all namespaces
     XMLNS = Hash[NS.map {|k,v| ["xmlns:#{k}", v]}]
+    
+    # schema locations
+    NS_XSD = NS.keys.collect {|k| "#{NS[k]} #{NS[k]}/#{k}.xsd"}
 
     # [Nokogiri::XSLT::Stylesheet] for ISO 19139 to MODS
     XSLT_GEOMODS = Nokogiri::XSLT(File.read(
@@ -38,39 +36,40 @@ module Dor
     XSLT_DC = Nokogiri::XSLT(File.new(
                                File.expand_path(
                                  File.dirname(__FILE__) + '/../models/mods2dc.xslt')))
+    
     # @see http://ruby-doc.org/gems/docs/o/om-1.8.0/OM/XML/Document/ClassMethods.html#method-i-set_terminology
     set_terminology do |t|
-      t.root :path => '', #'/gmd:MD_Metadata', 
+      t.root :path => '/rdf:RDF/rdf:Description/gmd:MD_Metadata', 
         'xmlns:gmd' => NS[:gmd], 
         'xmlns:gco' => NS[:gco], 
         'xmlns:rdf' => NS[:rdf]
 
-      t.id_ :path => '../rdf:Description/@rdf:about'
-      
-      p = '../gmd:MD_Metadata/' # root-level only, note that '' or './' don't work?
+      t.id_ :path => '/rdf:RDF/rdf:Description[1]/@rdf:about'
+
+      p = './'
       t.dataset_id :path => p + 'gmd:dataSetURI/gco:CharacterString'
       t.file_id :path => p + 'gmd:fileIdentifier/gco:CharacterString'
       t.metadata_dt :path => p + 'gmd:dateStamp/gco:Date/text()' # XXX: Allow DateTime
-      t.metadata_language :path => p + 'gmd:language/gmd:LanguageCode[@codeSpace="ISO639-2"]/@codeListValue'
+      t.metadata_language :path => p + 'gmd:MD_Metadata/gmd:language/gmd:LanguageCode[@codeSpace="ISO639-2"]/@codeListValue'
 
-      p = 'gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/'
+      p = 'gmd:identificationInfo/gmd:MD_DataIdentification/'
       t.abstract :path => p + 'gmd:abstract/gco:CharacterString/text()'
       t.purpose :path => p + 'gmd:purpose/gco:CharacterString/text()'
       t.publisher :path => p + 'gmd:pointOfContact/gmd:CI_ResponsibleParty[gmd:role/gmd:CI_RoleCode/@codeListValue="pointOfContact"]/gmd:organisationName/gco:CharacterString/text()'
 
-      p = 'gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/'
+      p = 'gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/'
       t.title :path => p + 'gmd:title/gco:CharacterString/text()'
       t.publish_dt :path => p + 'gmd:date/gmd:CI_Date/gmd:date/gco:Date/text()'
       t.originator :path => p + 'gmd:citedResponsibleParty/gmd:CI_ResponsibleParty[gmd:role/gmd:CI_RoleCode/@codeListValue="originator"]/gmd:organisationName/gco:CharacterString/text()'
 
-      p = 'gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat/gmd:MD_Format/'
+      p = 'gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat/gmd:MD_Format/'
       t.format :path => p + 'gmd:name/gco:CharacterString/text()'#, :index_as => [:facetable]
       
-      p = 'gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/'
+      p = 'gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/'
       t.layername :path => p + 'gmd:name/gco:CharacterString/text()'
       
       # XXX should define projection as codeSpace + ':' + code in terminology
-      p = 'gmd:MD_Metadata/gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/gmd:RS_Identifier/'
+      p = 'gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/gmd:RS_Identifier/'
       t.projection :path => p + 'gmd:code/gco:CharacterString/text()'
       t.projection_code_space :path => p + 'gmd:codeSpace/gco:CharacterString/text()'
     end
@@ -78,22 +77,22 @@ module Dor
     # @return [Nokogiri::XML::Document] with gmd:MD_Metadata as root node
     # @raise [Dor::ParameterError] if MD_Metadata is missing
     def metadata
-      x = ng_xml.xpath('//gmd:MD_Metadata', 'xmlns:gmd' => NS[:gmd])
-      if x.nil? or x.empty?
-        raise Dor::ParameterError, "Invalid geoMetadata -- missing MD_Metadata: #{x}" 
+      root = ng_xml.xpath('/rdf:RDF/rdf:Description/gmd:MD_Metadata', XMLNS)
+      if root.nil? or root.empty?
+        raise Dor::ParameterError, "Invalid geoMetadata -- missing MD_Metadata: #{root}" 
       else
-        Nokogiri::XML(x.first.to_xml)
+        Nokogiri::XML(root.first.to_xml)
       end
     end
     
     # @return [Nokogiri::XML::Document] with gfc:FC_FeatureCatalogue as root node, 
     #     or nil if not provided
     def feature_catalogue
-      x = ng_xml.xpath('//gfc:FC_FeatureCatalogue', 'xmlns:gfc' => NS[:gfc])
-      if x.nil? or x.empty?
+      root = ng_xml.xpath('/rdf:RDF/rdf:Description/gfc:FC_FeatureCatalogue', XMLNS)
+      if root.nil? or root.empty?
         nil # Feature catalog is optional
       else
-        Nokogiri::XML(x.first.to_xml)
+        Nokogiri::XML(root.first.to_xml)
       end
     end
 
@@ -161,7 +160,7 @@ module Dor
       XSLT_DC.transform(to_mods)
     end
     
-    # deprecated stub for GeoBlacklight (not Argo -- use to_solr as usual)
+    # @deprecated stub for GeoBlacklight (not Argo -- use to_solr as usual)
     def to_solr_spatial(solr_doc=Hash.new, *args)
       # There are a whole bunch of namespace-related things that can go
       # wrong with this terminology. Until it's fixed in OM, ignore them all.
@@ -178,9 +177,9 @@ module Dor
           :geo_format_s => self.format.first,
           :geo_geometry_type_s => 'Polygon',
           :geo_layername_s => File.basename(self.layername.first, '.shp'),
-          :geo_ne_pt => GeoMetadataDS.to_wkt([bb.e, bb.n]),
+          :geo_ne_pt => Dor::GeoMetadataDS.to_wkt([bb.e, bb.n]),
           :geo_pt => to_solr_centroid,
-          :geo_sw_pt => GeoMetadataDS.to_wkt([bb.w, bb.s]),
+          :geo_sw_pt => Dor::GeoMetadataDS.to_wkt([bb.w, bb.s]),
           :geo_proj => self.projection.first,
           :dc_coverage_t => to_dc_coverage,
           :dc_creator_t => self.originator.first,
@@ -296,10 +295,10 @@ module Dor
       w, e, n, s = s.scanf('%f -- %f/%f -- %f')
       raise ArgumentError, "Out of bounds latitude: #{n} #{s}" unless n >= -90 and n <= 90 and s >= -90 and s <= 90
       raise ArgumentError, "Out of bounds longitude: #{w} #{e}" unless w >= -180 and w <= 180 and e >= -180 and e <= 180
-      w = "#{w < 0 ? 'W' : 'E'} #{GeoMetadataDS::dd2ddmmss_abs w}"
-      e = "#{e < 0 ? 'W' : 'E'} #{GeoMetadataDS::dd2ddmmss_abs e}"
-      n = "#{n < 0 ? 'S' : 'N'} #{GeoMetadataDS::dd2ddmmss_abs n}"
-      s = "#{s < 0 ? 'S' : 'N'} #{GeoMetadataDS::dd2ddmmss_abs s}"
+      w = "#{w < 0 ? 'W' : 'E'} #{Dor::GeoMetadataDS::dd2ddmmss_abs w}"
+      e = "#{e < 0 ? 'W' : 'E'} #{Dor::GeoMetadataDS::dd2ddmmss_abs e}"
+      n = "#{n < 0 ? 'S' : 'N'} #{Dor::GeoMetadataDS::dd2ddmmss_abs n}"
+      s = "#{s < 0 ? 'S' : 'N'} #{Dor::GeoMetadataDS::dd2ddmmss_abs s}"
       "#{w}--#{e}/#{n}--#{s}"
     end
     
