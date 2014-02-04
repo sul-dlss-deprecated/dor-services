@@ -62,13 +62,8 @@ module Dor
       raise Dor::Exception, 'Trying to close version on an object not opened for versioning' unless(new_version_open?)
       raise Dor::Exception, 'accessionWF already created for versioned object' if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'submitted'))
 
-      Dor::WorkflowService.update_workflow_status 'dor', pid, 'versioningWF', 'submit-version', 'completed'
-      # TODO setting start-accession to completed could happen later if we have a universal robot to kick of accessioning across workflows,
-      # or if there's a review step after versioning is closed
-      Dor::WorkflowService.update_workflow_status 'dor', pid, 'versioningWF', 'start-accession', 'completed'
+      Dor::WorkflowService.close_version 'dor', pid, opts.fetch(:start_accession, true)  # Default to creating accessionWF when calling close_version
       Dor::WorkflowService.archive_workflow 'dor', pid, 'versioningWF', opts[:version_num]
-
-      initialize_workflow 'accessionWF' if(opts[:start_accession].nil? || opts[:start_accession])
     end
 
     # @return [Boolean] true if 'opened' lifecycle is active, false otherwise
