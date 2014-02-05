@@ -91,6 +91,7 @@ describe Dor::Versionable do
       # Stub out calls to update and archive workflow
       Dor::WorkflowService.stub(:update_workflow_status)
       Dor::WorkflowService.stub(:archive_workflow)
+      Dor::WorkflowService.should_receive(:close_version).with('dor', dr , true)
 
       obj.stub(:initialize_workflow)
 

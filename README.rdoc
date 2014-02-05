@@ -338,12 +338,14 @@ This is located in the +./script+ subdirectory so that it does not get installed
 - <b>4.4.7</b> Use OM to index APO data
 - <b>4.4.8</b> Fix a broken migration
 - <b>4.4.9</b> add remote publishing via dor-services-app
-- <b>4.4.10</b> 
-- <b>4.4.11</b> 
-- <b>4.4.12</b> 
-- <b>4.4.13</b> 
+- <b>4.4.10</b>
+- <b>4.4.11</b>
+- <b>4.4.12</b>
+- <b>4.4.13</b>
 - <b>4.4.14</b> Major cleanup of Gemfiles and README, passes all tests
+- <b>4.4.15</b> Added support for Geoable and GeoMetadataDS
+- <b>4.5.0</b> Added workflow transactional support when closing a version.  Eliminate caching of diff cache
 
 == Copyright
 
-Copyright (c) 2013 Stanford University Library. See LICENSE for details.
+Copyright (c) 2014 Stanford University Library. See LICENSE for details.

@@ -90,6 +90,7 @@ module Dor
   autoload :DescMetadataDS,  'dor/datastreams/desc_metadata_ds'
   autoload :EmbargoMetadataDS, 'dor/datastreams/embargo_metadata_ds'
   autoload :EventsDS,  'dor/datastreams/events_ds'
+  autoload :GeoMetadataDS,  'dor/datastreams/geo_metadata_ds'
   autoload :IdentityMetadataDS,  'dor/datastreams/identity_metadata_ds'
   autoload :RoleMetadataDS,  'dor/datastreams/role_metadata_ds'
   autoload :WorkflowDefinitionDs,  'dor/datastreams/workflow_definition_ds'
@@ -115,6 +116,7 @@ module Dor
   autoload :Contentable, 'dor/models/contentable'
   autoload :Editable, 'dor/models/editable'
   autoload :Discoverable, 'dor/models/discoverable'
+  autoload :Geoable, 'dor/models/geoable'
 
 
   # ActiveFedora Classes
