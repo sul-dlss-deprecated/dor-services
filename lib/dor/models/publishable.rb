@@ -56,7 +56,7 @@ module Dor
         DigitalStacksService.transfer_to_document_store(pid, self.datastreams['rightsMetadata'].to_xml, 'rightsMetadata')
         DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
         if self.metadata_format == 'mods'
-          DigitalStacksService.transfer_to_document_store(pid, self.add_collection_reference, 'mods')
+          DigitalStacksService.transfer_to_document_store(pid, self.generate_public_desc_md, 'mods')
         end
       else
         # Clear out the document cache for this item

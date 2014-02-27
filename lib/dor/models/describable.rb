@@ -7,7 +7,7 @@ module Dor
 			"http://www.loc.gov/mods/v3" =>	 'mods'
 		}
 		class CrosswalkError < Exception; end
-		
+
 		included do
 			has_metadata :name => "descMetadata", :type => Dor::DescMetadataDS, :label => 'Descriptive Metadata', :control_group => 'M'
 		end
@@ -31,7 +31,7 @@ module Dor
 				ds.content = ds.ng_xml.to_xml
 			end
 		end
-		
+
 		# Generates Dublin Core from the MODS in the descMetadata datastream using the LoC mods2dc stylesheet
 		#		Should not be used for the Fedora DC datastream
 		# @raise [Exception] Raises an Exception if the generated DC is empty or has no children
@@ -41,7 +41,9 @@ module Dor
 				raise CrosswalkError, "Unknown descMetadata namespace: #{metadata_namespace.inspect}"
 			end
 			xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/#{format}2dc.xslt")) )
-			dc_doc = xslt.transform(Nokogiri::XML(self.add_collection_reference))
+			desc_md = self.descMetadata.ng_xml.dup(1)
+			self.add_collection_reference(desc_md)
+			dc_doc = xslt.transform(desc_md)
 			# Remove empty nodes
 			dc_doc.xpath('/oai_dc:dc/*[count(text()) = 0]').remove
 			if(dc_doc.root.nil? || dc_doc.root.children.size == 0)
@@ -49,54 +51,90 @@ module Dor
 			end
 			dc_doc
 		end
-		#returns the desc metadata a relatedItem with information about the collection this object belongs to for use in published mods and mods to DC conversion
-	  def add_collection_reference
+
+    def generate_public_desc_md
+      doc = self.descMetadata.ng_xml.dup(1)
+      add_collection_reference(doc)
+      add_access_conditions(doc)
+      Nokogiri::XML(doc.to_xml) { |x| x.noblanks }.to_xml { |config| config.no_declaration }
+	  end
+
+    # Create MODS accessCondition statements from rightsMetadata
+    # @param [Nokogiri::XML::Document] doc Document representing the descriptiveMetadata of the object
+    # @note this method modifies the passed in doc
+    def add_access_conditions(doc)
+      # clear out any existing accessConditions
+      doc.xpath('//mods:accessCondition').each {|n| n.remove}
+      rights = self.datastreams['rightsMetadata'].ng_xml
+
+      rights.xpath('//use/human[@type="useAndReproduction"]').each do |use|
+        new_use =  doc.create_element("accessCondition", use.text.strip, :type => 'useAndReproduction')
+        doc.root.element_children.last.add_next_sibling new_use
+      end
+      rights.xpath('//copyright/human[@type="copyright"]').each do |cr|
+        new_use =  doc.create_element("accessCondition", cr.text.strip, :type => 'copyright')
+        doc.root.element_children.last.add_next_sibling new_use
+      end
+      rights.xpath("//use/machine[#{ci_compare('type', 'creativecommons')}]").each do |lic|
+        next if(lic.text =~ /none/i)
+        new_text = "CC #{lic.text} : " << rights.at_xpath("//use/human[#{ci_compare('type', 'creativecommons')}]").text.strip
+        new_lic =  doc.create_element("accessCondition", new_text, :type => 'license')
+        doc.root.element_children.last.add_next_sibling new_lic
+      end
+      rights.xpath("//use/machine[#{ci_compare('type', 'opendata')}]").each do |lic|
+        next if(lic.text =~ /none/i)
+        new_text = "ODC #{lic.text} : " << rights.at_xpath("//use/human[#{ci_compare('type', 'opendata')}]").text.strip
+        new_lic =  doc.create_element("accessCondition", new_text, :type => 'license')
+        doc.root.element_children.last.add_next_sibling new_lic
+      end
+	  end
+
+    # returns the desc metadata a relatedItem with information about the collection this object belongs to for use in published mods and mods to DC conversion
+    # @param [Nokogiri::XML::Document] doc Document representing the descriptiveMetadata of the object
+    # @note this method modifies the passed in doc
+    def add_collection_reference(doc)
 	    if not self.methods.include? :public_relationships
-        return self.descMetadata.ng_xml.to_s
+        return
       end
 	    relationships=self.public_relationships
-	    xml=Nokogiri::XML(self.descMetadata.ng_xml.to_s)
-	    
+
 	    collections=relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection','fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' 	)
 	    #if there is an existing relatedItem node with type=host and a child typeOfResource @collection=yes dont add anything
-	    existing_node=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']', 'mods' => 'http://www.loc.gov/mods/v3')
-      if(existing_node.length>0)
-        return xml.to_s
+	    existing_node=doc.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']', 'mods' => 'http://www.loc.gov/mods/v3')
+      if(existing_node.length > 0)
+        return
       end
       collections.each do |collection_node|
         druid=collection_node['rdf:resource']
         druid=druid.gsub('info:fedora/','')
         collection_obj=Dor::Item.find(druid)
         collection_title = Dor::Describable.get_collection_title(collection_obj)
-        node=xml.search('//mods:mods', 'mods' => 'http://www.loc.gov/mods/v3')
-        node=node.first
-        related_item_node=Nokogiri::XML::Node.new('relatedItem',xml)
+        related_item_node=Nokogiri::XML::Node.new('relatedItem',doc)
         related_item_node['type']='host'
-        title_info_node=Nokogiri::XML::Node.new('titleInfo',xml)
-        title_node=Nokogiri::XML::Node.new('title',xml)
+        title_info_node=Nokogiri::XML::Node.new('titleInfo',doc)
+        title_node=Nokogiri::XML::Node.new('title',doc)
         title_node.content=collection_title
-        type_node=Nokogiri::XML::Node.new('typeOfResource',xml)
+        type_node=Nokogiri::XML::Node.new('typeOfResource',doc)
         type_node['collection'] = 'yes'
-        node.add_child(related_item_node)
+        doc.root.add_child(related_item_node)
         related_item_node.add_child(title_info_node)
         title_info_node.add_child(title_node)
         related_item_node.add_child(type_node)
       end
-      Nokogiri::XML(xml.to_s) {|x| x.noblanks }.to_s
     end
 		def metadata_namespace
 			desc_md = self.datastreams['descMetadata'].ng_xml
 			if desc_md.nil? or desc_md.root.nil? or desc_md.root.namespace.nil?
-				return nil 
+				return nil
 			else
 				return desc_md.root.namespace.href
 			end
 		end
-		
+
 		def metadata_format
 			DESC_MD_FORMATS[metadata_namespace]
 		end
-		
+
 		def to_solr(solr_doc=Hash.new, *args)
 			super solr_doc, *args
 			add_solr_value(solr_doc, "metadata_format", self.metadata_format, :string, [:searchable, :facetable])
@@ -135,18 +173,18 @@ module Dor
 				end
 			end
 			def delete_identifier(type,value=nil)
-				
+
 				ds_xml=self.descMetadata.ng_xml
-				ds_xml.search('//mods:identifier','mods' => 'http://www.loc.gov/mods/v3').each do |node|	
+				ds_xml.search('//mods:identifier','mods' => 'http://www.loc.gov/mods/v3').each do |node|
 					if node.content == value or value==nil
 						node.remove
-						return true 
+						return true
 					end
 				end
 				return false
 			end
-			
-			def set_desc_metadata_using_label(force=false)	
+
+			def set_desc_metadata_using_label(force=false)
 				ds=self.descMetadata
 				unless force or ds.new?#22 is the length of <?xml version="1.0"?>
 					raise 'Cannot proceed, there is already content in the descriptive metadata datastream.'+ds.content.to_s
@@ -158,10 +196,10 @@ module Dor
 						xml.title label
 						}
 					}
-				} 
+				}
 				self.descMetadata.content=builder.to_xml
 			end
-			
+
 			def self.get_collection_title(obj)
 			  xml=obj.descMetadata.ng_xml
 			  preferred_citation=xml.search('//mods:mods/mods:note[@type=\'preferredCitation\']','mods' => 'http://www.loc.gov/mods/v3')
@@ -177,7 +215,7 @@ module Dor
 	      end
 	      title
 		  end
-			
+
 			private
 			#generic updater useful for updating things like title or subtitle which can only have a single occurance and must be present
 			def update_simple_field(field,new_val)
@@ -188,7 +226,16 @@ module Dor
 				end
 				return false
 			end
-			
-		
+
+			# Builds case-insensitive xpath translate function call that will match the attribute to a value
+			def ci_compare(attribute, value)
+          "translate(
+              @#{attribute},
+              'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+              'abcdefghijklmnopqrstuvwxyz'
+            ) = '#{value}' "
+			end
+
+
 	end
 end
