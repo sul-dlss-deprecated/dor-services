@@ -72,7 +72,6 @@ describe Dor::Describable do
 
     b = Dor::Item.new
     b.datastreams['descMetadata'].content = mods
-    b.stub(:add_collection_reference).and_return(mods)
     dc = b.generate_dublin_core
     dc.should be_equivalent_to(expected_dc)
   end
@@ -83,7 +82,6 @@ describe Dor::Describable do
 
     b = Dor::Item.new
     b.datastreams['descMetadata'].content = mods
-    b.stub(:add_collection_reference).and_return(mods)
     dc = b.generate_dublin_core
     EquivalentXml.equivalent?(dc, expected_dc).should be
   end
@@ -94,14 +92,153 @@ describe Dor::Describable do
     lambda {b.generate_dublin_core}.should raise_error(Dor::Describable::CrosswalkError)
   end
 
-  describe 'add_collection_reference' do
-    it "adds a relatedItem node for the collection if the item is a memeber of a collection" do
-      pending
+  describe "#add_access_conditions" do
+
+    let(:rights_xml) { <<-XML
+      <rightsMetadata>
+        <copyright>
+          <human type="copyright">
+            Property rights reside with the repository. Copyright &#xA9; Stanford University. All Rights Reserved.
+          </human>
+        </copyright>
+        <access type="discover">
+          <machine>
+            <world/>
+          </machine>
+        </access>
+        <access type="read">
+          <machine>
+            <world/>
+          </machine>
+        </access>
+        <use>
+          <human type="useAndReproduction">
+            Image from the Glen McLaughlin Map Collection yada ...
+          </human>
+          <machine type="creativeCommons">by-nc</machine>
+          <human type="creativeCommons">
+            This work is licensed under a Creative Commons Attribution-NonCommercial 3.0 Unported License
+          </human>
+        </use>
+      </rightsMetadata>
+      XML
+    }
+
+    let(:obj) {
       mods = read_fixture('ex2_related_mods.xml')
-      mods=Nokogiri::XML(mods)
+      b = Dor::Item.new
+      b.datastreams['descMetadata'].content = mods
+      b.datastreams['rightsMetadata'].content = rights_xml
+      b
+    }
+
+    let(:public_mods) {
+      obj.datastreams['descMetadata'].ng_xml.dup(1)
+    }
+
+    it "adds useAndReproduction accessConditions based on rightsMetadata" do
+      obj.add_access_conditions(public_mods)
+      expect(public_mods.xpath('//mods:accessCondition[@type="useAndReproduction"]').size).to eq(1)
+      expect(public_mods.xpath('//mods:accessCondition[@type="useAndReproduction"]').text).to match(/yada/)
+    end
+
+    it "adds copyright accessConditions based on rightsMetadata" do
+      obj.add_access_conditions(public_mods)
+      expect(public_mods.xpath('//mods:accessCondition[@type="copyright"]').size).to eq(1)
+      expect(public_mods.xpath('//mods:accessCondition[@type="copyright"]').text).to match(/Property rights reside with/)
+    end
+
+    it "adds license accessCondtitions based on creativeCommons or openData statements" do
+      obj.add_access_conditions(public_mods)
+      expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq(1)
+      expect(public_mods.xpath('//mods:accessCondition[@type="license"]').text).to match(/This work is licensed under/)
+    end
+
+    it "searches for creativeCommons and openData /use/machine/@type case-insensitively" do
+      rxml = <<-XML
+        <rightsMetadata>
+          <use>
+            <machine type="OpenDatA">by-nc</machine>
+            <human type="OpenDATA">
+              Open Data hoo ha
+            </human>
+          </use>
+        </rightsMetadata>
+        XML
+      obj.datastreams['rightsMetadata'].content = rxml
+      obj.add_access_conditions(public_mods)
+      expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq(1)
+      expect(public_mods.xpath('//mods:accessCondition[@type="license"]').text).to match(/hoo ha/)
+    end
+
+    it "does not add license accessConditions when createCommons or openData has a value of none in rightsMetadata" do
+      rxml = <<-XML
+        <rightsMetadata>
+          <use>
+            <machine type="OpenDatA">none</machine>
+          </use>
+        </rightsMetadata>
+        XML
+      obj.datastreams['rightsMetadata'].content = rxml
+      obj.add_access_conditions(public_mods)
+      expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq(0)
+    end
+
+    it "removes any pre-existing accessConditions already in the mods" do
+      expect(obj.descMetadata.ng_xml.xpath('//mods:accessCondition[text()[contains(.,"Public Services")]]').count).to eq(1)
+      obj.add_access_conditions(public_mods)
+      expect(public_mods.xpath('//mods:accessCondition').size).to eq(3)
+      expect(public_mods.xpath('//mods:accessCondition[text()[contains(.,"Public Services")]]').count).to eq(0)
+    end
+  end
+
+  describe 'add_collection_reference' do
+
+    it "adds a relatedItem node for the collection if the item is a memeber of a collection" do
+      mods_xml = read_fixture('ex2_related_mods.xml')
+      mods=Nokogiri::XML(mods_xml)
       mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']').each do |node|
         node.parent.remove()
       end
+      relationships_xml=<<-XML
+      <?xml version="1.0"?>
+      <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
+      <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
+      <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:zb871zd0767"/>
+      </rdf:Description>
+      </rdf:RDF>
+      XML
+      relationships=Nokogiri::XML(relationships_xml)
+      @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
+      @item.datastreams['descMetadata'].content = mods.to_s
+      @item.stub(:public_relationships).and_return(relationships)
+
+      @collection = instantiate_fixture('druid:ab123cd4567', Dor::Item)
+      mods=Nokogiri::XML(read_fixture('ex1_mods.xml'))
+      @collection.datastreams['descMetadata'].content = mods.to_s
+
+      Dor::Item.stub(:find) do |pid|
+        if pid == 'druid:ab123cd4567'
+          @item
+        else
+          @collection
+        end
+      end
+
+      @item.add_collection_reference(mods)
+      xml = mods
+      EquivalentXml.equivalent?(xml.to_s,@item.descMetadata.ng_xml.to_s).should == false
+      collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
+      collections.length.should == 1
+      collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
+      collection_title.length.should ==1
+      collection_title.first.content.should == 'complete works of Henry George'
+    end
+
+    it "Doesnt add a relatedItem for collection if there is an existing one" do
+      mods_xml = read_fixture('ex2_related_mods.xml')
+      b = instantiate_fixture('druid:ab123cd4567', Dor::Item)
       relationships=<<-XML
       <?xml version="1.0"?>
       <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -111,55 +248,101 @@ describe Dor::Describable do
       </rdf:Description>
       </rdf:RDF>
       XML
+
       relationships=Nokogiri::XML(relationships)
+      b.datastreams['descMetadata'].content = mods_xml
+      b.stub(:public_relationships).and_return(relationships)
+      mods = Nokogiri::XML(mods_xml)
+      b.add_collection_reference(mods)
+      collections=mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
+      collections.length.should == 1
+      collection_title=mods.search('//mods:relatedItem/mods:titleInfo/mods:title')
+      collection_title.length.should == 1
+    end
+  end
+
+  describe "#generate_public_desc_md" do
+
+    let(:rights_xml) { <<-XML
+      <rightsMetadata>
+        <copyright>
+          <human type="copyright">
+            Property rights reside with the repository. Copyright &#xA9; Stanford University. All Rights Reserved.
+          </human>
+        </copyright>
+        <access type="discover">
+          <machine>
+            <world/>
+          </machine>
+        </access>
+        <access type="read">
+          <machine>
+            <world/>
+          </machine>
+        </access>
+        <use>
+          <human type="useAndReproduction">
+            Image from the Glen McLaughlin Map Collection yada ...
+          </human>
+          <machine type="creativeCommons">by-nc</machine>
+          <human type="creativeCommons">
+            This work is licensed under a Creative Commons Attribution-NonCommercial 3.0 Unported License
+          </human>
+        </use>
+      </rightsMetadata>
+      XML
+    }
+
+    it "adds collections and generates accessConditions" do
+      mods_xml = read_fixture('ex2_related_mods.xml')
+      mods=Nokogiri::XML(mods_xml)
+      mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']').each do |node|
+        node.parent.remove
+      end
+      relationships_xml=<<-XML
+      <?xml version="1.0"?>
+      <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
+      <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
+      <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:zb871zd0767"/>
+      </rdf:Description>
+      </rdf:RDF>
+      XML
+      relationships=Nokogiri::XML(relationships_xml)
       @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
       @item.datastreams['descMetadata'].content = mods.to_s
+      @item.datastreams['rightsMetadata'].content = rights_xml
       @item.stub(:public_relationships).and_return(relationships)
 
       @collection = instantiate_fixture('druid:ab123cd4567', Dor::Item)
       mods=Nokogiri::XML(read_fixture('ex1_mods.xml'))
       @collection.datastreams['descMetadata'].content = mods.to_s
 
-      Dor::Item.stub(:find)do |pid|
-      if pid == 'druid:ab123cd4567'
-        @item
-      else
-        @collection
+      Dor::Item.stub(:find) do |pid|
+        if pid == 'druid:ab123cd4567'
+          @item
+        else
+          @collection
+        end
       end
-    end
-    xml = @item.add_collection_reference
-    EquivalentXml.equivalent?(xml,@item.descMetadata.ng_xml.to_s).should == false
-    xml=Nokogiri::XML(xml)
-    collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
-    collections.length.should == 1
-    collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
-    collection_title.length.should ==1
-    collection_title.first.content.should == 'complete works of Henry George'
-  end
-  it "Doesnt add a relatedItem for collection if there is an existing one" do
-    mods = read_fixture('ex2_related_mods.xml')
-    b = instantiate_fixture('druid:ab123cd4567', Dor::Item)
-    relationships=<<-XML
-    <?xml version="1.0"?>
-    <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-    <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
-    <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
-    <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:zb871zd0767"/>
-    </rdf:Description>
-    </rdf:RDF>
-    XML
 
-    relationships=Nokogiri::XML(relationships)
-    b.datastreams['descMetadata'].content = mods
-    b.stub(:public_relationships).and_return(relationships)
-    xml = b.add_collection_reference
-    xml=Nokogiri::XML(xml)
-    collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
-    collections.length.should == 1
-    collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
-    collection_title.length.should == 1
+      xml = @item.generate_public_desc_md
+      doc = Nokogiri::XML(xml)
+      collections=doc.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
+      collections.length.should == 1
+      collection_title=doc.search('//mods:relatedItem/mods:titleInfo/mods:title')
+      collection_title.length.should ==1
+      collection_title.first.content.should == 'complete works of Henry George'
+      expect(doc.xpath('//mods:accessCondition[@type="useAndReproduction"]').size).to eq(1)
+      expect(doc.xpath('//mods:accessCondition[@type="useAndReproduction"]').text).to match(/yada/)
+      expect(doc.xpath('//mods:accessCondition[@type="copyright"]').size).to eq(1)
+      expect(doc.xpath('//mods:accessCondition[@type="copyright"]').text).to match(/Property rights reside with/)
+      expect(doc.xpath('//mods:accessCondition[@type="license"]').size).to eq(1)
+      expect(doc.xpath('//mods:accessCondition[@type="license"]').text).to match(/This work is licensed under/)
+    end
   end
-end
+
+
 describe 'get_collection_title' do
   it 'should get a titleInfo/title' do
     @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
