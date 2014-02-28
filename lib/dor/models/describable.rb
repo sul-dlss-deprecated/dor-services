@@ -77,13 +77,13 @@ module Dor
       end
       rights.xpath("//use/machine[#{ci_compare('type', 'creativecommons')}]").each do |lic|
         next if(lic.text =~ /none/i)
-        new_text = "CC #{lic.text} : " << rights.at_xpath("//use/human[#{ci_compare('type', 'creativecommons')}]").text.strip
+        new_text = "CC #{lic.text}: " << rights.at_xpath("//use/human[#{ci_compare('type', 'creativecommons')}]").text.strip
         new_lic =  doc.create_element("accessCondition", new_text, :type => 'license')
         doc.root.element_children.last.add_next_sibling new_lic
       end
       rights.xpath("//use/machine[#{ci_compare('type', 'opendata')}]").each do |lic|
         next if(lic.text =~ /none/i)
-        new_text = "ODC #{lic.text} : " << rights.at_xpath("//use/human[#{ci_compare('type', 'opendata')}]").text.strip
+        new_text = "ODC #{lic.text}: " << rights.at_xpath("//use/human[#{ci_compare('type', 'opendata')}]").text.strip
         new_lic =  doc.create_element("accessCondition", new_text, :type => 'license')
         doc.root.element_children.last.add_next_sibling new_lic
       end
@@ -114,11 +114,17 @@ module Dor
         title_info_node=Nokogiri::XML::Node.new('titleInfo',doc)
         title_node=Nokogiri::XML::Node.new('title',doc)
         title_node.content=collection_title
+
+        id_node=Nokogiri::XML::Node.new('identifier',doc)
+        id_node['type'] = 'uri'
+        id_node.content = "http://#{Dor::Config.stacks.document_cache_host}/#{druid.split(':').last}"
+
         type_node=Nokogiri::XML::Node.new('typeOfResource',doc)
         type_node['collection'] = 'yes'
         doc.root.add_child(related_item_node)
         related_item_node.add_child(title_info_node)
         title_info_node.add_child(title_node)
+        related_item_node.add_child(id_node)
         related_item_node.add_child(type_node)
       end
     end
@@ -202,15 +208,13 @@ module Dor
 
 			def self.get_collection_title(obj)
 			  xml=obj.descMetadata.ng_xml
-			  preferred_citation=xml.search('//mods:mods/mods:note[@type=\'preferredCitation\']','mods' => 'http://www.loc.gov/mods/v3')
 			  title=''
-			  if preferred_citation.length == 1
-			    title=preferred_citation.first.content
-		    else
-		      title=xml.search('//mods:mods/mods:titleInfo/mods:title','mods' => 'http://www.loc.gov/mods/v3').first.content
-		      subtitle=xml.search('//mods:mods/mods:titleInfo/mods:subTitle','mods' => 'http://www.loc.gov/mods/v3')
-		      if(subtitle.length==1)
-		        title+=' ('+subtitle.first.content+')'
+        title_node = xml.at_xpath('//mods:mods/mods:titleInfo/mods:title','mods' => 'http://www.loc.gov/mods/v3')
+        if(title_node)
+          title = title_node.content
+		      subtitle=xml.at_xpath('//mods:mods/mods:titleInfo/mods:subTitle','mods' => 'http://www.loc.gov/mods/v3')
+		      if(subtitle)
+		        title += ' (' + subtitle.content + ')'
 	        end
 	      end
 	      title
