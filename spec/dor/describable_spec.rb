@@ -151,7 +151,7 @@ describe Dor::Describable do
     it "adds license accessCondtitions based on creativeCommons or openData statements" do
       obj.add_access_conditions(public_mods)
       expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq(1)
-      expect(public_mods.xpath('//mods:accessCondition[@type="license"]').text).to match(/This work is licensed under/)
+      expect(public_mods.xpath('//mods:accessCondition[@type="license"]').text).to match(/by-nc: This work is licensed under/)
     end
 
     it "searches for creativeCommons and openData /use/machine/@type case-insensitively" do
@@ -168,7 +168,7 @@ describe Dor::Describable do
       obj.datastreams['rightsMetadata'].content = rxml
       obj.add_access_conditions(public_mods)
       expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq(1)
-      expect(public_mods.xpath('//mods:accessCondition[@type="license"]').text).to match(/hoo ha/)
+      expect(public_mods.xpath('//mods:accessCondition[@type="license"]').text).to match(/by-nc: Open Data hoo ha/)
     end
 
     it "does not add license accessConditions when createCommons or openData has a value of none in rightsMetadata" do
@@ -193,6 +193,14 @@ describe Dor::Describable do
   end
 
   describe 'add_collection_reference' do
+
+    before(:each) do
+      Dor::Config.push! { stacks.document_cache_host 'purl.stanford.edu' }
+    end
+
+    after(:each) do
+      Dor::Config.pop!
+    end
 
     it "adds a relatedItem node for the collection if the item is a memeber of a collection" do
       mods_xml = read_fixture('ex2_related_mods.xml')
@@ -234,6 +242,9 @@ describe Dor::Describable do
       collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
       collection_title.length.should ==1
       collection_title.first.content.should == 'complete works of Henry George'
+      collection_uri = xml.search('//mods:relatedItem/mods:identifier[@type="uri"]')
+      expect(collection_uri.length).to eq(1)
+      expect(collection_uri.first.content).to eq "http://purl.stanford.edu/zb871zd0767"
     end
 
     it "Doesnt add a relatedItem for collection if there is an existing one" do
@@ -357,19 +368,7 @@ describe 'get_collection_title' do
 
     Dor::Describable.get_collection_title(@item).should == 'Foxml Test Object'
   end
-  it 'should get the prefered citation if there is one' do
-    @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
-    @item.descMetadata.content=<<-XML
-    <?xml version="1.0"?>
-    <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
-    <titleInfo>
-    <title>Foxml Test Object</title>
-    </titleInfo>
-    <note type="preferredCitation">Hello world</note>
-    </mods>
-    XML
-    Dor::Describable.get_collection_title(@item).should == 'Hello world'
-  end
+
   it 'should include a subtitle if there is one' do
     @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
     @item.descMetadata.content=<<-XML
