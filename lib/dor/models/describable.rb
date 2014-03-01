@@ -64,7 +64,7 @@ module Dor
     # @note this method modifies the passed in doc
     def add_access_conditions(doc)
       # clear out any existing accessConditions
-      doc.xpath('//mods:accessCondition').each {|n| n.remove}
+      doc.xpath('//mods:accessCondition', 'mods' => 'http://www.loc.gov/mods/v3').each {|n| n.remove}
       rights = self.datastreams['rightsMetadata'].ng_xml
 
       rights.xpath('//use/human[@type="useAndReproduction"]').each do |use|
