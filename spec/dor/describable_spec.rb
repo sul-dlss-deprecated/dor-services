@@ -190,6 +190,19 @@ describe Dor::Describable do
       expect(public_mods.xpath('//mods:accessCondition').size).to eq(3)
       expect(public_mods.xpath('//mods:accessCondition[text()[contains(.,"Public Services")]]').count).to eq(0)
     end
+
+    it "deals with mods declared as the default xmlns" do
+      mods = read_fixture('mods_default_ns.xml')
+      b = Dor::Item.new
+      b.datastreams['descMetadata'].content = mods
+      b.datastreams['rightsMetadata'].content = rights_xml
+      expect(b.descMetadata.ng_xml.xpath('//mods:accessCondition[text()[contains(.,"Should not be here anymore")]]', 'mods' => 'http://www.loc.gov/mods/v3').count).to eq(1)
+
+      new_mods = b.datastreams['descMetadata'].ng_xml.dup(1)
+      b.add_access_conditions(new_mods)
+      expect(new_mods.xpath('//mods:accessCondition', 'mods' => 'http://www.loc.gov/mods/v3').size).to eq(3)
+      expect(new_mods.xpath('//mods:accessCondition[text()[contains(.,"Should not be here anymore")]]', 'mods' => 'http://www.loc.gov/mods/v3').count).to eq(0)
+    end
   end
 
   describe 'add_collection_reference' do
@@ -304,12 +317,12 @@ describe Dor::Describable do
       XML
     }
 
-    it "adds collections and generates accessConditions" do
-      mods_xml = read_fixture('ex2_related_mods.xml')
-      mods=Nokogiri::XML(mods_xml)
-      mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']').each do |node|
-        node.parent.remove
-      end
+    let(:itm) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
+    let(:collection) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
+
+    before(:each) do
+      Dor::Config.push! { stacks.document_cache_host 'purl.stanford.edu' }
+
       relationships_xml=<<-XML
       <?xml version="1.0"?>
       <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -320,36 +333,76 @@ describe Dor::Describable do
       </rdf:RDF>
       XML
       relationships=Nokogiri::XML(relationships_xml)
-      @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
-      @item.datastreams['descMetadata'].content = mods.to_s
-      @item.datastreams['rightsMetadata'].content = rights_xml
-      @item.stub(:public_relationships).and_return(relationships)
 
-      @collection = instantiate_fixture('druid:ab123cd4567', Dor::Item)
-      mods=Nokogiri::XML(read_fixture('ex1_mods.xml'))
-      @collection.datastreams['descMetadata'].content = mods.to_s
+      itm.datastreams['rightsMetadata'].content = rights_xml
+      itm.stub(:public_relationships).and_return(relationships)
+
+      c_mods=Nokogiri::XML(read_fixture('ex1_mods.xml'))
+      collection.datastreams['descMetadata'].content = c_mods.to_s
 
       Dor::Item.stub(:find) do |pid|
         if pid == 'druid:ab123cd4567'
-          @item
+          itm
         else
-          @collection
+          collection
         end
       end
+    end
 
-      xml = @item.generate_public_desc_md
+    after(:each) do
+      Dor::Config.pop!
+    end
+
+    it "adds collections and generates accessConditions" do
+      mods_xml = read_fixture('ex2_related_mods.xml')
+      mods=Nokogiri::XML(mods_xml)
+      mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']').each do |node|
+        node.parent.remove
+      end
+      itm.datastreams['descMetadata'].content = mods.to_s
+
+      xml = itm.generate_public_desc_md
       doc = Nokogiri::XML(xml)
       collections=doc.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
       collections.length.should == 1
       collection_title=doc.search('//mods:relatedItem/mods:titleInfo/mods:title')
       collection_title.length.should ==1
       collection_title.first.content.should == 'complete works of Henry George'
+      collection_uri = doc.search('//mods:relatedItem/mods:identifier[@type="uri"]')
+      expect(collection_uri.length).to eq(1)
+      expect(collection_uri.first.content).to eq "http://purl.stanford.edu/zb871zd0767"
       expect(doc.xpath('//mods:accessCondition[@type="useAndReproduction"]').size).to eq(1)
       expect(doc.xpath('//mods:accessCondition[@type="useAndReproduction"]').text).to match(/yada/)
       expect(doc.xpath('//mods:accessCondition[@type="copyright"]').size).to eq(1)
       expect(doc.xpath('//mods:accessCondition[@type="copyright"]').text).to match(/Property rights reside with/)
       expect(doc.xpath('//mods:accessCondition[@type="license"]').size).to eq(1)
       expect(doc.xpath('//mods:accessCondition[@type="license"]').text).to match(/This work is licensed under/)
+    end
+
+    it "handles mods as the default namespace" do
+      mods_xml = read_fixture('mods_default_ns.xml')
+      mods=Nokogiri::XML(mods_xml)
+      mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
+        node.parent.remove
+      end
+      itm.datastreams['descMetadata'].content = mods.to_s
+
+      xml = itm.generate_public_desc_md
+      doc = Nokogiri::XML(xml)
+      collections=doc.search('//xmlns:relatedItem/xmlns:typeOfResource[@collection=\'yes\']')
+      collections.length.should == 1
+      collection_title=doc.search('//xmlns:relatedItem/xmlns:titleInfo/xmlns:title')
+      collection_title.length.should ==1
+      collection_title.first.content.should == 'complete works of Henry George'
+      collection_uri = doc.search('//xmlns:relatedItem/xmlns:identifier[@type="uri"]')
+      expect(collection_uri.length).to eq(1)
+      expect(collection_uri.first.content).to eq "http://purl.stanford.edu/zb871zd0767"
+      expect(doc.xpath('//xmlns:accessCondition[@type="useAndReproduction"]').size).to eq(1)
+      expect(doc.xpath('//xmlns:accessCondition[@type="useAndReproduction"]').text).to match(/yada/)
+      expect(doc.xpath('//xmlns:accessCondition[@type="copyright"]').size).to eq(1)
+      expect(doc.xpath('//xmlns:accessCondition[@type="copyright"]').text).to match(/Property rights reside with/)
+      expect(doc.xpath('//xmlns:accessCondition[@type="license"]').size).to eq(1)
+      expect(doc.xpath('//xmlns:accessCondition[@type="license"]').text).to match(/This work is licensed under/)
     end
   end
 

@@ -1,0 +1,53 @@
+<mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/mods/v3" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+  <titleInfo>
+    <title>Chart of the lines of magnetic variation in the seas around Africa</title>
+  </titleInfo>
+  <typeOfResource>cartographic</typeOfResource>
+  <genre authority="marcgt">map</genre>
+  <originInfo>
+    <place>
+      <placeTerm type="code" authority="marccountry">enk</placeTerm>
+    </place>
+    <place>
+      <placeTerm type="text">[London]</placeTerm>
+    </place>
+    <publisher>Bunney &amp; Gold</publisher>
+    <dateIssued>1799</dateIssued>
+    <dateIssued encoding="marc" keyDate="yes">1799</dateIssued>
+    <issuance>monographic</issuance>
+  </originInfo>
+  <language>
+    <languageTerm authority="iso639-2b" type="code">eng</languageTerm>
+  </language>
+  <physicalDescription>
+    <extent>1 map ; 22 cm. x 29 cm.</extent>
+  </physicalDescription>
+  <note>Also found in: Proceedings of the Association for Promoting the Discovery of the Interior Parts of Africa, &amp;c.</note>
+  <subject>
+    <cartographics>
+      <coordinates>W0180000 E0510000 N370000 S350000</coordinates>
+    </cartographics>
+  </subject>
+  <subject>
+    <cartographics>
+      <scale>Scale [ca. 1:50,000,000]</scale>
+    </cartographics>
+    <cartographics>
+      <coordinates>(W18&#xB0;--E51&#xB0;/N37&#xB0;--S35&#xB0;).</coordinates>
+    </cartographics>
+  </subject>
+  <subject authority="lcsh">
+    <geographic>Africa</geographic>
+    <genre>Maps</genre>
+    <genre>Early works to 1800</genre>
+  </subject>
+  <relatedItem>
+    <typeOfResource collection="yes"/>
+  </relatedItem>
+  <recordInfo>
+    <recordContentSource authority="marcorg">CSt-ES</recordContentSource>
+    <recordCreationDate encoding="marc">110207</recordCreationDate>
+    <recordIdentifier source="SIRSI">a8930218</recordIdentifier>
+  </recordInfo>
+  <accessCondition type="useAndReproduction">Should not be here anymore</accessCondition>
+</mods>
