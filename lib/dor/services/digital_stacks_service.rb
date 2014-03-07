@@ -22,6 +22,7 @@ module Dor
     # @param [Array<Array<String>>] file_map an array of two string arrays.  Each inner array represents old-file/new-file mappings.  First string is the old file name, second string is the new file name. e.g:
     #   [ ['src1.file', 'dest1.file'], ['src2.file', 'dest2.file'] ]
     def self.rename_in_stacks(id, file_map)
+      return if file_map.nil? or file_map.empty?
       dr = DruidTools::StacksDruid.new id, Config.stacks.local_stacks_root
       content_dir = dr.find_filelist_parent('content', file_map.first.first)
       file_map.each do |src, dest|
