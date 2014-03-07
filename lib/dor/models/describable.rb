@@ -90,20 +90,20 @@ module Dor
 	  end
 
     # returns the desc metadata a relatedItem with information about the collection this object belongs to for use in published mods and mods to DC conversion
-    # @param [Nokogiri::XML::Document] doc Document representing the descriptiveMetadata of the object
+    # @param [Nokogiri::XML::Document] doc A copy of the descriptiveMetadata of the object
     # @note this method modifies the passed in doc
     def add_collection_reference(doc)
-	    if not self.methods.include? :public_relationships
-        return
-      end
-	    relationships=self.public_relationships
+	    return unless self.methods.include? :public_relationships
+	    collections=self.public_relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection',
+	                                     'fedora' => 'info:fedora/fedora-system:def/relations-external#',
+	                                     'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' )
+	    return if collections.empty?
 
-	    collections=relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection','fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' 	)
-	    #if there is an existing relatedItem node with type=host and a child typeOfResource @collection=yes dont add anything
-	    existing_node=doc.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']', 'mods' => 'http://www.loc.gov/mods/v3')
-      if(existing_node.length > 0)
-        return
+	    # Remove any existing collections in the descMetadata
+      doc.search('/mods:mods/mods:relatedItem[@type="host"]/mods:typeOfResource[@collection=\'yes\']', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
+        node.parent.remove
       end
+
       collections.each do |collection_node|
         druid=collection_node['rdf:resource']
         druid=druid.gsub('info:fedora/','')
