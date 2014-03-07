@@ -209,18 +209,7 @@ describe Dor::Describable do
 
     before(:each) do
       Dor::Config.push! { stacks.document_cache_host 'purl.stanford.edu' }
-    end
 
-    after(:each) do
-      Dor::Config.pop!
-    end
-
-    it "adds a relatedItem node for the collection if the item is a memeber of a collection" do
-      mods_xml = read_fixture('ex2_related_mods.xml')
-      mods=Nokogiri::XML(mods_xml)
-      mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']').each do |node|
-        node.parent.remove()
-      end
       relationships_xml=<<-XML
       <?xml version="1.0"?>
       <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -231,14 +220,9 @@ describe Dor::Describable do
       </rdf:RDF>
       XML
       relationships=Nokogiri::XML(relationships_xml)
-      @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
-      @item.datastreams['descMetadata'].content = mods.to_s
       @item.stub(:public_relationships).and_return(relationships)
 
       @collection = instantiate_fixture('druid:ab123cd4567', Dor::Item)
-      mods=Nokogiri::XML(read_fixture('ex1_mods.xml'))
-      @collection.datastreams['descMetadata'].content = mods.to_s
-
       Dor::Item.stub(:find) do |pid|
         if pid == 'druid:ab123cd4567'
           @item
@@ -247,7 +231,23 @@ describe Dor::Describable do
         end
       end
 
+    end
+
+    after(:each) do
+      Dor::Config.pop!
+    end
+
+    it "adds a relatedItem node for the collection if the item is a member of a collection" do
+      mods_xml = read_fixture('ex2_related_mods.xml')
+      mods=Nokogiri::XML(mods_xml)
+      mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']').each do |node|
+        node.parent.remove()
+      end
+      c_mods=Nokogiri::XML(read_fixture('ex1_mods.xml'))
+      @collection.datastreams['descMetadata'].content = c_mods.to_s
+
       @item.add_collection_reference(mods)
+
       xml = mods
       EquivalentXml.equivalent?(xml.to_s,@item.descMetadata.ng_xml.to_s).should == false
       collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
@@ -260,28 +260,52 @@ describe Dor::Describable do
       expect(collection_uri.first.content).to eq "http://purl.stanford.edu/zb871zd0767"
     end
 
-    it "Doesnt add a relatedItem for collection if there is an existing one" do
+    it "replaces an existing relatedItem if there is a parent collection with title" do
       mods_xml = read_fixture('ex2_related_mods.xml')
+      mods=Nokogiri::XML(mods_xml)
+      c_mods=Nokogiri::XML(read_fixture('ex1_mods.xml'))
+      @collection.datastreams['descMetadata'].content = c_mods.to_s
+
+      @item.add_collection_reference(mods)
+
+      xml = mods
+      EquivalentXml.equivalent?(xml.to_s,@item.descMetadata.ng_xml.to_s).should == false
+      collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
+      collections.length.should == 1
+      collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
+      collection_title.length.should ==1
+      collection_title.first.content.should == 'complete works of Henry George'
+      collection_uri = xml.search('//mods:relatedItem/mods:identifier[@type="uri"]')
+      expect(collection_uri.length).to eq(1)
+      expect(collection_uri.first.content).to eq "http://purl.stanford.edu/zb871zd0767"
+    end
+
+    it "does not touch an existing relatedItem if there is no collection relationship" do
       b = instantiate_fixture('druid:ab123cd4567', Dor::Item)
-      relationships=<<-XML
+      relationships_xml=<<-XML
       <?xml version="1.0"?>
       <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-      <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
-      <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
-      <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:zb871zd0767"/>
-      </rdf:Description>
+        <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
+          <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
+          </rdf:Description>
       </rdf:RDF>
       XML
+      relationships=Nokogiri::XML(relationships_xml)
+      @item.stub(:public_relationships).and_return(relationships)
 
-      relationships=Nokogiri::XML(relationships)
-      b.datastreams['descMetadata'].content = mods_xml
-      b.stub(:public_relationships).and_return(relationships)
-      mods = Nokogiri::XML(mods_xml)
-      b.add_collection_reference(mods)
-      collections=mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
+      mods_xml = read_fixture('ex2_related_mods.xml')
+      mods=Nokogiri::XML(mods_xml)
+      @collection.datastreams['descMetadata'].content = mods.to_s
+
+      @item.add_collection_reference(mods)
+
+      xml = mods
+      EquivalentXml.equivalent?(xml.to_s,@item.descMetadata.ng_xml.to_s).should == false
+      collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
       collections.length.should == 1
-      collection_title=mods.search('//mods:relatedItem/mods:titleInfo/mods:title')
-      collection_title.length.should == 1
+      collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
+      collection_title.length.should ==1
+      collection_title.first.content.should == 'Buckminster Fuller papers, 1920-1983'
     end
   end
 
