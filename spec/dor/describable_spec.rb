@@ -203,6 +203,57 @@ describe Dor::Describable do
       expect(new_mods.xpath('//mods:accessCondition', 'mods' => 'http://www.loc.gov/mods/v3').size).to eq(3)
       expect(new_mods.xpath('//mods:accessCondition[text()[contains(.,"Should not be here anymore")]]', 'mods' => 'http://www.loc.gov/mods/v3').count).to eq(0)
     end
+
+    describe "does not add empty mods nodes when the rightsMetadata has empty" do
+
+      let(:blank_rights_xml) { <<-XML
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright"></human>
+          </copyright>
+          <access type="discover">
+            <machine>
+              <world/>
+            </machine>
+          </access>
+          <access type="read">
+            <machine>
+              <world/>
+            </machine>
+          </access>
+          <use>
+            <human type="useAndReproduction" />
+            <machine type="creativeCommons">by-nc</machine>
+            <human type="creativeCommons"></human>
+          </use>
+        </rightsMetadata>
+        XML
+      }
+
+      let(:blank_obj) {
+        mods = read_fixture('ex2_related_mods.xml')
+        b = Dor::Item.new
+        b.datastreams['descMetadata'].content = mods
+        b.datastreams['rightsMetadata'].content = blank_rights_xml
+        b
+      }
+
+      it "useAndReproduction nodes" do
+        blank_obj.add_access_conditions(public_mods)
+        expect(public_mods.xpath('//mods:accessCondition[@type="useAndReproduction"]').size).to eq(0)
+      end
+
+      it "copyright nodes" do
+        blank_obj.add_access_conditions(public_mods)
+        expect(public_mods.xpath('//mods:accessCondition[@type="copyright"]').size).to eq(0)
+      end
+
+      it "license nodes" do
+        blank_obj.add_access_conditions(public_mods)
+        expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq(0)
+      end
+    end
+
   end
 
   describe 'add_collection_reference' do
