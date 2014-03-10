@@ -68,22 +68,30 @@ module Dor
       rights = self.datastreams['rightsMetadata'].ng_xml
 
       rights.xpath('//use/human[@type="useAndReproduction"]').each do |use|
+        txt = use.text.strip
+        next if txt.empty?
         new_use =  doc.create_element("accessCondition", use.text.strip, :type => 'useAndReproduction')
         doc.root.element_children.last.add_next_sibling new_use
       end
       rights.xpath('//copyright/human[@type="copyright"]').each do |cr|
+        txt = cr.text.strip
+        next if txt.empty?
         new_use =  doc.create_element("accessCondition", cr.text.strip, :type => 'copyright')
         doc.root.element_children.last.add_next_sibling new_use
       end
-      rights.xpath("//use/machine[#{ci_compare('type', 'creativecommons')}]").each do |lic|
-        next if(lic.text =~ /none/i)
-        new_text = "CC #{lic.text}: " << rights.at_xpath("//use/human[#{ci_compare('type', 'creativecommons')}]").text.strip
+      rights.xpath("//use/machine[#{ci_compare('type', 'creativecommons')}]").each do |lic_type|
+        next if lic_type.text =~ /none/i
+        lic_text = rights.at_xpath("//use/human[#{ci_compare('type', 'creativecommons')}]").text.strip
+        next if lic_text.empty?
+        new_text = "CC #{lic_type.text}: #{lic_text}"
         new_lic =  doc.create_element("accessCondition", new_text, :type => 'license')
         doc.root.element_children.last.add_next_sibling new_lic
       end
-      rights.xpath("//use/machine[#{ci_compare('type', 'opendata')}]").each do |lic|
-        next if(lic.text =~ /none/i)
-        new_text = "ODC #{lic.text}: " << rights.at_xpath("//use/human[#{ci_compare('type', 'opendata')}]").text.strip
+      rights.xpath("//use/machine[#{ci_compare('type', 'opendata')}]").each do |lic_type|
+        next if lic_type.text =~ /none/i
+        lic_text = rights.at_xpath("//use/human[#{ci_compare('type', 'opendata')}]").text.strip
+        next if lic_text.empty?
+        new_text = "ODC #{lic_type.text}: #{lic_text}"
         new_lic =  doc.create_element("accessCondition", new_text, :type => 'license')
         doc.root.element_children.last.add_next_sibling new_lic
       end
