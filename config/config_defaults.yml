@@ -58,5 +58,6 @@
   :mint_ids: false
 :workflow:
   :url:
+  :timeout: 60
 :dor_services:
   :url:
