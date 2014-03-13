@@ -25,7 +25,9 @@ module Dor
       ensure
         $-v = temp_v
       end
-      Dor::WorkflowService.configure result.workflow.url, :dor_services_url => result.dor_services.url
+      params = { :dor_services_url => result.dor_services.url }
+      params[:timeout] = result.workflow.timeout if result.workflow.timeout
+      Dor::WorkflowService.configure result.workflow.url, params
       return result
     end
 
