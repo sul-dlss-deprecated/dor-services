@@ -254,7 +254,7 @@ module Dor
     end
     def agreement
       if agreement_object 
-        agreement_object
+        agreement_object.pid
       else
         ''
       end
