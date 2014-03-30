@@ -7,20 +7,18 @@ module Dor
 
     # Push file changes for shelve-able files into the stacks
     def shelve
+      workspace_druid = DruidTools::Druid.new(id,Config.stacks.local_workspace_root)
+
+      stacks_druid = DruidTools::StacksDruid.new id, Config.stacks.local_stacks_root
+      stacks_object_pathname = Pathname(stacks_druid.path)
+
       inventory_diff_xml = self.get_content_diff(:shelve)
       inventory_diff = Moab::FileInventoryDifference.parse(inventory_diff_xml)
-      content_group_diff = inventory_diff.group_difference("content")
-      deltas = content_group_diff.file_deltas
+      content_diff = inventory_diff.group_difference("content")
 
-      if content_group_diff.rename_require_temp_files(deltas[:renamed])
-        triplets = content_group_diff.rename_tempfile_triplets(deltas[:renamed])
-        DigitalStacksService.rename_in_stacks self.pid, triplets.collect{|old,new,temp| [old,temp]}
-        DigitalStacksService.rename_in_stacks self.pid, triplets.collect{|old,new,temp| [temp,new]}
-      else
-        DigitalStacksService.rename_in_stacks self.pid, deltas[:renamed]
-      end
-      DigitalStacksService.shelve_to_stacks   self.pid, deltas[:modified] + deltas[:added] + deltas[:copyadded].collect{|old,new| new}
-      DigitalStacksService.remove_from_stacks self.pid, deltas[:deleted] + deltas[:copydeleted]
+      DigitalStacksService.remove_from_stacks(stacks_object_pathname, content_diff)
+      DigitalStacksService.rename_in_stacks(stacks_object_pathname, content_diff)
+      DigitalStacksService.shelve_to_stacks(workspace_druid, stacks_object_pathname, content_diff)
     end
 
   end
