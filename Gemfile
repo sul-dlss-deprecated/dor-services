@@ -1,5 +1,4 @@
 source 'https://rubygems.org'
-source "http://sul-gems.stanford.edu"
 #gem "rsolr", :git => "git://github.com/sul-dlss/rsolr.git", :branch => "nokogiri"
 group :development do
   gem 'awesome_print'
@@ -13,3 +12,4 @@ end
 
 # Dependencies are defined in dor-services.gemspec
 gemspec
+gem 'addressable', '2.3.5'
