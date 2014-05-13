@@ -69,7 +69,18 @@
   <subject>
     <topic authority="ISO19115TopicCategory" authorityURI="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_TopicCategoryCode" valueURI="utilitiesCommunication">Utilities and Communication</topic>
   </subject>
+  <location>
+    <url>http://purl.stanford.edu/ww217dj0457</url>
+  </location>
   <accessCondition type="useAndReproduction">Access is granted to Stanford University affiliates only. Affiliates are limited to current faculty, staff and students. Unauthorized use, disclosure or reproduction is prohibited.</accessCondition>
+  <recordInfo>
+    <recordContentSource>Stanford</recordContentSource>
+    <recordIdentifier>FA6ED959-7DED-4722-B1FB-A85FB79725BA</recordIdentifier>
+    <recordOrigin>This record was translated from ISO 19139 to MODS v.3 using an xsl transformation.</recordOrigin>
+    <languageOfCataloging>
+      <languageTerm authority="iso639-2b" type="code">eng</languageTerm>
+    </languageOfCataloging>
+  </recordInfo>
   <extension xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" displayLabel="geo">
     <rdf:RDF xmlns:gml="http://www.opengis.net/gml/3.2/" xmlns:dc="http://purl.org/dc/elements/1.1/">
       <rdf:Description rdf:about="http://purl.stanford.edu/ww217dj0457">
