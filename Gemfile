@@ -12,3 +12,4 @@ end
 
 # Dependencies are defined in dor-services.gemspec
 gemspec
+gem 'addressable', '2.3.5'
