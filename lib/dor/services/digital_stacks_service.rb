@@ -106,6 +106,7 @@ module Dor
         stacks_pathname.delete if (file_signature != moab_signature)
       end
       unless stacks_pathname.exist?
+        stacks_pathname.parent.mkpath
         FileUtils.cp workspace_pathname.to_s, stacks_pathname.to_s
         return true
       end
