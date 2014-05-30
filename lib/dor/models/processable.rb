@@ -11,6 +11,33 @@ module Dor
       after_initialize :set_workflows_datastream_location
     end
 
+    #verbiage we want to use to describe an item when it has completed a particular step
+    STATUS_CODE_DISP_TXT = {
+      0 => 'Unknown Status', #if there are no milestones for the current version, someone likely messed up the versioning process.
+      1 => 'Registered',
+      2 => 'In accessioning',
+      3 => 'In accessioning (described)',
+      4 => 'In accessioning (described, published)',
+      5 => 'In accessioning (described, published, deposited)',
+      6 => 'Accessioned',
+      7 => 'Accessioned (indexed)',
+      8 => 'Accessioned (indexed, ingested)',
+      9 => 'Opened'
+    }
+
+    #milestones from accessioning and the order they happen in
+    STEPS = {
+      'registered' => 1,
+      'submitted' => 2,
+      'described' => 3,
+      'published' => 4,
+      'deposited' => 5,
+      'accessioned' => 6,
+      'indexed' => 7,
+      'shelved' => 8,
+      'opened' => 1
+    }
+
     def set_workflows_datastream_location
       # This is a work-around for some strange logic in ActiveFedora that
       # don't allow self.workflows.new? to work if we load the object using
@@ -78,69 +105,49 @@ module Dor
     def milestones
       Dor::WorkflowService.get_milestones('dor',self.pid)
     end
-    def status(include_time=false)
-      current_version='1'
+
+    def status_info()
+      current_version = '1'
       begin
         current_version = self.versionMetadata.current_version_id
       rescue
       end
-      status = 0
-      version = ''
-      #verbage we want to use to describe an item when it has completed a particular step
-      status_hash={
-        0 => 'Unknown Status', #if there are no milestones for the current version, someone likely messed up the versioning process.
-        1 => 'Registered',
-        2 => 'In accessioning',
-        3 => 'In accessioning (described)',
-        4 => 'In accessioning (described, published)',
-        5 => 'In accessioning (described, published, deposited)',
-        6 => 'Accessioned',
-        7 => 'Accessioned (indexed)',
-        8 => 'Accessioned (indexed, ingested)',
-        9 => 'Opened'
-      }
-      #milestones from accesioning and the order they happen in
-      steps={
-        'registered' => 1,
-        'submitted' => 2,
-        'described' => 3,
-        'published' => 4,
-        'deposited' => 5,
-        'accessioned' => 6,
-        'indexed' => 7,
-        'shelved' => 8,
-        'opened' => 1
-      }
-      status_time=nil
 
-      current=false
-      versions=[]
-      result=""
       current_milestones = []
-      #only get steps that are part of accessioning and part of the current version. That can mean they were archived with the current version number, or they might be active (no version number)
+      #only get steps that are part of accessioning and part of the current version. That can mean they were archived with the current version 
+      #number, or they might be active (no version number).
       milestones.each do |m|
-        if steps.keys.include?(m[:milestone]) and (m[:version].nil? or m[:version] == current_version)
+        if STEPS.keys.include?(m[:milestone]) and (m[:version].nil? or m[:version] == current_version)
           current_milestones << m unless m[:milestone] == 'registered' and current_version.to_i > 1
         end
       end
-      status = 0
+      
+      status_code = 0
       status_time = ''
       #for each milestone in the current version, see if it comes after the current 'last' step, if so, make it the last and record the date/time
       current_milestones.each do |m|
-        name=m[:milestone]
-        time=m[:at].utc.xmlschema
-        if steps.keys.include? name
-          if steps[name] > status
-            status = steps[name]
-            status_time=time
+        name = m[:milestone]
+        time = m[:at].utc.xmlschema
+        if STEPS.keys.include? name
+          if STEPS[name] > status_code
+            status_code = STEPS[name]
+            status_time = time
           end
         end
       end
+
+      return {:current_version => current_version, :status_code => status_code, :status_time => status_time}
+    end
+
+    def status(include_time=false)
+      status_info_hash = status_info
+      current_version, status_code, status_time = status_info_hash[:current_version], status_info_hash[:status_code], status_info_hash[:status_time]
+
       #use the translation table to get the appropriate verbage for the latest step
-      result='v'+current_version.to_s+' '+status_hash[status].to_s
-      result +=" #{format_date(status_time)}" if include_time
-      result
-  end
+      result = "v#{current_version} #{STATUS_CODE_DISP_TXT[status_code]}"
+      result += " #{format_date(status_time)}" if include_time
+      return result
+    end
 
     def to_solr(solr_doc=Hash.new, *args)
       super(solr_doc, *args)
@@ -210,6 +217,8 @@ module Dor
       opts[:priority] = priority if(priority > 0)
       Dor::WorkflowService.create_workflow(repo, self.pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
     end
+
+
     private
     #handles formating utc date/time to human readable
     def format_date datetime
