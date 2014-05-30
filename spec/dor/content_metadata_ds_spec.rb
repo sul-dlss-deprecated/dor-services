@@ -10,7 +10,7 @@ describe Dor::ContentMetadataDS do
   before(:each) do
     @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
     @item.contentMetadata.content='<?xml version="1.0"?>
-    <contentMetadata objectId="druid:gw177fc7976" type="map">
+    <contentMetadata objectId="druid:gw177fc7976" type="map" stacks="/specialstack">
     <resource id="0001" sequence="1" type="image">
     <file format="JPEG2000" id="gw177fc7976_05_0001.jp2" mimetype="image/jp2" preserve="yes" publish="yes" shelve="yes" size="5143883">
     <imageData height="4580" width="5939"/>
@@ -234,5 +234,10 @@ describe Dor::ContentMetadataDS do
       @item.contentMetadata.ng_xml.search('//contentMetadata/resource[@type=\'page\']').length.should ==1
     end
   end
+  describe 'get stacks value' do
+    it 'should read the stacks value' do
+      @item.contentMetadata.stacks.should == ["/specialstack"]
+    end
+    end
 end
 

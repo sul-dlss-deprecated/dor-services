@@ -9,8 +9,9 @@ module Dor
     def shelve
       # retrieve the differences between the current contentMetadata and the previously ingested version
       shelve_diff = get_shelve_diff
+      stacks_object_pathname = get_stacks_location
       # determine the location of the object's files in the stacks area
-      stacks_druid = DruidTools::StacksDruid.new id, Config.stacks.local_stacks_root
+      stacks_druid = DruidTools::StacksDruid.new id, stacks_object_pathname
       stacks_object_pathname = Pathname(stacks_druid.path)
       # determine the location of the object's content files in the workspace area
       workspace_druid = DruidTools::Druid.new(id,Config.stacks.local_workspace_root)
@@ -41,6 +42,23 @@ module Dor
       content_pathname = Pathname(workspace_druid.find_filelist_parent('content', filelist))
       content_pathname
     end
-
+    
+    
+    # get the stack location based on the contentMetadata stacks attribute 
+    # or using the default value from the config file if it doesn't exist
+    def get_stacks_location
+      
+      contentMetadataDS = self.datastreams['contentMetadata']
+      unless contentMetadataDS.nil? or contentMetadataDS.stacks.length == 0
+        stacks_location = contentMetadataDS.stacks[0]        
+        if stacks_location.start_with?"/"  #Absolute stacks path
+          return stacks_location
+        else        
+          raise "stacks attribute for item: "+self.id+ " contentMetadata should start with /. The current value is "+stacks_location
+        end
+      end      
+      return Config.stacks.local_stacks_root #Default stacks
+       
+    end
   end
 end
