@@ -88,7 +88,7 @@ module Dor
       config[:stomp][:host] ||= URI.parse(config.fedora.url).host rescue nil
 
       [:cert_file, :key_file, :key_pass].each do |key|
-        stack = caller.dup
+        stack = Kernel.caller.dup
         stack.shift while stack[0] =~ %r{(active_support/callbacks|dor/config|dor-services)\.rb}
         if config.fedora[key].present?
           ActiveSupport::Deprecation.warn "Dor::Config -- fedora.#{key.to_s} is deprecated. Please use ssl.#{key.to_s} instead.", stack
