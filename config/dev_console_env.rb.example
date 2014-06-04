@@ -27,7 +27,6 @@ Dor::Config.configure do
   end
 
   stacks do
-    document_cache_storage_root '/home/lyberadmin/document_cache'
     document_cache_host 'purl-dev.stanford.edu'
     document_cache_user ''
     local_workspace_root '/dor/workspace'

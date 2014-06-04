@@ -18,6 +18,24 @@ module Dor
       cleanup_export(druid)
     end
 
+    # Tries to remove any exsitence of the object in our systems
+    #   Does the following:
+    #   - Removes item from Dor/Fedora/Solr
+    #   - Removes content from dor workspace
+    #   - Removes content from assembly workspace
+    #   - Removes content from sdr export area
+    #   - Removes content from stacks
+    #   - Removes content from purl
+    #   - Removes active workflows
+    # @param [String] druid id of the object you wish to remove
+    def self.nuke!(druid)
+      cleanup_by_druid druid
+      cleanup_stacks druid
+      cleanup_purl_doc_cache druid
+      remove_active_workflows druid
+      delete_from_dor druid
+    end
+
     # @param [String] druid The identifier for the object whose data is to be removed
     # @param [String] base The base directory to delete from
     # @return [void] remove the object's data files from the workspace area
@@ -40,6 +58,30 @@ module Dor
     def self.remove_branch(pathname)
       pathname = Pathname(pathname) if pathname.instance_of? String
       pathname.rmtree if pathname.exist?
+    end
+
+    def self.cleanup_stacks(druid)
+      DruidTools::StacksDruid.new(druid, Config.stacks.local_storage_root).prune!
+    end
+
+    def self.cleanup_purl_doc_cache(druid)
+      DruidTools::PurlDruid.new(druid, Config.stacks.local_document_cache_root).prune!
+    end
+
+    def self.remove_active_workflows(druid)
+      %w(dor sdr).each do |repo|
+        dor_wfs = Dor::WorkflowService.get_workflows(druid, repo)
+        dor_wfs.each { |wf| Dor::WorkflowService.delete_workflow(repo, druid, wf) }
+      end
+    end
+
+    # Delete an object from DOR.
+    #
+    # @param [string] pid the druid
+    def self.delete_from_dor(pid)
+      Dor::Config.fedora.client["objects/#{pid}"].delete
+      Dor::SearchService.solr.delete_by_id(pid)
+      Dor::SearchService.solr.commit
     end
 
   end
