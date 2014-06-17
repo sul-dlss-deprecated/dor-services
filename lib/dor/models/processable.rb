@@ -114,14 +114,14 @@ module Dor
       end
 
       current_milestones = []
-      #only get steps that are part of accessioning and part of the current version. That can mean they were archived with the current version 
+      #only get steps that are part of accessioning and part of the current version. That can mean they were archived with the current version
       #number, or they might be active (no version number).
       milestones.each do |m|
         if STEPS.keys.include?(m[:milestone]) and (m[:version].nil? or m[:version] == current_version)
           current_milestones << m unless m[:milestone] == 'registered' and current_version.to_i > 1
         end
       end
-      
+
       status_code = 0
       status_time = ''
       #for each milestone in the current version, see if it comes after the current 'last' step, if so, make it the last and record the date/time
@@ -208,6 +208,7 @@ module Dor
 
     # Initilizes workflow for the object in the workflow service
     #  It will set the priorty of the new workflow to the current_priority if it is > 0
+    #  It will set lane_id from the item's APO default workflow lane
     # @param [String] name of the workflow to be initialized
     # @param [String] repo name of the repository to create workflow for
     # @param [Boolean] create_ds create a 'workflows' datastream in Fedora for the object
@@ -215,6 +216,7 @@ module Dor
       priority = workflows.current_priority if priority == 0
       opts = { :create_ds => create_ds }
       opts[:priority] = priority if(priority > 0)
+      opts[:lane_id] = default_workflow_lane
       Dor::WorkflowService.create_workflow(repo, self.pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
     end
 
