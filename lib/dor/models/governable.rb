@@ -1,4 +1,4 @@
-module Dor  
+module Dor
   module Governable
     extend ActiveSupport::Concern
     include ActiveFedora::Relationships
@@ -11,6 +11,18 @@ module Dor
 
     def initiate_apo_workflow(name)
       self.initialize_workflow(name, 'dor', !self.new_object?)
+    end
+
+    # Returns the default lane_id from the item's APO.  Will return 'default' if the item does not have
+    #   and APO, or if the APO does not have a default_lane
+    # @return [String] the lane id
+    def default_workflow_lane
+      return 'default' if self.admin_policy_object.nil?  # TODO log warning?
+
+      admin_md = admin_policy_object.datastreams['administrativeMetadata']
+      lane = admin_md.default_workflow_lane
+      return 'default' if lane.nil? or lane.strip == ''
+      lane
     end
 
     def reset_to_apo_default()
@@ -59,7 +71,7 @@ module Dor
           node.add_child(machine_node)
           machine_node.add_child(none_node)
         end
-      end 
+      end
     end
 
     def add_collection(collection_or_druid)
@@ -71,8 +83,8 @@ module Dor
       end
       self.collections << collection
       self.sets << collection
-    end 
-    
+    end
+
     def remove_collection(collection_or_druid)
 
       collection = case collection_or_druid
@@ -117,19 +129,19 @@ module Dor
       ['dor-administrator','dor-apo-manager', 'dor-apo-depositor']
     end
     def groups_which_manage_content
-      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor']    
+      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor']
     end
     def groups_which_manage_rights
       ['dor-administrator','dor-apo-manager', 'dor-apo-depositor']
     end
     def groups_which_manage_embargo
-      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor']    
+      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor']
     end
     def groups_which_view_content
-      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor', 'dor-viewer']    
+      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor', 'dor-viewer']
     end
     def groups_which_view_metadata
-      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor', 'dor-viewer']    
+      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor', 'dor-viewer']
     end
     def intersect arr1, arr2
       return (arr1 & arr2).length > 0

@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
 
   # Runtime dependencies
   s.add_dependency 'active-fedora', '~> 5.7.1'
-  s.add_dependency 'activesupport', '>= 3.2.16'
+  s.add_dependency 'activesupport', '~> 3.2', '>= 3.2.18'
   s.add_dependency 'confstruct', '~> 0.2.2'
   s.add_dependency 'equivalent-xml', '~> 0.2.2'
   s.add_dependency 'json', '~> 1.8.1'

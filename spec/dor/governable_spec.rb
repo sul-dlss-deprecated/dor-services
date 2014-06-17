@@ -107,7 +107,7 @@ describe Dor::Governable do
       </rightsMetadata>
       XML
     end
-    it 'should cahnge the read permissions value from <group>stanford</group> to <none/> ' do    
+    it 'should cahnge the read permissions value from <group>stanford</group> to <none/> ' do
       #this should work because the find call inside set_read_rights is stubbed to return @obj, so the modifications happen to that, not a fresh instance
       @item.set_read_rights('none')
       @item.datastreams['rightsMetadata'].ng_xml.should be_equivalent_to <<-XML
@@ -144,14 +144,14 @@ describe Dor::Governable do
     end
     it 'should shouldnt error if there is nothing in the datastream' do
       @item.stub(:milestones).and_return({})
-      @item.stub(:rightsMetadata).and_return(ActiveFedora::OmDatastream.new)      
+      @item.stub(:rightsMetadata).and_return(ActiveFedora::OmDatastream.new)
       solr_doc=@item.to_solr
       solr_doc['rights_facet'].should == [""]
     end
-    
+
   end
   describe 'add_collection' do
-    it 'should add a collection' do 
+    it 'should add a collection' do
       @item.add_collection('druid:oo201oo0002')
       rels_ext_ds=@item.datastreams['RELS-EXT']
       xml=Nokogiri::XML(rels_ext_ds.to_rels_ext.to_s)
@@ -243,6 +243,29 @@ end
       i.initiate_apo_workflow('accessionWF')
     end
   end
+
+  describe "#default_workflow_lane" do
+    it "returns the default lane as defined in the object's APO" do
+      apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
+      item = instantiate_fixture('druid:ab123cd4567', GovernableItem)
+      item.stub(:admin_policy_object) { apo }
+      expect(item.default_workflow_lane).to eq 'fast'
+    end
+
+    it "returns the value 'default' if the object does not have an APO" do
+      item = instantiate_fixture('druid:ab123cd4567', GovernableItem)
+      item.stub(:admin_policy_object) { nil }
+      expect(item.default_workflow_lane).to eq 'default'
+    end
+
+    it "returns the value 'default' if the object's APO does not have a default lane defined" do
+      apo  = instantiate_fixture('druid:zt570tx3016', Dor::AdminPolicyObject)
+      item = instantiate_fixture('druid:ab123cd4567', GovernableItem)
+      item.stub(:admin_policy_object) { apo }
+      expect(item.default_workflow_lane).to eq 'default'
+    end
+  end
+
   describe 'add_collection' do
 it 'should add a collection' do
       @item.add_collection('druid:oo201oo0002')

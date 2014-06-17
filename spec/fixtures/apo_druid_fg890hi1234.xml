@@ -204,6 +204,10 @@
           <dissemination>
             <releaseDelayLimit>20 years</releaseDelayLimit>
           </dissemination>
+          <defaults>
+            <initiateWorkflow lane="fast" />
+            <shelving path="/hoover" />
+          </defaults>
         </administrativeMetadata>
       </foxml:xmlContent>
     </foxml:datastreamVersion>
