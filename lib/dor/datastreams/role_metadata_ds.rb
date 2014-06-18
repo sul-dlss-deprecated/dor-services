@@ -1,7 +1,7 @@
 module Dor
 class RoleMetadataDS < ActiveFedora::OmDatastream
   include SolrDocHelper
-  
+
   set_terminology do |t|
     t.root :path => 'roleMetadata'
 
@@ -19,20 +19,20 @@ class RoleMetadataDS < ActiveFedora::OmDatastream
       t.person :ref => [:person]
       t.group  :ref => [:group]
     end
-    
+
     t.manager    :ref => [:role], :attributes => {:type => 'manager'}
     t.depositor  :ref => [:role], :attributes => {:type => 'depositor'}
     t.reviewer   :ref => [:role], :attributes => {:type => 'reviewer'}
     t.viewer     :ref => [:role], :attributes => {:type => 'viewer'}
   end
-  
+
   def self.xml_template
     Nokogiri::XML::Builder.new do |xml|
       xml.roleMetadata{
       }
     end.doc
   end
-  
+
 
   def to_solr(solr_doc=Hash.new, *args)
     self.find_by_xpath('/roleMetadata/role/*').each do |actor|
@@ -40,12 +40,12 @@ class RoleMetadataDS < ActiveFedora::OmDatastream
       val = [actor.at_xpath('identifier/@type'),actor.at_xpath('identifier/text()')].join ':'
       add_solr_value(solr_doc, "apo_role_#{actor.name}_#{role_type}", val, :string, [:searchable, :facetable])
       add_solr_value(solr_doc, "apo_role_#{role_type}", val, :string, [:searchable, :facetable])
-      if ['dor-apo-manager','dor-apo-depositor'].include? role_type
+      unless role_type =~ /^hydrus/
         add_solr_value(solr_doc, "apo_register_permissions", val, :string, [:searchable, :facetable])
       end
     end
     solr_doc
   end
-  
+
 end
 end
