@@ -244,7 +244,8 @@ module Dor
       else
         nodes=xml.search('//registration')
         if not nodes.first
-          self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :registration)
+          reg_node=Nokogiri::XML::Node.new('registration',xml)
+          xml.root.add_child(reg_node)
         end
         nodes=xml.search('//registration')
         wf_node=Nokogiri::XML::Node.new('workflow',xml)

@@ -268,6 +268,15 @@ describe Dor::Editable do
     it 'should work on an empty ds' do
       @empty_item.default_workflow = 'thisWF'
       @empty_item.default_workflows.include?('thisWF').should == true
+      adm_md_ds = @empty_item.datastreams['administrativeMetadata']
+      xml = Nokogiri::XML(adm_md_ds.to_xml)
+      xml.should be_equivalent_to <<-XML
+        <administrativeMetadata>
+          <registration>
+            <workflow id="thisWF"/>
+          </registration>
+        </administrativeMetadata>
+      XML
     end
   end
   describe 'to_solr' do
