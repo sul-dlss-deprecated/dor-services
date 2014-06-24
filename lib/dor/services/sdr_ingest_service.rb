@@ -1,7 +1,4 @@
-require 'rubygems'
-require 'lyber-utils'
 require 'moab_stanford'
-require 'dor-services'
 
 module Dor
   class SdrIngestService
