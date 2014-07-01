@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileInventoryDifference objectId="druid:ng782rw8378" differenceCount="8" basis="v3-contentMetadata-all" other="new-contentMetadata-all" reportDatetime="2014-04-23T18:45:26Z">
+  <fileGroupDifference groupId="content" differenceCount="8" identical="37" copyadded="1" copydeleted="0" renamed="2" modified="0" added="2" deleted="3">
+    <subset change="identical" count="37">
+      <file change="identical" basisPath="SUB1_b4000_2.nii.gz" otherPath="same">
+        <fileSignature size="77480850" md5="bc33a1aeac65e31891170186cfe61ced" sha1="751bf17ad13783b8d229b1b43a856522d1091448" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b2000_1.bvecs" otherPath="same">
+        <fileSignature size="3889" md5="4c63a586f29afc6a48a5809524a76cb4" sha1="6a607c21f179426171b8df154e925251f8649353" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_cc.nii.gz" otherPath="same">
+        <fileSignature size="24529" md5="4217ac59c2eb517dfa70c04846267a91" sha1="b2197c08430f9e368b5aed43c59897d643fa5e32" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_cc.nii.gz" otherPath="same">
+        <fileSignature size="24167" md5="695819c291ef10e1e9c940e62968f546" sha1="37de778f77d385cbbbdbc8d46212fa259200f696" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b2000_1.nii.gz" otherPath="same">
+        <fileSignature size="88999218" md5="2d6d4afdbfcc628ab7baca3458d441ba" sha1="84a1e7314f8aece8ceb20b12f77818a3fe0ebcea" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b1000_2.bvecs" otherPath="same">
+        <fileSignature size="3890" md5="22306b85ee8725cd39b275172c02a73f" sha1="5ade78115d87436bf5403330f0a0898d3aac496f" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_b1000_2.bvecs" otherPath="same">
+        <fileSignature size="3884" md5="eb0614a30f77c21bf197638270c978b1" sha1="05d5b4bf658636bd67d4b8395286cfa61c09baee" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_b1000_1.bvecs" otherPath="same">
+        <fileSignature size="3890" md5="ab7e61f735e1c714a27307a6ab647ec9" sha1="719339ae7394f69fefaeeda0f49621f1d28102e6" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_b4000_2.bvecs" otherPath="same">
+        <fileSignature size="3875" md5="7d91f04e39191c5aa799cc83acff4989" sha1="e1f17d82ab6fdc0033e8b38e729ad419b455778a" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b1000_2.bvals" otherPath="same">
+        <fileSignature size="770" md5="c48ab074908f82af2736a5ace84d0810" sha1="66cdafdf66fc10e2742fb3f58409f6a7075325fb" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_b1000_1.bvals" otherPath="same">
+        <fileSignature size="770" md5="c48ab074908f82af2736a5ace84d0810" sha1="66cdafdf66fc10e2742fb3f58409f6a7075325fb" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b1000_1.bvals" otherPath="same">
+        <fileSignature size="770" md5="c48ab074908f82af2736a5ace84d0810" sha1="66cdafdf66fc10e2742fb3f58409f6a7075325fb" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_b1000_2.bvals" otherPath="same">
+        <fileSignature size="770" md5="c48ab074908f82af2736a5ace84d0810" sha1="66cdafdf66fc10e2742fb3f58409f6a7075325fb" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_t1_class.nii.gz" otherPath="same">
+        <fileSignature size="522316" md5="d3ad363e4754d6ccacc56e71745954b2" sha1="25820450bc3417ebfff35b19acf0ad35d4cb113b" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b1000_1.bvecs" otherPath="same">
+        <fileSignature size="3890" md5="4444959ba096b06b5715d87bed219738" sha1="27b72439539fab865f4f8a22746e79ae0c05390a" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_t1.nii.gz" otherPath="same">
+        <fileSignature size="32950133" md5="26c13fc8966b9805d69acb37ceac023b" sha1="c247ea5176896db9477bcdd4838035c8ef89683b" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_b4000_1.bvals" otherPath="same">
+        <fileSignature size="770" md5="fe9fe71877da2cc0756341304073a08e" sha1="e8b667487cc71e875f51ac75582cf1e477485d82" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_b4000_2.bvals" otherPath="same">
+        <fileSignature size="770" md5="fe9fe71877da2cc0756341304073a08e" sha1="e8b667487cc71e875f51ac75582cf1e477485d82" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b4000_1.bvals" otherPath="same">
+        <fileSignature size="770" md5="fe9fe71877da2cc0756341304073a08e" sha1="e8b667487cc71e875f51ac75582cf1e477485d82" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b4000_2.bvals" otherPath="same">
+        <fileSignature size="770" md5="fe9fe71877da2cc0756341304073a08e" sha1="e8b667487cc71e875f51ac75582cf1e477485d82" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_t1.nii.gz" otherPath="same">
+        <fileSignature size="34190804" md5="97c682db61f3037af49c66a640428f85" sha1="3ffe0c15da1b7f5341c70707664c89783c7a73a9" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_t1_class.nii.gz" otherPath="same">
+        <fileSignature size="607019" md5="42a54a22903ac955788ed1318af0dd33" sha1="9b0c97bec4d9807362396d47dd87d9fd13cbbb67" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b2000_2.bvecs" otherPath="same">
+        <fileSignature size="3885" md5="385548e6b694be1dc5452a9213a992cd" sha1="8e127c4b82dc5a9823951f763b3f765b8f26eab0" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b2000_1.bvals" otherPath="same">
+        <fileSignature size="770" md5="4e08ee9e2b1d2ec3fddb68c70ae23c36" sha1="8773ea06b92aa27f3cd279c92c52f1eeec175c41" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_b2000_2.bvals" otherPath="same">
+        <fileSignature size="770" md5="4e08ee9e2b1d2ec3fddb68c70ae23c36" sha1="8773ea06b92aa27f3cd279c92c52f1eeec175c41" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b2000_2.bvals" otherPath="same">
+        <fileSignature size="770" md5="4e08ee9e2b1d2ec3fddb68c70ae23c36" sha1="8773ea06b92aa27f3cd279c92c52f1eeec175c41" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_b4000_1.nii.gz" otherPath="same">
+        <fileSignature size="78752294" md5="6601369481011b9810bbf3148702f8a5" sha1="61126c1130819f24abaf8877b8fc95bf7e7405c1" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b4000_2.bvecs" otherPath="same">
+        <fileSignature size="3867" md5="9b5034ac29d1b2ae13deb92e2000fb11" sha1="c69ba8197d4c02d838e8f31d1840c3601032daac" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b4000_1.bvecs" otherPath="same">
+        <fileSignature size="3896" md5="4618ec86e5edd9b85b982725098cb312" sha1="298cfee808bb5e3c822e9209dc92a726c20883d1" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b4000_1.nii.gz" otherPath="same">
+        <fileSignature size="77420978" md5="6f885591378a53db2771314d8473c6f8" sha1="ffd7019ec29f445c190f71411cbfb2f4134213a7" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b2000_2.nii.gz" otherPath="same">
+        <fileSignature size="88981523" md5="8e4abbf3d011fa4ca5f48e036464cfc2" sha1="b4b4c5bbf8df0136683ce168d2e0e95384c8b716" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_b4000_1.bvecs" otherPath="same">
+        <fileSignature size="3886" md5="db7c060fd0e0ec11c1b58b5db0192a4e" sha1="6369378ca1ff743ea99f986fc076f2ef8244ddbf" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_b1000_2.nii.gz" otherPath="same">
+        <fileSignature size="96794810" md5="e182dde973b9d8303c939f30c6b6e9e3" sha1="5778f8314d11ceb8a81d1d1a0bd088c867f699f5" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b1000_1.nii.gz" otherPath="same">
+        <fileSignature size="93699533" md5="69d95eb9dcdb18aac001ce91e13499a5" sha1="ca55f0910669b6950b7898010b9a7dcd28411803" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_b4000_2.nii.gz" otherPath="same">
+        <fileSignature size="78622595" md5="b8c9276cc407794ec2f1003f07c331de" sha1="f3fd5b51b70e2d6685f0764a93c469e626ab03c5" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB1_b1000_2.nii.gz" otherPath="same">
+        <fileSignature size="93722226" md5="468c59fc82061177f216efd54b2774e2" sha1="97e05f59c8adfb1000824c5ca809096118cd2dda" sha256=""/>
+      </file>
+      <file change="identical" basisPath="SUB2_b1000_1.nii.gz" otherPath="same">
+        <fileSignature size="96605505" md5="9d863cde9162795423ffe565bb62c100" sha1="bd1f9f1d0034061a30c1ab527cf7387c3fdad06a" sha256=""/>
+      </file>
+    </subset>
+    <subset change="renamed" count="2">
+      <file change="renamed" basisPath="SUB2_b2000_2.nii.gz" otherPath="SUB2_b2000_1.nii.gz">
+        <fileSignature size="89656328" md5="ddc3c9845ef7545baae3dd1f39262ca5" sha1="d8ad22d4dd07eaf038f7b7cf6c23f2d707dc4255" sha256=""/>
+      </file>
+      <file change="renamed" basisPath="SUB2_b2000_2.bvecs" otherPath="SUB2_b2000_1.bvecs">
+        <fileSignature size="3863" md5="6749ec9f45c08001e46fe848433f8fe3" sha1="926f2dd7d18b40d92d5e2d14ec03c16dc88de69b" sha256=""/>
+      </file>
+    </subset>
+    <subset change="copyadded" count="1">
+      <file change="copyadded" basisPath="SUB1_b2000_1.bvals" otherPath="SUB2_b2000_1.bvals">
+        <fileSignature size="770" md5="4e08ee9e2b1d2ec3fddb68c70ae23c36" sha1="8773ea06b92aa27f3cd279c92c52f1eeec175c41" sha256=""/>
+      </file>
+    </subset>
+    <subset change="added" count="2">
+      <file change="added" basisPath="" otherPath="SUB2_b2000_2.bvecs">
+        <fileSignature size="3883" md5="89539f101339b42e570517f12932af90" sha1="309a04c1b19b1e569bcf3bbc9836dd8b93242d7d" sha256=""/>
+      </file>
+      <file change="added" basisPath="" otherPath="SUB2_b2000_2.nii.gz">
+        <fileSignature size="89811996" md5="d46f6b980ff460d1f64cd2a066447b21" sha1="95d3a9c09025e32588e546e8cb848d6a0790c419" sha256=""/>
+      </file>
+    </subset>
+    <subset change="deleted" count="3">
+      <file change="deleted" basisPath="SUB2_b2000_1.bvecs" otherPath="">
+        <fileSignature size="24" md5="69482f33d71f06a2042ec2dd6936c90a" sha1="0c180d60336adc1b1f010db3b5073bfc18cacb02" sha256=""/>
+      </file>
+      <file change="deleted" basisPath="SUB2_b2000_1.bvals" otherPath="">
+        <fileSignature size="8" md5="a81f03b93fd84900d58f9853fccd4b09" sha1="32d6b8d8b633a6ec47536de1c9689b21a0b13432" sha256=""/>
+      </file>
+      <file change="deleted" basisPath="SUB2_b2000_1.nii.gz" otherPath="">
+        <fileSignature size="2763556" md5="4ed352048e1bfe06ac4033f8e772f2f8" sha1="463b754d61fdb3f79473a64486f6644e48836ff4" sha256=""/>
+      </file>
+    </subset>
+    <subset change="copydeleted" count="0"/>
+    <subset change="modified" count="0"/>
+  </fileGroupDifference>
+</fileInventoryDifference>
