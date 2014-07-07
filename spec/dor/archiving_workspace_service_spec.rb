@@ -11,10 +11,10 @@ describe Dor::ArchivingWorkspaceService do
   describe 'archive_workspace_druid_tree' do
     
     before(:each) do
-       @druid = "druid:aa111aa1111"
-       @druid_tree_path = "#{@workspace_root}/aa/111/aa/1111/aa111aa1111"
+       @druid = "druid:am111am1111"
+       @druid_tree_path = "#{@workspace_root}/am/111/am/1111/am111am1111"
        
-       #To make sure the directory name is as expected aa111aa1111
+       #To make sure the directory name is as expected am111am1111
        FileUtils.mv(@druid_tree_path+"_v2", @druid_tree_path) if File.exists?(@druid_tree_path+"_v2")
     end
     
