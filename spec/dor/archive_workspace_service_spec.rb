@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require 'dor/services/archiving_workspace_service'
+require 'dor/services/archive_workspace_service'
 
-describe Dor::ArchivingWorkspaceService do
+describe Dor::ArchiveWorkspaceService do
   before(:each) { stub_config }
   
   before(:each) do
@@ -22,7 +22,7 @@ describe Dor::ArchivingWorkspaceService do
     end
     
     it "should rename the directory tree with the directory not empty" do
-       Dor::ArchivingWorkspaceService.archive_workspace_druid_tree(@druid,"2",@workspace_root)
+       Dor::ArchiveWorkspaceService.archive_workspace_druid_tree(@druid,"2",@workspace_root)
 
        File.exists?("#{@druid_tree_path}_v2").should eq true
        File.exists?(@druid_tree_path).should eq false
@@ -30,7 +30,7 @@ describe Dor::ArchivingWorkspaceService do
        
     it "should do nothing with truncated druid" do
       truncated_druid = "druid:tr111tr1111"
-      Dor::ArchivingWorkspaceService.archive_workspace_druid_tree(truncated_druid,"2",@workspace_root) 
+      Dor::ArchiveWorkspaceService.archive_workspace_druid_tree(truncated_druid,"2",@workspace_root) 
       truncated_druid_tree_path = "#{@workspace_root}/tr/111/tr/1111/"
       
       File.exists?("#{truncated_druid_tree_path}_v2").should eq false
@@ -38,11 +38,11 @@ describe Dor::ArchivingWorkspaceService do
     end
     
     it "should throw an error if the directory is already archived" do
-      expect{ Dor::ArchivingWorkspaceService.archive_workspace_druid_tree(@archived_druid,"2",@workspace_root) }.to raise_error
+      expect{ Dor::ArchiveWorkspaceService.archive_workspace_druid_tree(@archived_druid,"2",@workspace_root) }.to raise_error
     end
     
     it "should archived the current directory even if there is an older archived that hasn't been cleaned up" do
-      Dor::ArchivingWorkspaceService.archive_workspace_druid_tree(@archived_druid,"3",@workspace_root)
+      Dor::ArchiveWorkspaceService.archive_workspace_druid_tree(@archived_druid,"3",@workspace_root)
  
       File.exists?("#{@archived_druid_tree_path}_v2").should eq true
       File.exists?("#{@archived_druid_tree_path}_v3").should eq true

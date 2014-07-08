@@ -1,7 +1,7 @@
 module Dor
 
   # Rename the druid trees  at the end of the accessionWF in order to be cleaned/deleted later.
-  class ArchivingWorkspaceService
+  class ArchiveWorkspaceService
 
     def self.archive_workspace_druid_tree(druid, version, workspace_root)
       
