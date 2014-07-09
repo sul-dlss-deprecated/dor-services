@@ -139,6 +139,7 @@ module Dor
   autoload :ProvenanceMetadataService, 'dor/services/provenance_metadata_service'
   autoload :TechnicalMetadataService, 'dor/services/technical_metadata_service'
   autoload :MergeService, 'dor/services/merge_service'
+  autoload :ArchiveWorkspaceService, 'dor/services/archive_workspace_service'
 
   # Versioning Classes
   module Versioning
