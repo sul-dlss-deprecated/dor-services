@@ -1,13 +1,14 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Dor::ArchiveWorkspaceService do
+describe Dor::ResetWorkspaceService do
   before(:each) { stub_config }
   
   before(:each) do
      @workspace_root = Dor::Config.stacks.local_workspace_root
+     @export_root = Dor::Config.sdr.local_export_home
   end
     
-  describe 'archive_workspace_druid_tree' do
+  describe 'reset_workspace_druid_tree' do
     
     before(:each) do
        @druid = "druid:am111am1111"
@@ -21,7 +22,7 @@ describe Dor::ArchiveWorkspaceService do
     end
     
     it "should rename the directory tree with the directory not empty" do
-       Dor::ArchiveWorkspaceService.archive_workspace_druid_tree(@druid,"2",@workspace_root)
+       Dor::ResetWorkspaceService.reset_workspace_druid_tree(@druid,"2",@workspace_root)
 
        File.exists?("#{@druid_tree_path}_v2").should eq true
        File.exists?(@druid_tree_path).should eq false
@@ -29,7 +30,7 @@ describe Dor::ArchiveWorkspaceService do
        
     it "should do nothing with truncated druid" do
       truncated_druid = "druid:tr111tr1111"
-      Dor::ArchiveWorkspaceService.archive_workspace_druid_tree(truncated_druid,"2",@workspace_root) 
+      Dor::ResetWorkspaceService.reset_workspace_druid_tree(truncated_druid,"2",@workspace_root) 
       truncated_druid_tree_path = "#{@workspace_root}/tr/111/tr/1111/"
       
       File.exists?("#{truncated_druid_tree_path}_v2").should eq false
@@ -37,26 +38,54 @@ describe Dor::ArchiveWorkspaceService do
     end
     
     it "should throw an error if the directory is already archived" do
-      expect{ Dor::ArchiveWorkspaceService.archive_workspace_druid_tree(@archived_druid,"2",@workspace_root) }.to raise_error
+      expect{ Dor::ResetWorkspaceService.reset_workspace_druid_tree(@archived_druid,"2",@workspace_root) }.to raise_error
     end
     
     it "should archived the current directory even if there is an older archived that hasn't been cleaned up" do
-      Dor::ArchiveWorkspaceService.archive_workspace_druid_tree(@archived_druid,"3",@workspace_root)
+      Dor::ResetWorkspaceService.reset_workspace_druid_tree(@archived_druid,"3",@workspace_root)
  
       File.exists?("#{@archived_druid_tree_path}_v2").should eq true
       File.exists?("#{@archived_druid_tree_path}_v3").should eq true
       File.exists?("#{@archived_druid_tree_path}").should eq false
-      
-      #reset the env.
-
     end
     
     after(:each) do
       #To reset the environment to its original format
       FileUtils.mv(@druid_tree_path+"_v2", @druid_tree_path) if File.exists?(@druid_tree_path+"_v2")
       FileUtils.mv( "#{@archived_druid_tree_path}_v3",@archived_druid_tree_path) if File.exists?(@archived_druid_tree_path+"_v3")
+    end
+  end
 
+  describe 'reset_export_bag' do
+    
+    before(:each) do
+      id = 'zb871zd0767'
+      @druid = "druid:#{id}"
+      @bag_path = "#{@export_root}/#{id}"
+      FileUtils.mv("#{@bag_path}_v2", @bag_path) if File.exists?(@bag_path+"_v2")
+      FileUtils.mv("#{@bag_path}_v2.tar", @bag_path+".tar") if File.exists?(@bag_path+"_v2.tar")
+    end
+
+    it "should rename the export bags directory and tar files" do
+      Dor::ResetWorkspaceService.reset_export_bag(@druid,"2",@export_root)
+      
+      File.exists?("#{@bag_path}_v2").should eq true
+      File.exists?("#{@bag_path}_v2.tar").should eq true
+      File.exists?("#{@bag_path}").should eq false
+      File.exists?("#{@bag_path}.tar").should eq false
     end
     
+    it "should throw an error if the renamed bag is already existent" do
+      existent_id = "az871zd0000"
+      existent_druid = "druid:#{existent_id}"
+      expect{ Dor::ResetWorkspaceService.reset_export_bag(existent_druid,"2",@export_root) }.to raise_error
+    end
+
+    after(:each) do
+        FileUtils.mv("#{@bag_path}_v2", @bag_path) if File.exists?(@bag_path+"_v2")
+        FileUtils.mv("#{@bag_path}_v2.tar", @bag_path+".tar") if File.exists?(@bag_path+"_v2.tar")
+    end
   end
+  
+  
 end
