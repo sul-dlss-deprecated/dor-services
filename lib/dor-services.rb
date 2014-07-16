@@ -140,6 +140,7 @@ module Dor
   autoload :TechnicalMetadataService, 'dor/services/technical_metadata_service'
   autoload :MergeService, 'dor/services/merge_service'
   autoload :ResetWorkspaceService, 'dor/services/reset_workspace_service'
+  autoload :CleanupResetService, 'dor/services/cleanup_reset_service'
 
   # Versioning Classes
   module Versioning
