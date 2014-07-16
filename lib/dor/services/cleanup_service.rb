@@ -18,6 +18,30 @@ module Dor
       cleanup_export(druid)
     end
 
+    # @param [String] druid The identifier for the object whose data is to be removed
+    # @param [String] base The base directory to delete from
+    # @return [void] remove the object's data files from the workspace area
+    def self.cleanup_workspace_content(druid, base)
+      DruidTools::Druid.new(druid, base).prune!
+    end
+    
+    # @param [String] druid The identifier for the object whose data is to be removed
+    # @return [void] remove copy of the data that was exported to preservation core
+    def self.cleanup_export(druid)
+      id = druid.split(':').last
+      bag_dir = File.join(Config.cleanup.local_export_home, id)
+      self.remove_branch(bag_dir)
+      tarfile = "#{bag_dir}.tar"
+      self.remove_branch(tarfile)
+    end
+
+    # @param [Pathname,String] pathname The full path of the branch to be removed
+    # @return [void] Remove the specified directory and all its children
+    def self.remove_branch(pathname)
+      pathname = Pathname(pathname) if pathname.instance_of? String
+      pathname.rmtree if pathname.exist?
+    end
+
     # Tries to remove any exsitence of the object in our systems
     #   Does the following:
     #   - Removes item from Dor/Fedora/Solr
@@ -34,30 +58,6 @@ module Dor
       cleanup_purl_doc_cache druid
       remove_active_workflows druid
       delete_from_dor druid
-    end
-
-    # @param [String] druid The identifier for the object whose data is to be removed
-    # @param [String] base The base directory to delete from
-    # @return [void] remove the object's data files from the workspace area
-    def self.cleanup_workspace_content(druid, base)
-      DruidTools::Druid.new(druid, base).prune!
-    end
-
-    # @param [String] druid The identifier for the object whose data is to be removed
-    # @return [void] remove copy of the data that was exported to preservation core
-    def self.cleanup_export(druid)
-      id = druid.split(':').last
-      bag_dir = File.join(Config.cleanup.local_export_home, id)
-      self.remove_branch(bag_dir)
-      tarfile = "#{bag_dir}.tar"
-      self.remove_branch(tarfile)
-    end
-
-    # @param [Pathname,String] pathname The full path of the branch to be removed
-    # @return [void] Remove the specified directory and all its children
-    def self.remove_branch(pathname)
-      pathname = Pathname(pathname) if pathname.instance_of? String
-      pathname.rmtree if pathname.exist?
     end
 
     def self.cleanup_stacks(druid)
@@ -83,7 +83,9 @@ module Dor
       Dor::SearchService.solr.delete_by_id(pid)
       Dor::SearchService.solr.commit
     end
-
-  end
+  end 
 
 end
+
+
+    
