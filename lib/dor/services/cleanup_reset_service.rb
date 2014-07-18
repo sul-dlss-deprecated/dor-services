@@ -22,6 +22,7 @@ module Dor
       if Dor::WorkflowService.get_lifecycle('dor', druid, 'accessioned').nil? then 
         last_version = last_version - 1 
       end
+      return last_version
     end
     
     # @param [String] druid The identifier for the object whose reset data is to be removed
