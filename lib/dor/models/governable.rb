@@ -120,28 +120,28 @@ module Dor
       end
     end
     def groups_which_manage_item
-      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor']
+      ['dor-administrator', 'sdr-administrator', 'dor-apo-manager', 'dor-apo-depositor']
     end
     def groups_which_manage_desc_metadata
-      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor', 'dor-apo-metadata']
+      ['dor-administrator', 'sdr-administrator', 'dor-apo-manager', 'dor-apo-depositor', 'dor-apo-metadata']
     end
     def groups_which_manage_system_metadata
-      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor']
+      ['dor-administrator', 'sdr-administrator', 'dor-apo-manager', 'dor-apo-depositor']
     end
     def groups_which_manage_content
-      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor']
+      ['dor-administrator', 'sdr-administrator', 'dor-apo-manager', 'dor-apo-depositor']
     end
     def groups_which_manage_rights
-      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor']
+      ['dor-administrator', 'sdr-administrator', 'dor-apo-manager', 'dor-apo-depositor']
     end
     def groups_which_manage_embargo
-      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor']
+      ['dor-administrator', 'sdr-administrator', 'dor-apo-manager', 'dor-apo-depositor']
     end
     def groups_which_view_content
-      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor', 'dor-viewer']
+      ['dor-administrator', 'sdr-administrator', 'dor-apo-manager', 'dor-apo-depositor', 'dor-viewer', 'sdr-viewer']
     end
     def groups_which_view_metadata
-      ['dor-administrator','dor-apo-manager', 'dor-apo-depositor', 'dor-viewer']
+      ['dor-administrator', 'sdr-administrator', 'dor-apo-manager', 'dor-apo-depositor', 'dor-viewer', 'sdr-viewer']
     end
     def intersect arr1, arr2
       return (arr1 & arr2).length > 0
