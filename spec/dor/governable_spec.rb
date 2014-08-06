@@ -291,8 +291,11 @@ it 'should add a collection' do
 	  end
 	end
 	describe 'can_manage_item?' do
-	  it 'should match a group that has rights' do
+    it 'should match a group that has rights' do
       @item.can_manage_item?(['dor-administrator']).should == true
+    end
+    it 'should match a group that has rights' do
+      @item.can_manage_item?(['sdr-administrator']).should == true
     end
     it 'shouldnt match a group that doesnt have rights' do
       @item.can_manage_item?(['dor-apo-metadata']).should == false
@@ -303,12 +306,18 @@ it 'should add a collection' do
       @item.can_manage_desc_metadata?(['dor-apo-metadata']).should == true
     end
     it 'shouldnt match a group that doesnt have rights' do
-      @item.can_manage_desc_metadata?(['dor-viewers']).should == false
+      @item.can_manage_desc_metadata?(['dor-viewer']).should == false
+    end
+    it 'shouldnt match a group that doesnt have rights' do
+      @item.can_manage_desc_metadata?(['sdr-viewer']).should == false
     end
   end
   describe 'can_manage_content?' do
     it 'should match a group that has rights' do
       @item.can_manage_content?(['dor-administrator']).should == true
+    end
+    it 'should match a group that has rights' do
+      @item.can_manage_content?(['sdr-administrator']).should == true
     end
     it 'shouldnt match a group that doesnt have rights' do
       @item.can_manage_content?(['dor-apo-metadata']).should == false
@@ -318,6 +327,9 @@ it 'should add a collection' do
     it 'should match a group that has rights' do
       @item.can_manage_rights?(['dor-administrator']).should == true
     end
+    it 'should match a group that has rights' do
+      @item.can_manage_rights?(['sdr-administrator']).should == true
+    end
     it 'shouldnt match a group that doesnt have rights' do
       @item.can_manage_rights?(['dor-apo-metadata']).should == false
     end
@@ -325,6 +337,9 @@ it 'should add a collection' do
   describe 'can_manage_embargo?' do
     it 'should match a group that has rights' do
       @item.can_manage_embargo?(['dor-administrator']).should == true
+    end
+    it 'should match a group that has rights' do
+      @item.can_manage_embargo?(['sdr-administrator']).should == true
     end
     it 'shouldnt match a group that doesnt have rights' do
       @item.can_manage_embargo?(['dor-apo-metadata']).should == false
@@ -334,6 +349,9 @@ it 'should add a collection' do
     it 'should match a group that has rights' do
       @item.can_view_content?(['dor-viewer']).should == true
     end
+    it 'should match a group that has rights' do
+      @item.can_view_content?(['sdr-viewer']).should == true
+    end
     it 'shouldnt match a group that doesnt have rights' do
       @item.can_view_content?(['dor-people']).should == false
     end
@@ -341,6 +359,9 @@ it 'should add a collection' do
   describe 'can_view_metadata?' do
     it 'should match a group that has rights' do
       @item.can_view_metadata?(['dor-viewer']).should == true
+    end
+    it 'should match a group that has rights' do
+      @item.can_view_metadata?(['sdr-viewer']).should == true
     end
     it 'shouldnt match a group that doesnt have rights' do
       @item.can_view_metadata?(['dor-people']).should == false
