@@ -56,7 +56,9 @@ module Dor
       doc = self.descMetadata.ng_xml.dup(1)
       add_collection_reference(doc)
       add_access_conditions(doc)
-      Nokogiri::XML(doc.to_xml) { |x| x.noblanks }.to_xml { |config| config.no_declaration }
+      new_doc = Nokogiri::XML(doc.to_xml) { |x| x.noblanks }
+      new_doc.encoding = 'UTF-8'
+      new_doc.to_xml
 	  end
 
     # Create MODS accessCondition statements from rightsMetadata

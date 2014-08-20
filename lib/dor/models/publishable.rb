@@ -41,7 +41,9 @@ module Dor
       rels = public_relationships.root
       pub.add_child(rels.clone) unless rels.nil? # TODO: Should never be nil in practice; working around an ActiveFedora quirk for testing
       pub.add_child(self.generate_dublin_core.root.clone)
-      Nokogiri::XML(pub.to_xml) { |x| x.noblanks }.to_xml { |config| config.no_declaration }
+      new_pub = Nokogiri::XML(pub.to_xml) { |x| x.noblanks }
+      new_pub.encoding = 'UTF-8'
+      new_pub.to_xml
     end
 
     # Copies this object's public_xml to the Purl document cache if it is world discoverable
