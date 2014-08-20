@@ -80,6 +80,10 @@ describe Dor::Publishable do
           @p_xml = Nokogiri::XML(@item.public_xml)
         end
 
+       it "an encoding of UTF-8" do
+         @p_xml.encoding.should =~ /UTF-8/
+       end
+
        it "an id attribute" do
          @p_xml.at_xpath('/publicObject/@id').value.should =~ /^druid:ab123cd4567/
        end

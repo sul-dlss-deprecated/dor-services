@@ -438,6 +438,7 @@ describe Dor::Describable do
 
       xml = itm.generate_public_desc_md
       doc = Nokogiri::XML(xml)
+      expect(doc.encoding).to eq('UTF-8')
       collections=doc.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
       collections.length.should == 1
       collection_title=doc.search('//mods:relatedItem/mods:titleInfo/mods:title')
