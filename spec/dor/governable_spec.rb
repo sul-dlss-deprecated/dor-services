@@ -264,6 +264,14 @@ end
       item.stub(:admin_policy_object) { apo }
       expect(item.default_workflow_lane).to eq 'default'
     end
+
+    it "returns the value 'default' for a newly created object" do
+      apo  = instantiate_fixture('druid:zt570tx3016', Dor::AdminPolicyObject)
+      item = GovernableItem.new
+      item.admin_policy_object = apo
+      expect(item.default_workflow_lane).to eq 'default'
+    end
+
   end
 
   describe 'add_collection' do
