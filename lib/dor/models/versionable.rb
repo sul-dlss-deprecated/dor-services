@@ -12,6 +12,7 @@ module Dor
     # @param [Hash] opts optional params
     # @option opts [Boolean] :assume_accessioned If true, does not check whether object has been accessioned.
     # @option opts [Boolean] :create_workflows_ds If false, initialize_workflow() will not initialize the workflows datastream.
+    # @option opts [Hash] :vers_md_upd_info If present, used to add to the events datastream and set the desc and significance on the versionMetadata datastream
     # @raise [Dor::Exception] if the object hasn't been accessioned, or if a version is already opened
     def open_new_version(opts = {})
       # During local development, we need a way to open a new version
@@ -24,10 +25,10 @@ module Dor
       raise Dor::Exception, 'Object currently being accessioned' if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'submitted'))
 
 
-      ds = datastreams['versionMetadata']
-      ds.increment_version
-      ds.content = ds.ng_xml.to_s
-      ds.save unless self.new_object?
+      vmd_ds = datastreams['versionMetadata']
+      vmd_ds.increment_version
+      vmd_ds.content = vmd_ds.ng_xml.to_s
+      vmd_ds.save unless self.new_object?
 
       k = :create_workflows_ds
       if opts.has_key?(k)
@@ -36,6 +37,13 @@ module Dor
         initialize_workflow('versioningWF', 'dor', opts[k])
       else
         initialize_workflow('versioningWF')
+      end
+
+      vmd_upd_info = opts[:vers_md_upd_info]
+      if vmd_upd_info
+        datastreams['events'].add_event("open", vmd_upd_info[:opening_user_name], "Version #{vmd_ds.current_version_id.to_s} opened")
+        vmd_ds.update_current_version({:description => vmd_upd_info[:description], :significance => vmd_upd_info[:significance].to_sym})
+        save
       end
     end
 
