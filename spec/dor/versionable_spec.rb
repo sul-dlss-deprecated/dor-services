@@ -2,6 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 class VersionableItem < ActiveFedora::Base
   include Dor::Versionable
+  include Dor::Eventable
 end
 
 describe Dor::Versionable do
@@ -14,7 +15,8 @@ describe Dor::Versionable do
     v
   }
 
-  let(:ds) { obj.datastreams['versionMetadata'] }
+  let(:vmd_ds) { obj.datastreams['versionMetadata'] }
+  let(:ev_ds) { obj.datastreams['events'] }
 
   before(:each) do
     obj.inner_object.stub(:repository).and_return(double('frepo').as_null_object)
@@ -29,28 +31,51 @@ describe Dor::Versionable do
         Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(nil)
         obj.should_receive(:initialize_workflow).with('versioningWF')
         obj.stub(:new_object?).and_return(false)
-        ds.should_receive(:save)
-        obj.open_new_version
+        vmd_ds.should_receive(:save)
       end
 
       it "checks if an object has been accessioned and not yet opened" do
         # checked in before block
+        obj.open_new_version
       end
 
       it "creates the versionMetadata datastream" do
-        ds.ng_xml.to_xml.should =~ /Initial Version/
+        vmd_ds.ng_xml.to_xml.should =~ /Initial Version/
+        obj.open_new_version
       end
 
       it "adds versioningWF" do
         # checked in before block
+        obj.open_new_version
       end
 
       it "sets the content with the new ng_xml" do
-
+        obj.open_new_version
       end
 
       it "saves the datastream" do
+        obj.open_new_version
+      end
 
+      it "includes vers_md_upd_info" do
+        vers_md_upd_info = {:significance => "real_major", :description => "same as it ever was", :opening_user_name => "sunetid"}
+        cur_vers = '2'
+        vmd_ds.stub(:current_version).and_return(cur_vers)
+        obj.stub(:save)
+
+        ev_ds.should_receive(:add_event).with("open", vers_md_upd_info[:opening_user_name], "Version #{cur_vers} opened")
+        vmd_ds.should_receive(:update_current_version).with({:description => vers_md_upd_info[:description], :significance => vers_md_upd_info[:significance].to_sym})
+        obj.should_receive(:save)
+
+        obj.open_new_version({:vers_md_upd_info => vers_md_upd_info})
+      end
+
+      it "doesn't include vers_md_upd_info" do
+        ev_ds.should_not_receive(:add_event)
+        vmd_ds.should_not_receive(:update_current_version)
+        obj.should_not_receive(:save)
+
+        obj.open_new_version
       end
     end
 
@@ -85,7 +110,7 @@ describe Dor::Versionable do
     end
 
     it "sets tag and description if passed in as optional paramaters" do
-      ds.stub(:pid).and_return('druid:ab123cd4567')
+      vmd_ds.stub(:pid).and_return('druid:ab123cd4567')
       Dor::WorkflowService.stub(:get_active_lifecycle).and_return(true, false)
 
       # Stub out calls to update and archive workflow
@@ -95,11 +120,11 @@ describe Dor::Versionable do
 
       obj.stub(:initialize_workflow)
 
-      ds.increment_version
-      ds.should_receive(:save)
+      vmd_ds.increment_version
+      vmd_ds.should_receive(:save)
       obj.close_version :description => 'closing text', :significance => :major
 
-      ds.to_xml.should be_equivalent_to( <<-XML
+      vmd_ds.to_xml.should be_equivalent_to( <<-XML
         <versionMetadata objectId="druid:ab123cd4567">
           <version versionId="1" tag="1.0.0">
             <description>Initial Version</description>
@@ -125,7 +150,7 @@ describe Dor::Versionable do
       end
 
       it "raises an exception if the latest version does not have a tag and a description" do
-        ds.increment_version
+        vmd_ds.increment_version
         expect { obj.close_version }.to raise_error(Dor::Exception, 'latest version in versionMetadata requires tag and description before it can be closed')
       end
     end
