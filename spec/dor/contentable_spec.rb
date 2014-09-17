@@ -170,7 +170,7 @@ describe Dor::Contentable do
       o = Dor::Item.new
       o.add_relationship :is_member_of, dummy_obj
       o.add_relationship :is_governed_by, dummy_obj
-      o.decomission
+      o.decomission " test "
       o
     end
 
@@ -202,7 +202,7 @@ describe Dor::Contentable do
     end
 
     it "adds a 'Decommissioned: tag" do
-      expect(obj.identityMetadata.tags).to include('Decommissioned : ')
+      expect(obj.identityMetadata.tags).to include('Decommissioned : test')
     end
   end
 end

@@ -75,22 +75,22 @@ describe Dor::Identifiable do
   describe 'add_tag' do
     it 'should add a new tag' do
       item.add_tag('sometag:someval')
-      item.identityMetadata.tags().include?('sometag:someval').should == true
+      item.identityMetadata.tags().include?('sometag : someval').should == true
       item.identityMetadata.should be_changed
     end
     it 'should raise an exception if there is an existing tag like it' do
       item.add_tag('sometag:someval')
-      item.identityMetadata.tags().include?('sometag:someval').should == true
-      lambda {item.add_tag('sometag:someval')}.should raise_error
+      item.identityMetadata.tags().include?('sometag : someval').should == true
+      lambda {item.add_tag('sometag: someval')}.should raise_error
     end
   end
   describe 'update_tag' do
     it 'should update a tag' do
       item.add_tag('sometag:someval')
-      item.identityMetadata.tags().include?('sometag:someval').should == true
-      item.update_tag('sometag:someval','new:tag').should == true
-      item.identityMetadata.tags().include?('sometag:someval').should == false
-      item.identityMetadata.tags().include?('new:tag').should == true
+      item.identityMetadata.tags().include?('sometag : someval').should == true
+      item.update_tag('sometag :someval','new :tag').should == true
+      item.identityMetadata.tags().include?('sometag : someval').should == false
+      item.identityMetadata.tags().include?('new : tag').should == true
       item.identityMetadata.should be_changed
     end
     it 'should return false if there is no matching tag to update' do
@@ -101,9 +101,9 @@ describe Dor::Identifiable do
   describe 'delete_tag' do
     it 'should delete a tag' do
     item.add_tag('sometag:someval')
-    item.identityMetadata.tags().include?('sometag:someval').should == true
+    item.identityMetadata.tags().include?('sometag : someval').should == true
     item.remove_tag('sometag:someval').should == true
-    item.identityMetadata.tags().include?('sometag:someval').should == false
+    item.identityMetadata.tags().include?('sometag : someval').should == false
       item.identityMetadata.should be_changed
     end
   end
