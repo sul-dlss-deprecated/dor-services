@@ -72,6 +72,9 @@ describe Dor::Identifiable do
     end
   end
 
+  # when looking for tags after addition/update/removal, check for the normalized form.
+  # when doing the add/update/removal, specify the tag in non-normalized form so that the
+  # normalization mechanism actually gets tested.
   describe 'add_tag' do
     it 'should add a new tag' do
       item.add_tag('sometag:someval')
@@ -98,7 +101,7 @@ describe Dor::Identifiable do
       item.identityMetadata.should_not be_changed
     end
   end
-  describe 'delete_tag' do
+  describe 'remove_tag' do
     it 'should delete a tag' do
     item.add_tag('sometag:someval')
     item.identityMetadata.tags().include?('sometag : someval').should == true
@@ -107,6 +110,7 @@ describe Dor::Identifiable do
       item.identityMetadata.should be_changed
     end
   end
+
   describe 'to_solr' do
     it 'should generate collection and apo title fields' do
       xml='<rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"

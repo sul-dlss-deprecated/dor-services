@@ -172,19 +172,25 @@ module Dor
     end
 
     def split_tag_to_arr(tag_str)
-      # split on ":", disregard leading and trailing whitespace on tokens
+      # turns a tag string into an array with one element per tag part.
+      # split on ":", disregard leading and trailing whitespace on tokens.
       return tag_str.split(":").map {|str| str.strip}
     end
 
     def normalize_tag_arr(tag_arr)
+      # turn a tag array back into a tag string with a standard format
       return tag_arr.join(' : ')
     end
 
     def normalize_tag(tag_str)
+      # take a tag string and return a normalized tag string
       return normalize_tag_arr(split_tag_to_arr(tag_str))
     end
 
     def validate_and_normalize_tag(tag_str, existing_tag_list)
+      # take a proposed tag string and a list of the existing tags for the object being edited.  if
+      # the proposed tag is valid, return it in normalized form.  if not, raise an exception with an
+      # explanatory message.
       tag_arr = split_tag_to_arr(tag_str)
 
       if tag_arr.length < 2

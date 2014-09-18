@@ -202,6 +202,7 @@ describe Dor::Contentable do
     end
 
     it "adds a 'Decommissioned: tag" do
+      # make sure the tag is present in its normalized form
       expect(obj.identityMetadata.tags).to include('Decommissioned : test')
     end
   end
