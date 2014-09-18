@@ -197,17 +197,13 @@ module Dor
         raise "Invalid tag structure:  tag '#{tag_str}' must have at least 2 elements"
       end
 
-      tag_arr.each do |str|
-        if str.empty?
-          raise "Invalid tag structure:  tag '#{tag_str}' contains empty elements"
-        end
+      if tag_arr.detect {|str| str.empty?}
+        raise "Invalid tag structure:  tag '#{tag_str}' contains empty elements"
       end
 
       normalized_tag = normalize_tag_arr(tag_arr)
-      existing_tag_list.each do |existing_tag|
-        if normalize_tag(existing_tag) == normalized_tag
-          raise "An existing tag (#{existing_tag}) is the same, consider using update_tag?"
-        end
+      if existing_tag_list.detect { |existing_tag| normalize_tag(existing_tag) == normalized_tag }
+        raise "An existing tag (#{existing_tag}) is the same, consider using update_tag?"
       end
 
       return normalized_tag
