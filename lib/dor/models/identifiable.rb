@@ -201,6 +201,8 @@ module Dor
         raise "Invalid tag structure:  tag '#{tag_str}' contains empty elements"
       end
 
+      # note that the comparison for duplicate tags is case-insensitive, but we don't change case as part of the normalized version 
+      # we return, because we want to preserve the user's intended case.
       normalized_tag = normalize_tag_arr(tag_arr)
       dupe_existing_tag = existing_tag_list.detect { |existing_tag| normalize_tag(existing_tag).downcase == normalized_tag.downcase }
       if dupe_existing_tag
