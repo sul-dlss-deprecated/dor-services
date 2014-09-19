@@ -125,9 +125,10 @@ describe Dor::Identifiable do
       lambda {item.validate_and_normalize_tag(tag_str, [])}.should raise_error(StandardError, expected_err_msg)
     end
     it 'should throw an exception if tag is the same as an existing tag' do
-      # note that tag_str should match existing_tags[1] because the comparison should happen after normalization
+      # note that tag_str should match existing_tags[1] because the comparison should happen after normalization, and it should
+      # be case-insensitive.
       tag_str = 'another:multi:part:test'
-      existing_tags = ['test part1 : test part2', 'another : multi : part : test', 'one : last_tag']
+      existing_tags = ['test part1 : test part2', 'Another : Multi : Part : Test', 'one : last_tag']
       expected_err_msg = "An existing tag (#{existing_tags[1]}) is the same, consider using update_tag?"
       lambda {item.validate_and_normalize_tag(tag_str, existing_tags)}.should raise_error(StandardError, expected_err_msg)
     end

@@ -202,7 +202,7 @@ module Dor
       end
 
       normalized_tag = normalize_tag_arr(tag_arr)
-      dupe_existing_tag = existing_tag_list.detect { |existing_tag| normalize_tag(existing_tag) == normalized_tag }
+      dupe_existing_tag = existing_tag_list.detect { |existing_tag| normalize_tag(existing_tag).downcase == normalized_tag.downcase }
       if dupe_existing_tag
         raise "An existing tag (#{dupe_existing_tag}) is the same, consider using update_tag?"
       end
