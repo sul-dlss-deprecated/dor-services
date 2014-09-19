@@ -72,25 +72,29 @@ describe Dor::Identifiable do
     end
   end
 
+  # when looking for tags after addition/update/removal, check for the normalized form.
+  # when doing the add/update/removal, specify the tag in non-normalized form so that the
+  # normalization mechanism actually gets tested.
   describe 'add_tag' do
     it 'should add a new tag' do
       item.add_tag('sometag:someval')
-      item.identityMetadata.tags().include?('sometag:someval').should == true
+      item.identityMetadata.tags().include?('sometag : someval').should == true
       item.identityMetadata.should be_changed
     end
     it 'should raise an exception if there is an existing tag like it' do
       item.add_tag('sometag:someval')
-      item.identityMetadata.tags().include?('sometag:someval').should == true
-      lambda {item.add_tag('sometag:someval')}.should raise_error
+      item.identityMetadata.tags().include?('sometag : someval').should == true
+      lambda {item.add_tag('sometag: someval')}.should raise_error
     end
   end
+
   describe 'update_tag' do
     it 'should update a tag' do
       item.add_tag('sometag:someval')
-      item.identityMetadata.tags().include?('sometag:someval').should == true
-      item.update_tag('sometag:someval','new:tag').should == true
-      item.identityMetadata.tags().include?('sometag:someval').should == false
-      item.identityMetadata.tags().include?('new:tag').should == true
+      item.identityMetadata.tags().include?('sometag : someval').should == true
+      item.update_tag('sometag :someval','new :tag').should == true
+      item.identityMetadata.tags().include?('sometag : someval').should == false
+      item.identityMetadata.tags().include?('new : tag').should == true
       item.identityMetadata.should be_changed
     end
     it 'should return false if there is no matching tag to update' do
@@ -98,15 +102,38 @@ describe Dor::Identifiable do
       item.identityMetadata.should_not be_changed
     end
   end
-  describe 'delete_tag' do
+
+  describe 'remove_tag' do
     it 'should delete a tag' do
     item.add_tag('sometag:someval')
-    item.identityMetadata.tags().include?('sometag:someval').should == true
+    item.identityMetadata.tags().include?('sometag : someval').should == true
     item.remove_tag('sometag:someval').should == true
-    item.identityMetadata.tags().include?('sometag:someval').should == false
+    item.identityMetadata.tags().include?('sometag : someval').should == false
       item.identityMetadata.should be_changed
     end
   end
+
+  describe 'validate_and_normalize_tag' do
+    it 'should throw an exception if tag has too few elements' do
+      tag_str = 'just one part'
+      expected_err_msg = "Invalid tag structure:  tag '#{tag_str}' must have at least 2 elements"
+      lambda {item.validate_and_normalize_tag(tag_str, [])}.should raise_error(StandardError, expected_err_msg)
+    end
+    it 'should throw an exception if tag has empty elements' do
+      tag_str = 'test part1 :  : test part3'
+      expected_err_msg = "Invalid tag structure:  tag '#{tag_str}' contains empty elements"
+      lambda {item.validate_and_normalize_tag(tag_str, [])}.should raise_error(StandardError, expected_err_msg)
+    end
+    it 'should throw an exception if tag is the same as an existing tag' do
+      # note that tag_str should match existing_tags[1] because the comparison should happen after normalization, and it should
+      # be case-insensitive.
+      tag_str = 'another:multi:part:test'
+      existing_tags = ['test part1 : test part2', 'Another : Multi : Part : Test', 'one : last_tag']
+      expected_err_msg = "An existing tag (#{existing_tags[1]}) is the same, consider using update_tag?"
+      lambda {item.validate_and_normalize_tag(tag_str, existing_tags)}.should raise_error(StandardError, expected_err_msg)
+    end
+  end
+
   describe 'to_solr' do
     it 'should generate collection and apo title fields' do
       xml='<rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"

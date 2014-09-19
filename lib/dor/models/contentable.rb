@@ -207,7 +207,7 @@ module Dor
 
     # Clears RELS-EXT relationships, sets the isGovernedBy relationship to the SDR Graveyard APO
     # @param [String] tag optional String of text that is concatenated to the identityMetadata/tag "Decomissioned : "
-    def decomission tag = nil
+    def decomission tag
       # remove isMemberOf and isMemberOfCollection relationships
       clear_relationship :is_member_of
       clear_relationship :is_member_of_collection

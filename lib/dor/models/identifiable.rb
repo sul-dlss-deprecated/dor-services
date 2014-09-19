@@ -77,7 +77,7 @@ module Dor
           druid=druid.gsub('info:fedora/','')
           if @@apo_hash.has_key? druid or @@hydrus_apo_hash.has_key? druid
             add_solr_value(solr_doc, "hydrus_apo_title", @@hydrus_apo_hash[druid], :string, [:searchable, :facetable]) if @@hydrus_apo_hash.has_key? druid
-            add_solr_value(solr_doc, "apo_title", @@apo_hash[druid] , :string, [:searchable, :facetable]) if @@apo_hash.has_key? druid 
+            add_solr_value(solr_doc, "apo_title", @@apo_hash[druid] , :string, [:searchable, :facetable]) if @@apo_hash.has_key? druid
           else
             begin
               apo_object=Dor.find(druid)
@@ -95,7 +95,7 @@ module Dor
         end
       end
       collections=rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection','fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' 	)
-      collections.each do |collection_node| 
+      collections.each do |collection_node|
         druid=collection_node['rdf:resource']
         if(druid)
           druid=druid.gsub('info:fedora/','')
@@ -117,9 +117,9 @@ module Dor
             end
           end
         end
-      end 
+      end
       # Fix for ActiveFedora 3.3 to ensure all date fields are properly formatted as UTC XML Schema datetime strings
-      solr_doc.each_pair { |k,v| 
+      solr_doc.each_pair { |k,v|
         if k =~ /_dt|_date$/
           if v.is_a?(Array)
             solr_doc[k] = v.collect { |t| Time.parse(t.to_s).utc.xmlschema }
@@ -136,7 +136,7 @@ module Dor
     end
 
     def add_other_Id(type,val)
-      if self.identityMetadata.otherId(type).length>0        
+      if self.identityMetadata.otherId(type).length>0
         raise 'There is an existing entry for '+node_name+', consider using update_other_identifier.'
       end
       identity_metadata_ds = self.identityMetadata
@@ -171,41 +171,77 @@ module Dor
       return removed
     end
 
+    # turns a tag string into an array with one element per tag part.
+    # split on ":", disregard leading and trailing whitespace on tokens.
+    def split_tag_to_arr(tag_str)
+      return tag_str.split(":").map {|str| str.strip}
+    end
+
+    # turn a tag array back into a tag string with a standard format
+    def normalize_tag_arr(tag_arr)
+      return tag_arr.join(' : ')
+    end
+
+    # take a tag string and return a normalized tag string
+    def normalize_tag(tag_str)
+      return normalize_tag_arr(split_tag_to_arr(tag_str))
+    end
+
+    # take a proposed tag string and a list of the existing tags for the object being edited.  if
+    # the proposed tag is valid, return it in normalized form.  if not, raise an exception with an
+    # explanatory message.
+    def validate_and_normalize_tag(tag_str, existing_tag_list)
+      tag_arr = split_tag_to_arr(tag_str)
+
+      if tag_arr.length < 2
+        raise "Invalid tag structure:  tag '#{tag_str}' must have at least 2 elements"
+      end
+
+      if tag_arr.detect {|str| str.empty?}
+        raise "Invalid tag structure:  tag '#{tag_str}' contains empty elements"
+      end
+
+      # note that the comparison for duplicate tags is case-insensitive, but we don't change case as part of the normalized version 
+      # we return, because we want to preserve the user's intended case.
+      normalized_tag = normalize_tag_arr(tag_arr)
+      dupe_existing_tag = existing_tag_list.detect { |existing_tag| normalize_tag(existing_tag).downcase == normalized_tag.downcase }
+      if dupe_existing_tag
+        raise "An existing tag (#{dupe_existing_tag}) is the same, consider using update_tag?"
+      end
+
+      return normalized_tag
+    end
+
     def add_tag(tag)
       identity_metadata_ds = self.identityMetadata
-      prefix=tag.split(/:/).first
-      identity_metadata_ds.tags.each do |existing_tag|
-        if existing_tag.split(/:/).first ==prefix 
-          raise 'An existing tag ('+existing_tag+') has the same prefix, consider using update_tag?'
-        end
-      end
-      identity_metadata_ds.add_value(:tag,tag)
+      normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags)
+      identity_metadata_ds.add_value(:tag, normalized_tag)
     end
 
     def remove_tag(tag)
       identity_metadata_ds = self.identityMetadata
-      ds_xml=identity_metadata_ds.ng_xml
-      removed=false
+      ds_xml = identity_metadata_ds.ng_xml
+      removed = false
       ds_xml.search('//tag').each do |node|
-        if node.content===tag
+        if normalize_tag(node.content) === normalize_tag(tag)
           node.remove
-          removed=true
+          removed = true
         end
       end
       return removed
     end
 
-    def update_tag(old_tag,new_tag)
+    def update_tag(old_tag, new_tag)
       identity_metadata_ds = self.identityMetadata
-      ds_xml=identity_metadata_ds.ng_xml
-      updated=false
+      ds_xml = identity_metadata_ds.ng_xml
+      updated = false
       ds_xml.search('//tag').each do |node|
-        if node.content==old_tag
-          node.content=new_tag
+        if normalize_tag(node.content) == normalize_tag(old_tag)
+          node.content = normalize_tag(new_tag)
           updated = true
         end
       end
-      return updated 
+      return updated
     end
   end
 end
