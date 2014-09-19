@@ -87,6 +87,7 @@ describe Dor::Identifiable do
       lambda {item.add_tag('sometag: someval')}.should raise_error
     end
   end
+
   describe 'update_tag' do
     it 'should update a tag' do
       item.add_tag('sometag:someval')
@@ -101,6 +102,7 @@ describe Dor::Identifiable do
       item.identityMetadata.should_not be_changed
     end
   end
+
   describe 'remove_tag' do
     it 'should delete a tag' do
     item.add_tag('sometag:someval')
@@ -108,6 +110,26 @@ describe Dor::Identifiable do
     item.remove_tag('sometag:someval').should == true
     item.identityMetadata.tags().include?('sometag : someval').should == false
       item.identityMetadata.should be_changed
+    end
+  end
+
+  describe 'validate_and_normalize_tag' do
+    it 'should throw an exception if tag has too few elements' do
+      tag_str = 'just one part'
+      expected_err_msg = "Invalid tag structure:  tag '#{tag_str}' must have at least 2 elements"
+      lambda {item.validate_and_normalize_tag(tag_str, [])}.should raise_error(StandardError, expected_err_msg)
+    end
+    it 'should throw an exception if tag has empty elements' do
+      tag_str = 'test part1 :  : test part3'
+      expected_err_msg = "Invalid tag structure:  tag '#{tag_str}' contains empty elements"
+      lambda {item.validate_and_normalize_tag(tag_str, [])}.should raise_error(StandardError, expected_err_msg)
+    end
+    it 'should throw an exception if tag is the same as an existing tag' do
+      # note that tag_str should match existing_tags[1] because the comparison should happen after normalization
+      tag_str = 'another:multi:part:test'
+      existing_tags = ['test part1 : test part2', 'another : multi : part : test', 'one : last_tag']
+      expected_err_msg = "An existing tag (#{existing_tags[1]}) is the same, consider using update_tag?"
+      lambda {item.validate_and_normalize_tag(tag_str, existing_tags)}.should raise_error(StandardError, expected_err_msg)
     end
   end
 
