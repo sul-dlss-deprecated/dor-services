@@ -1,3 +1,3 @@
 module Dor
-  VERSION = '4.14.0'
+  VERSION = '4.14.1'
 end
