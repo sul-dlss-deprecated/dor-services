@@ -28,10 +28,7 @@ module Dor
 
     def reset_to_apo_default()
       rights_metadata_ds = self.rightsMetadata
-      #get the apo for this object
-      apo_druid=obj.identityMetadata.adminPolicy.first
-      apo_obj=Dor::Item.find(apo_druid, :lightweight => true)
-      rights_metadata_ds.content=apo_obj.rightsMetadata.ng_xml
+      rights_metadata_ds.content = admin_policy_object.rightsMetadata.ng_xml
     end
 
     def set_read_rights(rights)

@@ -73,7 +73,6 @@ module Dor
         idmd.add_value(:objectCreator, 'DOR')
         idmd.add_value(:objectLabel, label)
         idmd.add_value(:objectType, object_type)
-        idmd.add_value(:adminPolicy, admin_policy)
         other_ids.each_pair { |name,value| idmd.add_otherId("#{name}:#{value}") }
         tags.each { |tag| idmd.add_value(:tag, tag) }
         new_item.admin_policy_object = apo_object
