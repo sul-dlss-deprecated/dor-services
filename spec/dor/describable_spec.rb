@@ -148,7 +148,7 @@ describe Dor::Describable do
       expect(public_mods.xpath('//mods:accessCondition[@type="copyright"]').text).to match(/Property rights reside with/)
     end
 
-    it "adds license accessCondtitions based on creativeCommons or openData statements" do
+    it "adds license accessCondtitions based on creativeCommons or openDataCommons statements" do
       obj.add_access_conditions(public_mods)
       expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq(1)
       expect(public_mods.xpath('//mods:accessCondition[@type="license"]').text).to match(/by-nc: This work is licensed under/)
@@ -158,8 +158,8 @@ describe Dor::Describable do
       rxml = <<-XML
         <rightsMetadata>
           <use>
-            <machine type="OpenDatA">by-nc</machine>
-            <human type="OpenDATA">
+            <machine type="openDataCommoNS">by-nc</machine>
+            <human type="OpenDATAcommOns">
               Open Data hoo ha
             </human>
           </use>

@@ -89,9 +89,9 @@ module Dor
         new_lic =  doc.create_element("accessCondition", new_text, :type => 'license')
         doc.root.element_children.last.add_next_sibling new_lic
       end
-      rights.xpath("//use/machine[#{ci_compare('type', 'opendata')}]").each do |lic_type|
+      rights.xpath("//use/machine[#{ci_compare('type', 'opendatacommons')}]").each do |lic_type|
         next if lic_type.text =~ /none/i
-        lic_text = rights.at_xpath("//use/human[#{ci_compare('type', 'opendata')}]").text.strip
+        lic_text = rights.at_xpath("//use/human[#{ci_compare('type', 'opendatacommons')}]").text.strip
         next if lic_text.empty?
         new_text = "ODC #{lic_type.text}: #{lic_text}"
         new_lic =  doc.create_element("accessCondition", new_text, :type => 'license')
