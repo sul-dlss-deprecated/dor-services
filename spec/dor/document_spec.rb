@@ -106,6 +106,48 @@ describe Dor::Workflow::Document do
       doc=d.to_solr
       doc['workflow_status_display'].first.should == 'accessionWF|active|0|dor'
     end
+
+    it 'should index the right workflow status (completed) when all steps are completed or skipped' do
+      xml = <<-eos
+      <?xml version="1.0" encoding="UTF-8"?>
+      <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:58-0800" status="skipped" name="hello"/>
+        <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:58-0800" status="skipped" name="goodbye"/>
+      </workflow>
+      eos
+
+      d=Dor::Workflow::Document.new(xml)
+      d.stub(:definition).and_return(@wf_definition)
+      doc=d.to_solr
+      doc['workflow_status_display'].first.should == 'accessionWF|completed|0|dor'
+    end
+    
+    it 'should index the right workflow status (active) when there is an empty status on a step' do
+      xml = <<-eos
+      <?xml version="1.0" encoding="UTF-8"?>
+      <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:58-0800" status="skipped" name="hello"/>
+        <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:58-0800" status="" name="goodbye"/>
+      </workflow>
+      eos
+
+      d=Dor::Workflow::Document.new(xml)
+      d.stub(:definition).and_return(@wf_definition)
+      doc=d.to_solr
+      doc['workflow_status_display'].first.should == 'accessionWF|active|0|dor'
+    end
     
     it 'should index error messages' do
       xml='<?xml version="1.0" encoding="UTF-8"?>
