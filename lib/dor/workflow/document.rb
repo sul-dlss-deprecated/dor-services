@@ -81,13 +81,17 @@ module Workflow
       end
     end
 
+    def workflow_should_show_completed? processes
+      return processes.all?{|p| ['skipped', 'completed'].include?(p.status)}
+    end
+
     def to_solr(solr_doc=Hash.new, *args)
       wf_name = self.workflowId.first
-      repo=self.repository.first
+      repo = self.repository.first
       add_solr_value(solr_doc, 'wf', wf_name, :string, [:facetable])
       add_solr_value(solr_doc, 'wf_wps', wf_name, :string, [:facetable])
       add_solr_value(solr_doc, 'wf_wsp', wf_name, :string, [:facetable])
-      status = processes.empty? ? 'empty' : (processes.all?(&:completed?) ? 'completed' : 'active')
+      status = processes.empty? ? 'empty' : (workflow_should_show_completed?(processes) ? 'completed' : 'active')
       errors = processes.select(&:error?).count
       add_solr_value(solr_doc, 'workflow_status', [wf_name,status,errors,repo].join('|'), :string, [:displayable])
 
