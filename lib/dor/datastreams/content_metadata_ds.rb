@@ -1,26 +1,26 @@
 module Dor
-  class ContentMetadataDS < ActiveFedora::OmDatastream 
+  class ContentMetadataDS < ActiveFedora::OmDatastream
     include Upgradable
     include SolrDocHelper
 
     set_terminology do |t|
-      t.root :path => 'contentMetadata', :index_as => [:not_searchable]
-      t.contentType :path => '/contentMetadata/@type', :index_as => [:not_searchable]
-      t.stacks :path=> '/contentMetadata/@stacks', :index_as => [:not_searchable]
+      t.root        :path => 'contentMetadata',          :index_as => [:not_searchable]
+      t.contentType :path => '/contentMetadata/@type',   :index_as => [:not_searchable]
+      t.stacks      :path => '/contentMetadata/@stacks', :index_as => [:not_searchable]
       t.resource(:index_as => [:not_searchable]) do
-        t.id_ :path => { :attribute => 'id' }
-        t.sequence :path => { :attribute => 'sequence' }#, :data_type => :integer
-        t.type_ :path => { :attribute => 'type' }, :index_as => [:displayable]
+        t.id_       :path => { :attribute => 'id' }
+        t.sequence  :path => { :attribute => 'sequence' }#, :data_type => :integer
+        t.type_     :path => { :attribute => 'type' }, :index_as => [:displayable]
         t.attribute(:path => 'attr', :index_as => [:not_searchable]) do
-          t.name :path => { :attribute => 'name' }, :index_as => [:not_searchable]
+          t.name    :path => { :attribute => 'name' }, :index_as => [:not_searchable]
         end
         t.file(:index_as => [:not_searchable]) do
-          t.id_ :path => { :attribute => 'id' }
+          t.id_      :path => { :attribute => 'id' }
           t.mimeType :path => { :attribute => 'mimeType' }, :index_as => [:displayable]
           t.dataType :path => { :attribute => 'dataType' }, :index_as => [:displayable]
-          t.size :path => { :attribute => 'size' }, :index_as => [:displayable]#, :data_type => :long
-          t.shelve :path => { :attribute => 'shelve' }, :index_as => [:not_searchable]#, :data_type => :boolean
-          t.publish :path => { :attribute => 'publish' }, :index_as => [:not_searchable]#, :data_type => :boolean
+          t.size     :path => { :attribute => 'size'     }, :index_as => [:displayable]#, :data_type => :long
+          t.shelve   :path => { :attribute => 'shelve'   }, :index_as => [:not_searchable]#, :data_type => :boolean
+          t.publish  :path => { :attribute => 'publish'  }, :index_as => [:not_searchable]#, :data_type => :boolean
           t.preserve :path => { :attribute => 'preserve' }, :index_as => [:not_searchable]#, :data_type => :boolean
           t.checksum do
             t.type_ :path => { :attribute => 'type' }
@@ -35,10 +35,10 @@ module Dor
 
     def public_xml
       result = self.ng_xml.clone
-      result.xpath('/contentMetadata/resource[not(file[(@deliver="yes" or @publish="yes")])]').each { |n| n.remove }
-      result.xpath('/contentMetadata/resource/file[not(@deliver="yes" or @publish="yes")]').each { |n| n.remove }
+      result.xpath('/contentMetadata/resource[not(file[(@deliver="yes" or @publish="yes")])]'   ).each { |n| n.remove }
+      result.xpath('/contentMetadata/resource/file[not(@deliver="yes" or @publish="yes")]'      ).each { |n| n.remove }
       result.xpath('/contentMetadata/resource/file').xpath('@preserve|@shelve|@publish|@deliver').each { |n| n.remove }
-      result.xpath('/contentMetadata/resource/file/checksum').each { |n| n.remove }
+      result.xpath('/contentMetadata/resource/file/checksum'                                    ).each { |n| n.remove }
       result
     end
     def add_file(file, resource_name)
@@ -77,7 +77,7 @@ module Dor
       self.save
     end
 
-    def add_resource(files,resource_name, position,type="file") 
+    def add_resource(files,resource_name, position,type="file")
       xml=self.ng_xml
       if xml.search('//resource[@id=\''+resource_name+'\']').length>0
         raise 'resource '+resource_name+' already exists'
@@ -232,6 +232,7 @@ module Dor
       end
       solr_doc
     end
+
     def rename_file old_name, new_name
       xml=self.ng_xml
       file_node=xml.search('//file[@id=\''+old_name+'\']').first
