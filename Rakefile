@@ -14,31 +14,17 @@ rescue Bundler::BundlerError => e
 end
 
 require 'rspec/core/rake_task'
+
 RSpec::Core::RakeTask.new(:spec) do |spec|
-#  spec.libs << 'lib' << 'spec'
-  spec.pattern = 'spec/**/*_spec.rb', 'test/**/*.rb'
+  spec.pattern = 'spec/**/*_spec.rb'
 end
 
-RSpec::Core::RakeTask.new(:functional) do |spec|
-#  spec.libs << 'lib' << 'spec' << 'test'
-  spec.pattern = 'spec/**/*_spec.rb', 'test/**/*.rb'
-  #spec.rcov = true
-  #spec.rcov_opts = %w{--exclude spec\/*,gems\/*,ruby\/* --aggregate coverage.data}
-end
-
-RSpec::Core::RakeTask.new(:unit) do |spec|
-#  spec.libs << 'lib' << 'spec'  
-  spec.pattern = 'test/**/*.rb'
-  #spec.rcov = true
-end
-
-task :rcov => ["functional"] do
-end
+task :rcov => [:spec]
 
 task :clean do
   puts 'Cleaning old coverage.data'
   FileUtils.rm('coverage.data') if(File.exists? 'coverage.data')
 end
 
-task :default => [:rcov, :doc]
+task :default => [:spec, :doc]
 
