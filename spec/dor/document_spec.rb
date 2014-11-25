@@ -5,9 +5,10 @@ describe Dor::Workflow::Document do
     #stub the wf definition. The workflow document updates the processes in the definition with the values from the xml.
     @wf_definition=double(Dor::WorkflowObject)
     wf_definition_procs=[]
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF','dor',{'name'=>'hello', 'lifecycle'=>'lc','status'=>'stat', 'sequence'=>'1'})
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF','dor',{'name'=>'goodbye','status'=>'waiting', 'sequence'=>'2'})
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF','dor',{'name'=>'technical-metadata','status'=>'error', 'sequence'=>'3'})
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name'=>'hello', 'lifecycle'=>'lc', 'status'=>'stat', 'sequence'=>'1'})
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name'=>'goodbye', 'status'=>'waiting', 'sequence'=>'2'})
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name'=>'technical-metadata', 'status'=>'error', 'sequence'=>'3'})
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name'=>'some-other-step', 'sequence'=>'4'})
 
     @wf_definition.stub(:processes).and_return(wf_definition_procs)
   end
@@ -37,7 +38,7 @@ describe Dor::Workflow::Document do
 
       d=Dor::Workflow::Document.new(xml)
       d.stub(:definition).and_return(@wf_definition)
-      d.processes.length.should == 3
+      d.processes.length.should == 4
       proc=d.processes.first
       proc.name.should == 'hello'
       proc.status.should =='stat'
@@ -149,7 +150,7 @@ describe Dor::Workflow::Document do
       doc['workflow_status_display'].first.should == 'accessionWF|completed|0|dor'
     end
     
-    it 'should index the right workflow status (active) when there is an empty status on a step' do
+    it 'should index the right workflow status (completed) when all steps have status of completed/skipped/nil/empty' do
       xml = <<-eos
       <?xml version="1.0" encoding="UTF-8"?>
       <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
@@ -167,7 +168,7 @@ describe Dor::Workflow::Document do
       d=Dor::Workflow::Document.new(xml)
       d.stub(:definition).and_return(@wf_definition)
       doc=d.to_solr
-      doc['workflow_status_display'].first.should == 'accessionWF|active|0|dor'
+      doc['workflow_status_display'].first.should == 'accessionWF|completed|0|dor'
     end
     
     it 'should index error messages' do
