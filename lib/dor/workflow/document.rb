@@ -82,7 +82,7 @@ module Workflow
     end
 
     def workflow_should_show_completed? processes
-      return processes.all?{|p| ['skipped', 'completed'].include?(p.status)}
+      return processes.all?{|p| ['skipped', 'completed', '', nil].include?(p.status)}
     end
 
     def to_solr(solr_doc=Hash.new, *args)
