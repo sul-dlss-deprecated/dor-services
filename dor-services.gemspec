@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'equivalent-xml', '~> 0.5.1'
   s.add_dependency 'json', '~> 1.8.1'
   s.add_dependency 'net-sftp', '~> 2.1.2'
-  s.add_dependency 'net-ssh', '~> 2.7.0'
+  s.add_dependency 'net-ssh',  '~> 2.6.5' # 2.6.5 is pegged by our 12/2014 version of net-stfp
   s.add_dependency 'nokogiri', '~> 1.6.0'
   s.add_dependency 'om', '~> 1.8.0'
   s.add_dependency 'progressbar', '~> 0.21.0'
