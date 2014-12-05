@@ -46,7 +46,7 @@ It will need the following in order to execute:
 
   ./config/dev_console_env.rb
   ./config/certs/robots-dor-dev.crt
-  ./conig/certs/robots-dor-dev.key
+  ./config/certs/robots-dor-dev.key
 
 You can basically copy the +sul-lyberservices-dev:common-accessioning/current/config/environments/development.rb+ file and the certs from there too
 
