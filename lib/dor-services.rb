@@ -118,6 +118,7 @@ module Dor
   autoload :Discoverable, 'dor/models/discoverable'
   autoload :Geoable, 'dor/models/geoable'
   autoload :Presentable, 'dor/models/presentable'
+  autoload :Releaseable, 'dor/models/releaseable'
 
 
   # ActiveFedora Classes
