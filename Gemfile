@@ -8,6 +8,8 @@ group :development do
   gem "debugger", '1.6.3', :platform => :ruby_19
   gem "pry"
   gem "pry-debugger", '0.2.2', :platform => :ruby_19
+  gem "vcr"
+  gem 'webmock'
 end
 
 # Dependencies are defined in dor-services.gemspec
