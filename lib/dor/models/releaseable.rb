@@ -18,12 +18,14 @@ module Dor
     #Example:
     #   item.release_tags
     def release_tags
-      #Convert document to solr hash
-      solr_hash = self.to_solr
+      #Find Tags On Item
       
-      #First get the item type
-      #TODO: Don't hardcode name
-      type = solr_hash['identityMetadata_objectType_t']
+      #Find Parents
+      
+      #Find Those Tags
+      
+      #Make Hash Of All Those Tags
+      return self.hash_tags_by_namespace(tags)
       
     end
     
@@ -42,22 +44,25 @@ module Dor
       tags.each do |tag|
         release_value = self.parse_tag(tag)
         
-        #Add the info to the return hash
-        t[release_value[:namespace]] << release_value[:release_info] if t.keys.include 
-        
+        #Add the info to the return hash, append to exsisting list if needed 
+        if t.keys.include?(release_value[:namespace])
+          release_tags[release_value[:namespace]] << release_value[:release_info] 
+        else
+          release_tags[release_value[:namespace]] = [release_value[:release_info]]
+        end
       end
+      return release_tags
     end
     
     #Takes a tag and returns its namespace and release_info if it is a release tag, returns nil if it is not
     #@return [hash] in the form of {:namespace => str, :release_info => str} if it is a release tag
     #@return [nil] if the tag is not a release tag
     #
-    #@paran [str] a tag
+    #@param [str] a tag
     def parse_tag(tag)
       tag = tag.delete(' ') #delete whitespace
       value = tag.split(@@release_prefix) #split the tag up
       if value[0] == "" #If release: was the first part it should now be dropped
-        
         #TODO: Catch the lack of a value[1], aka nothing after release:
         i = value[1].index(":")
         namespace = value[1][0..i-1]
