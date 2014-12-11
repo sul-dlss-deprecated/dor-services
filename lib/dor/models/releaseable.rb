@@ -9,6 +9,14 @@ module Dor
     #@return
     #TODO: Finish me once this function stabilizes 
     def released_for(options = {})
+      #Get All Release Tags
+      
+      #Detect if any namespace(s) supplied in options
+      #If only one namespace was supplied, return true or false for that namespace
+      #If multiple namespaces were supplied, return a hash in the form of {:namespace => boolean} for only specified ones
+      #If no namespaces were supplied, return hash in the format above, but for all namespaces included in the tags
+      
+      
     end
     
     #Returns all release tags for an item 
