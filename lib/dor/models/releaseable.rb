@@ -18,7 +18,10 @@ module Dor
     #Example:
     #   item.release_tags
     def release_tags
+      all_tags = []
+      
       #Find Tags On Item
+      all_tags << self.tags
       
       #Find Parents
       
@@ -27,6 +30,21 @@ module Dor
       #Make Hash Of All Those Tags
       return self.hash_tags_by_namespace(tags)
       
+    end
+    
+    #Returns a list of all tags on an item and its parents
+    #
+    #@return [array] array of all tags
+    #
+    #Example:
+    #   item.get_all_tags_on_item_and_parents
+    def get_all_tags_on_item_and_parents
+      all_tags = []
+      
+      #Add Tags on the Item Itself
+      all_tags << self.tags
+      
+      parents = 
     end
     
     #Takes all supplied tags and creates a hash of just the release ones
