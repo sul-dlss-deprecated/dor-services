@@ -26,18 +26,7 @@ module Dor
     #Example:
     #   item.release_tags
     def release_tags
-      all_tags = []
-      
-      #Find Tags On Item
-      all_tags << self.tags
-      
-      #Find Parents
-      
-      #Find Those Tags
-      
-      #Make Hash Of All Those Tags
-      return self.hash_tags_by_namespace(tags)
-      
+      return self.hash_release_tags_by_namespace(self.get_all_tags_on_item_and_parents)
     end
     
     #Returns a list of all tags on an item and its parents
@@ -52,7 +41,14 @@ module Dor
       #Add Tags on the Item Itself
       all_tags << self.tags
       
-      parents = 
+      release_governed_by = #Get all collections and set (recursively)
+      
+      release_governed_by.uniq do |parent|
+        all_tags << Dor::Item.find(parent).get_all_tags_on_item_and_parents
+      end
+      
+      return all_tags
+      
     end
     
     #Takes all supplied tags and creates a hash of just the release ones
@@ -60,7 +56,7 @@ module Dor
     #@return [hash] of release tags and their values
     #
     #@param [array] of all tags to parse
-    def hash_tags_by_namespace(tags)
+    def hash_release_tags_by_namespace(tags)
       release_tags = {}
       
       #Drop any duplicates (if set multiple times on various collections)
