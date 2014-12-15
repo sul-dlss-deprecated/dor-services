@@ -8,6 +8,7 @@ module Dor
     include Describable
     include Itemizable
     include Presentable
+    include Releasable
 
     included do
       has_metadata :name => "rightsMetadata", :type => ActiveFedora::OmDatastream, :label => 'Rights Metadata'
@@ -32,17 +33,26 @@ module Dor
       rels_doc
     end
 
-    def public_xml
+    #Generate the public .xml for a PURL page.
+    #@return [xml] The public xml for the item
+    #
+    #@param [hash] a hash of options for specific sets to generate or skip, currently only supports :generate_release
+    def public_xml(options = {})
       pub = Nokogiri::XML("<publicObject/>").root
       pub['id'] = pid
       pub['published'] = Time.now.xmlschema
       pub.add_child(self.datastreams['identityMetadata'].ng_xml.root.clone)
       pub.add_child(self.datastreams['contentMetadata'].public_xml.root.clone)
       pub.add_child(self.datastreams['rightsMetadata'].ng_xml.root.clone)
+
       rels = public_relationships.root
       pub.add_child(rels.clone) unless rels.nil? # TODO: Should never be nil in practice; working around an ActiveFedora quirk for testing
       pub.add_child(self.generate_dublin_core.root.clone)
+<<<<<<< HEAD
       @public_xml_doc = pub # save this for possible IIIF Presentation manifest
+=======
+      #TODO: pud.add_child(self.generate_release_xml.root.clone) if options[:generate_release]
+>>>>>>> Stub out publish for changes.
       new_pub = Nokogiri::XML(pub.to_xml) { |x| x.noblanks }
       new_pub.encoding = 'UTF-8'
       new_pub.to_xml
