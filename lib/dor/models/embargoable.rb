@@ -35,6 +35,7 @@ module Dor
         end
       end
 
+      datastreams['rightsMetadata'].content_will_change!
       datastreams['events'].add_event("embargo", release_agent, "Embargo released")
     end
 
