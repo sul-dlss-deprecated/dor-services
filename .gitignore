@@ -17,3 +17,4 @@ spec/fixtures/workspace/*/*/*/*/*/temp/
 tmp.xml
 *.gem
 config/environments
+spec/dor_config.rb

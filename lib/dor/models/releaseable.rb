@@ -3,7 +3,7 @@ module Dor
     extend ActiveSupport::Concern
     include Itemizable
     @@release_prefix = "release:"
-    @@item_embargo_tag = "embargo"
+    @@item_blacklist_tag = "embargo"
     @@collection_global_release = "all"
     
     #Determine if an item is released for a specific namespace or not
@@ -38,7 +38,7 @@ module Dor
       released_yn = {}
       tags.keys.each do |key|
         #If the item has specifically blocked itself from release to this namespace, false and no more operations
-        if tags[key].include? @@item_embargo_tag
+        if tags[key].include? @@item_blacklist_tag
           released_yn[key] = false 
         else
           #Does the Collection have a Global Release for these items?

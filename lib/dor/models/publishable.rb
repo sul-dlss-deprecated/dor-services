@@ -8,7 +8,6 @@ module Dor
     include Describable
     include Itemizable
     include Presentable
-    include Releasable
 
     included do
       has_metadata :name => "rightsMetadata", :type => ActiveFedora::OmDatastream, :label => 'Rights Metadata'
@@ -48,11 +47,7 @@ module Dor
       rels = public_relationships.root
       pub.add_child(rels.clone) unless rels.nil? # TODO: Should never be nil in practice; working around an ActiveFedora quirk for testing
       pub.add_child(self.generate_dublin_core.root.clone)
-<<<<<<< HEAD
       @public_xml_doc = pub # save this for possible IIIF Presentation manifest
-=======
-      #TODO: pud.add_child(self.generate_release_xml.root.clone) if options[:generate_release]
->>>>>>> Stub out publish for changes.
       new_pub = Nokogiri::XML(pub.to_xml) { |x| x.noblanks }
       new_pub.encoding = 'UTF-8'
       new_pub.to_xml

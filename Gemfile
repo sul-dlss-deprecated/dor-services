@@ -8,6 +8,9 @@ group :development do
   gem "debugger", '1.6.3', :platform => :ruby_19
   gem "pry"
   gem "pry-debugger", '0.2.2', :platform => :ruby_19
+end
+
+group :test do
   gem "vcr"
   gem 'webmock'
 end

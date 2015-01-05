@@ -212,11 +212,47 @@ module Dor
       return normalized_tag
     end
 
-    def add_tag(tag)
+    #Add a tag for an item
+    #If you are adding just a :tag att
+    #
+    #@return [String] returned if this function is called with invalid parameters, eg a lack of :who for release_tag
+    #@return [Nokogiri::XML::Element] the tag added if successful 
+    #
+    #@raise [RuntimeError] Raised if the tag already exists on the item or the tag is not of the form a:b
+    #
+    #@params tag [string] The content of the tag
+    #@params type [symbol] The type of tag, :tag is assumed as default 
+    #@params attrs [hash]  A hash of any attributes to be placed onto the tag 
+    def add_tag(tag, type=:tag, attrs={})
+      needs_timestamp = [:release_tag] #If you want a tag to get a timestamp attribute, add its symbol here
       identity_metadata_ds = self.identityMetadata
       normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags)
-      identity_metadata_ds.add_value(:tag, normalized_tag)
+      attrs[:when] = Time.now.utc.iso8601 if needs_timestamp.include? type
+      return valid_release_attributes(attrs) if type == :release_tag and valid_release_attributes(attrs) != true 
+      
+      return identity_metadata_ds.add_value(type, normalized_tag) if attrs == {}
+      return identity_metadata_ds.add_value(type, normalized_tag, attrs) if attrs != {}
     end
+    
+    
+    #Determine if the supplied tag is a valid release tag that meets all requirements
+    #
+    #@return [Boolean] Returns true if valid
+    #@return [String] Returns the error if invalid 
+    #
+    #@params attrs [hash] A hash of attributes for the tag, must contain :when, a ISO 8601 timestamp and :who to identify who or what added the tag
+    def valid_release_attributes(attrs={})
+      return ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z') == nil
+      return ":who not supplied as a String" if attrs[:who].class != String
+      return true 
+    end
+    
+    
+    def add_release_tag(tag, attrs={})
+      identity_metadata_ds = self.identityMetadata
+      normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags)
+      identity_metadata_ds.add_value(:release_tag, normalized_tag, attrs)
+    end 
 
     def remove_tag(tag)
       identity_metadata_ds = self.identityMetadata

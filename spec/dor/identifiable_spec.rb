@@ -152,3 +152,39 @@ describe Dor::Identifiable do
     end
   end
 end
+
+describe "Adding release tags", :vcr do
+  before :each do
+    VCR.use_cassette('releaseable_no_who') do
+      @item = Dor::Item.find('druid:bb004bn8654')
+    end
+  end
+  
+  it "should return a string when no :who is supplied for add_tag" do
+      expect(@item.add_tag("searchworks:all", :release_tag, {:foo => 'bar'})).to eq(":who not supplied as a String")
+  end
+  
+  it "should raise an error when the tag is not well formed" do
+      expect{@item.add_tag("searchworks", :release_tag, {:foo => 'bar'})}.to raise_error(RuntimeError)
+  end
+  
+  it "should add a tag when all items are properly provided" do
+    VCR.use_cassette('simple_release_tag_add_test') do
+       expect(@item.add_tag("searchworks:all", :release_tag, {:who => 'carrickr'})).should be_a_kind_of(Nokogiri::XML::Element)
+    end
+  end
+  
+  it "should return a string when no :who is supplied for valid_release_attributes" do
+     expect(@item.valid_release_attributes({:when=>'2015-01-05T23:23:45Z'})).to eq(":who not supplied as a String")
+  end
+  
+  it "should return a string when :when is not supplied as iso8601 for valid_release_attributes" do
+     expect(@item.valid_release_attributes({:when=>'2015-1-05T23:23:45'})).to eq(":when is not iso8601")
+  end
+  
+  it "should return true when valid_release_attributes is called with valid attributes" do
+    expect(@item.valid_release_attributes({:when=>'2015-01-05T23:23:45Z',:who => 'carrickr'})).to be true 
+  end
+  
+end
+
