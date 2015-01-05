@@ -247,13 +247,6 @@ module Dor
       return true 
     end
     
-    
-    def add_release_tag(tag, attrs={})
-      identity_metadata_ds = self.identityMetadata
-      normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags)
-      identity_metadata_ds.add_value(:release_tag, normalized_tag, attrs)
-    end 
-
     def remove_tag(tag)
       identity_metadata_ds = self.identityMetadata
       ds_xml = identity_metadata_ds.ng_xml
