@@ -160,31 +160,62 @@ describe "Adding release tags", :vcr do
     end
   end
   
-  it "should return a string when no :who is supplied for add_tag" do
-      expect(@item.add_tag("searchworks:all", :release_tag, {:foo => 'bar'})).to eq(":who not supplied as a String")
+  it "should raise an error when no :who, :to,  or :what is supplied" do
+      expect{@item.valid_release_attributes_and_tag(true, {:when=>'2015-01-05T23:23:45Z',:who => nil, :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
+      expect{@item.valid_release_attributes_and_tag(false, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>nil, :what => 'collection', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
+      expect{@item.valid_release_attributes_and_tag(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => nil, :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
   end
   
-  it "should raise an error when the tag is not well formed" do
-      expect{@item.add_tag("searchworks", :release_tag, {:foo => 'bar'})}.to raise_error(RuntimeError)
+  it "should raise an error when :who, :to, :what are supplied but are not strings" do 
+    expect{@item.valid_release_attributes_and_tag(true, {:when=>'2015-01-05T23:23:45Z',:who => 1, :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
+    expect{@item.valid_release_attributes_and_tag(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>true, :what => 'collection', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
+    expect{@item.valid_release_attributes_and_tag(false, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => ['i','am','an','array'], :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
   end
   
-  it "should add a tag when all items are properly provided" do
-    VCR.use_cassette('simple_release_tag_add_test') do
-       expect(@item.add_tag("searchworks:all", :release_tag, {:who => 'carrickr'})).should be_a_kind_of(Nokogiri::XML::Element)
+  it "should not raise an error when :what is self or collection" do 
+    expect(@item.valid_release_attributes_and_tag(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})).to be true 
+    expect(@item.valid_release_attributes_and_tag(false, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'collection', :tag => 'Project:Fitch:Batch2'})).to be true 
+  end
+  
+  it "should raise an error when :what is a string but is not self or collection" do
+    expect{@item.valid_release_attributes_and_tag(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'foo', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
+  end 
+  
+  it "should add a tag when all attributes are properly provided" do
+    VCR.use_cassette('simple_release_tag_add_success_test') do
+       expect(@item.add_tag(true, :release, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})).should be_a_kind_of(Nokogiri::XML::Element)
     end
   end
   
-  it "should return a string when no :who is supplied for valid_release_attributes" do
-     expect(@item.valid_release_attributes({:when=>'2015-01-05T23:23:45Z'})).to eq(":who not supplied as a String")
+  it "should fail to add a tag when there is an attribute error" do
+    VCR.use_cassette('simple_release_tag_add_failure_test') do
+       expect{@item.add_tag(true, :release, {:who => nil, :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
+       expect{@item.add_tag(false, :release, {:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project'})}.to raise_error(RuntimeError)
+       expect{@item.add_tag(1, :release, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
+    end
   end
   
-  it "should return a string when :when is not supplied as iso8601 for valid_release_attributes" do
-     expect(@item.valid_release_attributes({:when=>'2015-1-05T23:23:45'})).to eq(":when is not iso8601")
+  it "should raise an error when :when is not supplied as iso8601 for valid_release_attributes" do
+     expect{@item.valid_release_attributes_and_tag(true, {:when=>'2015-1-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
   end
   
-  it "should return true when valid_release_attributes is called with valid attributes" do
-    expect(@item.valid_release_attributes({:when=>'2015-01-05T23:23:45Z',:who => 'carrickr'})).to be true 
+  it "should return true when valid_release_attributes is called with valid attributes and no tag attribute" do
+    expect(@item.valid_release_attributes_and_tag(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self'})).to be true 
   end
   
+  it "should return true when valid_release_attributes is called with valid attributes and tag attribute" do
+    expect(@item.valid_release_attributes_and_tag(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})).to be true 
+  end
+  
+  it "should raise a Runtime Error when valid_release_attributes is called with valid attributes but an invalid tag attribute" do
+    expect{@item.valid_release_attributes_and_tag(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Batch2'})}.to raise_error(RuntimeError)
+  end
+  
+  it "should raise a Runtime Error when valid_release_attributes is called with a tag content that is not a boolean" do
+    expect{@item.valid_release_attributes_and_tag(1, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
+  end
+  
+  #expect{@item.valid_release_attributes_and_tag(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}
+    
 end
 

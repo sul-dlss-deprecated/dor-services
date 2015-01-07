@@ -191,15 +191,7 @@ module Dor
     # the proposed tag is valid, return it in normalized form.  if not, raise an exception with an
     # explanatory message.
     def validate_and_normalize_tag(tag_str, existing_tag_list)
-      tag_arr = split_tag_to_arr(tag_str)
-
-      if tag_arr.length < 2
-        raise "Invalid tag structure:  tag '#{tag_str}' must have at least 2 elements"
-      end
-
-      if tag_arr.detect {|str| str.empty?}
-        raise "Invalid tag structure:  tag '#{tag_str}' contains empty elements"
-      end
+      tag_arr = validate_tag_format(tag_str)
 
       # note that the comparison for duplicate tags is case-insensitive, but we don't change case as part of the normalized version 
       # we return, because we want to preserve the user's intended case.
@@ -210,6 +202,26 @@ module Dor
       end
 
       return normalized_tag
+    end
+    
+    #Ensure that an administrative tag meets the proper mininum format
+    #
+    #@params tag_str [String] the tag
+    #
+    #@return [Array] the tag split into an array via ':'
+    def validate_tag_format(tag_str)
+      tag_arr = split_tag_to_arr(tag_str)
+
+      if tag_arr.length < 2
+        raise "Invalid tag structure:  tag '#{tag_str}' must have at least 2 elements"
+      end
+
+      if tag_arr.detect {|str| str.empty?}
+        raise "Invalid tag structure:  tag '#{tag_str}' contains empty elements"
+      end
+      
+      return tag_arr
+      
     end
 
     #Add a tag for an item
@@ -224,11 +236,18 @@ module Dor
     #@params type [symbol] The type of tag, :tag is assumed as default 
     #@params attrs [hash]  A hash of any attributes to be placed onto the tag 
     def add_tag(tag, type=:tag, attrs={})
-      needs_timestamp = [:release_tag] #If you want a tag to get a timestamp attribute, add its symbol here
+      needs_timestamp = [:release] #If you want a tag to get a timestamp attribute, add its symbol here
       identity_metadata_ds = self.identityMetadata
-      normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags)
+      normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags) if type != :release #Release tags are always boolean, so skip this step
+      normalized_tag = tag.to_s if type == :release #just keep the boolean if we have just have a release
+        
       attrs[:when] = Time.now.utc.iso8601 if needs_timestamp.include? type
-      return valid_release_attributes(attrs) if type == :release_tag and valid_release_attributes(attrs) != true 
+      
+    
+      if type == :release 
+        valid_release_attributes_and_tag(tag, attrs)
+        attrs[:tag] = normalize_tag_arr(validate_tag_format(attrs[:tag])) if attrs[:tag] != nil #:tag must be a valid administrative tag
+      end
       
       return identity_metadata_ds.add_value(type, normalized_tag) if attrs == {}
       return identity_metadata_ds.add_value(type, normalized_tag, attrs) if attrs != {}
@@ -237,14 +256,27 @@ module Dor
     
     #Determine if the supplied tag is a valid release tag that meets all requirements
     #
-    #@return [Boolean] Returns true if valid
-    #@return [String] Returns the error if invalid 
+    #@raises [RuntimeError]  Raises an error of the first fault in the release tag
     #
-    #@params attrs [hash] A hash of attributes for the tag, must contain :when, a ISO 8601 timestamp and :who to identify who or what added the tag
-    def valid_release_attributes(attrs={})
-      return ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z') == nil
-      return ":who not supplied as a String" if attrs[:who].class != String
-      return true 
+    #@return [Boolean] Returns true if no errors found 
+    #
+    #@params attrs [hash] A hash of attributes for the tag, must contain :when, a ISO 8601 timestamp and :who to identify who or what added the tag, :to, 
+    def valid_release_attributes_and_tag(tag, attrs={})
+      raise ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z') == nil
+      [:who, :to, :what].each do |check_attr|
+        raise "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
+      end
+      
+      what_correct = false
+      ['self', 'collection'].each do |allowed_what_value|
+        what_correct = true if attrs[:what] == allowed_what_value
+      end
+      raise ":what must be self or collection" if not what_correct
+      
+      raise "the value set for this tag is not a boolean" if !!tag != tag
+      identity_metadata_ds = self.identityMetadata
+      validate_tag_format(attrs[:tag]) if attrs[:tag] != nil #Will Raise exception if invalid tag
+      return true
     end
     
     def remove_tag(tag)
