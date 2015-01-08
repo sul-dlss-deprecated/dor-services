@@ -16,3 +16,4 @@ config/dev_console_env.rb
 spec/fixtures/workspace/*/*/*/*/*/temp/
 tmp.xml
 *.gem
+config/environments
