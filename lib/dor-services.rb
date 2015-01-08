@@ -117,6 +117,7 @@ module Dor
   autoload :Editable, 'dor/models/editable'
   autoload :Discoverable, 'dor/models/discoverable'
   autoload :Geoable, 'dor/models/geoable'
+  autoload :Presentable, 'dor/models/presentable'
 
 
   # ActiveFedora Classes

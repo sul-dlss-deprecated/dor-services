@@ -50,6 +50,8 @@
   :document_cache_user:
   :local_stacks_root: /stacks
   :local_document_cache_root: /purl
+  :url:
+  :iiif_profile:
 :suri:
   :pass:
   :id_namespace: druid
