@@ -19,7 +19,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 07 Jan 2015 00:20:57 GMT
+      - Thu, 08 Jan 2015 23:00:51 GMT
       Content-Type:
       - text/xml
       Content-Length:
@@ -31,7 +31,7 @@ http_interactions:
         http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:bb004bn8654"
         dsID="identityMetadata" ><dsLabel>Identity Metadata</dsLabel><dsVersionID>identityMetadata.17</dsVersionID><dsCreateDate>2015-01-06T23:40:22.589Z</dsCreateDate><dsState>A</dsState><dsMIME>text/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>1090</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:bb004bn8654+identityMetadata+identityMetadata.17</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
     http_version: 
-  recorded_at: Wed, 07 Jan 2015 00:20:57 GMT
+  recorded_at: Thu, 08 Jan 2015 23:00:51 GMT
 - request:
     method: get
     uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:bb004bn8654/datastreams/identityMetadata/content
@@ -51,7 +51,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 07 Jan 2015 00:20:57 GMT
+      - Thu, 08 Jan 2015 23:00:51 GMT
       Content-Disposition:
       - inline; filename="Identity Metadata.xml"
       Content-Type:
@@ -74,5 +74,5 @@ http_interactions:
         who=\"carrickr\">true</release>\n  <release tag=\"Project : Fitch : Batch2\"
         to=\"Revs\" what=\"self\" when=\"2015-01-06T23:40:01Z\" who=\"carrickr\">false</release>\n</identityMetadata>\n"
     http_version: 
-  recorded_at: Wed, 07 Jan 2015 00:20:57 GMT
+  recorded_at: Thu, 08 Jan 2015 23:00:51 GMT
 recorded_with: VCR 2.9.3

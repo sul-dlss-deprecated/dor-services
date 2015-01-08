@@ -31,6 +31,48 @@ module Dor
     def tags
       self.identityMetadata.tag
     end
+    
+    #helper method to get the release tags as a nodeset
+    #
+    #@return [Nokogiri::XML::NodeSet] of all release tags and their attributes
+    def release_tags
+      release_tags = self.identityMetadata.ng_xml.xpath('//release')
+      return_hash = {}
+      release_tags.each do |release_tag|
+        hashed_node = self.release_tag_node_to_hash(release_tag)
+        if return_hash[hashed_node[:to]] != nil
+          return_hash[hashed_node[:to]] << hashed_node[:attrs]
+        else
+           return_hash[hashed_node[:to]] = [hashed_node[:attrs]]
+        end
+      end
+      return return_hash
+    end
+    
+    #method to convert one release element into an array
+    #
+    #@param rtag [Nokogiri::XML::Element] the release tag element
+    #
+    #return [Hash] in the form of {:to => String :attrs = Hash}
+    def release_tag_node_to_hash(rtag)
+      to = 'to'
+      release = 'release'
+      when_word = 'when' #TODO: Make to and when_word load from some config file instead of hardcoded here
+      attrs = rtag.attributes
+      return_hash = { :to => attrs[to].value }
+      attrs.tap { |a| a.delete(to)}
+      attrs[release] = rtag.text.downcase == "true" #save release as a boolean
+      return_hash[:attrs] = attrs
+      
+      #convert all the attrs beside :to to strings, they are currently Nokogiri::XML::Attr
+      (return_hash[:attrs].keys-[to]).each do |a|
+        return_hash[:attrs][a] =  return_hash[:attrs][a].to_s if a != release
+      end
+      
+      return_hash[:attrs][when_word] = Time.parse(return_hash[:attrs][when_word]) #convert when to a datetime
+      
+      return return_hash
+    end
 
     # helper method to get just the content type tag
     def content_type_tag

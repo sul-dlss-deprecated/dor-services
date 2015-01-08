@@ -155,7 +155,7 @@ end
 
 describe "Adding release tags", :vcr do
   before :each do
-    VCR.use_cassette('releaseable_no_who') do
+    VCR.use_cassette('releaseable_sample_obj') do
       @item = Dor::Item.find('druid:bb004bn8654')
     end
   end
@@ -183,7 +183,7 @@ describe "Adding release tags", :vcr do
   
   it "should add a tag when all attributes are properly provided" do
     VCR.use_cassette('simple_release_tag_add_success_test') do
-       expect(@item.add_tag(true, :release, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})).should be_a_kind_of(Nokogiri::XML::Element)
+       expect(@item.add_tag(true, :release, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})).to be_a_kind_of(Nokogiri::XML::Element)
     end
   end
   
@@ -214,6 +214,27 @@ describe "Adding release tags", :vcr do
   it "should raise a Runtime Error when valid_release_attributes is called with a tag content that is not a boolean" do
     expect{@item.valid_release_attributes_and_tag(1, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
   end
+  
+  it "should return no release tags for an item that doesn't have any" do
+    VCR.use_cassette('releaseable_no_release_tags') do
+      no_tags_item = Dor::Item.find('druid:qv648vd4392')
+      expect(no_tags_item.release_tags).to eq({})
+    end
+  end
+  
+  it "should return the releases for an item that has release tags" do
+    expect(@item.release_tags).to be_a_kind_of(Hash)
+    expect(@item.release_tags).to eq({"Revs"=>[{"tag"=>"true", "what"=>"collection", "when"=>Time.parse('2015-01-06 23:33:47Z'), "who"=>"carrickr", "release"=>true}, {"tag"=>"true", "what"=>"self", "when"=>Time.parse('2015-01-06 23:33:54Z'), "who"=>"carrickr", "release"=>true}, {"tag"=>"Project : Fitch : Batch2", "what"=>"self", "when"=>Time.parse('2015-01-06 23:40:01Z'), "who"=>"carrickr", "release"=>false}]})
+  end
+  
+  it "should return a hash created from a single release tag" do
+    n = Nokogiri('<release to="Revs" what="collection" when="2015-01-06T23:33:47Z" who="carrickr">true</release>').xpath('//release')[0]
+    expect(@item.release_tag_node_to_hash(n)).to eq({:to=>"Revs", :attrs=>{"what"=>"collection", "when"=>Time.parse('2015-01-06 23:33:47Z'), "who"=>"carrickr", "release"=>true}}) 
+    n = Nokogiri('<release tag="Project : Fitch: Batch1" to="Revs" what="collection" when="2015-01-06T23:33:47Z" who="carrickr">true</release>').xpath('//release')[0]
+    expect(@item.release_tag_node_to_hash(n)).to eq({:to=>"Revs", :attrs=>{"tag"=> "Project : Fitch: Batch1", "what"=>"collection", "when"=>Time.parse('2015-01-06 23:33:47Z'), "who"=>"carrickr", "release"=>true}}) 
+  end
+  
+
   
   #expect{@item.valid_release_attributes_and_tag(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}
     
