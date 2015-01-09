@@ -31,19 +31,19 @@ module Dor
     end
 
     def set_read_rights(rights)
-      return if not ['world','stanford','none', 'dark'].include? rights
+      raise(ArgumentError, "Argument '${rights}' is not a recognized value") if not ['world','stanford','none','dark'].include? rights
       rights_metadata_ds = self.rightsMetadata
       rights_xml=rights_metadata_ds.ng_xml
-      if(rights_xml.search('//rightsMetadata/access[@type=\'read\']').length==0)
-        raise ('The rights metadata stream doesnt contain an entry for machine read permissions. Consider populating it from the APO before trying to change it.')
+      if (rights_xml.search('//rightsMetadata/access[@type=\'read\']').length==0)
+        raise('The rights metadata stream doesnt contain an entry for machine read permissions. Consider populating it from the APO before trying to change it.')
       end
       rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
         node.children.remove
         if rights=='dark'
-            world_node=Nokogiri::XML::Node.new('none',rights_xml)
-            node.add_child(world_node)
+          world_node=Nokogiri::XML::Node.new('none',rights_xml)
+          node.add_child(world_node)
         else
-            world_node=Nokogiri::XML::Node.new('world',rights_xml)
+          world_node=Nokogiri::XML::Node.new('world',rights_xml)
           node.add_child(world_node)
         end
       end
@@ -56,7 +56,6 @@ module Dor
           machine_node.add_child(world_node)
         end
         if rights=='stanford'
-          world_node=Nokogiri::XML::Node.new(rights,rights_xml)
           node.add_child(machine_node)
           group_node=Nokogiri::XML::Node.new('group',rights_xml)
           group_node.content="Stanford"
