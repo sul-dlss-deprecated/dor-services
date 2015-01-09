@@ -147,7 +147,8 @@ describe Dor::Workflow::Document do
       d=Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
       doc=d.to_solr
-      expect(doc['workflow_status_display'].first).to eq('accessionWF|completed|0|dor')
+      puts doc.inspect
+      expect(doc).to match a_hash_including('workflow_status_ssm' => ['accessionWF|completed|0|dor'])
     end
     
     it 'should index the right workflow status (completed) when all steps have status of completed/skipped/nil/empty' do
@@ -168,7 +169,7 @@ describe Dor::Workflow::Document do
       d=Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
       doc=d.to_solr
-      expect(doc['workflow_status_display'].first).to eq('accessionWF|completed|0|dor')
+      expect(doc).to match a_hash_including('workflow_status_ssm' => ['accessionWF|completed|0|dor'])
     end
     
     it 'should index error messages' do
