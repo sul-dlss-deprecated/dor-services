@@ -8,7 +8,6 @@ class ContentableItem < ActiveFedora::Base
 end
 
 class SpecNode
-  include ActiveFedora::Relationships
   include ActiveFedora::SemanticNode
 
   attr_accessor :pid
