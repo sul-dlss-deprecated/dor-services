@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
 
   # Runtime dependencies
-  s.add_dependency 'active-fedora', '~> 5.7.1'
+  s.add_dependency 'active-fedora', '~> 6.0'
   s.add_dependency 'activesupport', '~> 3.2', '>= 3.2.18'
   s.add_dependency 'confstruct', '~> 0.2.7'
   s.add_dependency 'equivalent-xml', '~> 0.5.1'
@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'net-sftp', '~> 2.1.2'
   s.add_dependency 'net-ssh',  '~> 2.6.5' # 2.6.5 is pegged by our 12/2014 version of net-stfp
   s.add_dependency 'nokogiri', '~> 1.6.0'
-  s.add_dependency 'om', '~> 1.8.0'
+  s.add_dependency 'om', '~> 3.0'
   s.add_dependency 'progressbar', '~> 0.21.0'
   s.add_dependency 'rdf', '~> 1.0.9.0' # 1.0.10 breaks
   s.add_dependency 'rest-client', '~> 1.6.7'
@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'ruby-cache', '~> 0.3.0'
   s.add_dependency 'ruby-graphviz', '~> 1.0.9'
   s.add_dependency 'rubydora', '~> 1.6.5'
-  s.add_dependency 'solrizer', '~> 2.0'
+  s.add_dependency 'solrizer', '~> 3.0'
   s.add_dependency 'systemu', '~> 2.6.0'
   s.add_dependency 'uuidtools', '~> 2.1.4'
   s.add_dependency 'validatable', '~> 1.6.7'
