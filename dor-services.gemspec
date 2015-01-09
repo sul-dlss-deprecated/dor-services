@@ -51,7 +51,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'fakeweb', '~> 1.3.0'
   s.add_development_dependency 'haml', '~> 4.0.4'
   s.add_development_dependency 'jhove-service', '~> 1.0.1'
-  s.add_development_dependency 'rake', '~> 0.8.7'
+  s.add_development_dependency 'rake', '~> 10.0'
   s.add_development_dependency 'rdoc', '~> 4.0.1'
   s.add_development_dependency 'rspec', '~> 3.1'
   s.add_development_dependency 'yard', '~> 0.8.7'
