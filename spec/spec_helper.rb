@@ -10,6 +10,7 @@ require 'awesome_print'
 #require 'rspec/mocks'
 
 require 'solrizer'
+require 'om'
 
 require 'rubygems'
 require 'rake'

@@ -2,7 +2,7 @@ module Dor
 module Workflow
   class Document
     include SolrDocHelper
-    include OM::XML::Document
+    include ::OM::XML::Document
 
     set_terminology do |t|
       t.root(:path => 'workflow')
