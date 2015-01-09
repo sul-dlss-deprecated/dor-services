@@ -31,7 +31,7 @@ describe Dor::DescMetadataDS do
     end
     
     it "should get correct values from OM terminology" do
-      @dsdoc.term_values(:abstract).should == ['Abstract contents.']
+      expect(@dsdoc.term_values(:abstract)).to eq(['Abstract contents.'])
     end
 
   end

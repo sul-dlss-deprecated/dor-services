@@ -11,7 +11,7 @@ describe Dor::Versionable do
 
   let(:obj) {
     v = VersionableItem.new
-    v.stub(:pid).and_return(dr)
+    allow(v).to receive(:pid).and_return(dr)
     v
   }
 
@@ -19,19 +19,19 @@ describe Dor::Versionable do
   let(:ev_ds) { obj.datastreams['events'] }
 
   before(:each) do
-    obj.inner_object.stub(:repository).and_return(double('frepo').as_null_object)
+    allow(obj.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)
   end
 
   describe "#open_new_version" do
 
     context "normal behavior" do
       before(:each) do
-        Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
-        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
-        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(nil)
-        obj.should_receive(:initialize_workflow).with('versioningWF')
-        obj.stub(:new_object?).and_return(false)
-        vmd_ds.should_receive(:save)
+        expect(Dor::WorkflowService).to receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
+        expect(Dor::WorkflowService).to receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
+        expect(Dor::WorkflowService).to receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(nil)
+        expect(obj).to receive(:initialize_workflow).with('versioningWF')
+        allow(obj).to receive(:new_object?).and_return(false)
+        expect(vmd_ds).to receive(:save)
       end
 
       it "checks if an object has been accessioned and not yet opened" do
@@ -40,7 +40,7 @@ describe Dor::Versionable do
       end
 
       it "creates the versionMetadata datastream" do
-        vmd_ds.ng_xml.to_xml.should =~ /Initial Version/
+        expect(vmd_ds.ng_xml.to_xml).to match(/Initial Version/)
         obj.open_new_version
       end
 
@@ -60,20 +60,20 @@ describe Dor::Versionable do
       it "includes vers_md_upd_info" do
         vers_md_upd_info = {:significance => "real_major", :description => "same as it ever was", :opening_user_name => "sunetid"}
         cur_vers = '2'
-        vmd_ds.stub(:current_version).and_return(cur_vers)
-        obj.stub(:save)
+        allow(vmd_ds).to receive(:current_version).and_return(cur_vers)
+        allow(obj).to receive(:save)
 
-        ev_ds.should_receive(:add_event).with("open", vers_md_upd_info[:opening_user_name], "Version #{cur_vers} opened")
-        vmd_ds.should_receive(:update_current_version).with({:description => vers_md_upd_info[:description], :significance => vers_md_upd_info[:significance].to_sym})
-        obj.should_receive(:save)
+        expect(ev_ds).to receive(:add_event).with("open", vers_md_upd_info[:opening_user_name], "Version #{cur_vers} opened")
+        expect(vmd_ds).to receive(:update_current_version).with({:description => vers_md_upd_info[:description], :significance => vers_md_upd_info[:significance].to_sym})
+        expect(obj).to receive(:save)
 
         obj.open_new_version({:vers_md_upd_info => vers_md_upd_info})
       end
 
       it "doesn't include vers_md_upd_info" do
-        ev_ds.should_not_receive(:add_event)
-        vmd_ds.should_not_receive(:update_current_version)
-        obj.should_not_receive(:save)
+        expect(ev_ds).not_to receive(:add_event)
+        expect(vmd_ds).not_to receive(:update_current_version)
+        expect(obj).not_to receive(:save)
 
         obj.open_new_version
       end
@@ -81,20 +81,20 @@ describe Dor::Versionable do
 
     context "error handling" do
       it "raises an exception if it the object has not yet been accessioned" do
-        Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(false)
+        expect(Dor::WorkflowService).to receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(false)
         expect { obj.open_new_version }.to raise_error(Dor::Exception, 'Object net yet accessioned')
       end
 
       it "raises an exception if the object has already been opened" do
-        Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
-        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(Time.new)
+        expect(Dor::WorkflowService).to receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
+        expect(Dor::WorkflowService).to receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(Time.new)
         expect { obj.open_new_version }.to raise_error(Dor::Exception, 'Object already opened for versioning')
       end
 
       it "raises an exception if the object is still being accessioned" do
-        Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
-        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
-        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(Time.new)
+        expect(Dor::WorkflowService).to receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
+        expect(Dor::WorkflowService).to receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
+        expect(Dor::WorkflowService).to receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(Time.new)
         expect { obj.open_new_version }.to raise_error(Dor::Exception, 'Object currently being accessioned')
       end
     end
@@ -102,29 +102,29 @@ describe Dor::Versionable do
 
   describe "#close_version" do
     it "kicks off common-accesioning" do
-      pending 'just mocking calls to workflow'
+      skip 'write accessioning test'
     end
 
     it "sets versioningWF:submit-version and versioningWF:start-accession to completed" do
-      pending 'just mocking calls to workflow'
+      skip 'write versioningWF:submit-version test'
     end
 
     it "sets tag and description if passed in as optional paramaters" do
-      vmd_ds.stub(:pid).and_return('druid:ab123cd4567')
-      Dor::WorkflowService.stub(:get_active_lifecycle).and_return(true, false)
+      allow(vmd_ds).to receive(:pid).and_return('druid:ab123cd4567')
+      allow(Dor::WorkflowService).to receive(:get_active_lifecycle).and_return(true, false)
 
       # Stub out calls to update and archive workflow
-      Dor::WorkflowService.stub(:update_workflow_status)
+      allow(Dor::WorkflowService).to receive(:update_workflow_status)
 
-      Dor::WorkflowService.should_receive(:close_version).with('dor', dr , true)
+      expect(Dor::WorkflowService).to receive(:close_version).with('dor', dr , true)
 
-      obj.stub(:initialize_workflow)
+      allow(obj).to receive(:initialize_workflow)
 
       vmd_ds.increment_version
-      vmd_ds.should_receive(:save)
+      expect(vmd_ds).to receive(:save)
       obj.close_version :description => 'closing text', :significance => :major
 
-      vmd_ds.to_xml.should be_equivalent_to( <<-XML
+      expect(vmd_ds.to_xml).to be_equivalent_to( <<-XML
         <versionMetadata objectId="druid:ab123cd4567">
           <version versionId="1" tag="1.0.0">
             <description>Initial Version</description>
@@ -139,13 +139,13 @@ describe Dor::Versionable do
 
     context "error handling" do
       it "raises an exception if the object has not been opened for versioning" do
-        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
+        expect(Dor::WorkflowService).to receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
         expect { obj.close_version }.to raise_error(Dor::Exception, 'Trying to close version on an object not opened for versioning')
       end
 
       it "raises an exception if the object has already has an active instance of accesssionWF" do
-        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(Time.new)
-        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(true)
+        expect(Dor::WorkflowService).to receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(Time.new)
+        expect(Dor::WorkflowService).to receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(true)
         expect { obj.submit_version }.to raise_error(Dor::Exception, 'accessionWF already created for versioned object')
       end
 
@@ -157,19 +157,19 @@ describe Dor::Versionable do
   end
   describe "allows_modification?" do
     it 'should allow modification if the object hasnt been submitted' do
-      Dor::WorkflowService.stub(:get_lifecycle).and_return(false)
-      obj.allows_modification?.should == true
+      allow(Dor::WorkflowService).to receive(:get_lifecycle).and_return(false)
+      expect(obj.allows_modification?).to eq(true)
     end
     it 'should allow modification if there is an open version' do
-      Dor::WorkflowService.stub(:get_lifecycle).and_return(true)
-      obj.stub(:new_version_open?).and_return(true)
-      obj.allows_modification?.should == true
+      allow(Dor::WorkflowService).to receive(:get_lifecycle).and_return(true)
+      allow(obj).to receive(:new_version_open?).and_return(true)
+      expect(obj.allows_modification?).to eq(true)
     end
     it "should allow modification if the item has sdr-ingest-transfer set to hold" do
-      Dor::WorkflowService.stub(:get_lifecycle).and_return(true)
-      obj.stub(:new_version_open?).and_return(false)
-      Dor::WorkflowService.stub(:get_workflow_status).and_return('hold')
-      obj.allows_modification?.should == true
+      allow(Dor::WorkflowService).to receive(:get_lifecycle).and_return(true)
+      allow(obj).to receive(:new_version_open?).and_return(false)
+      allow(Dor::WorkflowService).to receive(:get_workflow_status).and_return('hold')
+      expect(obj.allows_modification?).to eq(true)
     end
   end
 end

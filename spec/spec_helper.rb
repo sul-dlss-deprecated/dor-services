@@ -16,7 +16,7 @@ require 'rake'
 require 'dor-services'
 #require 'ruby-debug'
 require 'foxml_helper'
-require 'equivalent-xml'
+require 'equivalent-xml/rspec_matchers'
 require 'fakeweb'
 require 'pry'
 require 'tmpdir'
@@ -41,7 +41,7 @@ module Dor::SpecHelpers
       sdr.local_workspace_root File.join(fixture_dir, "workspace")
       sdr.local_export_home File.join(fixture_dir, "export")
     end
-    ActiveFedora.stub(:fedora).and_return(double('frepo').as_null_object)
+    allow(ActiveFedora).to receive(:fedora).and_return(double('frepo').as_null_object)
   end
 
   def unstub_config

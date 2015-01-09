@@ -30,73 +30,73 @@ describe Dor::GeoMetadataDS do
 
     it 'id' do
       @test_keys.each do |k|
-        @doc[k].term_values(:id).should == [{
+        expect(@doc[k].term_values(:id)).to eq([{
           'co2_pipe' => 'http://purl.stanford.edu/ww217dj0457',
           'oil_gas_fields' => 'http://purl.stanford.edu/cs838pw3418'
-        }[k]]
+        }[k]])
       end
     end
     
     it 'file_id' do
       @test_keys.each do |k|
-        @doc[k].term_values(:file_id).should == [{
+        expect(@doc[k].term_values(:file_id)).to eq([{
           'co2_pipe' => 'FA6ED959-7DED-4722-B1FB-A85FB79725BA',
           'oil_gas_fields' => 'BBF1AEBF-51A8-46CD-8913-95B63390A2D0'
-        }[k]]
+        }[k]])
       end
     end
 
     it 'format' do
       @test_keys.each do |k|
-        @doc[k].term_values(:format).should == [{
+        expect(@doc[k].term_values(:format)).to eq([{
           'co2_pipe' => 'Shapefile',
           'oil_gas_fields' => 'Shapefile'
-        }[k]]
+        }[k]])
       end
     end
 
     it 'metadata_language' do
       @test_keys.each do |k|
-        @doc[k].term_values(:metadata_language).should == [{
+        expect(@doc[k].term_values(:metadata_language)).to eq([{
           'co2_pipe' => 'eng',
           'oil_gas_fields' => 'eng'
-        }[k]]
+        }[k]])
       end
     end
 
     it 'title' do
       @test_keys.each do |k|
-        @doc[k].term_values(:title).should == [{
+        expect(@doc[k].term_values(:title)).to eq([{
           'co2_pipe' => 'Carbon Dioxide (CO2) Pipelines in the United States, 2011',
           'oil_gas_fields' => 'Oil and Gas Fields in the United States, 2011'
-        }[k]]
+        }[k]])
       end
     end
 
     it 'abstract' do
       @test_keys.each do |k|
-        @doc[k].term_values(:abstract).should == [{
+        expect(@doc[k].term_values(:abstract)).to eq([{
           'co2_pipe' => 'Dataset represents locations of existing and proposed CO2 pipelines. Includes all interstate pipelines and major intrastate pipelines.',
           'oil_gas_fields' => 'Shows the locations and extents of oil and gas fields in the United States'
-        }[k]]
+        }[k]])
       end
     end
 
     it 'purpose' do
       @test_keys.each do |k|
-        @doc[k].term_values(:purpose).should == [{
+        expect(@doc[k].term_values(:purpose)).to eq([{
           'co2_pipe' => 'Locating Carbon Dioxide (CO2) pipelines in the United States.',
           'oil_gas_fields' => 'Locating and analysing United States oil and gas field data for use in geographic information systems.'
-        }[k]]
+        }[k]])
       end
     end
 
     it 'metadata_dt' do
       @test_keys.each do |k|
-        @doc[k].term_values(:metadata_dt).should == [{
+        expect(@doc[k].term_values(:metadata_dt)).to eq([{
           'co2_pipe' => '2013-09-16',
           'oil_gas_fields' => '2013-09-16'
-        }[k]]
+        }[k]])
       end
     end
   end
@@ -125,51 +125,51 @@ describe Dor::GeoMetadataDS do
           id
           text}.sort
         @test_keys.each do |k|
-          @doc[k].to_solr_spatial.keys.sort.should == KEYS
+          expect(@doc[k].to_solr_spatial.keys.sort).to eq(KEYS)
         end
       end
   
     it 'data' do
-      @doc['co2_pipe'].to_solr_spatial.should == {"id"=>["http://purl.stanford.edu/ww217dj0457"], "druid"=>["ww217dj0457"], "file_id_s"=>["FA6ED959-7DED-4722-B1FB-A85FB79725BA"], "geo_layername_s" => ["CO2_PIPE"], "geo_bbox"=>["POLYGON((-109.758319 29.423028, -109.758319 48.999336, -88.990844 48.999336, -88.990844 29.423028, -109.758319 29.423028))"], "geo_data_type_s"=>["vector"], "geo_geometry_type_s" => ["Polygon"], "geo_format_s"=>["Shapefile"], "geo_ne_pt"=>["POINT(-88.990844 48.999336)"], "geo_pt"=>["POINT(-99.3745815 39.211182)"], "geo_sw_pt"=>["POINT(-109.758319 29.423028)"], "dc_coverage_t"=>["x.min=-109.758319 x.max=-88.990844 y.min=29.423028 y.max=48.999336"], "dc_creator_t"=>["Hart Energy Publishing"], "dc_date_i"=>["2012"], "dc_description_t"=>["Dataset represents locations of existing and proposed CO2 pipelines. Includes all interstate pipelines and major intrastate pipelines.; Locating Carbon Dioxide (CO2) pipelines in the United States."], "dc_format_s"=>["application/x-esri-shapefile"], "dc_language_s"=>["eng"], "dc_title_t"=>["Carbon Dioxide (CO2) Pipelines in the United States, 2011"], "text"=>["Carbon Dioxide (CO2) Pipelines in the United States, 2011; Dataset represents locations of existing and proposed CO2 pipelines. Includes all interstate pipelines and major intrastate pipelines.; Locating Carbon Dioxide (CO2) pipelines in the United States."], 'geo_proj' => ['4269']}
-      @doc['oil_gas_fields'].to_solr_spatial.should == {"id"=>["http://purl.stanford.edu/cs838pw3418"], "druid"=>["cs838pw3418"], "file_id_s"=>["BBF1AEBF-51A8-46CD-8913-95B63390A2D0"], "geo_layername_s" => ["OIL_GAS_FIELDS"], "geo_bbox"=>["POLYGON((-151.479444 26.071745, -151.479444 69.4325, -78.085007 69.4325, -78.085007 26.071745, -151.479444 26.071745))"], "geo_geometry_type_s" => ["Polygon"], "geo_data_type_s"=>["vector"], "geo_format_s"=>["Shapefile"], "geo_ne_pt"=>["POINT(-78.085007 69.4325)"], "geo_pt"=>["POINT(-114.78222550000001 47.7521225)"], "geo_sw_pt"=>["POINT(-151.479444 26.071745)"], "dc_coverage_t"=>["x.min=-151.479444 x.max=-78.085007 y.min=26.071745 y.max=69.4325"], "dc_creator_t"=>["Hart Energy Publishing"], "dc_date_i"=>["2011"], "dc_description_t"=>["Shows the locations and extents of oil and gas fields in the United States; Locating and analysing United States oil and gas field data for use in geographic information systems."], "dc_format_s"=>["application/x-esri-shapefile"], "dc_language_s"=>["eng"], "dc_title_t"=>["Oil and Gas Fields in the United States, 2011"], "text"=>["Oil and Gas Fields in the United States, 2011; Shows the locations and extents of oil and gas fields in the United States; Locating and analysing United States oil and gas field data for use in geographic information systems."],  'geo_proj' => ['4269']}
+      expect(@doc['co2_pipe'].to_solr_spatial).to eq({"id"=>["http://purl.stanford.edu/ww217dj0457"], "druid"=>["ww217dj0457"], "file_id_s"=>["FA6ED959-7DED-4722-B1FB-A85FB79725BA"], "geo_layername_s" => ["CO2_PIPE"], "geo_bbox"=>["POLYGON((-109.758319 29.423028, -109.758319 48.999336, -88.990844 48.999336, -88.990844 29.423028, -109.758319 29.423028))"], "geo_data_type_s"=>["vector"], "geo_geometry_type_s" => ["Polygon"], "geo_format_s"=>["Shapefile"], "geo_ne_pt"=>["POINT(-88.990844 48.999336)"], "geo_pt"=>["POINT(-99.3745815 39.211182)"], "geo_sw_pt"=>["POINT(-109.758319 29.423028)"], "dc_coverage_t"=>["x.min=-109.758319 x.max=-88.990844 y.min=29.423028 y.max=48.999336"], "dc_creator_t"=>["Hart Energy Publishing"], "dc_date_i"=>["2012"], "dc_description_t"=>["Dataset represents locations of existing and proposed CO2 pipelines. Includes all interstate pipelines and major intrastate pipelines.; Locating Carbon Dioxide (CO2) pipelines in the United States."], "dc_format_s"=>["application/x-esri-shapefile"], "dc_language_s"=>["eng"], "dc_title_t"=>["Carbon Dioxide (CO2) Pipelines in the United States, 2011"], "text"=>["Carbon Dioxide (CO2) Pipelines in the United States, 2011; Dataset represents locations of existing and proposed CO2 pipelines. Includes all interstate pipelines and major intrastate pipelines.; Locating Carbon Dioxide (CO2) pipelines in the United States."], 'geo_proj' => ['4269']})
+      expect(@doc['oil_gas_fields'].to_solr_spatial).to eq({"id"=>["http://purl.stanford.edu/cs838pw3418"], "druid"=>["cs838pw3418"], "file_id_s"=>["BBF1AEBF-51A8-46CD-8913-95B63390A2D0"], "geo_layername_s" => ["OIL_GAS_FIELDS"], "geo_bbox"=>["POLYGON((-151.479444 26.071745, -151.479444 69.4325, -78.085007 69.4325, -78.085007 26.071745, -151.479444 26.071745))"], "geo_geometry_type_s" => ["Polygon"], "geo_data_type_s"=>["vector"], "geo_format_s"=>["Shapefile"], "geo_ne_pt"=>["POINT(-78.085007 69.4325)"], "geo_pt"=>["POINT(-114.78222550000001 47.7521225)"], "geo_sw_pt"=>["POINT(-151.479444 26.071745)"], "dc_coverage_t"=>["x.min=-151.479444 x.max=-78.085007 y.min=26.071745 y.max=69.4325"], "dc_creator_t"=>["Hart Energy Publishing"], "dc_date_i"=>["2011"], "dc_description_t"=>["Shows the locations and extents of oil and gas fields in the United States; Locating and analysing United States oil and gas field data for use in geographic information systems."], "dc_format_s"=>["application/x-esri-shapefile"], "dc_language_s"=>["eng"], "dc_title_t"=>["Oil and Gas Fields in the United States, 2011"], "text"=>["Oil and Gas Fields in the United States, 2011; Shows the locations and extents of oil and gas fields in the United States; Locating and analysing United States oil and gas field data for use in geographic information systems."],  'geo_proj' => ['4269']})
     end
 
     it '#to_solr3_bbox' do
       @test_keys.each do |k|
-        @doc[k].should be_a(Dor::GeoMetadataDS)
-        @doc[k].to_solr_bbox(:solr3).should == {
+        expect(@doc[k]).to be_a(Dor::GeoMetadataDS)
+        expect(@doc[k].to_solr_bbox(:solr3)).to eq({
           'co2_pipe' => '-109.758319 29.423028 -88.990844 48.999336',
           'oil_gas_fields' => '-151.479444 26.071745 -78.085007 69.4325'
-          }[k]
+          }[k])
       end
     end
 
     it '#to_solr3_centroid' do
       @test_keys.each do |k|
-        @doc[k].should be_a(Dor::GeoMetadataDS)
-        @doc[k].to_solr_centroid(:solr3).should == {
+        expect(@doc[k]).to be_a(Dor::GeoMetadataDS)
+        expect(@doc[k].to_solr_centroid(:solr3)).to eq({
           'co2_pipe' => "39.211182,-99.3745815",
           'oil_gas_fields' => "47.7521225,-114.78222550000001"
-          }[k]
+          }[k])
       end
     end
     it '#to_solr4_bbox' do
       @test_keys.each do |k|
-        @doc[k].should be_a(Dor::GeoMetadataDS)
-        @doc[k].to_solr_bbox(:solr4).should == {
+        expect(@doc[k]).to be_a(Dor::GeoMetadataDS)
+        expect(@doc[k].to_solr_bbox(:solr4)).to eq({
           'co2_pipe' => 'POLYGON((-109.758319 29.423028, -109.758319 48.999336, -88.990844 48.999336, -88.990844 29.423028, -109.758319 29.423028))',
           'oil_gas_fields' => 'POLYGON((-151.479444 26.071745, -151.479444 69.4325, -78.085007 69.4325, -78.085007 26.071745, -151.479444 26.071745))'
-          }[k]
+          }[k])
       end
     end
 
     it '#to_solr4_centroid' do
       @test_keys.each do |k|
-        @doc[k].should be_a(Dor::GeoMetadataDS)
-        @doc[k].to_solr_centroid(:solr4).should == {
+        expect(@doc[k]).to be_a(Dor::GeoMetadataDS)
+        expect(@doc[k].to_solr_centroid(:solr4)).to eq({
           'co2_pipe' => 'POINT(-99.3745815 39.211182)',
           'oil_gas_fields' => 'POINT(-114.78222550000001 47.7521225)'
-          }[k]
+          }[k])
       end
     end
   end
@@ -178,55 +178,55 @@ describe Dor::GeoMetadataDS do
 
     it '#to_centroid' do
       @test_keys.each do |k|
-        @doc[k].should be_a(Dor::GeoMetadataDS)
-        @doc[k].to_centroid.should == {
+        expect(@doc[k]).to be_a(Dor::GeoMetadataDS)
+        expect(@doc[k].to_centroid).to eq({
           'co2_pipe' => [-99.3745815, 39.211182],
           'oil_gas_fields' =>  [-114.78222550000001, 47.7521225]
-          }[k]
+          }[k])
       end
 
     end
 
     it '#to_bbox' do
       @test_keys.each do |k|
-        @doc[k].should be_a(Dor::GeoMetadataDS)
-        @doc[k].to_bbox.to_s.should == {
+        expect(@doc[k]).to be_a(Dor::GeoMetadataDS)
+        expect(@doc[k].to_bbox.to_s).to eq({
           'co2_pipe' => Struct.new(:w, :e, :n, :s).new(-109.758319, -88.990844, 48.999336, 29.423028).to_s,
           'oil_gas_fields' =>  Struct.new(:w, :e, :n, :s).new(-151.479444, -78.085007, 69.4325, 26.071745).to_s
-          }[k]
+          }[k])
       end
 
     end
 
     it '#to_wkt' do
       w, s, e, n = [1.2, 3.4, 5.6, 7.8]
-      Dor::GeoMetadataDS.to_wkt([w, s]).should == "POINT(#{w} #{s})"
+      expect(Dor::GeoMetadataDS.to_wkt([w, s])).to eq("POINT(#{w} #{s})")
       { :t1 => [[w, s], [e, n]],
         :t2 => [[w, n], [e, s]],
         :t3 => [[w, s], [e, n]]
       }.each do |k,v|
-        Dor::GeoMetadataDS.to_wkt(v[0], v[1]).should == "POLYGON((#{w} #{s}, #{w} #{n}, #{e} #{n}, #{e} #{s}, #{w} #{s}))"
+        expect(Dor::GeoMetadataDS.to_wkt(v[0], v[1])).to eq("POLYGON((#{w} #{s}, #{w} #{n}, #{e} #{n}, #{e} #{s}, #{w} #{s}))")
       end
     end
 
     it '#xml_template' do
-      Dor::GeoMetadataDS.xml_template.to_xml.should be_equivalent_to(@template)
+      expect(Dor::GeoMetadataDS.xml_template.to_xml).to be_equivalent_to(@template)
     end
 
     it '#metadata' do
-      @doc['co2_pipe'].metadata.root.name.should == 'MD_Metadata'
+      expect(@doc['co2_pipe'].metadata.root.name).to eq('MD_Metadata')
       @doc['co2_pipe'].metadata.root.children.size == 33
-      @doc['oil_gas_fields'].metadata.root.name.should == 'MD_Metadata'
+      expect(@doc['oil_gas_fields'].metadata.root.name).to eq('MD_Metadata')
       @doc['oil_gas_fields'].metadata.root.children.size == 33
     end
 
     it '#feature_catalogue' do
-      @doc['co2_pipe'].feature_catalogue.nil?.should == false
-      @doc['co2_pipe'].feature_catalogue.root.name.should == 'FC_FeatureCatalogue'
-      @doc['co2_pipe'].feature_catalogue.root.children.size.should == 17
-      @doc['oil_gas_fields'].feature_catalogue.nil?.should == false
-      @doc['oil_gas_fields'].feature_catalogue.root.name.should == 'FC_FeatureCatalogue'
-      @doc['oil_gas_fields'].feature_catalogue.root.children.size.should == 17
+      expect(@doc['co2_pipe'].feature_catalogue.nil?).to eq(false)
+      expect(@doc['co2_pipe'].feature_catalogue.root.name).to eq('FC_FeatureCatalogue')
+      expect(@doc['co2_pipe'].feature_catalogue.root.children.size).to eq(17)
+      expect(@doc['oil_gas_fields'].feature_catalogue.nil?).to eq(false)
+      expect(@doc['oil_gas_fields'].feature_catalogue.root.name).to eq('FC_FeatureCatalogue')
+      expect(@doc['oil_gas_fields'].feature_catalogue.root.children.size).to eq(17)
     end
 
     it '#to_coordinates_ddmmss' do
@@ -251,14 +251,14 @@ describe Dor::GeoMetadataDS do
 "E 120°12ʹ--E 18°19ʹ/N 0°--N 0°" 
       }
       r.each do |k,v|
-        Dor::GeoMetadataDS.to_coordinates_ddmmss(k).should == v
+        expect(Dor::GeoMetadataDS.to_coordinates_ddmmss(k)).to eq(v)
       end
     end
     
     it "#to_mods" do
       @test_keys.each do |k|
         # File.open("tmp.xml", "w") {|f| f << @doc[k].to_mods.to_xml}
-        @doc[k].to_mods.to_xml.should be_equivalent_to(@mods[k].to_xml)
+        expect(@doc[k].to_mods.to_xml).to be_equivalent_to(@mods[k].to_xml)
       end
     end
     

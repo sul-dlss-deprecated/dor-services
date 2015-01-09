@@ -11,9 +11,9 @@ describe SimpleDublinCoreDs do
         <dc:identifier>identifier</dc:identifier>
       </oai_dc:dc>'
 
-      subject.to_solr[Solrizer.solr_name('title', :searchable)].should include('title')
-      subject.to_solr[Solrizer.solr_name('creator', :searchable)].should include('creator')
-      subject.to_solr[Solrizer.solr_name('identifier', :searchable)].should include('identifier')
+      expect(subject.to_solr[Solrizer.solr_name('title', :searchable)]).to include('title')
+      expect(subject.to_solr[Solrizer.solr_name('creator', :searchable)]).to include('creator')
+      expect(subject.to_solr[Solrizer.solr_name('identifier', :searchable)]).to include('identifier')
     end
 
     context "sort fields" do
@@ -26,8 +26,8 @@ describe SimpleDublinCoreDs do
         <dc:identifier>identifier</dc:identifier>
       </oai_dc:dc>'
 
-      subject.to_solr[Solrizer.solr_name('dc_title', :sortable)].should be_a_kind_of(String)
-      subject.to_solr[Solrizer.solr_name('dc_creator', :sortable)].should be_a_kind_of(String)
+      expect(subject.to_solr[Solrizer.solr_name('dc_title', :sortable)]).to be_a_kind_of(String)
+      expect(subject.to_solr[Solrizer.solr_name('dc_creator', :sortable)]).to be_a_kind_of(String)
     end
 
     it "should create sort fields for each type of identifier" do
@@ -38,8 +38,8 @@ describe SimpleDublinCoreDs do
         <dc:identifier>uuid:identifierxyz</dc:identifier>
       </oai_dc:dc>'
 
-      subject.to_solr[Solrizer.solr_name('dc_identifier_druid', :sortable)].should be_a_kind_of(String)
-      subject.to_solr[Solrizer.solr_name('dc_identifier_uuid', :sortable)].should be_a_kind_of(String)
+      expect(subject.to_solr[Solrizer.solr_name('dc_identifier_druid', :sortable)]).to be_a_kind_of(String)
+      expect(subject.to_solr[Solrizer.solr_name('dc_identifier_uuid', :sortable)]).to be_a_kind_of(String)
     end
     end
   end

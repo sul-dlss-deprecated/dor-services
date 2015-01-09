@@ -36,15 +36,15 @@ require 'dor/datastreams/workflow_ds'
               datetime="2012-11-06T16:19:15-0800" status="completed" name="descriptive-metadata"/>
           <process version="2" elapsed="0.0" archived="true" attempts="2"
               datetime="2012-11-06T16:19:16-0800" status="completed" name="content-metadata"/>'
-      Dor::WorkflowService.stub(:get_workflow_xml).and_return(xml)
+      allow(Dor::WorkflowService).to receive(:get_workflow_xml).and_return(xml)
        accessionWF=@item.workflows['accessionWF']
-       accessionWF.nil?.should == false
+       expect(accessionWF.nil?).to eq(false)
 
       end
       it 'should return nil if the xml is empty' do
       xml=''
-      Dor::WorkflowService.stub(:get_workflow_xml).and_return(xml)
-       @item.workflows['accessionWF'].nil?.should == true
+      allow(Dor::WorkflowService).to receive(:get_workflow_xml).and_return(xml)
+       expect(@item.workflows['accessionWF'].nil?).to eq(true)
     end
     end
     describe 'get_workflow' do
@@ -73,19 +73,19 @@ require 'dor/datastreams/workflow_ds'
               datetime="2012-11-06T16:19:15-0800" status="completed" name="descriptive-metadata"/>
           <process version="2" elapsed="0.0" archived="true" attempts="2"
               datetime="2012-11-06T16:19:16-0800" status="completed" name="content-metadata"/>'
-      Dor::WorkflowService.stub(:get_workflow_xml).and_return(xml)
+      allow(Dor::WorkflowService).to receive(:get_workflow_xml).and_return(xml)
        accessionWF=@item.workflows.get_workflow 'accessionWF'
-       accessionWF.nil?.should == false
+       expect(accessionWF.nil?).to eq(false)
 
       end
       it 'should return nil if the xml is empty' do
       xml=''
-      Dor::WorkflowService.stub(:get_workflow_xml).and_return(xml)
-       @item.workflows.get_workflow('accessionWF').nil?.should == true
+      allow(Dor::WorkflowService).to receive(:get_workflow_xml).and_return(xml)
+       expect(@item.workflows.get_workflow('accessionWF').nil?).to eq(true)
     end
     it 'should request the workflow for a different repository if one is specified' do
       xml=''
-      Dor::WorkflowService.should_receive(:get_workflow_xml).with('sdr','druid:ab123cd4567','accessionWF').and_return(xml)
+      expect(Dor::WorkflowService).to receive(:get_workflow_xml).with('sdr','druid:ab123cd4567','accessionWF').and_return(xml)
        @item.workflows.get_workflow('accessionWF','sdr')
     end
     end

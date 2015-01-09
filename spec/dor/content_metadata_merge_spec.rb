@@ -14,27 +14,27 @@ describe Dor::Contentable do
 
   let(:primary) {
     c = MergeableItem.new
-    c.stub(:pid) { primary_pid }
+    allow(c).to receive(:pid) { primary_pid }
     c
   }
 
   let(:src1) {
     c = MergeableItem.new
-    c.stub(:pid) { src1_pid }
+    allow(c).to receive(:pid) { src1_pid }
     c
   }
 
   let(:src2) {
     c = MergeableItem.new
-    c.stub(:pid) { src2_pid }
+    allow(c).to receive(:pid) { src2_pid }
     c
   }
 
   before(:each) do
-    primary.inner_object.stub(:repository).and_return(double('frepo').as_null_object)
-    src1.inner_object.stub(:repository).and_return(double('frepo').as_null_object)
-    Dor::Item.stub(:find).with(src1_pid) { src1 }
-    Dor::Item.stub(:find).with(src2_pid) { src2 }
+    allow(primary.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)
+    allow(src1.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)
+    allow(Dor::Item).to receive(:find).with(src1_pid) { src1 }
+    allow(Dor::Item).to receive(:find).with(src2_pid) { src2 }
     primary.contentMetadata.content = <<-XML
     <?xml version="1.0"?>
     <contentMetadata objectId="ab123cd0001" type="map">

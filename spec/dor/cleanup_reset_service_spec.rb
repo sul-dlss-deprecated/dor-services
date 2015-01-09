@@ -45,7 +45,7 @@ describe Dor::CleanupResetService do
     expect(File.exists?(base_tar_dir)).to eq true
     expect(File.exists?(base_druid_dir+"_v1")).to eq true    
 
-    Dor::CleanupResetService.stub(:get_druid_last_version).and_return(1)
+    allow(Dor::CleanupResetService).to receive(:get_druid_last_version).and_return(1)
     Dor::CleanupResetService.cleanup_by_reset_druid(druid)
 
     expect(File.exists?(base_bag_dir)).to eq false

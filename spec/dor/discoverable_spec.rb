@@ -5,9 +5,9 @@ describe 'Dor::Discoverable' do
   after(:each)  { unstub_config }
   before :each do
     @item=instantiate_fixture("cj765pw7168", Dor::Item)
-    @item.descMetadata.stub(:new?).and_return(false)
-    @item.stub(:milestones).and_return({})
-    @item.descMetadata.stub(:ng_xml).and_return(Nokogiri::XML('
+    allow(@item.descMetadata).to receive(:new?).and_return(false)
+    allow(@item).to receive(:milestones).and_return({})
+    allow(@item.descMetadata).to receive(:ng_xml).and_return(Nokogiri::XML('
     <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
       <titleInfo>
         <title>San Francisco, Cal.</title>
@@ -42,33 +42,33 @@ describe 'Dor::Discoverable' do
   describe 'to_solr' do
     it 'should build a doc hash using stanford-mods' do
       doc_hash=@item.to_solr({})
-      doc_hash[:sw_pub_date_facet].should == '1900'
-      doc_hash[:sw_title_display_facet].should == "San Francisco, Cal."
+      expect(doc_hash[:sw_pub_date_facet]).to eq('1900')
+      expect(doc_hash[:sw_title_display_facet]).to eq("San Francisco, Cal.")
       #doc_hash[:sw_author_sort_facet].should == "\uFFFF San Francisco Cal"
     end
     it 'should merge the hash with the existing hash' do
       doc_hash=@item.to_solr({Solrizer.solr_name('title', :facetable) => "title"})
-      doc_hash[Solrizer.solr_name('title', :facetable)].should == 'title'
-      doc_hash[:sw_pub_date_facet].should == '1900'
+      expect(doc_hash[Solrizer.solr_name('title', :facetable)]).to eq('title')
+      expect(doc_hash[:sw_pub_date_facet]).to eq('1900')
     end
     it 'should not error if there is no descMD' do
-      @item.descMetadata.stub(:ng_xml).and_return(Nokogiri::XML('<xml/>'))
-      @item.descMetadata.stub(:new?).and_return(true)
-      @item.to_solr({}).keys.include?(:sw_pub_date_facet).should == false
+      allow(@item.descMetadata).to receive(:ng_xml).and_return(Nokogiri::XML('<xml/>'))
+      allow(@item.descMetadata).to receive(:new?).and_return(true)
+      expect(@item.to_solr({}).keys.include?(:sw_pub_date_facet)).to eq(false)
     end
     it 'shouldnt error on minimal mods' do
-      @item.descMetadata.stub(:ng_xml).and_return(Nokogiri::XML('
+      allow(@item.descMetadata).to receive(:ng_xml).and_return(Nokogiri::XML('
       <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
         <titleInfo>
           <title>San Francisco, Cal.</title>
         </titleInfo>
       </mods>'))
-      @item.to_solr({})[:sw_title_full_display_facet].should == 'San Francisco, Cal.'
+      expect(@item.to_solr({})[:sw_title_full_display_facet]).to eq('San Francisco, Cal.')
       
     end
     it 'should include translated format' do
       doc_hash=@item.to_solr({})
-      doc_hash[:sw_format_facet].should == ['Image']
+      expect(doc_hash[:sw_format_facet]).to eq(['Image'])
     end
     
   end

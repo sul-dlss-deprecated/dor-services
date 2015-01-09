@@ -24,7 +24,7 @@ describe Dor::ContentMetadataDS do
     </file>
     </resource>
     </contentMetadata>'
-    Dor::Item.stub(:find).and_return(@item)
+    allow(Dor::Item).to receive(:find).and_return(@item)
 
   end
   describe 'add_resource' do
@@ -39,28 +39,28 @@ describe Dor::ContentMetadataDS do
     }
 
     before(:each) do
-      Dor::Item.stub(:save).and_return(true)
+      allow(Dor::Item).to receive(:save).and_return(true)
     end
 
     it 'should add a resource with default type="file"' do
       @item.contentMetadata.add_resource(@files,'resource',1)
       xml=@item.contentMetadata.ng_xml
-      xml.search('//resource[@id=\'resource\']').length.should ==1
+      expect(xml.search('//resource[@id=\'resource\']').length).to eq(1)
       xml.search('//resource[@id=\'resource\']').each do |node|
-        node['id'].should == 'resource'
-        node['type'].should == 'file'
-        node['sequence'].should == '1'
+        expect(node['id']).to eq('resource')
+        expect(node['type']).to eq('file')
+        expect(node['sequence']).to eq('1')
       end
     end
 
     it 'should add a resource with a type="image"' do
       @item.contentMetadata.add_resource(@files,'resource',1,'image')
       xml=@item.contentMetadata.ng_xml
-      xml.search('//resource[@id=\'resource\']').length.should ==1
+      expect(xml.search('//resource[@id=\'resource\']').length).to eq(1)
       xml.search('//resource[@id=\'resource\']').each do |node|
-        node['id'].should == 'resource'
-        node['type'].should == 'image'
-        node['sequence'].should == '1'
+        expect(node['id']).to eq('resource')
+        expect(node['type']).to eq('image')
+        expect(node['sequence']).to eq('1')
       end
     end
 
@@ -71,12 +71,12 @@ describe Dor::ContentMetadataDS do
       @item.contentMetadata.add_resource(@files,'resource',1)
       xml=@item.contentMetadata.ng_xml
       checksums=xml.search('//file[@id=\'new_file.jp2\']//checksum')
-      checksums.length.should == 2
+      expect(checksums.length).to eq(2)
       checksums.each do | checksum|
         if checksum['type'] == 'md5'
-          checksum.content.should == '123456'
+          expect(checksum.content).to eq('123456')
         else
-          checksum.content.should == '56789'
+          expect(checksum.content).to eq('56789')
         end
       end
     end
@@ -84,7 +84,7 @@ describe Dor::ContentMetadataDS do
       it 'should remove the only resource' do
         @item.contentMetadata.remove_resource('0001')
         xml=@item.contentMetadata.ng_xml
-        xml.search('//resource').length.should ==0
+        expect(xml.search('//resource').length).to eq(0)
       end
       it 'should remove one resource and renumber remaining resources' do
         file={}
@@ -94,14 +94,14 @@ describe Dor::ContentMetadataDS do
         file[:preserve]='no'
         @files=Array.new
         @files[0]=file
-        Dor::Item.stub(:save).and_return(true)
+        allow(Dor::Item).to receive(:save).and_return(true)
 
         @item.contentMetadata.add_resource(@files,'resource',1)
         @item.contentMetadata.remove_resource('resource')
         xml=@item.contentMetadata.ng_xml
         resources=xml.search('//resource')
-        resources.length.should ==1
-        resources.first()['sequence'].should == '1'
+        expect(resources.length).to eq(1)
+        expect(resources.first()['sequence']).to eq('1')
 
       end
     end
@@ -110,7 +110,7 @@ describe Dor::ContentMetadataDS do
       it 'should remove the file' do
         @item.contentMetadata.remove_file('gw177fc7976_00_0001.tif')
         xml=@item.contentMetadata.ng_xml
-        xml.search('//file').length.should ==1
+        expect(xml.search('//file').length).to eq(1)
       end
     end
     describe 'add_file' do
@@ -126,13 +126,13 @@ describe Dor::ContentMetadataDS do
         @item.contentMetadata.add_file(@file,'0001')
         xml=@item.contentMetadata.ng_xml
         files=xml.search('//resource[@id=\'0001\']/file')
-        files.length.should == 3
-        xml.search('//file[@id=\'new_file.jp2\']').length.should == 1
+        expect(files.length).to eq(3)
+        expect(xml.search('//file[@id=\'new_file.jp2\']').length).to eq(1)
         new_file=xml.search('//file[@id=\'new_file.jp2\']').first
-        new_file['shelve'].should == 'no'
-        new_file['publish'].should == 'no'
-        new_file['preserve'].should == 'no'
-        new_file['size'].should == '12345'
+        expect(new_file['shelve']).to eq('no')
+        expect(new_file['publish']).to eq('no')
+        expect(new_file['preserve']).to eq('no')
+        expect(new_file['size']).to eq('12345')
       end
     end
     describe 'update_file' do
@@ -148,12 +148,12 @@ describe Dor::ContentMetadataDS do
         @item.contentMetadata.update_file(@file,'gw177fc7976_05_0001.jp2')
         xml = @item.contentMetadata.ng_xml
         file=xml.search('//file[@id=\'new_file.jp2\']')
-        file.length.should ==1
+        expect(file.length).to eq(1)
         file=file.first
-        file['shelve'].should == 'no'
-        file['publish'].should == 'no'
-        file['preserve'].should == 'no'
-        file['size'].should == '12345'
+        expect(file['shelve']).to eq('no')
+        expect(file['publish']).to eq('no')
+        expect(file['preserve']).to eq('no')
+        expect(file['size']).to eq('12345')
       end
       it 'should error out if there isnt an existing record to modify' do
         expect { @item.contentMetadata.update_file(@file,'gw177fc7976_05_0001_different.jp2')}.to raise_error
@@ -164,7 +164,7 @@ describe Dor::ContentMetadataDS do
         @item.contentMetadata.rename_file('gw177fc7976_05_0001.jp2','test.jp2')
         xml = @item.contentMetadata.ng_xml
         file=xml.search('//file[@id=\'test.jp2\']')
-        file.length.should ==1
+        expect(file.length).to eq(1)
       end
     end
     describe 'move_resource' do
@@ -186,14 +186,14 @@ describe Dor::ContentMetadataDS do
         @item.contentMetadata.update_resource_label '0001', 'label!'
         xml = @item.contentMetadata.ng_xml
         labels=xml.search('//resource[@id=\'0001\']/label')
-        labels.length.should ==1
-        labels.first.content.should == 'label!'
+        expect(labels.length).to eq(1)
+        expect(labels.first.content).to eq('label!')
       end
       it 'should add a new label' do
          @item.contentMetadata.update_resource_label '0001', 'label!'
           xml = @item.contentMetadata.ng_xml
           labels=xml.search('//resource[@id=\'0001\']/label')
-          labels.length.should ==1
+          expect(labels.length).to eq(1)
       end
     end
     describe 'update_resource_type' do
@@ -204,39 +204,39 @@ describe Dor::ContentMetadataDS do
     describe 'to_solr' do
     	it 'should generate a shelved file count' do
     		doc=@item.contentMetadata.to_solr
-    		doc[Solrizer.solr_name('shelved_content_file_count', :displayable)].first.should == '1'
+    		expect(doc[Solrizer.solr_name('shelved_content_file_count', :displayable)].first).to eq('1')
     	end
     	it 'should generate a resource count' do
     		doc=@item.contentMetadata.to_solr
-    		doc[Solrizer.solr_name('resource_count', :displayable)].first.should == '1'
+    		expect(doc[Solrizer.solr_name('resource_count', :displayable)].first).to eq('1')
     	end
     	it 'should generate a file count' do
     		doc=@item.contentMetadata.to_solr
-    		doc[Solrizer.solr_name('content_file_count', :displayable)].first.should == '2'
+    		expect(doc[Solrizer.solr_name('content_file_count', :displayable)].first).to eq('2')
     	end
     	it 'should generate a field called image_resource_count' do
     		doc=@item.contentMetadata.to_solr
-    		doc[Solrizer.solr_name('image_resource_count', :displayable)].first.should == '1'
+    		expect(doc[Solrizer.solr_name('image_resource_count', :displayable)].first).to eq('1')
     	end
     	it 'should generate a field called first_shelved_image' do
   	    doc=@item.contentMetadata.to_solr
-  	    doc[Solrizer.solr_name('first_shelved_image', :displayable)].first.should == 'gw177fc7976_05_0001.jp2'
+  	    expect(doc[Solrizer.solr_name('first_shelved_image', :displayable)].first).to eq('gw177fc7976_05_0001.jp2')
   	  end
       it 'should generate a field call preserved_size_display' do
   	    doc=@item.contentMetadata.to_solr
-  	    doc[Solrizer.solr_name('preserved_size', :searchable)].first.should == '86774303'
+  	    expect(doc[Solrizer.solr_name('preserved_size', :searchable)].first).to eq('86774303')
       end
     end
   describe 'set_content_type' do
     it 'should change the content type and the resource types' do
       @item.contentMetadata.set_content_type 'map', 'image', 'book', 'page'
-      @item.contentMetadata.ng_xml.search('//contentMetadata[@type=\'book\']').length.should ==1
-      @item.contentMetadata.ng_xml.search('//contentMetadata/resource[@type=\'page\']').length.should ==1
+      expect(@item.contentMetadata.ng_xml.search('//contentMetadata[@type=\'book\']').length).to eq(1)
+      expect(@item.contentMetadata.ng_xml.search('//contentMetadata/resource[@type=\'page\']').length).to eq(1)
     end
   end
   describe 'get stacks value' do
     it 'should read the stacks value' do
-      @item.contentMetadata.stacks.should == ["/specialstack"]
+      expect(@item.contentMetadata.stacks).to eq(["/specialstack"])
     end
     end
 end
