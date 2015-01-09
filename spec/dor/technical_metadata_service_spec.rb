@@ -6,20 +6,21 @@ require 'fakeweb'
 
 describe Dor::TechnicalMetadataService do
 
-  before(:each) do    
-    @fixtures=fixtures=Pathname(File.dirname(__FILE__)).join("../fixtures")
-    Dor::Config.push! do
-      sdr.local_workspace_root fixtures.join("workspace").to_s
-    end
-  end
-  
-  before(:each) do
-    @fixtures=fixtures=Pathname(File.dirname(__FILE__)).join("../fixtures")
-    @sdr_repo = @fixtures.join('sdr_repo')
-    @workspace_pathname = Pathname(fixtures.join("workspace").to_s)
-
+  before(:all) do
     @object_ids = %w(dd116zh0343 du000ps9999 jq937jp0017)
     @druid_tool = Hash.new
+  end
+
+  before(:each) do    
+    @fixtures = fixtures = Pathname(File.dirname(__FILE__)).join("../fixtures")
+    wsfixtures = fixtures.join("workspace").to_s
+    Dor::Config.push! do
+      sdr.local_workspace_root wsfixtures
+    end
+
+    @sdr_repo = @fixtures.join('sdr_repo')
+    @workspace_pathname = Pathname(wsfixtures)
+
     @inventory_differences = Hash.new
     @deltas = Hash.new
     @new_files = Hash.new
