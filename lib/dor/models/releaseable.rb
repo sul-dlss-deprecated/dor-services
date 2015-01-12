@@ -2,142 +2,172 @@ module Dor
   module Releaseable
     extend ActiveSupport::Concern
     include Itemizable
-    @@release_prefix = "release:"
-    @@item_blacklist_tag = "embargo"
-    @@collection_global_release = "all"
     
-    #Determine if an item is released for a specific namespace or not
+    #Determine which projects an item is released for
     #
-    #
-    #
-    #@return
-    #TODO: Finish me once this function stabilizes 
-    def released_for(options = {})
-      #Get All Release Tags
-      tags = self.release_tags
+    #@return [Hash] all namespaces in the form of {"Project" => Boolean}
+    def released_for
+      released_hash = {}
       
-      #Detect if any namespace(s) supplied in options
-      single_return = options[:namespace]
+      #Get release tags on the item itself 
+      release_tags_on_this_item = self.release_tags
       
-      #Determine if released for each namespace
-      released_hash = self.released_yes_no_by_tags(tags)
       
-      if single_return
-        return released_hash[options[:namespace]] || false #If it doesn't exist it will come back as a nil, so return false
+      #Get any self tags on this item
+      self_release_tags = self.get_self_release_tags(release_tags_on_this_item)
+      
+      #Get the most recent self tag for all targets and save their result since most recent self always trumps any other non self tags
+      latest_self_tags = self.get_newest_release_tag(self_release_tags)
+      latest_self_tags.keys.each do |target|
+        released_hash[target] =  self.clean_release_tag_for_purl(latest_self_tags[target])
       end
-    
+      
+      #With Self Tags Resolved We Now need to deal with tags on all sets this object is part of 
+      
+      potential_applicable_release_tags = {}  #This will be where we store all tags that apply, regardless of their timestamp
+       
+      #Get all release tags on the item and strip out the what = self ones, we've already processed all the self tags on this item 
+      potential_applicable_release_tags = self.get_release_tags_for_item_and_all_governing_sets
+      potential_applicable_release_tags = get_tags_for_what_value(potential_applicable_release_tags, 'collection')
+      
+      administrative_tags = self.tags  #Get them once here and pass them down
+      
+      #We now have the keys for all potential releases, we need to check the tags and the most recent time stamp with an explicit true or false wins, in a nil case, the lack of an explicit false tag we do nothing
+      (potential_applicable_release_tags.keys-released_hash.keys).each do |key|  #don't bother checking the ones already added to the release hash, they were added due to a self tag and that has won
+        latest_applicable_tag_for_key = latest_applicable_release_tag_in_array(potential_applicable_release_tags[keys], administrative_tags)
+        if latest_applicable_tag_for_key != nil #We have a valid tag, record it
+          released_hash[key] = self.clean_release_tag_for_purl(latest_applicable_tag_for_key) 
+        end
+        
+      end
+        
       return released_hash
     end
     
-    #Parses all tags for each namespace and determines if an item is released for that namespace or not
+    #Take a hash of tags as obtained via Dor::Item.release_tags and returns all self tags
     #
-    #@return [hash] of namespaces and booleans, such as {searchworks => true, frda => false, revs => true}
+    #@param tags [Hash] a hash of tags obtained via Dor::Item.release_tags or matching format
     #
-    #@params [hash] of all tags in the form of {namespace => ["tag1", "tag2"]}
-    def released_yes_no_by_tags(tags)
-      released_yn = {}
+    #@return [Hash] a hash of self tags for each to value
+    def get_self_release_tags(tags)
+      return get_tags_for_what_value(tags, 'self')
+    end
+    
+    #Take an item and get all of its release tags and all tags on collections it is a member of it
+    #
+    #
+    #@return [Hash] a hash of all tags
+    def get_release_tags_for_item_and_all_governing_sets
+      return_tags = self.release_tags || {}
+      self.collections.each do |collection|
+        return_tags = combine_two_release_tag_hashes(return_tags, Dor::Item.find(collection.id).get_release_tags_for_item_and_all_governing_sets) #this will function recurvisely so parents of parents are found
+      end
+      return return_tags  
+    end
+    
+    #Take two hashes of tags and combine them, will not overwrite but will enforce uniqueness of the tags
+    #
+    #@param hash_one [Hash] a hash of tags obtained via Dor::Item.release_tags or matching format
+    #@param hash_two [Hash] a hash of tags obtained via Dor::Item.release_tags or matching format
+    #
+    #@return [Hash] the combined hash with uniquiness enforced 
+    def combine_two_release_tag_hashes(hash_one, hash_two)
+      hash_two.keys.each do |key|
+        hash_one[key] = hash_two[key] if hash_one[key] == nil
+        hash_one[key] = (hash_one[key] + hash_two[key]).uniq if hash_one[key] != nil
+      end
+      return hash_one
+    end
+    
+    #Take a hash of tags and return all tags with the matching what target
+    #
+    #@param tags [Hash] a hash of tags obtained via Dor::Item.release_tags or matching format
+    #@param what_target [String] the target for the 'what' key, self or collection
+    #
+    #@return [Hash] a hash of self tags for each to value
+    def get_tags_for_what_value(tags, what_target)
+      return_hash = {}
       tags.keys.each do |key|
-        #If the item has specifically blocked itself from release to this namespace, false and no more operations
-        if tags[key].include? @@item_blacklist_tag
-          released_yn[key] = false 
-        else
-          #Does the Collection have a Global Release for these items?
-          if tags[key].include?  @@collection_global_release
-            released_yn[key] = true
-          #If we don't have a global release for the item, it must be a specific tag of a collection has been released
-          else
-            item_tags = self.tags
-            release = false
-            tags[key].each do |tag|
-              #These should be in the form of something such as {:searchworkers => ["tag:fitch1", "tag:fitch2"]} due to how we process tags
-              release = true if item_tags.include?(self.normalize_tag(tag))
-            end
-            #Item has some kind of release tag on it that does not match :all for a collection or a specific tag it has, set to false
-            released_yn[key] = release
-          end
-          
-        end   
+        self_tags =  tags[key].select{|tag| tag['what'] == what_target.downcase}
+        return_hash[key] = self_tags if self_tags.size > 0
       end
-      return released_yn
+      return return_hash
     end
     
-    #Returns all release tags for an item 
+    #Take a hash of tags as obtained via Dor::Item.release_tags and returns the newest tag for each namespace
     #
-    #@return [hash] of release tags and their values
+    #@params tags [Hash] a hash of tags obtained via Dor::Item.release_tags or matching format
     #
-    #Example:
-    #   item.release_tags
-    def release_tags
-      return self.hash_release_tags_by_namespace(self.get_all_tags_on_item_and_parents)
-    end
-    
-    #Returns a list of all tags on an item and its parents
-    #
-    #@return [array] array of all tags
-    #
-    #Example:
-    #   item.get_all_tags_on_item_and_parents
-    def get_all_tags_on_item_and_parents
-      all_tags = []
-      
-      #Add Tags on the Item Itself
-      all_tags += self.tags
-      
-      release_governed_by = self.collections
-  
-      release_governed_by.each do |parent|
-        all_tags += Dor::Item.find(parent.id).get_all_tags_on_item_and_parents
+    #@return [Hash] a hash of latest tags for each to value
+    def get_newest_release_tag(tags)
+      return_hash = {}
+      tags.keys.each do |key|
+        latest_for_key = newest_release_tag_in_an_array(tags[key])
+        return_hash[key] = latest_for_key         
       end
-      
-      return all_tags.uniq
-      
+      return return_hash
     end
     
-    #Takes all supplied tags and creates a hash of just the release ones
+    #Take a tag and return only the attributes  we want to put into purl
     #
-    #@return [hash] of release tags and their values
+    #@param tag [Hash] a tag
     #
-    #@param [array] of all tags to parse
-    def hash_release_tags_by_namespace(tags) 
-      release_tags = {}
-      
-      #Drop any duplicates (if set multiple times on various collections)
-      tags = tags.uniq
-      
-      #Grab the Release tags
-      tags.each do |tag|
-        release_value = self.parse_tag(tag)
+    #@return [Hash] a hash of the attributes we want for purl
+    def clean_release_tag_for_purl(tag)
+      for_purl = ['release']
+      return_hash = {}
+      for_purl.each do |attr|
+        return_hash[attr] = tag[attr]
+      end
+      return return_hash
+    end
+    
+    #Takes an array of release tags and returns the most recent one
+    #
+    #@params tags [Array] an array of hashes, with the hashes being release tags
+    #
+    #@return [Hash] the most recent tag
+    def newest_release_tag_in_an_array(array_of_tags)
+      latest_tag_in_array = array_of_tags[0] || {}
+      array_of_tags.each do |tag|
+        latest_tag_in_array = tag if tag['when'] > latest_tag_in_array['when']
+      end
+      return latest_tag_in_array
+    end
+    
+    
+    #Takes a tag and returns true or false if it applies to the specific item
+    #
+    #@param release_tag [Hash] the tag in a hashed form
+    #@param Optional admin_tags [Array] the administrative tags on an item, if not supplied it will attempt to retrieve them
+    #
+    #@return [Boolean] true or false if it applies (not true or false if it is released, that is the release_tag data)
+    def does_release_tag_apply(release_tag, admin_tags=false)
+      #Is the tag global or restricted 
+      return true if release_tag['tag'] == nil  #there is no specific tag specificied, so that means this tag is global to all members of the collection, it applies, return true
         
-        if release_value != nil
-          #Add the info to the return hash, append to exsisting list if needed 
-          if release_tags.keys.include?(release_value[:namespace])
-            release_tags[release_value[:namespace]] << release_value[:release_info] 
-          else
-            release_tags[release_value[:namespace]] = [release_value[:release_info]]
-          end
-        end
-      end
-      return release_tags
+      admin_tags = self.tags if not admin_tags #We use false instead of [], since an item can have no admin_tags that which point we'd be passing down this variable as [] and would not an attempt to retrieve it
+      return admin_tags.include?(release_tag['tag'])
     end
     
-    #Takes a tag and returns its namespace and release_info if it is a release tag, returns nil if it is not
-    #@return [hash] in the form of {:namespace => str, :release_info => str} if it is a release tag
-    #@return [nil] if the tag is not a release tag
+    #Takes an array of release tags and returns the most recent one that applies to this item
     #
-    #@param [str] a tag
-    def parse_tag(tag)
-      tag = tag.delete(' ') #delete whitespace
-      value = tag.split(@@release_prefix) #split the tag up
-      if value[0] == "" #If release: was the first part it should now be dropped
-        #TODO: Catch the lack of a value[1], aka nothing after release:
-        i = value[1].index(":")
-        namespace = value[1][0..i-1]
-        release_info = value[1][i+1..value[1].size-1] #TODO: Catch the lack of an instruction after namespace, as in a tag that is 'release:searchworks:'
-        return {:namespace => namespace, :release_info => release_info}
-      end
-      return nil
+    #@param release_tags [Array] an array of release tags in hashed form
+    #param admin_tags [Array] the administrative tags on an on item
+    #
+    #@return [Hash] the tag
+    def latest_applicable_release_tag_in_array(release_tags, admin_tags)
+      newest_tag = newest_release_tag_in_an_array(release_tags)
+      return newest_tag if does_release_tag_apply(newest_tag, admin_tags) #Return true if we have it
+      
+      #The latest tag wasn't applicable, slice it off and try again
+      #This could be optimized by reordering on the timestamp and just running down it instead of constantly resorting, at least if we end up getting numerous release tags on an item
+      release_tags.slice!(release_tags.index(newest_tag))
+      
+      return latest_applicable_release_tag_in_array(release_tags, admin_tags) if release_tags.size > 0 #Try again after dropping the one that wasn't applicable 
+      
+      return nil #We're out of tags, no applicable ones
     end
-    
-    
+
   end
 end
