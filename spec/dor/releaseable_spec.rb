@@ -82,6 +82,9 @@ describe Dor::Releaseable, :vcr do
   end
   
   describe 'handling tags on objects and determining release status' do
+    #test get_release_tags_for_item_and_all_governing_sets
+    #test released_for
+    #test TODO generate XML
   end
   
   

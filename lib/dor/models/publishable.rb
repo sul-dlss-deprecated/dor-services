@@ -35,8 +35,7 @@ module Dor
     #Generate the public .xml for a PURL page.
     #@return [xml] The public xml for the item
     #
-    #@param [hash] a hash of options for specific sets to generate or skip, currently only supports :generate_release
-    def public_xml(options = {})
+    def public_xml
       pub = Nokogiri::XML("<publicObject/>").root
       pub['id'] = pid
       pub['published'] = Time.now.xmlschema
@@ -48,6 +47,7 @@ module Dor
       pub.add_child(rels.clone) unless rels.nil? # TODO: Should never be nil in practice; working around an ActiveFedora quirk for testing
       pub.add_child(self.generate_dublin_core.root.clone)
       @public_xml_doc = pub # save this for possible IIIF Presentation manifest
+      pub.add_child(Nokogiri(self.generate_release_xml).root.clone)  #TODO:  Adding this breaks tests, rework these
       new_pub = Nokogiri::XML(pub.to_xml) { |x| x.noblanks }
       new_pub.encoding = 'UTF-8'
       new_pub.to_xml

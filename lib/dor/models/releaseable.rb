@@ -3,6 +3,22 @@ module Dor
     extend ActiveSupport::Concern
     include Itemizable
     
+    
+    #Generate XML structure for inclusion to Purl 
+    #
+    #@return [String] The XML ReleaseDigest node as a string
+    def generate_release_xml
+      release_info = self.released_for
+      builder = Nokogiri::XML::Builder.new do |xml|
+        xml.ReleaseDigest {
+          release_info.keys.each do |key|
+            xml.send(key, release_info[key]['release'].to_s)
+          end          
+        }
+      end
+      return builder.to_xml
+    end
+    
     #Determine which projects an item is released for
     #
     #@return [Hash] all namespaces in the form of {"Project" => Boolean}
