@@ -34,6 +34,7 @@ describe Dor::Governable do
       expect{@item.set_read_rights('mambo')}.to raise_error
     end
     it 'should segfault' do
+      skip "No expectation implemented"
       doc=Nokogiri::XML('<oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
         <dc:identifier>druid:ab123cd4567</dc:identifier>
       </oai_dc:dc>')
