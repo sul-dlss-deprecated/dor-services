@@ -147,7 +147,6 @@ describe Dor::Workflow::Document do
       d=Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
       doc=d.to_solr
-      puts doc.inspect
       expect(doc).to match a_hash_including('workflow_status_ssm' => ['accessionWF|completed|0|dor'])
     end
     
