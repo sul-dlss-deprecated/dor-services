@@ -26,7 +26,7 @@ describe Dor::Governable do
     allow(Dor::Collection).to receive(:find).with("druid:oo201oo0002").and_return(mock_collection)
   end
 
-  describe 'set_read_rights' do
+  describe 'set_read_rights error handling' do
     it 'should raise an exception if the rights option doesnt match the accepted values' do
       expect{@item.set_read_rights('"druid:oo201oo0001"','Something')}.to raise_error
     end
@@ -41,7 +41,10 @@ describe Dor::Governable do
       node=doc.xpath('//element').first
       new_node=doc.root.clone
     end
-    it 'should set an item to dark, removing the discovery rights' do
+  end
+
+  describe 'set_read_rights' do
+    it 'should set rights to dark (double none), removing the discovery rights' do
       @item.set_read_rights('dark')
       expect(@item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
       <?xml version="1.0"?>
@@ -50,14 +53,10 @@ describe Dor::Governable do
           <human type="copyright">This work is in the Public Domain.</human>
         </copyright>
         <access type="discover">
-          <machine>
-            <none/>
-          </machine>
+          <machine><none/></machine>
         </access>
         <access type="read">
-          <machine>
-            <none/>
-          </machine>
+          <machine><none/></machine>
         </access>
         <use>
           <human type="creativecommons">Attribution Share Alike license</human>
@@ -66,30 +65,7 @@ describe Dor::Governable do
       </rightsMetadata>
       XML
     end
-    it 'should correctly set a dark item to world' do
-      @item.set_read_rights('dark')
-      expect(@item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
-      <?xml version="1.0"?>
-      <rightsMetadata>
-        <copyright>
-          <human type="copyright">This work is in the Public Domain.</human>
-        </copyright>
-        <access type="discover">
-          <machine>
-            <none/>
-          </machine>
-        </access>
-        <access type="read">
-          <machine>
-            <none/>
-          </machine>
-        </access>
-        <use>
-          <human type="creativecommons">Attribution Share Alike license</human>
-          <machine type="creativecommons">by-sa</machine>
-        </use>
-      </rightsMetadata>
-      XML
+    it 'should set rights to <world/>' do
       @item.set_read_rights('world')
       expect(@item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
       <?xml version="1.0"?>
@@ -110,7 +86,30 @@ describe Dor::Governable do
       </rightsMetadata>
       XML
     end
-    it 'should cahnge the read permissions value from <group>stanford</group> to <none/> ' do
+    it 'should set rights to stanford' do
+      @item.set_read_rights('stanford')
+      expect(@item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
+      <?xml version="1.0"?>
+      <rightsMetadata>
+        <copyright>
+          <human type="copyright">This work is in the Public Domain.</human>
+        </copyright>
+        <access type="discover">
+          <machine><world/></machine>
+        </access>
+        <access type="read">
+          <machine>
+            <group>Stanford</group>
+          </machine>
+        </access>
+        <use>
+          <human type="creativecommons">Attribution Share Alike license</human>
+          <machine type="creativecommons">by-sa</machine>
+        </use>
+      </rightsMetadata>
+      XML
+    end
+    it 'should set rights to <none/>' do
       #this should work because the find call inside set_read_rights is stubbed to return @obj, so the modifications happen to that, not a fresh instance
       @item.set_read_rights('none')
       expect(@item.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to <<-XML
@@ -133,22 +132,22 @@ describe Dor::Governable do
       XML
     end
   end
+
   describe 'to_solr' do
     it 'should include a rights facet' do
       allow(@item).to receive(:milestones).and_return({})
       @item.set_read_rights('world')
       solr_doc=@item.to_solr
-      expect(solr_doc).to match a_hash_including('rights_facet' => ['World'])
-      expect(solr_doc[:id]).to eq(@item.pid)
+      expect(solr_doc).to match a_hash_including('rights_sim' => ['World'], :id => @item.pid)
     end
     it 'should shouldnt error if there is nothing in the datastream' do
       allow(@item).to receive(:milestones).and_return({})
       allow(@item).to receive(:rightsMetadata).and_return(ActiveFedora::OmDatastream.new)
       solr_doc=@item.to_solr
-      expect(solr_doc['rights_facet']).to eq([""])
+      expect(solr_doc).not_to include('rights_facet')
     end
-
   end
+
   describe 'add_collection' do
     it 'should add a collection' do
       @item.add_collection('druid:oo201oo0002')
@@ -177,16 +176,16 @@ describe Dor::Governable do
       xml=Nokogiri::XML(rels_ext_ds.content.to_s)
       expect(xml).to be_equivalent_to <<-XML
       <?xml version="1.0" encoding="UTF-8"?>
-             <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#">
-               <rdf:Description rdf:about="info:fedora/druid:oo201oo0001">
-                 <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
-                 <fedora-model:hasModel rdf:resource="info:fedora/afmodel:Hydrus_Item"/>
-               </rdf:Description>
-             </rdf:RDF>
+      <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#">
+        <rdf:Description rdf:about="info:fedora/druid:oo201oo0001">
+          <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
+          <fedora-model:hasModel rdf:resource="info:fedora/afmodel:Hydrus_Item"/>
+        </rdf:Description>
+      </rdf:RDF>
       XML
     end
-  it 'should cahnge the read permissions value from <group>stanford</group> to <none/> ' do
-    expect(@item.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to <<-XML
+    it 'should change the read permissions value from <group>stanford</group> to <none/>' do
+      expect(@item.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to <<-XML
     <?xml version="1.0"?>
     <rightsMetadata>
       <copyright>
@@ -207,10 +206,10 @@ describe Dor::Governable do
         <machine type="creativecommons">by-sa</machine>
       </use>
     </rightsMetadata>
-    XML
-    #this should work because the find call inside set_read_rights is stubbed to return @obj, so the modifications happen to that, not a fresh instance
-    @item.set_read_rights('none')
-    expect(@item.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to <<-XML
+      XML
+      #this should work because the find call inside set_read_rights is stubbed to return @obj, so the modifications happen to that, not a fresh instance
+      @item.set_read_rights('none')
+      expect(@item.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to <<-XML
     <?xml version="1.0"?>
     <rightsMetadata>
       <copyright>
@@ -223,7 +222,7 @@ describe Dor::Governable do
       </access>
       <access type="read">
         <machine>
-        <none/>
+          <none/>
         </machine>
       </access>
       <use>
@@ -231,9 +230,9 @@ describe Dor::Governable do
         <machine type="creativecommons">by-sa</machine>
       </use>
     </rightsMetadata>
-    XML
+      XML
+    end
   end
-end
 
   describe "initiate_apo_workflow" do
     it "calls Processable.initialize_workflow without creating a datastream when the object is new" do
