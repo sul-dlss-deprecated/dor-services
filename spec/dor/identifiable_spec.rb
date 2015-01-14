@@ -51,11 +51,11 @@ describe Dor::Identifiable do
       item.add_other_Id('mdtoolkit','someid123')
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someid123')
       #return value should be true when it finds something to update
-      expect(item.update_other_Id('mdtoolkit','someotherid234','someid123')).to eq(true)
+      expect(item.update_other_Id('mdtoolkit','someotherid234','someid123')).to be_truthy
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someotherid234')
     end
     it 'should return false if there was no existing record to update' do
-      expect(item.update_other_Id('mdtoolkit','someotherid234')).to eq(false)
+      expect(item.update_other_Id('mdtoolkit','someotherid234')).to be_falsey
     end
   end
 
@@ -63,11 +63,11 @@ describe Dor::Identifiable do
     it 'should remove an existing otherid when the tag and value match' do
       item.add_other_Id('mdtoolkit','someid123')
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someid123')
-      expect(item.remove_other_Id('mdtoolkit','someid123')).to eq(true)
+      expect(item.remove_other_Id('mdtoolkit','someid123')).to be_truthy
       expect(item.identityMetadata.otherId('mdtoolkit').length).to eq(0)
     end
     it 'should return false if there was nothing to delete' do
-      expect(item.remove_other_Id('mdtoolkit','someid123')).to eq(false)
+      expect(item.remove_other_Id('mdtoolkit','someid123')).to be_falsey
       expect(item.identityMetadata).not_to be_changed
     end
   end
@@ -78,12 +78,12 @@ describe Dor::Identifiable do
   describe 'add_tag' do
     it 'should add a new tag' do
       item.add_tag('sometag:someval')
-      expect(item.identityMetadata.tags().include?('sometag : someval')).to eq(true)
+      expect(item.identityMetadata.tags().include?('sometag : someval')).to be_truthy
       expect(item.identityMetadata).to be_changed
     end
     it 'should raise an exception if there is an existing tag like it' do
       item.add_tag('sometag:someval')
-      expect(item.identityMetadata.tags().include?('sometag : someval')).to eq(true)
+      expect(item.identityMetadata.tags().include?('sometag : someval')).to be_truthy
       expect {item.add_tag('sometag: someval')}.to raise_error
     end
   end
@@ -91,14 +91,14 @@ describe Dor::Identifiable do
   describe 'update_tag' do
     it 'should update a tag' do
       item.add_tag('sometag:someval')
-      expect(item.identityMetadata.tags().include?('sometag : someval')).to eq(true)
-      expect(item.update_tag('sometag :someval','new :tag')).to eq(true)
-      expect(item.identityMetadata.tags().include?('sometag : someval')).to eq(false)
-      expect(item.identityMetadata.tags().include?('new : tag')).to eq(true)
+      expect(item.identityMetadata.tags().include?('sometag : someval')).to be_truthy
+      expect(item.update_tag('sometag :someval','new :tag')).to be_truthy
+      expect(item.identityMetadata.tags().include?('sometag : someval')).to be_falsey
+      expect(item.identityMetadata.tags().include?('new : tag')).to be_truthy
       expect(item.identityMetadata).to be_changed
     end
     it 'should return false if there is no matching tag to update' do
-      expect(item.update_tag('sometag:someval','new:tag')).to eq(false)
+      expect(item.update_tag('sometag:someval','new:tag')).to be_falsey
       expect(item.identityMetadata).not_to be_changed
     end
   end
@@ -106,9 +106,9 @@ describe Dor::Identifiable do
   describe 'remove_tag' do
     it 'should delete a tag' do
     item.add_tag('sometag:someval')
-    expect(item.identityMetadata.tags().include?('sometag : someval')).to eq(true)
-    expect(item.remove_tag('sometag:someval')).to eq(true)
-    expect(item.identityMetadata.tags().include?('sometag : someval')).to eq(false)
+    expect(item.identityMetadata.tags().include?('sometag : someval')).to be_truthy
+    expect(item.remove_tag('sometag:someval')).to be_truthy
+    expect(item.identityMetadata.tags().include?('sometag : someval')).to be_falsey
       expect(item.identityMetadata).to be_changed
     end
   end

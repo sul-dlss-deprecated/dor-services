@@ -61,7 +61,7 @@ describe Dor::Workflow::Document do
 
       d=Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
-      expect(d.expedited?).to eq(false)
+      expect(d.expedited?).to be_falsey
     end
     it 'says true if there are incomplete prioritized items' do
       xml = <<-eos
@@ -76,7 +76,7 @@ describe Dor::Workflow::Document do
 
       d=Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
-      expect(d.expedited?).to eq(true)
+      expect(d.expedited?).to be_truthy
     end
   end 
   describe 'active?' do
@@ -93,7 +93,7 @@ describe Dor::Workflow::Document do
 
       d=Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
-      expect(d.expedited?).to eq(true)
+      expect(d.expedited?).to be_truthy
     end
     it 'should return false if there are only archived rows' do
       xml = <<-eos
@@ -108,7 +108,7 @@ describe Dor::Workflow::Document do
 
       d=Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
-      expect(d.expedited?).to eq(true)
+      expect(d.expedited?).to be_truthy
     end
   end
   describe 'to_solr' do

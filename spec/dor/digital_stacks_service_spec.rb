@@ -178,17 +178,17 @@ describe "file operations" do
       # if file does not exist
       file_pathname = @tmpdir.join('delete-me.txt')
       moab_signature = Moab::FileSignature.new
-      expect(file_pathname.exist?).to eq(false)
-      expect(Dor::DigitalStacksService.delete_file(file_pathname,moab_signature)).to eq(false)
+      expect(file_pathname.exist?).to be_falsey
+      expect(Dor::DigitalStacksService.delete_file(file_pathname,moab_signature)).to be_falsey
       # if file exists, but has unexpected signature
       FileUtils.touch(file_pathname.to_s)
-      expect(file_pathname.exist?).to eq(true)
-      expect(Dor::DigitalStacksService.delete_file(file_pathname,moab_signature)).to eq(false)
-      expect(file_pathname.exist?).to eq(true)
+      expect(file_pathname.exist?).to be_truthy
+      expect(Dor::DigitalStacksService.delete_file(file_pathname,moab_signature)).to be_falsey
+      expect(file_pathname.exist?).to be_truthy
       # if file exists, and has expected signature
       moab_signature = Moab::FileSignature.new.signature_from_file(file_pathname)
-      expect(Dor::DigitalStacksService.delete_file(file_pathname,moab_signature)).to eq(true)
-      expect(file_pathname.exist?).to eq(false)
+      expect(Dor::DigitalStacksService.delete_file(file_pathname,moab_signature)).to be_truthy
+      expect(file_pathname.exist?).to be_falsey
     end
   end
 
@@ -198,20 +198,20 @@ describe "file operations" do
       old_pathname = @tmpdir.join('rename-me.txt')
       new_pathname = @tmpdir.join('new-name.txt')
       moab_signature = Moab::FileSignature.new
-      expect(old_pathname.exist?).to eq(false)
-      expect(new_pathname.exist?).to eq(false)
-      expect(Dor::DigitalStacksService.rename_file(old_pathname,new_pathname, moab_signature)).to eq(false)
+      expect(old_pathname.exist?).to be_falsey
+      expect(new_pathname.exist?).to be_falsey
+      expect(Dor::DigitalStacksService.rename_file(old_pathname,new_pathname, moab_signature)).to be_falsey
       # if file exists, but has unexpected signature
       FileUtils.touch(old_pathname.to_s)
-      expect(old_pathname.exist?).to eq(true)
-      expect(Dor::DigitalStacksService.rename_file(old_pathname,new_pathname, moab_signature)).to eq(false)
-      expect(old_pathname.exist?).to eq(true)
-      expect(new_pathname.exist?).to eq(false)
+      expect(old_pathname.exist?).to be_truthy
+      expect(Dor::DigitalStacksService.rename_file(old_pathname,new_pathname, moab_signature)).to be_falsey
+      expect(old_pathname.exist?).to be_truthy
+      expect(new_pathname.exist?).to be_falsey
       # if file exists, and has expected signature
       moab_signature = Moab::FileSignature.new.signature_from_file(old_pathname)
-      expect(Dor::DigitalStacksService.rename_file(old_pathname,new_pathname, moab_signature)).to eq(true)
-      expect(old_pathname.exist?).to eq(false)
-      expect(new_pathname.exist?).to eq(true)
+      expect(Dor::DigitalStacksService.rename_file(old_pathname,new_pathname, moab_signature)).to be_truthy
+      expect(old_pathname.exist?).to be_falsey
+      expect(new_pathname.exist?).to be_truthy
     end
   end
 
@@ -222,19 +222,19 @@ describe "file operations" do
       stacks_pathname = @tmpdir.join('stacks-name.txt')
       FileUtils.touch(workspace_pathname.to_s)
       moab_signature = Moab::FileSignature.new.signature_from_file(workspace_pathname)
-      expect(workspace_pathname.exist?).to eq(true)
-      expect(stacks_pathname.exist?).to eq(false)
-      expect(Dor::DigitalStacksService.copy_file(workspace_pathname,stacks_pathname, moab_signature)).to eq(true)
+      expect(workspace_pathname.exist?).to be_truthy
+      expect(stacks_pathname.exist?).to be_falsey
+      expect(Dor::DigitalStacksService.copy_file(workspace_pathname,stacks_pathname, moab_signature)).to be_truthy
       # if file exists, and has expected signature
-      expect(workspace_pathname.exist?).to eq(true)
-      expect(stacks_pathname.exist?).to eq(true)
+      expect(workspace_pathname.exist?).to be_truthy
+      expect(stacks_pathname.exist?).to be_truthy
       moab_signature = Moab::FileSignature.new.signature_from_file(stacks_pathname)
-      expect(Dor::DigitalStacksService.copy_file(workspace_pathname,stacks_pathname, moab_signature)).to eq(false)
+      expect(Dor::DigitalStacksService.copy_file(workspace_pathname,stacks_pathname, moab_signature)).to be_falsey
       # if file exists, but has unexpected signature
       moab_signature = Moab::FileSignature.new
-      expect(workspace_pathname.exist?).to eq(true)
-      expect(stacks_pathname.exist?).to eq(true)
-      expect(Dor::DigitalStacksService.copy_file(workspace_pathname,stacks_pathname, moab_signature)).to eq(true)
+      expect(workspace_pathname.exist?).to be_truthy
+      expect(stacks_pathname.exist?).to be_truthy
+      expect(Dor::DigitalStacksService.copy_file(workspace_pathname,stacks_pathname, moab_signature)).to be_truthy
     end
   end
 

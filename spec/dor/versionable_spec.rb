@@ -158,18 +158,18 @@ describe Dor::Versionable do
   describe "allows_modification?" do
     it 'should allow modification if the object hasnt been submitted' do
       allow(Dor::WorkflowService).to receive(:get_lifecycle).and_return(false)
-      expect(obj.allows_modification?).to eq(true)
+      expect(obj.allows_modification?).to be_truthy
     end
     it 'should allow modification if there is an open version' do
       allow(Dor::WorkflowService).to receive(:get_lifecycle).and_return(true)
       allow(obj).to receive(:new_version_open?).and_return(true)
-      expect(obj.allows_modification?).to eq(true)
+      expect(obj.allows_modification?).to be_truthy
     end
     it "should allow modification if the item has sdr-ingest-transfer set to hold" do
       allow(Dor::WorkflowService).to receive(:get_lifecycle).and_return(true)
       allow(obj).to receive(:new_version_open?).and_return(false)
       allow(Dor::WorkflowService).to receive(:get_workflow_status).and_return('hold')
-      expect(obj.allows_modification?).to eq(true)
+      expect(obj.allows_modification?).to be_truthy
     end
   end
 end

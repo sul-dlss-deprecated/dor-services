@@ -54,7 +54,7 @@ describe 'Dor::Discoverable' do
     it 'should not error if there is no descMD' do
       allow(@item.descMetadata).to receive(:ng_xml).and_return(Nokogiri::XML('<xml/>'))
       allow(@item.descMetadata).to receive(:new?).and_return(true)
-      expect(@item.to_solr({}).keys.include?(:sw_pub_date_facet)).to eq(false)
+      expect(@item.to_solr({}).keys.include?(:sw_pub_date_facet)).to be_falsey
     end
     it 'shouldnt error on minimal mods' do
       allow(@item.descMetadata).to receive(:ng_xml).and_return(Nokogiri::XML('
