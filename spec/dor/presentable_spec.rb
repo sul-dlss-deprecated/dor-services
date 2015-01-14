@@ -147,6 +147,7 @@ describe Dor::Presentable do
               "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-1",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
+              "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1",
               "resource": {
                 "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0001",
                 "@type": "dcterms:Image",
@@ -156,8 +157,7 @@ describe Dor::Presentable do
                 "service": {
                   "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0001",
                   "profile": "http://iiif.io/api/image/2/level1.json"
-                },
-                "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1"
+                }
               }
             }
           ]
@@ -173,6 +173,7 @@ describe Dor::Presentable do
               "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-2",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
+              "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2",
               "resource": {
                 "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0002",
                 "@type": "dcterms:Image",
@@ -182,8 +183,7 @@ describe Dor::Presentable do
                 "service": {
                   "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0002",
                   "profile": "http://iiif.io/api/image/2/level1.json"
-                },
-                "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2"
+                }
               }
             }
           ]
@@ -250,6 +250,7 @@ describe Dor::Presentable do
               "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-1",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
+              "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1",
               "resource": {
                 "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F1",
                 "@type": "dcterms:Image",
@@ -259,8 +260,7 @@ describe Dor::Presentable do
                 "service": {
                   "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F1",
                   "profile": "http://iiif.io/api/image/2/level1.json"
-                },
-                "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1"
+                }
               }
             }
           ]
@@ -276,6 +276,7 @@ describe Dor::Presentable do
               "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-2",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
+              "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2",
               "resource": {
                 "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F2",
                 "@type": "dcterms:Image",
@@ -285,8 +286,7 @@ describe Dor::Presentable do
                 "service": {
                   "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F2",
                   "profile": "http://iiif.io/api/image/2/level1.json"
-                },
-                "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2"
+                }
               }
             }
           ]
@@ -302,6 +302,7 @@ describe Dor::Presentable do
               "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-3",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
+              "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-3",
               "resource": {
                 "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F3",
                 "@type": "dcterms:Image",
@@ -311,8 +312,7 @@ describe Dor::Presentable do
                 "service": {
                   "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F3",
                   "profile": "http://iiif.io/api/image/2/level1.json"
-                },
-                "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-3"
+                }
               }
             }
           ]

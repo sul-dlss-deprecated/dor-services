@@ -59,6 +59,7 @@ module Dor
 
         anno = IIIF::Presentation::Annotation.new
         anno['@id'] = "#{purl_base_uri}/imageanno/anno-#{count}"
+        anno['on'] = canv['@id']
 
         img_res = IIIF::Presentation::ImageResource.new
         img_res['@id'] = stacks_uri
@@ -72,8 +73,6 @@ module Dor
         })
 
         img_res.service = svc
-        img_res['on'] = canv['@id']
-
         anno.resource = img_res
         canv.images << anno
         sequence.canvases << canv
