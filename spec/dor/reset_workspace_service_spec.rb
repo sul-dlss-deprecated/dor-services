@@ -84,7 +84,7 @@ describe Dor::ResetWorkspaceService do
       existent_druid = "druid:#{existent_id}"
       create_bag_dir(existent_id)
       bag_path = "#{@export_root}/#{existent_id}"
-      puts bag_path
+      # puts bag_path
       FileUtils.mv( bag_path, "#{bag_path}_v2") unless File.exists?(bag_path+"_v2")
 
       expect{ Dor::ResetWorkspaceService.reset_export_bag(existent_druid,"2",@export_root) }.to raise_error
