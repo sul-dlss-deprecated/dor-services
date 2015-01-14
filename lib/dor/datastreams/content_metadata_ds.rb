@@ -225,7 +225,7 @@ module Dor
           resource_count+=1
           if(resource['type'])
             if resource_type_counts[resource['type']]
-              resource_type_counts[resource['type']]+=1        	
+              resource_type_counts[resource['type']]+=1
             else
               resource_type_counts[resource['type']]=1
             end

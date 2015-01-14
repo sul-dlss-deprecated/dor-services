@@ -202,29 +202,29 @@ describe Dor::ContentMetadataDS do
       end
     end
     describe 'to_solr' do
-    	it 'should generate a shelved file count' do
-    		doc=@item.contentMetadata.to_solr
-    		expect(doc[Solrizer.solr_name('shelved_content_file_count', :displayable)].first).to eq('1')
-    	end
-    	it 'should generate a resource count' do
-    		doc=@item.contentMetadata.to_solr
-    		expect(doc[Solrizer.solr_name('resource_count', :displayable)].first).to eq('1')
-    	end
-    	it 'should generate a file count' do
-    		doc=@item.contentMetadata.to_solr
-    		expect(doc[Solrizer.solr_name('content_file_count', :displayable)].first).to eq('2')
-    	end
-    	it 'should generate a field called image_resource_count' do
-    		doc=@item.contentMetadata.to_solr
-    		expect(doc[Solrizer.solr_name('image_resource_count', :displayable)].first).to eq('1')
-    	end
-    	it 'should generate a field called first_shelved_image' do
-  	    doc=@item.contentMetadata.to_solr
-  	    expect(doc[Solrizer.solr_name('first_shelved_image', :displayable)].first).to eq('gw177fc7976_05_0001.jp2')
-  	  end
+      it 'should generate a shelved file count' do
+        doc=@item.contentMetadata.to_solr
+        expect(doc[Solrizer.solr_name('shelved_content_file_count', :displayable)].first).to eq('1')
+      end
+      it 'should generate a resource count' do
+        doc=@item.contentMetadata.to_solr
+        expect(doc[Solrizer.solr_name('resource_count', :displayable)].first).to eq('1')
+      end
+      it 'should generate a file count' do
+        doc=@item.contentMetadata.to_solr
+        expect(doc[Solrizer.solr_name('content_file_count', :displayable)].first).to eq('2')
+      end
+      it 'should generate a field called image_resource_count' do
+        doc=@item.contentMetadata.to_solr
+        expect(doc[Solrizer.solr_name('image_resource_count', :displayable)].first).to eq('1')
+      end
+      it 'should generate a field called first_shelved_image' do
+        doc=@item.contentMetadata.to_solr
+        expect(doc[Solrizer.solr_name('first_shelved_image', :displayable)].first).to eq('gw177fc7976_05_0001.jp2')
+      end
       it 'should generate a field call preserved_size_display' do
-  	    doc=@item.contentMetadata.to_solr
-  	    expect(doc[Solrizer.solr_name('preserved_size', :searchable)].first).to eq('86774303')
+        doc=@item.contentMetadata.to_solr
+        expect(doc[Solrizer.solr_name('preserved_size', :searchable)].first).to eq('86774303')
       end
     end
   describe 'set_content_type' do
