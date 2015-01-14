@@ -26,20 +26,7 @@ describe Dor::Presentable do
         <tag>Registered By : astrids</tag>
         <tag>Remediated By : 4.14.3</tag>
       </identityMetadata>
-      <contentMetadata objectId="bp778zp8790" type="image">
-        <resource id="bp778zp8790_1" sequence="1" type="image">
-          <label>Image 1</label>
-          <file id="bp778zp8790_00_0001.jp2" mimetype="image/jp2" size="132906">
-            <imageData width="790" height="790"/>
-          </file>
-        </resource>
-        <resource id="bp778zp8790_2" sequence="2" type="image">
-          <label>Image 2</label>
-          <file id="bp778zp8790_00_0002.jp2" mimetype="image/jp2" size="132828">
-            <imageData width="790" height="790"/>
-          </file>
-        </resource>
-      </contentMetadata>
+      #{content_md}
       <rightsMetadata>
         <access type="discover">
           <machine>
@@ -106,60 +93,7 @@ describe Dor::Presentable do
           "@id": "http://purl-dev.stanford.edu/bp778zp8790/sequence",
           "@type": "sc:Sequence",
           "label": "Current order",
-          "canvases": [
-            {
-              "@id": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1",
-              "@type": "sc:Canvas",
-              "label": "Image 1",
-              "height": 790,
-              "width": 790,
-              "images": [
-                {
-                  "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-1",
-                  "@type": "oa:Annotation",
-                  "motivation": "sc:painting",
-                  "resource": {
-                    "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0001",
-                    "@type": "dcterms:Image",
-                    "format": "image/jp2",
-                    "height": 790,
-                    "width": 790,
-                    "service": {
-                      "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0001",
-                      "profile": "http://iiif.io/api/image/2/level1.json"
-                    },
-                    "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1"
-                  }
-                }
-              ]
-            },
-            {
-              "@id": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2",
-              "@type": "sc:Canvas",
-              "label": "Image 2",
-              "height": 790,
-              "width": 790,
-              "images": [
-                {
-                  "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-2",
-                  "@type": "oa:Annotation",
-                  "motivation": "sc:painting",
-                  "resource": {
-                    "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0002",
-                    "@type": "dcterms:Image",
-                    "format": "image/jp2",
-                    "height": 790,
-                    "width": 790,
-                    "service": {
-                      "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0002",
-                      "profile": "http://iiif.io/api/image/2/level1.json"
-                    },
-                    "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2"
-                  }
-                }
-              ]
-            }
-          ]
+          #{canvases}
         }
       ]
     }
@@ -180,24 +114,229 @@ describe Dor::Presentable do
     end
   end
 
-  describe '#build_iiif_manifest' do
-    it 'transforms publicObject xml to a IIIF 2.0 Presentation manifest' do
-      item = PresentableItem.new(:pid => druid)
-      pub_doc = Nokogiri::XML pub_xml
-      built_json = JSON.parse(item.build_iiif_manifest(pub_doc))
-      expected_json = JSON.parse manifest
-      expect(built_json).to eq(expected_json)
+  context 'basic images' do
+
+    let(:content_md) {<<-XML
+      <contentMetadata objectId="bp778zp8790" type="image">
+        <resource id="bp778zp8790_1" sequence="1" type="image">
+          <label>Image 1</label>
+          <file id="bp778zp8790_00_0001.jp2" mimetype="image/jp2" size="132906">
+            <imageData width="790" height="790"/>
+          </file>
+        </resource>
+        <resource id="bp778zp8790_2" sequence="2" type="image">
+          <label>Image 2</label>
+          <file id="bp778zp8790_00_0002.jp2" mimetype="image/jp2" size="132828">
+            <imageData width="790" height="790"/>
+          </file>
+        </resource>
+      </contentMetadata>
+      XML
+    }
+
+    let(:canvases) {<<-JSON
+      "canvases": [
+        {
+          "@id": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1",
+          "@type": "sc:Canvas",
+          "label": "Image 1",
+          "height": 790,
+          "width": 790,
+          "images": [
+            {
+              "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-1",
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "resource": {
+                "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0001",
+                "@type": "dcterms:Image",
+                "format": "image/jp2",
+                "height": 790,
+                "width": 790,
+                "service": {
+                  "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0001",
+                  "profile": "http://iiif.io/api/image/2/level1.json"
+                },
+                "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1"
+              }
+            }
+          ]
+        },
+        {
+          "@id": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2",
+          "@type": "sc:Canvas",
+          "label": "Image 2",
+          "height": 790,
+          "width": 790,
+          "images": [
+            {
+              "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-2",
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "resource": {
+                "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0002",
+                "@type": "dcterms:Image",
+                "format": "image/jp2",
+                "height": 790,
+                "width": 790,
+                "service": {
+                  "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0002",
+                  "profile": "http://iiif.io/api/image/2/level1.json"
+                },
+                "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2"
+              }
+            }
+          ]
+        }
+      ]
+      JSON
+    }
+
+    describe '#build_iiif_manifest for images' do
+      it 'transforms publicObject xml to a IIIF 2.0 Presentation manifest' do
+        item = PresentableItem.new(:pid => druid)
+        pub_doc = Nokogiri::XML pub_xml
+        built_json = JSON.parse(item.build_iiif_manifest(pub_doc))
+        expected_json = JSON.parse manifest
+        expect(built_json).to eq(expected_json)
+      end
     end
+
+    describe '#iiif_presentation_manifest_needed? for images' do
+      it 'returns true when the public_xml contentMetadata has an image resource' do
+        item = PresentableItem.new(:pid => druid)
+        pub_doc = Nokogiri::XML pub_xml
+        expect(item.iiif_presentation_manifest_needed? pub_doc).to be true
+      end
+    end
+
   end
 
-  describe '#iiif_presentation_manifest_needed?' do
-    it 'returns true when the public_xml contentMetadata has an image resource' do
-      item = PresentableItem.new(:pid => druid)
-      pub_doc = Nokogiri::XML pub_xml
-      expect(item.iiif_presentation_manifest_needed? pub_doc).to be true
+  context 'book pages' do
+    let(:content_md) {<<-XML
+      <contentMetadata objectId="druid:bp778zp8790" type="book">
+          <resource id="image_1" sequence="1" type="page">
+            <label>1</label>
+            <file id="1.jp2" mimetype="image/jp2" format="JPEG2000" size="522205">
+              <imageData height="1740" width="1771"/>
+            </file>
+          </resource>
+          <resource id="image_2" sequence="2" type="page">
+            <label>2</label>
+            <file id="2.jp2" mimetype="image/jp2" format="JPEG2000" size="521630">
+              <imageData height="1740" width="1771"/>
+            </file>
+          </resource>
+          <resource id="image_3" sequence="3" type="page">
+            <label>3</label>
+            <file id="3.jp2" mimetype="image/jp2" format="JPEG2000" size="44542">
+              <imageData height="1740" width="1771"/>
+            </file>
+          </resource>
+      </contentMetadata>
+      XML
+    }
+
+    let(:canvases) {<<-JSON
+      "canvases": [
+        {
+          "@id": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1",
+          "@type": "sc:Canvas",
+          "label": "1",
+          "height": 1740,
+          "width": 1771,
+          "images": [
+            {
+              "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-1",
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "resource": {
+                "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F1",
+                "@type": "dcterms:Image",
+                "format": "image/jp2",
+                "height": 1740,
+                "width": 1771,
+                "service": {
+                  "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F1",
+                  "profile": "http://iiif.io/api/image/2/level1.json"
+                },
+                "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1"
+              }
+            }
+          ]
+        },
+        {
+          "@id": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2",
+          "@type": "sc:Canvas",
+          "label": "2",
+          "height": 1740,
+          "width": 1771,
+          "images": [
+            {
+              "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-2",
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "resource": {
+                "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F2",
+                "@type": "dcterms:Image",
+                "format": "image/jp2",
+                "height": 1740,
+                "width": 1771,
+                "service": {
+                  "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F2",
+                  "profile": "http://iiif.io/api/image/2/level1.json"
+                },
+                "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2"
+              }
+            }
+          ]
+        },
+        {
+          "@id": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-3",
+          "@type": "sc:Canvas",
+          "label": "3",
+          "height": 1740,
+          "width": 1771,
+          "images": [
+            {
+              "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-3",
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "resource": {
+                "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F3",
+                "@type": "dcterms:Image",
+                "format": "image/jp2",
+                "height": 1740,
+                "width": 1771,
+                "service": {
+                  "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F3",
+                  "profile": "http://iiif.io/api/image/2/level1.json"
+                },
+                "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-3"
+              }
+            }
+          ]
+        }
+      ]
+      JSON
+    }
+
+    describe '#build_iiif_manifest' do
+      it 'transforms publicObject xml to a IIIF 2.0 Presentation manifest' do
+        item = PresentableItem.new(:pid => druid)
+        pub_doc = Nokogiri::XML pub_xml
+        built_json = JSON.parse(item.build_iiif_manifest(pub_doc))
+        expected_json = JSON.parse manifest
+        expect(built_json).to eq(expected_json)
+      end
+    end
+
+    describe '#iiif_presentation_manifest_needed?' do
+      it 'returns true when the public_xml contentMetadata has an image resource' do
+        item = PresentableItem.new(:pid => druid)
+        pub_doc = Nokogiri::XML pub_xml
+        expect(item.iiif_presentation_manifest_needed? pub_doc).to be true
+      end
     end
   end
-
-
-
 end

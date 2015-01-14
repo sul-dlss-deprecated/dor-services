@@ -7,6 +7,7 @@ module Dor
     include Governable
     include Describable
     include Itemizable
+    include Presentable
 
     included do
       has_metadata :name => "rightsMetadata", :type => ActiveFedora::OmDatastream, :label => 'Rights Metadata'
@@ -41,6 +42,7 @@ module Dor
       rels = public_relationships.root
       pub.add_child(rels.clone) unless rels.nil? # TODO: Should never be nil in practice; working around an ActiveFedora quirk for testing
       pub.add_child(self.generate_dublin_core.root.clone)
+      @public_xml_doc = pub # save this for possible IIIF Presentation manifest
       new_pub = Nokogiri::XML(pub.to_xml) { |x| x.noblanks }
       new_pub.encoding = 'UTF-8'
       new_pub.to_xml
@@ -59,6 +61,9 @@ module Dor
         DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
         if self.metadata_format == 'mods'
           DigitalStacksService.transfer_to_document_store(pid, self.generate_public_desc_md, 'mods')
+        end
+        if iiif_presentation_manifest_needed? @public_xml_doc
+          DigitalStacksService.transfer_to_document_store(pid, build_iiif_manifest(@public_xml_doc), 'manifest')
         end
       else
         # Clear out the document cache for this item

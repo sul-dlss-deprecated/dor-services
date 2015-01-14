@@ -4,7 +4,13 @@ module Dor
   module Presentable
 
     def iiif_presentation_manifest_needed? pub_obj_doc
-      pub_obj_doc.at_xpath('/publicObject/contentMetadata/resource[@type="image"]') ? true : false
+      if(pub_obj_doc.at_xpath('/publicObject/contentMetadata[@type="image"]/resource[@type="image"]'))
+        return true
+      elsif(pub_obj_doc.at_xpath('/publicObject/contentMetadata[@type="book"]/resource[@type="page"]'))
+        return true
+      else
+        return false
+      end
     end
 
     # Bypass this method if there are no image resources in contentMetadata
@@ -34,7 +40,8 @@ module Dor
       # for each resource image, create a canvas
       count = 0
       # TODO inner loop for each file within a resource?
-      pub_obj_doc.xpath('/publicObject/contentMetadata/resource[@type="image"]').each do |res_node|
+
+      pub_obj_doc.xpath('/publicObject/contentMetadata/resource[@type="image" or @type="page"]').each do |res_node|
         count += 1
         img_file_name = res_node.at_xpath('file/@id').text.split('.').first
         height = res_node.at_xpath('file/imageData/@height').text.to_i
