@@ -7,6 +7,7 @@ describe 'Dor::Discoverable' do
     @item=instantiate_fixture("cj765pw7168", Dor::Item)
     allow(@item.descMetadata).to receive(:new?).and_return(false)
     allow(@item).to receive(:milestones).and_return({})
+  # allow(@item.embargoMetadata).to receive(:to_solr).and_return({})
     allow(@item.descMetadata).to receive(:ng_xml).and_return(Nokogiri::XML('
     <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
       <titleInfo>
@@ -36,7 +37,7 @@ describe 'Dor::Discoverable' do
       </abstract>
       <identifier type="local">rd-115</identifier>
     </mods>
-    
+
     '))
   end
   describe 'to_solr' do
@@ -54,7 +55,7 @@ describe 'Dor::Discoverable' do
     it 'should not error if there is no descMD' do
       allow(@item.descMetadata).to receive(:ng_xml).and_return(Nokogiri::XML('<xml/>'))
       allow(@item.descMetadata).to receive(:new?).and_return(true)
-      expect(@item.to_solr({}).keys.include?(:sw_pub_date_facet)).to be_falsey
+      expect(@item.to_solr({})).not_to include(:sw_pub_date_facet)
     end
     it 'shouldnt error on minimal mods' do
       allow(@item.descMetadata).to receive(:ng_xml).and_return(Nokogiri::XML('
@@ -64,12 +65,12 @@ describe 'Dor::Discoverable' do
         </titleInfo>
       </mods>'))
       expect(@item.to_solr({})[:sw_title_full_display_facet]).to eq('San Francisco, Cal.')
-      
+
     end
     it 'should include translated format' do
       doc_hash=@item.to_solr({})
       expect(doc_hash[:sw_format_facet]).to eq(['Image'])
     end
-    
+
   end
 end
