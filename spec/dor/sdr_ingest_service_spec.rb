@@ -17,19 +17,17 @@ describe Dor::SdrIngestService do
       @export_dir.rmtree
     end
     @export_dir.mkdir
-
     @druid = 'druid:aa123bb4567'
     @agreement_id = 'druid:xx098yy7654'
-
   end
-  
+
   after(:each) do
     Dor::Config.pop!
     if @export_dir.exist? and @export_dir.basename.to_s == 'export'
       @export_dir.rmtree
     end
   end
-  
+
   it "can access configuration settings" do
     sdr = Dor::Config.sdr
     expect(sdr.local_workspace_root).to eql @fixtures.join("workspace").to_s
@@ -63,7 +61,7 @@ describe Dor::SdrIngestService do
     mock_item = double("item")
     expect(mock_item).to receive(:datastreams).and_return(ds_hash)
     result = Dor::SdrIngestService.get_datastream_content(mock_item ,'dummy', 'optional')
-    expect(result).to eql nil
+    expect(result).to be_nil
   end
 
   it "can raise exception if required datastream does not exist in the item" do
@@ -233,7 +231,7 @@ describe Dor::SdrIngestService do
     # if no content metadata
     metadata_dir = @fixtures.join('workspace/ab/123/cd/4567/ab123cd4567')
     content_metadata = Dor::SdrIngestService.get_content_metadata(metadata_dir)
-    expect(content_metadata).to eq(nil)
+    expect(content_metadata).to be_nil
   end
 
   specify "SdrIngestService.get_metadata_file_group" do
@@ -245,9 +243,8 @@ describe Dor::SdrIngestService do
   end
 
   specify "SdrIngestService.verify_version_id" do
-    expect(Dor::SdrIngestService.verify_version_id("/mypath/myfile", expected=2, found=2)).to eq(true)
-    expect{Dor::SdrIngestService.verify_version_id("/mypath/myfile", expected=1, found=2)}.to
-      raise_exception("Version mismatch in /mypath/myfile, expected 1, found 2")
+    expect(Dor::SdrIngestService.verify_version_id("/mypath/myfile", expected=2, found=2)).to be_truthy
+    expect{Dor::SdrIngestService.verify_version_id("/mypath/myfile", expected=1, found=2)}.to raise_exception("Version mismatch in /mypath/myfile, expected 1, found 2")
   end
 
   specify "SdrIngestService.vmfile_version_id" do
@@ -258,11 +255,10 @@ describe Dor::SdrIngestService do
 
   specify "SdrIngestService.verify_pathname" do
     metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
-    expect(Dor::SdrIngestService.verify_pathname(metadata_dir)).to eq(true)
+    expect(Dor::SdrIngestService.verify_pathname(metadata_dir)).to be_truthy
     vmfile = metadata_dir.join("versionMetadata.xml")
-    expect(Dor::SdrIngestService.verify_pathname(vmfile)).to eq(true)
+    expect(Dor::SdrIngestService.verify_pathname(vmfile)).to be_truthy
     badfile = metadata_dir.join("badfile.xml")
-    expect{Dor::SdrIngestService.verify_pathname(badfile)}.to  raise_exception(/badfile.xml not found/)
-
+    expect{Dor::SdrIngestService.verify_pathname(badfile)}.to raise_exception(/badfile.xml not found/)
   end
 end
