@@ -3,6 +3,8 @@ require 'iiif/presentation'
 module Dor
   module Presentable
 
+    DC_NS = {"dc"=>"http://purl.org/dc/elements/1.1/", "oai_dc"=>"http://www.openarchives.org/OAI/2.0/oai_dc/"}
+
     def iiif_presentation_manifest_needed? pub_obj_doc
       if(pub_obj_doc.at_xpath('/publicObject/contentMetadata[@type="image"]/resource[@type="image"]'))
         return true
@@ -16,7 +18,14 @@ module Dor
     # Bypass this method if there are no image resources in contentMetadata
     def build_iiif_manifest pub_obj_doc
       id = self.pid.split(':').last
-      lbl = pub_obj_doc.at_xpath('/publicObject/identityMetadata/objectLabel').text  # TODO what if no label?
+
+      lbl_node = pub_obj_doc.at_xpath('/publicObject/identityMetadata/objectLabel')
+      if lbl_node.nil?
+        lbl_node = pub_obj_doc.at_xpath '//oai_dc:dc/dc:title', ns
+      end
+      raise "Unable to build IIIF Presentation manifest:  No identityMetadata/bjectLabel or dc:title" if lbl_node.nil?
+      lbl = lbl_node.text
+
       purl_base_uri = "http://#{Dor::Config.stacks.document_cache_host}/#{id}"
 
 
