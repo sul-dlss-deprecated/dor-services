@@ -14,7 +14,7 @@ describe Dor::RegistrationService do
       @pid = 'druid:ab123cd4567'
       allow(Dor::SuriService).to receive(:mint_id).and_return("druid:ab123cd4567")
       @mock_repo = double(Rubydora::Repository).as_null_object
-      if ActiveFedora::Base.respond_to? :connection_for_pid
+      if ActiveFedora::Base.respond_to?(:connection_for_pid)
         allow(ActiveFedora::Base).to receive(:connection_for_pid).and_return(@mock_repo)
       else
         ActiveFedora.stub_chain(:fedora,:connection).and_return(@mock_repo)

@@ -54,7 +54,7 @@ describe Dor::SuriService do
     
     before :each do
       @mock_repo = double(Rubydora::Repository)
-      if ActiveFedora::Base.respond_to? :connection_for_pid
+      if ActiveFedora::Base.respond_to?(:connection_for_pid)
         allow(ActiveFedora::Base).to receive(:connection_for_pid).and_return(@mock_repo)
       else
         ActiveFedora.stub_chain(:fedora,:connection).and_return(@mock_repo)
