@@ -52,9 +52,11 @@ describe Dor::EmbargoMetadataDS do
 
     it "should solrize correctly" do
       ds = Dor::EmbargoMetadataDS.from_xml(dsxml)
-      release_date_field = Solrizer.solr_name('embargo_release_date', :searchable)
-      expect(ds.to_solr[release_date_field]).to include('2011-10-12T22:47:52Z')
-      expect(ds.to_solr[Solrizer.solr_name('twenty_pct_visibility_release_date', :searchable)]).to include('2016-10-12T22:47:52Z')
+      release_date_field = Solrizer.solr_name('embargo_release', :dateable)
+      twenty_pct_field   = Solrizer.solr_name('twenty_pct_visibility_release', :dateable)
+      expect(ds.to_solr).to match a_hash_including(release_date_field, twenty_pct_field)
+      expect(ds.to_solr[release_date_field]).to eq ['2011-10-12T00:00:00Z']  # field removes time granularity -- for questionable reasons
+      expect(ds.to_solr[twenty_pct_field  ]).to eq ['2016-10-12T00:00:00Z']  # field removes time granularity -- for questionable reasons
     end
   end
 

@@ -8,9 +8,9 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
     t.root(:path => "embargoMetadata")
     t.status
     t.embargo_status(:path => 'status', :index_as => [:symbol])
-    t.release_date(:path => "releaseDate")
+    t.release_date(:path => "releaseDate", :index_as => [:dateable])
     t.release_access(:path => "releaseAccess")
-    t.twenty_pct_status( :path => "twentyPctVisibilityStatus", :index_as => [:searchable, :facetable])
+    t.twenty_pct_status( :path => "twentyPctVisibilityStatus", :index_as => [:facetable])
     t.twenty_pct_release_date(:path => "twentyPctVisibilityReleaseDate")
   end
 
@@ -30,9 +30,9 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
 
   def to_solr solr_doc = {}, *args
     super
-    add_solr_value(solr_doc, 'embargo_release_date', self.release_date.utc.strftime('%FT%TZ') , :date, [:stored_searchable]) rescue nil
-    add_solr_value(solr_doc, 'twenty_pct_visibility_release_date', self.twenty_pct_release_date.utc.strftime('%FT%TZ') , :date, [:displayable, :searchable]) rescue nil
-
+    #::Solrizer.insert_field(solr_doc, field_name, value, *index_types)
+    ::Solrizer.insert_field(solr_doc, 'embargo_release', self.release_date.utc.strftime('%FT%TZ') , :dateable)
+    ::Solrizer.insert_field(solr_doc, 'twenty_pct_visibility_release', self.twenty_pct_release_date.utc.strftime('%FT%TZ'), :dateable)
     solr_doc
   end
 
