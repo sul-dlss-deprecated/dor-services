@@ -125,6 +125,7 @@ module Dor
       #remove the resource record from the metadata and renumber the resource sequence
       self.contentMetadata.remove_resource resource_name
     end
+
     #list files in the workspace
     def list_files
       filename='none'
@@ -147,6 +148,16 @@ module Dor
         end
       end
       return files
+    end
+
+    # determine whether the file in question is present in the object's workspace.
+    # note: for this method to work, the workspace must be mounted on the local file 
+    # system, and Config.dor_workspace_path must be set to point to the correct location.
+    def is_file_in_workspace? filename
+      druid_str = self.pid
+      dor_workspace_path = Config.dor_workspace_path
+      druid_obj = DruidTools::Druid.new(druid_str, dor_workspace_path)
+      return druid_obj.find_content(filename) != nil
     end
 
     # Appends contentMetadata file resources from the source objects to this object
