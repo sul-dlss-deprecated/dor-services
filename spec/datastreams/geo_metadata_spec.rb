@@ -102,37 +102,6 @@ describe Dor::GeoMetadataDS do
   end
 
   context '# to_solr_spatial' do
-      it "keys" do
-        KEYS = %w{
-          dc_coverage_t
-          dc_creator_t
-          dc_date_i
-          dc_description_t
-          dc_format_s
-          dc_language_s
-          dc_title_t
-          druid
-          file_id_s
-          geo_bbox
-          geo_data_type_s
-          geo_format_s
-          geo_geometry_type_s
-          geo_layername_s
-          geo_ne_pt
-          geo_proj
-          geo_pt
-          geo_sw_pt
-          id
-          text}.sort
-        @test_keys.each do |k|
-          expect(@doc[k].to_solr_spatial.keys.sort).to eq(KEYS)
-        end
-      end
-  
-    it 'data' do
-      expect(@doc['co2_pipe'].to_solr_spatial).to eq({"id"=>["http://purl.stanford.edu/ww217dj0457"], "druid"=>["ww217dj0457"], "file_id_s"=>["FA6ED959-7DED-4722-B1FB-A85FB79725BA"], "geo_layername_s" => ["CO2_PIPE"], "geo_bbox"=>["POLYGON((-109.758319 29.423028, -109.758319 48.999336, -88.990844 48.999336, -88.990844 29.423028, -109.758319 29.423028))"], "geo_data_type_s"=>["vector"], "geo_geometry_type_s" => ["Polygon"], "geo_format_s"=>["Shapefile"], "geo_ne_pt"=>["POINT(-88.990844 48.999336)"], "geo_pt"=>["POINT(-99.3745815 39.211182)"], "geo_sw_pt"=>["POINT(-109.758319 29.423028)"], "dc_coverage_t"=>["x.min=-109.758319 x.max=-88.990844 y.min=29.423028 y.max=48.999336"], "dc_creator_t"=>["Hart Energy Publishing"], "dc_date_i"=>["2012"], "dc_description_t"=>["Dataset represents locations of existing and proposed CO2 pipelines. Includes all interstate pipelines and major intrastate pipelines.; Locating Carbon Dioxide (CO2) pipelines in the United States."], "dc_format_s"=>["application/x-esri-shapefile"], "dc_language_s"=>["eng"], "dc_title_t"=>["Carbon Dioxide (CO2) Pipelines in the United States, 2011"], "text"=>["Carbon Dioxide (CO2) Pipelines in the United States, 2011; Dataset represents locations of existing and proposed CO2 pipelines. Includes all interstate pipelines and major intrastate pipelines.; Locating Carbon Dioxide (CO2) pipelines in the United States."], 'geo_proj' => ['4269']})
-      expect(@doc['oil_gas_fields'].to_solr_spatial).to eq({"id"=>["http://purl.stanford.edu/cs838pw3418"], "druid"=>["cs838pw3418"], "file_id_s"=>["BBF1AEBF-51A8-46CD-8913-95B63390A2D0"], "geo_layername_s" => ["OIL_GAS_FIELDS"], "geo_bbox"=>["POLYGON((-151.479444 26.071745, -151.479444 69.4325, -78.085007 69.4325, -78.085007 26.071745, -151.479444 26.071745))"], "geo_geometry_type_s" => ["Polygon"], "geo_data_type_s"=>["vector"], "geo_format_s"=>["Shapefile"], "geo_ne_pt"=>["POINT(-78.085007 69.4325)"], "geo_pt"=>["POINT(-114.78222550000001 47.7521225)"], "geo_sw_pt"=>["POINT(-151.479444 26.071745)"], "dc_coverage_t"=>["x.min=-151.479444 x.max=-78.085007 y.min=26.071745 y.max=69.4325"], "dc_creator_t"=>["Hart Energy Publishing"], "dc_date_i"=>["2011"], "dc_description_t"=>["Shows the locations and extents of oil and gas fields in the United States; Locating and analysing United States oil and gas field data for use in geographic information systems."], "dc_format_s"=>["application/x-esri-shapefile"], "dc_language_s"=>["eng"], "dc_title_t"=>["Oil and Gas Fields in the United States, 2011"], "text"=>["Oil and Gas Fields in the United States, 2011; Shows the locations and extents of oil and gas fields in the United States; Locating and analysing United States oil and gas field data for use in geographic information systems."],  'geo_proj' => ['4269']})
-    end
 
     it '#to_solr3_bbox' do
       @test_keys.each do |k|
@@ -153,6 +122,7 @@ describe Dor::GeoMetadataDS do
           }[k])
       end
     end
+
     it '#to_solr4_bbox' do
       @test_keys.each do |k|
         expect(@doc[k]).to be_a(Dor::GeoMetadataDS)
@@ -184,7 +154,6 @@ describe Dor::GeoMetadataDS do
           'oil_gas_fields' =>  [-114.78222550000001, 47.7521225]
           }[k])
       end
-
     end
 
     it '#to_bbox' do
@@ -195,7 +164,6 @@ describe Dor::GeoMetadataDS do
           'oil_gas_fields' =>  Struct.new(:w, :e, :n, :s).new(-151.479444, -78.085007, 69.4325, 26.071745).to_s
           }[k])
       end
-
     end
 
     it '#to_wkt' do
