@@ -37,6 +37,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'systemu', '~> 2.6.0'
   s.add_dependency 'uuidtools', '~> 2.1.4'
   s.add_dependency 'validatable', '~> 1.6.7'
+  s.add_dependency 'osullivan'
 
   # Stanford dependencies
   s.add_dependency 'dor-workflow-service', '~> 1.7', '>= 1.7.1'
