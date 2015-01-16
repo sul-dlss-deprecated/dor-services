@@ -80,7 +80,7 @@ describe Dor::Presentable do
   let(:manifest) {<<-JSON
     {
       "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://purl-dev.stanford.edu/bp778zp8790/manifest",
+      "@id": "http://purl-dev.stanford.edu/bp778zp8790.manifest",
       "@type": "sc:Manifest",
       "label": "Roman Imperial denarius",
       "attribution": "Provided by the Stanford University Libraries",
@@ -90,7 +90,7 @@ describe Dor::Presentable do
       },
       "sequences": [
         {
-          "@id": "http://purl-dev.stanford.edu/bp778zp8790/sequence",
+          "@id": "http://purl-dev.stanford.edu/bp778zp8790/sequence-1",
           "@type": "sc:Sequence",
           "label": "Current order",
           #{canvases}
@@ -149,12 +149,13 @@ describe Dor::Presentable do
               "motivation": "sc:painting",
               "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1",
               "resource": {
-                "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0001",
+                "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0001/full/full/0/default.jpg",
                 "@type": "dcterms:Image",
-                "format": "image/jp2",
+                "format": "image/jpeg",
                 "height": 790,
                 "width": 790,
                 "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
                   "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0001",
                   "profile": "http://iiif.io/api/image/2/level1.json"
                 }
@@ -175,12 +176,13 @@ describe Dor::Presentable do
               "motivation": "sc:painting",
               "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2",
               "resource": {
-                "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0002",
+                "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0002/full/full/0/default.jpg",
                 "@type": "dcterms:Image",
-                "format": "image/jp2",
+                "format": "image/jpeg",
                 "height": 790,
                 "width": 790,
                 "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
                   "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0002",
                   "profile": "http://iiif.io/api/image/2/level1.json"
                 }
@@ -252,12 +254,13 @@ describe Dor::Presentable do
               "motivation": "sc:painting",
               "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1",
               "resource": {
-                "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F1",
+                "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F1/full/full/0/default.jpg",
                 "@type": "dcterms:Image",
-                "format": "image/jp2",
+                "format": "image/jpeg",
                 "height": 1740,
                 "width": 1771,
                 "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
                   "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F1",
                   "profile": "http://iiif.io/api/image/2/level1.json"
                 }
@@ -278,12 +281,13 @@ describe Dor::Presentable do
               "motivation": "sc:painting",
               "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2",
               "resource": {
-                "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F2",
+                "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F2/full/full/0/default.jpg",
                 "@type": "dcterms:Image",
-                "format": "image/jp2",
+                "format": "image/jpeg",
                 "height": 1740,
                 "width": 1771,
                 "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
                   "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F2",
                   "profile": "http://iiif.io/api/image/2/level1.json"
                 }
@@ -304,12 +308,13 @@ describe Dor::Presentable do
               "motivation": "sc:painting",
               "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-3",
               "resource": {
-                "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F3",
+                "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F3/full/full/0/default.jpg",
                 "@type": "dcterms:Image",
-                "format": "image/jp2",
+                "format": "image/jpeg",
                 "height": 1740,
                 "width": 1771,
                 "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
                   "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F3",
                   "profile": "http://iiif.io/api/image/2/level1.json"
                 }

@@ -23,14 +23,13 @@ module Dor
       if lbl_node.nil?
         lbl_node = pub_obj_doc.at_xpath '//oai_dc:dc/dc:title', ns
       end
-      raise "Unable to build IIIF Presentation manifest:  No identityMetadata/bjectLabel or dc:title" if lbl_node.nil?
+      raise "Unable to build IIIF Presentation manifest:  No identityMetadata/objectLabel or dc:title" if lbl_node.nil?
       lbl = lbl_node.text
 
       purl_base_uri = "http://#{Dor::Config.stacks.document_cache_host}/#{id}"
 
-
       manifest_data = {
-        '@id'   => "#{purl_base_uri}/manifest",
+        '@id'   => "#{purl_base_uri}.manifest",
         'label' => lbl,
         'attribution' => 'Provided by the Stanford University Libraries',
         'seeAlso' => {
@@ -41,25 +40,20 @@ module Dor
       manifest = IIIF::Presentation::Manifest.new manifest_data
 
       seq_data = {
-        '@id' => "#{purl_base_uri}/sequence",
+        '@id' => "#{purl_base_uri}/sequence-1",
         'label' => 'Current order'
       }
       sequence = IIIF::Presentation::Sequence.new seq_data
 
       # for each resource image, create a canvas
       count = 0
-      # TODO inner loop for each file within a resource?
-
       pub_obj_doc.xpath('/publicObject/contentMetadata/resource[@type="image" or @type="page"]').each do |res_node|
         count += 1
         img_file_name = res_node.at_xpath('file/@id').text.split('.').first
         height = res_node.at_xpath('file/imageData/@height').text.to_i
         width = res_node.at_xpath('file/imageData/@width').text.to_i
         stacks_uri = "#{Dor::Config.stacks.url}/image/iiif/#{id}%2F#{img_file_name}"
-        # create canvas
-        #        (for each image create anno then resource?)
-        #        annotation
-        #        ImageResource
+
         canv = IIIF::Presentation::Canvas.new
         canv['@id'] = "#{purl_base_uri}/canvas/canvas-#{count}"
         canv.label = res_node.at_xpath('label').text
@@ -71,12 +65,13 @@ module Dor
         anno['on'] = canv['@id']
 
         img_res = IIIF::Presentation::ImageResource.new
-        img_res['@id'] = stacks_uri
-        img_res.format = res_node.at_xpath('file/@mimetype').text
+        img_res['@id'] = "#{stacks_uri}/full/full/0/default.jpg"
+        img_res.format = 'image/jpeg'
         img_res.height = height
         img_res.width = width
 
         svc = IIIF::Service.new ({
+          '@context' => 'http://iiif.io/api/image/2/context.json',
           '@id' => stacks_uri,
           'profile' => Dor::Config.stacks.iiif_profile
         })
