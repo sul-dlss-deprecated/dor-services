@@ -39,7 +39,13 @@ module Dor
       pub = Nokogiri::XML("<publicObject/>").root
       pub['id'] = pid
       pub['published'] = Time.now.xmlschema
-      pub.add_child(self.datastreams['identityMetadata'].ng_xml.root.clone)
+
+      release_xml=Nokogiri(self.generate_release_xml).root
+      im=self.datastreams['identityMetadata'].ng_xml.clone
+      im.search('//release').each {|node| node.remove} # remove any <release> tags from public xml which have full history
+      im.root.add_child(release_xml)  # now add in final <release> tag  #TODO:  Adding this breaks tests, rework these
+
+      pub.add_child(im.root) # add in modified identityMetadata datastream
       pub.add_child(self.datastreams['contentMetadata'].public_xml.root.clone)
       pub.add_child(self.datastreams['rightsMetadata'].ng_xml.root.clone)
 

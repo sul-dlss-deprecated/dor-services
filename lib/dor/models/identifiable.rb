@@ -277,6 +277,8 @@ module Dor
     #@params tag [string] The content of the tag
     #@params type [symbol] The type of tag, :tag is assumed as default 
     #@params attrs [hash]  A hash of any attributes to be placed onto the tag 
+    # release tag example:
+    #  item.add_tag(true,:release,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket'})
     def add_tag(tag, type=:tag, attrs={})
       needs_timestamp = [:release] #If you want a tag to get a timestamp attribute, add its symbol here
       identity_metadata_ds = self.identityMetadata

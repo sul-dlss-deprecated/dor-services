@@ -6,15 +6,12 @@ module Dor
     
     #Generate XML structure for inclusion to Purl 
     #
-    #@return [String] The XML ReleaseDigest node as a string
+    #@return [String] The XML release node as a string
     def generate_release_xml
-      release_info = self.released_for
       builder = Nokogiri::XML::Builder.new do |xml|
-        xml.ReleaseDigest {
-          release_info.keys.each do |key|
-            xml.send(key, release_info[key]['release'].to_s)
-          end          
-        }
+        self.released_for.each do |project,released_value|
+          xml.release(released_value["release"],:to=>project)
+        end          
       end
       return builder.to_xml
     end
@@ -27,7 +24,6 @@ module Dor
       
       #Get release tags on the item itself 
       release_tags_on_this_item = self.release_tags
-      
       
       #Get any self tags on this item
       self_release_tags = self.get_self_release_tags(release_tags_on_this_item)
@@ -43,8 +39,7 @@ module Dor
       potential_applicable_release_tags = {}  #This will be where we store all tags that apply, regardless of their timestamp
        
       #Get all release tags on the item and strip out the what = self ones, we've already processed all the self tags on this item 
-      potential_applicable_release_tags = self.get_release_tags_for_item_and_all_governing_sets
-      potential_applicable_release_tags = get_tags_for_what_value(potential_applicable_release_tags, 'collection')
+      potential_applicable_release_tags = get_tags_for_what_value(self.get_release_tags_for_item_and_all_governing_sets, 'collection')
       
       administrative_tags = self.tags  #Get them once here and pass them down
       

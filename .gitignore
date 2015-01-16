@@ -18,3 +18,5 @@ tmp.xml
 *.gem
 config/environments
 spec/dor_config.rb
+config/certs/*
+spec/certs/*
