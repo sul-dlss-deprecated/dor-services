@@ -15,3 +15,4 @@ gemspec
 
 gem 'druid-tools', '0.3.1'
 gem 'addressable', '2.3.5'
+gem 'osullivan', :path => 'vendor/gems/osullivan-0.0.2.pre.dev'
