@@ -90,7 +90,7 @@ module Dor
   autoload :WorkflowDs,  'dor/datastreams/workflow_ds'
   autoload :VersionMetadataDS,  'dor/datastreams/version_metadata_ds'
   autoload :DefaultObjectRightsDS,  'dor/datastreams/default_object_rights_ds'
-  ::Object.autoload :SimpleDublinCoreDs, 'dor/datastreams/simple_dublin_core_ds'
+  autoload :SimpleDublinCoreDs, 'dor/datastreams/simple_dublin_core_ds'
 
   # DOR Concerns
   autoload :Identifiable, 'dor/models/identifiable'

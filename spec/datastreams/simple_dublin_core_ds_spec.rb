@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe SimpleDublinCoreDs do
-  subject { SimpleDublinCoreDs.from_xml @xml }
+describe 'Dor::SimpleDublinCoreDs' do
 
   describe "#to_solr" do
     it "should do OM mapping" do
@@ -11,9 +10,14 @@ describe SimpleDublinCoreDs do
         <dc:identifier>identifier</dc:identifier>
       </oai_dc:dc>'
 
-      expect(subject.to_solr[Solrizer.solr_name('title', :searchable)]).to include('title')
-      expect(subject.to_solr[Solrizer.solr_name('creator', :searchable)]).to include('creator')
-      expect(subject.to_solr[Solrizer.solr_name('identifier', :searchable)]).to include('identifier')
+      title_field   = Solrizer.solr_name('title', :stored_searchable)
+      creator_field = Solrizer.solr_name('creator', :stored_searchable)
+      id_field      = Solrizer.solr_name('identifier', :stored_searchable)
+      dublin = Dor::SimpleDublinCoreDs.from_xml(@xml)
+      expect(dublin.to_solr).to match a_hash_including(title_field, creator_field, id_field)
+      expect(dublin.to_solr[title_field]  ).to eq ['title']
+      expect(dublin.to_solr[creator_field]).to eq ['creator']
+      expect(dublin.to_solr[id_field]     ).to eq ['identifier']
     end
 
     context "sort fields" do
@@ -26,8 +30,11 @@ describe SimpleDublinCoreDs do
         <dc:identifier>identifier</dc:identifier>
       </oai_dc:dc>'
 
-      expect(subject.to_solr[Solrizer.solr_name('dc_title', :sortable)]).to be_a_kind_of(String)
-      expect(subject.to_solr[Solrizer.solr_name('dc_creator', :sortable)]).to be_a_kind_of(String)
+      dublin = Dor::SimpleDublinCoreDs.from_xml(@xml)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_title', :sortable)]).to be_a_kind_of(String)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_title', :sortable)]).to eq 'title'
+      expect(dublin.to_solr[Solrizer.solr_name('dc_creator', :sortable)]).to be_a_kind_of(String)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_creator', :sortable)]).to eq 'creator'
     end
 
     it "should create sort fields for each type of identifier" do
@@ -38,8 +45,11 @@ describe SimpleDublinCoreDs do
         <dc:identifier>uuid:identifierxyz</dc:identifier>
       </oai_dc:dc>'
 
-      expect(subject.to_solr[Solrizer.solr_name('dc_identifier_druid', :sortable)]).to be_a_kind_of(String)
-      expect(subject.to_solr[Solrizer.solr_name('dc_identifier_uuid', :sortable)]).to be_a_kind_of(String)
+      dublin = Dor::SimpleDublinCoreDs.from_xml(@xml)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_druid', :sortable)]).to be_a_kind_of(String)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_druid', :sortable)]).to eq 'identifier'
+      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_uuid', :sortable)]).to be_a_kind_of(String)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_uuid', :sortable)]).to eq 'identifier2'
     end
     end
   end
