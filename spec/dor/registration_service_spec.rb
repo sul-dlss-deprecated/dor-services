@@ -27,7 +27,6 @@ describe Dor::RegistrationService do
       allow_any_instance_of(Dor::Item).to receive(:save).and_return(true)
       allow_any_instance_of(Dor::Collection).to receive(:save).and_return(true)
 
-
       allow(Dor).to receive(:find).with('druid:fg890hi1234', :lightweight => true).and_return(@apo)
 
       @params = {
@@ -270,6 +269,7 @@ describe Dor::RegistrationService do
       @params[:label]=''
       @params[:metadata_source]='mdtoolkit'
       allow(Dor::SearchService).to receive(:query_by_id).and_return([nil])
+      allow(Dor::logger).to receive(:warn)
       Dor::RegistrationService.register_object(@params)
     end
 

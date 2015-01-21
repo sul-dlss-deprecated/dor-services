@@ -104,10 +104,8 @@ module Dor
               }
             }
           }
-
-      ds.content=builder.to_xml
-
-      end
+          ds.content=builder.to_xml
+        end
 
         workflow_priority = params[:workflow_priority] ? params[:workflow_priority].to_i : 0
 
