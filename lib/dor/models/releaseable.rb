@@ -44,37 +44,15 @@ module Dor
       administrative_tags = self.tags  #Get them once here and pass them down
       
       #We now have the keys for all potential releases, we need to check the tags and the most recent time stamp with an explicit true or false wins, in a nil case, the lack of an explicit false tag we do nothing
-      potential_applicable_release_tags.keys.each do |key|  
-        latest_applicable_tag_for_key = latest_applicable_release_tag_in_array(potential_applicable_release_tags[key], administrative_tags)
-        if latest_applicable_tag_for_key != nil #We have a valid tag, record it, unless we already set a self false
-          
-          #If releash_hash was populated by a self tag it will either be true or false, we can override a ride a true if we have a false with a later timestamp, a false cannot be override by a true though as self blacklist always wins
-          released_hash[key] = self.clean_release_tag_for_purl(latest_applicable_tag_for_key) if released_hash[key] != false && override_self_tag(key, latest_self_tags, latest_applicable_tag_for_key) 
+      (potential_applicable_release_tags.keys-released_hash.keys).each do |key|  #don't bother checking the ones already added to the release hash, they were added due to a self tag and that has won
+        latest_applicable_tag_for_key = latest_applicable_release_tag_in_array(potential_applicable_release_tags[keys], administrative_tags)
+        if latest_applicable_tag_for_key != nil #We have a valid tag, record it
+          released_hash[key] = self.clean_release_tag_for_purl(latest_applicable_tag_for_key) 
         end
         
       end
         
       return released_hash
-    end
-    
-    #For a specific what target, determine if a collection tag should override a self tag.  A self tag of true can be overridden by a false tag with a later timestamp.  A self tag of false cannot be overridden 
-    #
-    #@param target [String] the name of the target in question
-    #@param self_tags [Hash] all the latest self tags on the item
-    #@param tag [Hash] the tag in question that may override the self_tags
-    #
-    #@return [Boolean] True or false if the self_tag should be overridden
-    def override_self_tag(target, self_tags, tag)
-      
-      #If the current self_tag for this item is nil, there is no tag, it can be overridden at will
-      return true if self_tags[target] == nil
-      
-      #If the current self_tag for this item is false, it cannot be overridden with a non self tag
-      return false if self_tags[target]['release'] == false
-      
-      #If we have a self_tag for this item, we need to compare timestamps 
-      return self_tags[target]['when'] < tag['when'] #if this collection tag has a time that is later than the self tag, this collection tag wins
-      
     end
     
     #Take a hash of tags as obtained via Dor::Item.release_tags and returns all self tags
