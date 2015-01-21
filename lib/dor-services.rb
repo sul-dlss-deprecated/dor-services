@@ -108,7 +108,6 @@ module Dor
   autoload :Versionable, 'dor/models/versionable'
   autoload :Contentable, 'dor/models/contentable'
   autoload :Editable, 'dor/models/editable'
-  autoload :Discoverable, 'dor/models/discoverable'
   autoload :Geoable, 'dor/models/geoable'
   autoload :Presentable, 'dor/models/presentable'
   autoload :Releaseable, 'dor/models/releaseable'
