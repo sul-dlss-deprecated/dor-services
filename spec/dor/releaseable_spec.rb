@@ -79,6 +79,27 @@ describe Dor::Releaseable, :vcr do
       expect(@bryar_trans_am.get_self_release_tags({'Revs' => @dummy_tags, 'FRDA' => @dummy_tags, 'BV' => [@dummy_tags[1]]})).to eq({'Revs' => [@dummy_tags[0]], 'FRDA' => [@dummy_tags[0]]})
     end
     
+    describe 'overriding self tags' do
+      it 'should return true when there is no self tag to override' do
+        expect(@bryar_trans_am.override_self_tag('foo', {}, {})).to eq(true)
+      end
+      
+      it 'should return false when the self tag is false, even if the collection tag has a more recent timestamp' do
+        target = 'Revs'
+        self_tag = {target => {'release' => false, 'when' => @array_of_times[0]}}
+        co_tag = {'release' => true, 'when' =>  @array_of_times[1] }
+        expect(@bryar_trans_am.override_self_tag(target, self_tag, co_tag)).to eq(false)
+      end
+      
+      it 'should return true when the self tag is true and the collection tag has a later timestamp' do
+        target = 'Revs'
+        self_tag = {target => {'release' => true, 'when' => @array_of_times[0]}}
+        co_tag = {'release' => true, 'when' =>  @array_of_times[1] }
+        expect(@bryar_trans_am.override_self_tag(target, self_tag, co_tag)).to eq(true)
+      end
+      
+    end
+    
   end
   
   describe 'handling tags on objects and determining release status' do
