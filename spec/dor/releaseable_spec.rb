@@ -81,13 +81,97 @@ describe Dor::Releaseable, :vcr do
     
   end
   
+  #Warning:  Exercise care when rerecording these cassette, as these items are set up to have specific tags on them at the time of recording, other folks messing around in the dev environment might add or remove release tags that cause failures on these tests
+  #If these tests fail, check not just the logic, but also the specific tags
   describe 'handling tags on objects and determining release status' do
-    #test get_release_tags_for_item_and_all_governing_sets
-    #test released_for
-    #test TODO generate XML
+    
+      it "should use only the most recent self tag to determine if an item is released, with no release tags on the collection" do
+        VCR.use_cassette('releaseable_self_tags_only') do
+          item = Dor::Item.find('druid:vs298kg2555')
+          expect(item.released_for['Kurita']['release']).to eq(true)
+        end
+      end
+      
+      #This test takes an object with a self tag that is older and opposite the tag on this object's collection and ensures the self tag still is the one that is used to decide release status
+      it "should use the self tag over the collection tag to determine if an item is released, even if the collection tag is newer" do
+        VCR.use_cassette('releaseable_self_over_collection') do
+          item = Dor::Item.find('druid:bb537hc4022')
+          expect(item.released_for['Kurita']['release']).to eq(false)
+        end
+      end
+      
+      #This test looks at an item whose only tags are on the collection and ensures the most recent one wins
+      it "should use only most the recent collection tag if no self tags are present" do
+        VCR.use_cassette('releaseable_most_recent_collection_tag_wins') do
+          item = Dor::Item.find('druid:bc566xq6031')
+          expect(item.release_tags).to eq({})
+          expect(item.released_for['Kurita']['release']).to eq(true)
+        end
+      end
+      
+      #A collection whose only tag is to release a what=collection should also release the collection object itself
+      it "a tag with what=collection should release the collection item, assuming it is not blocked by a self tag" do
+        VCR.use_cassette('releaseable_collection_tag_releases_collection_object') do
+          item = Dor::Item.find('druid:wz243gf4151')
+          expect(item.released_for['Kurita']['release']).to eq(true)
+        end
+      end
+      
+      #Here we have an object governed by both the Marcus Chambers, druid:wz243gf4151, Collection and the Revs Collection, druid:nt028fd5773
+      #When determining if an item is released, it should look at both collections and pick the most recent timestamp
+      it "should look all collections and sets that an item is a member of" do
+        VCR.use_cassette('releaseable_multiple_collections') do
+          item = Dor::Item.find('druid:dc235vd9662')
+          expect(item.released_for['Atago']['release']).to eq(false)
+          chambers_collection = Dor::Item.find('druid:wz243gf4151')
+          expect(chambers_collection.release_tags["Atago"]).to eq ([{"what"=>"collection", "who"=>"carrickr", "when"=>Time.parse('2015-01-21 22:37:21Z').iso8601, "release"=>true}])
+          revs_collection = Dor::Item.find('druid:nt028fd5773')
+          expect(revs_collection.release_tags['Atago']).to eq([{"what"=>"collection", "who"=>"carrickr", "when"=>Time.parse('2015-01-21 22:37:40Z').iso8601, "release"=>false}])
+        end 
+      end
+      
+      #If an items release is controlled with the tag= attr, meaning that only items with that administrative tag are released, that should be respected
+      it "should respect the tag= attr and apply it when releasing" do
+        VCR.use_cassette('releaseable_respect_admin_tagging') do
+          chambers_collection = Dor::Item.find('druid:wz243gf4151')
+          expect(chambers_collection.release_tags['Mogami']).to eq( [{"what"=>"collection", "who"=>"carrickr", "tag"=>"Project : ReleaseSpecTesting : Batch1", "when"=>Time.parse('2015-01-21 22:46:22Z').iso8601, "release"=>true}]) 
+          item_with_this_admin_tag = Dor::Item.find('druid:dc235vd9662')
+          expect(item_with_this_admin_tag.tags.include?('Project : ReleaseSpecTesting : Batch1')).to eq(true)
+          expect(item_with_this_admin_tag.released_for['Mogami']['release']).to eq(true)
+          item_without_this_admin_tag = item = Dor::Item.find('druid:bc566xq6031')
+          expect(item_without_this_admin_tag.tags.include?('Project : ReleaseSpecTesting : Batch1')).to eq(false)
+          expect(item_without_this_admin_tag.released_for['Mogami']).to eq(nil)
+        end
+      end
+      
+      #If an item has no release tags on it for a target it should just return nil when queried with regard to that target
+      it "should return nil if no tags exist on an item with regard to that target" do
+          VCR.use_cassette('releaseable_nil_target') do
+            item = Dor::Item.find('druid:bc566xq6031')
+            expect(item.released_for['Runner II']).to eq(nil)
+          end
+      end
+      
+      it 'should return release xml for an item as string of elements wrapped in a ReleaseDigestRoot' do
+        VCR.use_cassette('releaseable_release_xml') do
+          item = Dor::Item.find('druid:dc235vd9662')
+          release_xml = item.generate_release_xml
+          expect(release_xml.class).to eq(String)
+          true_or_false = ['true', 'false']
+          xml_obj = Nokogiri(release_xml)
+          xml_obj.xpath('//release').each do |release_node|
+            expect(release_node.name).to eq('release')  #Well, duh
+            expect(release_node.attributes.keys).to eq(['to'])
+            expect(release_node.attributes.keys).to eq(['to'])
+            expect(release_node.attributes['to'].value.class).to eq(String)
+            expect(true_or_false.include? release_node.children.text).to eq(true)
+          end
+        end
+      end
+      
+
+      
+    
   end
-  
-  
-  
 
 end

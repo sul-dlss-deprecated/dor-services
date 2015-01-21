@@ -1,0 +1,995 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:bb537hc4022?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:33 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1004'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:bb537hc4022"
+        ><objLabel>Minuta di lettera di Paolo Veratti,</objLabel><objOwnerId>fedoraAdmin</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2012-09-04T21:52:39.526Z</objCreateDate><objLastModDate>2015-01-21T22:12:55.672Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Abb537hc4022/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Abb537hc4022/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:bb537hc4022/datastreams?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:33 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1403'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams  xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora-commons.org/definitions/1/0/listDatastreams.xsd" pid="druid:bb537hc4022"  baseURL="https://localhost:443/fedora/"
+        >    <datastream dsid="DC" label="Dublin Core Record for this object" mimeType="text/xml"
+        />    <datastream dsid="RELS-EXT" label="Fedora Object-to-Object Relationship
+        Metadata" mimeType="application/rdf+xml" />    <datastream dsid="identityMetadata"
+        label="Identity Metadata" mimeType="text/xml" />    <datastream dsid="rightsMetadata"
+        label="Rights Metadata" mimeType="text/xml" />    <datastream dsid="workflows"
+        label="Workflow" mimeType="application/xml" />    <datastream dsid="contentMetadata"
+        label="Content Metadata" mimeType="text/xml" />    <datastream dsid="descMetadata"
+        label="Descriptive Metadata" mimeType="text/xml" />    <datastream dsid="technicalMetadata"
+        label="Technical Metadata" mimeType="text/xml" />    <datastream dsid="events"
+        label="Events" mimeType="text/xml" />    <datastream dsid="versionMetadata"
+        label="Version Metadata" mimeType="text/xml" />    <datastream dsid="provenanceMetadata"
+        label="Provenance Metadata" mimeType="text/xml" /></objectDatastreams>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:bb537hc4022/datastreams/RELS-EXT?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:33 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '927'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:bb537hc4022"
+        dsID="RELS-EXT" ><dsLabel>Fedora Object-to-Object Relationship Metadata</dsLabel><dsVersionID>RELS-EXT.1</dsVersionID><dsCreateDate>2012-12-14T06:49:06.184Z</dsCreateDate><dsState>A</dsState><dsMIME>application/rdf+xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>721</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:bb537hc4022+RELS-EXT+RELS-EXT.1</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:bb537hc4022/datastreams/RELS-EXT/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:33 GMT
+      Content-Disposition:
+      - inline; filename="Fedora Object-to-Object Relationship Metadata.rdf"
+      Content-Type:
+      - application/rdf+xml
+      Content-Length:
+      - '721'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<rdf:RDF xmlns:fedora=\"info:fedora/fedora-system:def/relations-external#\"
+        xmlns:fedora-model=\"info:fedora/fedora-system:def/model#\" xmlns:hydra=\"http://projecthydra.org/ns/relations#\"
+        xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n  <rdf:Description
+        rdf:about=\"info:fedora/druid:bb537hc4022\">\n    <hydra:isGovernedBy rdf:resource=\"info:fedora/druid:wq307yk9043\"></hydra:isGovernedBy>\n
+        \   <fedora-model:hasModel rdf:resource=\"info:fedora/afmodel:Dor_Item\"></fedora-model:hasModel>\n
+        \   <fedora:isMemberOf rdf:resource=\"info:fedora/druid:nx585yw5390\"></fedora:isMemberOf>\n
+        \   <fedora:isMemberOfCollection rdf:resource=\"info:fedora/druid:nx585yw5390\"></fedora:isMemberOfCollection>\n
+        \ </rdf:Description>\n</rdf:RDF>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:bb537hc4022/datastreams/workflows?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:33 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '941'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:bb537hc4022"
+        dsID="workflows" ><dsLabel>Workflow</dsLabel><dsVersionID>workflows.2</dsVersionID><dsCreateDate>2013-01-13T05:53:38.602Z</dsCreateDate><dsState>A</dsState><dsMIME>application/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>E</dsControlGroup><dsSize>0</dsSize><dsVersionable>false</dsVersionable><dsInfoType></dsInfoType><dsLocation>https://lyberservices-prod.stanford.edu/workflow/dor/objects/druid:bb537hc4022/workflows</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:bb537hc4022/datastreams/identityMetadata?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:33 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '920'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:bb537hc4022"
+        dsID="identityMetadata" ><dsLabel>Identity Metadata</dsLabel><dsVersionID>identityMetadata.8</dsVersionID><dsCreateDate>2015-01-21T22:12:55.672Z</dsCreateDate><dsState>A</dsState><dsMIME>text/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>623</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:bb537hc4022+identityMetadata+identityMetadata.8</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:bb537hc4022/datastreams/identityMetadata/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:34 GMT
+      Content-Disposition:
+      - inline; filename="Identity Metadata.xml"
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '623'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<identityMetadata>\n  <sourceId source=\"Archiginnasio\">Bassi_Box10_Folder3_Item52</sourceId>\n
+        \ <objectId>druid:bb537hc4022</objectId>\n  <objectCreator>DOR</objectCreator>\n
+        \ <objectLabel>Minuta di lettera di Paolo Veratti, 1806 mar. 15</objectLabel>\n
+        \ <objectType>item</objectType>\n  <adminPolicy>druid:wq307yk9043</adminPolicy>\n
+        \ <otherId name=\"uuid\">d828825e-f6da-11e1-a9cf-0016034322e2</otherId>\n
+        \ <tag>Project : Bassi Veratti</tag>\n  <tag>Registered By : mgolson</tag>\n
+        \ <tag>Remediated By : 3.17.13</tag>\n  <release to=\"Kurita\" what=\"self\"
+        when=\"2015-01-21T22:12:51Z\" who=\"carrickr\">false</release>\n</identityMetadata>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:34 GMT
+- request:
+    method: get
+    uri: http://127.0.0.1:8080/solr/argo_test/select?q=id:druid%5C:nx585yw5390&qt=standard&wt=ruby
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: !binary |-
+        T0s=
+    headers:
+      !binary "U2VydmVy":
+      - !binary |-
+        QXBhY2hlLUNveW90ZS8xLjE=
+      !binary "Q29udGVudC1UeXBl":
+      - !binary |-
+        dGV4dC9wbGFpbjtjaGFyc2V0PVVURi04
+      !binary "VHJhbnNmZXItRW5jb2Rpbmc=":
+      - !binary |-
+        Y2h1bmtlZA==
+      !binary "RGF0ZQ==":
+      - !binary |-
+        V2VkLCAyMSBKYW4gMjAxNSAyMjoyNjozNCBHTVQ=
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eydyZXNwb25zZUhlYWRlcic9Pnsnc3RhdHVzJz0+MCwnUVRpbWUnPT4xLCdw
+        YXJhbXMnPT57J3EnPT4naWQ6ZHJ1aWRcXDpueDU4NXl3NTM5MCcsJ3F0Jz0+
+        J3N0YW5kYXJkJywnd3QnPT4ncnVieSd9fSwncmVzcG9uc2UnPT57J251bUZv
+        dW5kJz0+MSwnc3RhcnQnPT4wLCdkb2NzJz0+W3snaWQnPT4nZHJ1aWQ6bng1
+        ODV5dzUzOTAnLCdzeXN0ZW1fY3JlYXRlX2R0Jz0+WycyMDExLTA3LTA1VDE3
+        OjEyOjE4WiddLCdkYXRlJz0+WycyMDExLTA3LTA1VDE3OjEyOjE4WicsJzIw
+        MTUtMDEtMjFUMjI6MjY6MDZaJywnMjAxMS0wNy0wNVQxNzoxMjoxOFonLCcy
+        MDE1LTAxLTIxVDIyOjI2OjA2WicsJzIwMTUtMDEtMjFUMjI6MjY6MTNaJ10s
+        J3N5c3RlbV9tb2RpZmllZF9kdCc9PlsnMjAxNS0wMS0yMVQyMjoyNjowNlon
+        XSwnYWN0aXZlX2ZlZG9yYV9tb2RlbF9zJz0+WydEb3I6OkNvbGxlY3Rpb24n
+        XSwnb2JqZWN0X3Byb2ZpbGVfZGlzcGxheSc9PlsneyJkYXRhc3RyZWFtcyI6
+        eyJSRUxTLUVYVCI6eyJkc0xhYmVsIjoiUkRGIFN0YXRlbWVudHMgYWJvdXQg
+        dGhpcyBvYmplY3QiLCJkc1ZlcnNpb25JRCI6IlJFTFMtRVhULjEiLCJkc0Ny
+        ZWF0ZURhdGUiOiIyMDE1LTAxLTIxVDIyOjE2OjIwWiIsImRzU3RhdGUiOiJB
+        IiwiZHNNSU1FIjoiYXBwbGljYXRpb24vcmRmK3htbCIsImRzRm9ybWF0VVJJ
+        IjoiaW5mbzpmZWRvcmEvZmVkb3JhLXN5c3RlbTpGZWRvcmFSRUxTRXh0LTEu
+        MCIsImRzQ29udHJvbEdyb3VwIjoiWCIsImRzU2l6ZSI6NDU4LCJkc1ZlcnNp
+        b25hYmxlIjp0cnVlLCJkc0luZm9UeXBlIjpudWxsLCJkc0xvY2F0aW9uIjoi
+        ZHJ1aWQ6bng1ODV5dzUzOTArUkVMUy1FWFQrUkVMUy1FWFQuMSIsImRzTG9j
+        YXRpb25UeXBlIjpudWxsLCJkc0NoZWNrc3VtVHlwZSI6IkRJU0FCTEVEIiwi
+        ZHNDaGVja3N1bSI6Im5vbmUifSwiREMiOnsiZHNMYWJlbCI6IkR1YmxpbiBD
+        b3JlIFJlY29yZCBmb3IgdGhpcyBvYmplY3QiLCJkc1ZlcnNpb25JRCI6IkRD
+        LjEiLCJkc0NyZWF0ZURhdGUiOiIyMDExLTA4LTE1VDIwOjQ3OjI1WiIsImRz
+        U3RhdGUiOiJBIiwiZHNNSU1FIjoidGV4dC94bWwiLCJkc0Zvcm1hdFVSSSI6
+        Imh0dHA6Ly93d3cub3BlbmFyY2hpdmVzLm9yZy9PQUkvMi4wL29haV9kYy8i
+        LCJkc0NvbnRyb2xHcm91cCI6IlgiLCJkc1NpemUiOjQ2OSwiZHNWZXJzaW9u
+        YWJsZSI6ZmFsc2UsImRzSW5mb1R5cGUiOm51bGwsImRzTG9jYXRpb24iOiJk
+        cnVpZDpueDU4NXl3NTM5MCtEQytEQy4xIiwiZHNMb2NhdGlvblR5cGUiOiJV
+        UkwiLCJkc0NoZWNrc3VtVHlwZSI6IkRJU0FCTEVEIiwiZHNDaGVja3N1bSI6
+        Im5vbmUifSwiZXZlbnRzIjp7ImRzTGFiZWwiOiJFdmVudHMiLCJkc1ZlcnNp
+        b25JRCI6ImV2ZW50cy4wIiwiZHNDcmVhdGVEYXRlIjoiMjAxNS0wMS0yMVQy
+        MjoxNjoyMFoiLCJkc1N0YXRlIjoiQSIsImRzTUlNRSI6InRleHQveG1sIiwi
+        ZHNGb3JtYXRVUkkiOm51bGwsImRzQ29udHJvbEdyb3VwIjoiWCIsImRzU2l6
+        ZSI6MTksImRzVmVyc2lvbmFibGUiOmZhbHNlLCJkc0luZm9UeXBlIjpudWxs
+        LCJkc0xvY2F0aW9uIjoiZHJ1aWQ6bng1ODV5dzUzOTArZXZlbnRzK2V2ZW50
+        cy4wIiwiZHNMb2NhdGlvblR5cGUiOiJVUkwiLCJkc0NoZWNrc3VtVHlwZSI6
+        IkRJU0FCTEVEIiwiZHNDaGVja3N1bSI6Im5vbmUifSwiZW1iYXJnb01ldGFk
+        YXRhIjp7ImRzTGFiZWwiOiJFbWJhcmdvIG1ldGFkYXRhIiwiZHNWZXJzaW9u
+        SUQiOiJlbWJhcmdvTWV0YWRhdGEuMCIsImRzQ3JlYXRlRGF0ZSI6IjIwMTUt
+        MDEtMjFUMjI6MTY6MjBaIiwiZHNTdGF0ZSI6IkEiLCJkc01JTUUiOiJ0ZXh0
+        L3htbCIsImRzRm9ybWF0VVJJIjpudWxsLCJkc0NvbnRyb2xHcm91cCI6Ilgi
+        LCJkc1NpemUiOjI0OCwiZHNWZXJzaW9uYWJsZSI6ZmFsc2UsImRzSW5mb1R5
+        cGUiOm51bGwsImRzTG9jYXRpb24iOiJkcnVpZDpueDU4NXl3NTM5MCtlbWJh
+        cmdvTWV0YWRhdGErZW1iYXJnb01ldGFkYXRhLjAiLCJkc0xvY2F0aW9uVHlw
+        ZSI6IlVSTCIsImRzQ2hlY2tzdW1UeXBlIjoiRElTQUJMRUQiLCJkc0NoZWNr
+        c3VtIjoibm9uZSJ9LCJpZGVudGl0eU1ldGFkYXRhIjp7ImRzTGFiZWwiOiJJ
+        ZGVudGl0eSBNZXRhZGF0YSIsImRzVmVyc2lvbklEIjoiaWRlbnRpdHlNZXRh
+        ZGF0YS40IiwiZHNDcmVhdGVEYXRlIjoiMjAxNS0wMS0yMVQyMjoyNjowNloi
+        LCJkc1N0YXRlIjoiQSIsImRzTUlNRSI6InRleHQveG1sIiwiZHNGb3JtYXRV
+        UkkiOm51bGwsImRzQ29udHJvbEdyb3VwIjoiWCIsImRzU2l6ZSI6NzkwLCJk
+        c1ZlcnNpb25hYmxlIjpmYWxzZSwiZHNJbmZvVHlwZSI6bnVsbCwiZHNMb2Nh
+        dGlvbiI6ImRydWlkOm54NTg1eXc1MzkwK2lkZW50aXR5TWV0YWRhdGEraWRl
+        bnRpdHlNZXRhZGF0YS40IiwiZHNMb2NhdGlvblR5cGUiOiJVUkwiLCJkc0No
+        ZWNrc3VtVHlwZSI6IkRJU0FCTEVEIiwiZHNDaGVja3N1bSI6Im5vbmUifSwi
+        Y29udGVudE1ldGFkYXRhIjp7fSwid29ya2Zsb3dzIjp7ImRzTGFiZWwiOiJX
+        b3JrZmxvdyIsImRzVmVyc2lvbklEIjoid29ya2Zsb3dzLjAiLCJkc0NyZWF0
+        ZURhdGUiOiIyMDEyLTA2LTA1VDIzOjUxOjM2WiIsImRzU3RhdGUiOiJBIiwi
+        ZHNNSU1FIjoiYXBwbGljYXRpb24veG1sIiwiZHNGb3JtYXRVUkkiOm51bGws
+        ImRzQ29udHJvbEdyb3VwIjoiRSIsImRzU2l6ZSI6MCwiZHNWZXJzaW9uYWJs
+        ZSI6ZmFsc2UsImRzSW5mb1R5cGUiOm51bGwsImRzTG9jYXRpb24iOiJodHRw
+        czovL2x5YmVyc2VydmljZXMtcHJvZC5zdGFuZm9yZC5lZHUvd29ya2Zsb3cv
+        ZG9yL29iamVjdHMvZHJ1aWQ6bng1ODV5dzUzOTAvd29ya2Zsb3dzIiwiZHNM
+        b2NhdGlvblR5cGUiOiJVUkwiLCJkc0NoZWNrc3VtVHlwZSI6IkRJU0FCTEVE
+        IiwiZHNDaGVja3N1bSI6Im5vbmUifSwiZGVzY01ldGFkYXRhIjp7ImRzTGFi
+        ZWwiOiJEZXNjcmlwdGl2ZSBNZXRhZGF0YSIsImRzVmVyc2lvbklEIjoiZGVz
+        Y01ldGFkYXRhLjEiLCJkc0NyZWF0ZURhdGUiOiIyMDExLTA5LTE2VDE5OjM1
+        OjEyWiIsImRzU3RhdGUiOiJBIiwiZHNNSU1FIjoidGV4dC94bWwiLCJkc0Zv
+        cm1hdFVSSSI6bnVsbCwiZHNDb250cm9sR3JvdXAiOiJYIiwiZHNTaXplIjox
+        NDI2LCJkc1ZlcnNpb25hYmxlIjpmYWxzZSwiZHNJbmZvVHlwZSI6bnVsbCwi
+        ZHNMb2NhdGlvbiI6ImRydWlkOm54NTg1eXc1MzkwK2Rlc2NNZXRhZGF0YStk
+        ZXNjTWV0YWRhdGEuMSIsImRzTG9jYXRpb25UeXBlIjoiVVJMIiwiZHNDaGVj
+        a3N1bVR5cGUiOiJESVNBQkxFRCIsImRzQ2hlY2tzdW0iOiJub25lIn0sInJp
+        Z2h0c01ldGFkYXRhIjp7ImRzTGFiZWwiOiJSaWdodHMgTWV0YWRhdGEiLCJk
+        c1ZlcnNpb25JRCI6InJpZ2h0c01ldGFkYXRhLjAiLCJkc0NyZWF0ZURhdGUi
+        OiIyMDExLTA2LTI3VDIxOjQ1OjQxWiIsImRzU3RhdGUiOiJBIiwiZHNNSU1F
+        IjoidGV4dC94bWwiLCJkc0Zvcm1hdFVSSSI6bnVsbCwiZHNDb250cm9sR3Jv
+        dXAiOiJYIiwiZHNTaXplIjozMzAsImRzVmVyc2lvbmFibGUiOnRydWUsImRz
+        SW5mb1R5cGUiOm51bGwsImRzTG9jYXRpb24iOiJkcnVpZDpueDU4NXl3NTM5
+        MCtyaWdodHNNZXRhZGF0YStyaWdodHNNZXRhZGF0YS4wIiwiZHNMb2NhdGlv
+        blR5cGUiOiJVUkwiLCJkc0NoZWNrc3VtVHlwZSI6IkRJU0FCTEVEIiwiZHND
+        aGVja3N1bSI6Im5vbmUifSwidmVyc2lvbk1ldGFkYXRhIjp7ImRzTGFiZWwi
+        OiJWZXJzaW9uIE1ldGFkYXRhIiwiZHNWZXJzaW9uSUQiOiJ2ZXJzaW9uTWV0
+        YWRhdGEuMCIsImRzQ3JlYXRlRGF0ZSI6IjIwMTUtMDEtMjFUMjI6MTY6MjFa
+        IiwiZHNTdGF0ZSI6IkEiLCJkc01JTUUiOiJ0ZXh0L3htbCIsImRzRm9ybWF0
+        VVJJIjpudWxsLCJkc0NvbnRyb2xHcm91cCI6IlgiLCJkc1NpemUiOjEzNiwi
+        ZHNWZXJzaW9uYWJsZSI6ZmFsc2UsImRzSW5mb1R5cGUiOm51bGwsImRzTG9j
+        YXRpb24iOiJkcnVpZDpueDU4NXl3NTM5MCt2ZXJzaW9uTWV0YWRhdGErdmVy
+        c2lvbk1ldGFkYXRhLjAiLCJkc0xvY2F0aW9uVHlwZSI6IlVSTCIsImRzQ2hl
+        Y2tzdW1UeXBlIjoiRElTQUJMRUQiLCJkc0NoZWNrc3VtIjoibm9uZSJ9fSwi
+        b2JqTGFiZWwiOiJCYXNzaS1WZXJhdHRpIENvbGxlY3Rpb24iLCJvYmpPd25l
+        cklkIjoiRE9SIiwib2JqTW9kZWxzIjpbImluZm86ZmVkb3JhL2FmbW9kZWw6
+        RG9yX0l0ZW0iLCJpbmZvOmZlZG9yYS9mZWRvcmEtc3lzdGVtOkZlZG9yYU9i
+        amVjdC0zLjAiXSwib2JqQ3JlYXRlRGF0ZSI6IjIwMTEtMDctMDVUMTc6MTI6
+        MThaIiwib2JqTGFzdE1vZERhdGUiOiIyMDE1LTAxLTIxVDIyOjI2OjA2WiIs
+        Im9iakRpc3NJbmRleFZpZXdVUkwiOiJodHRwczovL2xvY2FsaG9zdDo0NDMv
+        ZmVkb3JhL29iamVjdHMvZHJ1aWQlM0FueDU4NXl3NTM5MC9tZXRob2RzL2Zl
+        ZG9yYS1zeXN0ZW0lM0EzL3ZpZXdNZXRob2RJbmRleCIsIm9iakl0ZW1JbmRl
+        eFZpZXdVUkwiOiJodHRwczovL2xvY2FsaG9zdDo0NDMvZmVkb3JhL29iamVj
+        dHMvZHJ1aWQlM0FueDU4NXl3NTM5MC9tZXRob2RzL2ZlZG9yYS1zeXN0ZW0l
+        M0EzL3ZpZXdJdGVtSW5kZXgiLCJvYmpTdGF0ZSI6IkEifSddLCdkY190aXRs
+        ZV90Jz0+WydCYXNzaS1WZXJhdHRpIENvbGxlY3Rpb24nXSwnZGNfdGl0bGVf
+        ZGlzcGxheSc9PlsnQmFzc2ktVmVyYXR0aSBDb2xsZWN0aW9uJ10sJ2RjX3Rp
+        dGxlX2ZhY2V0Jz0+WydCYXNzaS1WZXJhdHRpIENvbGxlY3Rpb24nXSwnZGNf
+        MF90aXRsZV90Jz0+WydCYXNzaS1WZXJhdHRpIENvbGxlY3Rpb24nXSwnZGNf
+        MF90aXRsZV9kaXNwbGF5Jz0+WydCYXNzaS1WZXJhdHRpIENvbGxlY3Rpb24n
+        XSwnZGNfMF90aXRsZV9mYWNldCc9PlsnQmFzc2ktVmVyYXR0aSBDb2xsZWN0
+        aW9uJ10sJ2RjX2lkZW50aWZpZXJfdCc9PlsndXVpZDplMjVmOTE0Mi0zN2Y2
+        LTExZTItOTZhZi0wMjI4NThiZWZlNjAnLCdkcnVpZDpueDU4NXl3NTM5MCdd
+        LCdkY19pZGVudGlmaWVyX2Rpc3BsYXknPT5bJ3V1aWQ6ZTI1ZjkxNDItMzdm
+        Ni0xMWUyLTk2YWYtMDIyODU4YmVmZTYwJywnZHJ1aWQ6bng1ODV5dzUzOTAn
+        XSwnZGNfMF9pZGVudGlmaWVyX3QnPT5bJ3V1aWQ6ZTI1ZjkxNDItMzdmNi0x
+        MWUyLTk2YWYtMDIyODU4YmVmZTYwJywnZHJ1aWQ6bng1ODV5dzUzOTAnXSwn
+        ZGNfMF9pZGVudGlmaWVyX2Rpc3BsYXknPT5bJ3V1aWQ6ZTI1ZjkxNDItMzdm
+        Ni0xMWUyLTk2YWYtMDIyODU4YmVmZTYwJywnZHJ1aWQ6bng1ODV5dzUzOTAn
+        XSwndGl0bGVfdCc9PlsnQmFzc2ktVmVyYXR0aSBDb2xsZWN0aW9uJ10sJ3Rp
+        dGxlX2Rpc3BsYXknPT5bJ0Jhc3NpLVZlcmF0dGkgQ29sbGVjdGlvbiddLCd0
+        aXRsZV9mYWNldCc9PlsnQmFzc2ktVmVyYXR0aSBDb2xsZWN0aW9uJ10sJ2lk
+        ZW50aWZpZXJfdCc9PlsndXVpZDplMjVmOTE0Mi0zN2Y2LTExZTItOTZhZi0w
+        MjI4NThiZWZlNjAnLCdkcnVpZDpueDU4NXl3NTM5MCcsJ3V1aWQ6ZTI1Zjkx
+        NDItMzdmNi0xMWUyLTk2YWYtMDIyODU4YmVmZTYwJ10sJ2lkZW50aWZpZXJf
+        ZGlzcGxheSc9PlsndXVpZDplMjVmOTE0Mi0zN2Y2LTExZTItOTZhZi0wMjI4
+        NThiZWZlNjAnLCdkcnVpZDpueDU4NXl3NTM5MCddLCdpZGVudGl0eU1ldGFk
+        YXRhX29iamVjdElkX3QnPT5bJ2RydWlkOm54NTg1eXc1MzkwJ10sJ2lkZW50
+        aXR5TWV0YWRhdGFfMF9vYmplY3RJZF90Jz0+WydkcnVpZDpueDU4NXl3NTM5
+        MCddLCdpZGVudGl0eU1ldGFkYXRhX29iamVjdFR5cGVfdCc9PlsnY29sbGVj
+        dGlvbicsJ3NldCddLCdpZGVudGl0eU1ldGFkYXRhX29iamVjdFR5cGVfZmFj
+        ZXQnPT5bJ2NvbGxlY3Rpb24nLCdzZXQnXSwnaWRlbnRpdHlNZXRhZGF0YV8w
+        X29iamVjdFR5cGVfdCc9PlsnY29sbGVjdGlvbicsJ3NldCddLCdpZGVudGl0
+        eU1ldGFkYXRhXzBfb2JqZWN0VHlwZV9mYWNldCc9PlsnY29sbGVjdGlvbics
+        J3NldCddLCdpZGVudGl0eU1ldGFkYXRhX29iamVjdENyZWF0b3JfdCc9Plsn
+        RE9SJ10sJ2lkZW50aXR5TWV0YWRhdGFfb2JqZWN0Q3JlYXRvcl9mYWNldCc9
+        PlsnRE9SJ10sJ2lkZW50aXR5TWV0YWRhdGFfMF9vYmplY3RDcmVhdG9yX3Qn
+        PT5bJ0RPUiddLCdpZGVudGl0eU1ldGFkYXRhXzBfb2JqZWN0Q3JlYXRvcl9m
+        YWNldCc9PlsnRE9SJ10sJ29iamVjdElkX3QnPT5bJ2RydWlkOm54NTg1eXc1
+        MzkwJ10sJ29iamVjdFR5cGVfdCc9PlsnY29sbGVjdGlvbicsJ3NldCddLCdv
+        YmplY3RUeXBlX2ZhY2V0Jz0+Wydjb2xsZWN0aW9uJywnc2V0J10sJ29iamVj
+        dENyZWF0b3JfdCc9PlsnRE9SJ10sJ29iamVjdENyZWF0b3JfZmFjZXQnPT5b
+        J0RPUiddLCdvYmpfbGFiZWxfdCc9PlsnQmFzc2ktVmVyYXR0aSBDb2xsZWN0
+        aW9uJ10sJ29ial9vd25lcl9pZF90Jz0+WydET1InXSwnb2JqX21vZGVsc190
+        Jz0+WydpbmZvOmZlZG9yYS9hZm1vZGVsOkRvcl9JdGVtIGluZm86ZmVkb3Jh
+        L2ZlZG9yYS1zeXN0ZW06RmVkb3JhT2JqZWN0LTMuMCddLCdvYmpfY3JlYXRl
+        X2RhdGVfZHQnPT5bJzIwMTEtMDctMDVUMTc6MTI6MThaJ10sJ29ial9sYXN0
+        X21vZF9kYXRlX2R0Jz0+WycyMDE1LTAxLTIxVDIyOjI2OjA2WiddLCdvYmpf
+        ZGlzc19pbmRleF92aWV3X3VybF90Jz0+WydodHRwczovL2xvY2FsaG9zdDo0
+        NDMvZmVkb3JhL29iamVjdHMvZHJ1aWQlM0FueDU4NXl3NTM5MC9tZXRob2Rz
+        L2ZlZG9yYS1zeXN0ZW0lM0EzL3ZpZXdNZXRob2RJbmRleCddLCdvYmpfaXRl
+        bV9pbmRleF92aWV3X3VybF90Jz0+WydodHRwczovL2xvY2FsaG9zdDo0NDMv
+        ZmVkb3JhL29iamVjdHMvZHJ1aWQlM0FueDU4NXl3NTM5MC9tZXRob2RzL2Zl
+        ZG9yYS1zeXN0ZW0lM0EzL3ZpZXdJdGVtSW5kZXgnXSwnb2JqX3N0YXRlX3Qn
+        PT5bJ0EnXSwnZG9yX2lkX3QnPT5bJ2UyNWY5MTQyLTM3ZjYtMTFlMi05NmFm
+        LTAyMjg1OGJlZmU2MCddLCd1dWlkX2lkX3QnPT5bJ2UyNWY5MTQyLTM3ZjYt
+        MTFlMi05NmFmLTAyMjg1OGJlZmU2MCddLCdtb2RzX3RpdGxlX2luZm9fbWFp
+        bl90aXRsZV9mYWNldCc9PlsnQmFzc2ktVmVyYXR0aSBDb2xsZWN0aW9uJ10s
+        J21vZHNfMF90aXRsZV9pbmZvXzBfbWFpbl90aXRsZV9mYWNldCc9PlsnQmFz
+        c2ktVmVyYXR0aSBDb2xsZWN0aW9uJ10sJ21vZHNfYWJzdHJhY3RfZGlzcGxh
+        eSc9PlsnVGhlIEJpYmxpb3RlY2EgZGVsbOKAmUFyY2hpZ2lubmFzaW8gaW4g
+        Qm9sb2duYSBpcyB0aGUgcmVwb3NpdG9yeSBmb3IgdGhlIExhdXJhIEJhc3Np
+        IGUgZmFtaWdsaWEgVmVyYXR0aSBhcmNoaXZlLiBMYXVyYSBCYXNzaSAoMTcx
+        MS0xNzc4KSwgdGhlIHNlY29uZCB3b21hbiB0byByZWNlaXZlIGEgdW5pdmVy
+        c2l0eSBkZWdyZWUgYW5kIHRoZSBmaXJzdCB0byBiZSBvZmZlcmVkIGFuIG9m
+        ZmljaWFsIHRlYWNoaW5nIHBvc2l0aW9uIGluIGFueSBFdXJvcGVhbiB1bml2
+        ZXJzaXR5LCB3YXMgYSBmaWd1cmUgb2YgZ3JlYXQgaW1wb3J0YW5jZSB0byB0
+        aGUgc2NpZW50aWZpYyBjdWx0dXJlIG9mIEVubGlnaHRlbm1lbnQgSXRhbHku
+        IFNoZSB3YXMgdGhlIG1vc3QgcHJvbWluZW50IGZlbWFsZSBtZW1iZXIgb2Yg
+        SXRhbHnigJlzIGxlYWRpbmcgc2NpZW50aWZpYyBzb2NpZXR5LCBwbGF5ZWQg
+        YSBjZW50cmFsIHJvbGUgaW4gdGhlIGFwcGxpY2F0aW9uIG9mIE5ld3Rvbmlh
+        biBwcmluY2lwbGVzIHRvIGJldHRlciB1bmRlcnN0YW5kaW5nIG9mIHRoZSBu
+        YXR1cmFsIHdvcmxkLCBhbmQgaGVscGVkIGNyZWF0ZSBhIG5ldHdvcmsgb2Yg
+        ZXhwZXJpbWVudGVycyBhbmQgdGVhY2hlcnMgY29ubmVjdGluZyBJdGFseSB3
+        aXRoIEZyYW5jZSBhbmQgRW5nbGFuZC4gQWxvbmdzaWRlIGhlciBzY2llbnRp
+        ZmljIGNvbnRyaWJ1dGlvbnMgYW5kIGludGVncmFsIHJvbGUgaW4gdGhlIEV1
+        cm9wZWFuIGNvbW11bml0eSBvZiBzY2llbmNlLCBCYXNzaSBpcyBhbHNvIGlu
+        dGVyZXN0aW5nIGZvciB0aGUgd2luZG93IHNoZSBwcm92aWRlcyBpbnRvIHRo
+        ZSBsaWZlIGFuZCBidXNpbmVzcyBvZiBhIHByb2Zlc3Npb25hbCB3b21hbiBp
+        biAxOHRoIGNlbnR1cnkgSXRhbHkuJ10sJ21vZHNfMF9hYnN0cmFjdF9kaXNw
+        bGF5Jz0+WydUaGUgQmlibGlvdGVjYSBkZWxs4oCZQXJjaGlnaW5uYXNpbyBp
+        biBCb2xvZ25hIGlzIHRoZSByZXBvc2l0b3J5IGZvciB0aGUgTGF1cmEgQmFz
+        c2kgZSBmYW1pZ2xpYSBWZXJhdHRpIGFyY2hpdmUuIExhdXJhIEJhc3NpICgx
+        NzExLTE3NzgpLCB0aGUgc2Vjb25kIHdvbWFuIHRvIHJlY2VpdmUgYSB1bml2
+        ZXJzaXR5IGRlZ3JlZSBhbmQgdGhlIGZpcnN0IHRvIGJlIG9mZmVyZWQgYW4g
+        b2ZmaWNpYWwgdGVhY2hpbmcgcG9zaXRpb24gaW4gYW55IEV1cm9wZWFuIHVu
+        aXZlcnNpdHksIHdhcyBhIGZpZ3VyZSBvZiBncmVhdCBpbXBvcnRhbmNlIHRv
+        IHRoZSBzY2llbnRpZmljIGN1bHR1cmUgb2YgRW5saWdodGVubWVudCBJdGFs
+        eS4gU2hlIHdhcyB0aGUgbW9zdCBwcm9taW5lbnQgZmVtYWxlIG1lbWJlciBv
+        ZiBJdGFseeKAmXMgbGVhZGluZyBzY2llbnRpZmljIHNvY2lldHksIHBsYXll
+        ZCBhIGNlbnRyYWwgcm9sZSBpbiB0aGUgYXBwbGljYXRpb24gb2YgTmV3dG9u
+        aWFuIHByaW5jaXBsZXMgdG8gYmV0dGVyIHVuZGVyc3RhbmRpbmcgb2YgdGhl
+        IG5hdHVyYWwgd29ybGQsIGFuZCBoZWxwZWQgY3JlYXRlIGEgbmV0d29yayBv
+        ZiBleHBlcmltZW50ZXJzIGFuZCB0ZWFjaGVycyBjb25uZWN0aW5nIEl0YWx5
+        IHdpdGggRnJhbmNlIGFuZCBFbmdsYW5kLiBBbG9uZ3NpZGUgaGVyIHNjaWVu
+        dGlmaWMgY29udHJpYnV0aW9ucyBhbmQgaW50ZWdyYWwgcm9sZSBpbiB0aGUg
+        RXVyb3BlYW4gY29tbXVuaXR5IG9mIHNjaWVuY2UsIEJhc3NpIGlzIGFsc28g
+        aW50ZXJlc3RpbmcgZm9yIHRoZSB3aW5kb3cgc2hlIHByb3ZpZGVzIGludG8g
+        dGhlIGxpZmUgYW5kIGJ1c2luZXNzIG9mIGEgcHJvZmVzc2lvbmFsIHdvbWFu
+        IGluIDE4dGggY2VudHVyeSBJdGFseS4nXSwndGl0bGVfaW5mb19tYWluX3Rp
+        dGxlX2ZhY2V0Jz0+WydCYXNzaS1WZXJhdHRpIENvbGxlY3Rpb24nXSwndGl0
+        bGVfaW5mb18wX21haW5fdGl0bGVfZmFjZXQnPT5bJ0Jhc3NpLVZlcmF0dGkg
+        Q29sbGVjdGlvbiddLCdhYnN0cmFjdF9kaXNwbGF5Jz0+WydUaGUgQmlibGlv
+        dGVjYSBkZWxs4oCZQXJjaGlnaW5uYXNpbyBpbiBCb2xvZ25hIGlzIHRoZSBy
+        ZXBvc2l0b3J5IGZvciB0aGUgTGF1cmEgQmFzc2kgZSBmYW1pZ2xpYSBWZXJh
+        dHRpIGFyY2hpdmUuIExhdXJhIEJhc3NpICgxNzExLTE3NzgpLCB0aGUgc2Vj
+        b25kIHdvbWFuIHRvIHJlY2VpdmUgYSB1bml2ZXJzaXR5IGRlZ3JlZSBhbmQg
+        dGhlIGZpcnN0IHRvIGJlIG9mZmVyZWQgYW4gb2ZmaWNpYWwgdGVhY2hpbmcg
+        cG9zaXRpb24gaW4gYW55IEV1cm9wZWFuIHVuaXZlcnNpdHksIHdhcyBhIGZp
+        Z3VyZSBvZiBncmVhdCBpbXBvcnRhbmNlIHRvIHRoZSBzY2llbnRpZmljIGN1
+        bHR1cmUgb2YgRW5saWdodGVubWVudCBJdGFseS4gU2hlIHdhcyB0aGUgbW9z
+        dCBwcm9taW5lbnQgZmVtYWxlIG1lbWJlciBvZiBJdGFseeKAmXMgbGVhZGlu
+        ZyBzY2llbnRpZmljIHNvY2lldHksIHBsYXllZCBhIGNlbnRyYWwgcm9sZSBp
+        biB0aGUgYXBwbGljYXRpb24gb2YgTmV3dG9uaWFuIHByaW5jaXBsZXMgdG8g
+        YmV0dGVyIHVuZGVyc3RhbmRpbmcgb2YgdGhlIG5hdHVyYWwgd29ybGQsIGFu
+        ZCBoZWxwZWQgY3JlYXRlIGEgbmV0d29yayBvZiBleHBlcmltZW50ZXJzIGFu
+        ZCB0ZWFjaGVycyBjb25uZWN0aW5nIEl0YWx5IHdpdGggRnJhbmNlIGFuZCBF
+        bmdsYW5kLiBBbG9uZ3NpZGUgaGVyIHNjaWVudGlmaWMgY29udHJpYnV0aW9u
+        cyBhbmQgaW50ZWdyYWwgcm9sZSBpbiB0aGUgRXVyb3BlYW4gY29tbXVuaXR5
+        IG9mIHNjaWVuY2UsIEJhc3NpIGlzIGFsc28gaW50ZXJlc3RpbmcgZm9yIHRo
+        ZSB3aW5kb3cgc2hlIHByb3ZpZGVzIGludG8gdGhlIGxpZmUgYW5kIGJ1c2lu
+        ZXNzIG9mIGEgcHJvZmVzc2lvbmFsIHdvbWFuIGluIDE4dGggY2VudHVyeSBJ
+        dGFseS4nXSwnaXNfZ292ZXJuZWRfYnlfcyc9PlsnaW5mbzpmZWRvcmEvZHJ1
+        aWQ6d3EzMDd5azkwNDMnXSwnaGFzX21vZGVsX3MnPT5bJ2luZm86ZmVkb3Jh
+        L2FmbW9kZWw6RG9yX0l0ZW0nLCdpbmZvOmZlZG9yYS9hZm1vZGVsOkRvcl9D
+        b2xsZWN0aW9uJ10sJ2Rvcl9zZXJ2aWNlc192ZXJzaW9uX2ZhY2V0Jz0+Wyc0
+        LjE1LjInXSwnaW5kZXhlZF9hdF9kdCc9PlsnMjAxNS0wMS0yMVQyMjoyNjox
+        M1onXSwnaW5kZXhlZF9kYXlfdCc9PlsnMjAxNS0wMS0yMVQwODowMDowMFon
+        XSwnaW5kZXhlZF9kYXlfZmFjZXQnPT5bJzIwMTUtMDEtMjFUMDg6MDA6MDBa
+        J10sJ2RzX3NwZWNzX2Rpc3BsYXknPT5bJ1JFTFMtRVhUfFh8YXBwbGljYXRp
+        b24vcmRmK3htbHwxfDQ1OHxSREYgU3RhdGVtZW50cyBhYm91dCB0aGlzIG9i
+        amVjdCcsJ0RDfFh8dGV4dC94bWx8MXw0Njl8RHVibGluIENvcmUgUmVjb3Jk
+        IGZvciB0aGlzIG9iamVjdCcsJ2V2ZW50c3xYfHRleHQveG1sfDB8MTl8RXZl
+        bnRzJywnZW1iYXJnb01ldGFkYXRhfFh8dGV4dC94bWx8MHwyNDh8RW1iYXJn
+        byBtZXRhZGF0YScsJ2lkZW50aXR5TWV0YWRhdGF8WHx0ZXh0L3htbHw0fDc5
+        MHxJZGVudGl0eSBNZXRhZGF0YScsJ3dvcmtmbG93c3xFfGFwcGxpY2F0aW9u
+        L3htbHwwfDk4fFdvcmtmbG93JywnZGVzY01ldGFkYXRhfFh8dGV4dC94bWx8
+        MXwxNDI2fERlc2NyaXB0aXZlIE1ldGFkYXRhJywncmlnaHRzTWV0YWRhdGF8
+        WHx0ZXh0L3htbHwwfDMzMHxSaWdodHMgTWV0YWRhdGEnLCd2ZXJzaW9uTWV0
+        YWRhdGF8WHx0ZXh0L3htbHwwfDEzNnxWZXJzaW9uIE1ldGFkYXRhJ10sJ2Fw
+        b190aXRsZV90Jz0+WydCYXNzaS1WZXJhdHRpJ10sJ2Fwb190aXRsZV9mYWNl
+        dCc9PlsnQmFzc2ktVmVyYXR0aSddLCd2ZXJzaW9uc19kaXNwbGF5Jz0+Wycx
+        OzEuMC4wO0luaXRpYWwgVmVyc2lvbiddLCdzdGF0dXNfZGlzcGxheSc9Plsn
+        djEgVW5rbm93biBTdGF0dXMnXSwnY3VycmVudF92ZXJzaW9uX2Rpc3BsYXkn
+        PT5bJzEnXSwnY3VycmVudF92ZXJzaW9uX2ZhY2V0Jz0+WycxJ10sJ2xhc3Rf
+        bW9kaWZpZWRfZGF5X2ZhY2V0Jz0+WycyMDE1LTAxLTIxJ10sJ21ldGFkYXRh
+        X2Zvcm1hdF90Jz0+Wydtb2RzJ10sJ21ldGFkYXRhX2Zvcm1hdF9mYWNldCc9
+        PlsnbW9kcyddLCdwdWJsaWNfZGNfdGl0bGVfdCc9PlsnQmFzc2ktVmVyYXR0
+        aSBDb2xsZWN0aW9uJ10sJ3B1YmxpY19kY19kZXNjcmlwdGlvbl90Jz0+WydU
+        aGUgQmlibGlvdGVjYSBkZWxs4oCZQXJjaGlnaW5uYXNpbyBpbiBCb2xvZ25h
+        IGlzIHRoZSByZXBvc2l0b3J5IGZvciB0aGUgTGF1cmEgQmFzc2kgZSBmYW1p
+        Z2xpYSBWZXJhdHRpIGFyY2hpdmUuIExhdXJhIEJhc3NpICgxNzExLTE3Nzgp
+        LCB0aGUgc2Vjb25kIHdvbWFuIHRvIHJlY2VpdmUgYSB1bml2ZXJzaXR5IGRl
+        Z3JlZSBhbmQgdGhlIGZpcnN0IHRvIGJlIG9mZmVyZWQgYW4gb2ZmaWNpYWwg
+        dGVhY2hpbmcgcG9zaXRpb24gaW4gYW55IEV1cm9wZWFuIHVuaXZlcnNpdHks
+        IHdhcyBhIGZpZ3VyZSBvZiBncmVhdCBpbXBvcnRhbmNlIHRvIHRoZSBzY2ll
+        bnRpZmljIGN1bHR1cmUgb2YgRW5saWdodGVubWVudCBJdGFseS4gU2hlIHdh
+        cyB0aGUgbW9zdCBwcm9taW5lbnQgZmVtYWxlIG1lbWJlciBvZiBJdGFseeKA
+        mXMgbGVhZGluZyBzY2llbnRpZmljIHNvY2lldHksIHBsYXllZCBhIGNlbnRy
+        YWwgcm9sZSBpbiB0aGUgYXBwbGljYXRpb24gb2YgTmV3dG9uaWFuIHByaW5j
+        aXBsZXMgdG8gYmV0dGVyIHVuZGVyc3RhbmRpbmcgb2YgdGhlIG5hdHVyYWwg
+        d29ybGQsIGFuZCBoZWxwZWQgY3JlYXRlIGEgbmV0d29yayBvZiBleHBlcmlt
+        ZW50ZXJzIGFuZCB0ZWFjaGVycyBjb25uZWN0aW5nIEl0YWx5IHdpdGggRnJh
+        bmNlIGFuZCBFbmdsYW5kLiBBbG9uZ3NpZGUgaGVyIHNjaWVudGlmaWMgY29u
+        dHJpYnV0aW9ucyBhbmQgaW50ZWdyYWwgcm9sZSBpbiB0aGUgRXVyb3BlYW4g
+        Y29tbXVuaXR5IG9mIHNjaWVuY2UsIEJhc3NpIGlzIGFsc28gaW50ZXJlc3Rp
+        bmcgZm9yIHRoZSB3aW5kb3cgc2hlIHByb3ZpZGVzIGludG8gdGhlIGxpZmUg
+        YW5kIGJ1c2luZXNzIG9mIGEgcHJvZmVzc2lvbmFsIHdvbWFuIGluIDE4dGgg
+        Y2VudHVyeSBJdGFseS4nXSwncHVibGljX2RjX3R5cGVfdCc9PlsnQ29sbGVj
+        dGlvbiddLCdwdWJsaWNfZGNfbGFuZ3VhZ2VfdCc9PlsnZW5nJ10sJ3N3X3Rp
+        dGxlXzI0NWFfc2VhcmNoX2ZhY2V0X2ZhY2V0Jz0+WydCYXNzaS1WZXJhdHRp
+        IENvbGxlY3Rpb24nXSwnc3dfdGl0bGVfMjQ1X3NlYXJjaF9mYWNldF9mYWNl
+        dCc9PlsnQmFzc2ktVmVyYXR0aSBDb2xsZWN0aW9uJ10sJ3N3X3RpdGxlX3Nv
+        cnRfZmFjZXQnPT5bJ0Jhc3NpVmVyYXR0aSBDb2xsZWN0aW9uJ10sJ3N3X3Rp
+        dGxlXzI0NWFfZGlzcGxheV9mYWNldCc9PlsnQmFzc2ktVmVyYXR0aSBDb2xs
+        ZWN0aW9uJ10sJ3N3X3RpdGxlX2Rpc3BsYXlfZmFjZXQnPT5bJ0Jhc3NpLVZl
+        cmF0dGkgQ29sbGVjdGlvbiddLCdzd190aXRsZV9mdWxsX2Rpc3BsYXlfZmFj
+        ZXQnPT5bJ0Jhc3NpLVZlcmF0dGkgQ29sbGVjdGlvbiddLCdzd19sYW5ndWFn
+        ZV9mYWNldCc9PlsnRW5nbGlzaCddLCdzd19hbGxfc2VhcmNoX2ZhY2V0X2Zh
+        Y2V0Jz0+WycKICAgICAgICAgICAgCiAgICAgICAgICAgICAgIEJhc3NpLVZl
+        cmF0dGkgQ29sbGVjdGlvbgogICAgICAgICAgICAKICAgICAgICAgICAgVGhl
+        IEJpYmxpb3RlY2EgZGVsbOKAmUFyY2hpZ2lubmFzaW8gaW4gQm9sb2duYSBp
+        cyB0aGUgcmVwb3NpdG9yeSBmb3IgdGhlIExhdXJhIEJhc3NpIGUgZmFtaWds
+        aWEgVmVyYXR0aSBhcmNoaXZlLiBMYXVyYSBCYXNzaSAoMTcxMS0xNzc4KSwg
+        dGhlIHNlY29uZCB3b21hbiB0byByZWNlaXZlIGEgdW5pdmVyc2l0eSBkZWdy
+        ZWUgYW5kIHRoZSBmaXJzdCB0byBiZSBvZmZlcmVkIGFuIG9mZmljaWFsIHRl
+        YWNoaW5nIHBvc2l0aW9uIGluIGFueSBFdXJvcGVhbiB1bml2ZXJzaXR5LCB3
+        YXMgYSBmaWd1cmUgb2YgZ3JlYXQgaW1wb3J0YW5jZSB0byB0aGUgc2NpZW50
+        aWZpYyBjdWx0dXJlIG9mIEVubGlnaHRlbm1lbnQgSXRhbHkuIFNoZSB3YXMg
+        dGhlIG1vc3QgcHJvbWluZW50IGZlbWFsZSBtZW1iZXIgb2YgSXRhbHnigJlz
+        IGxlYWRpbmcgc2NpZW50aWZpYyBzb2NpZXR5LCBwbGF5ZWQgYSBjZW50cmFs
+        IHJvbGUgaW4gdGhlIGFwcGxpY2F0aW9uIG9mIE5ld3RvbmlhbiBwcmluY2lw
+        bGVzIHRvIGJldHRlciB1bmRlcnN0YW5kaW5nIG9mIHRoZSBuYXR1cmFsIHdv
+        cmxkLCBhbmQgaGVscGVkIGNyZWF0ZSBhIG5ldHdvcmsgb2YgZXhwZXJpbWVu
+        dGVycyBhbmQgdGVhY2hlcnMgY29ubmVjdGluZyBJdGFseSB3aXRoIEZyYW5j
+        ZSBhbmQgRW5nbGFuZC4gQWxvbmdzaWRlIGhlciBzY2llbnRpZmljIGNvbnRy
+        aWJ1dGlvbnMgYW5kIGludGVncmFsIHJvbGUgaW4gdGhlIEV1cm9wZWFuIGNv
+        bW11bml0eSBvZiBzY2llbmNlLCBCYXNzaSBpcyBhbHNvIGludGVyZXN0aW5n
+        IGZvciB0aGUgd2luZG93IHNoZSBwcm92aWRlcyBpbnRvIHRoZSBsaWZlIGFu
+        ZCBidXNpbmVzcyBvZiBhIHByb2Zlc3Npb25hbCB3b21hbiBpbiAxOHRoIGNl
+        bnR1cnkgSXRhbHkuCiAgICAgICAgICAgIAogICAgICAgICAgICAKICAgICAg
+        ICAgICAgICAgZW5nCiAgICAgICAgICAgIAogICAgICAgICAnXSwnX3ZlcnNp
+        b25fJz0+MTQ5MDk0ODM3Nzk2NDE4MzU1MiwndGltZXN0YW1wJz0+JzIwMTUt
+        MDEtMjFUMjI6MjY6MTUuMTY5Wid9XX19Cg==
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:34 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nx585yw5390?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:34 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '985'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:nx585yw5390"
+        ><objLabel>Bassi-Veratti Collection</objLabel><objOwnerId>DOR</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2011-07-05T17:12:18.779Z</objCreateDate><objLastModDate>2015-01-21T22:26:06.561Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Anx585yw5390/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Anx585yw5390/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:34 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nx585yw5390/datastreams?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:34 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1208'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams  xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora-commons.org/definitions/1/0/listDatastreams.xsd" pid="druid:nx585yw5390"  baseURL="https://localhost:443/fedora/"
+        >    <datastream dsid="RELS-EXT" label="RDF Statements about this object"
+        mimeType="application/rdf+xml" />    <datastream dsid="workflows" label="Workflow"
+        mimeType="application/xml" />    <datastream dsid="DC" label="Dublin Core
+        Record for this object" mimeType="text/xml" />    <datastream dsid="descMetadata"
+        label="Descriptive Metadata" mimeType="text/xml" />    <datastream dsid="rightsMetadata"
+        label="Rights Metadata" mimeType="text/xml" />    <datastream dsid="events"
+        label="Events" mimeType="text/xml" />    <datastream dsid="embargoMetadata"
+        label="Embargo metadata" mimeType="text/xml" />    <datastream dsid="versionMetadata"
+        label="Version Metadata" mimeType="text/xml" />    <datastream dsid="identityMetadata"
+        label="Identity Metadata" mimeType="text/xml" /></objectDatastreams>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:34 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nx585yw5390/datastreams/RELS-EXT?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:34 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '957'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nx585yw5390"
+        dsID="RELS-EXT" ><dsLabel>RDF Statements about this object</dsLabel><dsVersionID>RELS-EXT.1</dsVersionID><dsCreateDate>2015-01-21T22:16:20.450Z</dsCreateDate><dsState>A</dsState><dsMIME>application/rdf+xml</dsMIME><dsFormatURI>info:fedora/fedora-system:FedoraRELSExt-1.0</dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>458</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:nx585yw5390+RELS-EXT+RELS-EXT.1</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:34 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nx585yw5390/datastreams/RELS-EXT/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:34 GMT
+      Content-Disposition:
+      - inline; filename="RDF Statements about this object.rdf"
+      Content-Type:
+      - application/rdf+xml
+      Content-Length:
+      - '458'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<rdf:RDF xmlns:fedora-model=\"info:fedora/fedora-system:def/model#\"
+        xmlns:hydra=\"http://projecthydra.org/ns/relations#\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n
+        \ <rdf:Description rdf:about=\"info:fedora/druid:nx585yw5390\">\n    <hydra:isGovernedBy
+        rdf:resource=\"info:fedora/druid:wq307yk9043\"></hydra:isGovernedBy>\n    <fedora-model:hasModel
+        rdf:resource=\"info:fedora/afmodel:Dor_Item\"></fedora-model:hasModel>\n  </rdf:Description>\n</rdf:RDF>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:34 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nx585yw5390/datastreams/workflows?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:34 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '941'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nx585yw5390"
+        dsID="workflows" ><dsLabel>Workflow</dsLabel><dsVersionID>workflows.0</dsVersionID><dsCreateDate>2012-06-05T23:51:36.220Z</dsCreateDate><dsState>A</dsState><dsMIME>application/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>E</dsControlGroup><dsSize>0</dsSize><dsVersionable>false</dsVersionable><dsInfoType></dsInfoType><dsLocation>https://lyberservices-prod.stanford.edu/workflow/dor/objects/druid:nx585yw5390/workflows</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:34 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nx585yw5390?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:34 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '985'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:nx585yw5390"
+        ><objLabel>Bassi-Veratti Collection</objLabel><objOwnerId>DOR</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2011-07-05T17:12:18.779Z</objCreateDate><objLastModDate>2015-01-21T22:26:06.561Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Anx585yw5390/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Anx585yw5390/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:34 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nx585yw5390/datastreams?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:34 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1208'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams  xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora-commons.org/definitions/1/0/listDatastreams.xsd" pid="druid:nx585yw5390"  baseURL="https://localhost:443/fedora/"
+        >    <datastream dsid="RELS-EXT" label="RDF Statements about this object"
+        mimeType="application/rdf+xml" />    <datastream dsid="workflows" label="Workflow"
+        mimeType="application/xml" />    <datastream dsid="DC" label="Dublin Core
+        Record for this object" mimeType="text/xml" />    <datastream dsid="descMetadata"
+        label="Descriptive Metadata" mimeType="text/xml" />    <datastream dsid="rightsMetadata"
+        label="Rights Metadata" mimeType="text/xml" />    <datastream dsid="events"
+        label="Events" mimeType="text/xml" />    <datastream dsid="embargoMetadata"
+        label="Embargo metadata" mimeType="text/xml" />    <datastream dsid="versionMetadata"
+        label="Version Metadata" mimeType="text/xml" />    <datastream dsid="identityMetadata"
+        label="Identity Metadata" mimeType="text/xml" /></objectDatastreams>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:34 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nx585yw5390/datastreams/RELS-EXT?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:34 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '957'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nx585yw5390"
+        dsID="RELS-EXT" ><dsLabel>RDF Statements about this object</dsLabel><dsVersionID>RELS-EXT.1</dsVersionID><dsCreateDate>2015-01-21T22:16:20.450Z</dsCreateDate><dsState>A</dsState><dsMIME>application/rdf+xml</dsMIME><dsFormatURI>info:fedora/fedora-system:FedoraRELSExt-1.0</dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>458</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:nx585yw5390+RELS-EXT+RELS-EXT.1</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:34 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nx585yw5390/datastreams/RELS-EXT/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:34 GMT
+      Content-Disposition:
+      - inline; filename="RDF Statements about this object.rdf"
+      Content-Type:
+      - application/rdf+xml
+      Content-Length:
+      - '458'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<rdf:RDF xmlns:fedora-model=\"info:fedora/fedora-system:def/model#\"
+        xmlns:hydra=\"http://projecthydra.org/ns/relations#\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n
+        \ <rdf:Description rdf:about=\"info:fedora/druid:nx585yw5390\">\n    <hydra:isGovernedBy
+        rdf:resource=\"info:fedora/druid:wq307yk9043\"></hydra:isGovernedBy>\n    <fedora-model:hasModel
+        rdf:resource=\"info:fedora/afmodel:Dor_Item\"></fedora-model:hasModel>\n  </rdf:Description>\n</rdf:RDF>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:34 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nx585yw5390/datastreams/workflows?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:35 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '941'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nx585yw5390"
+        dsID="workflows" ><dsLabel>Workflow</dsLabel><dsVersionID>workflows.0</dsVersionID><dsCreateDate>2012-06-05T23:51:36.220Z</dsCreateDate><dsState>A</dsState><dsMIME>application/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>E</dsControlGroup><dsSize>0</dsSize><dsVersionable>false</dsVersionable><dsInfoType></dsInfoType><dsLocation>https://lyberservices-prod.stanford.edu/workflow/dor/objects/druid:nx585yw5390/workflows</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:35 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nx585yw5390/datastreams/identityMetadata?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:35 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '924'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nx585yw5390"
+        dsID="identityMetadata" ><dsLabel>Identity Metadata</dsLabel><dsVersionID>identityMetadata.4</dsVersionID><dsCreateDate>2015-01-21T22:26:06.561Z</dsCreateDate><dsState>A</dsState><dsMIME>text/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>790</dsSize><dsVersionable>false</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:nx585yw5390+identityMetadata+identityMetadata.4</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:35 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nx585yw5390/datastreams/identityMetadata/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 22:26:35 GMT
+      Content-Disposition:
+      - inline; filename="Identity Metadata.xml"
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '790'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<identityMetadata>\n  <objectLabel>Bassi-Veratti Collection</objectLabel>\n
+        \ <objectType>collection</objectType>\n  <objectType>set</objectType>\n  <otherId
+        name=\"uuid\">e25f9142-37f6-11e2-96af-022858befe60</otherId>\n  <objectId>druid:nx585yw5390</objectId>\n
+        \ <objectCreator>DOR</objectCreator>\n  <release to=\"Kurita\" what=\"self\"
+        when=\"2015-01-21T22:13:39Z\" who=\"carrickr\">true</release>\n  <release
+        to=\"Kurita\" what=\"self\" when=\"2015-01-21T22:16:08Z\" who=\"carrickr\">false</release>\n
+        \ <release to=\"Kurita\" what=\"self\" when=\"2015-01-21T22:16:17Z\" who=\"carrickr\">true</release>\n
+        \ <release to=\"Kurita\" what=\"collection\" when=\"2015-01-21T22:25:53Z\"
+        who=\"carrickr\">false</release>\n  <release to=\"Kurita\" what=\"collection\"
+        when=\"2015-01-21T22:26:03Z\" who=\"carrickr\">true</release>\n</identityMetadata>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 22:26:35 GMT
+recorded_with: VCR 2.9.3

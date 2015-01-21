@@ -39,8 +39,8 @@ module Dor
       pub = Nokogiri::XML("<publicObject/>").root
       pub['id'] = pid
       pub['published'] = Time.now.xmlschema
+      release_xml=Nokogiri(self.generate_release_xml).xpath('//release')
 
-      release_xml=Nokogiri(self.generate_release_xml).root
       im=self.datastreams['identityMetadata'].ng_xml.clone
       im.search('//release').each {|node| node.remove} # remove any <release> tags from public xml which have full history
       im.root.add_child(release_xml)  # now add in final <release> tag  #TODO:  Adding this breaks tests, rework these

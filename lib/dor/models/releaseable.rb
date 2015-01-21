@@ -6,13 +6,15 @@ module Dor
     
     #Generate XML structure for inclusion to Purl 
     #
-    #@return [String] The XML release node as a string
+    #@return [String] The XML release node as a string, with ReleaseDigest as the root document
     def generate_release_xml
       builder = Nokogiri::XML::Builder.new do |xml|
-        self.released_for.each do |project,released_value|
-          xml.release(released_value["release"],:to=>project)
-        end          
-      end
+        xml.ReleaseDigest {
+          self.released_for.each do |project,released_value|
+            xml.release(released_value["release"],:to=>project)
+          end  
+          }        
+        end
       return builder.to_xml
     end
     
@@ -45,7 +47,7 @@ module Dor
       
       #We now have the keys for all potential releases, we need to check the tags and the most recent time stamp with an explicit true or false wins, in a nil case, the lack of an explicit false tag we do nothing
       (potential_applicable_release_tags.keys-released_hash.keys).each do |key|  #don't bother checking the ones already added to the release hash, they were added due to a self tag and that has won
-        latest_applicable_tag_for_key = latest_applicable_release_tag_in_array(potential_applicable_release_tags[keys], administrative_tags)
+        latest_applicable_tag_for_key = latest_applicable_release_tag_in_array(potential_applicable_release_tags[key], administrative_tags)
         if latest_applicable_tag_for_key != nil #We have a valid tag, record it
           released_hash[key] = self.clean_release_tag_for_purl(latest_applicable_tag_for_key) 
         end

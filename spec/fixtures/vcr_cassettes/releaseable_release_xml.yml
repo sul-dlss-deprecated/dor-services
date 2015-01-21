@@ -1,0 +1,1971 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:dc235vd9662?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:31 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1002'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:dc235vd9662"
+        ><objLabel>Le Mans, 1955 ; Mille Miglia 1956</objLabel><objOwnerId>fedoraAdmin</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2012-05-03T20:38:34.666Z</objCreateDate><objLastModDate>2015-01-21T22:45:12.758Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Adc235vd9662/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Adc235vd9662/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:31 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:dc235vd9662/datastreams?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:31 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1403'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams  xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora-commons.org/definitions/1/0/listDatastreams.xsd" pid="druid:dc235vd9662"  baseURL="https://localhost:443/fedora/"
+        >    <datastream dsid="DC" label="Dublin Core Record for this object" mimeType="text/xml"
+        />    <datastream dsid="RELS-EXT" label="Fedora Object-to-Object Relationship
+        Metadata" mimeType="application/rdf+xml" />    <datastream dsid="contentMetadata"
+        label="Content Metadata" mimeType="text/xml" />    <datastream dsid="descMetadata"
+        label="Descriptive Metadata" mimeType="text/xml" />    <datastream dsid="embargoMetadata"
+        label="Embargo metadata" mimeType="text/xml" />    <datastream dsid="events"
+        label="Events" mimeType="text/xml" />    <datastream dsid="identityMetadata"
+        label="Identity Metadata" mimeType="text/xml" />    <datastream dsid="provenanceMetadata"
+        label="Provenance Metadata" mimeType="text/xml" />    <datastream dsid="rightsMetadata"
+        label="Rights Metadata" mimeType="text/xml" />    <datastream dsid="technicalMetadata"
+        label="Technical Metadata" mimeType="text/xml" />    <datastream dsid="workflows"
+        label="Workflow" mimeType="application/xml" /></objectDatastreams>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:31 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:dc235vd9662/datastreams/RELS-EXT?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:31 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '927'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:dc235vd9662"
+        dsID="RELS-EXT" ><dsLabel>Fedora Object-to-Object Relationship Metadata</dsLabel><dsVersionID>RELS-EXT.4</dsVersionID><dsCreateDate>2012-08-10T23:19:16.308Z</dsCreateDate><dsState>A</dsState><dsMIME>application/rdf+xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>810</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:dc235vd9662+RELS-EXT+RELS-EXT.4</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:31 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:dc235vd9662/datastreams/RELS-EXT/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:31 GMT
+      Content-Disposition:
+      - inline; filename="Fedora Object-to-Object Relationship Metadata.rdf"
+      Content-Type:
+      - application/rdf+xml
+      Content-Length:
+      - '810'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<rdf:RDF xmlns:fedora=\"info:fedora/fedora-system:def/relations-external#\"
+        xmlns:fedora-model=\"info:fedora/fedora-system:def/model#\" xmlns:hydra=\"http://projecthydra.org/ns/relations#\"
+        xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n  <rdf:Description
+        rdf:about=\"info:fedora/druid:dc235vd9662\">\n    <hydra:isGovernedBy rdf:resource=\"info:fedora/druid:qv648vd4392\"></hydra:isGovernedBy>\n
+        \   <fedora-model:hasModel rdf:resource=\"info:fedora/afmodel:Dor_Item\"></fedora-model:hasModel>\n
+        \   <fedora:isMemberOf rdf:resource=\"info:fedora/druid:wz243gf4151\"></fedora:isMemberOf>\n
+        \   <fedora:isMemberOf rdf:resource=\"info:fedora/druid:wz243gf4151\"></fedora:isMemberOf>\n
+        \   <fedora:isMemberOfCollection rdf:resource=\"info:fedora/druid:wz243gf4151\"></fedora:isMemberOfCollection>\n
+        \ </rdf:Description>\n</rdf:RDF>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:31 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:dc235vd9662/datastreams/workflows?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:31 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '941'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:dc235vd9662"
+        dsID="workflows" ><dsLabel>Workflow</dsLabel><dsVersionID>workflows.2</dsVersionID><dsCreateDate>2012-05-03T20:39:57.705Z</dsCreateDate><dsState>A</dsState><dsMIME>application/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>E</dsControlGroup><dsSize>0</dsSize><dsVersionable>false</dsVersionable><dsInfoType></dsInfoType><dsLocation>https://lyberservices-test.stanford.edu/workflow/dor/objects/druid:dc235vd9662/workflows</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:31 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:dc235vd9662/datastreams/identityMetadata?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:31 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '931'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:dc235vd9662"
+        dsID="identityMetadata" ><dsLabel>Identity Metadata</dsLabel><dsVersionID>identityMetadata.1</dsVersionID><dsCreateDate>2015-01-21T22:45:12.758Z</dsCreateDate><dsState>A</dsState><dsMIME>text/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>468</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:dc235vd9662+identityMetadata+identityMetadata.1</dsLocation><dsLocationType>INTERNAL_ID</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:31 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:dc235vd9662/datastreams/identityMetadata/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:31 GMT
+      Content-Disposition:
+      - inline; filename="Identity Metadata.xml"
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '468'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<identityMetadata>\n  <sourceId source=\"Revs\">2011-023CHAM-1.0_0001</sourceId>\n
+        \ <objectId>druid:dc235vd9662</objectId>\n  <objectCreator>DOR</objectCreator>\n
+        \ <objectLabel>Le Mans, 1955 ; Mille Miglia 1956</objectLabel>\n  <objectType>item</objectType>\n
+        \ <adminPolicy>druid:qv648vd4392</adminPolicy>\n  <otherId name=\"uuid\">f36fcad6-955f-11e1-9027-0050569b52c6</otherId>\n
+        \ <tag>Project : Revs</tag>\n  <tag>Project : ReleaseSpecTesting : Batch1</tag>\n</identityMetadata>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:31 GMT
+- request:
+    method: get
+    uri: http://127.0.0.1:8080/solr/argo_test/select?q=id:druid%5C:wz243gf4151&qt=standard&wt=ruby
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Content-Type:
+      - text/plain;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Wed, 21 Jan 2015 23:18:31 GMT
+    body:
+      encoding: US-ASCII
+      string: ! '{''responseHeader''=>{''status''=>0,''QTime''=>1,''params''=>{''q''=>''id:druid\\:wz243gf4151'',''qt''=>''standard'',''wt''=>''ruby''}},''response''=>{''numFound''=>1,''start''=>0,''docs''=>[{''id''=>''druid:wz243gf4151'',''system_create_dt''=>[''2011-07-05T17:12:18Z''],''date''=>[''2011-07-05T17:12:18Z'',''2015-01-21T22:46:27Z'',''2011-07-05T17:12:18Z'',''2015-01-21T22:46:27Z'',''2013-04-29T20:55:31Z'',''2013-04-29T20:55:32Z'',''2013-04-29T20:55:32Z'',''2013-04-29T20:55:32Z'',''2013-04-29T20:55:34Z'',''2013-04-29T20:55:34Z'',''2015-01-21T22:46:35Z''],''system_modified_dt''=>[''2015-01-21T22:46:27Z''],''active_fedora_model_s''=>[''Dor::Set''],''object_profile_display''=>[''{"datastreams":{"DC":{"dsLabel":"Dublin
+        Core Record for this object","dsVersionID":"DC.1","dsCreateDate":"2011-08-15T20:47:25Z","dsState":"A","dsMIME":"text/xml","dsFormatURI":"http://www.openarchives.org/OAI/2.0/oai_dc/","dsControlGroup":"X","dsSize":497,"dsVersionable":false,"dsInfoType":null,"dsLocation":"druid:wz243gf4151+DC+DC.1","dsLocationType":null,"dsChecksumType":"DISABLED","dsChecksum":"none"},"RELS-EXT":{"dsLabel":"RDF
+        Statements about this object","dsVersionID":"RELS-EXT.1","dsCreateDate":"2015-01-21T22:37:23Z","dsState":"A","dsMIME":"application/rdf+xml","dsFormatURI":"info:fedora/fedora-system:FedoraRELSExt-1.0","dsControlGroup":"X","dsSize":721,"dsVersionable":true,"dsInfoType":null,"dsLocation":"druid:wz243gf4151+RELS-EXT+RELS-EXT.1","dsLocationType":null,"dsChecksumType":"DISABLED","dsChecksum":"none"},"events":{"dsLabel":"Events","dsVersionID":"events.0","dsCreateDate":"2015-01-21T22:37:23Z","dsState":"A","dsMIME":"text/xml","dsFormatURI":null,"dsControlGroup":"X","dsSize":19,"dsVersionable":false,"dsInfoType":null,"dsLocation":"druid:wz243gf4151+events+events.0","dsLocationType":"URL","dsChecksumType":"DISABLED","dsChecksum":"none"},"embargoMetadata":{"dsLabel":"Embargo
+        metadata","dsVersionID":"embargoMetadata.0","dsCreateDate":"2015-01-21T22:37:23Z","dsState":"A","dsMIME":"text/xml","dsFormatURI":null,"dsControlGroup":"X","dsSize":248,"dsVersionable":false,"dsInfoType":null,"dsLocation":"druid:wz243gf4151+embargoMetadata+embargoMetadata.0","dsLocationType":"URL","dsChecksumType":"DISABLED","dsChecksum":"none"},"identityMetadata":{"dsLabel":"Identity
+        Metadata","dsVersionID":"identityMetadata.4","dsCreateDate":"2015-01-21T22:46:27Z","dsState":"A","dsMIME":"text/xml","dsFormatURI":null,"dsControlGroup":"X","dsSize":735,"dsVersionable":false,"dsInfoType":null,"dsLocation":"druid:wz243gf4151+identityMetadata+identityMetadata.4","dsLocationType":"URL","dsChecksumType":"DISABLED","dsChecksum":"none"},"contentMetadata":{},"workflows":{"dsLabel":"Workflows","dsVersionID":"workflows.0","dsCreateDate":"2015-01-21T22:32:14Z","dsState":"A","dsMIME":"application/xml","dsFormatURI":null,"dsControlGroup":"E","dsSize":0,"dsVersionable":true,"dsInfoType":null,"dsLocation":"https://lyberservices-test.stanford.edu/workflow/dor/objects/druid:wz243gf4151/workflows","dsLocationType":"URL","dsChecksumType":"DISABLED","dsChecksum":"none"},"descMetadata":{"dsLabel":"Descriptive
+        Metadata","dsVersionID":"descMetadata.1","dsCreateDate":"2011-09-16T19:35:12Z","dsState":"A","dsMIME":"text/xml","dsFormatURI":null,"dsControlGroup":"X","dsSize":637,"dsVersionable":false,"dsInfoType":null,"dsLocation":"druid:wz243gf4151+descMetadata+descMetadata.1","dsLocationType":null,"dsChecksumType":"DISABLED","dsChecksum":"none"},"rightsMetadata":{"dsLabel":"Rights
+        Metadata","dsVersionID":"rightsMetadata.1","dsCreateDate":"2012-10-12T17:10:16Z","dsState":"A","dsMIME":"text/xml","dsFormatURI":null,"dsControlGroup":"X","dsSize":231,"dsVersionable":true,"dsInfoType":null,"dsLocation":"druid:wz243gf4151+rightsMetadata+rightsMetadata.1","dsLocationType":null,"dsChecksumType":"DISABLED","dsChecksum":"none"},"versionMetadata":{"dsLabel":"Version
+        Metadata","dsVersionID":"versionMetadata.0","dsCreateDate":"2015-01-21T22:37:24Z","dsState":"A","dsMIME":"text/xml","dsFormatURI":null,"dsControlGroup":"X","dsSize":136,"dsVersionable":false,"dsInfoType":null,"dsLocation":"druid:wz243gf4151+versionMetadata+versionMetadata.0","dsLocationType":"URL","dsChecksumType":"DISABLED","dsChecksum":"none"}},"objLabel":"Marcus
+        Chambers Collection of the Revs Institute","objOwnerId":"DOR","objModels":["info:fedora/afmodel:Dor_Item","info:fedora/fedora-system:FedoraObject-3.0"],"objCreateDate":"2011-07-05T17:12:18Z","objLastModDate":"2015-01-21T22:46:27Z","objDissIndexViewURL":"https://localhost:443/fedora/objects/druid%3Awz243gf4151/methods/fedora-system%3A3/viewMethodIndex","objItemIndexViewURL":"https://localhost:443/fedora/objects/druid%3Awz243gf4151/methods/fedora-system%3A3/viewItemIndex","objState":"A"}''],''dc_title_t''=>[''The
+        Marcus Chambers Collection of the Revs Institute''],''dc_title_display''=>[''The
+        Marcus Chambers Collection of the Revs Institute''],''dc_title_facet''=>[''The
+        Marcus Chambers Collection of the Revs Institute''],''dc_0_title_t''=>[''The
+        Marcus Chambers Collection of the Revs Institute''],''dc_0_title_display''=>[''The
+        Marcus Chambers Collection of the Revs Institute''],''dc_0_title_facet''=>[''The
+        Marcus Chambers Collection of the Revs Institute''],''dc_identifier_t''=>[''uuid:076503a0-7a92-11e1-b0c4-0800200c9a66'',''druid:wz243gf4151''],''dc_identifier_display''=>[''uuid:076503a0-7a92-11e1-b0c4-0800200c9a66'',''druid:wz243gf4151''],''dc_0_identifier_t''=>[''uuid:076503a0-7a92-11e1-b0c4-0800200c9a66'',''druid:wz243gf4151''],''dc_0_identifier_display''=>[''uuid:076503a0-7a92-11e1-b0c4-0800200c9a66'',''druid:wz243gf4151''],''title_t''=>[''The
+        Marcus Chambers Collection of the Revs Institute''],''title_display''=>[''The
+        Marcus Chambers Collection of the Revs Institute''],''title_facet''=>[''The
+        Marcus Chambers Collection of the Revs Institute''],''identifier_t''=>[''uuid:076503a0-7a92-11e1-b0c4-0800200c9a66'',''druid:wz243gf4151'',''uuid:076503a0-7a92-11e1-b0c4-0800200c9a66''],''identifier_display''=>[''uuid:076503a0-7a92-11e1-b0c4-0800200c9a66'',''druid:wz243gf4151''],''identityMetadata_objectId_t''=>[''druid:wz243gf4151''],''identityMetadata_0_objectId_t''=>[''druid:wz243gf4151''],''identityMetadata_objectType_t''=>[''set''],''identityMetadata_objectType_facet''=>[''set''],''identityMetadata_0_objectType_t''=>[''set''],''identityMetadata_0_objectType_facet''=>[''set''],''identityMetadata_agreementId_t''=>[''druid:xf765cv5573''],''identityMetadata_agreementId_facet''=>[''druid:xf765cv5573''],''identityMetadata_0_agreementId_t''=>[''druid:xf765cv5573''],''identityMetadata_0_agreementId_facet''=>[''druid:xf765cv5573''],''identityMetadata_objectCreator_t''=>[''DOR''],''identityMetadata_objectCreator_facet''=>[''DOR''],''identityMetadata_0_objectCreator_t''=>[''DOR''],''identityMetadata_0_objectCreator_facet''=>[''DOR''],''objectId_t''=>[''druid:wz243gf4151''],''objectType_t''=>[''set''],''objectType_facet''=>[''set''],''agreementId_t''=>[''druid:xf765cv5573''],''agreementId_facet''=>[''druid:xf765cv5573''],''objectCreator_t''=>[''DOR''],''objectCreator_facet''=>[''DOR''],''obj_label_t''=>[''Marcus
+        Chambers Collection of the Revs Institute''],''obj_owner_id_t''=>[''DOR''],''obj_models_t''=>[''info:fedora/afmodel:Dor_Item
+        info:fedora/fedora-system:FedoraObject-3.0''],''obj_create_date_dt''=>[''2011-07-05T17:12:18Z''],''obj_last_mod_date_dt''=>[''2015-01-21T22:46:27Z''],''obj_diss_index_view_url_t''=>[''https://localhost:443/fedora/objects/druid%3Awz243gf4151/methods/fedora-system%3A3/viewMethodIndex''],''obj_item_index_view_url_t''=>[''https://localhost:443/fedora/objects/druid%3Awz243gf4151/methods/fedora-system%3A3/viewItemIndex''],''obj_state_t''=>[''A''],''dor_id_t''=>[''076503a0-7a92-11e1-b0c4-0800200c9a66''],''uuid_id_t''=>[''076503a0-7a92-11e1-b0c4-0800200c9a66''],''wf_facet''=>[''sdrRecoveryWF''],''wf_wps_facet''=>[''sdrRecoveryWF'',''sdrRecoveryWF:recovery-start'',''sdrRecoveryWF:recovery-start:completed'',''sdrRecoveryWF:recovery-register'',''sdrRecoveryWF:recovery-register:completed'',''sdrRecoveryWF:recovery-validate'',''sdrRecoveryWF:recovery-validate:completed'',''sdrRecoveryWF:recovery-restore'',''sdrRecoveryWF:recovery-restore:completed'',''sdrRecoveryWF:recovery-metadata'',''sdrRecoveryWF:recovery-metadata:completed'',''sdrRecoveryWF:recovery-cleanup'',''sdrRecoveryWF:recovery-cleanup:completed''],''wf_wsp_facet''=>[''sdrRecoveryWF'',''sdrRecoveryWF:completed'',''sdrRecoveryWF:completed:recovery-start'',''sdrRecoveryWF:completed:recovery-register'',''sdrRecoveryWF:completed:recovery-validate'',''sdrRecoveryWF:completed:recovery-restore'',''sdrRecoveryWF:completed:recovery-metadata'',''sdrRecoveryWF:completed:recovery-cleanup''],''workflow_status_display''=>[''sdrRecoveryWF|completed|0|sdr''],''wf_sdrRecoveryWF_recovery-start_dt''=>[''2013-04-29T20:55:31Z''],''wf_swp_facet''=>[''completed'',''completed:sdrRecoveryWF'',''completed:sdrRecoveryWF:recovery-start'',''completed:sdrRecoveryWF:recovery-register'',''completed:sdrRecoveryWF:recovery-validate'',''completed:sdrRecoveryWF:recovery-restore'',''completed:sdrRecoveryWF:recovery-metadata'',''completed:sdrRecoveryWF:recovery-cleanup''],''wf_sdrRecoveryWF_recovery-register_dt''=>[''2013-04-29T20:55:32Z''],''wf_sdrRecoveryWF_recovery-validate_dt''=>[''2013-04-29T20:55:32Z''],''wf_sdrRecoveryWF_recovery-restore_dt''=>[''2013-04-29T20:55:32Z''],''wf_sdrRecoveryWF_recovery-metadata_dt''=>[''2013-04-29T20:55:34Z''],''wf_sdrRecoveryWF_recovery-cleanup_dt''=>[''2013-04-29T20:55:34Z''],''mods_title_info_main_title_facet''=>[''The
+        Marcus Chambers Collection of the Revs Institute''],''mods_0_title_info_0_main_title_facet''=>[''The
+        Marcus Chambers Collection of the Revs Institute''],''mods_abstract_display''=>[''The
+        Marcus Chambers Collection of the Revs Institute.''],''mods_0_abstract_display''=>[''The
+        Marcus Chambers Collection of the Revs Institute.''],''title_info_main_title_facet''=>[''The
+        Marcus Chambers Collection of the Revs Institute''],''title_info_0_main_title_facet''=>[''The
+        Marcus Chambers Collection of the Revs Institute''],''abstract_display''=>[''The
+        Marcus Chambers Collection of the Revs Institute.''],''is_governed_by_s''=>[''info:fedora/druid:qv648vd4392''],''has_model_s''=>[''info:fedora/afmodel:Dor_Item'',''info:fedora/afmodel:Dor_Set''],''is_member_of_s''=>[''info:fedora/druid:nt028fd5773''],''is_member_of_collection_s''=>[''info:fedora/druid:nt028fd5773''],''dor_services_version_facet''=>[''4.15.2''],''indexed_at_dt''=>[''2015-01-21T22:46:35Z''],''indexed_day_t''=>[''2015-01-21T08:00:00Z''],''indexed_day_facet''=>[''2015-01-21T08:00:00Z''],''ds_specs_display''=>[''DC|X|text/xml|1|497|Dublin
+        Core Record for this object'',''RELS-EXT|X|application/rdf+xml|1|721|RDF Statements
+        about this object'',''events|X|text/xml|0|19|Events'',''embargoMetadata|X|text/xml|0|248|Embargo
+        metadata'',''identityMetadata|X|text/xml|4|735|Identity Metadata'',''workflows|E|application/xml|0|1338|Workflows'',''descMetadata|X|text/xml|1|637|Descriptive
+        Metadata'',''rightsMetadata|X|text/xml|1|231|Rights Metadata'',''versionMetadata|X|text/xml|0|136|Version
+        Metadata''],''apo_title_t''=>[''Revs Institute''],''apo_title_facet''=>[''Revs
+        Institute''],''collection_title_t''=>[''Revs Institute''],''collection_title_facet''=>[''Revs
+        Institute''],''versions_display''=>[''1;1.0.0;Initial Version''],''status_display''=>[''v1
+        Unknown Status''],''current_version_display''=>[''1''],''current_version_facet''=>[''1''],''last_modified_day_facet''=>[''2015-01-21''],''metadata_format_t''=>[''mods''],''metadata_format_facet''=>[''mods''],''public_dc_title_t''=>[''The
+        Marcus Chambers Collection of the Revs Institute''],''public_dc_description_t''=>[''The
+        Marcus Chambers Collection of the Revs Institute.''],''public_dc_type_t''=>[''Collection''],''public_dc_language_t''=>[''eng''],''public_dc_relation_t''=>[''Revs
+        Institute''],''_version_''=>1490949657828786176,''timestamp''=>''2015-01-21T22:46:35.758Z''}]}}
+
+'
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:31 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:31 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1009'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:wz243gf4151"
+        ><objLabel>Marcus Chambers Collection of the Revs Institute</objLabel><objOwnerId>DOR</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2011-07-05T17:12:18.779Z</objCreateDate><objLastModDate>2015-01-21T22:46:27.563Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Awz243gf4151/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Awz243gf4151/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:31 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:32 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1209'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams  xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora-commons.org/definitions/1/0/listDatastreams.xsd" pid="druid:wz243gf4151"  baseURL="https://localhost:443/fedora/"
+        >    <datastream dsid="DC" label="Dublin Core Record for this object" mimeType="text/xml"
+        />    <datastream dsid="RELS-EXT" label="RDF Statements about this object"
+        mimeType="application/rdf+xml" />    <datastream dsid="descMetadata" label="Descriptive
+        Metadata" mimeType="text/xml" />    <datastream dsid="rightsMetadata" label="Rights
+        Metadata" mimeType="text/xml" />    <datastream dsid="workflows" label="Workflows"
+        mimeType="application/xml" />    <datastream dsid="events" label="Events"
+        mimeType="text/xml" />    <datastream dsid="embargoMetadata" label="Embargo
+        metadata" mimeType="text/xml" />    <datastream dsid="versionMetadata" label="Version
+        Metadata" mimeType="text/xml" />    <datastream dsid="identityMetadata" label="Identity
+        Metadata" mimeType="text/xml" /></objectDatastreams>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:32 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams/RELS-EXT?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:32 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '957'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:wz243gf4151"
+        dsID="RELS-EXT" ><dsLabel>RDF Statements about this object</dsLabel><dsVersionID>RELS-EXT.1</dsVersionID><dsCreateDate>2015-01-21T22:37:23.552Z</dsCreateDate><dsState>A</dsState><dsMIME>application/rdf+xml</dsMIME><dsFormatURI>info:fedora/fedora-system:FedoraRELSExt-1.0</dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>721</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:wz243gf4151+RELS-EXT+RELS-EXT.1</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:32 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams/RELS-EXT/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:32 GMT
+      Content-Disposition:
+      - inline; filename="RDF Statements about this object.rdf"
+      Content-Type:
+      - application/rdf+xml
+      Content-Length:
+      - '721'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<rdf:RDF xmlns:fedora=\"info:fedora/fedora-system:def/relations-external#\"
+        xmlns:fedora-model=\"info:fedora/fedora-system:def/model#\" xmlns:hydra=\"http://projecthydra.org/ns/relations#\"
+        xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n  <rdf:Description
+        rdf:about=\"info:fedora/druid:wz243gf4151\">\n    <hydra:isGovernedBy rdf:resource=\"info:fedora/druid:qv648vd4392\"></hydra:isGovernedBy>\n
+        \   <fedora-model:hasModel rdf:resource=\"info:fedora/afmodel:Dor_Item\"></fedora-model:hasModel>\n
+        \   <fedora:isMemberOf rdf:resource=\"info:fedora/druid:nt028fd5773\"></fedora:isMemberOf>\n
+        \   <fedora:isMemberOfCollection rdf:resource=\"info:fedora/druid:nt028fd5773\"></fedora:isMemberOfCollection>\n
+        \ </rdf:Description>\n</rdf:RDF>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:32 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams/workflows?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:32 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '941'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:wz243gf4151"
+        dsID="workflows" ><dsLabel>Workflows</dsLabel><dsVersionID>workflows.0</dsVersionID><dsCreateDate>2015-01-21T22:32:14.050Z</dsCreateDate><dsState>A</dsState><dsMIME>application/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>E</dsControlGroup><dsSize>0</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>https://lyberservices-test.stanford.edu/workflow/dor/objects/druid:wz243gf4151/workflows</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:32 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:32 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1009'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:wz243gf4151"
+        ><objLabel>Marcus Chambers Collection of the Revs Institute</objLabel><objOwnerId>DOR</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2011-07-05T17:12:18.779Z</objCreateDate><objLastModDate>2015-01-21T22:46:27.563Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Awz243gf4151/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Awz243gf4151/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:32 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:32 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1209'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams  xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora-commons.org/definitions/1/0/listDatastreams.xsd" pid="druid:wz243gf4151"  baseURL="https://localhost:443/fedora/"
+        >    <datastream dsid="DC" label="Dublin Core Record for this object" mimeType="text/xml"
+        />    <datastream dsid="RELS-EXT" label="RDF Statements about this object"
+        mimeType="application/rdf+xml" />    <datastream dsid="descMetadata" label="Descriptive
+        Metadata" mimeType="text/xml" />    <datastream dsid="rightsMetadata" label="Rights
+        Metadata" mimeType="text/xml" />    <datastream dsid="workflows" label="Workflows"
+        mimeType="application/xml" />    <datastream dsid="events" label="Events"
+        mimeType="text/xml" />    <datastream dsid="embargoMetadata" label="Embargo
+        metadata" mimeType="text/xml" />    <datastream dsid="versionMetadata" label="Version
+        Metadata" mimeType="text/xml" />    <datastream dsid="identityMetadata" label="Identity
+        Metadata" mimeType="text/xml" /></objectDatastreams>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:32 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams/RELS-EXT?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:32 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '957'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:wz243gf4151"
+        dsID="RELS-EXT" ><dsLabel>RDF Statements about this object</dsLabel><dsVersionID>RELS-EXT.1</dsVersionID><dsCreateDate>2015-01-21T22:37:23.552Z</dsCreateDate><dsState>A</dsState><dsMIME>application/rdf+xml</dsMIME><dsFormatURI>info:fedora/fedora-system:FedoraRELSExt-1.0</dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>721</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:wz243gf4151+RELS-EXT+RELS-EXT.1</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:32 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams/RELS-EXT/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:32 GMT
+      Content-Disposition:
+      - inline; filename="RDF Statements about this object.rdf"
+      Content-Type:
+      - application/rdf+xml
+      Content-Length:
+      - '721'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<rdf:RDF xmlns:fedora=\"info:fedora/fedora-system:def/relations-external#\"
+        xmlns:fedora-model=\"info:fedora/fedora-system:def/model#\" xmlns:hydra=\"http://projecthydra.org/ns/relations#\"
+        xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n  <rdf:Description
+        rdf:about=\"info:fedora/druid:wz243gf4151\">\n    <hydra:isGovernedBy rdf:resource=\"info:fedora/druid:qv648vd4392\"></hydra:isGovernedBy>\n
+        \   <fedora-model:hasModel rdf:resource=\"info:fedora/afmodel:Dor_Item\"></fedora-model:hasModel>\n
+        \   <fedora:isMemberOf rdf:resource=\"info:fedora/druid:nt028fd5773\"></fedora:isMemberOf>\n
+        \   <fedora:isMemberOfCollection rdf:resource=\"info:fedora/druid:nt028fd5773\"></fedora:isMemberOfCollection>\n
+        \ </rdf:Description>\n</rdf:RDF>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:32 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams/workflows?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:32 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '941'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:wz243gf4151"
+        dsID="workflows" ><dsLabel>Workflows</dsLabel><dsVersionID>workflows.0</dsVersionID><dsCreateDate>2015-01-21T22:32:14.050Z</dsCreateDate><dsState>A</dsState><dsMIME>application/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>E</dsControlGroup><dsSize>0</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>https://lyberservices-test.stanford.edu/workflow/dor/objects/druid:wz243gf4151/workflows</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:32 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams/identityMetadata?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:32 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '924'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:wz243gf4151"
+        dsID="identityMetadata" ><dsLabel>Identity Metadata</dsLabel><dsVersionID>identityMetadata.4</dsVersionID><dsCreateDate>2015-01-21T22:46:27.563Z</dsCreateDate><dsState>A</dsState><dsMIME>text/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>735</dsSize><dsVersionable>false</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:wz243gf4151+identityMetadata+identityMetadata.4</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:32 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams/identityMetadata/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:32 GMT
+      Content-Disposition:
+      - inline; filename="Identity Metadata.xml"
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '735'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<identityMetadata>\n  <objectLabel>The Marcus Chambers Collection
+        of the Revs Institute</objectLabel>\n  <adminPolicy>druid:qv648vd4392</adminPolicy>\n
+        \ <objectType>set</objectType>\n  <otherId name=\"uuid\">076503a0-7a92-11e1-b0c4-0800200c9a66</otherId>\n
+        \ <objectId>druid:wz243gf4151</objectId>\n  <objectCreator>DOR</objectCreator>\n
+        \ <agreementId>druid:xf765cv5573</agreementId>\n  <release to=\"Kurita\" what=\"collection\"
+        when=\"2015-01-21T22:32:09Z\" who=\"carrickr\">true</release>\n  <release
+        to=\"Atago\" what=\"collection\" when=\"2015-01-21T22:37:21Z\" who=\"carrickr\">true</release>\n
+        \ <release tag=\"Project : ReleaseSpecTesting : Batch1\" to=\"Mogami\" what=\"collection\"
+        when=\"2015-01-21T22:46:22Z\" who=\"carrickr\">true</release>\n</identityMetadata>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:33 GMT
+- request:
+    method: get
+    uri: http://127.0.0.1:8080/solr/argo_test/select?q=id:druid%5C:nt028fd5773&qt=standard&wt=ruby
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Content-Type:
+      - text/plain;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Wed, 21 Jan 2015 23:18:33 GMT
+    body:
+      encoding: US-ASCII
+      string: ! "{'responseHeader'=>{'status'=>0,'QTime'=>0,'params'=>{'q'=>'id:druid\\\\:nt028fd5773','qt'=>'standard','wt'=>'ruby'}},'response'=>{'numFound'=>1,'start'=>0,'docs'=>[{'id'=>'druid:nt028fd5773','system_create_dt'=>['2011-07-05T17:12:18Z'],'date'=>['2011-07-05T17:12:18Z','2015-01-21T22:37:44Z','2011-07-05T17:12:18Z','2015-01-21T22:37:44Z','2015-01-21T22:37:51Z'],'system_modified_dt'=>['2015-01-21T22:37:44Z'],'active_fedora_model_s'=>['Dor::Collection'],'object_profile_display'=>['{\"datastreams\":{\"DC\":{\"dsLabel\":\"Dublin
+        Core Record for this object\",\"dsVersionID\":\"DC.1\",\"dsCreateDate\":\"2011-08-15T20:47:25Z\",\"dsState\":\"A\",\"dsMIME\":\"text/xml\",\"dsFormatURI\":\"http://www.openarchives.org/OAI/2.0/oai_dc/\",\"dsControlGroup\":\"X\",\"dsSize\":459,\"dsVersionable\":false,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+DC+DC.1\",\"dsLocationType\":null,\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"RELS-EXT\":{\"dsLabel\":\"RDF
+        Statements about this object\",\"dsVersionID\":\"RELS-EXT.1\",\"dsCreateDate\":\"2014-12-11T22:21:23Z\",\"dsState\":\"A\",\"dsMIME\":\"application/rdf+xml\",\"dsFormatURI\":\"info:fedora/fedora-system:FedoraRELSExt-1.0\",\"dsControlGroup\":\"X\",\"dsSize\":458,\"dsVersionable\":true,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+RELS-EXT+RELS-EXT.1\",\"dsLocationType\":null,\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"events\":{\"dsLabel\":\"Events\",\"dsVersionID\":\"events.0\",\"dsCreateDate\":\"2014-12-11T22:21:23Z\",\"dsState\":\"A\",\"dsMIME\":\"text/xml\",\"dsFormatURI\":null,\"dsControlGroup\":\"X\",\"dsSize\":19,\"dsVersionable\":false,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+events+events.0\",\"dsLocationType\":\"URL\",\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"embargoMetadata\":{\"dsLabel\":\"Embargo
+        metadata\",\"dsVersionID\":\"embargoMetadata.0\",\"dsCreateDate\":\"2014-12-11T22:21:24Z\",\"dsState\":\"A\",\"dsMIME\":\"text/xml\",\"dsFormatURI\":null,\"dsControlGroup\":\"X\",\"dsSize\":248,\"dsVersionable\":false,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+embargoMetadata+embargoMetadata.0\",\"dsLocationType\":\"URL\",\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"identityMetadata\":{\"dsLabel\":\"Identity
+        Metadata\",\"dsVersionID\":\"identityMetadata.7\",\"dsCreateDate\":\"2015-01-21T22:37:44Z\",\"dsState\":\"A\",\"dsMIME\":\"text/xml\",\"dsFormatURI\":null,\"dsControlGroup\":\"X\",\"dsSize\":659,\"dsVersionable\":false,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+identityMetadata+identityMetadata.7\",\"dsLocationType\":\"URL\",\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"contentMetadata\":{},\"workflows\":{\"dsLabel\":\"workflows\",\"dsVersionID\":\"workflows.0\",\"dsCreateDate\":\"2012-01-28T02:07:31Z\",\"dsState\":\"A\",\"dsMIME\":\"application/xml\",\"dsFormatURI\":null,\"dsControlGroup\":\"E\",\"dsSize\":0,\"dsVersionable\":true,\"dsInfoType\":null,\"dsLocation\":\"https://lyberservices-test.stanford.edu/workflow/dor/objects/druid:nt028fd5773/workflows\",\"dsLocationType\":\"URL\",\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"descMetadata\":{\"dsLabel\":\"Descriptive
+        Metadata\",\"dsVersionID\":\"descMetadata.2\",\"dsCreateDate\":\"2013-05-10T20:16:19Z\",\"dsState\":\"A\",\"dsMIME\":\"text/xml\",\"dsFormatURI\":null,\"dsControlGroup\":\"X\",\"dsSize\":839,\"dsVersionable\":false,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+descMetadata+descMetadata.2\",\"dsLocationType\":\"URL\",\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"rightsMetadata\":{\"dsLabel\":\"Rights
+        Metadata\",\"dsVersionID\":\"rightsMetadata.0\",\"dsCreateDate\":\"2011-06-27T21:45:41Z\",\"dsState\":\"A\",\"dsMIME\":\"text/xml\",\"dsFormatURI\":null,\"dsControlGroup\":\"X\",\"dsSize\":330,\"dsVersionable\":true,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+rightsMetadata+rightsMetadata.0\",\"dsLocationType\":null,\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"versionMetadata\":{\"dsLabel\":\"Version
+        Metadata\",\"dsVersionID\":\"versionMetadata.0\",\"dsCreateDate\":\"2014-12-11T22:21:26Z\",\"dsState\":\"A\",\"dsMIME\":\"text/xml\",\"dsFormatURI\":null,\"dsControlGroup\":\"X\",\"dsSize\":136,\"dsVersionable\":false,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+versionMetadata+versionMetadata.0\",\"dsLocationType\":\"URL\",\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"}},\"objLabel\":\"Revs
+        Institute\",\"objOwnerId\":\"DOR\",\"objModels\":[\"info:fedora/afmodel:Dor_Item\",\"info:fedora/fedora-system:FedoraObject-3.0\"],\"objCreateDate\":\"2011-07-05T17:12:18Z\",\"objLastModDate\":\"2015-01-21T22:37:44Z\",\"objDissIndexViewURL\":\"https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewMethodIndex\",\"objItemIndexViewURL\":\"https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewItemIndex\",\"objState\":\"A\"}'],'dc_title_t'=>['Revs
+        Institute'],'dc_title_display'=>['Revs Institute'],'dc_title_facet'=>['Revs
+        Institute'],'dc_0_title_t'=>['Revs Institute'],'dc_0_title_display'=>['Revs
+        Institute'],'dc_0_title_facet'=>['Revs Institute'],'dc_identifier_t'=>['uuid:fd7af5e0-42ea-11e1-b86c-0800200c9a66','druid:nt028fd5773'],'dc_identifier_display'=>['uuid:fd7af5e0-42ea-11e1-b86c-0800200c9a66','druid:nt028fd5773'],'dc_0_identifier_t'=>['uuid:fd7af5e0-42ea-11e1-b86c-0800200c9a66','druid:nt028fd5773'],'dc_0_identifier_display'=>['uuid:fd7af5e0-42ea-11e1-b86c-0800200c9a66','druid:nt028fd5773'],'title_t'=>['Revs
+        Institute'],'title_display'=>['Revs Institute'],'title_facet'=>['Revs Institute'],'identifier_t'=>['uuid:fd7af5e0-42ea-11e1-b86c-0800200c9a66','druid:nt028fd5773','uuid:fd7af5e0-42ea-11e1-b86c-0800200c9a66'],'identifier_display'=>['uuid:fd7af5e0-42ea-11e1-b86c-0800200c9a66','druid:nt028fd5773'],'identityMetadata_objectId_t'=>['druid:nt028fd5773'],'identityMetadata_0_objectId_t'=>['druid:nt028fd5773'],'identityMetadata_objectType_t'=>['collection','set'],'identityMetadata_objectType_facet'=>['collection','set'],'identityMetadata_0_objectType_t'=>['collection','set'],'identityMetadata_0_objectType_facet'=>['collection','set'],'identityMetadata_agreementId_t'=>['druid:xf765cv5573'],'identityMetadata_agreementId_facet'=>['druid:xf765cv5573'],'identityMetadata_0_agreementId_t'=>['druid:xf765cv5573'],'identityMetadata_0_agreementId_facet'=>['druid:xf765cv5573'],'identityMetadata_tag_t'=>['revs
+        : tag : test1','release : revs : tag : test1'],'identityMetadata_tag_facet'=>['revs
+        : tag : test1','release : revs : tag : test1'],'identityMetadata_0_tag_t'=>['revs
+        : tag : test1','release : revs : tag : test1'],'identityMetadata_0_tag_facet'=>['revs
+        : tag : test1','release : revs : tag : test1'],'identityMetadata_objectCreator_t'=>['DOR'],'identityMetadata_objectCreator_facet'=>['DOR'],'identityMetadata_0_objectCreator_t'=>['DOR'],'identityMetadata_0_objectCreator_facet'=>['DOR'],'objectId_t'=>['druid:nt028fd5773'],'objectType_t'=>['collection','set'],'objectType_facet'=>['collection','set'],'agreementId_t'=>['druid:xf765cv5573'],'agreementId_facet'=>['druid:xf765cv5573'],'tag_t'=>['revs
+        : tag : test1','release : revs : tag : test1','revs','revs : tag','revs :
+        tag : test1','release','release : revs','release : revs : tag','release :
+        revs : tag : test1'],'tag_facet'=>['revs : tag : test1','release : revs :
+        tag : test1','revs','revs : tag','revs : tag : test1','release','release :
+        revs','release : revs : tag','release : revs : tag : test1'],'objectCreator_t'=>['DOR'],'objectCreator_facet'=>['DOR'],'obj_label_t'=>['Revs
+        Institute'],'obj_owner_id_t'=>['DOR'],'obj_models_t'=>['info:fedora/afmodel:Dor_Item
+        info:fedora/fedora-system:FedoraObject-3.0'],'obj_create_date_dt'=>['2011-07-05T17:12:18Z'],'obj_last_mod_date_dt'=>['2015-01-21T22:37:44Z'],'obj_diss_index_view_url_t'=>['https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewMethodIndex'],'obj_item_index_view_url_t'=>['https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewItemIndex'],'obj_state_t'=>['A'],'dor_id_t'=>['fd7af5e0-42ea-11e1-b86c-0800200c9a66'],'uuid_id_t'=>['fd7af5e0-42ea-11e1-b86c-0800200c9a66'],'revs_tag_t'=>['tag
+        : test1'],'revs_tag_facet'=>['tag : test1'],'release_tag_t'=>['revs : tag
+        : test1'],'release_tag_facet'=>['revs : tag : test1'],'mods_originInfo_publisher_t'=>['Stanford
+        University Libraries and Academic Information Resources'],'mods_originInfo_publisher_display'=>['Stanford
+        University Libraries and Academic Information Resources'],'mods_0_originInfo_0_publisher_t'=>['Stanford
+        University Libraries and Academic Information Resources'],'mods_0_originInfo_0_publisher_display'=>['Stanford
+        University Libraries and Academic Information Resources'],'mods_title_info_main_title_facet'=>['Revs
+        Institute'],'mods_0_title_info_0_main_title_facet'=>['Revs Institute'],'mods_abstract_display'=>['The
+        collection of the Revs Institute in Naples, Florida.'],'mods_0_abstract_display'=>['The
+        collection of the Revs Institute in Naples, Florida.'],'originInfo_publisher_t'=>['Stanford
+        University Libraries and Academic Information Resources'],'originInfo_publisher_display'=>['Stanford
+        University Libraries and Academic Information Resources'],'originInfo_0_publisher_t'=>['Stanford
+        University Libraries and Academic Information Resources'],'originInfo_0_publisher_display'=>['Stanford
+        University Libraries and Academic Information Resources'],'title_info_main_title_facet'=>['Revs
+        Institute'],'title_info_0_main_title_facet'=>['Revs Institute'],'abstract_display'=>['The
+        collection of the Revs Institute in Naples, Florida.'],'is_governed_by_s'=>['info:fedora/druid:qv648vd4392'],'has_model_s'=>['info:fedora/afmodel:Dor_Item','info:fedora/afmodel:Dor_Collection'],'dor_services_version_facet'=>['4.15.2'],'indexed_at_dt'=>['2015-01-21T22:37:51Z'],'indexed_day_t'=>['2015-01-21T08:00:00Z'],'indexed_day_facet'=>['2015-01-21T08:00:00Z'],'ds_specs_display'=>['DC|X|text/xml|1|459|Dublin
+        Core Record for this object','RELS-EXT|X|application/rdf+xml|1|458|RDF Statements
+        about this object','events|X|text/xml|0|19|Events','embargoMetadata|X|text/xml|0|248|Embargo
+        metadata','identityMetadata|X|text/xml|7|659|Identity Metadata','workflows|E|application/xml|0|98|workflows','descMetadata|X|text/xml|2|839|Descriptive
+        Metadata','rightsMetadata|X|text/xml|0|330|Rights Metadata','versionMetadata|X|text/xml|0|136|Version
+        Metadata'],'apo_title_t'=>['Revs Institute'],'apo_title_facet'=>['Revs Institute'],'versions_display'=>['1;1.0.0;Initial
+        Version'],'status_display'=>['v1 Unknown Status'],'current_version_display'=>['1'],'current_version_facet'=>['1'],'last_modified_day_facet'=>['2015-01-21'],'metadata_format_t'=>['mods'],'metadata_format_facet'=>['mods'],'public_dc_title_t'=>['Revs
+        Institute'],'public_dc_description_t'=>['The collection of the Revs Institute
+        in Naples, Florida.'],'public_dc_creator_t'=>['Revs Collection'],'public_dc_type_t'=>['Collection'],'public_dc_date_t'=>['2012'],'public_dc_publisher_t'=>['Stanford
+        University Libraries and Academic Information Resources'],'public_dc_language_t'=>['eng'],'sw_title_245a_search_facet_facet'=>['Revs
+        Institute'],'sw_title_245_search_facet_facet'=>['Revs Institute'],'sw_title_sort_facet'=>['Revs
+        Institute'],'sw_title_245a_display_facet'=>['Revs Institute'],'sw_title_display_facet'=>['Revs
+        Institute'],'sw_title_full_display_facet'=>['Revs Institute'],'sw_author_7xx_search_facet_facet'=>['Revs
+        Collection'],'sw_author_other_facet_facet'=>['Revs Collection'],'sw_author_corp_display_facet'=>['Revs
+        Collection'],'sw_language_facet'=>['English'],'sw_pub_date_sort_facet'=>['2012'],'sw_pub_date_group_facet_facet'=>['Last
+        3 years'],'sw_pub_date_facet'=>['2012'],'sw_pub_date_display_facet'=>['2012'],'sw_all_search_facet_facet'=>['\n
+        \ \n    Revs Institute\n  \n  The collection of the Revs Institute in Naples,
+        Florida.\n  \n    Revs Collection\n    \n      creator\n    \n  \n  \n  \n
+        \   Stanford University Libraries and Academic Information Resources\n    2012\n
+        \ \n  \n    eng\n  \n'],'_version_'=>1490949108786003968,'timestamp'=>'2015-01-21T22:37:52.128Z'}]}}\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:33 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '975'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:nt028fd5773"
+        ><objLabel>Revs Institute</objLabel><objOwnerId>DOR</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2011-07-05T17:12:18.779Z</objCreateDate><objLastModDate>2015-01-21T22:37:44.589Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:33 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1209'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams  xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora-commons.org/definitions/1/0/listDatastreams.xsd" pid="druid:nt028fd5773"  baseURL="https://localhost:443/fedora/"
+        >    <datastream dsid="DC" label="Dublin Core Record for this object" mimeType="text/xml"
+        />    <datastream dsid="RELS-EXT" label="RDF Statements about this object"
+        mimeType="application/rdf+xml" />    <datastream dsid="rightsMetadata" label="Rights
+        Metadata" mimeType="text/xml" />    <datastream dsid="workflows" label="workflows"
+        mimeType="application/xml" />    <datastream dsid="descMetadata" label="Descriptive
+        Metadata" mimeType="text/xml" />    <datastream dsid="events" label="Events"
+        mimeType="text/xml" />    <datastream dsid="embargoMetadata" label="Embargo
+        metadata" mimeType="text/xml" />    <datastream dsid="versionMetadata" label="Version
+        Metadata" mimeType="text/xml" />    <datastream dsid="identityMetadata" label="Identity
+        Metadata" mimeType="text/xml" /></objectDatastreams>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/RELS-EXT?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:33 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '957'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nt028fd5773"
+        dsID="RELS-EXT" ><dsLabel>RDF Statements about this object</dsLabel><dsVersionID>RELS-EXT.1</dsVersionID><dsCreateDate>2014-12-11T22:21:23.609Z</dsCreateDate><dsState>A</dsState><dsMIME>application/rdf+xml</dsMIME><dsFormatURI>info:fedora/fedora-system:FedoraRELSExt-1.0</dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>458</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:nt028fd5773+RELS-EXT+RELS-EXT.1</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/RELS-EXT/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:33 GMT
+      Content-Disposition:
+      - inline; filename="RDF Statements about this object.rdf"
+      Content-Type:
+      - application/rdf+xml
+      Content-Length:
+      - '458'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<rdf:RDF xmlns:fedora-model=\"info:fedora/fedora-system:def/model#\"
+        xmlns:hydra=\"http://projecthydra.org/ns/relations#\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n
+        \ <rdf:Description rdf:about=\"info:fedora/druid:nt028fd5773\">\n    <hydra:isGovernedBy
+        rdf:resource=\"info:fedora/druid:qv648vd4392\"></hydra:isGovernedBy>\n    <fedora-model:hasModel
+        rdf:resource=\"info:fedora/afmodel:Dor_Item\"></fedora-model:hasModel>\n  </rdf:Description>\n</rdf:RDF>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/workflows?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:33 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '941'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nt028fd5773"
+        dsID="workflows" ><dsLabel>workflows</dsLabel><dsVersionID>workflows.0</dsVersionID><dsCreateDate>2012-01-28T02:07:31.084Z</dsCreateDate><dsState>A</dsState><dsMIME>application/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>E</dsControlGroup><dsSize>0</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>https://lyberservices-test.stanford.edu/workflow/dor/objects/druid:nt028fd5773/workflows</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:33 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '975'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:nt028fd5773"
+        ><objLabel>Revs Institute</objLabel><objOwnerId>DOR</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2011-07-05T17:12:18.779Z</objCreateDate><objLastModDate>2015-01-21T22:37:44.589Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:33 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1209'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams  xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora-commons.org/definitions/1/0/listDatastreams.xsd" pid="druid:nt028fd5773"  baseURL="https://localhost:443/fedora/"
+        >    <datastream dsid="DC" label="Dublin Core Record for this object" mimeType="text/xml"
+        />    <datastream dsid="RELS-EXT" label="RDF Statements about this object"
+        mimeType="application/rdf+xml" />    <datastream dsid="rightsMetadata" label="Rights
+        Metadata" mimeType="text/xml" />    <datastream dsid="workflows" label="workflows"
+        mimeType="application/xml" />    <datastream dsid="descMetadata" label="Descriptive
+        Metadata" mimeType="text/xml" />    <datastream dsid="events" label="Events"
+        mimeType="text/xml" />    <datastream dsid="embargoMetadata" label="Embargo
+        metadata" mimeType="text/xml" />    <datastream dsid="versionMetadata" label="Version
+        Metadata" mimeType="text/xml" />    <datastream dsid="identityMetadata" label="Identity
+        Metadata" mimeType="text/xml" /></objectDatastreams>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/RELS-EXT?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:33 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '957'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nt028fd5773"
+        dsID="RELS-EXT" ><dsLabel>RDF Statements about this object</dsLabel><dsVersionID>RELS-EXT.1</dsVersionID><dsCreateDate>2014-12-11T22:21:23.609Z</dsCreateDate><dsState>A</dsState><dsMIME>application/rdf+xml</dsMIME><dsFormatURI>info:fedora/fedora-system:FedoraRELSExt-1.0</dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>458</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:nt028fd5773+RELS-EXT+RELS-EXT.1</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/RELS-EXT/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:33 GMT
+      Content-Disposition:
+      - inline; filename="RDF Statements about this object.rdf"
+      Content-Type:
+      - application/rdf+xml
+      Content-Length:
+      - '458'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<rdf:RDF xmlns:fedora-model=\"info:fedora/fedora-system:def/model#\"
+        xmlns:hydra=\"http://projecthydra.org/ns/relations#\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n
+        \ <rdf:Description rdf:about=\"info:fedora/druid:nt028fd5773\">\n    <hydra:isGovernedBy
+        rdf:resource=\"info:fedora/druid:qv648vd4392\"></hydra:isGovernedBy>\n    <fedora-model:hasModel
+        rdf:resource=\"info:fedora/afmodel:Dor_Item\"></fedora-model:hasModel>\n  </rdf:Description>\n</rdf:RDF>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:33 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/workflows?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:34 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '941'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nt028fd5773"
+        dsID="workflows" ><dsLabel>workflows</dsLabel><dsVersionID>workflows.0</dsVersionID><dsCreateDate>2012-01-28T02:07:31.084Z</dsCreateDate><dsState>A</dsState><dsMIME>application/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>E</dsControlGroup><dsSize>0</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>https://lyberservices-test.stanford.edu/workflow/dor/objects/druid:nt028fd5773/workflows</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:34 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/identityMetadata?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:34 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '924'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nt028fd5773"
+        dsID="identityMetadata" ><dsLabel>Identity Metadata</dsLabel><dsVersionID>identityMetadata.7</dsVersionID><dsCreateDate>2015-01-21T22:37:44.589Z</dsCreateDate><dsState>A</dsState><dsMIME>text/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>659</dsSize><dsVersionable>false</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:nt028fd5773+identityMetadata+identityMetadata.7</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:34 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/identityMetadata/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:18:34 GMT
+      Content-Disposition:
+      - inline; filename="Identity Metadata.xml"
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '659'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<identityMetadata>\n  <objectLabel>Revs Institute</objectLabel>\n
+        \ <adminPolicy>druid:qv648vd4392</adminPolicy>\n  <objectType>collection</objectType>\n
+        \ <objectType>set</objectType>\n  <otherId name=\"uuid\">fd7af5e0-42ea-11e1-b86c-0800200c9a66</otherId>\n
+        \ <objectId>druid:nt028fd5773</objectId>\n  <objectCreator>DOR</objectCreator>\n
+        \ <agreementId>druid:xf765cv5573</agreementId>\n  <tag>revs : tag : test1</tag>\n
+        \ <tag>release : revs : tag : test1</tag>\n  <release to=\"Revs\" what=\"self\"
+        when=\"2015-01-08T22:58:35Z\" who=\"carrickr\">true</release>\n  <release
+        to=\"Atago\" what=\"collection\" when=\"2015-01-21T22:37:40Z\" who=\"carrickr\">false</release>\n</identityMetadata>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:18:34 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:17 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1009'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:wz243gf4151"
+        ><objLabel>Marcus Chambers Collection of the Revs Institute</objLabel><objOwnerId>DOR</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2011-07-05T17:12:18.779Z</objCreateDate><objLastModDate>2015-01-21T22:46:27.563Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Awz243gf4151/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Awz243gf4151/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:17 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:17 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1209'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams  xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora-commons.org/definitions/1/0/listDatastreams.xsd" pid="druid:wz243gf4151"  baseURL="https://localhost:443/fedora/"
+        >    <datastream dsid="DC" label="Dublin Core Record for this object" mimeType="text/xml"
+        />    <datastream dsid="RELS-EXT" label="RDF Statements about this object"
+        mimeType="application/rdf+xml" />    <datastream dsid="descMetadata" label="Descriptive
+        Metadata" mimeType="text/xml" />    <datastream dsid="rightsMetadata" label="Rights
+        Metadata" mimeType="text/xml" />    <datastream dsid="workflows" label="Workflows"
+        mimeType="application/xml" />    <datastream dsid="events" label="Events"
+        mimeType="text/xml" />    <datastream dsid="embargoMetadata" label="Embargo
+        metadata" mimeType="text/xml" />    <datastream dsid="versionMetadata" label="Version
+        Metadata" mimeType="text/xml" />    <datastream dsid="identityMetadata" label="Identity
+        Metadata" mimeType="text/xml" /></objectDatastreams>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:17 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams/RELS-EXT?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:17 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '957'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:wz243gf4151"
+        dsID="RELS-EXT" ><dsLabel>RDF Statements about this object</dsLabel><dsVersionID>RELS-EXT.1</dsVersionID><dsCreateDate>2015-01-21T22:37:23.552Z</dsCreateDate><dsState>A</dsState><dsMIME>application/rdf+xml</dsMIME><dsFormatURI>info:fedora/fedora-system:FedoraRELSExt-1.0</dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>721</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:wz243gf4151+RELS-EXT+RELS-EXT.1</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:17 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams/RELS-EXT/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:17 GMT
+      Content-Disposition:
+      - inline; filename="RDF Statements about this object.rdf"
+      Content-Type:
+      - application/rdf+xml
+      Content-Length:
+      - '721'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<rdf:RDF xmlns:fedora=\"info:fedora/fedora-system:def/relations-external#\"
+        xmlns:fedora-model=\"info:fedora/fedora-system:def/model#\" xmlns:hydra=\"http://projecthydra.org/ns/relations#\"
+        xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n  <rdf:Description
+        rdf:about=\"info:fedora/druid:wz243gf4151\">\n    <hydra:isGovernedBy rdf:resource=\"info:fedora/druid:qv648vd4392\"></hydra:isGovernedBy>\n
+        \   <fedora-model:hasModel rdf:resource=\"info:fedora/afmodel:Dor_Item\"></fedora-model:hasModel>\n
+        \   <fedora:isMemberOf rdf:resource=\"info:fedora/druid:nt028fd5773\"></fedora:isMemberOf>\n
+        \   <fedora:isMemberOfCollection rdf:resource=\"info:fedora/druid:nt028fd5773\"></fedora:isMemberOfCollection>\n
+        \ </rdf:Description>\n</rdf:RDF>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:17 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams/workflows?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:17 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '941'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:wz243gf4151"
+        dsID="workflows" ><dsLabel>Workflows</dsLabel><dsVersionID>workflows.0</dsVersionID><dsCreateDate>2015-01-21T22:32:14.050Z</dsCreateDate><dsState>A</dsState><dsMIME>application/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>E</dsControlGroup><dsSize>0</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>https://lyberservices-test.stanford.edu/workflow/dor/objects/druid:wz243gf4151/workflows</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:17 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams/identityMetadata?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:17 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '924'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:wz243gf4151"
+        dsID="identityMetadata" ><dsLabel>Identity Metadata</dsLabel><dsVersionID>identityMetadata.4</dsVersionID><dsCreateDate>2015-01-21T22:46:27.563Z</dsCreateDate><dsState>A</dsState><dsMIME>text/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>735</dsSize><dsVersionable>false</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:wz243gf4151+identityMetadata+identityMetadata.4</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:17 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:wz243gf4151/datastreams/identityMetadata/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:18 GMT
+      Content-Disposition:
+      - inline; filename="Identity Metadata.xml"
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '735'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<identityMetadata>\n  <objectLabel>The Marcus Chambers Collection
+        of the Revs Institute</objectLabel>\n  <adminPolicy>druid:qv648vd4392</adminPolicy>\n
+        \ <objectType>set</objectType>\n  <otherId name=\"uuid\">076503a0-7a92-11e1-b0c4-0800200c9a66</otherId>\n
+        \ <objectId>druid:wz243gf4151</objectId>\n  <objectCreator>DOR</objectCreator>\n
+        \ <agreementId>druid:xf765cv5573</agreementId>\n  <release to=\"Kurita\" what=\"collection\"
+        when=\"2015-01-21T22:32:09Z\" who=\"carrickr\">true</release>\n  <release
+        to=\"Atago\" what=\"collection\" when=\"2015-01-21T22:37:21Z\" who=\"carrickr\">true</release>\n
+        \ <release tag=\"Project : ReleaseSpecTesting : Batch1\" to=\"Mogami\" what=\"collection\"
+        when=\"2015-01-21T22:46:22Z\" who=\"carrickr\">true</release>\n</identityMetadata>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:18 GMT
+- request:
+    method: get
+    uri: http://127.0.0.1:8080/solr/argo_test/select?q=id:druid%5C:nt028fd5773&qt=standard&wt=ruby
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Content-Type:
+      - text/plain;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Wed, 21 Jan 2015 23:22:18 GMT
+    body:
+      encoding: US-ASCII
+      string: ! "{'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'q'=>'id:druid\\\\:nt028fd5773','qt'=>'standard','wt'=>'ruby'}},'response'=>{'numFound'=>1,'start'=>0,'docs'=>[{'id'=>'druid:nt028fd5773','system_create_dt'=>['2011-07-05T17:12:18Z'],'date'=>['2011-07-05T17:12:18Z','2015-01-21T22:37:44Z','2011-07-05T17:12:18Z','2015-01-21T22:37:44Z','2015-01-21T22:37:51Z'],'system_modified_dt'=>['2015-01-21T22:37:44Z'],'active_fedora_model_s'=>['Dor::Collection'],'object_profile_display'=>['{\"datastreams\":{\"DC\":{\"dsLabel\":\"Dublin
+        Core Record for this object\",\"dsVersionID\":\"DC.1\",\"dsCreateDate\":\"2011-08-15T20:47:25Z\",\"dsState\":\"A\",\"dsMIME\":\"text/xml\",\"dsFormatURI\":\"http://www.openarchives.org/OAI/2.0/oai_dc/\",\"dsControlGroup\":\"X\",\"dsSize\":459,\"dsVersionable\":false,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+DC+DC.1\",\"dsLocationType\":null,\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"RELS-EXT\":{\"dsLabel\":\"RDF
+        Statements about this object\",\"dsVersionID\":\"RELS-EXT.1\",\"dsCreateDate\":\"2014-12-11T22:21:23Z\",\"dsState\":\"A\",\"dsMIME\":\"application/rdf+xml\",\"dsFormatURI\":\"info:fedora/fedora-system:FedoraRELSExt-1.0\",\"dsControlGroup\":\"X\",\"dsSize\":458,\"dsVersionable\":true,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+RELS-EXT+RELS-EXT.1\",\"dsLocationType\":null,\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"events\":{\"dsLabel\":\"Events\",\"dsVersionID\":\"events.0\",\"dsCreateDate\":\"2014-12-11T22:21:23Z\",\"dsState\":\"A\",\"dsMIME\":\"text/xml\",\"dsFormatURI\":null,\"dsControlGroup\":\"X\",\"dsSize\":19,\"dsVersionable\":false,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+events+events.0\",\"dsLocationType\":\"URL\",\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"embargoMetadata\":{\"dsLabel\":\"Embargo
+        metadata\",\"dsVersionID\":\"embargoMetadata.0\",\"dsCreateDate\":\"2014-12-11T22:21:24Z\",\"dsState\":\"A\",\"dsMIME\":\"text/xml\",\"dsFormatURI\":null,\"dsControlGroup\":\"X\",\"dsSize\":248,\"dsVersionable\":false,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+embargoMetadata+embargoMetadata.0\",\"dsLocationType\":\"URL\",\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"identityMetadata\":{\"dsLabel\":\"Identity
+        Metadata\",\"dsVersionID\":\"identityMetadata.7\",\"dsCreateDate\":\"2015-01-21T22:37:44Z\",\"dsState\":\"A\",\"dsMIME\":\"text/xml\",\"dsFormatURI\":null,\"dsControlGroup\":\"X\",\"dsSize\":659,\"dsVersionable\":false,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+identityMetadata+identityMetadata.7\",\"dsLocationType\":\"URL\",\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"contentMetadata\":{},\"workflows\":{\"dsLabel\":\"workflows\",\"dsVersionID\":\"workflows.0\",\"dsCreateDate\":\"2012-01-28T02:07:31Z\",\"dsState\":\"A\",\"dsMIME\":\"application/xml\",\"dsFormatURI\":null,\"dsControlGroup\":\"E\",\"dsSize\":0,\"dsVersionable\":true,\"dsInfoType\":null,\"dsLocation\":\"https://lyberservices-test.stanford.edu/workflow/dor/objects/druid:nt028fd5773/workflows\",\"dsLocationType\":\"URL\",\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"descMetadata\":{\"dsLabel\":\"Descriptive
+        Metadata\",\"dsVersionID\":\"descMetadata.2\",\"dsCreateDate\":\"2013-05-10T20:16:19Z\",\"dsState\":\"A\",\"dsMIME\":\"text/xml\",\"dsFormatURI\":null,\"dsControlGroup\":\"X\",\"dsSize\":839,\"dsVersionable\":false,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+descMetadata+descMetadata.2\",\"dsLocationType\":\"URL\",\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"rightsMetadata\":{\"dsLabel\":\"Rights
+        Metadata\",\"dsVersionID\":\"rightsMetadata.0\",\"dsCreateDate\":\"2011-06-27T21:45:41Z\",\"dsState\":\"A\",\"dsMIME\":\"text/xml\",\"dsFormatURI\":null,\"dsControlGroup\":\"X\",\"dsSize\":330,\"dsVersionable\":true,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+rightsMetadata+rightsMetadata.0\",\"dsLocationType\":null,\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"},\"versionMetadata\":{\"dsLabel\":\"Version
+        Metadata\",\"dsVersionID\":\"versionMetadata.0\",\"dsCreateDate\":\"2014-12-11T22:21:26Z\",\"dsState\":\"A\",\"dsMIME\":\"text/xml\",\"dsFormatURI\":null,\"dsControlGroup\":\"X\",\"dsSize\":136,\"dsVersionable\":false,\"dsInfoType\":null,\"dsLocation\":\"druid:nt028fd5773+versionMetadata+versionMetadata.0\",\"dsLocationType\":\"URL\",\"dsChecksumType\":\"DISABLED\",\"dsChecksum\":\"none\"}},\"objLabel\":\"Revs
+        Institute\",\"objOwnerId\":\"DOR\",\"objModels\":[\"info:fedora/afmodel:Dor_Item\",\"info:fedora/fedora-system:FedoraObject-3.0\"],\"objCreateDate\":\"2011-07-05T17:12:18Z\",\"objLastModDate\":\"2015-01-21T22:37:44Z\",\"objDissIndexViewURL\":\"https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewMethodIndex\",\"objItemIndexViewURL\":\"https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewItemIndex\",\"objState\":\"A\"}'],'dc_title_t'=>['Revs
+        Institute'],'dc_title_display'=>['Revs Institute'],'dc_title_facet'=>['Revs
+        Institute'],'dc_0_title_t'=>['Revs Institute'],'dc_0_title_display'=>['Revs
+        Institute'],'dc_0_title_facet'=>['Revs Institute'],'dc_identifier_t'=>['uuid:fd7af5e0-42ea-11e1-b86c-0800200c9a66','druid:nt028fd5773'],'dc_identifier_display'=>['uuid:fd7af5e0-42ea-11e1-b86c-0800200c9a66','druid:nt028fd5773'],'dc_0_identifier_t'=>['uuid:fd7af5e0-42ea-11e1-b86c-0800200c9a66','druid:nt028fd5773'],'dc_0_identifier_display'=>['uuid:fd7af5e0-42ea-11e1-b86c-0800200c9a66','druid:nt028fd5773'],'title_t'=>['Revs
+        Institute'],'title_display'=>['Revs Institute'],'title_facet'=>['Revs Institute'],'identifier_t'=>['uuid:fd7af5e0-42ea-11e1-b86c-0800200c9a66','druid:nt028fd5773','uuid:fd7af5e0-42ea-11e1-b86c-0800200c9a66'],'identifier_display'=>['uuid:fd7af5e0-42ea-11e1-b86c-0800200c9a66','druid:nt028fd5773'],'identityMetadata_objectId_t'=>['druid:nt028fd5773'],'identityMetadata_0_objectId_t'=>['druid:nt028fd5773'],'identityMetadata_objectType_t'=>['collection','set'],'identityMetadata_objectType_facet'=>['collection','set'],'identityMetadata_0_objectType_t'=>['collection','set'],'identityMetadata_0_objectType_facet'=>['collection','set'],'identityMetadata_agreementId_t'=>['druid:xf765cv5573'],'identityMetadata_agreementId_facet'=>['druid:xf765cv5573'],'identityMetadata_0_agreementId_t'=>['druid:xf765cv5573'],'identityMetadata_0_agreementId_facet'=>['druid:xf765cv5573'],'identityMetadata_tag_t'=>['revs
+        : tag : test1','release : revs : tag : test1'],'identityMetadata_tag_facet'=>['revs
+        : tag : test1','release : revs : tag : test1'],'identityMetadata_0_tag_t'=>['revs
+        : tag : test1','release : revs : tag : test1'],'identityMetadata_0_tag_facet'=>['revs
+        : tag : test1','release : revs : tag : test1'],'identityMetadata_objectCreator_t'=>['DOR'],'identityMetadata_objectCreator_facet'=>['DOR'],'identityMetadata_0_objectCreator_t'=>['DOR'],'identityMetadata_0_objectCreator_facet'=>['DOR'],'objectId_t'=>['druid:nt028fd5773'],'objectType_t'=>['collection','set'],'objectType_facet'=>['collection','set'],'agreementId_t'=>['druid:xf765cv5573'],'agreementId_facet'=>['druid:xf765cv5573'],'tag_t'=>['revs
+        : tag : test1','release : revs : tag : test1','revs','revs : tag','revs :
+        tag : test1','release','release : revs','release : revs : tag','release :
+        revs : tag : test1'],'tag_facet'=>['revs : tag : test1','release : revs :
+        tag : test1','revs','revs : tag','revs : tag : test1','release','release :
+        revs','release : revs : tag','release : revs : tag : test1'],'objectCreator_t'=>['DOR'],'objectCreator_facet'=>['DOR'],'obj_label_t'=>['Revs
+        Institute'],'obj_owner_id_t'=>['DOR'],'obj_models_t'=>['info:fedora/afmodel:Dor_Item
+        info:fedora/fedora-system:FedoraObject-3.0'],'obj_create_date_dt'=>['2011-07-05T17:12:18Z'],'obj_last_mod_date_dt'=>['2015-01-21T22:37:44Z'],'obj_diss_index_view_url_t'=>['https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewMethodIndex'],'obj_item_index_view_url_t'=>['https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewItemIndex'],'obj_state_t'=>['A'],'dor_id_t'=>['fd7af5e0-42ea-11e1-b86c-0800200c9a66'],'uuid_id_t'=>['fd7af5e0-42ea-11e1-b86c-0800200c9a66'],'revs_tag_t'=>['tag
+        : test1'],'revs_tag_facet'=>['tag : test1'],'release_tag_t'=>['revs : tag
+        : test1'],'release_tag_facet'=>['revs : tag : test1'],'mods_originInfo_publisher_t'=>['Stanford
+        University Libraries and Academic Information Resources'],'mods_originInfo_publisher_display'=>['Stanford
+        University Libraries and Academic Information Resources'],'mods_0_originInfo_0_publisher_t'=>['Stanford
+        University Libraries and Academic Information Resources'],'mods_0_originInfo_0_publisher_display'=>['Stanford
+        University Libraries and Academic Information Resources'],'mods_title_info_main_title_facet'=>['Revs
+        Institute'],'mods_0_title_info_0_main_title_facet'=>['Revs Institute'],'mods_abstract_display'=>['The
+        collection of the Revs Institute in Naples, Florida.'],'mods_0_abstract_display'=>['The
+        collection of the Revs Institute in Naples, Florida.'],'originInfo_publisher_t'=>['Stanford
+        University Libraries and Academic Information Resources'],'originInfo_publisher_display'=>['Stanford
+        University Libraries and Academic Information Resources'],'originInfo_0_publisher_t'=>['Stanford
+        University Libraries and Academic Information Resources'],'originInfo_0_publisher_display'=>['Stanford
+        University Libraries and Academic Information Resources'],'title_info_main_title_facet'=>['Revs
+        Institute'],'title_info_0_main_title_facet'=>['Revs Institute'],'abstract_display'=>['The
+        collection of the Revs Institute in Naples, Florida.'],'is_governed_by_s'=>['info:fedora/druid:qv648vd4392'],'has_model_s'=>['info:fedora/afmodel:Dor_Item','info:fedora/afmodel:Dor_Collection'],'dor_services_version_facet'=>['4.15.2'],'indexed_at_dt'=>['2015-01-21T22:37:51Z'],'indexed_day_t'=>['2015-01-21T08:00:00Z'],'indexed_day_facet'=>['2015-01-21T08:00:00Z'],'ds_specs_display'=>['DC|X|text/xml|1|459|Dublin
+        Core Record for this object','RELS-EXT|X|application/rdf+xml|1|458|RDF Statements
+        about this object','events|X|text/xml|0|19|Events','embargoMetadata|X|text/xml|0|248|Embargo
+        metadata','identityMetadata|X|text/xml|7|659|Identity Metadata','workflows|E|application/xml|0|98|workflows','descMetadata|X|text/xml|2|839|Descriptive
+        Metadata','rightsMetadata|X|text/xml|0|330|Rights Metadata','versionMetadata|X|text/xml|0|136|Version
+        Metadata'],'apo_title_t'=>['Revs Institute'],'apo_title_facet'=>['Revs Institute'],'versions_display'=>['1;1.0.0;Initial
+        Version'],'status_display'=>['v1 Unknown Status'],'current_version_display'=>['1'],'current_version_facet'=>['1'],'last_modified_day_facet'=>['2015-01-21'],'metadata_format_t'=>['mods'],'metadata_format_facet'=>['mods'],'public_dc_title_t'=>['Revs
+        Institute'],'public_dc_description_t'=>['The collection of the Revs Institute
+        in Naples, Florida.'],'public_dc_creator_t'=>['Revs Collection'],'public_dc_type_t'=>['Collection'],'public_dc_date_t'=>['2012'],'public_dc_publisher_t'=>['Stanford
+        University Libraries and Academic Information Resources'],'public_dc_language_t'=>['eng'],'sw_title_245a_search_facet_facet'=>['Revs
+        Institute'],'sw_title_245_search_facet_facet'=>['Revs Institute'],'sw_title_sort_facet'=>['Revs
+        Institute'],'sw_title_245a_display_facet'=>['Revs Institute'],'sw_title_display_facet'=>['Revs
+        Institute'],'sw_title_full_display_facet'=>['Revs Institute'],'sw_author_7xx_search_facet_facet'=>['Revs
+        Collection'],'sw_author_other_facet_facet'=>['Revs Collection'],'sw_author_corp_display_facet'=>['Revs
+        Collection'],'sw_language_facet'=>['English'],'sw_pub_date_sort_facet'=>['2012'],'sw_pub_date_group_facet_facet'=>['Last
+        3 years'],'sw_pub_date_facet'=>['2012'],'sw_pub_date_display_facet'=>['2012'],'sw_all_search_facet_facet'=>['\n
+        \ \n    Revs Institute\n  \n  The collection of the Revs Institute in Naples,
+        Florida.\n  \n    Revs Collection\n    \n      creator\n    \n  \n  \n  \n
+        \   Stanford University Libraries and Academic Information Resources\n    2012\n
+        \ \n  \n    eng\n  \n'],'_version_'=>1490949108786003968,'timestamp'=>'2015-01-21T22:37:52.128Z'}]}}\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:18 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:18 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '975'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:nt028fd5773"
+        ><objLabel>Revs Institute</objLabel><objOwnerId>DOR</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2011-07-05T17:12:18.779Z</objCreateDate><objLastModDate>2015-01-21T22:37:44.589Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:18 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:18 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1209'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams  xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora-commons.org/definitions/1/0/listDatastreams.xsd" pid="druid:nt028fd5773"  baseURL="https://localhost:443/fedora/"
+        >    <datastream dsid="DC" label="Dublin Core Record for this object" mimeType="text/xml"
+        />    <datastream dsid="RELS-EXT" label="RDF Statements about this object"
+        mimeType="application/rdf+xml" />    <datastream dsid="rightsMetadata" label="Rights
+        Metadata" mimeType="text/xml" />    <datastream dsid="workflows" label="workflows"
+        mimeType="application/xml" />    <datastream dsid="descMetadata" label="Descriptive
+        Metadata" mimeType="text/xml" />    <datastream dsid="events" label="Events"
+        mimeType="text/xml" />    <datastream dsid="embargoMetadata" label="Embargo
+        metadata" mimeType="text/xml" />    <datastream dsid="versionMetadata" label="Version
+        Metadata" mimeType="text/xml" />    <datastream dsid="identityMetadata" label="Identity
+        Metadata" mimeType="text/xml" /></objectDatastreams>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:18 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/RELS-EXT?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:18 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '957'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nt028fd5773"
+        dsID="RELS-EXT" ><dsLabel>RDF Statements about this object</dsLabel><dsVersionID>RELS-EXT.1</dsVersionID><dsCreateDate>2014-12-11T22:21:23.609Z</dsCreateDate><dsState>A</dsState><dsMIME>application/rdf+xml</dsMIME><dsFormatURI>info:fedora/fedora-system:FedoraRELSExt-1.0</dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>458</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:nt028fd5773+RELS-EXT+RELS-EXT.1</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:18 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/RELS-EXT/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:18 GMT
+      Content-Disposition:
+      - inline; filename="RDF Statements about this object.rdf"
+      Content-Type:
+      - application/rdf+xml
+      Content-Length:
+      - '458'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<rdf:RDF xmlns:fedora-model=\"info:fedora/fedora-system:def/model#\"
+        xmlns:hydra=\"http://projecthydra.org/ns/relations#\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n
+        \ <rdf:Description rdf:about=\"info:fedora/druid:nt028fd5773\">\n    <hydra:isGovernedBy
+        rdf:resource=\"info:fedora/druid:qv648vd4392\"></hydra:isGovernedBy>\n    <fedora-model:hasModel
+        rdf:resource=\"info:fedora/afmodel:Dor_Item\"></fedora-model:hasModel>\n  </rdf:Description>\n</rdf:RDF>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:18 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/workflows?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:18 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '941'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nt028fd5773"
+        dsID="workflows" ><dsLabel>workflows</dsLabel><dsVersionID>workflows.0</dsVersionID><dsCreateDate>2012-01-28T02:07:31.084Z</dsCreateDate><dsState>A</dsState><dsMIME>application/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>E</dsControlGroup><dsSize>0</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>https://lyberservices-test.stanford.edu/workflow/dor/objects/druid:nt028fd5773/workflows</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:18 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:18 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '975'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:nt028fd5773"
+        ><objLabel>Revs Institute</objLabel><objOwnerId>DOR</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2011-07-05T17:12:18.779Z</objCreateDate><objLastModDate>2015-01-21T22:37:44.589Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Ant028fd5773/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:18 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:18 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1209'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams  xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora-commons.org/definitions/1/0/listDatastreams.xsd" pid="druid:nt028fd5773"  baseURL="https://localhost:443/fedora/"
+        >    <datastream dsid="DC" label="Dublin Core Record for this object" mimeType="text/xml"
+        />    <datastream dsid="RELS-EXT" label="RDF Statements about this object"
+        mimeType="application/rdf+xml" />    <datastream dsid="rightsMetadata" label="Rights
+        Metadata" mimeType="text/xml" />    <datastream dsid="workflows" label="workflows"
+        mimeType="application/xml" />    <datastream dsid="descMetadata" label="Descriptive
+        Metadata" mimeType="text/xml" />    <datastream dsid="events" label="Events"
+        mimeType="text/xml" />    <datastream dsid="embargoMetadata" label="Embargo
+        metadata" mimeType="text/xml" />    <datastream dsid="versionMetadata" label="Version
+        Metadata" mimeType="text/xml" />    <datastream dsid="identityMetadata" label="Identity
+        Metadata" mimeType="text/xml" /></objectDatastreams>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:18 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/RELS-EXT?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:18 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '957'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nt028fd5773"
+        dsID="RELS-EXT" ><dsLabel>RDF Statements about this object</dsLabel><dsVersionID>RELS-EXT.1</dsVersionID><dsCreateDate>2014-12-11T22:21:23.609Z</dsCreateDate><dsState>A</dsState><dsMIME>application/rdf+xml</dsMIME><dsFormatURI>info:fedora/fedora-system:FedoraRELSExt-1.0</dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>458</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:nt028fd5773+RELS-EXT+RELS-EXT.1</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:18 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/RELS-EXT/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:18 GMT
+      Content-Disposition:
+      - inline; filename="RDF Statements about this object.rdf"
+      Content-Type:
+      - application/rdf+xml
+      Content-Length:
+      - '458'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<rdf:RDF xmlns:fedora-model=\"info:fedora/fedora-system:def/model#\"
+        xmlns:hydra=\"http://projecthydra.org/ns/relations#\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n
+        \ <rdf:Description rdf:about=\"info:fedora/druid:nt028fd5773\">\n    <hydra:isGovernedBy
+        rdf:resource=\"info:fedora/druid:qv648vd4392\"></hydra:isGovernedBy>\n    <fedora-model:hasModel
+        rdf:resource=\"info:fedora/afmodel:Dor_Item\"></fedora-model:hasModel>\n  </rdf:Description>\n</rdf:RDF>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:18 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/workflows?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:18 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '941'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nt028fd5773"
+        dsID="workflows" ><dsLabel>workflows</dsLabel><dsVersionID>workflows.0</dsVersionID><dsCreateDate>2012-01-28T02:07:31.084Z</dsCreateDate><dsState>A</dsState><dsMIME>application/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>E</dsControlGroup><dsSize>0</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>https://lyberservices-test.stanford.edu/workflow/dor/objects/druid:nt028fd5773/workflows</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:18 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/identityMetadata?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:18 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '924'
+    body:
+      encoding: US-ASCII
+      string: <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
+        http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nt028fd5773"
+        dsID="identityMetadata" ><dsLabel>Identity Metadata</dsLabel><dsVersionID>identityMetadata.7</dsVersionID><dsCreateDate>2015-01-21T22:37:44.589Z</dsCreateDate><dsState>A</dsState><dsMIME>text/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>659</dsSize><dsVersionable>false</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:nt028fd5773+identityMetadata+identityMetadata.7</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:19 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:nt028fd5773/datastreams/identityMetadata/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Jan 2015 23:22:19 GMT
+      Content-Disposition:
+      - inline; filename="Identity Metadata.xml"
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '659'
+    body:
+      encoding: US-ASCII
+      string: ! "\n<identityMetadata>\n  <objectLabel>Revs Institute</objectLabel>\n
+        \ <adminPolicy>druid:qv648vd4392</adminPolicy>\n  <objectType>collection</objectType>\n
+        \ <objectType>set</objectType>\n  <otherId name=\"uuid\">fd7af5e0-42ea-11e1-b86c-0800200c9a66</otherId>\n
+        \ <objectId>druid:nt028fd5773</objectId>\n  <objectCreator>DOR</objectCreator>\n
+        \ <agreementId>druid:xf765cv5573</agreementId>\n  <tag>revs : tag : test1</tag>\n
+        \ <tag>release : revs : tag : test1</tag>\n  <release to=\"Revs\" what=\"self\"
+        when=\"2015-01-08T22:58:35Z\" who=\"carrickr\">true</release>\n  <release
+        to=\"Atago\" what=\"collection\" when=\"2015-01-21T22:37:40Z\" who=\"carrickr\">false</release>\n</identityMetadata>\n"
+    http_version: 
+  recorded_at: Wed, 21 Jan 2015 23:22:19 GMT
+recorded_with: VCR 2.9.3
