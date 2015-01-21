@@ -64,6 +64,7 @@ end
 
 RSpec.configure do |config|
   config.include Dor::SpecHelpers
+  config.logger.level = Logger::WARN  # INFO and lesser messages are not notable
 end
 
 def catch_stdio
