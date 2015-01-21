@@ -147,7 +147,7 @@ describe Dor::Processable do
       solr_doc=@item.to_solr
       lifecycle=solr_doc[Solrizer.solr_name('lifecycle', :displayable)]
       #lifecycle_display should have the semicolon delimited version
-      expect(lifecycle.include?("published:2012-01-27T05:06:54Z;2")).to eq(true)
+      expect(lifecycle.include?("published:2012-01-27T05:06:54Z;2")).to be_truthy
       #published date should be the first published date
       expect(solr_doc[Solrizer.solr_name('published', :type => :date)]).to eq(solr_doc[Solrizer.solr_name('published_earliest', :type => :date)])
       expect(solr_doc[Solrizer.solr_name('status', :displayable)].first).to eq('v4 In accessioning (described, published)')
@@ -178,7 +178,7 @@ describe Dor::Processable do
       solr_doc=@item.to_solr
       #the facet field should have a date in it.
       expect(solr_doc[Solrizer.solr_name('versions', :displayable)].length).to be > 1
-      expect(solr_doc[Solrizer.solr_name('versions', :displayable)].include?("4;2.2.0;Another typo")).to eq(true)
+      expect(solr_doc[Solrizer.solr_name('versions', :displayable)].include?("4;2.2.0;Another typo")).to be_truthy
     end
     it 'should handle a missing description for a version' do
       dsxml='
@@ -201,8 +201,7 @@ describe Dor::Processable do
       allow(@item).to receive(:versionMetadata).and_return(@versionMD)
       solr_doc=@item.to_solr
       #the facet field should have a date in it.
-      expect(solr_doc[Solrizer.solr_name('versions', :displayable)].length).to be > 1
-      expect(solr_doc[Solrizer.solr_name('versions', :displayable)].include?("4;2.2.0;")).to eq(true)
+      expect(solr_doc[Solrizer.solr_name('versions', :displayable)]).to include "4;2.2.0;"
     end
   end
   describe 'status' do
