@@ -5,8 +5,6 @@ group :development do
 end
 
 group :development, :test do
-  gem "ruby-debug", :platform => :ruby_18
-  gem "rcov",       :platform => :ruby_18
   gem "simplecov",  :platform => [:ruby_19, :ruby_20, :ruby_21]
   gem "debugger", '1.6.3', :platform => :ruby_19
 end
