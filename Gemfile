@@ -18,5 +18,3 @@ end
 # Dependencies are defined in dor-services.gemspec
 gemspec
 
-gem 'druid-tools', '~> 0.3'
-gem 'addressable', '2.3.5'

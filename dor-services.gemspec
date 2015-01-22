@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 
   # Runtime dependencies
   s.add_dependency 'active-fedora', '~> 6.0'
-  s.add_dependency 'activesupport', '~> 3.2', '>= 3.2.18'
+  s.add_dependency 'activesupport', '>= 3.2.18' # '~> 4.0' #
   s.add_dependency 'confstruct', '~> 0.2.7'
   s.add_dependency 'equivalent-xml', '~> 0.5.1'
   s.add_dependency 'json', '~> 1.8.1'
@@ -37,11 +37,12 @@ Gem::Specification.new do |s|
   s.add_dependency 'systemu', '~> 2.6.0'
   s.add_dependency 'uuidtools', '~> 2.1.4'
   s.add_dependency 'validatable', '~> 1.6.7'
-  s.add_dependency 'osullivan'
+  s.add_dependency 'osullivan', '~> 0.0.3'
+  s.add_dependency 'addressable', '2.3.5'
 
   # Stanford dependencies
   s.add_dependency 'dor-workflow-service', '~> 1.7', '>= 1.7.1'
-  s.add_dependency 'druid-tools', '~> 0.3.1'
+  s.add_dependency 'druid-tools', '~> 0.3'
   s.add_dependency 'lyber-utils', '~> 0.1.2'
   s.add_dependency 'moab-versioning', '~> 1.4.0' # 1.3.2 fails
 
