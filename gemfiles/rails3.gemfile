@@ -3,3 +3,9 @@ source "https://rubygems.org"
 gemspec :path=>"../"
 
 gem 'activesupport', '~> 3.2', '>= 3.2.18'
+
+group :development,:test do
+  gem "rcov", :platform => :ruby_18
+  gem "simplecov", :platform => [:ruby_19, :ruby_20, :ruby_21]
+end
+

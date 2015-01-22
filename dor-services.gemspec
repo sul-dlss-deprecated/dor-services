@@ -48,9 +48,11 @@ Gem::Specification.new do |s|
 
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects
+  s.add_development_dependency 'awesome_print'
   s.add_development_dependency 'fakeweb', '~> 1.3.0'
   s.add_development_dependency 'haml', '~> 4.0.4'
   s.add_development_dependency 'jhove-service', '~> 1.0.1'
+  s.add_development_dependency 'pry'
   s.add_development_dependency 'rake', '~> 10.0'
   s.add_development_dependency 'rdoc', '~> 4.0.1'
   s.add_development_dependency 'rspec', '~> 3.1'
