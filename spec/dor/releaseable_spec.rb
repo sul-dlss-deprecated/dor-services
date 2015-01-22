@@ -2,12 +2,22 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 #
 describe Dor::Releaseable, :vcr do
   before :each do
+    
+    Dor::Config.push! do
+      solrizer.url "http://127.0.0.1:8080/solr/argo_test"
+      fedora.url "https://sul-dor-test.stanford.edu/fedora"
+    end
+    
     VCR.use_cassette('fetch_bryar_transam') do
       @bryar_trans_am = Dor::Item.find('druid:bb004bn8654')
       @bryar_trans_am_admin_tags = @bryar_trans_am.tags
       @bryar_trans_am_release_tags = @bryar_trans_am.release_tags
       @array_of_times = [Time.parse('2015-01-06 23:33:47Z').iso8601, Time.parse('2015-01-07 23:33:47Z').iso8601, Time.parse('2015-01-08 23:33:47Z').iso8601, Time.parse('2015-01-09 23:33:47Z').iso8601]
     end
+  end
+  
+  after :each do
+    Dor::Config.pop!
   end
   
   describe "Tag sorting, combining, and comparision functions" do

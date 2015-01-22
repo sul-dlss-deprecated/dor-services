@@ -155,9 +155,27 @@ end
 
 describe "Adding release tags", :vcr do
   before :each do
+    
+    Dor::Config.push! do
+      cert_dir = File.expand_path('../../certs', __FILE__)
+      ssl do
+        cert_file File.join(cert_dir,"robots-dor-test.crt")
+        key_file File.join(cert_dir,"robots-dor-test.key")
+        key_pass ''
+      end
+      solrizer.url "http://127.0.0.1:8080/solr/argo_test"
+      fedora.url "https://sul-dor-test.stanford.edu/fedora"
+      
+    end
+    
     VCR.use_cassette('releaseable_sample_obj') do
       @item = Dor::Item.find('druid:bb004bn8654')
+      @release_tags = @item.release_tags
     end
+  end
+  
+  after :each do
+    Dor::Config.pop!
   end
   
   it "should raise an error when no :who, :to,  or :what is supplied" do
@@ -223,8 +241,8 @@ describe "Adding release tags", :vcr do
   end
   
   it "should return the releases for an item that has release tags" do
-    expect(@item.release_tags).to be_a_kind_of(Hash)
-    expect(@item.release_tags).to eq({"Revs"=>[{"tag"=>"true", "what"=>"collection", "when"=>Time.parse('2015-01-06 23:33:47Z'), "who"=>"carrickr", "release"=>true}, {"tag"=>"true", "what"=>"self", "when"=>Time.parse('2015-01-06 23:33:54Z'), "who"=>"carrickr", "release"=>true}, {"tag"=>"Project : Fitch : Batch2", "what"=>"self", "when"=>Time.parse('2015-01-06 23:40:01Z'), "who"=>"carrickr", "release"=>false}]})
+    expect(@release_tags).to be_a_kind_of(Hash)
+    expect(@release_tags).to eq({"Revs"=>[{"tag"=>"true", "what"=>"collection", "when"=>Time.parse('2015-01-06 23:33:47Z'), "who"=>"carrickr", "release"=>true}, {"tag"=>"true", "what"=>"self", "when"=>Time.parse('2015-01-06 23:33:54Z'), "who"=>"carrickr", "release"=>true}, {"tag"=>"Project : Fitch : Batch2", "what"=>"self", "when"=>Time.parse('2015-01-06 23:40:01Z'), "who"=>"carrickr", "release"=>false}]})
   end
   
   it "should return a hash created from a single release tag" do
