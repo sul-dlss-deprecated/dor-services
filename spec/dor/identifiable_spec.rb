@@ -159,8 +159,9 @@ describe "Adding release tags", :vcr do
     Dor::Config.push! do
       cert_dir = File.expand_path('../../certs', __FILE__)
       ssl do
-        cert_file File.join(cert_dir,"robots-dor-test.crt")
-        key_file File.join(cert_dir,"robots-dor-test.key")
+        #If rerecording or adding new cassettes, point these to real files
+        cert_file File.join(cert_dir,"spec.crt")
+        key_file File.join(cert_dir,"spec.key")
         key_pass ''
       end
       solrizer.url "http://127.0.0.1:8080/solr/argo_test"
