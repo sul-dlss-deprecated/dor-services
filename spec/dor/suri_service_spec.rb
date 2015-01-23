@@ -1,7 +1,7 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 describe Dor::SuriService do
-  
+
   describe "an enabled SuriService" do
     before(:each) do
       Dor::Config.push! do
@@ -19,39 +19,37 @@ describe Dor::SuriService do
       @my_client = double('restclient').as_null_object
       allow(RestClient::Resource).to receive(:new).and_return(@my_client)
     end
-  
+
     after(:each) do
       Dor::Config.pop!
     end
-  
+
     it "should mint a druid using RestClient::Resource" do
       expect(@my_client).to receive(:post).with("").and_return('foo')
       expect(@my_client).to receive(:[]).with("identifiers?quantity=1").and_return(@my_client)
-      expect(Dor::SuriService.mint_id).to eq("#{Dor::Config.suri.id_namespace}:foo") 
+      expect(Dor::SuriService.mint_id).to eq("#{Dor::Config.suri.id_namespace}:foo")
     end
-    
+
     it "should mint several druids if a quantity is passed in" do
       expect(@my_client).to receive(:post).with("").and_return("foo\nbar\nbaz")
       expect(@my_client).to receive(:[]).with("identifiers?quantity=3").and_return(@my_client)
       expect(Dor::SuriService.mint_id(3)).to eq(["#{Dor::Config.suri.id_namespace}:foo","#{Dor::Config.suri.id_namespace}:bar","#{Dor::Config.suri.id_namespace}:baz"])
     end
-  
+
     it "should throw log an error and rethrow the exception if Connect fails." do
       e = "thrown exception"
       ex = Exception.new(e)
-      
       expect(@my_client).to receive(:post).with("").and_raise(ex)
-                                                
       expect{ Dor::SuriService.mint_id }.to raise_error(Exception, "thrown exception")
     end
-    
+
   end
-  
+
   describe "a disabled SuriService" do
     before :all do
       Dor::Config.push! { suri.mint_ids false }
     end
-    
+
     before :each do
       @mock_repo = double(Rubydora::Repository)
       if ActiveFedora::Base.respond_to?(:connection_for_pid)
@@ -64,7 +62,7 @@ describe Dor::SuriService do
     after :all do
       Dor::Config.pop!
     end
-    
+
     it "should mint a single ID using Fedora's getNextPid API-M service" do
       xml_response = <<-EOXML
       <?xml version="1.0" encoding="UTF-8"?>
@@ -91,5 +89,5 @@ describe Dor::SuriService do
       Dor::Config.suri.pop
     end
   end
-  
+
 end

@@ -1,6 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-
-require 'dor/services/technical_metadata_service'
+require 'spec_helper'
 require 'moab_stanford'
 require 'fakeweb'
 

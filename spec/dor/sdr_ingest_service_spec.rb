@@ -1,6 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require 'dor/services/sdr_ingest_service'
-
+require 'spec_helper'
 require 'fileutils'
 
 describe Dor::SdrIngestService do
@@ -35,8 +33,8 @@ describe Dor::SdrIngestService do
   end
 
   it "can find the fixtures workspace and export folders" do
-    expect(File.directory?(Dor::Config.sdr.local_workspace_root)).to eql true
-    expect(File.directory?(Dor::Config.sdr.local_export_home)).to eql true
+    expect(File.directory?(Dor::Config.sdr.local_workspace_root)).to be_truthy
+    expect(File.directory?(Dor::Config.sdr.local_export_home)).to be_truthy
   end
 
   it "can retrieve content of a required metadata datastream" do
@@ -161,7 +159,7 @@ describe Dor::SdrIngestService do
   # p catalog
   # p catalog.to_xml
     expect(catalog.to_xml).to match(/<signatureCatalog/)
-    expect(catalog.version_id).to eq(0)
+    expect(catalog.version_id).to eq 0
   end
 
   specify "SdrIngestService.extract_datastreams" do
@@ -200,7 +198,7 @@ describe Dor::SdrIngestService do
       and_return(metadata_group)
     result = Dor::SdrIngestService.get_version_inventory(metadata_dir, druid, version_id)
     expect(result).to be_instance_of Moab::FileInventory
-    expect(result.groups.size).to eq(2)
+    expect(result.groups.size).to eq 2
   end
 
   specify "SdrIngestService.get_content_inventory" do
@@ -210,17 +208,17 @@ describe Dor::SdrIngestService do
 
     version_inventory = Dor::SdrIngestService.get_content_inventory(metadata_dir, druid, version_id)
     expect(version_inventory).to be_instance_of Moab::FileInventory
-    expect(version_inventory.version_id).to eq(2)
+    expect(version_inventory.version_id).to eq 2
     content_group = version_inventory.groups[0]
-    expect(content_group.group_id).to eq('content')
-    expect(content_group.files.size).to eq(2)
+    expect(content_group.group_id).to eq 'content'
+    expect(content_group.files.size).to eq 2
     # files in the 2nd resource are copied from the first resource
-    expect(content_group.files[0].instances.size).to eq(2)
+    expect(content_group.files[0].instances.size).to eq 2
 
     # if no content metadata
     metadata_dir = @fixtures.join('workspace/ab/123/cd/4567/ab123cd4567')
     version_inventory = Dor::SdrIngestService.get_content_inventory(metadata_dir, druid, version_id)
-    expect(version_inventory.groups.size).to eq(0)
+    expect(version_inventory.groups.size).to eq 0
   end
 
   specify "SdrIngestService.get_content_metadata" do
@@ -250,7 +248,7 @@ describe Dor::SdrIngestService do
   specify "SdrIngestService.vmfile_version_id" do
     metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
     vmfile = metadata_dir.join("versionMetadata.xml")
-    expect(Dor::SdrIngestService.vmfile_version_id(vmfile)).to eq(2)
+    expect(Dor::SdrIngestService.vmfile_version_id(vmfile)).to eq 2
   end
 
   specify "SdrIngestService.verify_pathname" do

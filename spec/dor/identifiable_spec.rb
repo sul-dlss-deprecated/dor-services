@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 class IdentifiableItem < ActiveFedora::Base
   include Dor::Identifiable
@@ -105,10 +105,10 @@ describe Dor::Identifiable do
 
   describe 'remove_tag' do
     it 'should delete a tag' do
-    item.add_tag('sometag:someval')
-    expect(item.identityMetadata.tags().include?('sometag : someval')).to be_truthy
-    expect(item.remove_tag('sometag:someval')).to be_truthy
-    expect(item.identityMetadata.tags().include?('sometag : someval')).to be_falsey
+      item.add_tag('sometag:someval')
+      expect(item.identityMetadata.tags().include?('sometag : someval')).to be_truthy
+      expect(item.remove_tag('sometag:someval')).to be_truthy
+      expect(item.identityMetadata.tags().include?('sometag : someval')).to be_falsey
       expect(item.identityMetadata).to be_changed
     end
   end

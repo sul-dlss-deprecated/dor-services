@@ -12,8 +12,6 @@ require 'awesome_print'
 require 'solrizer'
 require 'om'
 
-require 'rubygems'
-require 'rake'
 require 'dor-services'
 #require 'ruby-debug'
 require 'foxml_helper'

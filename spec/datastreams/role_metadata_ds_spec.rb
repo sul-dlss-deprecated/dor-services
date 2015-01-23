@@ -1,6 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require 'dor/datastreams/role_metadata_ds'
-require 'equivalent-xml'
+require 'spec_helper'
 
 describe Dor::RoleMetadataDS do
 

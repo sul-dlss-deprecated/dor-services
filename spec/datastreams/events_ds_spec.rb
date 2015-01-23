@@ -1,10 +1,8 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require 'dor/datastreams/events_ds'
-require 'equivalent-xml'
+require 'spec_helper'
 
 describe Dor::EventsDS do
-  
-  before(:each) do      
+
+  before(:each) do
     @dsxml =<<-EOF
       <events>
         <event type="eems" who="sunetid:jwible" when="2011-02-23T12:41:09-08:00">Request created by Joe Wible</event>
@@ -14,27 +12,27 @@ describe Dor::EventsDS do
       </events>
     EOF
   end
-  
+
   context "Marshalling to and from a Fedora Datastream" do
-    
+
     it "creates itself from xml" do
       ds = Dor::EventsDS.from_xml(@dsxml)
       expect(ds.find_by_terms(:event).size).to eq(4)
     end
-        
+
     it "creates a simple default with #new" do
       xml = "<events/>"
-      
+
       ds = Dor::EventsDS.new nil, 'events'
       expect(ds.to_xml).to be_equivalent_to(xml)
-    end    
+    end
   end
-  
+
   describe "#add_event" do
     it "appends a new event element to the set of events" do
       ds = Dor::EventsDS.new nil, 'events'
       ds.add_event "embargo", "application:etd-robot", "Embargo released"
-      
+
       events = ds.find_by_terms(:event)
       expect(events.size).to eq(1)
       expect(events.first['type']).to eq('embargo')
@@ -42,39 +40,39 @@ describe Dor::EventsDS do
       expect(Time.parse(events.first['when'])).to be > Time.now - 10000
       expect(events.first.content).to eq('Embargo released')
     end
-    
+
     it "keeps events in sorted order" do
       ds = Dor::EventsDS.from_xml(@dsxml)
       ds.add_event "embargo", "application:etd-robot", "Embargo go bye-bye"
-      
+
       expect(ds.find_by_terms(:event).last.content).to eq('Embargo go bye-bye')
     end
-    
+
     it "markes the datastream changed" do
       ds = Dor::EventsDS.from_xml(@dsxml)
       ds.add_event "embargo", "application:etd-robot", "Embargo go bye-bye"
       expect(ds).to be_changed
     end
   end
-  
+
   describe "#find_events_by_type" do
-                
+
     it "returns a block with who, timestamp, and message" do
       ds = Dor::EventsDS.from_xml(@dsxml)
       ds.add_event "publish", "application:common-accessioning-robot", "Released to the world"
-      
+
       ds.find_events_by_type("publish") do |who, timestamp, message|
         expect(who).to eq("application:common-accessioning-robot")
         expect(timestamp).to be > Time.now - 10000
         expect(message).to eq("Released to the world")
       end
-      
+
       count = 0
       ds.find_events_by_type("embargo") {|w, t, m| count += 1}
       expect(count).to eq(2)
     end
   end
-  
+
   describe "#each_event" do
     it "returns a block with type, who, timestamp, and message for all events" do
       ds = Dor::EventsDS.from_xml(@dsxml)
@@ -88,11 +86,11 @@ describe Dor::EventsDS do
         expect(message.class).to be String
         count += 1
       end
-      
+
       expect(all_types).to eq(['eems', 'eems', 'embargo', 'embargo'])
       expect(all_whos).to eq(['sunetid:jwible', 'sunetid:jwible', 'sunetid:hfrost', 'application:embargo'])
       expect(count).to be 4
     end
   end
-  
+
 end

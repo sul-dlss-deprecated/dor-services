@@ -1,7 +1,6 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 require 'nokogiri'
-require 'equivalent-xml'
-require 'dor/datastreams/workflow_ds'
+
 describe Dor::WorkflowDs do
 
   before(:each) { stub_config }

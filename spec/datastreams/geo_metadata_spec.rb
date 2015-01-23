@@ -1,9 +1,7 @@
 # encoding: UTF-8
 
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 require 'nokogiri'
-require 'equivalent-xml'
-require 'dor/datastreams/geo_metadata_ds'
 require 'pp'
 
 describe Dor::GeoMetadataDS do
@@ -36,7 +34,7 @@ describe Dor::GeoMetadataDS do
         }[k]])
       end
     end
-    
+
     it 'file_id' do
       @test_keys.each do |k|
         expect(@doc[k].term_values(:file_id)).to eq([{
@@ -189,10 +187,10 @@ describe Dor::GeoMetadataDS do
     end
 
     it '#feature_catalogue' do
-      expect(@doc['co2_pipe'].feature_catalogue.nil?).to eq(false)
+      expect(@doc['co2_pipe'].feature_catalogue.nil?).not_to be_nil
       expect(@doc['co2_pipe'].feature_catalogue.root.name).to eq('FC_FeatureCatalogue')
       expect(@doc['co2_pipe'].feature_catalogue.root.children.size).to eq(17)
-      expect(@doc['oil_gas_fields'].feature_catalogue.nil?).to eq(false)
+      expect(@doc['oil_gas_fields'].feature_catalogue).not_to be_nil
       expect(@doc['oil_gas_fields'].feature_catalogue.root.name).to eq('FC_FeatureCatalogue')
       expect(@doc['oil_gas_fields'].feature_catalogue.root.children.size).to eq(17)
     end
@@ -216,20 +214,20 @@ describe Dor::GeoMetadataDS do
         '120.2 -- 18.316667/0 -- 0' =>
 "E 120°12ʹ--E 18°19ʹ/N 0°--N 0°",
         '120.2 -- 18.316667/0 -- 0.0001' =>
-"E 120°12ʹ--E 18°19ʹ/N 0°--N 0°" 
+"E 120°12ʹ--E 18°19ʹ/N 0°--N 0°"
       }
       r.each do |k,v|
         expect(Dor::GeoMetadataDS.to_coordinates_ddmmss(k)).to eq(v)
       end
     end
-    
+
     it "#to_mods" do
       @test_keys.each do |k|
         # File.open("tmp.xml", "w") {|f| f << @doc[k].to_mods.to_xml}
         expect(@doc[k].to_mods.to_xml).to be_equivalent_to(@mods[k].to_xml)
       end
     end
-    
+
     it "#to_dc" do
       @test_keys.each do |k|
         File.open("tmp.xml", "w") {|f| f << @doc[k].to_dublin_core.to_xml}

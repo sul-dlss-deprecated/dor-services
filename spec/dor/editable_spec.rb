@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 describe Dor::Editable do
   before(:each) { stub_config   }
@@ -8,14 +8,14 @@ describe Dor::Editable do
     @empty_item = instantiate_fixture("pw570tx3016", Dor::AdminPolicyObject)
   end
 
-    let(:mock_agreement) {
-      agr = Dor::Item.new
-      allow(agr).to receive(:new?).and_return false
-      allow(agr).to receive(:new_record?).and_return false
-      allow(agr).to receive(:pid).and_return 'druid:new_agreement'
-      allow(agr).to receive(:save)
-      agr
-    }
+  let(:mock_agreement) {
+    agr = Dor::Item.new
+    allow(agr).to receive(:new?).and_return false
+    allow(agr).to receive(:new_record?).and_return false
+    allow(agr).to receive(:pid).and_return 'druid:new_agreement'
+    allow(agr).to receive(:save)
+    agr
+  }
 
   describe 'add_roleplayer' do
     it 'should add a role' do
@@ -265,11 +265,11 @@ describe Dor::Editable do
   describe 'default_workflow=' do
     it 'should set the default workflow' do
       @item.default_workflow = 'thisWF'
-      expect(@item.default_workflows.include?('thisWF')).to eq(true)
+      expect(@item.default_workflows).to include('thisWF')
     end
     it 'should work on an empty ds' do
       @empty_item.default_workflow = 'thisWF'
-      expect(@empty_item.default_workflows.include?('thisWF')).to eq(true)
+      expect(@empty_item.default_workflows).to include('thisWF')
       adm_md_ds = @empty_item.datastreams['administrativeMetadata']
       xml = Nokogiri::XML(adm_md_ds.to_xml)
       expect(xml).to be_equivalent_to <<-XML
@@ -293,7 +293,7 @@ describe Dor::Editable do
       expect(solr_doc["registration_workflow_id_sim"]).to eq(['digitizationWF'])
       expect(solr_doc["use_statement_sim"]).to eq(["Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu."])
       expect(solr_doc["copyright_sim"]).to eq(["Additional copyright info"])
-      
+
     end
   end
 end

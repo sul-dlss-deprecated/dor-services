@@ -1,6 +1,5 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 require 'nokogiri'
-require 'dor/datastreams/embargo_metadata_ds'
 
 describe Dor::EmbargoMetadataDS do
   context "Marshalling to and from a Fedora Datastream" do

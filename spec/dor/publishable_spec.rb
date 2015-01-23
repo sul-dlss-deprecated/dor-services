@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 class PublishableItem < ActiveFedora::Base
   include Dor::Publishable

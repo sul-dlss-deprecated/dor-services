@@ -1,7 +1,5 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 require 'nokogiri'
-require 'equivalent-xml'
-require 'dor/datastreams/desc_metadata_ds'
 
 describe Dor::DescMetadataDS do
   context "Marshalling to and from a Fedora Datastream" do
@@ -26,14 +24,14 @@ describe Dor::DescMetadataDS do
           </language>
         </mods>
       EOF
-      
+
       @dsdoc = Dor::DescMetadataDS.from_xml(@dsxml)
     end
-    
+
     it "should get correct values from OM terminology" do
       expect(@dsdoc.term_values(:abstract)).to eq(['Abstract contents.'])
     end
 
   end
-    
+
 end

@@ -1,7 +1,7 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 describe Dor::Upgradable do
-  
+
   before :each do
     module UpgradableTest
       class Foo
@@ -20,17 +20,17 @@ describe Dor::Upgradable do
         end
         def pid; 'baz'; end
       end
-      
+
       class Quux
         def pid; 'quux'; end
       end
-      
+
       def self.define_upgrades
         UpgradableTest::Foo.on_upgrade '1.0.1', 'Signal foo 2' do |obj|
           obj.signal(obj, 'foo_2')
           true
         end
-    
+
         UpgradableTest::Foo.on_upgrade '1.0.0', 'Signal foo 1' do |obj|
           obj.signal(obj, 'foo')
           true
@@ -40,7 +40,7 @@ describe Dor::Upgradable do
           obj.signal(obj, 'bar')
           true
         end
-        
+
         UpgradableTest::Bar.on_upgrade '1.0.1', 'NEVER RUN'  do |obj|
           false
         end
@@ -60,12 +60,12 @@ describe Dor::Upgradable do
   after :each do
     Object.instance_eval { remove_const :UpgradableTest }
   end
-  
+
   it "should allow callbacks to be defined" do
     expect(Dor::Upgradable).to receive(:add_upgrade_callback).exactly(5).times
     UpgradableTest.define_upgrades
   end
-  
+
   it "should send an upgrade to the relevant class" do
     UpgradableTest.define_upgrades
     expect(@foo).to receive(:save)
@@ -73,7 +73,7 @@ describe Dor::Upgradable do
     expect(@foo).to receive(:signal).with(@foo,'foo_2').ordered
     @foo.upgrade!
   end
-  
+
   it "should send an upgrade to descendant classes" do
     UpgradableTest.define_upgrades
     expect(@baz).to receive(:signal).with(@baz,'bar')
@@ -82,7 +82,7 @@ describe Dor::Upgradable do
 
     @baz.upgrade!
   end
-  
+
   it "should send an upgrade to datastreams" do
     UpgradableTest.define_upgrades
     datastreams = { 'a' => UpgradableTest::Foo.new, 'b' => UpgradableTest::Bar.new, 'c' => UpgradableTest::Quux.new }
@@ -100,7 +100,7 @@ describe Dor::Upgradable do
 
     @baz.upgrade!
   end
-  
+
   it "should send event notifications when an upgrade is done" do
     UpgradableTest.define_upgrades
     allow(@bar).to receive(:add_event)
@@ -110,7 +110,7 @@ describe Dor::Upgradable do
     expect(@bar).to receive(:save)
     @bar.upgrade!
   end
-  
+
   it "should only save if upgrades were run" do
     UpgradableTest::Foo.on_upgrade '1.0.2', 'This should never run' do
       if false

@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 class ProcessableItem < ActiveFedora::Base
   include Dor::Itemizable
@@ -144,6 +144,8 @@ describe Dor::Processable do
     end
     it 'should include the semicolon delimited version, an earliest published date and a status' do
       allow(@item).to receive(:versionMetadata).and_return(@versionMD)
+#      allow(@item.descMetadata).to receive(:to_solr).and_return({})
+      expect(Dor.logger).to receive(:warn)
       solr_doc=@item.to_solr
       lifecycle=solr_doc[Solrizer.solr_name('lifecycle', :displayable)]
       #lifecycle_display should have the semicolon delimited version

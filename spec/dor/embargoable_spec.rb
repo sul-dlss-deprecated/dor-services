@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 require 'equivalent-xml'
 
 class EmbargoedItem < ActiveFedora::Base
@@ -115,8 +115,8 @@ describe Dor::Embargoable do
     it "writes 'embargo released' to event history" do
       events = @embargo_item.datastreams['events']
       events.find_events_by_type("embargo") do |who, timestamp, message|
-        expect(who).to eq('application:embargo-release')
-        expect(message).to eq("Embargo released")
+        expect(who).to eq 'application:embargo-release'
+        expect(message).to eq "Embargo released"
       end
     end
   end
@@ -134,7 +134,7 @@ describe Dor::Embargoable do
     end
 
     it "sets the embargo status to released" do
-      expect(eds.twenty_pct_status).to eq('released')
+      expect(eds.twenty_pct_status).to eq 'released'
     end
 
     context "rightsMetadata modifications" do
@@ -142,9 +142,9 @@ describe Dor::Embargoable do
       it "replaces stanford group read access to world read access" do
         rights = embargo_item.datastreams['rightsMetadata'].ng_xml
 
-        expect(rights.xpath("//rightsMetadata/access[@type='read']").size).to eq(1)
-        expect(rights.xpath("//rightsMetadata/access[@type='discover']").size).to eq(1)
-        expect(rights.xpath("//rightsMetadata/access[@type='read']/machine/world").size).to eq(1)
+        expect(rights.xpath("//rightsMetadata/access[@type='read']"              ).size).to eq 1
+        expect(rights.xpath("//rightsMetadata/access[@type='discover']"          ).size).to eq 1
+        expect(rights.xpath("//rightsMetadata/access[@type='read']/machine/world").size).to eq 1
       end
 
       it "marks the datastream as dirty" do
@@ -176,7 +176,7 @@ describe Dor::Embargoable do
     it 'should update the embargo date' do
       old_embargo_date=@embargo_item.embargoMetadata.release_date
       @embargo_item.update_embargo(Time.now + 1.month)
-      expect(@embargo_item.embargoMetadata.release_date == old_embargo_date).to eq(false)
+      expect(@embargo_item.embargoMetadata.release_date).not_to eq old_embargo_date
     end
 
     it 'should raise an error if the item isnt embargoed' do

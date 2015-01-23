@@ -1,6 +1,5 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 require 'nokogiri'
-require 'equivalent-xml'
 
 describe Dor::WorkflowDs do
   let(:dsxml) { <<-EOF

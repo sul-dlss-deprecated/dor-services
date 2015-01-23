@@ -1,9 +1,7 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 require 'moab_stanford'
-require 'dor/services/digital_stacks_service'
 
 describe Dor::DigitalStacksService do
-
 
   before(:each) do
     @content_diff_reports = Pathname('spec').join('fixtures','content_diff_reports')
@@ -240,7 +238,7 @@ describe "file operations" do
 
 end
 
-describe "depricated Dor::DigitalStacksService" do
+describe "deprecated Dor::DigitalStacksService" do
 
   let(:purl_root) { Dir.mktmpdir }
   let(:stacks_root) { Dir.mktmpdir }

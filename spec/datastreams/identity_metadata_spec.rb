@@ -1,7 +1,5 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 require 'nokogiri'
-require 'equivalent-xml'
-require 'dor/datastreams/identity_metadata_ds'
 
 describe Dor::IdentityMetadataDS do
   context "Marshalling to and from a Fedora Datastream" do
@@ -19,10 +17,10 @@ describe Dor::IdentityMetadataDS do
           <tag>Project : McLaughlin Maps</tag>
         </identityMetadata>
       EOF
-      
+
       @dsdoc = Dor::IdentityMetadataDS.from_xml(@dsxml)
     end
-    
+
     it "creates itself from xml" do
       expect(@dsdoc.term_values(:objectId)).to eq(['druid:bb110sm8219'])
       expect(@dsdoc.term_values(:objectType)).to eq(['item'])
@@ -37,7 +35,7 @@ describe Dor::IdentityMetadataDS do
       expect(@dsdoc.otherId('bogus')).to eq([])
       expect(@dsdoc.sourceId).to eq('sulair:bb110sm8219')
     end
-    
+
     it "should be able to read ID fields as attributes" do
       expect(@dsdoc.objectId).to eq("druid:bb110sm8219")
       expect(@dsdoc.otherId).to eq(["mdtoolkit:bb110sm8219","uuid:b382ee92-da77-11e0-9036-0016034322e4"])
@@ -46,7 +44,7 @@ describe Dor::IdentityMetadataDS do
       expect(@dsdoc.otherId('bogus')).to eq([])
       expect(@dsdoc.sourceId).to eq('sulair:bb110sm8219')
     end
-    
+
     it "should be able to set the sourceID" do
       resultxml = <<-EOF
         <identityMetadata>
@@ -61,17 +59,17 @@ describe Dor::IdentityMetadataDS do
           <tag>Project : McLaughlin Maps</tag>
         </identityMetadata>
       EOF
-      
+
       @dsdoc.sourceId = 'test:ab110cd8219'
       expect(@dsdoc.sourceId).to eq('test:ab110cd8219')
       expect(@dsdoc.to_xml).to be_equivalent_to resultxml
     end
-    
+
     it "creates a simple default with #new" do
       new_doc = Dor::IdentityMetadataDS.new nil, 'identityMetadata'
       expect(new_doc.to_xml).to be_equivalent_to '<identityMetadata/>'
     end
-    
+
     it "should properly add elements" do
       resultxml = <<-EOF
         <identityMetadata>

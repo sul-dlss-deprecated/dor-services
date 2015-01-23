@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 class VersionableItem < ActiveFedora::Base
   include Dor::Versionable
@@ -16,7 +16,7 @@ describe Dor::Versionable do
   }
 
   let(:vmd_ds) { obj.datastreams['versionMetadata'] }
-  let(:ev_ds) { obj.datastreams['events'] }
+  let(:ev_ds ) { obj.datastreams['events'] }
 
   before(:each) do
     allow(obj.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)

@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 class DescribableItem < ActiveFedora::Base
   include Dor::Identifiable
@@ -10,8 +10,8 @@ class SimpleItem < ActiveFedora::Base
 end
 
 describe Dor::Describable do
-  before(:each) { stub_config	 }
-  after(:each)	 { unstub_config }
+  before(:each) { stub_config   }
+  after(:each)  { unstub_config }
 
   before :each do
     @item = instantiate_fixture('druid:ab123cd4567', DescribableItem)
@@ -34,7 +34,7 @@ describe Dor::Describable do
     end
     @simple.to_solr(doc)
     expect(@found).to eq(1)
-    end
+  end
 
   it "should have a descMetadata datastream" do
     expect(@item.datastreams['descMetadata']).to be_a(Dor::DescMetadataDS)
@@ -72,8 +72,7 @@ describe Dor::Describable do
 
     b = Dor::Item.new
     b.datastreams['descMetadata'].content = mods
-    dc = b.generate_dublin_core
-    expect(dc).to be_equivalent_to(expected_dc)
+    expect(b.generate_dublin_core).to be_equivalent_to expected_dc
   end
 
   it "produces dublin core Stanford-specific mapping for repository, collection and location, from the MODS in the descMetadata datastream" do
@@ -82,8 +81,7 @@ describe Dor::Describable do
 
     b = Dor::Item.new
     b.datastreams['descMetadata'].content = mods
-    dc = b.generate_dublin_core
-    expect(EquivalentXml.equivalent?(dc, expected_dc)).to be
+    expect(b.generate_dublin_core).to be_equivalent_to expected_dc
   end
 
   it "throws an exception if the generated dc has no root element" do
@@ -300,7 +298,7 @@ describe Dor::Describable do
       @item.add_collection_reference(mods)
 
       xml = mods
-      expect(EquivalentXml.equivalent?(xml.to_s,@item.descMetadata.ng_xml.to_s)).to eq(false)
+      expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(xml)
       collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
       expect(collections.length).to eq(1)
       collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
@@ -320,7 +318,7 @@ describe Dor::Describable do
       @item.add_collection_reference(mods)
 
       xml = mods
-      expect(EquivalentXml.equivalent?(xml.to_s,@item.descMetadata.ng_xml.to_s)).to eq(false)
+      expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(xml)
       collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
       expect(collections.length).to eq(1)
       collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
@@ -351,7 +349,7 @@ describe Dor::Describable do
       @item.add_collection_reference(mods)
 
       xml = mods
-      expect(EquivalentXml.equivalent?(xml.to_s,@item.descMetadata.ng_xml.to_s)).to eq(false)
+      expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(xml)
       collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
       expect(collections.length).to eq(1)
       collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
@@ -531,13 +529,12 @@ end
 describe 'update_title' do
   it 'should update the title' do
     found=false
-
     @obj.update_title('new title')
     @obj.descMetadata.ng_xml.search('//mods:mods/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
       expect(node.content).to eq('new title')
       found=true
     end
-    expect(found).to eq(true)
+    expect(found).to be_truthy
   end
   it 'should raise an exception if the mods lacks a title' do
     @obj.update_title('new title')
@@ -565,12 +562,12 @@ describe 'delete_identifier' do
     res.each do |node|
       expect(node.content).to eq('new attribute')
     end
-    expect(@obj.delete_identifier('type', 'new attribute')).to eq(true)
+    expect(@obj.delete_identifier('type', 'new attribute')).to be_truthy
     res=@obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]','mods' => 'http://www.loc.gov/mods/v3')
     expect(res.length).to eq(0)
   end
   it 'should return false if there was nothing to delete' do
-    expect(@obj.delete_identifier( 'type', 'new attribute')).to eq(false)
+    expect(@obj.delete_identifier('type', 'new attribute')).to be_falsey
   end
 end
 describe 'set_desc_metadata_using_label' do

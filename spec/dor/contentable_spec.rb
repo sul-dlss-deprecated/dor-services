@@ -1,7 +1,5 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require File.expand_path(File.dirname(__FILE__) + '/../../lib/dor/models/contentable')
+require 'spec_helper'
 require 'net/sftp'
-
 
 class ContentableItem < ActiveFedora::Base
   include Dor::Contentable
@@ -21,15 +19,16 @@ end
 
 describe Dor::Contentable do
 
-  before(:each) { stub_config
-                Dor.configure do
-                    content do
-                      content_user 'user'
-                      content_base_dir '/workspace/'
-                      content_server 'server'
-                    end
-                  end
-                }
+  before(:each) {
+    stub_config
+    Dor.configure do
+      content do
+        content_user 'user'
+        content_base_dir '/workspace/'
+        content_server 'server'
+      end
+    end
+  }
   after(:each)  { unstub_config }
 
   before(:each) do
@@ -51,7 +50,7 @@ describe Dor::Contentable do
     </contentMetadata>'
     allow(Dor::Item).to receive(:find).and_return(@item)
     file_path=File.dirname(__FILE__) + '/../fixtures/ab123cd4567_descMetadata.xml'
-    allow_any_instance_of(DruidTools::Druid).to receive(:path).and_return('file_path/ab123cd4567/ab123cd4567_descMetadata.xml')
+   #allow_any_instance_of(DruidTools::Druid).to receive(:path).and_return("#{file_path}/ab123cd4567/ab123cd4567_descMetadata.xml")
     @sftp=double(Net::SFTP)
     @resp=double(Net::SFTP::Response)
     allow(@resp).to receive(:code).and_return(123)
