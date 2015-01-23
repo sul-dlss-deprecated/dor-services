@@ -19,9 +19,9 @@ module Dor
     def build_iiif_manifest pub_obj_doc
       id = self.pid.split(':').last
 
-      lbl_node = pub_obj_doc.at_xpath('/publicObject/identityMetadata/objectLabel')
+      lbl_node = pub_obj_doc.at_xpath '//oai_dc:dc/dc:title', DC_NS
       if lbl_node.nil?
-        lbl_node = pub_obj_doc.at_xpath '//oai_dc:dc/dc:title', ns
+        lbl_node = pub_obj_doc.at_xpath('/publicObject/identityMetadata/objectLabel')
       end
       raise "Unable to build IIIF Presentation manifest:  No identityMetadata/objectLabel or dc:title" if lbl_node.nil?
       lbl = lbl_node.text
@@ -37,7 +37,31 @@ module Dor
           'format' => 'application/mods+xml'
         }
       }
+      # Use the human copyright statement for attribution if present
+      if(cr = pub_obj_doc.at_xpath('/publicObject/rightsMetadata/copyright/human[@type="copyright"]'))
+        manifest_data['attribution'] = cr.text
+      end
+
       manifest = IIIF::Presentation::Manifest.new manifest_data
+
+      # Set viewingHint to paged if this is a book
+      if(pub_obj_doc.at_xpath('/publicObject/contentMetadata[@type="book"]'))
+        manifest.viewingHint = "paged"
+      end
+
+      metadata = []
+      # make into method, pass in xpath and label
+      add_metadata 'Creator', '//oai_dc:dc/dc:creator', metadata, pub_obj_doc
+      add_metadata 'Contributor', '//oai_dc:dc/dc:contributor', metadata, pub_obj_doc
+      add_metadata 'Publisher', '//oai_dc:dc/dc:publisher', metadata, pub_obj_doc
+      add_metadata 'Date', '//oai_dc:dc/dc:date', metadata, pub_obj_doc
+
+      # Save off the first dc:description without displayLabel
+      if(desc = pub_obj_doc.at_xpath('//oai_dc:dc/dc:description[not(@displayLabel)]', DC_NS))
+        manifest.description = desc.text
+      end
+
+      manifest.metadata = metadata unless metadata.empty?
 
       seq_data = {
         '@id' => "#{purl_base_uri}/sequence-1",
@@ -76,6 +100,14 @@ module Dor
           'profile' => Dor::Config.stacks.iiif_profile
         })
 
+        # Use the first image to create a thumbnail on the manifest
+        if count == 1
+          thumb = IIIF::Presentation::Resource.new
+          thumb['@id'] = "#{stacks_uri}/full/400,/0/default.jpg"
+          thumb.service = svc
+          manifest.thumbnail = thumb
+        end
+
         img_res.service = svc
         anno.resource = img_res
         canv.images << anno
@@ -85,5 +117,17 @@ module Dor
       manifest.sequences << sequence
       manifest.to_json(:pretty => true)
     end
+
+    def add_metadata label, xpath, metadata, pub_obj_doc
+      nodes = pub_obj_doc.xpath xpath, DC_NS
+      nodes.each do |node|
+        h = {
+          'label' => label,
+          'value' => node.text
+        }
+        metadata << h
+      end
+    end
+
   end
 end
