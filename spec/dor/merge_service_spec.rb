@@ -1,11 +1,9 @@
 require 'spec_helper'
-require 'tmpdir'
 
 class MergeableItem < ActiveFedora::Base
   include Dor::Itemizable
   include Dor::Contentable
 end
-
 
 describe Dor::MergeService do
 
