@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'equivalent-xml'
 
 class EmbargoedItem < ActiveFedora::Base
   include Dor::Embargoable

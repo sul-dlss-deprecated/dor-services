@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'nokogiri'
-require 'equivalent-xml/rspec_matchers'
 
 describe Dor::MetadataService do
 
