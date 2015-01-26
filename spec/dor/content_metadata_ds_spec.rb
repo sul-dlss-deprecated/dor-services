@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'nokogiri'
 
 describe Dor::ContentMetadataDS do
   before(:each) { stub_config }
@@ -61,7 +60,6 @@ describe Dor::ContentMetadataDS do
         expect(node['sequence']).to eq('1')
       end
     end
-
 
     it 'should add a resource with a checksum' do
       @files[0][:md5]='123456'
@@ -236,6 +234,6 @@ describe Dor::ContentMetadataDS do
     it 'should read the stacks value' do
       expect(@item.contentMetadata.stacks).to eq(["/specialstack"])
     end
-    end
+  end
 end
 

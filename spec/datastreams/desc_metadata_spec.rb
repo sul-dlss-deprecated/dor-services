@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'nokogiri'
 
 describe Dor::DescMetadataDS do
   context "Marshalling to and from a Fedora Datastream" do
