@@ -29,7 +29,7 @@ module Dor
       purl_base_uri = "http://#{Dor::Config.stacks.document_cache_host}/#{id}"
 
       manifest_data = {
-        '@id'   => "#{purl_base_uri}.manifest",
+        '@id'   => "#{purl_base_uri}/iiif/manifest.json",
         'label' => lbl,
         'attribution' => 'Provided by the Stanford University Libraries',
         'seeAlso' => {
