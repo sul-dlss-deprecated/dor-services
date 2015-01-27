@@ -6,5 +6,7 @@ gem 'activesupport', '~> 4.1'
 
 group :development,:test do
   gem "simplecov", :platform => [:ruby_19, :ruby_20, :ruby_21]
+  gem "vcr"
+  gem 'webmock'
 end
 
