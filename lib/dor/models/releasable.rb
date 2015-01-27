@@ -1,5 +1,5 @@
 module Dor
-  module Releaseable
+  module Releasable
     extend ActiveSupport::Concern
     include Itemizable
     
