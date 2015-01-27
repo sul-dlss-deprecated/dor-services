@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 class GovernableItem < ActiveFedora::Base
   include Dor::Itemizable
@@ -13,158 +13,156 @@ describe Dor::Governable do
 
   let(:mock_collection) {
     coll = Dor::Collection.new
-    coll.stub(:new? => false, :new_record? => false, :pid => 'druid:oo201oo0002')
-    coll.stub(:save)
+    allow(coll).to receive(:new?).and_return false
+    allow(coll).to receive(:new_record?).and_return false
+    allow(coll).to receive(:pid).and_return 'druid:oo201oo0002'
+    allow(coll).to receive(:save)
     coll
   }
 
   before :each do
     @item = instantiate_fixture("druid:oo201oo0001", Dor::AdminPolicyObject)
    # @item.stub(:new_record? => false)
-    Dor::Collection.stub(:find).with("druid:oo201oo0002").and_return(mock_collection)
+    allow(Dor::Collection).to receive(:find).with("druid:oo201oo0002").and_return(mock_collection)
   end
-  describe 'set_read_rights' do
+
+  describe 'set_read_rights error handling' do
     it 'should raise an exception if the rights option doesnt match the accepted values' do
-      lambda{@item.set_read_rights('"druid:oo201oo0001"','Something')}.should raise_error
+      expect{@item.set_read_rights('"druid:oo201oo0001"','Something')}.to raise_error
+    end
+    it 'should raise an exception if the rights option doesnt match the accepted values' do
+      expect{@item.set_read_rights('mambo')}.to raise_error
     end
     it 'should segfault' do
+      skip "No expectation implemented"
       doc=Nokogiri::XML('<oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
         <dc:identifier>druid:ab123cd4567</dc:identifier>
       </oai_dc:dc>')
       node=doc.xpath('//element').first
       new_node=doc.root.clone
     end
-    it 'should set an item to dark, removing the discovery rights' do
+  end
+
+  describe 'set_read_rights' do
+    it 'should set rights to dark (double none), removing the discovery rights' do
       @item.set_read_rights('dark')
-      @item.rightsMetadata.ng_xml.should be_equivalent_to <<-XML
+      expect(@item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
       <?xml version="1.0"?>
       <rightsMetadata>
-      <copyright>
-      <human type="copyright">This work is in the Public Domain.</human>
-      </copyright>
-      <access type="discover">
-      <machine>
-      <none/>
-      </machine>
-      </access>
-      <access type="read">
-      <machine>
-      <none/>
-      </machine>
-      </access>
-      <use>
-      <human type="creativecommons">Attribution Share Alike license</human>
-      <machine type="creativecommons">by-sa</machine>
-      </use>
+        <copyright>
+          <human type="copyright">This work is in the Public Domain.</human>
+        </copyright>
+        <access type="discover">
+          <machine><none/></machine>
+        </access>
+        <access type="read">
+          <machine><none/></machine>
+        </access>
+        <use>
+          <human type="creativecommons">Attribution Share Alike license</human>
+          <machine type="creativecommons">by-sa</machine>
+        </use>
       </rightsMetadata>
       XML
     end
-    it 'should correctly set a dark item to world' do
-      @item.set_read_rights('dark')
-      @item.rightsMetadata.ng_xml.should be_equivalent_to <<-XML
-      <?xml version="1.0"?>
-      <rightsMetadata>
-      <copyright>
-      <human type="copyright">This work is in the Public Domain.</human>
-      </copyright>
-      <access type="discover">
-      <machine>
-      <none/>
-      </machine>
-      </access>
-      <access type="read">
-      <machine>
-      <none/>
-      </machine>
-      </access>
-      <use>
-      <human type="creativecommons">Attribution Share Alike license</human>
-      <machine type="creativecommons">by-sa</machine>
-      </use>
-      </rightsMetadata>
-      XML
+    it 'should set rights to <world/>' do
       @item.set_read_rights('world')
-      @item.rightsMetadata.ng_xml.should be_equivalent_to <<-XML
+      expect(@item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
       <?xml version="1.0"?>
       <rightsMetadata>
-      <copyright>
-      <human type="copyright">This work is in the Public Domain.</human>
-      </copyright>
-      <access type="discover">
-      <machine>
-      <world/>
-      </machine>
-      </access>
-      <access type="read">
-      <machine>
-      <world/>
-      </machine>
-      </access>
-      <use>
-      <human type="creativecommons">Attribution Share Alike license</human>
-      <machine type="creativecommons">by-sa</machine>
-      </use>
+        <copyright>
+          <human type="copyright">This work is in the Public Domain.</human>
+        </copyright>
+        <access type="discover">
+          <machine><world/></machine>
+        </access>
+        <access type="read">
+          <machine><world/></machine>
+        </access>
+        <use>
+          <human type="creativecommons">Attribution Share Alike license</human>
+          <machine type="creativecommons">by-sa</machine>
+        </use>
       </rightsMetadata>
       XML
     end
-    it 'should cahnge the read permissions value from <group>stanford</group> to <none/> ' do
+    it 'should set rights to stanford' do
+      @item.set_read_rights('stanford')
+      expect(@item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
+      <?xml version="1.0"?>
+      <rightsMetadata>
+        <copyright>
+          <human type="copyright">This work is in the Public Domain.</human>
+        </copyright>
+        <access type="discover">
+          <machine><world/></machine>
+        </access>
+        <access type="read">
+          <machine>
+            <group>Stanford</group>
+          </machine>
+        </access>
+        <use>
+          <human type="creativecommons">Attribution Share Alike license</human>
+          <machine type="creativecommons">by-sa</machine>
+        </use>
+      </rightsMetadata>
+      XML
+    end
+    it 'should set rights to <none/>' do
       #this should work because the find call inside set_read_rights is stubbed to return @obj, so the modifications happen to that, not a fresh instance
       @item.set_read_rights('none')
-      @item.datastreams['rightsMetadata'].ng_xml.should be_equivalent_to <<-XML
+      expect(@item.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to <<-XML
       <?xml version="1.0"?>
       <rightsMetadata>
-      <copyright>
-      <human type="copyright">This work is in the Public Domain.</human>
-      </copyright>
-      <access type="discover">
-      <machine>
-      <world/>
-      </machine>
-      </access>
-      <access type="read">
-      <machine>
-      <none/>
-      </machine>
-      </access>
-      <use>
-      <human type="creativecommons">Attribution Share Alike license</human>
-      <machine type="creativecommons">by-sa</machine>
-      </use>
+        <copyright>
+          <human type="copyright">This work is in the Public Domain.</human>
+        </copyright>
+        <access type="discover">
+          <machine><world/></machine>
+        </access>
+        <access type="read">
+          <machine><none/></machine>
+        </access>
+        <use>
+          <human type="creativecommons">Attribution Share Alike license</human>
+          <machine type="creativecommons">by-sa</machine>
+        </use>
       </rightsMetadata>
       XML
     end
   end
+
   describe 'to_solr' do
     it 'should include a rights facet' do
-      @item.stub(:milestones).and_return({})
+      allow(@item).to receive(:milestones).and_return({})
       @item.set_read_rights('world')
       solr_doc=@item.to_solr
-      solr_doc['rights_facet'].should == ['World']
-      solr_doc[:id].should == @item.pid
+      expect(solr_doc).to match a_hash_including('rights_sim' => ['World'], :id => @item.pid)
     end
     it 'should shouldnt error if there is nothing in the datastream' do
-      @item.stub(:milestones).and_return({})
-      @item.stub(:rightsMetadata).and_return(ActiveFedora::OmDatastream.new)
+      allow(@item).to receive(:milestones).and_return({})
+      allow(@item).to receive(:rightsMetadata).and_return(ActiveFedora::OmDatastream.new)
       solr_doc=@item.to_solr
-      solr_doc['rights_facet'].should == [""]
+      expect(solr_doc).not_to include('rights_facet')
     end
-
   end
+
   describe 'add_collection' do
     it 'should add a collection' do
       @item.add_collection('druid:oo201oo0002')
       rels_ext_ds=@item.datastreams['RELS-EXT']
       xml=Nokogiri::XML(rels_ext_ds.to_rels_ext.to_s)
-      xml.should be_equivalent_to <<-XML
+      expect(xml).to be_equivalent_to <<-XML
       <?xml version="1.0" encoding="UTF-8"?>
-             <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#">
-               <rdf:Description rdf:about="info:fedora/druid:oo201oo0001">
-                 <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
-                 <fedora-model:hasModel rdf:resource="info:fedora/afmodel:Hydrus_Item"/>
-                 <fedora:isMemberOf rdf:resource="info:fedora/druid:oo201oo0002"/>
-                 <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:oo201oo0002"/>
-               </rdf:Description>
-             </rdf:RDF>
+      <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#">
+       <rdf:Description rdf:about="info:fedora/druid:oo201oo0001">
+         <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
+         <fedora-model:hasModel rdf:resource="info:fedora/afmodel:Hydrus_Item"/>
+         <fedora:isMemberOf rdf:resource="info:fedora/druid:oo201oo0002"/>
+         <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:oo201oo0002"/>
+       </rdf:Description>
+      </rdf:RDF>
       XML
     end
   end
@@ -176,70 +174,70 @@ describe Dor::Governable do
       @item.remove_collection('druid:oo201oo0002')
       rels_ext_ds.serialize!
       xml=Nokogiri::XML(rels_ext_ds.content.to_s)
-      xml.should be_equivalent_to <<-XML
+      expect(xml).to be_equivalent_to <<-XML
       <?xml version="1.0" encoding="UTF-8"?>
-             <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#">
-               <rdf:Description rdf:about="info:fedora/druid:oo201oo0001">
-                 <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
-                 <fedora-model:hasModel rdf:resource="info:fedora/afmodel:Hydrus_Item"/>
-               </rdf:Description>
-             </rdf:RDF>
+      <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#">
+        <rdf:Description rdf:about="info:fedora/druid:oo201oo0001">
+          <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
+          <fedora-model:hasModel rdf:resource="info:fedora/afmodel:Hydrus_Item"/>
+        </rdf:Description>
+      </rdf:RDF>
       XML
     end
-  it 'should cahnge the read permissions value from <group>stanford</group> to <none/> ' do
-    @item.datastreams['rightsMetadata'].ng_xml.should be_equivalent_to <<-XML
+    it 'should change the read permissions value from <group>stanford</group> to <none/>' do
+      expect(@item.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to <<-XML
     <?xml version="1.0"?>
     <rightsMetadata>
-              <copyright>
-                <human type="copyright">This work is in the Public Domain.</human>
-              </copyright>
-              <access type="discover">
-                <machine>
-                  <world/>
-                </machine>
-              </access>
-              <access type="read">
-                <machine>
-                <group>Stanford</group>
-                </machine>
-              </access>
-              <use>
-                <human type="creativecommons">Attribution Share Alike license</human>
-                <machine type="creativecommons">by-sa</machine>
-              </use>
-            </rightsMetadata>
-    XML
-    #this should work because the find call inside set_read_rights is stubbed to return @obj, so the modifications happen to that, not a fresh instance
-    @item.set_read_rights('none')
-    @item.datastreams['rightsMetadata'].ng_xml.should be_equivalent_to <<-XML
+      <copyright>
+        <human type="copyright">This work is in the Public Domain.</human>
+      </copyright>
+      <access type="discover">
+        <machine>
+          <world/>
+        </machine>
+      </access>
+      <access type="read">
+        <machine>
+          <group>Stanford</group>
+        </machine>
+      </access>
+      <use>
+        <human type="creativecommons">Attribution Share Alike license</human>
+        <machine type="creativecommons">by-sa</machine>
+      </use>
+    </rightsMetadata>
+      XML
+      #this should work because the find call inside set_read_rights is stubbed to return @obj, so the modifications happen to that, not a fresh instance
+      @item.set_read_rights('none')
+      expect(@item.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to <<-XML
     <?xml version="1.0"?>
     <rightsMetadata>
-              <copyright>
-                <human type="copyright">This work is in the Public Domain.</human>
-              </copyright>
-              <access type="discover">
-                <machine>
-                  <world/>
-                </machine>
-              </access>
-              <access type="read">
-                <machine>
-                <none/>
-                </machine>
-              </access>
-              <use>
-                <human type="creativecommons">Attribution Share Alike license</human>
-                <machine type="creativecommons">by-sa</machine>
-              </use>
-            </rightsMetadata>
-    XML
+      <copyright>
+        <human type="copyright">This work is in the Public Domain.</human>
+      </copyright>
+      <access type="discover">
+        <machine>
+          <world/>
+        </machine>
+      </access>
+      <access type="read">
+        <machine>
+          <none/>
+        </machine>
+      </access>
+      <use>
+        <human type="creativecommons">Attribution Share Alike license</human>
+        <machine type="creativecommons">by-sa</machine>
+      </use>
+    </rightsMetadata>
+      XML
+    end
   end
-end
 
   describe "initiate_apo_workflow" do
     it "calls Processable.initialize_workflow without creating a datastream when the object is new" do
       i = GovernableItem.new
-      i.should_receive(:initialize_workflow).with('accessionWF', 'dor', false)
+      expect(i).to receive(:initialize_workflow).with('accessionWF', 'dor', false)
       i.initiate_apo_workflow('accessionWF')
     end
   end
@@ -248,20 +246,20 @@ end
     it "returns the default lane as defined in the object's APO" do
       apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
       item = instantiate_fixture('druid:ab123cd4567', GovernableItem)
-      item.stub(:admin_policy_object) { apo }
+      allow(item).to receive(:admin_policy_object) { apo }
       expect(item.default_workflow_lane).to eq 'fast'
     end
 
     it "returns the value 'default' if the object does not have an APO" do
       item = instantiate_fixture('druid:ab123cd4567', GovernableItem)
-      item.stub(:admin_policy_object) { nil }
+      allow(item).to receive(:admin_policy_object) { nil }
       expect(item.default_workflow_lane).to eq 'default'
     end
 
     it "returns the value 'default' if the object's APO does not have a default lane defined" do
       apo  = instantiate_fixture('druid:zt570tx3016', Dor::AdminPolicyObject)
       item = instantiate_fixture('druid:ab123cd4567', GovernableItem)
-      item.stub(:admin_policy_object) { apo }
+      allow(item).to receive(:admin_policy_object) { apo }
       expect(item.default_workflow_lane).to eq 'default'
     end
 
@@ -275,114 +273,114 @@ end
   end
 
   describe 'add_collection' do
-it 'should add a collection' do
+    it 'should add a collection' do
       @item.add_collection('druid:oo201oo0002')
-			rels_ext_ds=@item.datastreams['RELS-EXT']
-			@item.collection_ids.should include('druid:oo201oo0002')
+      rels_ext_ds=@item.datastreams['RELS-EXT']
+      expect(@item.collection_ids).to include('druid:oo201oo0002')
     end
-    end
+  end
 
-	describe 'remove_collection' do
-		it 'should delete a collection' do
-			@item.add_collection('druid:oo201oo0002')
-			rels_ext_ds=@item.datastreams['RELS-EXT']
-      @item.collection_ids.should include('druid:oo201oo0002')
-			@item.remove_collection('druid:oo201oo0002')
-		end
-	end
+  describe 'remove_collection' do
+    it 'should delete a collection' do
+      @item.add_collection('druid:oo201oo0002')
+      rels_ext_ds=@item.datastreams['RELS-EXT']
+      expect(@item.collection_ids).to include('druid:oo201oo0002')
+      @item.remove_collection('druid:oo201oo0002')
+    end
+  end
 
-	describe "initiate_apo_workflow" do
-	  it "calls Processable.initialize_workflow without creating a datastream when the object is new" do
-	    i = GovernableItem.new
-	    i.should_receive(:initialize_workflow).with('accessionWF', 'dor', false)
-	    i.initiate_apo_workflow('accessionWF')
-	  end
-	end
-	describe 'can_manage_item?' do
+  describe "initiate_apo_workflow" do
+    it "calls Processable.initialize_workflow without creating a datastream when the object is new" do
+      i = GovernableItem.new
+      expect(i).to receive(:initialize_workflow).with('accessionWF', 'dor', false)
+      i.initiate_apo_workflow('accessionWF')
+    end
+  end
+  describe 'can_manage_item?' do
     it 'should match a group that has rights' do
-      @item.can_manage_item?(['dor-administrator']).should == true
+      expect(@item.can_manage_item?(['dor-administrator'])).to be_truthy
     end
     it 'should match a group that has rights' do
-      @item.can_manage_item?(['sdr-administrator']).should == true
+      expect(@item.can_manage_item?(['sdr-administrator'])).to be_truthy
     end
     it 'shouldnt match a group that doesnt have rights' do
-      @item.can_manage_item?(['dor-apo-metadata']).should == false
+      expect(@item.can_manage_item?(['dor-apo-metadata'])).to be_falsey
     end
   end
   describe 'can_manage_desc_metadata?' do
     it 'should match a group that has rights' do
-      @item.can_manage_desc_metadata?(['dor-apo-metadata']).should == true
+      expect(@item.can_manage_desc_metadata?(['dor-apo-metadata'])).to be_truthy
     end
     it 'shouldnt match a group that doesnt have rights' do
-      @item.can_manage_desc_metadata?(['dor-viewer']).should == false
+      expect(@item.can_manage_desc_metadata?(['dor-viewer'])).to be_falsey
     end
     it 'shouldnt match a group that doesnt have rights' do
-      @item.can_manage_desc_metadata?(['sdr-viewer']).should == false
+      expect(@item.can_manage_desc_metadata?(['sdr-viewer'])).to be_falsey
     end
   end
   describe 'can_manage_content?' do
     it 'should match a group that has rights' do
-      @item.can_manage_content?(['dor-administrator']).should == true
+      expect(@item.can_manage_content?(['dor-administrator'])).to be_truthy
     end
     it 'should match a group that has rights' do
-      @item.can_manage_content?(['sdr-administrator']).should == true
+      expect(@item.can_manage_content?(['sdr-administrator'])).to be_truthy
     end
     it 'shouldnt match a group that doesnt have rights' do
-      @item.can_manage_content?(['dor-apo-metadata']).should == false
+      expect(@item.can_manage_content?(['dor-apo-metadata'])).to be_falsey
     end
   end
   describe 'can_manage_rights?' do
     it 'should match a group that has rights' do
-      @item.can_manage_rights?(['dor-administrator']).should == true
+      expect(@item.can_manage_rights?(['dor-administrator'])).to be_truthy
     end
     it 'should match a group that has rights' do
-      @item.can_manage_rights?(['sdr-administrator']).should == true
+      expect(@item.can_manage_rights?(['sdr-administrator'])).to be_truthy
     end
     it 'shouldnt match a group that doesnt have rights' do
-      @item.can_manage_rights?(['dor-apo-metadata']).should == false
+      expect(@item.can_manage_rights?(['dor-apo-metadata'])).to be_falsey
     end
   end
   describe 'can_manage_embargo?' do
     it 'should match a group that has rights' do
-      @item.can_manage_embargo?(['dor-administrator']).should == true
+      expect(@item.can_manage_embargo?(['dor-administrator'])).to be_truthy
     end
     it 'should match a group that has rights' do
-      @item.can_manage_embargo?(['sdr-administrator']).should == true
+      expect(@item.can_manage_embargo?(['sdr-administrator'])).to be_truthy
     end
     it 'shouldnt match a group that doesnt have rights' do
-      @item.can_manage_embargo?(['dor-apo-metadata']).should == false
+      expect(@item.can_manage_embargo?(['dor-apo-metadata'])).to be_falsey
     end
   end
   describe 'can_view_content?' do
     it 'should match a group that has rights' do
-      @item.can_view_content?(['dor-viewer']).should == true
+      expect(@item.can_view_content?(['dor-viewer'])).to be_truthy
     end
     it 'should match a group that has rights' do
-      @item.can_view_content?(['sdr-viewer']).should == true
+      expect(@item.can_view_content?(['sdr-viewer'])).to be_truthy
     end
     it 'shouldnt match a group that doesnt have rights' do
-      @item.can_view_content?(['dor-people']).should == false
+      expect(@item.can_view_content?(['dor-people'])).to be_falsey
     end
   end
   describe 'can_view_metadata?' do
     it 'should match a group that has rights' do
-      @item.can_view_metadata?(['dor-viewer']).should == true
+      expect(@item.can_view_metadata?(['dor-viewer'])).to be_truthy
     end
     it 'should match a group that has rights' do
-      @item.can_view_metadata?(['sdr-viewer']).should == true
+      expect(@item.can_view_metadata?(['sdr-viewer'])).to be_truthy
     end
     it 'shouldnt match a group that doesnt have rights' do
-      @item.can_view_metadata?(['dor-people']).should == false
+      expect(@item.can_view_metadata?(['dor-people'])).to be_falsey
     end
   end
   describe 'reapplyAdminPolicyObjectDefaults' do
     it 'should update rightsMetadata from the APO defaultObjectRights' do
-      @item.rightsMetadata.ng_xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length.should == 1
+      expect(@item.rightsMetadata.ng_xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length).to eq(1)
       @apo = instantiate_fixture("druid_zt570tx3016", Dor::AdminPolicyObject)
-      @item.should_receive(:admin_policy_object).and_return(@apo)
+      expect(@item).to receive(:admin_policy_object).and_return(@apo)
       @item.reapplyAdminPolicyObjectDefaults
-      @item.rightsMetadata.ng_xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length.should == 0
-      @item.rightsMetadata.ng_xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length.should == 1
+      expect(@item.rightsMetadata.ng_xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length).to eq(0)
+      expect(@item.rightsMetadata.ng_xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length).to eq(1)
     end
   end
 end

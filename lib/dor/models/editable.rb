@@ -1,10 +1,9 @@
 module Dor  
   module Editable
     extend ActiveSupport::Concern
-    include ActiveFedora::Relationships
 
     included do
-      belongs_to 'agreement_object', :property => :referencesAgreement, :class_name => "Dor::Item"
+      belongs_to :agreement_object, :property => :referencesAgreement, :class_name => "Dor::Item"
     end
     
     def to_solr(solr_doc=Hash.new, *args)

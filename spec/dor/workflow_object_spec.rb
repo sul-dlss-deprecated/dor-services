@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 describe Dor::WorkflowObject do
 
@@ -27,24 +27,24 @@ describe Dor::WorkflowObject do
   #   Dor::WorkflowObject.find_by_name('accessionWF').should be_kind_of(Dor::WorkflowObject)
   #   Dor::WorkflowObject.find_by_name('missingWF').should be_nil
   # end
-  
+
   # return @@xml_cache[name] if(@@xml_cache.include?(name))
   # 
   # wobj = self.find_by_name(name)
   # wf_xml = wobj.generate_intial_workflow
   # @@xml_cache[name] = wf_xml
   # wf_xml
-  
+
   describe ".initial_workflow" do
     it "caches the intial workflow xml for subsequent requests" do
       wobj = double('workflow_object').as_null_object
-      Dor::WorkflowObject.should_receive(:find_by_name).once.and_return(wobj)
+      expect(Dor::WorkflowObject).to receive(:find_by_name).once.and_return(wobj)
 
       # First call, object not in cache
       Dor::WorkflowObject.initial_workflow('accessionWF')
       # Second call, object in cache
-      Dor::WorkflowObject.initial_workflow('accessionWF').should == wobj
+      expect(Dor::WorkflowObject.initial_workflow('accessionWF')).to eq(wobj)
     end
   end
-  
+
 end

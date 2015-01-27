@@ -1,7 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require 'nokogiri'
-require 'equivalent-xml'
-require 'dor/datastreams/identity_metadata_ds'
+require 'spec_helper'
 
 describe Dor::IdentityMetadataDS do
   context "Marshalling to and from a Fedora Datastream" do
@@ -19,34 +16,34 @@ describe Dor::IdentityMetadataDS do
           <tag>Project : McLaughlin Maps</tag>
         </identityMetadata>
       EOF
-      
+
       @dsdoc = Dor::IdentityMetadataDS.from_xml(@dsxml)
     end
-    
+
     it "creates itself from xml" do
-      @dsdoc.term_values(:objectId).should == ['druid:bb110sm8219']
-      @dsdoc.term_values(:objectType).should == ['item']
-      @dsdoc.term_values(:objectLabel).should == ['AMERICQVE | SEPTENTRIONALE']
-      @dsdoc.term_values(:tag).should =~ ['MDForm : mclaughlin','Project : McLaughlin Maps']
-      @dsdoc.term_values(:otherId).should =~ ["bb110sm8219","b382ee92-da77-11e0-9036-0016034322e4"]
-      @dsdoc.term_values(:sourceId).should == ['bb110sm8219']
-      @dsdoc.objectId.should == "druid:bb110sm8219"
-      @dsdoc.otherId.should == ["mdtoolkit:bb110sm8219","uuid:b382ee92-da77-11e0-9036-0016034322e4"]
-      @dsdoc.otherId('mdtoolkit').should == ['bb110sm8219']
-      @dsdoc.otherId('uuid').should == ['b382ee92-da77-11e0-9036-0016034322e4']
-      @dsdoc.otherId('bogus').should == []
-      @dsdoc.sourceId.should == 'sulair:bb110sm8219'
+      expect(@dsdoc.term_values(:objectId)).to eq(['druid:bb110sm8219'])
+      expect(@dsdoc.term_values(:objectType)).to eq(['item'])
+      expect(@dsdoc.term_values(:objectLabel)).to eq(['AMERICQVE | SEPTENTRIONALE'])
+      expect(@dsdoc.term_values(:tag)).to match_array(['MDForm : mclaughlin','Project : McLaughlin Maps'])
+      expect(@dsdoc.term_values(:otherId)).to match_array(["bb110sm8219","b382ee92-da77-11e0-9036-0016034322e4"])
+      expect(@dsdoc.term_values(:sourceId)).to eq(['bb110sm8219'])
+      expect(@dsdoc.objectId).to eq("druid:bb110sm8219")
+      expect(@dsdoc.otherId).to eq(["mdtoolkit:bb110sm8219","uuid:b382ee92-da77-11e0-9036-0016034322e4"])
+      expect(@dsdoc.otherId('mdtoolkit')).to eq(['bb110sm8219'])
+      expect(@dsdoc.otherId('uuid')).to eq(['b382ee92-da77-11e0-9036-0016034322e4'])
+      expect(@dsdoc.otherId('bogus')).to eq([])
+      expect(@dsdoc.sourceId).to eq('sulair:bb110sm8219')
     end
-    
+
     it "should be able to read ID fields as attributes" do
-      @dsdoc.objectId.should == "druid:bb110sm8219"
-      @dsdoc.otherId.should == ["mdtoolkit:bb110sm8219","uuid:b382ee92-da77-11e0-9036-0016034322e4"]
-      @dsdoc.otherId('mdtoolkit').should == ['bb110sm8219']
-      @dsdoc.otherId('uuid').should == ['b382ee92-da77-11e0-9036-0016034322e4']
-      @dsdoc.otherId('bogus').should == []
-      @dsdoc.sourceId.should == 'sulair:bb110sm8219'
+      expect(@dsdoc.objectId).to eq("druid:bb110sm8219")
+      expect(@dsdoc.otherId).to eq(["mdtoolkit:bb110sm8219","uuid:b382ee92-da77-11e0-9036-0016034322e4"])
+      expect(@dsdoc.otherId('mdtoolkit')).to eq(['bb110sm8219'])
+      expect(@dsdoc.otherId('uuid')).to eq(['b382ee92-da77-11e0-9036-0016034322e4'])
+      expect(@dsdoc.otherId('bogus')).to eq([])
+      expect(@dsdoc.sourceId).to eq('sulair:bb110sm8219')
     end
-    
+
     it "should be able to set the sourceID" do
       resultxml = <<-EOF
         <identityMetadata>
@@ -61,17 +58,17 @@ describe Dor::IdentityMetadataDS do
           <tag>Project : McLaughlin Maps</tag>
         </identityMetadata>
       EOF
-      
+
       @dsdoc.sourceId = 'test:ab110cd8219'
-      @dsdoc.sourceId.should == 'test:ab110cd8219'
-      @dsdoc.to_xml.should be_equivalent_to resultxml
+      expect(@dsdoc.sourceId).to eq('test:ab110cd8219')
+      expect(@dsdoc.to_xml).to be_equivalent_to resultxml
     end
-    
+
     it "creates a simple default with #new" do
       new_doc = Dor::IdentityMetadataDS.new nil, 'identityMetadata'
-      new_doc.to_xml.should be_equivalent_to '<identityMetadata/>'
+      expect(new_doc.to_xml).to be_equivalent_to '<identityMetadata/>'
     end
-    
+
     it "should properly add elements" do
       resultxml = <<-EOF
         <identityMetadata>
@@ -86,9 +83,9 @@ describe Dor::IdentityMetadataDS do
       new_doc.add_value('otherId', '12345678-abcd-1234-ef01-23456789abcd', { 'name' => 'uuid' })
       new_doc.add_value('otherId', 'ab123cd4567', { 'name' => 'mdtoolkit' })
       new_doc.add_value('tag', 'Created By : Spec Tests')
-      new_doc.to_xml.should be_equivalent_to resultxml
-      new_doc.objectId.should == 'druid:ab123cd4567'
-      new_doc.otherId.should =~ ['mdtoolkit:ab123cd4567','uuid:12345678-abcd-1234-ef01-23456789abcd']
+      expect(new_doc.to_xml).to be_equivalent_to resultxml
+      expect(new_doc.objectId).to eq('druid:ab123cd4567')
+      expect(new_doc.otherId).to match_array(['mdtoolkit:ab123cd4567','uuid:12345678-abcd-1234-ef01-23456789abcd'])
     end
   end
 

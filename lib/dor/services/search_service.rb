@@ -5,18 +5,13 @@ module Dor
 
   class SearchService
 
-    include Solrizer::FieldNameMapper
     RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'"
     @@index_version = nil
 
     class << self
 
       def index_version
-        if @@index_version.nil?
-          xsl_doc = Nokogiri::XML(File.read(File.expand_path('../../../gsearch/demoFoxmlToSolr.xslt',__FILE__)))
-          @@index_version = xsl_doc.at_xpath('/xsl:stylesheet/xsl:variable[@name="INDEXVERSION"]/text()').to_s
-        end
-        @@index_version
+        Dor::VERSION
       end
 
       def reindex(*pids)
@@ -96,7 +91,7 @@ module Dor
         elsif id.is_a?(Array) # Two values: [ 'google', 'STANFORD_0123456789' ]
           id = id.join(':')
         end
-        q = %{#{solr_name 'identifier', :string}:"#{id}"}
+        q = %{#{Solrizer.solr_name 'identifier', :facetable}:"#{id}"}
         result = []
         resp = query(q, :fl => 'id', :rows => 1000) do |resp|
           result += resp.docs.collect { |doc| doc['id'] }

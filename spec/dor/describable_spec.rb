@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 class DescribableItem < ActiveFedora::Base
   include Dor::Identifiable
@@ -10,8 +10,8 @@ class SimpleItem < ActiveFedora::Base
 end
 
 describe Dor::Describable do
-  before(:each) { stub_config	 }
-  after(:each)	 { unstub_config }
+  before(:each) { stub_config   }
+  after(:each)  { unstub_config }
 
   before :each do
     @item = instantiate_fixture('druid:ab123cd4567', DescribableItem)
@@ -24,41 +24,41 @@ describe Dor::Describable do
     doc={}
     expected_dc = read_fixture('ex1_dc.xml')
     @found=0
-    @simple.stub(:generate_dublin_core).and_return(Nokogiri::XML(expected_dc))
+    allow(@simple).to receive(:generate_dublin_core).and_return(Nokogiri::XML(expected_dc))
     #this is hacky but effective
-    @simple.stub(:add_solr_value) do |doc,val, field, otherstuff|
+    allow(@simple).to receive(:add_solr_value) do |doc,val, field, otherstuff|
       if val == 'creator_title'
-        field.should == 'George, Henry, 1839-1897The complete works of Henry George'
+        expect(field).to eq('George, Henry, 1839-1897The complete works of Henry George')
         @found=1
       end
     end
     @simple.to_solr(doc)
-    @found.should == 1
-    end
+    expect(@found).to eq(1)
+  end
 
   it "should have a descMetadata datastream" do
-    @item.datastreams['descMetadata'].should be_a(Dor::DescMetadataDS)
+    expect(@item.datastreams['descMetadata']).to be_a(Dor::DescMetadataDS)
   end
 
   it "should know its metadata format" do
-    @item.stub(:find_metadata_file).and_return(nil)
+    allow(@item).to receive(:find_metadata_file).and_return(nil)
     FakeWeb.register_uri(:get, "#{Dor::Config.metadata.catalog.url}/?barcode=36105049267078", :body => read_fixture('ab123cd4567_descMetadata.xml'))
     @item.build_datastream('descMetadata')
-    @item.metadata_format.should == 'mods'
+    expect(@item.metadata_format).to eq('mods')
   end
 
   it "should provide a descMetadata datastream builder" do
-    @item.stub(:find_metadata_file).and_return(nil)
+    allow(@item).to receive(:find_metadata_file).and_return(nil)
     Dor::MetadataService.class_eval { class << self; alias_method :_fetch, :fetch; end }
-    Dor::MetadataService.should_receive(:fetch).with('barcode:36105049267078').and_return { Dor::MetadataService._fetch('barcode:36105049267078') }
-    @item.datastreams['descMetadata'].ng_xml.to_s.should be_equivalent_to('<?xml version="1.0"?>
+    expect(Dor::MetadataService).to receive(:fetch).with('barcode:36105049267078') { Dor::MetadataService._fetch('barcode:36105049267078') }
+    expect(@item.datastreams['descMetadata'].ng_xml.to_s).to be_equivalent_to('<?xml version="1.0"?>
           <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
             <titleInfo>
               <title/>
             </titleInfo>
           </mods>')
     @item.build_datastream('descMetadata')
-    @item.datastreams['descMetadata'].ng_xml.to_s.should_not be_equivalent_to('<?xml version="1.0"?>
+    expect(@item.datastreams['descMetadata'].ng_xml.to_s).not_to be_equivalent_to('<?xml version="1.0"?>
           <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
             <titleInfo>
               <title/>
@@ -72,8 +72,7 @@ describe Dor::Describable do
 
     b = Dor::Item.new
     b.datastreams['descMetadata'].content = mods
-    dc = b.generate_dublin_core
-    dc.should be_equivalent_to(expected_dc)
+    expect(b.generate_dublin_core).to be_equivalent_to expected_dc
   end
 
   it "produces dublin core Stanford-specific mapping for repository, collection and location, from the MODS in the descMetadata datastream" do
@@ -82,14 +81,13 @@ describe Dor::Describable do
 
     b = Dor::Item.new
     b.datastreams['descMetadata'].content = mods
-    dc = b.generate_dublin_core
-    EquivalentXml.equivalent?(dc, expected_dc).should be
+    expect(b.generate_dublin_core).to be_equivalent_to expected_dc
   end
 
   it "throws an exception if the generated dc has no root element" do
     b = DescribableItem.new
     b.datastreams['descMetadata'].content = '<tei><stuff>ha</stuff></tei>'
-    lambda {b.generate_dublin_core}.should raise_error(Dor::Describable::CrosswalkError)
+    expect {b.generate_dublin_core}.to raise_error(Dor::Describable::CrosswalkError)
   end
 
   describe "#add_access_conditions" do
@@ -271,10 +269,10 @@ describe Dor::Describable do
       </rdf:RDF>
       XML
       relationships=Nokogiri::XML(relationships_xml)
-      @item.stub(:public_relationships).and_return(relationships)
+      allow(@item).to receive(:public_relationships).and_return(relationships)
 
       @collection = instantiate_fixture('druid:ab123cd4567', Dor::Item)
-      Dor::Item.stub(:find) do |pid|
+      allow(Dor::Item).to receive(:find) do |pid|
         if pid == 'druid:ab123cd4567'
           @item
         else
@@ -300,12 +298,12 @@ describe Dor::Describable do
       @item.add_collection_reference(mods)
 
       xml = mods
-      EquivalentXml.equivalent?(xml.to_s,@item.descMetadata.ng_xml.to_s).should == false
+      expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(xml)
       collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
-      collections.length.should == 1
+      expect(collections.length).to eq(1)
       collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
-      collection_title.length.should ==1
-      collection_title.first.content.should == 'complete works of Henry George'
+      expect(collection_title.length).to eq(1)
+      expect(collection_title.first.content).to eq('complete works of Henry George')
       collection_uri = xml.search('//mods:relatedItem/mods:identifier[@type="uri"]')
       expect(collection_uri.length).to eq(1)
       expect(collection_uri.first.content).to eq "http://purl.stanford.edu/zb871zd0767"
@@ -320,12 +318,12 @@ describe Dor::Describable do
       @item.add_collection_reference(mods)
 
       xml = mods
-      EquivalentXml.equivalent?(xml.to_s,@item.descMetadata.ng_xml.to_s).should == false
+      expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(xml)
       collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
-      collections.length.should == 1
+      expect(collections.length).to eq(1)
       collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
-      collection_title.length.should ==1
-      collection_title.first.content.should == 'complete works of Henry George'
+      expect(collection_title.length).to eq(1)
+      expect(collection_title.first.content).to eq('complete works of Henry George')
       collection_uri = xml.search('//mods:relatedItem/mods:identifier[@type="uri"]')
       expect(collection_uri.length).to eq(1)
       expect(collection_uri.first.content).to eq "http://purl.stanford.edu/zb871zd0767"
@@ -342,7 +340,7 @@ describe Dor::Describable do
       </rdf:RDF>
       XML
       relationships=Nokogiri::XML(relationships_xml)
-      @item.stub(:public_relationships).and_return(relationships)
+      allow(@item).to receive(:public_relationships).and_return(relationships)
 
       mods_xml = read_fixture('ex2_related_mods.xml')
       mods=Nokogiri::XML(mods_xml)
@@ -351,12 +349,12 @@ describe Dor::Describable do
       @item.add_collection_reference(mods)
 
       xml = mods
-      EquivalentXml.equivalent?(xml.to_s,@item.descMetadata.ng_xml.to_s).should == false
+      expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(xml)
       collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
-      collections.length.should == 1
+      expect(collections.length).to eq(1)
       collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
-      collection_title.length.should ==1
-      collection_title.first.content.should == 'Buckminster Fuller papers, 1920-1983'
+      expect(collection_title.length).to eq(1)
+      expect(collection_title.first.content).to eq('Buckminster Fuller papers, 1920-1983')
     end
   end
 
@@ -410,12 +408,12 @@ describe Dor::Describable do
       relationships=Nokogiri::XML(relationships_xml)
 
       itm.datastreams['rightsMetadata'].content = rights_xml
-      itm.stub(:public_relationships).and_return(relationships)
+      allow(itm).to receive(:public_relationships).and_return(relationships)
 
       c_mods=Nokogiri::XML(read_fixture('ex1_mods.xml'))
       collection.datastreams['descMetadata'].content = c_mods.to_s
 
-      Dor::Item.stub(:find) do |pid|
+      allow(Dor::Item).to receive(:find) do |pid|
         if pid == 'druid:ab123cd4567'
           itm
         else
@@ -440,10 +438,10 @@ describe Dor::Describable do
       doc = Nokogiri::XML(xml)
       expect(doc.encoding).to eq('UTF-8')
       collections=doc.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
-      collections.length.should == 1
+      expect(collections.length).to eq(1)
       collection_title=doc.search('//mods:relatedItem/mods:titleInfo/mods:title')
-      collection_title.length.should ==1
-      collection_title.first.content.should == 'complete works of Henry George'
+      expect(collection_title.length).to eq(1)
+      expect(collection_title.first.content).to eq('complete works of Henry George')
       collection_uri = doc.search('//mods:relatedItem/mods:identifier[@type="uri"]')
       expect(collection_uri.length).to eq(1)
       expect(collection_uri.first.content).to eq "http://purl.stanford.edu/zb871zd0767"
@@ -466,10 +464,10 @@ describe Dor::Describable do
       xml = itm.generate_public_desc_md
       doc = Nokogiri::XML(xml)
       collections=doc.search('//xmlns:relatedItem/xmlns:typeOfResource[@collection=\'yes\']')
-      collections.length.should == 1
+      expect(collections.length).to eq(1)
       collection_title=doc.search('//xmlns:relatedItem/xmlns:titleInfo/xmlns:title')
-      collection_title.length.should ==1
-      collection_title.first.content.should == 'complete works of Henry George'
+      expect(collection_title.length).to eq(1)
+      expect(collection_title.first.content).to eq('complete works of Henry George')
       collection_uri = doc.search('//xmlns:relatedItem/xmlns:identifier[@type="uri"]')
       expect(collection_uri.length).to eq(1)
       expect(collection_uri.first.content).to eq "http://purl.stanford.edu/zb871zd0767"
@@ -495,7 +493,7 @@ describe 'get_collection_title' do
     </mods>
     XML
 
-    Dor::Describable.get_collection_title(@item).should == 'Foxml Test Object'
+    expect(Dor::Describable.get_collection_title(@item)).to eq('Foxml Test Object')
   end
 
   it 'should include a subtitle if there is one' do
@@ -509,7 +507,7 @@ describe 'get_collection_title' do
     </titleInfo>
     </mods>
     XML
-    Dor::Describable.get_collection_title(@item).should == 'Foxml Test Object (Hello world)'
+    expect(Dor::Describable.get_collection_title(@item)).to eq('Foxml Test Object (Hello world)')
   end
 end
 
@@ -523,37 +521,36 @@ it "throws an exception if the generated dc has only a root element with no chil
   EOXML
 
   b = Dor::Item.new
-  b.stub(:add_collection_reference).and_return(mods)
+  allow(b).to receive(:add_collection_reference).and_return(mods)
   b.datastreams['descMetadata'].content = mods
 
-  lambda {b.generate_dublin_core}.should raise_error(Dor::Describable::CrosswalkError)
+  expect {b.generate_dublin_core}.to raise_error(Dor::Describable::CrosswalkError)
 end
 describe 'update_title' do
   it 'should update the title' do
     found=false
-
     @obj.update_title('new title')
     @obj.descMetadata.ng_xml.search('//mods:mods/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
-      node.content.should == 'new title'
+      expect(node.content).to eq('new title')
       found=true
     end
-    found.should == true
+    expect(found).to be_truthy
   end
   it 'should raise an exception if the mods lacks a title' do
     @obj.update_title('new title')
     @obj.descMetadata.ng_xml.search('//mods:mods/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
       node.remove
     end
-    lambda {@obj.update_title('druid:oo201oo0001', 'new title')}.should raise_error
+    expect {@obj.update_title('druid:oo201oo0001', 'new title')}.to raise_error
   end
 end
 describe 'add_identifier' do
   it 'should add an identifier' do
     @obj.add_identifier('type', 'new attribute')
     res=@obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]','mods' => 'http://www.loc.gov/mods/v3')
-    res.length.should > 0
+    expect(res.length).to be > 0
     res.each do |node|
-      node.content.should == 'new attribute'
+      expect(node.content).to eq('new attribute')
     end
   end
 end
@@ -561,23 +558,23 @@ describe 'delete_identifier' do
   it 'should delete an identifier' do
     @obj.add_identifier('type', 'new attribute')
     res=@obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]','mods' => 'http://www.loc.gov/mods/v3')
-    res.length.should > 0
+    expect(res.length).to be > 0
     res.each do |node|
-      node.content.should == 'new attribute'
+      expect(node.content).to eq('new attribute')
     end
-    @obj.delete_identifier('type', 'new attribute').should == true
+    expect(@obj.delete_identifier('type', 'new attribute')).to be_truthy
     res=@obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]','mods' => 'http://www.loc.gov/mods/v3')
-    res.length.should == 0
+    expect(res.length).to eq(0)
   end
   it 'should return false if there was nothing to delete' do
-    @obj.delete_identifier( 'type', 'new attribute').should == false
+    expect(@obj.delete_identifier('type', 'new attribute')).to be_falsey
   end
 end
 describe 'set_desc_metadata_using_label' do
   it 'should create basic mods using the object label' do
-    @obj.datastreams['descMetadata'].stub(:content).and_return ''
+    allow(@obj.datastreams['descMetadata']).to receive(:content).and_return ''
     @obj.set_desc_metadata_using_label()
-    @obj.datastreams['descMetadata'].ng_xml.should be_equivalent_to <<-XML
+    expect(@obj.datastreams['descMetadata'].ng_xml).to be_equivalent_to <<-XML
     <?xml version="1.0"?>
     <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
     <titleInfo>
@@ -589,12 +586,12 @@ describe 'set_desc_metadata_using_label' do
   end
   it 'should throw an exception if there is content in the descriptive metadata stream' do
     #@obj.stub(:descMetadata).and_return(ActiveFedora::OmDatastream.new)
-    @obj.descMetadata.stub(:new?).and_return(false)
-    lambda{@obj.set_desc_metadata_using_label()}.should raise_error
+    allow(@obj.descMetadata).to receive(:new?).and_return(false)
+    expect{@obj.set_desc_metadata_using_label()}.to raise_error
   end
   it 'should run if there is content in the descriptive metadata stream and force is true' do
     @obj.set_desc_metadata_using_label(false)
-    @obj.datastreams['descMetadata'].ng_xml.should be_equivalent_to <<-XML
+    expect(@obj.datastreams['descMetadata'].ng_xml).to be_equivalent_to <<-XML
     <?xml version="1.0"?>
     <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
     <titleInfo>
