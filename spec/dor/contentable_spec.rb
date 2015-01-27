@@ -154,6 +154,22 @@ describe Dor::Contentable do
       @item.remove_file('gw177fc7976_05_0001.jp2')
     end
   end
+  describe 'is_file_in_workspace?' do
+    it 'should return true if the file is in the workspace for the object' do
+      mock_filename = 'fake_file'
+      mock_druid_obj = double(DruidTools::Druid)
+      mock_druid_obj.stub(:find_content).with(mock_filename).and_return('this is not nil')
+      DruidTools::Druid.stub(:new).and_return(mock_druid_obj)
+      expect(@item.is_file_in_workspace?(mock_filename)).to eq(true)
+    end
+    it 'should return false if the file is not in the workspace for the object' do
+      mock_filename = 'fake_file'
+      mock_druid_obj = double(DruidTools::Druid)
+      mock_druid_obj.stub(:find_content).with(mock_filename).and_return(nil)
+      DruidTools::Druid.stub(:new).and_return(mock_druid_obj)
+      expect(@item.is_file_in_workspace?(mock_filename)).to eq(false)
+    end
+  end
 
   describe "#decomission" do
 
