@@ -65,7 +65,7 @@ describe Dor::Presentable do
   let(:manifest) {<<-JSON
     {
       "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://purl-dev.stanford.edu/bp778zp8790.manifest",
+      "@id": "http://purl-dev.stanford.edu/bp778zp8790/iiif/manifest.json",
       "@type": "sc:Manifest",
       "label": "Roman Imperial denarius",
       "attribution": "(c) 2009 by Jasper Wilcox. All rights reserved.",
