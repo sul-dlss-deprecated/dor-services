@@ -14,7 +14,7 @@ module Dor
     include Versionable
     include Contentable
     include Geoable
-    include Releaseable
+    include Releasable
     
   end
   
