@@ -80,7 +80,7 @@ describe Dor::Editable do
     end
   end
 
-  describe 'use_statement =' do
+  describe 'use_statement=' do
     it 'should work' do
       @item.use_statement = 'hi'
       expect(@item.use_statement).to eq('hi')
@@ -96,6 +96,7 @@ describe Dor::Editable do
     end
   end
   describe 'copyright_statement =' do
+    pending "Test not implemented"
   end
   describe 'metadata_source' do
     it 'should get the metadata source' do
@@ -129,7 +130,7 @@ describe Dor::Editable do
       expect(@item.creative_commons_license_human).to eq('CC Attribution-NonCommercial-ShareAlike 3.0')
     end
   end
-  describe 'creative_commons_license =' do
+  describe 'creative_commons_license=' do
     it 'should work on an empty ds' do
       @empty_item.creative_commons_license = ['hi']
       expect(@empty_item.creative_commons_license).to eq('hi')
@@ -160,7 +161,7 @@ describe Dor::Editable do
       expect(@empty_item.default_rights).to eq('World')
     end
   end
-  describe 'default_rights =' do
+  describe 'default_rights=' do
     it 'should set default rights' do
       @item.default_rights = 'stanford'
       expect(@item.default_rights).to eq('Stanford')
