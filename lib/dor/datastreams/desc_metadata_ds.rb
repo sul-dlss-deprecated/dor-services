@@ -1,6 +1,5 @@
 module Dor
 class DescMetadataDS < ActiveFedora::OmDatastream 
-  include SolrDocHelper
   
   MODS_NS = 'http://www.loc.gov/mods/v3'
   set_terminology do |t|

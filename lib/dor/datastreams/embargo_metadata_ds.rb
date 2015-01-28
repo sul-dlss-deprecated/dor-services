@@ -1,6 +1,5 @@
 module Dor
 class EmbargoMetadataDS < ActiveFedora::OmDatastream
-  include SolrDocHelper
 
   before_create :ensure_non_versionable
 

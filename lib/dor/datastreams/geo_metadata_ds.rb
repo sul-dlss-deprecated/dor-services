@@ -10,7 +10,6 @@ module Dor
   # @see http://www.isotc211.org
   # @author Darren Hardy
   class GeoMetadataDS < ActiveFedora::OmDatastream
-    include SolrDocHelper
 
     # namespaces
     NS = {
