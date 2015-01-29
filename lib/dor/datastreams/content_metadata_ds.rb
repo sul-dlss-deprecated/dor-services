@@ -105,27 +105,18 @@ module Dor
       node['type']=type
       files.each do |file|
         file_node=Nokogiri::XML::Node.new('file',xml)
-        file_node['shelve']=file[:shelve] ? file[:shelve] : ''
-        file_node['publish']=file[:publish] ? file[:publish] : ''
-        file_node['preserve']=file[:preserve] ? file[:preserve] : ''
-        file_node['id']=file[:name]
+        %w[shelve publish preserve].each {|x| file_node[x] = file[x.to_sym] ? file[x.to_sym] : '' }
+        file_node['id'] = file[:name]
         node.add_child(file_node)
 
-        if not file[:md5].nil?
-          checksum_node=Nokogiri::XML::Node.new('checksum',xml)
-          checksum_node['type']='md5'
-          checksum_node.content=file[:md5]
+        [:md5, :sha1].each { |algo|
+          next if file[algo].nil?
+          checksum_node = Nokogiri::XML::Node.new('checksum',xml)
+          checksum_node['type'] = algo.to_s
+          checksum_node.content = file[algo]
           file_node.add_child(checksum_node)
-        end
-        if not file[:sha1].nil?
-          checksum_node=Nokogiri::XML::Node.new('checksum',xml)
-          checksum_node['type']='sha1'
-          checksum_node.content=file[:sha1]
-          file_node.add_child(checksum_node)
-        end
-        if file[:size]
-          file_node['size']=file[:size]
-        end
+        }
+        file_node['size'] = file[:size] if file[:size]
       end    
       xml.search('//contentMetadata').first.add_child(node)
       self.content=xml.to_s
@@ -166,8 +157,8 @@ module Dor
     def update_attributes file_name, publish, shelve, preserve
       xml=self.ng_xml
       file_node=xml.search('//file[@id=\''+file_name+'\']').first
-      file_node['shelve']=shelve
-      file_node['publish']=publish
+      file_node['shelve'  ]=shelve
+      file_node['publish' ]=publish
       file_node['preserve']=preserve
       self.content=xml.to_s
       self.save
@@ -176,36 +167,20 @@ module Dor
       xml=self.ng_xml
       file_node=xml.search('//file[@id=\''+old_file_id+'\']').first
       file_node['id']=file[:name]
-      if not file[:md5].nil?
-        checksum_node=xml.search('//file[@id=\''+old_file_id+'\']/checksum[@type=\'md5\']').first
+      [:md5, :sha1].each { |algo|
+        next if file[algo].nil?
+        checksum_node = xml.search('//file[@id=\''+old_file_id+'\']/checksum[@type=\'' + algo.to_s + '\']').first
         if checksum_node.nil?
-          checksum_node=Nokogiri::XML::Node.new('checksum',xml)
+          checksum_node = Nokogiri::XML::Node.new('checksum',xml)
           file_node.add_child(checksum_node)
         end
-        checksum_node['type']='md5'
-        checksum_node.content=file[:md5]
-      end
-      if not file[:sha1].nil?
-        checksum_node=xml.search('//file[@id=\''+old_file_id+'\']/checksum[@type=\'sha1\']').first
-        if checksum_node.nil?
-          checksum_node=Nokogiri::XML::Node.new('checksum',xml)
-          file_node.add_child(checksum_node)
-        end
-        checksum_node['type']='sha1'
-        checksum_node.content=file[:sha1]
-      end
-      if file[:size]
-        file_node['size']=file[:size]
-      end
-      if file[:shelve]
-        file_node['shelve']=file[:shelve]
-      end
-      if file[:preserve]
-        file_node['preserve']=file[:preserve]
-      end
-      if file[:publish]
-        file_node['publish']=file[:publish]
-      end
+        checksum_node['type'] = algo.to_s
+        checksum_node.content = file[algo]
+      }
+
+      [:size, :shelve, :preserve, :publish].each{ |x|
+        file_node[x.to_s] = file[x] if file[x]
+      }
       self.content=xml.to_s
       self.save
     end
@@ -251,7 +226,7 @@ module Dor
           add_solr_value(solr_doc, "resource_types", key, :string, [:symbol])
           add_solr_value(solr_doc, key+"_resource_count", count.to_s, :string, [:searchable, :displayable])
         end
-        if not first_shelved_image.nil?
+        unless first_shelved_image.nil?
           add_solr_value(solr_doc, "first_shelved_image", first_shelved_image, :string, [:displayable])
         end
       end
