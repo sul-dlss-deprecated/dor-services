@@ -158,16 +158,16 @@ describe Dor::Contentable do
     it 'should return true if the file is in the workspace for the object' do
       mock_filename = 'fake_file'
       mock_druid_obj = double(DruidTools::Druid)
-      mock_druid_obj.stub(:find_content).with(mock_filename).and_return('this is not nil')
-      DruidTools::Druid.stub(:new).and_return(mock_druid_obj)
-      expect(@item.is_file_in_workspace?(mock_filename)).to eq(true)
+      allow(mock_druid_obj).to receive(:find_content).with(mock_filename).and_return('this is not nil')
+      allow(DruidTools::Druid).to receive(:new).and_return(mock_druid_obj)
+      expect(@item.is_file_in_workspace?(mock_filename)).to be_truthy
     end
     it 'should return false if the file is not in the workspace for the object' do
       mock_filename = 'fake_file'
       mock_druid_obj = double(DruidTools::Druid)
-      mock_druid_obj.stub(:find_content).with(mock_filename).and_return(nil)
-      DruidTools::Druid.stub(:new).and_return(mock_druid_obj)
-      expect(@item.is_file_in_workspace?(mock_filename)).to eq(false)
+      allow(mock_druid_obj).to receive(:find_content).with(mock_filename).and_return(nil)
+      allow(DruidTools::Druid).to receive(:new).and_return(mock_druid_obj)
+      expect(@item.is_file_in_workspace?(mock_filename)).to be_falsey
     end
   end
 
