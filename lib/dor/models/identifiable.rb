@@ -254,11 +254,11 @@ module Dor
       tag_arr = split_tag_to_arr(tag_str)
 
       if tag_arr.length < 2
-        raise "Invalid tag structure:  tag '#{tag_str}' must have at least 2 elements"
+        raise ArgumentError, "Invalid tag structure: tag '#{tag_str}' must have at least 2 elements"
       end
 
       if tag_arr.detect {|str| str.empty?}
-        raise "Invalid tag structure:  tag '#{tag_str}' contains empty elements"
+        raise ArgumentError, "Invalid tag structure: tag '#{tag_str}' contains empty elements"
       end
       return tag_arr
     end
@@ -301,28 +301,26 @@ module Dor
     #
     #@params attrs [hash] A hash of attributes for the tag, must contain: :when, a ISO 8601 timestamp; :who, to identify who or what added the tag; and :to, a string identifying the release target
     def valid_release_attributes_and_tag(tag, attrs={})
-      raise ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z') == nil
+      raise ArgumentError, ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z') == nil
       [:who, :to, :what].each do |check_attr|
-        raise "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
+        raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
 
       what_correct = false
       ['self', 'collection'].each do |allowed_what_value|
         what_correct = true if attrs[:what] == allowed_what_value
       end
-      raise ":what must be self or collection" if not what_correct
+      raise ArgumentError, ":what must be self or collection" if not what_correct
 
-      raise "the value set for this tag is not a boolean" if !!tag != tag
+      raise ArgumentError, "the value set for this tag is not a boolean" if !!tag != tag
       identity_metadata_ds = self.identityMetadata
       validate_tag_format(attrs[:tag]) if attrs[:tag] != nil #Will Raise exception if invalid tag
       return true
     end
 
     def remove_tag(tag)
-      identity_metadata_ds = self.identityMetadata
-      ds_xml = identity_metadata_ds.ng_xml
       removed = false
-      ds_xml.search('//tag').each do |node|
+      self.identityMetadata.ng_xml.search('//tag').each do |node|
         if normalize_tag(node.content) === normalize_tag(tag)
           node.remove
           removed = true
@@ -332,10 +330,8 @@ module Dor
     end
 
     def update_tag(old_tag, new_tag)
-      identity_metadata_ds = self.identityMetadata
-      ds_xml = identity_metadata_ds.ng_xml
       updated = false
-      ds_xml.search('//tag').each do |node|
+      self.identityMetadata.ng_xml.search('//tag').each do |node|
         if normalize_tag(node.content) == normalize_tag(old_tag)
           node.content = normalize_tag(new_tag)
           updated = true
