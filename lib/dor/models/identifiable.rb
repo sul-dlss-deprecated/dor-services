@@ -32,48 +32,6 @@ module Dor
       self.identityMetadata.tag
     end
     
-    #helper method to get the release tags as a nodeset
-    #
-    #@return [Nokogiri::XML::NodeSet] of all release tags and their attributes
-    def release_tags
-      release_tags = self.identityMetadata.ng_xml.xpath('//release')
-      return_hash = {}
-      release_tags.each do |release_tag|
-        hashed_node = self.release_tag_node_to_hash(release_tag)
-        if return_hash[hashed_node[:to]] != nil
-          return_hash[hashed_node[:to]] << hashed_node[:attrs]
-        else
-           return_hash[hashed_node[:to]] = [hashed_node[:attrs]]
-        end
-      end
-      return return_hash
-    end
-    
-    #method to convert one release element into an array
-    #
-    #@param rtag [Nokogiri::XML::Element] the release tag element
-    #
-    #return [Hash] in the form of {:to => String :attrs = Hash}
-    def release_tag_node_to_hash(rtag)
-      to = 'to'
-      release = 'release'
-      when_word = 'when' #TODO: Make to and when_word load from some config file instead of hardcoded here
-      attrs = rtag.attributes
-      return_hash = { :to => attrs[to].value }
-      attrs.tap { |a| a.delete(to)}
-      attrs[release] = rtag.text.downcase == "true" #save release as a boolean
-      return_hash[:attrs] = attrs
-      
-      #convert all the attrs beside :to to strings, they are currently Nokogiri::XML::Attr
-      (return_hash[:attrs].keys-[to]).each do |a|
-        return_hash[:attrs][a] =  return_hash[:attrs][a].to_s if a != release
-      end
-      
-      return_hash[:attrs][when_word] = Time.parse(return_hash[:attrs][when_word]) #convert when to a datetime
-      
-      return return_hash
-    end
-
     # helper method to get just the content type tag
     def content_type_tag
       content_tag=tags.select {|tag| tag.include?('Process : Content Type')}
@@ -266,6 +224,7 @@ module Dor
       
     end
 
+<<<<<<< HEAD
     #Add a tag for an item
     #If you are adding just a :tag att
     #
@@ -323,6 +282,17 @@ module Dor
       return true
     end
     
+=======
+    #Add an administrative tag to an item, you will need to seperately save the item to write it to fedora
+    #
+    #param tag [string] The tag you wish to add
+    def add_tag(tag)
+        identity_metadata_ds = self.identityMetadata
+        normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags)
+        identity_metadata_ds.add_value(:tag, normalized_tag)
+    end
+  
+>>>>>>> 18f7903... Reversion to simple add_tag coupled with the creation of a specific function for adding release nodes, also introduct of argument errors.
     def remove_tag(tag)
       identity_metadata_ds = self.identityMetadata
       ds_xml = identity_metadata_ds.ng_xml
