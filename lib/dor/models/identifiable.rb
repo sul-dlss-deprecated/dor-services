@@ -292,7 +292,6 @@ module Dor
       return identity_metadata_ds.add_value(type, normalized_tag, attrs) if attrs != {}
     end
 
-
     #Determine if the supplied tag is a valid release tag that meets all requirements
     #
     #@raises [RuntimeError]  Raises an error of the first fault in the release tag
@@ -310,10 +309,8 @@ module Dor
       ['self', 'collection'].each do |allowed_what_value|
         what_correct = true if attrs[:what] == allowed_what_value
       end
-      raise ArgumentError, ":what must be self or collection" if not what_correct
-
+      raise ArgumentError, ":what must be self or collection" if ! what_correct
       raise ArgumentError, "the value set for this tag is not a boolean" if !!tag != tag
-      identity_metadata_ds = self.identityMetadata
       validate_tag_format(attrs[:tag]) if attrs[:tag] != nil #Will Raise exception if invalid tag
       return true
     end
