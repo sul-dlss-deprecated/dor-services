@@ -2,7 +2,7 @@ module Dor
   module Releasable
     extend ActiveSupport::Concern
     include Itemizable
-    
+
     #Generate XML structure for inclusion to Purl 
     #
     #@return [String] The XML release node as a string, with ReleaseDigest as the root document
@@ -12,8 +12,8 @@ module Dor
           self.released_for.each do |project,released_value|
             xml.release(released_value["release"],:to=>project)
           end  
-          }        
-        end
+        }        
+      end
       return builder.to_xml
     end
     
@@ -85,7 +85,7 @@ module Dor
     #@return [Hash] the combined hash with uniquiness enforced 
     def combine_two_release_tag_hashes(hash_one, hash_two)
       hash_two.keys.each do |key|
-        hash_one[key] = hash_two[key] if hash_one[key] == nil
+        hash_one[key] = hash_two[key] if hash_one[key].nil?
         hash_one[key] = (hash_one[key] + hash_two[key]).uniq if hash_one[key] != nil
       end
       return hash_one
@@ -155,9 +155,9 @@ module Dor
     #@return [Boolean] true or false if it applies (not true or false if it is released, that is the release_tag data)
     def does_release_tag_apply(release_tag, admin_tags=false)
       #Is the tag global or restricted 
-      return true if release_tag['tag'] == nil  #there is no specific tag specificied, so that means this tag is global to all members of the collection, it applies, return true
+      return true if release_tag['tag'].nil?  #there is no specific tag specificied, so that means this tag is global to all members of the collection, it applies, return true
         
-      admin_tags = self.tags if ! admin_tags #We use false instead of [], since an item can have no admin_tags that which point we'd be passing down this variable as [] and would not an attempt to retrieve it
+      admin_tags = self.tags unless admin_tags #We use false instead of [], since an item can have no admin_tags that which point we'd be passing down this variable as [] and would not an attempt to retrieve it
       return admin_tags.include?(release_tag['tag'])
     end
     

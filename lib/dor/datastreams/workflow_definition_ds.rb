@@ -20,11 +20,11 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
           prereq_name = repo
           repo = nil
         end
-        if (repo == workflow.repo and wf = workflow.name)
+        if (repo == workflow.repo && wf = workflow.name)
           repo = nil
           wf = nil
         end
-        attrs = (repo.nil? and wf.nil?) ? {} : { :repository => repo, :workflow => wf }
+        attrs = (repo.nil? && wf.nil?) ? {} : { :repository => repo, :workflow => wf }
         node.prereq(attrs) { node.text prereq_name }
       end
     end

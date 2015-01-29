@@ -4,7 +4,7 @@ module Dor
 
     DESC_MD_FORMATS = {
       "http://www.tei-c.org/ns/1.0" => 'tei',
-      "http://www.loc.gov/mods/v3" =>   'mods'
+      "http://www.loc.gov/mods/v3"  => 'mods'
     }
     class CrosswalkError < Exception; end
 
@@ -15,11 +15,7 @@ module Dor
     def fetch_descMetadata_datastream
       candidates = self.datastreams['identityMetadata'].otherId.collect { |oid| oid.to_s }
       metadata_id = Dor::MetadataService.resolvable(candidates).first
-      unless metadata_id.nil?
-        return Dor::MetadataService.fetch(metadata_id.to_s)
-      else
-        return nil
-      end
+      return metadata_id.nil? ? nil : Dor::MetadataService.fetch(metadata_id.to_s)
     end
 
     def build_descMetadata_datastream(ds)
@@ -72,30 +68,26 @@ module Dor
       rights.xpath('//use/human[@type="useAndReproduction"]').each do |use|
         txt = use.text.strip
         next if txt.empty?
-        new_use =  doc.create_element("accessCondition", use.text.strip, :type => 'useAndReproduction')
-        doc.root.element_children.last.add_next_sibling new_use
+        doc.root.element_children.last.add_next_sibling doc.create_element("accessCondition", txt, :type => 'useAndReproduction')
       end
       rights.xpath('//copyright/human[@type="copyright"]').each do |cr|
         txt = cr.text.strip
         next if txt.empty?
-        new_use =  doc.create_element("accessCondition", cr.text.strip, :type => 'copyright')
-        doc.root.element_children.last.add_next_sibling new_use
+        doc.root.element_children.last.add_next_sibling doc.create_element("accessCondition", txt, :type => 'copyright')
       end
       rights.xpath("//use/machine[#{ci_compare('type', 'creativecommons')}]").each do |lic_type|
         next if lic_type.text =~ /none/i
         lic_text = rights.at_xpath("//use/human[#{ci_compare('type', 'creativecommons')}]").text.strip
         next if lic_text.empty?
         new_text = "CC #{lic_type.text}: #{lic_text}"
-        new_lic =  doc.create_element("accessCondition", new_text, :type => 'license')
-        doc.root.element_children.last.add_next_sibling new_lic
+        doc.root.element_children.last.add_next_sibling doc.create_element("accessCondition", new_text, :type => 'license')
       end
       rights.xpath("//use/machine[#{ci_compare('type', 'opendatacommons')}]").each do |lic_type|
         next if lic_type.text =~ /none/i
         lic_text = rights.at_xpath("//use/human[#{ci_compare('type', 'opendatacommons')}]").text.strip
         next if lic_text.empty?
         new_text = "ODC #{lic_type.text}: #{lic_text}"
-        new_lic =  doc.create_element("accessCondition", new_text, :type => 'license')
-        doc.root.element_children.last.add_next_sibling new_lic
+        doc.root.element_children.last.add_next_sibling doc.create_element("accessCondition", new_text, :type => 'license')
       end
     end
 
@@ -140,7 +132,7 @@ module Dor
     end
     def metadata_namespace
       desc_md = self.datastreams['descMetadata'].ng_xml
-      if desc_md.nil? or desc_md.root.nil? or desc_md.root.namespace.nil?
+      if desc_md.nil? || desc_md.root.nil? || desc_md.root.namespace.nil?
         return nil
       else
         return desc_md.root.namespace.href
@@ -191,7 +183,7 @@ module Dor
     def delete_identifier(type,value=nil)
       ds_xml=self.descMetadata.ng_xml
       ds_xml.search('//mods:identifier','mods' => 'http://www.loc.gov/mods/v3').each do |node|
-        if node.content == value or value==nil
+        if node.content == value || value.nil?
           node.remove
           return true
         end
@@ -201,14 +193,14 @@ module Dor
 
     def set_desc_metadata_using_label(force=false)
       ds=self.descMetadata
-      unless force or ds.new?#22 is the length of <?xml version="1.0"?>
+      unless force || ds.new?
         raise 'Cannot proceed, there is already content in the descriptive metadata datastream.'+ds.content.to_s
       end
       label=self.label
       builder = Nokogiri::XML::Builder.new { |xml|
-      xml.mods( 'xmlns' => 'http://www.loc.gov/mods/v3', 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',:version => '3.3', "xsi:schemaLocation" => 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd'){
-        xml.titleInfo{
-          xml.title label
+        xml.mods( 'xmlns' => 'http://www.loc.gov/mods/v3', 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',:version => '3.3', "xsi:schemaLocation" => 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd'){
+          xml.titleInfo{
+            xml.title label
           }
         }
       }
