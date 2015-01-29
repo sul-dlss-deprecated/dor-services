@@ -31,7 +31,7 @@ module Dor
     def tags
       self.identityMetadata.tag
     end
-    
+
     #helper method to get the release tags as a nodeset
     #
     #@return [Nokogiri::XML::NodeSet] of all release tags and their attributes
@@ -48,7 +48,7 @@ module Dor
       end
       return return_hash
     end
-    
+
     #method to convert one release element into an array
     #
     #@param rtag [Nokogiri::XML::Element] the release tag element
@@ -63,14 +63,14 @@ module Dor
       attrs.tap { |a| a.delete(to)}
       attrs[release] = rtag.text.downcase == "true" #save release as a boolean
       return_hash[:attrs] = attrs
-      
+
       #convert all the attrs beside :to to strings, they are currently Nokogiri::XML::Attr
       (return_hash[:attrs].keys-[to]).each do |a|
         return_hash[:attrs][a] =  return_hash[:attrs][a].to_s if a != release
       end
-      
+
       return_hash[:attrs][when_word] = Time.parse(return_hash[:attrs][when_word]) #convert when to a datetime
-      
+
       return return_hash
     end
 
@@ -119,7 +119,7 @@ module Dor
           druid=druid.gsub('info:fedora/','')
           if @@apo_hash.has_key? druid or @@hydrus_apo_hash.has_key? druid
             add_solr_value(solr_doc, "hydrus_apo_title", @@hydrus_apo_hash[druid], :string, [:searchable, :facetable, :displayable]) if @@hydrus_apo_hash.has_key? druid
-            add_solr_value(solr_doc, "apo_title", @@apo_hash[druid] , :string, [:searchable, :facetable, :displayable]) if @@apo_hash.has_key? druid 
+            add_solr_value(solr_doc, "apo_title", @@apo_hash[druid] , :string, [:searchable, :facetable, :displayable]) if @@apo_hash.has_key? druid
           else
             begin
               apo_object=Dor.find(druid)
@@ -179,10 +179,9 @@ module Dor
 
     def add_other_Id(type,val)
       if self.identityMetadata.otherId(type).length>0
-        raise 'There is an existing entry for '+node_name+', consider using update_other_identifier.'
+        raise 'There is an existing entry for '+type+', consider using update_other_Id().'
       end
-      identity_metadata_ds = self.identityMetadata
-      identity_metadata_ds.add_otherId(type+':'+val)
+      self.identityMetadata.add_otherId(type+':'+val)
     end
 
     def update_other_Id(type,new_val, val=nil)
@@ -205,7 +204,7 @@ module Dor
       removed=false
 
       ds_xml.search('//otherId[@name=\''+type+'\']').each do |node|
-        if node.content===val or val==nil
+        if node.content===val or val.nil?
           node.remove
           removed=true
         end
@@ -235,7 +234,7 @@ module Dor
     def validate_and_normalize_tag(tag_str, existing_tag_list)
       tag_arr = validate_tag_format(tag_str)
 
-      # note that the comparison for duplicate tags is case-insensitive, but we don't change case as part of the normalized version 
+      # note that the comparison for duplicate tags is case-insensitive, but we don't change case as part of the normalized version
       # we return, because we want to preserve the user's intended case.
       normalized_tag = normalize_tag_arr(tag_arr)
       dupe_existing_tag = existing_tag_list.detect { |existing_tag| normalize_tag(existing_tag).downcase == normalized_tag.downcase }
@@ -245,7 +244,7 @@ module Dor
 
       return normalized_tag
     end
-    
+
     #Ensure that an administrative tag meets the proper mininum format
     #
     #@params tag_str [String] the tag
@@ -261,22 +260,20 @@ module Dor
       if tag_arr.detect {|str| str.empty?}
         raise "Invalid tag structure:  tag '#{tag_str}' contains empty elements"
       end
-      
       return tag_arr
-      
     end
 
     #Add a tag for an item
     #If you are adding just a :tag att
     #
     #@return [String] returned if this function is called with invalid parameters, eg a lack of :who for release_tag
-    #@return [Nokogiri::XML::Element] the tag added if successful 
+    #@return [Nokogiri::XML::Element] the tag added if successful
     #
     #@raise [RuntimeError] Raised if the tag already exists on the item or the tag is not of the form a:b
     #
     #@params tag [string] The content of the tag
-    #@params type [symbol] The type of tag, :tag is assumed as default 
-    #@params attrs [hash]  A hash of any attributes to be placed onto the tag 
+    #@params type [symbol] The type of tag, :tag is assumed as default
+    #@params attrs [hash]  A hash of any attributes to be placed onto the tag
     # release tag example:
     #  item.add_tag(true,:release,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket'})
     def add_tag(tag, type=:tag, attrs={})
@@ -284,45 +281,43 @@ module Dor
       identity_metadata_ds = self.identityMetadata
       normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags) if type != :release #Release tags are always boolean, so skip this step
       normalized_tag = tag.to_s if type == :release #just keep the boolean if we have just have a release
-        
       attrs[:when] = Time.now.utc.iso8601 if needs_timestamp.include? type
-      
-    
-      if type == :release 
+
+      if type == :release
         valid_release_attributes_and_tag(tag, attrs)
         attrs[:tag] = normalize_tag_arr(validate_tag_format(attrs[:tag])) if attrs[:tag] != nil #:tag must be a valid administrative tag
       end
-      
+
       return identity_metadata_ds.add_value(type, normalized_tag) if attrs == {}
       return identity_metadata_ds.add_value(type, normalized_tag, attrs) if attrs != {}
     end
-    
-    
+
+
     #Determine if the supplied tag is a valid release tag that meets all requirements
     #
     #@raises [RuntimeError]  Raises an error of the first fault in the release tag
     #
-    #@return [Boolean] Returns true if no errors found 
+    #@return [Boolean] Returns true if no errors found
     #
-    #@params attrs [hash] A hash of attributes for the tag, must contain :when, a ISO 8601 timestamp and :who to identify who or what added the tag, :to, 
+    #@params attrs [hash] A hash of attributes for the tag, must contain: :when, a ISO 8601 timestamp; :who, to identify who or what added the tag; and :to, a string identifying the release target
     def valid_release_attributes_and_tag(tag, attrs={})
       raise ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z') == nil
       [:who, :to, :what].each do |check_attr|
         raise "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
-      
+
       what_correct = false
       ['self', 'collection'].each do |allowed_what_value|
         what_correct = true if attrs[:what] == allowed_what_value
       end
       raise ":what must be self or collection" if not what_correct
-      
+
       raise "the value set for this tag is not a boolean" if !!tag != tag
       identity_metadata_ds = self.identityMetadata
       validate_tag_format(attrs[:tag]) if attrs[:tag] != nil #Will Raise exception if invalid tag
       return true
     end
-    
+
     def remove_tag(tag)
       identity_metadata_ds = self.identityMetadata
       ds_xml = identity_metadata_ds.ng_xml
