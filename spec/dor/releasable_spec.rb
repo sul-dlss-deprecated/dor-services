@@ -216,15 +216,15 @@ describe "Adding release nodes", :vcr do
   end
   
   it "should raise an error when no :who, :to,  or :what is supplied" do
-      expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => nil, :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
-      expect{@item.valid_release_attributes(false, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>nil, :what => 'collection', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
-      expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => nil, :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
+      expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => nil, :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
+      expect{@item.valid_release_attributes(false, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>nil, :what => 'collection', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
+      expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => nil, :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
   end
   
   it "should raise an error when :who, :to, :what are supplied but are not strings" do 
-    expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 1, :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
-    expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>true, :what => 'collection', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
-    expect{@item.valid_release_attributes(false, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => ['i','am','an','array'], :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
+    expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 1, :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
+    expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>true, :what => 'collection', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
+    expect{@item.valid_release_attributes(false, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => ['i','am','an','array'], :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
   end
   
   it "should not raise an error when :what is self or collection" do 
@@ -233,7 +233,7 @@ describe "Adding release nodes", :vcr do
   end
   
   it "should raise an error when :what is a string but is not self or collection" do
-    expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'foo', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
+    expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'foo', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
   end 
   
   it "should add a tag when all attributes are properly provided" do
@@ -244,14 +244,14 @@ describe "Adding release nodes", :vcr do
   
   it "should fail to add a release node when there is an attribute error" do
     VCR.use_cassette('simple_release_tag_add_failure_test') do
-       expect{@item.add_release_node(true, {:who => nil, :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
+       expect{@item.add_release_node(true, {:who => nil, :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
        expect{@item.add_release_node(false, {:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project'})}.to raise_error(ArgumentError)
-       expect{@item.add_release_node(1, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
+       expect{@item.add_release_node(1, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
     end
   end
   
   it "should raise an error when :when is not supplied as iso8601 for valid_release_attributes" do
-     expect{@item.valid_release_attributes(true, {:when=>'2015-1-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
+     expect{@item.valid_release_attributes(true, {:when=>'2015-1-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
   end
   
   it "should return true when valid_release_attributes is called with valid attributes and no tag attribute" do
@@ -267,7 +267,7 @@ describe "Adding release nodes", :vcr do
   end
   
   it "should raise a Runtime Error when valid_release_attributes is called with a tag content that is not a boolean" do
-    expect{@item.valid_release_attributes(1, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(RuntimeError)
+    expect{@item.valid_release_attributes(1, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
   end
   
   it "should return no release nodes for an item that doesn't have any" do

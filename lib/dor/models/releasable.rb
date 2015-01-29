@@ -275,18 +275,18 @@ module Dor
     #
     #@params attrs [hash] A hash of attributes for the tag, must contain :when, a ISO 8601 timestamp and :who to identify who or what added the tag, :to, 
     def valid_release_attributes(tag, attrs={})
-      raise ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z') == nil
+      raise ArgumentError, ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z') == nil
       [:who, :to, :what].each do |check_attr|
-        raise "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
+        raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
   
       what_correct = false
       ['self', 'collection'].each do |allowed_what_value|
         what_correct = true if attrs[:what] == allowed_what_value
       end
-      raise ":what must be self or collection" if not what_correct
+      raise ArgumentError, ":what must be self or collection" if not what_correct
   
-      raise "the value set for this tag is not a boolean" if !!tag != tag
+      raise ArgumentError, "the value set for this tag is not a boolean" if !!tag != tag
       identity_metadata_ds = self.identityMetadata
       validate_tag_format(attrs[:tag]) if attrs[:tag] != nil #Will Raise exception if invalid tag
       return true
