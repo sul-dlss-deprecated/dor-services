@@ -269,7 +269,7 @@ module Dor
     
     #Determine if the supplied tag is a valid release node that meets all requirements
     #
-    #@raises [RuntimeError]  Raises an error of the first fault in the release tag
+    #@raises [ArgumentError]  Raises an error of the first fault in the release tag
     #
     #@return [Boolean] Returns true if no errors found 
     #
