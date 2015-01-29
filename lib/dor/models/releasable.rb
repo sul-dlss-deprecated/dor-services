@@ -3,7 +3,6 @@ module Dor
     extend ActiveSupport::Concern
     include Itemizable
     
-    
     #Generate XML structure for inclusion to Purl 
     #
     #@return [String] The XML release node as a string, with ReleaseDigest as the root document
@@ -148,7 +147,6 @@ module Dor
       return latest_tag_in_array
     end
     
-    
     #Takes a tag and returns true or false if it applies to the specific item
     #
     #@param release_tag [Hash] the tag in a hashed form
@@ -159,7 +157,7 @@ module Dor
       #Is the tag global or restricted 
       return true if release_tag['tag'] == nil  #there is no specific tag specificied, so that means this tag is global to all members of the collection, it applies, return true
         
-      admin_tags = self.tags if not admin_tags #We use false instead of [], since an item can have no admin_tags that which point we'd be passing down this variable as [] and would not an attempt to retrieve it
+      admin_tags = self.tags if ! admin_tags #We use false instead of [], since an item can have no admin_tags that which point we'd be passing down this variable as [] and would not an attempt to retrieve it
       return admin_tags.include?(release_tag['tag'])
     end
     
@@ -266,7 +264,6 @@ module Dor
       return identity_metadata_ds.add_value(:release, release.to_s, attrs)
     end
 
-    
     #Determine if the supplied tag is a valid release node that meets all requirements
     #
     #@raises [ArgumentError]  Raises an error of the first fault in the release tag
@@ -284,10 +281,10 @@ module Dor
       ['self', 'collection'].each do |allowed_what_value|
         what_correct = true if attrs[:what] == allowed_what_value
       end
-      raise ArgumentError, ":what must be self or collection" if not what_correct
+      raise ArgumentError, ":what must be self or collection" if ! what_correct
   
       raise ArgumentError, "the value set for this tag is not a boolean" if !!tag != tag
-      identity_metadata_ds = self.identityMetadata
+      #identity_metadata_ds = self.identityMetadata
       validate_tag_format(attrs[:tag]) if attrs[:tag] != nil #Will Raise exception if invalid tag
       return true
     end
