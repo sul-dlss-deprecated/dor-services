@@ -209,7 +209,7 @@ module Dor
             content_file_count+=1
             if file['shelve'] == 'yes'
               shelved_file_count+=1
-              if first_shelved_image.nil? and file['id'].match(/jp2$/)
+              if first_shelved_image.nil? && file['id'].match(/jp2$/)
                 first_shelved_image=file['id']
               end
             end

@@ -57,11 +57,7 @@ describe Dor::Contentable do
     allow(@resp).to receive(:message).and_return('sup')
     allow(@sftp).to receive(:stat!) do |arg|
       #raise an exception when checking whether the file exists, but no exception when checking whether the folder it belongs in exists
-      if not arg=~ /desc/
-        #do nothing
-      else
-        raise(Net::SFTP::StatusException.new @resp, 'sup')
-      end
+      raise(Net::SFTP::StatusException.new @resp, 'sup') if arg=~ /desc/
     end
     allow(@sftp).to receive(:upload!).and_return(true)
     allow(Net::SFTP).to receive(:start).and_return(@sftp) #mock sftp obj
@@ -90,7 +86,7 @@ describe Dor::Contentable do
 
     it 'should work ok if the object was set up using the old directory structure' do
       allow(@sftp).to receive(:stat!) do |arg|
-        if not arg=~ /desc/ and not arg=~/ab123/
+        if ! arg=~ /desc/ && ! arg=~/ab123/
           #do nothing
         else
           raise(Net::SFTP::StatusException.new @resp, 'sup')

@@ -10,8 +10,8 @@ module Dor
         [:object_type, :label].each do |required_param|
           raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{self.name}.register_object" unless params[required_param]
         end
-        metadata_source=params[:metadata_source]
-        if params[:label].length<1 and (metadata_source=='label' || metadata_source=='none')
+        metadata_source = params[:metadata_source]
+        if params[:label].length<1 && (metadata_source=='label' || metadata_source=='none')
           raise Dor::ParameterError, "label cannot be empty to call #{self.name}.register_object"
         end
         object_type = params[:object_type]
@@ -19,15 +19,14 @@ module Dor
         raise Dor::ParameterError, "Unknown item type: '#{object_type}'" if item_class.nil?
 
         content_model = params[:content_model]
-        admin_policy = params[:admin_policy]
-        label = params[:label]
-        source_id = params[:source_id] || {}
-        other_ids = params[:other_ids] || {}
-        tags = params[:tags] || []
-        parent = params[:parent]
-        collection = params[:collection]
+        admin_policy  = params[:admin_policy]
+        label         = params[:label]
+        source_id     = params[:source_id] || {}
+        other_ids     = params[:other_ids] || {}
+        tags          = params[:tags] || []
+        parent        = params[:parent]
+        collection    = params[:collection]
         pid = nil
-        metadata_source=params[:metadata_source]
         if params[:pid]
           pid = params[:pid]
           existing_pid = SearchService.query_by_id(pid).first
@@ -41,8 +40,8 @@ module Dor
         rights=nil
         if params[:rights]
           rights=params[:rights]
-          if not ['world','stanford','dark','default','none'].include? rights
-            raise Dor::ParameterError,"Unknown rights setting" + rights + "when calling #{self.name}.register_object"
+          unless ['world','stanford','dark','default','none'].include? rights
+            raise Dor::ParameterError, "Unknown rights setting '#{rights}' when calling #{self.name}.register_object"
           end
         end
 
@@ -57,11 +56,7 @@ module Dor
         if (other_ids.has_key?(:uuid) or other_ids.has_key?('uuid')) == false
           other_ids[:uuid] = UUIDTools::UUID.timestamp_create.to_s
         end
-        short_label=label
-        if label.length>254
-          short_label=label[0,254]
-        end
-
+        short_label = label.length>254 ? label[0,254] : label
         apo_object = Dor.find(admin_policy, :lightweight => true)
         adm_xml = apo_object.administrativeMetadata.ng_xml
 
@@ -89,7 +84,7 @@ module Dor
         if collection
           new_item.add_collection(collection)
         end
-        if(rights and ['item','collection'].include? object_type  )
+        if (rights && ['item','collection'].include?(object_type))
           rights_xml=apo_object.defaultObjectRights.ng_xml
           new_item.datastreams['rightsMetadata'].content=rights_xml.to_s
           new_item.set_read_rights(rights) unless rights == 'default'    # already defaulted to default!

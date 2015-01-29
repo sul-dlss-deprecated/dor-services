@@ -72,11 +72,11 @@ module Dor
     end
 
     def update_embargo(new_date)
-      if not embargoMetadata.status == 'embargoed'
-        raise 'You cannot change the embargo date of an item thant isnt embargoed.'
+      if embargoMetadata.status != 'embargoed'
+        raise ArgumentError, 'You cannot change the embargo date of an item thant isnt embargoed.'
       end
       if new_date.past?
-        raise 'You cannot set the embargo date to a past date.'
+        raise ArgumentError, 'You cannot set the embargo date to a past date.'
       end
       updated=false
       self.rightsMetadata.ng_xml.search('//embargoReleaseDate').each do |node|
@@ -85,9 +85,7 @@ module Dor
       end
       self.rightsMetadata.content=self.rightsMetadata.ng_xml.to_s
       self.rightsMetadata.save
-      if not updated
-        raise 'No release date in rights metadata, cannot proceed!'
-      end
+      raise 'No release date in rights metadata, cannot proceed!' unless updated
       self.embargoMetadata.ng_xml.xpath('//releaseDate').each do |node|
         node.content=new_date.beginning_of_day.utc.xmlschema
       end

@@ -21,7 +21,7 @@ module Dor
       admin_md = admin_policy_object.datastreams['administrativeMetadata']
       return 'default' unless admin_md.respond_to? :default_workflow_lane
       lane = admin_md.default_workflow_lane
-      return 'default' if lane.nil? or lane.strip == ''
+      return 'default' if lane.nil? || lane.strip == ''
       lane
     end
 
@@ -32,7 +32,7 @@ module Dor
 
     # slight misnomer: also sets discover rights!
     def set_read_rights(rights)
-      raise(ArgumentError, "Argument '#{rights}' is not a recognized value") if not ['world','stanford','none','dark'].include? rights
+      raise(ArgumentError, "Argument '#{rights}' is not a recognized value") unless ['world','stanford','none','dark'].include? rights
       rights_xml = self.rightsMetadata.ng_xml
       if (rights_xml.search('//rightsMetadata/access[@type=\'read\']').length==0)
         raise('The rights metadata stream doesnt contain an entry for machine read permissions. Consider populating it from the APO before trying to change it.')
@@ -88,7 +88,7 @@ module Dor
     def rights
       return nil unless self.respond_to? :rightsMetadata
       xml = self.rightsMetadata.ng_xml
-      return nil if xml.search('//rightsMetadata').length != 1
+      return nil if xml.search('//rightsMetadata').length != 1      # ORLY?
       if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
         'Stanford'
       elsif xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length == 1

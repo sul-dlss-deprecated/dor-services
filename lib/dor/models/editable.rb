@@ -19,10 +19,7 @@ module Dor
     #@param type [Symbol] :workgroup for a group or :person for a person
     def add_roleplayer role, entity, type=:workgroup
       xml=self.roleMetadata.ng_xml
-      group='person'
-      if type == :workgroup
-        group='group'
-      end
+      group = type == :workgroup ? 'group' : 'person'
       nodes = xml.search('/roleMetadata/role[@type=\''+role+'\']')
       if nodes.length > 0
         group_node=Nokogiri::XML::Node.new(group, xml)
@@ -46,9 +43,7 @@ module Dor
     end
     #remove all people groups and roles from the APO role metadata datastream
     def purge_roles 
-      xml=self.roleMetadata.ng_xml
-      nodes = xml.search('/roleMetadata/role')
-      nodes.each do |node|
+      self.roleMetadata.ng_xml.search('/roleMetadata/role').each do |node|
         node.remove
       end
     end
@@ -67,10 +62,9 @@ module Dor
     #Add a collection to the listing of collections for items governed by this apo. 
     #@param val [String] pid of the collection, ex. druid:ab123cd4567
     def add_default_collection val
-      ds=self.administrativeMetadata
-      xml=ds.ng_xml
+      xml = self.administrativeMetadata.ng_xml
       reg=xml.search('//administrativeMetadata/registration').first
-      if not reg
+      unless reg
         reg=Nokogiri::XML::Node.new('registration',xml)
         xml.search('/administrativeMetadata').first.add_child(reg)
       end
@@ -81,8 +75,7 @@ module Dor
     end
     
     def remove_default_collection val
-      ds=self.administrativeMetadata
-      xml=ds.ng_xml
+      xml = self.administrativeMetadata.ng_xml
       xml.search('//administrativeMetadata/registration/collection[@id=\''+val+'\']').remove
       self.administrativeMetadata.content=xml.to_s
     end
@@ -161,8 +154,7 @@ module Dor
     #@param rights [String] Stanford, World, Dark, or None
     def default_rights=(rights)
       rights=rights.downcase
-      ds = self.defaultObjectRights
-      rights_xml=ds.ng_xml
+      rights_xml = self.defaultObjectRights.ng_xml
       rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
         node.children.remove
         if rights=='dark'
@@ -180,16 +172,14 @@ module Dor
           world_node=Nokogiri::XML::Node.new(rights,rights_xml)
           node.add_child(machine_node)
           machine_node.add_child(world_node)
-        end
-        if rights=='stanford'
+        elsif rights=='stanford'
           world_node=Nokogiri::XML::Node.new(rights,rights_xml)
           node.add_child(machine_node)
           group_node=Nokogiri::XML::Node.new('group',rights_xml)
           group_node.content="Stanford"
           node.add_child(machine_node)
           machine_node.add_child(group_node)
-        end
-        if rights=='none' || rights == 'dark'
+        elsif rights=='none' || rights == 'dark'
           none_node=Nokogiri::XML::Node.new('none',rights_xml)
           node.add_child(machine_node)
           machine_node.add_child(none_node)
@@ -202,7 +192,7 @@ module Dor
     end
     def desc_metadata_format=(format)
       #create the node if it isnt there already
-      if not self.administrativeMetadata.metadata_format.first
+      unless self.administrativeMetadata.metadata_format.first
         self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :metadata_format)
       end
       self.administrativeMetadata.update_values({[:metadata_format] => format})
@@ -212,7 +202,7 @@ module Dor
     end
     def desc_metadata_source=(source)
       #create the node if it isnt there already
-      if not self.administrativeMetadata.metadata_source.first
+      unless self.administrativeMetadata.metadata_source.first
         self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :metadata_source)
       end
       self.administrativeMetadata.update_values({[:metadata_source] => format})
@@ -235,14 +225,13 @@ module Dor
     #set a single default workflow
     #@param wf [String] the name of the workflow, ex. 'digitizationWF'
     def default_workflow=(wf)
-      ds=self.administrativeMetadata
-      xml=ds.ng_xml
+      xml = self.administrativeMetadata.ng_xml
       nodes=xml.search('//registration/workflow')
       if nodes.first
         nodes.first['id']=wf
       else
         nodes=xml.search('//registration')
-        if not nodes.first
+        unless nodes.first
           reg_node=Nokogiri::XML::Node.new('registration',xml)
           xml.root.add_child(reg_node)
         end
@@ -253,11 +242,7 @@ module Dor
       end
     end
     def agreement
-      if agreement_object 
-        agreement_object.pid
-      else
-        ''
-      end
+      agreement_object ? agreement_object.pid : ''
     end
     def agreement=(val)
       self.agreement_object = Dor::Item.find val.to_s, :cast => true

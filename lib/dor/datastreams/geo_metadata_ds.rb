@@ -29,7 +29,7 @@ module Dor
     # @raise [Dor::ParameterError] if MD_Metadata is missing
     def metadata
       root = ng_xml.xpath('/rdf:RDF/rdf:Description/gmd:MD_Metadata', XMLNS)
-      if root.nil? or root.empty?
+      if root.nil? || root.empty?
         raise Dor::ParameterError, "Invalid geoMetadata -- missing MD_Metadata: #{root}"
       else
         Nokogiri::XML(root.first.to_xml)
@@ -40,7 +40,7 @@ module Dor
     #     or nil if not provided
     def feature_catalogue
       root = ng_xml.xpath('/rdf:RDF/rdf:Description/gfc:FC_FeatureCatalogue', XMLNS)
-      if root.nil? or root.empty?
+      if root.nil? || root.empty?
         nil # Feature catalog is optional
       else
         Nokogiri::XML(root.first.to_xml)
