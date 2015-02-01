@@ -53,84 +53,87 @@ module Dor
       end
     end
 
+    ## Module-level variables, shared between ALL mixin includers!
     @@collection_hash={}
     @@apo_hash={}
     @@hydrus_apo_hash={}
     @@hydrus_collection_hash={}
+
     def to_solr(solr_doc=Hash.new, *args)
       self.assert_content_model
-      super(solr_doc)
+      super(solr_doc, *args)
       solr_doc[Dor::INDEX_VERSION_FIELD] = Dor::VERSION
-      solr_doc[solr_name('indexed_at', :type => :date)] = Time.now.utc.xmlschema
-      add_solr_value(solr_doc, 'indexed_day', Time.now.beginning_of_day.utc.xmlschema, :string, [:searchable, :facetable])
+      solr_doc['indexed_at_dtsi' ] = Time.now.utc.xmlschema
+      solr_doc['indexed_day_dtsi'] = Time.now.beginning_of_day.utc.xmlschema  # technically unnecessary, but convenient
       datastreams.values.each do |ds|
-        unless ds.new?
-          add_solr_value(solr_doc,'ds_specs',ds.datastream_spec_string,:string,[:displayable])
-        end
+        add_solr_value(solr_doc,'ds_specs',ds.datastream_spec_string,:string,[:displayable]) unless ds.new?
       end
       add_solr_value(solr_doc, 'title_sort', self.label, :string, [:sortable])
+      title_attrs = [:searchable, :facetable, :displayable]
       rels_doc = Nokogiri::XML(self.datastreams['RELS-EXT'].content)
       apos=rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy','hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' )
       apos.each do |apo_node|
-        druid=apo_node['rdf:resource']
-        if druid
-          druid=druid.gsub('info:fedora/','')
-          if @@apo_hash.has_key? druid or @@hydrus_apo_hash.has_key? druid
-            add_solr_value(solr_doc, "hydrus_apo_title", @@hydrus_apo_hash[druid], :string, [:searchable, :facetable, :displayable]) if @@hydrus_apo_hash.has_key? druid
-            add_solr_value(solr_doc, "apo_title", @@apo_hash[druid] , :string, [:searchable, :facetable, :displayable]) if @@apo_hash.has_key? druid
-          else
-            begin
-              apo_object=Dor.find(druid)
-              if apo_object.tags.include? 'Project : Hydrus'
-                add_solr_value(solr_doc, "hydrus_apo_title", apo_object.label, :string, [:searchable, :facetable, :displayable])
-                @@hydrus_apo_hash[druid]=apo_object.label
-              else
-                add_solr_value(solr_doc, "apo_title", apo_object.label, :string, [:searchable, :facetable, :displayable])
-                @@apo_hash[druid]=apo_object.label
-              end
-            rescue
-              add_solr_value(solr_doc, "apo_title", druid, :string, [:searchable, :facetable, :displayable])
+        druid = apo_node['rdf:resource']
+        next unless druid   # TODO: a warning about the bad APO would be nice
+        druid=druid.gsub('info:fedora/','')
+        # check cache first
+        if @@apo_hash.has_key?(druid) || @@hydrus_apo_hash.has_key?(druid)
+          add_solr_value(solr_doc, "hydrus_apo_title", @@hydrus_apo_hash[druid], :string, title_attrs) if @@hydrus_apo_hash.has_key? druid
+          add_solr_value(solr_doc, "apo_title", @@apo_hash[druid] , :string, title_attrs) if @@apo_hash.has_key? druid
+        else
+          begin
+            apo_object=Dor.find(druid)
+            if apo_object.tags.include? 'Project : Hydrus'
+              add_solr_value(solr_doc, "hydrus_apo_title", apo_object.label, :string, title_attrs)
+              @@hydrus_apo_hash[druid]=apo_object.label
+            else
+              add_solr_value(solr_doc, "apo_title", apo_object.label, :string, title_attrs)
+              @@apo_hash[druid]=apo_object.label
             end
+          rescue
+            add_solr_value(solr_doc, "apo_title", druid, :string, title_attrs)
           end
         end
       end
       collections=rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection','fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' )
       collections.each do |collection_node|
         druid=collection_node['rdf:resource']
-        if(druid)
-          druid=druid.gsub('info:fedora/','')
-          if @@collection_hash.has_key? druid or @@hydrus_collection_hash.has_key? druid
-            add_solr_value(solr_doc, "hydrus_collection_title", @@hydrus_collection_hash[druid], :string, [:searchable, :facetable, :displayable]) if @@hydrus_collection_hash.has_key? druid
-            add_solr_value(solr_doc, "collection_title", @@collection_hash[druid], :string, [:searchable, :facetable, :displayable]) if @@collection_hash.has_key? druid
-          else
-            begin
-              collection_object=Dor.find(druid)
-              if collection_object.tags.include? 'Project : Hydrus'
-                add_solr_value(solr_doc, "hydrus_collection_title", collection_object.label, :string, [:searchable, :facetable, :displayable])
-                @@hydrus_collection_hash[druid]=collection_object.label
-              else
-                add_solr_value(solr_doc, "collection_title", collection_object.label, :string, [:searchable, :facetable, :displayable])
-                @@collection_hash[druid]=collection_object.label
-              end
-            rescue
-              add_solr_value(solr_doc, "collection_title", druid, :string, [:searchable, :facetable, :displayable])
+        next unless druid     ## TODO: warning here would also be useful
+        druid=druid.gsub('info:fedora/','')
+        if @@collection_hash.has_key?(druid) || @@hydrus_collection_hash.has_key?(druid)
+          add_solr_value(solr_doc, "hydrus_collection_title", @@hydrus_collection_hash[druid], :string, title_attrs) if @@hydrus_collection_hash.has_key? druid
+          add_solr_value(solr_doc, "collection_title", @@collection_hash[druid], :string, title_attrs) if @@collection_hash.has_key? druid
+        else
+          begin
+            collection_object=Dor.find(druid)
+            if collection_object.tags.include? 'Project : Hydrus'
+              add_solr_value(solr_doc, "hydrus_collection_title", collection_object.label, :string, title_attrs)
+              @@hydrus_collection_hash[druid]=collection_object.label
+            else
+              add_solr_value(solr_doc, "collection_title", collection_object.label, :string, title_attrs)
+              @@collection_hash[druid]=collection_object.label
             end
+          rescue
+            add_solr_value(solr_doc, "collection_title", druid, :string, title_attrs)
           end
         end
       end
-      # Fix for ActiveFedora 3.3 to ensure all date fields are properly formatted as UTC XML Schema datetime strings
-      solr_doc.each_pair { |k,v|
-        if k =~ /_dt|_date$/
-          if v.is_a?(Array)
-            solr_doc[k] = v.collect { |t| Time.parse(t.to_s).utc.xmlschema }
-          else
-            solr_doc[k] = Time.parse(v.to_s).utc.xmlschema
-          end
-        end
-      }
-
+      solr_doc["metadata_source_ssi"] = self.identity_metadata_source
       solr_doc
     end
+
+    #@return [String] calculated value for Solr index
+    def identity_metadata_source
+      if self.identityMetadata.otherId('catkey').first ||
+         self.identityMetadata.otherId('barcode').first
+        'Symphony'
+      elsif self.identityMetadata.otherId('mdtoolkit').first
+        'Metadata Toolkit'
+      else
+        'DOR'
+      end
+    end
+
     def set_source_id(source_id)
       self.identityMetadata.sourceId = source_id
     end
@@ -142,13 +145,10 @@ module Dor
       self.identityMetadata.add_otherId(type+':'+val)
     end
 
-    def update_other_Id(type,new_val, val=nil)
-      identity_metadata_ds = self.identityMetadata
-      ds_xml=identity_metadata_ds.ng_xml
-      #split the thing they sent in to find the node name
+    def update_other_Id(type, new_val, val=nil)
       updated=false
-      ds_xml.search('//otherId[@name=\''+type+'\']').each do |node|
-        if node.content==val or val==nil
+      self.identityMetadata.ng_xml.search('//otherId[@name=\''+type+'\']').each do |node|
+        if node.content==val || val.nil?
           node.content=new_val
           updated=true
         end
@@ -156,13 +156,10 @@ module Dor
       return updated
     end
 
-    def remove_other_Id(type,val=nil)
-      ds_xml=self.identityMetadata.ng_xml
-      #split the thing they sent in to find the node name
+    def remove_other_Id(type, val=nil)
       removed=false
-
-      ds_xml.search('//otherId[@name=\''+type+'\']').each do |node|
-        if node.content===val or val.nil?
+      self.identityMetadata.ng_xml.search('//otherId[@name=\''+type+'\']').each do |node|
+        if node.content===val || val.nil?
           node.remove
           removed=true
         end
@@ -229,7 +226,7 @@ module Dor
         normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags)
         identity_metadata_ds.add_value(:tag, normalized_tag)
     end
-  
+
     def remove_tag(tag)
       removed = false
       self.identityMetadata.ng_xml.search('//tag').each do |node|
