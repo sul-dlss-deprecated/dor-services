@@ -71,10 +71,20 @@ describe Dor::Identifiable do
       expect(item.identityMetadata).not_to be_changed
     end
     it 'should affect identity_metadata_source computation' do
-      expect(item.remove_other_Id('catkey','129483625')).to be_truthy
-      expect(item.remove_other_Id('barcode','36105049267078')).to be_truthy
-      expect(item.add_other_Id('mdtoolkit','someid123')).to be_truthy
+      item.remove_other_Id('catkey','129483625')
+      item.remove_other_Id('barcode','36105049267078')
+      item.add_other_Id('mdtoolkit','someid123')
       expect(item.identity_metadata_source).to eq 'Metadata Toolkit'
+      item.add_other_Id('catkey','129483625')
+      item.remove_other_Id('mdtoolkit','someid123')
+      expect(item.identity_metadata_source).to eq 'Symphony'
+      item.remove_other_Id('catkey','129483625')
+      item.add_other_Id('barcode','36105049267078')
+      expect(item.identity_metadata_source).to eq 'Symphony'
+      item.remove_other_Id('barcode','36105049267078')
+      expect(item.identity_metadata_source).to eq 'DOR'
+      item.remove_other_Id('foo','bar')
+      expect(item.identity_metadata_source).to eq 'DOR'
     end
   end
 
