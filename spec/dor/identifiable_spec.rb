@@ -70,6 +70,22 @@ describe Dor::Identifiable do
       expect(item.remove_other_Id('mdtoolkit','someid123')).to be_falsey
       expect(item.identityMetadata).not_to be_changed
     end
+    it 'should affect identity_metadata_source computation' do
+      item.remove_other_Id('catkey','129483625')
+      item.remove_other_Id('barcode','36105049267078')
+      item.add_other_Id('mdtoolkit','someid123')
+      expect(item.identity_metadata_source).to eq 'Metadata Toolkit'
+      item.add_other_Id('catkey','129483625')
+      item.remove_other_Id('mdtoolkit','someid123')
+      expect(item.identity_metadata_source).to eq 'Symphony'
+      item.remove_other_Id('catkey','129483625')
+      item.add_other_Id('barcode','36105049267078')
+      expect(item.identity_metadata_source).to eq 'Symphony'
+      item.remove_other_Id('barcode','36105049267078')
+      expect(item.identity_metadata_source).to eq 'DOR'
+      item.remove_other_Id('foo','bar')
+      expect(item.identity_metadata_source).to eq 'DOR'
+    end
   end
 
   # when looking for tags after addition/update/removal, check for the normalized form.
@@ -134,6 +150,12 @@ describe Dor::Identifiable do
     end
   end
 
+  describe 'identity_metadata_source' do
+    it 'should index metadata source' do
+      expect(item.identity_metadata_source).to eq 'Symphony'
+    end
+  end
+
   describe 'to_solr' do
     it 'should generate collection and apo title fields' do
       xml='<rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -150,5 +172,9 @@ describe Dor::Identifiable do
       #end
       expect(doc[Solrizer.solr_name('apo_title', :facetable)].first).to eq('druid:fg890hi1234')
     end
+    it 'should index metadata source' do
+      expect(item.to_solr).to match a_hash_including('metadata_source_ssi' => 'Symphony')
+    end
   end
+
 end
