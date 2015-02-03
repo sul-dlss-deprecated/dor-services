@@ -65,19 +65,19 @@ describe Dor::Presentable do
   let(:manifest) {<<-JSON
     {
       "@context": "http://iiif.io/api/presentation/2/context.json",
-      "@id": "http://purl-dev.stanford.edu/bp778zp8790/iiif/manifest.json",
+      "@id": "https://purl-dev.stanford.edu/bp778zp8790/iiif/manifest.json",
       "@type": "sc:Manifest",
       "label": "Roman Imperial denarius",
       "attribution": "(c) 2009 by Jasper Wilcox. All rights reserved.",
       "seeAlso": {
-        "@id": "http://purl-dev.stanford.edu/bp778zp8790.mods",
+        "@id": "https://purl-dev.stanford.edu/bp778zp8790.mods",
         "format": "application/mods+xml"
       },
       #{description_and_md}
       #{thumbnail}
       "sequences": [
         {
-          "@id": "http://purl-dev.stanford.edu/bp778zp8790/sequence-1",
+          "@id": "https://purl-dev.stanford.edu/bp778zp8790/sequence-1",
           "@type": "sc:Sequence",
           "label": "Current order",
           #{canvases}
@@ -185,17 +185,17 @@ describe Dor::Presentable do
     let(:canvases) {<<-JSON
       "canvases": [
         {
-          "@id": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1",
+          "@id": "https://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1",
           "@type": "sc:Canvas",
           "label": "Image 1",
           "height": 790,
           "width": 790,
           "images": [
             {
-              "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-1",
+              "@id": "https://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-1",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
-              "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1",
+              "on": "https://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1",
               "resource": {
                 "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0001/full/full/0/default.jpg",
                 "@type": "dcterms:Image",
@@ -212,17 +212,17 @@ describe Dor::Presentable do
           ]
         },
         {
-          "@id": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2",
+          "@id": "https://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2",
           "@type": "sc:Canvas",
           "label": "Image 2",
           "height": 790,
           "width": 790,
           "images": [
             {
-              "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-2",
+              "@id": "https://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-2",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
-              "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2",
+              "on": "https://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2",
               "resource": {
                 "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2Fbp778zp8790_00_0002/full/full/0/default.jpg",
                 "@type": "dcterms:Image",
@@ -340,17 +340,17 @@ describe Dor::Presentable do
     let(:canvases) {<<-JSON
       "canvases": [
         {
-          "@id": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1",
+          "@id": "https://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1",
           "@type": "sc:Canvas",
           "label": "1",
           "height": 1740,
           "width": 1771,
           "images": [
             {
-              "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-1",
+              "@id": "https://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-1",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
-              "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1",
+              "on": "https://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-1",
               "resource": {
                 "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F1/full/full/0/default.jpg",
                 "@type": "dcterms:Image",
@@ -367,17 +367,17 @@ describe Dor::Presentable do
           ]
         },
         {
-          "@id": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2",
+          "@id": "https://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2",
           "@type": "sc:Canvas",
           "label": "2",
           "height": 1740,
           "width": 1771,
           "images": [
             {
-              "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-2",
+              "@id": "https://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-2",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
-              "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2",
+              "on": "https://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-2",
               "resource": {
                 "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F2/full/full/0/default.jpg",
                 "@type": "dcterms:Image",
@@ -394,17 +394,17 @@ describe Dor::Presentable do
           ]
         },
         {
-          "@id": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-3",
+          "@id": "https://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-3",
           "@type": "sc:Canvas",
           "label": "3",
           "height": 1740,
           "width": 1771,
           "images": [
             {
-              "@id": "http://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-3",
+              "@id": "https://purl-dev.stanford.edu/bp778zp8790/imageanno/anno-3",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
-              "on": "http://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-3",
+              "on": "https://purl-dev.stanford.edu/bp778zp8790/canvas/canvas-3",
               "resource": {
                 "@id": "http://stacks-dev.stanford.edu/image/iiif/bp778zp8790%2F3/full/full/0/default.jpg",
                 "@type": "dcterms:Image",

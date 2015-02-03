@@ -26,7 +26,7 @@ module Dor
       raise "Unable to build IIIF Presentation manifest:  No identityMetadata/objectLabel or dc:title" if lbl_node.nil?
       lbl = lbl_node.text
 
-      purl_base_uri = "http://#{Dor::Config.stacks.document_cache_host}/#{id}"
+      purl_base_uri = "https://#{Dor::Config.stacks.document_cache_host}/#{id}"
 
       manifest_data = {
         '@id'   => "#{purl_base_uri}/iiif/manifest.json",
