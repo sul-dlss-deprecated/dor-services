@@ -14,26 +14,26 @@ describe Dor::Describable do
   after(:each)  { unstub_config }
 
   before :each do
-    @item = instantiate_fixture('druid:ab123cd4567', DescribableItem)
-    @obj= instantiate_fixture('druid:ab123cd4567', DescribableItem)
+    @simple = instantiate_fixture('druid:ab123cd4567', SimpleItem)
+    @item   = instantiate_fixture('druid:ab123cd4567', DescribableItem)
+    @obj    = instantiate_fixture('druid:ab123cd4567', DescribableItem)
     @obj.datastreams['descMetadata'].content = read_fixture('ex1_mods.xml')
-    @simple=instantiate_fixture('druid:ab123cd4567', SimpleItem)
   end
 
   it 'should add a creator_title field' do
     doc={}
     expected_dc = read_fixture('ex1_dc.xml')
-    @found=0
+    found = 0
     allow(@simple).to receive(:generate_dublin_core).and_return(Nokogiri::XML(expected_dc))
     #this is hacky but effective
-    allow(@simple).to receive(:add_solr_value) do |doc,val, field, otherstuff|
-      if val == 'creator_title'
-        expect(field).to eq('George, Henry, 1839-1897The complete works of Henry George')
-        @found=1
+    allow(@simple).to receive(:add_solr_value) do |doc, field, value, otherstuff|
+      if field == 'creator_title'
+        expect(value).to eq('George, Henry, 1839-1897The complete works of Henry George')
+        found=1
       end
     end
     @simple.to_solr(doc)
-    expect(@found).to eq(1)
+    expect(found).to eq 1
   end
 
   it "should have a descMetadata datastream" do
@@ -67,21 +67,15 @@ describe Dor::Describable do
   end
 
   it "produces dublin core from the MODS in the descMetadata datastream" do
-    mods = read_fixture('ex1_mods.xml')
-    expected_dc = read_fixture('ex1_dc.xml')
-
     b = Dor::Item.new
-    b.datastreams['descMetadata'].content = mods
-    expect(b.generate_dublin_core).to be_equivalent_to expected_dc
+    b.datastreams['descMetadata'].content = read_fixture('ex1_mods.xml')
+    expect(b.generate_dublin_core).to be_equivalent_to read_fixture('ex1_dc.xml')
   end
 
   it "produces dublin core Stanford-specific mapping for repository, collection and location, from the MODS in the descMetadata datastream" do
-    mods = read_fixture('ex2_related_mods.xml')
-    expected_dc = read_fixture('ex2_related_dc.xml')
-
     b = Dor::Item.new
-    b.datastreams['descMetadata'].content = mods
-    expect(b.generate_dublin_core).to be_equivalent_to expected_dc
+    b.datastreams['descMetadata'].content = read_fixture('ex2_related_mods.xml')
+    expect(b.generate_dublin_core).to be_equivalent_to read_fixture('ex2_related_dc.xml')
   end
 
   it "throws an exception if the generated dc has no root element" do
@@ -273,13 +267,8 @@ describe Dor::Describable do
 
       @collection = instantiate_fixture('druid:ab123cd4567', Dor::Item)
       allow(Dor::Item).to receive(:find) do |pid|
-        if pid == 'druid:ab123cd4567'
-          @item
-        else
-          @collection
-        end
+        pid == 'druid:ab123cd4567' ? @item : @collection
       end
-
     end
 
     after(:each) do
@@ -414,11 +403,7 @@ describe Dor::Describable do
       collection.datastreams['descMetadata'].content = c_mods.to_s
 
       allow(Dor::Item).to receive(:find) do |pid|
-        if pid == 'druid:ab123cd4567'
-          itm
-        else
-          collection
-        end
+        pid == 'druid:ab123cd4567' ? itm : collection
       end
     end
 
@@ -481,124 +466,121 @@ describe Dor::Describable do
   end
 
 
-describe 'get_collection_title' do
-  it 'should get a titleInfo/title' do
-    @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
-    @item.descMetadata.content=<<-XML
-    <?xml version="1.0"?>
-    <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
-    <titleInfo>
-    <title>Foxml Test Object</title>
-    </titleInfo>
-    </mods>
-    XML
-
-    expect(Dor::Describable.get_collection_title(@item)).to eq('Foxml Test Object')
-  end
-
-  it 'should include a subtitle if there is one' do
-    @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
-    @item.descMetadata.content=<<-XML
-    <?xml version="1.0"?>
-    <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
-    <titleInfo>
-    <title>Foxml Test Object</title>
-    <subTitle>Hello world</note>
-    </titleInfo>
-    </mods>
-    XML
-    expect(Dor::Describable.get_collection_title(@item)).to eq('Foxml Test Object (Hello world)')
-  end
-end
-
-
-it "throws an exception if the generated dc has only a root element with no children" do
-  mods = <<-EOXML
-  <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  version="3.3"
-  xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd" />
-  EOXML
-
-  b = Dor::Item.new
-  allow(b).to receive(:add_collection_reference).and_return(mods)
-  b.datastreams['descMetadata'].content = mods
-
-  expect {b.generate_dublin_core}.to raise_error(Dor::Describable::CrosswalkError)
-end
-describe 'update_title' do
-  it 'should update the title' do
-    found=false
-    @obj.update_title('new title')
-    @obj.descMetadata.ng_xml.search('//mods:mods/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
-      expect(node.content).to eq('new title')
-      found=true
+  describe 'get_collection_title' do
+    it 'should get a titleInfo/title' do
+      @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
+      @item.descMetadata.content=<<-XML
+      <?xml version="1.0"?>
+      <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+      <titleInfo>
+      <title>Foxml Test Object</title>
+      </titleInfo>
+      </mods>
+      XML
+      expect(Dor::Describable.get_collection_title(@item)).to eq('Foxml Test Object')
     end
-    expect(found).to be_truthy
-  end
-  it 'should raise an exception if the mods lacks a title' do
-    @obj.update_title('new title')
-    @obj.descMetadata.ng_xml.search('//mods:mods/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
-      node.remove
-    end
-    expect {@obj.update_title('druid:oo201oo0001', 'new title')}.to raise_error
-  end
-end
-describe 'add_identifier' do
-  it 'should add an identifier' do
-    @obj.add_identifier('type', 'new attribute')
-    res=@obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]','mods' => 'http://www.loc.gov/mods/v3')
-    expect(res.length).to be > 0
-    res.each do |node|
-      expect(node.content).to eq('new attribute')
+
+    it 'should include a subtitle if there is one' do
+      @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
+      @item.descMetadata.content=<<-XML
+      <?xml version="1.0"?>
+      <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+      <titleInfo>
+      <title>Foxml Test Object</title>
+      <subTitle>Hello world</note>
+      </titleInfo>
+      </mods>
+      XML
+      expect(Dor::Describable.get_collection_title(@item)).to eq('Foxml Test Object (Hello world)')
     end
   end
-end
-describe 'delete_identifier' do
-  it 'should delete an identifier' do
-    @obj.add_identifier('type', 'new attribute')
-    res=@obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]','mods' => 'http://www.loc.gov/mods/v3')
-    expect(res.length).to be > 0
-    res.each do |node|
-      expect(node.content).to eq('new attribute')
-    end
-    expect(@obj.delete_identifier('type', 'new attribute')).to be_truthy
-    res=@obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]','mods' => 'http://www.loc.gov/mods/v3')
-    expect(res.length).to eq(0)
-  end
-  it 'should return false if there was nothing to delete' do
-    expect(@obj.delete_identifier('type', 'new attribute')).to be_falsey
-  end
-end
-describe 'set_desc_metadata_using_label' do
-  it 'should create basic mods using the object label' do
-    allow(@obj.datastreams['descMetadata']).to receive(:content).and_return ''
-    @obj.set_desc_metadata_using_label()
-    expect(@obj.datastreams['descMetadata'].ng_xml).to be_equivalent_to <<-XML
-    <?xml version="1.0"?>
-    <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
-    <titleInfo>
-    <title>Foxml Test Object</title>
-    </titleInfo>
-    </mods>
-    XML
 
+  it "throws an exception if the generated dc has only a root element with no children" do
+    mods = <<-EOXML
+    <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    version="3.3"
+    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd" />
+    EOXML
+
+    b = Dor::Item.new
+    allow(b).to receive(:add_collection_reference).and_return(mods)
+    b.datastreams['descMetadata'].content = mods
+    expect {b.generate_dublin_core}.to raise_error(Dor::Describable::CrosswalkError)
   end
-  it 'should throw an exception if there is content in the descriptive metadata stream' do
-    #@obj.stub(:descMetadata).and_return(ActiveFedora::OmDatastream.new)
-    allow(@obj.descMetadata).to receive(:new?).and_return(false)
-    expect{@obj.set_desc_metadata_using_label()}.to raise_error
+
+  describe 'update_title' do
+    it 'should update the title' do
+      found=false
+      @obj.update_title('new title')
+      @obj.descMetadata.ng_xml.search('//mods:mods/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
+        expect(node.content).to eq('new title')
+        found=true
+      end
+      expect(found).to be_truthy
+    end
+    it 'should raise an exception if the mods lacks a title' do
+      @obj.update_title('new title')
+      @obj.descMetadata.ng_xml.search('//mods:mods/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
+        node.remove
+      end
+      expect {@obj.update_title('druid:oo201oo0001', 'new title')}.to raise_error
+    end
   end
-  it 'should run if there is content in the descriptive metadata stream and force is true' do
-    @obj.set_desc_metadata_using_label(false)
-    expect(@obj.datastreams['descMetadata'].ng_xml).to be_equivalent_to <<-XML
-    <?xml version="1.0"?>
-    <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
-    <titleInfo>
-    <title>Foxml Test Object</title>
-    </titleInfo>
-    </mods>
-    XML
+  describe 'add_identifier' do
+    it 'should add an identifier' do
+      @obj.add_identifier('type', 'new attribute')
+      res=@obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]','mods' => 'http://www.loc.gov/mods/v3')
+      expect(res.length).to be > 0
+      res.each do |node|
+        expect(node.content).to eq('new attribute')
+      end
+    end
   end
-end
+  describe 'delete_identifier' do
+    it 'should delete an identifier' do
+      @obj.add_identifier('type', 'new attribute')
+      res=@obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]','mods' => 'http://www.loc.gov/mods/v3')
+      expect(res.length).to be > 0
+      res.each do |node|
+        expect(node.content).to eq('new attribute')
+      end
+      expect(@obj.delete_identifier('type', 'new attribute')).to be_truthy
+      res=@obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]','mods' => 'http://www.loc.gov/mods/v3')
+      expect(res.length).to eq(0)
+    end
+    it 'should return false if there was nothing to delete' do
+      expect(@obj.delete_identifier('type', 'new attribute')).to be_falsey
+    end
+  end
+  describe 'set_desc_metadata_using_label' do
+    it 'should create basic mods using the object label' do
+      allow(@obj.datastreams['descMetadata']).to receive(:content).and_return ''
+      @obj.set_desc_metadata_using_label()
+      expect(@obj.datastreams['descMetadata'].ng_xml).to be_equivalent_to <<-XML
+      <?xml version="1.0"?>
+      <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+      <titleInfo>
+      <title>Foxml Test Object</title>
+      </titleInfo>
+      </mods>
+      XML
+    end
+    it 'should throw an exception if there is content in the descriptive metadata stream' do
+      #@obj.stub(:descMetadata).and_return(ActiveFedora::OmDatastream.new)
+      allow(@obj.descMetadata).to receive(:new?).and_return(false)
+      expect{@obj.set_desc_metadata_using_label()}.to raise_error
+    end
+    it 'should run if there is content in the descriptive metadata stream and force is true' do
+      @obj.set_desc_metadata_using_label(false)
+      expect(@obj.datastreams['descMetadata'].ng_xml).to be_equivalent_to <<-XML
+      <?xml version="1.0"?>
+      <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+      <titleInfo>
+      <title>Foxml Test Object</title>
+      </titleInfo>
+      </mods>
+      XML
+    end
+  end
 end
