@@ -275,75 +275,60 @@ describe Dor::Describable do
       Dor::Config.pop!
     end
 
-    it "adds a relatedItem node for the collection if the item is a member of a collection" do
-      mods_xml = read_fixture('ex2_related_mods.xml')
-      mods=Nokogiri::XML(mods_xml)
-      mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']').each do |node|
-        node.parent.remove()
+    describe "relatedItem" do
+      before(:each) do
+        @xml = Nokogiri::XML(read_fixture('ex2_related_mods.xml'))
+        @collection.datastreams['descMetadata'].content = Nokogiri::XML(read_fixture('ex1_mods.xml')).to_s
       end
-      c_mods=Nokogiri::XML(read_fixture('ex1_mods.xml'))
-      @collection.datastreams['descMetadata'].content = c_mods.to_s
 
-      @item.add_collection_reference(mods)
+      it "adds a relatedItem node for the collection if the item is a member of a collection" do
+        @xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']').each do |node|
+          node.parent.remove()
+        end
+        @item.add_collection_reference(@xml)
+        expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@xml)
+        collections      = @xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
+        collection_title = @xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
+        collection_uri   = @xml.search('//mods:relatedItem/mods:identifier[@type="uri"]')
+        expect(collections.length     ).to eq 1
+        expect(collection_title.length).to eq 1
+        expect(collection_uri.length  ).to eq 1
+        expect(collection_title.first.content).to eq 'complete works of Henry George'
+        expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
+      end
 
-      xml = mods
-      expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(xml)
-      collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
-      expect(collections.length).to eq(1)
-      collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
-      expect(collection_title.length).to eq(1)
-      expect(collection_title.first.content).to eq('complete works of Henry George')
-      collection_uri = xml.search('//mods:relatedItem/mods:identifier[@type="uri"]')
-      expect(collection_uri.length).to eq(1)
-      expect(collection_uri.first.content).to eq "http://purl.stanford.edu/zb871zd0767"
-    end
+      it "replaces an existing relatedItem if there is a parent collection with title" do
+        @item.add_collection_reference(@xml)
+        expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@xml)
+        collections      = @xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
+        collection_title = @xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
+        collection_uri   = @xml.search('//mods:relatedItem/mods:identifier[@type="uri"]')
+        expect(collections.length     ).to eq 1
+        expect(collection_title.length).to eq 1
+        expect(collection_uri.length  ).to eq 1
+        expect(collection_title.first.content).to eq 'complete works of Henry George'
+        expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
+      end
 
-    it "replaces an existing relatedItem if there is a parent collection with title" do
-      mods_xml = read_fixture('ex2_related_mods.xml')
-      mods=Nokogiri::XML(mods_xml)
-      c_mods=Nokogiri::XML(read_fixture('ex1_mods.xml'))
-      @collection.datastreams['descMetadata'].content = c_mods.to_s
-
-      @item.add_collection_reference(mods)
-
-      xml = mods
-      expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(xml)
-      collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
-      expect(collections.length).to eq(1)
-      collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
-      expect(collection_title.length).to eq(1)
-      expect(collection_title.first.content).to eq('complete works of Henry George')
-      collection_uri = xml.search('//mods:relatedItem/mods:identifier[@type="uri"]')
-      expect(collection_uri.length).to eq(1)
-      expect(collection_uri.first.content).to eq "http://purl.stanford.edu/zb871zd0767"
-    end
-
-    it "does not touch an existing relatedItem if there is no collection relationship" do
-      b = instantiate_fixture('druid:ab123cd4567', Dor::Item)
-      relationships_xml=<<-XML
-      <?xml version="1.0"?>
-      <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-        <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
-          <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
-          </rdf:Description>
-      </rdf:RDF>
-      XML
-      relationships=Nokogiri::XML(relationships_xml)
-      allow(@item).to receive(:public_relationships).and_return(relationships)
-
-      mods_xml = read_fixture('ex2_related_mods.xml')
-      mods=Nokogiri::XML(mods_xml)
-      @collection.datastreams['descMetadata'].content = mods.to_s
-
-      @item.add_collection_reference(mods)
-
-      xml = mods
-      expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(xml)
-      collections=xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
-      expect(collections.length).to eq(1)
-      collection_title=xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
-      expect(collection_title.length).to eq(1)
-      expect(collection_title.first.content).to eq('Buckminster Fuller papers, 1920-1983')
+      it "does not touch an existing relatedItem if there is no collection relationship" do
+        relationships_xml=<<-XML
+        <?xml version="1.0"?>
+        <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+          <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
+            <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
+            </rdf:Description>
+        </rdf:RDF>
+        XML
+        relationships=Nokogiri::XML(relationships_xml)
+        allow(@item).to receive(:public_relationships).and_return(relationships)
+        @item.add_collection_reference(@xml)
+        expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@xml)
+        collections      = @xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
+        collection_title = @xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
+        expect(collections.length     ).to eq 1
+        expect(collection_title.length).to eq 1
+        expect(collection_title.first.content).to eq 'Buckminster Fuller papers, 1920-1983'
+      end
     end
   end
 
@@ -394,10 +379,9 @@ describe Dor::Describable do
       </rdf:Description>
       </rdf:RDF>
       XML
-      relationships=Nokogiri::XML(relationships_xml)
 
       itm.datastreams['rightsMetadata'].content = rights_xml
-      allow(itm).to receive(:public_relationships).and_return(relationships)
+      allow(itm).to receive(:public_relationships).and_return(Nokogiri::XML(relationships_xml))
 
       c_mods=Nokogiri::XML(read_fixture('ex1_mods.xml'))
       collection.datastreams['descMetadata'].content = c_mods.to_s
@@ -419,23 +403,22 @@ describe Dor::Describable do
       end
       itm.datastreams['descMetadata'].content = mods.to_s
 
-      xml = itm.generate_public_desc_md
-      doc = Nokogiri::XML(xml)
+      doc = Nokogiri::XML(itm.generate_public_desc_md)
       expect(doc.encoding).to eq('UTF-8')
-      collections=doc.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
-      expect(collections.length).to eq(1)
-      collection_title=doc.search('//mods:relatedItem/mods:titleInfo/mods:title')
-      expect(collection_title.length).to eq(1)
-      expect(collection_title.first.content).to eq('complete works of Henry George')
-      collection_uri = doc.search('//mods:relatedItem/mods:identifier[@type="uri"]')
-      expect(collection_uri.length).to eq(1)
-      expect(collection_uri.first.content).to eq "http://purl.stanford.edu/zb871zd0767"
-      expect(doc.xpath('//mods:accessCondition[@type="useAndReproduction"]').size).to eq(1)
+      collections      = doc.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
+      collection_title = doc.search('//mods:relatedItem/mods:titleInfo/mods:title')
+      collection_uri   = doc.search('//mods:relatedItem/mods:identifier[@type="uri"]')
+      expect(collections.length     ).to eq 1
+      expect(collection_title.length).to eq 1
+      expect(collection_uri.length  ).to eq 1
+      expect(collection_title.first.content).to eq 'complete works of Henry George'
+      expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
+      %w(useAndReproduction copyright license).each{ |term|
+        expect(doc.xpath('//mods:accessCondition[@type="' + term +'"]').size).to eq 1
+      }
       expect(doc.xpath('//mods:accessCondition[@type="useAndReproduction"]').text).to match(/yada/)
-      expect(doc.xpath('//mods:accessCondition[@type="copyright"]').size).to eq(1)
-      expect(doc.xpath('//mods:accessCondition[@type="copyright"]').text).to match(/Property rights reside with/)
-      expect(doc.xpath('//mods:accessCondition[@type="license"]').size).to eq(1)
-      expect(doc.xpath('//mods:accessCondition[@type="license"]').text).to match(/This work is licensed under/)
+      expect(doc.xpath('//mods:accessCondition[@type="copyright"]'         ).text).to match(/Property rights reside with/)
+      expect(doc.xpath('//mods:accessCondition[@type="license"]'           ).text).to match(/This work is licensed under/)
     end
 
     it "handles mods as the default namespace" do
@@ -446,29 +429,30 @@ describe Dor::Describable do
       end
       itm.datastreams['descMetadata'].content = mods.to_s
 
-      xml = itm.generate_public_desc_md
-      doc = Nokogiri::XML(xml)
-      collections=doc.search('//xmlns:relatedItem/xmlns:typeOfResource[@collection=\'yes\']')
-      expect(collections.length).to eq(1)
-      collection_title=doc.search('//xmlns:relatedItem/xmlns:titleInfo/xmlns:title')
-      expect(collection_title.length).to eq(1)
-      expect(collection_title.first.content).to eq('complete works of Henry George')
-      collection_uri = doc.search('//xmlns:relatedItem/xmlns:identifier[@type="uri"]')
-      expect(collection_uri.length).to eq(1)
-      expect(collection_uri.first.content).to eq "http://purl.stanford.edu/zb871zd0767"
-      expect(doc.xpath('//xmlns:accessCondition[@type="useAndReproduction"]').size).to eq(1)
+      doc = Nokogiri::XML(itm.generate_public_desc_md)
+      collections      = doc.search('//xmlns:relatedItem/xmlns:typeOfResource[@collection=\'yes\']')
+      collection_title = doc.search('//xmlns:relatedItem/xmlns:titleInfo/xmlns:title')
+      collection_uri   = doc.search('//xmlns:relatedItem/xmlns:identifier[@type="uri"]')
+      expect(collections.length     ).to eq 1
+      expect(collection_title.length).to eq 1
+      expect(collection_uri.length  ).to eq 1
+      expect(collection_title.first.content).to eq 'complete works of Henry George'
+      expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
+      %w(useAndReproduction copyright license).each{ |term|
+        expect(doc.xpath('//xmlns:accessCondition[@type="' + term +'"]').size).to eq 1
+      }
       expect(doc.xpath('//xmlns:accessCondition[@type="useAndReproduction"]').text).to match(/yada/)
-      expect(doc.xpath('//xmlns:accessCondition[@type="copyright"]').size).to eq(1)
-      expect(doc.xpath('//xmlns:accessCondition[@type="copyright"]').text).to match(/Property rights reside with/)
-      expect(doc.xpath('//xmlns:accessCondition[@type="license"]').size).to eq(1)
-      expect(doc.xpath('//xmlns:accessCondition[@type="license"]').text).to match(/This work is licensed under/)
+      expect(doc.xpath('//xmlns:accessCondition[@type="copyright"]'         ).text).to match(/Property rights reside with/)
+      expect(doc.xpath('//xmlns:accessCondition[@type="license"]'           ).text).to match(/This work is licensed under/)
     end
   end
 
 
   describe 'get_collection_title' do
-    it 'should get a titleInfo/title' do
+    before(:each) do
       @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
+    end
+    it 'should get a titleInfo/title' do
       @item.descMetadata.content=<<-XML
       <?xml version="1.0"?>
       <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
@@ -477,11 +461,10 @@ describe Dor::Describable do
       </titleInfo>
       </mods>
       XML
-      expect(Dor::Describable.get_collection_title(@item)).to eq('Foxml Test Object')
+      expect(Dor::Describable.get_collection_title(@item)).to eq 'Foxml Test Object'
     end
 
     it 'should include a subtitle if there is one' do
-      @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
       @item.descMetadata.content=<<-XML
       <?xml version="1.0"?>
       <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
@@ -491,7 +474,7 @@ describe Dor::Describable do
       </titleInfo>
       </mods>
       XML
-      expect(Dor::Describable.get_collection_title(@item)).to eq('Foxml Test Object (Hello world)')
+      expect(Dor::Describable.get_collection_title(@item)).to eq 'Foxml Test Object (Hello world)'
     end
   end
 
