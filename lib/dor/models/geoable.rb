@@ -1,7 +1,6 @@
 module Dor
   module Geoable
     extend ActiveSupport::Concern
-    include SolrDocHelper
 
     class CrosswalkError < Exception; end    
     

@@ -8,7 +8,7 @@ module Dor
     # @param [LyberCore::Robots::WorkItem] dor_item The DOR work item whose workspace should be cleaned up
     # @return [void] Delete all workspace and export entities for the druid
     def self.cleanup(dor_item)
-      druid = dor_item.druid
+      druid = dor_item.respond_to?(:druid) ? dor_item.druid : dor_item.id
       cleanup_by_druid druid
     end
 
@@ -24,7 +24,7 @@ module Dor
     def self.cleanup_workspace_content(druid, base)
       DruidTools::Druid.new(druid, base).prune!
     end
-    
+
     # @param [String] druid The identifier for the object whose data is to be removed
     # @return [void] remove copy of the data that was exported to preservation core
     def self.cleanup_export(druid)
@@ -83,9 +83,6 @@ module Dor
       Dor::SearchService.solr.delete_by_id(pid)
       Dor::SearchService.solr.commit
     end
-  end 
+  end
 
 end
-
-
-    

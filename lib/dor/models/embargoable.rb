@@ -71,28 +71,28 @@ module Dor
       datastreams['events'].add_event("embargo", release_agent, "20% Visibility Embargo released")
     end
 
-		def update_embargo(new_date)
-			if not embargoMetadata.status == 'embargoed'
-				raise 'You cannot change the embargo date of an item thant isnt embargoed.'
-			end
-			if new_date.past?
-			  raise 'You cannot set the embargo date to a past date.'
-			end
-			updated=false
-			self.rightsMetadata.ng_xml.search('//embargoReleaseDate').each do |node|
-				node.content=new_date.beginning_of_day.utc.xmlschema
-				updated=true
-			end
-			self.rightsMetadata.content=self.rightsMetadata.ng_xml.to_s
-			self.rightsMetadata.save
-			if not updated
-				raise 'No release date in rights metadata, cannot proceed!'
-			end
-			self.embargoMetadata.ng_xml.xpath('//releaseDate').each do |node|
-				node.content=new_date.beginning_of_day.utc.xmlschema
-			end
-			self.embargoMetadata.content=self.embargoMetadata.ng_xml.to_s
-			self.embargoMetadata.save
-		end
+    def update_embargo(new_date)
+      if not embargoMetadata.status == 'embargoed'
+        raise 'You cannot change the embargo date of an item thant isnt embargoed.'
+      end
+      if new_date.past?
+        raise 'You cannot set the embargo date to a past date.'
+      end
+      updated=false
+      self.rightsMetadata.ng_xml.search('//embargoReleaseDate').each do |node|
+        node.content=new_date.beginning_of_day.utc.xmlschema
+        updated=true
+      end
+      self.rightsMetadata.content=self.rightsMetadata.ng_xml.to_s
+      self.rightsMetadata.save
+      if not updated
+        raise 'No release date in rights metadata, cannot proceed!'
+      end
+      self.embargoMetadata.ng_xml.xpath('//releaseDate').each do |node|
+        node.content=new_date.beginning_of_day.utc.xmlschema
+      end
+      self.embargoMetadata.content=self.embargoMetadata.ng_xml.to_s
+      self.embargoMetadata.save
+    end
   end
 end

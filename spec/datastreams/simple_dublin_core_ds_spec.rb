@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe SimpleDublinCoreDs do
-  subject { SimpleDublinCoreDs.from_xml @xml }
+describe 'Dor::SimpleDublinCoreDs' do
 
   describe "#to_solr" do
     it "should do OM mapping" do
@@ -11,9 +10,14 @@ describe SimpleDublinCoreDs do
         <dc:identifier>identifier</dc:identifier>
       </oai_dc:dc>'
 
-      subject.to_solr['dc_title_t'].should include('title')
-      subject.to_solr['dc_creator_t'].should include('creator')
-      subject.to_solr['dc_identifier_t'].should include('identifier')
+      title_field   = Solrizer.solr_name('title', :stored_searchable)
+      creator_field = Solrizer.solr_name('creator', :stored_searchable)
+      id_field      = Solrizer.solr_name('identifier', :stored_searchable)
+      dublin = Dor::SimpleDublinCoreDs.from_xml(@xml)
+      expect(dublin.to_solr).to match a_hash_including(title_field, creator_field, id_field)
+      expect(dublin.to_solr[title_field]  ).to eq ['title']
+      expect(dublin.to_solr[creator_field]).to eq ['creator']
+      expect(dublin.to_solr[id_field]     ).to eq ['identifier']
     end
 
     context "sort fields" do
@@ -26,8 +30,11 @@ describe SimpleDublinCoreDs do
         <dc:identifier>identifier</dc:identifier>
       </oai_dc:dc>'
 
-      subject.to_solr['dc_title_sort'].should have(1).item
-      subject.to_solr['dc_creator_sort'].should have(1).item
+      dublin = Dor::SimpleDublinCoreDs.from_xml(@xml)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_title', :sortable)]).to be_a_kind_of(String)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_title', :sortable)]).to eq 'title'
+      expect(dublin.to_solr[Solrizer.solr_name('dc_creator', :sortable)]).to be_a_kind_of(String)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_creator', :sortable)]).to eq 'creator'
     end
 
     it "should create sort fields for each type of identifier" do
@@ -38,8 +45,11 @@ describe SimpleDublinCoreDs do
         <dc:identifier>uuid:identifierxyz</dc:identifier>
       </oai_dc:dc>'
 
-      subject.to_solr['dc_identifier_druid_sort'].should have(1).item
-      subject.to_solr['dc_identifier_uuid_sort'].should have(1).item
+      dublin = Dor::SimpleDublinCoreDs.from_xml(@xml)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_druid', :sortable)]).to be_a_kind_of(String)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_druid', :sortable)]).to eq 'identifier'
+      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_uuid', :sortable)]).to be_a_kind_of(String)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_uuid', :sortable)]).to eq 'identifier2'
     end
     end
   end

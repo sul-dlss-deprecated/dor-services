@@ -1,11 +1,9 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require 'tmpdir'
+require 'spec_helper'
 
 class MergeableItem < ActiveFedora::Base
   include Dor::Itemizable
   include Dor::Contentable
 end
-
 
 describe Dor::MergeService do
 
@@ -16,15 +14,15 @@ describe Dor::MergeService do
 
   let(:primary) {
     c = MergeableItem.new
-    c.stub(:pid).and_return(primary_pid)
-    c.inner_object.stub(:repository).and_return(double('frepo').as_null_object)
+    allow(c).to receive(:pid).and_return(primary_pid)
+    allow(c.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)
     c
   }
 
   let(:secondary) {
     c = MergeableItem.new
-    c.stub(:pid).and_return(secondary_pid)
-    c.inner_object.stub(:repository).and_return(double('frepo').as_null_object)
+    allow(c).to receive(:pid).and_return(secondary_pid)
+    allow(c.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)
     c
   }
 
@@ -74,8 +72,8 @@ describe Dor::MergeService do
       </contentMetadata>
       XML
 
-      Dor::Item.stub(:find).with(primary_pid) { primary }
-      Dor::Item.stub(:find).with(secondary_pid) { secondary }
+      allow(Dor::Item).to receive(:find).with(primary_pid) { primary }
+      allow(Dor::Item).to receive(:find).with(secondary_pid) { secondary }
       pri_druid_tree.mkdir
       create_tempfile pri_druid_tree.path, 'image_a.jp2'
     end

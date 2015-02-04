@@ -1,6 +1,5 @@
 module Dor
 class WorkflowDs < ActiveFedora::OmDatastream
-  include SolrDocHelper
 
   set_terminology do |t|
     t.root(:path=>"workflows")
@@ -15,11 +14,6 @@ class WorkflowDs < ActiveFedora::OmDatastream
         t.attempts(:path=>{:attribute=>"attempts"}, :index_as => [:displayable, :not_searchable])
       }
     }
-  end
-
-  def initialize *args
-    self.field_mapper = UtcDateFieldMapper.new
-    super
   end
 
   def get_workflow (wf,repo='dor')

@@ -36,17 +36,11 @@ module Dor
 
     def find_all query, opts={}
       ensure_models_loaded!
-      af_version = Gem::Version.new(ActiveFedora::VERSION)
-      if opts[:lightweight] and af_version < Gem::Version.new('4.0.0.rc9')
-        ActiveFedora.logger.warn("Loading of lightweight objects requires ActiveFedora >= 4.0.0")
-        opts.delete(:lightweight)
-      end
-
       resp = SearchService.query query, opts
       resp.docs.collect do |solr_doc|
         doc_version = solr_doc[INDEX_VERSION_FIELD].first rescue '0.0.0'
         doc_version = Gem::Version.new(doc_version)
-        object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType',:string)]).first
+        object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType',:facetable)]).first
         object_class = registered_classes[object_type] || ActiveFedora::Base
         if opts[:lightweight] and doc_version >= Gem::Version.new('3.1.0')
           begin
@@ -77,7 +71,6 @@ module Dor
   # patches, utilities and helpers
   require 'dor/utils/ng_tidy'
   require 'dor/utils/solr_doc_helper'
-  require 'dor/utils/utc_date_field_mapper'
   require 'dor/utils/predicate_patch'
 
   require 'dor/datastreams/datastream_spec_solrizer'
@@ -97,7 +90,7 @@ module Dor
   autoload :WorkflowDs,  'dor/datastreams/workflow_ds'
   autoload :VersionMetadataDS,  'dor/datastreams/version_metadata_ds'
   autoload :DefaultObjectRightsDS,  'dor/datastreams/default_object_rights_ds'
-  ::Object.autoload :SimpleDublinCoreDs, 'dor/datastreams/simple_dublin_core_ds'
+  autoload :SimpleDublinCoreDs, 'dor/datastreams/simple_dublin_core_ds'
 
   # DOR Concerns
   autoload :Identifiable, 'dor/models/identifiable'
@@ -115,10 +108,9 @@ module Dor
   autoload :Versionable, 'dor/models/versionable'
   autoload :Contentable, 'dor/models/contentable'
   autoload :Editable, 'dor/models/editable'
-  autoload :Discoverable, 'dor/models/discoverable'
   autoload :Geoable, 'dor/models/geoable'
   autoload :Presentable, 'dor/models/presentable'
-  autoload :Releaseable, 'dor/models/releaseable'
+  autoload :Releasable, 'dor/models/releasable'
 
 
   # ActiveFedora Classes

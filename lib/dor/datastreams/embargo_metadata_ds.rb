@@ -1,15 +1,15 @@
 module Dor
 class EmbargoMetadataDS < ActiveFedora::OmDatastream
-  include SolrDocHelper
 
   before_create :ensure_non_versionable
 
   set_terminology do |t|
     t.root(:path => "embargoMetadata")
-    t.status(:index_as => [:searchable, :facetable])
-    t.release_date(:path => "releaseDate")
+    t.status
+    t.embargo_status(:path => 'status', :index_as => [:symbol])
+    t.release_date(:path => "releaseDate", :index_as => [:dateable])
     t.release_access(:path => "releaseAccess")
-    t.twenty_pct_status( :path => "twentyPctVisibilityStatus", :index_as => [:searchable, :facetable])
+    t.twenty_pct_status( :path => "twentyPctVisibilityStatus", :index_as => [:facetable])
     t.twenty_pct_release_date(:path => "twentyPctVisibilityReleaseDate")
   end
 
@@ -29,9 +29,11 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
 
   def to_solr solr_doc = {}, *args
     super
-    add_solr_value(solr_doc, 'embargo_release_date', self.release_date.utc.strftime('%FT%TZ') , :date, [:searchable]) rescue nil
-    add_solr_value(solr_doc, 'twenty_pct_visibility_release_date', self.twenty_pct_release_date.utc.strftime('%FT%TZ') , :date, [:searchable]) rescue nil
-
+    #::Solrizer.insert_field(solr_doc, field_name, value, *index_types)
+    rd1  = self.release_date
+    rd20 = self.twenty_pct_release_date
+    ::Solrizer.insert_field(solr_doc, 'embargo_release', rd1.utc.strftime('%FT%TZ'), :dateable) unless rd1.nil?
+    ::Solrizer.insert_field(solr_doc, 'twenty_pct_visibility_release', rd20.utc.strftime('%FT%TZ'), :dateable) unless rd20.nil?
     solr_doc
   end
 
@@ -55,14 +57,15 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
   # Sets the release date.  Converts the date to beginning-of-day, UTC to help with Solr indexing
   # @param [Time] rd A Time object represeting the release date.  By default, it is set to now
   def release_date=(rd=Time.now)
-		update_values([:release_date] => rd.beginning_of_day.utc.xmlschema)
+    update_values([:release_date] => rd.beginning_of_day.utc.xmlschema)
     self.content=self.ng_xml.to_s
   end
 
   # Current releaseDate value
   # @return [Time]
   def release_date
-    Time.parse(term_values(:release_date).first)
+    rd = term_values(:release_date).first
+    return (rd.nil? || rd.empty?) ? nil : Time.parse(rd)
   end
 
   def twenty_pct_status=(new_status)
@@ -84,7 +87,8 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
   # Current twentyPctVisibilityReleaseDate value
   # @return [Time]
   def twenty_pct_release_date
-    Time.parse(term_values(:twenty_pct_release_date).first)
+    rd = term_values(:twenty_pct_release_date).first
+    return (rd.nil? || rd.empty?) ? nil : Time.parse(rd)
   end
 
   # @return [Nokogiri::XML::Element] The releaseAccess node

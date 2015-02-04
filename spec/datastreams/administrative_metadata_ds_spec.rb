@@ -1,6 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require 'dor/datastreams/administrative_metadata_ds'
-require 'equivalent-xml'
+require 'spec_helper'
 
 describe Dor::AdministrativeMetadataDS do
 
@@ -9,7 +7,7 @@ describe Dor::AdministrativeMetadataDS do
       ds = Dor::AdministrativeMetadataDS.new
       ds.default_workflow_lane = 'slow'
 
-      ds.to_xml.should be_equivalent_to(<<-XML
+      expect(ds.to_xml).to be_equivalent_to(<<-XML
         <administrativeMetadata>
           <defaults>
             <initiateWorkflow lane="slow"/>
@@ -17,14 +15,14 @@ describe Dor::AdministrativeMetadataDS do
         </administrativeMetadata>
       XML
       )
-      ds.default_workflow_lane.should == 'slow'
+      expect(ds.default_workflow_lane).to eq('slow')
     end
 
     it "#default_shelving_path gets and sets the attribute defaults/shelving/@path " do
       ds = Dor::AdministrativeMetadataDS.new
       ds.default_shelving_path = '/hoover'
 
-      ds.to_xml.should be_equivalent_to(<<-XML
+      expect(ds.to_xml).to be_equivalent_to(<<-XML
         <administrativeMetadata>
           <defaults>
             <shelving path="/hoover"/>
@@ -32,7 +30,7 @@ describe Dor::AdministrativeMetadataDS do
         </administrativeMetadata>
       XML
       )
-      ds.default_shelving_path.should == '/hoover'
+      expect(ds.default_shelving_path).to eq('/hoover')
     end
   end
 end

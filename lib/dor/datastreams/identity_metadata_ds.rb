@@ -4,8 +4,8 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
   
   set_terminology do |t|
     t.root(:path=>"identityMetadata")
-    t.objectId :index_as => [:searchable]
-    t.objectType :index_as => [:searchable, :facetable]
+    t.objectId :index_as => [:symbol, :searchable]
+    t.objectType :index_as => [:symbol, :searchable, :facetable]
     t.objectLabel
     t.citationCreator
     t.sourceId
@@ -13,7 +13,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
       t.name_(:path => { :attribute => 'name' })
     end
     t.agreementId :index_as => [:searchable, :facetable]
-    t.tag :index_as => [:searchable, :facetable]
+    t.tag :index_as => [:symbol, :searchable, :facetable]
     t.citationTitle
     t.objectCreator :index_as => [:searchable, :facetable]
     t.adminPolicy :index_as => [:not_searchable]
@@ -84,26 +84,30 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
     super(solr_doc, *args)
     if digital_object.respond_to?(:profile)
       digital_object.profile.each_pair do |property,value|
-        add_solr_value(solr_doc, property.underscore, value, property =~ /Date/ ? :date : :string, [:searchable])
+        if property =~ /Date/
+          add_solr_value(solr_doc, property.underscore,  Time.parse(value).utc.xmlschema, :date, [:searchable, :stored_searchable])
+        else
+          add_solr_value(solr_doc, property.underscore, value, :string, [:searchable, :stored_searchable])
+        end
       end
     end
     if sourceId.present?
       (name,id) = sourceId.split(/:/,2)
-      add_solr_value(solr_doc, "dor_id", id, :string, [:searchable])
-      add_solr_value(solr_doc, "identifier", sourceId, :string, [:searchable])
-      add_solr_value(solr_doc, "source_id", sourceId, :string, [:searchable])
+      add_solr_value(solr_doc, "dor_id", id, :string, [:searchable, :facetable])
+      add_solr_value(solr_doc, "identifier", sourceId, :string, [:searchable, :facetable, :symbol])
+      add_solr_value(solr_doc, "source_id", sourceId, :string, [:symbol, :searchable, :facetable, :symbol])
     end
     otherId.compact.each { |qid|
       (name,id) = qid.split(/:/,2)
-      add_solr_value(solr_doc, "dor_id", id, :string, [:searchable])
-      add_solr_value(solr_doc, "identifier", qid, :string, [:searchable])
-      add_solr_value(solr_doc, "#{name}_id", id, :string, [:searchable])
+      add_solr_value(solr_doc, "dor_id", id, :string, [:searchable, :facetable])
+      add_solr_value(solr_doc, "identifier", qid, :string, [:searchable, :facetable, :symbol])
+      add_solr_value(solr_doc, "#{name}_id", id, :string, [:symbol, :searchable, :facetable])
     }
         
     self.find_by_terms(:tag).each { |tag|
       (top,rest) = tag.text.split(/:/,2)
       unless rest.nil?
-        add_solr_value(solr_doc, "#{top.downcase.strip.gsub(/\s/,'_')}_tag", rest.strip, :string, [:searchable, :facetable])
+        add_solr_value(solr_doc, "#{top.downcase.strip.gsub(/\s/,'_')}_tag", rest.strip, :string, [:symbol, :searchable, :facetable])
       end
     }
     solr_doc

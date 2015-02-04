@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 class AssembleableItem < ActiveFedora::Base
   include Dor::Assembleable
@@ -27,14 +27,14 @@ describe Dor::Assembleable do
     end
 
     before(:each) do
-      ActiveFedora.stub(:fedora).and_return(double('frepo').as_null_object)
+      allow(ActiveFedora).to receive(:fedora).and_return(double('frepo').as_null_object)
     end
 
   describe "#initialize_workspace" do
 
     before(:each) do
       @ai = AssembleableItem.new
-      @ai.stub(:pid).and_return('aa123bb7890')
+      allow(@ai).to receive(:pid).and_return('aa123bb7890')
       @druid_path = File.join(@temp_workspace, 'aa', '123', 'bb', '7890', 'aa123bb7890')
       FileUtils.rm_rf(File.join(@temp_workspace, 'aa'))
     end
@@ -42,8 +42,8 @@ describe Dor::Assembleable do
     it "creates a plain directory in the workspace when passed no params" do
       @ai.initialize_workspace
 
-      File.should be_directory(@druid_path)
-      File.should_not be_symlink(@druid_path)
+      expect(File).to be_directory(@druid_path)
+      expect(File).not_to be_symlink(@druid_path)
     end
 
     it "creates a link in the workspace to a passed in source directory" do
@@ -51,8 +51,8 @@ describe Dor::Assembleable do
       FileUtils.mkdir_p(source_dir)
       @ai.initialize_workspace(source_dir)
 
-      File.should be_symlink(@druid_path)
-      File.readlink(@druid_path).should == source_dir
+      expect(File).to be_symlink(@druid_path)
+      expect(File.readlink(@druid_path)).to eq(source_dir)
     end
 
   end

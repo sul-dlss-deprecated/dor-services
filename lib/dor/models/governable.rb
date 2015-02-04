@@ -1,10 +1,9 @@
 module Dor
   module Governable
     extend ActiveSupport::Concern
-    include ActiveFedora::Relationships
 
     included do
-      belongs_to 'admin_policy_object', :property => :is_governed_by, :class_name => "Dor::AdminPolicyObject"
+      belongs_to :admin_policy_object, :property => :is_governed_by, :class_name => "Dor::AdminPolicyObject"
       has_and_belongs_to_many :collections, :property => :is_member_of_collection, :class_name => "Dor::Collection"
       has_and_belongs_to_many :sets, :property => :is_member_of, :class_name => "Dor::Collection"
     end
@@ -31,43 +30,30 @@ module Dor
       rights_metadata_ds.content = admin_policy_object.rightsMetadata.ng_xml
     end
 
+    # slight misnomer: also sets discover rights!
     def set_read_rights(rights)
-      return if not ['world','stanford','none', 'dark'].include? rights
-      rights_metadata_ds = self.rightsMetadata
-      rights_xml=rights_metadata_ds.ng_xml
-      if(rights_xml.search('//rightsMetadata/access[@type=\'read\']').length==0)
-        raise ('The rights metadata stream doesnt contain an entry for machine read permissions. Consider populating it from the APO before trying to change it.')
+      raise(ArgumentError, "Argument '#{rights}' is not a recognized value") if not ['world','stanford','none','dark'].include? rights
+      rights_xml = self.rightsMetadata.ng_xml
+      if (rights_xml.search('//rightsMetadata/access[@type=\'read\']').length==0)
+        raise('The rights metadata stream doesnt contain an entry for machine read permissions. Consider populating it from the APO before trying to change it.')
       end
+      label = rights=='dark' ? 'none' : 'world'
       rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
         node.children.remove
-        if rights=='dark'
-            world_node=Nokogiri::XML::Node.new('none',rights_xml)
-            node.add_child(world_node)
-        else
-            world_node=Nokogiri::XML::Node.new('world',rights_xml)
-          node.add_child(world_node)
-        end
+        node.add_child Nokogiri::XML::Node.new(label,rights_xml)
       end
       rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
         node.children.remove
-        machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
-        if(rights=='world')
-          world_node=Nokogiri::XML::Node.new(rights,rights_xml)
-          node.add_child(machine_node)
-          machine_node.add_child(world_node)
-        end
-        if rights=='stanford'
-          world_node=Nokogiri::XML::Node.new(rights,rights_xml)
-          node.add_child(machine_node)
-          group_node=Nokogiri::XML::Node.new('group',rights_xml)
-          group_node.content="Stanford"
-          node.add_child(machine_node)
+        machine_node = Nokogiri::XML::Node.new('machine',rights_xml)
+        node.add_child(machine_node)
+        if rights == 'world'
+          machine_node.add_child Nokogiri::XML::Node.new(rights,rights_xml)
+        elsif rights == 'stanford'
+          group_node = Nokogiri::XML::Node.new('group',rights_xml)
+          group_node.content = "Stanford"
           machine_node.add_child(group_node)
-        end
-        if rights=='none' or rights == 'dark'
-          none_node=Nokogiri::XML::Node.new('none',rights_xml)
-          node.add_child(machine_node)
-          machine_node.add_child(none_node)
+        else  # we know it is none or dark by the argument filter (first line)
+          machine_node.add_child Nokogiri::XML::Node.new('none',rights_xml)
         end
       end
     end
@@ -100,21 +86,17 @@ module Dor
       rightsMetadata.content=admin_policy_object.datastreams['defaultObjectRights'].content
     end
     def rights
-        return nil unless self.respond_to? :rightsMetadata
-        xml=self.rightsMetadata.ng_xml
-        return nil if xml.search('//rightsMetadata').length != 1
-        if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
-          'Stanford'
-        else
-          if xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length ==1
-            'World'
-          else
-            if xml.search('//rightsMetadata/access[@type=\'discover\']/machine/none').length == 1
-              'Dark'
-            else
-              'None'
-            end
-          end
+      return nil unless self.respond_to? :rightsMetadata
+      xml = self.rightsMetadata.ng_xml
+      return nil if xml.search('//rightsMetadata').length != 1
+      if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
+        'Stanford'
+      elsif xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length == 1
+        'World'
+      elsif xml.search('//rightsMetadata/access[@type=\'discover\']/machine/none').length == 1
+        'Dark'
+      else
+        'None'
       end
     end
     def groups_which_manage_item

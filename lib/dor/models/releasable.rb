@@ -1,8 +1,7 @@
 module Dor
-  module Releaseable
+  module Releasable
     extend ActiveSupport::Concern
     include Itemizable
-    
     
     #Generate XML structure for inclusion to Purl 
     #
@@ -25,7 +24,7 @@ module Dor
       released_hash = {}
       
       #Get release tags on the item itself 
-      release_tags_on_this_item = self.release_tags
+      release_tags_on_this_item = self.release_nodes
       
       #Get any self tags on this item
       self_release_tags = self.get_self_release_tags(release_tags_on_this_item)
@@ -71,7 +70,7 @@ module Dor
     #
     #@return [Hash] a hash of all tags
     def get_release_tags_for_item_and_all_governing_sets
-      return_tags = self.release_tags || {}
+      return_tags = self.release_nodes || {}
       self.collections.each do |collection|
         return_tags = combine_two_release_tag_hashes(return_tags, Dor::Item.find(collection.id).get_release_tags_for_item_and_all_governing_sets) #this will function recurvisely so parents of parents are found
       end
@@ -148,7 +147,6 @@ module Dor
       return latest_tag_in_array
     end
     
-    
     #Takes a tag and returns true or false if it applies to the specific item
     #
     #@param release_tag [Hash] the tag in a hashed form
@@ -159,7 +157,7 @@ module Dor
       #Is the tag global or restricted 
       return true if release_tag['tag'] == nil  #there is no specific tag specificied, so that means this tag is global to all members of the collection, it applies, return true
         
-      admin_tags = self.tags if not admin_tags #We use false instead of [], since an item can have no admin_tags that which point we'd be passing down this variable as [] and would not an attempt to retrieve it
+      admin_tags = self.tags if ! admin_tags #We use false instead of [], since an item can have no admin_tags that which point we'd be passing down this variable as [] and would not an attempt to retrieve it
       return admin_tags.include?(release_tag['tag'])
     end
     
@@ -180,6 +178,132 @@ module Dor
       return latest_applicable_release_tag_in_array(release_tags, admin_tags) if release_tags.size > 0 #Try again after dropping the one that wasn't applicable 
       
       return nil #We're out of tags, no applicable ones
+    end
+    
+    #helper method to get the release tags as a nodeset
+    #
+    #@return [Nokogiri::XML::NodeSet] of all release tags and their attributes
+    def release_tags
+      release_tags = self.identityMetadata.ng_xml.xpath('//release')
+      return_hash = {}
+      release_tags.each do |release_tag|
+        hashed_node = self.release_tag_node_to_hash(release_tag)
+        if return_hash[hashed_node[:to]] != nil
+          return_hash[hashed_node[:to]] << hashed_node[:attrs]
+        else
+           return_hash[hashed_node[:to]] = [hashed_node[:attrs]]
+        end
+      end
+      return return_hash
+    end
+
+    #method to convert one release element into an array
+    #
+    #@param rtag [Nokogiri::XML::Element] the release tag element
+    #
+    #return [Hash] in the form of {:to => String :attrs = Hash}
+    def release_tag_node_to_hash(rtag)
+      to = 'to'
+      release = 'release'
+      when_word = 'when' #TODO: Make to and when_word load from some config file instead of hardcoded here
+      attrs = rtag.attributes
+      return_hash = { :to => attrs[to].value }
+      attrs.tap { |a| a.delete(to)}
+      attrs[release] = rtag.text.downcase == "true" #save release as a boolean
+      return_hash[:attrs] = attrs
+
+      #convert all the attrs beside :to to strings, they are currently Nokogiri::XML::Attr
+      (return_hash[:attrs].keys-[to]).each do |a|
+        return_hash[:attrs][a] =  return_hash[:attrs][a].to_s if a != release
+      end
+
+      return_hash[:attrs][when_word] = Time.parse(return_hash[:attrs][when_word]) #convert when to a datetime
+
+      return return_hash
+    end
+    
+    #Determine if the supplied tag is a valid release tag that meets all requirements
+    #
+    #@raises [RuntimeError]  Raises an error of the first fault in the release tag
+    #
+    #@return [Boolean] Returns true if no errors found
+    #
+    #@params attrs [hash] A hash of attributes for the tag, must contain: :when, a ISO 8601 timestamp; :who, to identify who or what added the tag; and :to, a string identifying the release target
+    def valid_release_attributes_and_tag(tag, attrs={})
+      raise ArgumentError, ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z') == nil
+      [:who, :to, :what].each do |check_attr|
+        raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
+      end
+
+      what_correct = false
+      ['self', 'collection'].each do |allowed_what_value|
+        what_correct = true if attrs[:what] == allowed_what_value
+      end
+      raise ArgumentError, ":what must be self or collection" if ! what_correct
+      raise ArgumentError, "the value set for this tag is not a boolean" if !!tag != tag
+      validate_tag_format(attrs[:tag]) if attrs[:tag] != nil #Will Raise exception if invalid tag
+      return true
+    end
+    
+    #Add a release node for the item
+    #Will use the current time to add in the timestamp if you do not supply a timestamp, you can supply a timestap for correcting history, etc if desired
+    #
+    #@return [Nokogiri::XML::Element] the tag added if successful 
+    #
+    #@raise [RuntimeError] Raised if attributes are improperly supplied
+    #
+    #@params tag [Boolean] True or false for the release node
+    #@params attrs [hash]  A hash of any attributes to be placed onto the tag 
+    # release tag example:
+    #  item.add_tag(true,:release,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket'})
+    def add_release_node(release, attrs={})
+      identity_metadata_ds = self.identityMetadata
+      attrs[:when] = Time.now.utc.iso8601 if attrs[:when] == nil#add the timestamp
+      valid_release_attributes(release, attrs)
+  
+      return identity_metadata_ds.add_value(:release, release.to_s, attrs)
+    end
+
+    #Determine if the supplied tag is a valid release node that meets all requirements
+    #
+    #@raises [ArgumentError]  Raises an error of the first fault in the release tag
+    #
+    #@return [Boolean] Returns true if no errors found 
+    #
+    #@params attrs [hash] A hash of attributes for the tag, must contain :when, a ISO 8601 timestamp and :who to identify who or what added the tag, :to, 
+    def valid_release_attributes(tag, attrs={})
+      raise ArgumentError, ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z') == nil
+      [:who, :to, :what].each do |check_attr|
+        raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
+      end
+  
+      what_correct = false
+      ['self', 'collection'].each do |allowed_what_value|
+        what_correct = true if attrs[:what] == allowed_what_value
+      end
+      raise ArgumentError, ":what must be self or collection" if ! what_correct
+  
+      raise ArgumentError, "the value set for this tag is not a boolean" if !!tag != tag
+      #identity_metadata_ds = self.identityMetadata
+      validate_tag_format(attrs[:tag]) if attrs[:tag] != nil #Will Raise exception if invalid tag
+      return true
+    end
+
+    #helper method to get the release nodes as a nodeset
+    #
+    #@return [Nokogiri::XML::NodeSet] of all release tags and their attributes
+    def release_nodes
+      release_tags = self.identityMetadata.ng_xml.xpath('//release')
+      return_hash = {}
+      release_tags.each do |release_tag|
+        hashed_node = self.release_tag_node_to_hash(release_tag)
+        if return_hash[hashed_node[:to]] != nil
+          return_hash[hashed_node[:to]] << hashed_node[:attrs]
+        else
+           return_hash[hashed_node[:to]] = [hashed_node[:attrs]]
+        end
+      end
+      return return_hash
     end
 
   end

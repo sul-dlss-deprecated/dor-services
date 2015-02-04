@@ -1,6 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require 'nokogiri'
-require 'equivalent-xml'
+require 'spec_helper'
 
 describe Dor::WorkflowDefinitionDs do
   let(:dsxml) { <<-EOF
@@ -24,7 +22,7 @@ describe Dor::WorkflowDefinitionDs do
 
   context "Marshalling to and from a Fedora Datastream" do
     it "creates itself from xml" do
-      ds.name.should == 'accessionWF'
+      expect(ds.name).to eq('accessionWF')
     end
   end
 
@@ -37,7 +35,7 @@ describe Dor::WorkflowDefinitionDs do
            <process name="descriptive-metadata" status="waiting" lifecycle="described"/>
         </workflow>
       EOXML
-      ds.initial_workflow.should be_equivalent_to(expected)
+      expect(ds.initial_workflow).to be_equivalent_to(expected)
     end
   end
 
