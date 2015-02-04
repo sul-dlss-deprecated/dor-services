@@ -242,7 +242,7 @@ describe "Adding release nodes", :vcr do
   it "should fail to add a release node when there is an attribute error" do
     VCR.use_cassette('simple_release_tag_add_failure_test') do
        expect{@item.add_release_node(true, {:who => nil, :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
-       expect{@item.add_release_node(false, {:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project'})}.to raise_error(ArgumentError)
+       expect{@item.add_release_node(false, {:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project'})}.to raise_error(RuntimeError)
        expect{@item.add_release_node(1, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
     end
   end
@@ -260,7 +260,7 @@ describe "Adding release nodes", :vcr do
   end
   
   it "should raise a Runtime Error when valid_release_attributes is called with valid attributes but an invalid tag attribute" do
-    expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Batch2'})}.to raise_error(ArgumentError)
+    expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Batch2'})}.to raise_error(RuntimeError)
   end
   
   it "should raise a Runtime Error when valid_release_attributes is called with a tag content that is not a boolean" do

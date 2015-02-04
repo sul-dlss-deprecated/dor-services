@@ -276,15 +276,13 @@ module Dor
       [:who, :to, :what].each do |check_attr|
         raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
-  
+
       what_correct = false
       ['self', 'collection'].each do |allowed_what_value|
         what_correct = true if attrs[:what] == allowed_what_value
       end
       raise ArgumentError, ":what must be self or collection" if ! what_correct
-  
       raise ArgumentError, "the value set for this tag is not a boolean" if !!tag != tag
-      #identity_metadata_ds = self.identityMetadata
       validate_tag_format(attrs[:tag]) if attrs[:tag] != nil #Will Raise exception if invalid tag
       return true
     end
