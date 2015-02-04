@@ -223,66 +223,7 @@ module Dor
       return tag_arr
       
     end
-
-<<<<<<< HEAD
-    #Add a tag for an item
-    #If you are adding just a :tag att
-    #
-    #@return [String] returned if this function is called with invalid parameters, eg a lack of :who for release_tag
-    #@return [Nokogiri::XML::Element] the tag added if successful 
-    #
-    #@raise [RuntimeError] Raised if the tag already exists on the item or the tag is not of the form a:b
-    #
-    #@params tag [string] The content of the tag
-    #@params type [symbol] The type of tag, :tag is assumed as default 
-    #@params attrs [hash]  A hash of any attributes to be placed onto the tag 
-    # release tag example:
-    #  item.add_tag(true,:release,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket'})
-    def add_tag(tag, type=:tag, attrs={})
-      needs_timestamp = [:release] #If you want a tag to get a timestamp attribute, add its symbol here
-      identity_metadata_ds = self.identityMetadata
-      normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags) if type != :release #Release tags are always boolean, so skip this step
-      normalized_tag = tag.to_s if type == :release #just keep the boolean if we have just have a release
-        
-      attrs[:when] = Time.now.utc.iso8601 if needs_timestamp.include? type
-      
     
-      if type == :release 
-        valid_release_attributes_and_tag(tag, attrs)
-        attrs[:tag] = normalize_tag_arr(validate_tag_format(attrs[:tag])) if attrs[:tag] != nil #:tag must be a valid administrative tag
-      end
-      
-      return identity_metadata_ds.add_value(type, normalized_tag) if attrs == {}
-      return identity_metadata_ds.add_value(type, normalized_tag, attrs) if attrs != {}
-    end
-    
-    
-    #Determine if the supplied tag is a valid release tag that meets all requirements
-    #
-    #@raises [RuntimeError]  Raises an error of the first fault in the release tag
-    #
-    #@return [Boolean] Returns true if no errors found 
-    #
-    #@params attrs [hash] A hash of attributes for the tag, must contain :when, a ISO 8601 timestamp and :who to identify who or what added the tag, :to, 
-    def valid_release_attributes_and_tag(tag, attrs={})
-      raise ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z') == nil
-      [:who, :to, :what].each do |check_attr|
-        raise "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
-      end
-      
-      what_correct = false
-      ['self', 'collection'].each do |allowed_what_value|
-        what_correct = true if attrs[:what] == allowed_what_value
-      end
-      raise ":what must be self or collection" if not what_correct
-      
-      raise "the value set for this tag is not a boolean" if !!tag != tag
-      identity_metadata_ds = self.identityMetadata
-      validate_tag_format(attrs[:tag]) if attrs[:tag] != nil #Will Raise exception if invalid tag
-      return true
-    end
-    
-=======
     #Add an administrative tag to an item, you will need to seperately save the item to write it to fedora
     #
     #param tag [string] The tag you wish to add
@@ -292,7 +233,6 @@ module Dor
         identity_metadata_ds.add_value(:tag, normalized_tag)
     end
   
->>>>>>> 18f7903... Reversion to simple add_tag coupled with the creation of a specific function for adding release nodes, also introduct of argument errors.
     def remove_tag(tag)
       identity_metadata_ds = self.identityMetadata
       ds_xml = identity_metadata_ds.ng_xml

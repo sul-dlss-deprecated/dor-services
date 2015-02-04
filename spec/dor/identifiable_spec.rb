@@ -151,3 +151,4 @@ describe Dor::Identifiable do
       doc['apo_title_facet'].first.should == 'druid:fg890hi1234'
     end
   end
+end
