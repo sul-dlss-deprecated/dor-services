@@ -12,6 +12,18 @@ module Dor
       has_metadata :name => "descMetadata", :type => Dor::DescMetadataDS, :label => 'Descriptive Metadata', :control_group => 'M'
     end
 
+    require 'stanford-mods/searchworks'
+
+    # intended for read-access, "as SearchWorks would see it", mostly for to_solr()
+    # @param [Nokogiri::XML::Document] content Nokogiri descMetadata document (overriding internal data)
+    # @param [boolean] ns_aware namespace awareness toggle for from_nk_node()
+    def stanford_mods(content=nil, ns_aware=true)
+      m = Stanford::Mods::Record.new
+      desc = content.nil? ? self.descMetadata.ng_xml : content
+      m.from_nk_node(desc.root, ns_aware)
+      m
+    end
+
     def fetch_descMetadata_datastream
       candidates = self.datastreams['identityMetadata'].otherId.collect { |oid| oid.to_s }
       metadata_id = Dor::MetadataService.resolvable(candidates).first
@@ -194,7 +206,7 @@ module Dor
     def set_desc_metadata_using_label(force=false)
       ds=self.descMetadata
       unless force || ds.new?
-        raise 'Cannot proceed, there is already content in the descriptive metadata datastream.'+ds.content.to_s
+        raise 'Cannot proceed, there is already content in the descriptive metadata datastream: '+ds.content.to_s
       end
       label=self.label
       builder = Nokogiri::XML::Builder.new { |xml|
@@ -214,9 +226,7 @@ module Dor
       if(title_node)
         title = title_node.content
         subtitle=xml.at_xpath('//mods:mods/mods:titleInfo/mods:subTitle','mods' => 'http://www.loc.gov/mods/v3')
-        if(subtitle)
-          title += ' (' + subtitle.content + ')'
-        end
+        title += " (#{subtitle.content})" if subtitle
       end
       title
     end

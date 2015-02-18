@@ -21,7 +21,6 @@ describe Dor::Describable do
   end
 
   it 'should add a creator_title field' do
-    doc={}
     expected_dc = read_fixture('ex1_dc.xml')
     found = 0
     allow(@simple).to receive(:generate_dublin_core).and_return(Nokogiri::XML(expected_dc))
@@ -32,7 +31,7 @@ describe Dor::Describable do
         found=1
       end
     end
-    @simple.to_solr(doc)
+    @simple.to_solr({})
     expect(found).to eq 1
   end
 
@@ -130,19 +129,19 @@ describe Dor::Describable do
 
     it "adds useAndReproduction accessConditions based on rightsMetadata" do
       obj.add_access_conditions(public_mods)
-      expect(public_mods.xpath('//mods:accessCondition[@type="useAndReproduction"]').size).to eq(1)
+      expect(public_mods.xpath('//mods:accessCondition[@type="useAndReproduction"]').size).to eq 1
       expect(public_mods.xpath('//mods:accessCondition[@type="useAndReproduction"]').text).to match(/yada/)
     end
 
     it "adds copyright accessConditions based on rightsMetadata" do
       obj.add_access_conditions(public_mods)
-      expect(public_mods.xpath('//mods:accessCondition[@type="copyright"]').size).to eq(1)
+      expect(public_mods.xpath('//mods:accessCondition[@type="copyright"]').size).to eq 1
       expect(public_mods.xpath('//mods:accessCondition[@type="copyright"]').text).to match(/Property rights reside with/)
     end
 
     it "adds license accessCondtitions based on creativeCommons or openDataCommons statements" do
       obj.add_access_conditions(public_mods)
-      expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq(1)
+      expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq 1
       expect(public_mods.xpath('//mods:accessCondition[@type="license"]').text).to match(/by-nc: This work is licensed under/)
     end
 
@@ -173,14 +172,14 @@ describe Dor::Describable do
         XML
       obj.datastreams['rightsMetadata'].content = rxml
       obj.add_access_conditions(public_mods)
-      expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq(0)
+      expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq 0
     end
 
     it "removes any pre-existing accessConditions already in the mods" do
-      expect(obj.descMetadata.ng_xml.xpath('//mods:accessCondition[text()[contains(.,"Public Services")]]').count).to eq(1)
+      expect(obj.descMetadata.ng_xml.xpath('//mods:accessCondition[text()[contains(.,"Public Services")]]').count).to eq 1
       obj.add_access_conditions(public_mods)
-      expect(public_mods.xpath('//mods:accessCondition').size).to eq(3)
-      expect(public_mods.xpath('//mods:accessCondition[text()[contains(.,"Public Services")]]').count).to eq(0)
+      expect(public_mods.xpath('//mods:accessCondition').size).to eq 3
+      expect(public_mods.xpath('//mods:accessCondition[text()[contains(.,"Public Services")]]').count).to eq 0
     end
 
     it "deals with mods declared as the default xmlns" do
@@ -192,7 +191,7 @@ describe Dor::Describable do
 
       new_mods = b.datastreams['descMetadata'].ng_xml.dup(1)
       b.add_access_conditions(new_mods)
-      expect(new_mods.xpath('//mods:accessCondition', 'mods' => 'http://www.loc.gov/mods/v3').size).to eq(3)
+      expect(new_mods.xpath('//mods:accessCondition', 'mods' => 'http://www.loc.gov/mods/v3').size).to eq 3
       expect(new_mods.xpath('//mods:accessCondition[text()[contains(.,"Should not be here anymore")]]', 'mods' => 'http://www.loc.gov/mods/v3').count).to eq(0)
     end
 
@@ -232,17 +231,17 @@ describe Dor::Describable do
 
       it "useAndReproduction nodes" do
         blank_obj.add_access_conditions(public_mods)
-        expect(public_mods.xpath('//mods:accessCondition[@type="useAndReproduction"]').size).to eq(0)
+        expect(public_mods.xpath('//mods:accessCondition[@type="useAndReproduction"]').size).to eq 0
       end
 
       it "copyright nodes" do
         blank_obj.add_access_conditions(public_mods)
-        expect(public_mods.xpath('//mods:accessCondition[@type="copyright"]').size).to eq(0)
+        expect(public_mods.xpath('//mods:accessCondition[@type="copyright"]').size).to eq 0
       end
 
       it "license nodes" do
         blank_obj.add_access_conditions(public_mods)
-        expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq(0)
+        expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq 0
       end
     end
 
@@ -530,7 +529,7 @@ describe Dor::Describable do
       end
       expect(@obj.delete_identifier('type', 'new attribute')).to be_truthy
       res=@obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]','mods' => 'http://www.loc.gov/mods/v3')
-      expect(res.length).to eq(0)
+      expect(res.length).to eq 0
     end
     it 'should return false if there was nothing to delete' do
       expect(@obj.delete_identifier('type', 'new attribute')).to be_falsey
@@ -566,4 +565,25 @@ describe Dor::Describable do
       XML
     end
   end
+
+  describe "stanford_mods accessor to DS" do
+    it "should fetch Stanford::Mods object" do
+      expect(@obj.methods).to include(:stanford_mods)
+      sm=nil
+      expect{sm=@obj.stanford_mods}.not_to raise_error
+      expect(sm).to be_kind_of(Stanford::Mods::Record)
+      expect(sm.format_main).to eq(["Book"])
+      expect(sm.pub_date_sort).to eq("1911")
+    end
+    it "should allow override argument" do
+      sm=nil
+      nk = Nokogiri::XML('<mods><genre>ape</genre></mods>')
+      expect{sm=@obj.stanford_mods(nk, false)}.not_to raise_error
+      expect(sm).to be_kind_of(Stanford::Mods::Record)
+      expect(sm.genre.text).to eq("ape")
+      expect(sm.pub_date_sort).to be_nil
+    end
+
+  end
+
 end
