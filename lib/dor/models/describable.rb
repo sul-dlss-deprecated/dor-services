@@ -157,7 +157,13 @@ module Dor
 
     def to_solr(solr_doc=Hash.new, *args)
       super solr_doc, *args
-      add_solr_value(solr_doc, "metadata_format", self.metadata_format, :string, [:symbol, :searchable, :facetable])
+      # initialize multivalue targts if necessary
+      %w[ metadata_format_ssim sw_language_tesim sw_genre_tesim sw_format_tesim
+          sw_subject_temporal_tesim sw_subject_geographic_tesim mods_typeOfResource_tesim].each { |key|
+        solr_doc[key] ||= []
+      }
+
+      solr_doc["metadata_format_ssim"] << self.metadata_format
       begin
         dc_doc = self.generate_dublin_core
         dc_doc.xpath('/oai_dc:dc/*').each do |node|
@@ -176,8 +182,29 @@ module Dor
       rescue CrosswalkError => e
         ActiveFedora.logger.warn "Cannot index #{self.pid}.descMetadata: #{e.message}"
       end
+
+      begin
+        mods = self.stanford_mods
+        sources = {
+          'sw_language_tesim'           => :sw_language_facet,
+          'sw_genre_tesim'              => :sw_genre,
+          'sw_format_tesim'             => :format_main,
+          'sw_subject_temporal_tesim'   => :era_facet,
+          'sw_subject_geographic_tesim' => :geographic_facet,
+          'mods_typeOfResource_tesim'   => [:term_values, :typeOfResource]
+        }
+        sources.each_pair do |solr_key, meth|
+          vals = meth.is_a?(Array) ? mods.send(meth.shift, *meth) : mods.send(meth)
+          solr_doc[solr_key].push *vals unless (vals.nil? || vals.empty?)
+          # asterisk to avoid multi-dimensional array: push values, not the array
+        end
+        solr_doc['sw_pub_date_sort_ssi'] = mods.pub_date_sort
+      end
+      # some fields get explicit "(none)" placeholder values, mostly for faceting
+      %w[sw_language_tesim sw_genre_tesim sw_format_tesim].each { |key| solr_doc[key] = ['(none)'] if solr_doc[key].empty? }
       solr_doc
     end
+
     def update_title(new_title)
       if not update_simple_field('mods:mods/mods:titleInfo/mods:title',new_title)
         raise 'Descriptive metadata has no title to update!'

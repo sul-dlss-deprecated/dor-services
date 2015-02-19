@@ -575,7 +575,7 @@ describe Dor::Describable do
       expect(sm.format_main).to eq(["Book"])
       expect(sm.pub_date_sort).to eq("1911")
     end
-    it "should allow override argument" do
+    it "should allow override argument(s)" do
       sm=nil
       nk = Nokogiri::XML('<mods><genre>ape</genre></mods>')
       expect{sm=@obj.stanford_mods(nk, false)}.not_to raise_error
@@ -583,7 +583,22 @@ describe Dor::Describable do
       expect(sm.genre.text).to eq("ape")
       expect(sm.pub_date_sort).to be_nil
     end
+  end
 
+  describe "to_solr" do
+    it "should include values from stanford_mods" do
+      allow(@obj).to receive(:milestones).and_return({})
+      doc = @obj.to_solr()
+      # require 'pp'; pp doc
+      expect(doc).not_to be_nil
+      expect(doc).to match a_hash_including(
+        "sw_language_tesim"           => ["English"],
+        "sw_genre_tesim"              => ["(none)"],
+        "sw_format_tesim"             => ["Book"],
+        "sw_subject_temporal_tesim"   => ["1800-1900"],
+#        "sw_subject_geographic_tesim" => []
+      )
+    end
   end
 
 end
