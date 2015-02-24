@@ -188,7 +188,7 @@ module Dor
         sources = {
           'sw_language_tesim'           => :sw_language_facet,
           'sw_genre_tesim'              => :sw_genre,
-          'sw_format_tesim'             => :format_main,
+          'sw_format_tesim'             => :format_main,   # basically sw_typeOfResource_tesim
           'sw_subject_temporal_tesim'   => :era_facet,
           'sw_subject_geographic_tesim' => :geographic_facet,
           'mods_typeOfResource_tesim'   => [:term_values, :typeOfResource]
