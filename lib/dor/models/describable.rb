@@ -12,6 +12,18 @@ module Dor
       has_metadata :name => "descMetadata", :type => Dor::DescMetadataDS, :label => 'Descriptive Metadata', :control_group => 'M'
     end
 
+    require 'stanford-mods/searchworks'
+
+    # intended for read-access, "as SearchWorks would see it", mostly for to_solr()
+    # @param [Nokogiri::XML::Document] content Nokogiri descMetadata document (overriding internal data)
+    # @param [boolean] ns_aware namespace awareness toggle for from_nk_node()
+    def stanford_mods(content=nil, ns_aware=true)
+      m = Stanford::Mods::Record.new
+      desc = content.nil? ? self.descMetadata.ng_xml : content
+      m.from_nk_node(desc.root, ns_aware)
+      m
+    end
+
     def fetch_descMetadata_datastream
       candidates = self.datastreams['identityMetadata'].otherId.collect { |oid| oid.to_s }
       metadata_id = Dor::MetadataService.resolvable(candidates).first
@@ -145,7 +157,13 @@ module Dor
 
     def to_solr(solr_doc=Hash.new, *args)
       super solr_doc, *args
-      add_solr_value(solr_doc, "metadata_format", self.metadata_format, :string, [:symbol, :searchable, :facetable])
+      # initialize multivalue targts if necessary
+      %w[ metadata_format_ssim sw_language_tesim sw_genre_tesim sw_format_tesim
+          sw_subject_temporal_tesim sw_subject_geographic_tesim mods_typeOfResource_tesim].each { |key|
+        solr_doc[key] ||= []
+      }
+
+      solr_doc["metadata_format_ssim"] << self.metadata_format
       begin
         dc_doc = self.generate_dublin_core
         dc_doc.xpath('/oai_dc:dc/*').each do |node|
@@ -164,8 +182,29 @@ module Dor
       rescue CrosswalkError => e
         ActiveFedora.logger.warn "Cannot index #{self.pid}.descMetadata: #{e.message}"
       end
+
+      begin
+        mods = self.stanford_mods
+        sources = {
+          'sw_language_tesim'           => :sw_language_facet,
+          'sw_genre_tesim'              => :sw_genre,
+          'sw_format_tesim'             => :format_main,   # basically sw_typeOfResource_tesim
+          'sw_subject_temporal_tesim'   => :era_facet,
+          'sw_subject_geographic_tesim' => :geographic_facet,
+          'mods_typeOfResource_tesim'   => [:term_values, :typeOfResource]
+        }
+        sources.each_pair do |solr_key, meth|
+          vals = meth.is_a?(Array) ? mods.send(meth.shift, *meth) : mods.send(meth)
+          solr_doc[solr_key].push *vals unless (vals.nil? || vals.empty?)
+          # asterisk to avoid multi-dimensional array: push values, not the array
+        end
+        solr_doc['sw_pub_date_sort_ssi'] = mods.pub_date_sort
+      end
+      # some fields get explicit "(none)" placeholder values, mostly for faceting
+      %w[sw_language_tesim sw_genre_tesim sw_format_tesim].each { |key| solr_doc[key] = ['(none)'] if solr_doc[key].empty? }
       solr_doc
     end
+
     def update_title(new_title)
       if not update_simple_field('mods:mods/mods:titleInfo/mods:title',new_title)
         raise 'Descriptive metadata has no title to update!'
@@ -194,7 +233,7 @@ module Dor
     def set_desc_metadata_using_label(force=false)
       ds=self.descMetadata
       unless force || ds.new?
-        raise 'Cannot proceed, there is already content in the descriptive metadata datastream.'+ds.content.to_s
+        raise 'Cannot proceed, there is already content in the descriptive metadata datastream: '+ds.content.to_s
       end
       label=self.label
       builder = Nokogiri::XML::Builder.new { |xml|
@@ -214,9 +253,7 @@ module Dor
       if(title_node)
         title = title_node.content
         subtitle=xml.at_xpath('//mods:mods/mods:titleInfo/mods:subTitle','mods' => 'http://www.loc.gov/mods/v3')
-        if(subtitle)
-          title += ' (' + subtitle.content + ')'
-        end
+        title += " (#{subtitle.content})" if subtitle
       end
       title
     end
