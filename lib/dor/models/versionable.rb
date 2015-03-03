@@ -24,7 +24,6 @@ module Dor
       raise Dor::Exception, 'Object already opened for versioning' if(new_version_open?)
       raise Dor::Exception, 'Object currently being accessioned' if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'submitted'))
 
-
       vmd_ds = datastreams['versionMetadata']
       vmd_ds.increment_version
       vmd_ds.content = vmd_ds.ng_xml.to_s
@@ -81,7 +80,7 @@ module Dor
 
     # @return [Boolean] true if the object is in a state that allows it to be modified. States that will allow modification are: has not been submitted for accessioning, has an open version or has sdr-ingest set to hold
     def allows_modification?
-      if Dor::WorkflowService.get_lifecycle('dor', pid, 'submitted' ) and not new_version_open? and not Dor::WorkflowService.get_workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer')=='hold'
+      if Dor::WorkflowService.get_lifecycle('dor', pid, 'submitted') && ! new_version_open? && Dor::WorkflowService.get_workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer')!='hold'
         false
       else
         true

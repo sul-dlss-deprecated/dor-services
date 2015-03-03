@@ -1,3 +1,5 @@
+{<img src="https://travis-ci.org/sul-dlss/dor-services.png" />}[http://travis-ci.org/sul-dlss/dor-services]
+
 = dor-services
 
 Require the following:
@@ -264,14 +266,14 @@ This is located in the +./script+ subdirectory so that it does not get installed
   - Move REST registration logic from Argo's ObjectsController#create to Dor::RegistrationService#create_from_request
   - Monkey patch ActiveFedora::RelsExtDatastream.short_predicate to create missing mappings on the fly.
 - <b>3.10.0</b> Added support for setting rights when registering an object.
-- <b>3.10.1</b>Fixed a 1.87->1.93 syntax deprication issue
-- <b>3.10.2</b>Changed the method for setting the rightsMetadata stream to trigger a save
-- <b>3.10.3</b>Debugging failure to save rights metadata
-- <b>3.10.4</b>Found the location where the report parameter from argo was being lost
-- <b>3.10.5</b>Corrected the Stanford entry in rights metadata, and truncate the fedora label if it is too long
-- <b>3.10.6</b>Removed a remnant from the previous change
-- <b>3.10.7</b>source id is now a required parameter for item registration
-- <b>3.10.8</b>A descriptive metadata stream with basic mods created from the label can be created in item registration
+- <b>3.10.1</b> Fixed a 1.87->1.93 syntax deprication issue
+- <b>3.10.2</b> Changed the method for setting the rightsMetadata stream to trigger a save
+- <b>3.10.3</b> Debugging failure to save rights metadata
+- <b>3.10.4</b> Found the location where the report parameter from argo was being lost
+- <b>3.10.5</b> Corrected the Stanford entry in rights metadata, and truncate the fedora label if it is too long
+- <b>3.10.6</b> Removed a remnant from the previous change
+- <b>3.10.7</b> Source id is now a required parameter for item registration
+- <b>3.10.8</b> A descriptive metadata stream with basic mods created from the label can be created in item registration
 - <b>3.11.0</b>
   - Dor::WorkflowObject.initial_workflow creates workflow xml from workflow definition objects
   - Added Versionable concern
@@ -309,9 +311,9 @@ This is located in the +./script+ subdirectory so that it does not get installed
 - <b>3.17.7</b> SdrIngestService was not handling case when new version has no new content files
 - <b>3.17.9</b> Now extracts all datastreams from Fedora even if file exists on disk.
 - <b>3.17.10</b> SdrIngestService was not handling case when object has no contentMetadata.
-- <b>3.17.11</b>Workflow was only set up to work with items from the dor repo.
-- <b>3.17.12</b>BuildDatastream can now require the datastream be populated and raise an exception if it isnt
-- <b>3.17.13</b>Fixes all known issues caused by nokogiri 1.56
+- <b>3.17.11</b> Workflow was only set up to work with items from the dor repo.
+- <b>3.17.12</b> BuildDatastream can now require the datastream be populated and raise an exception if it isnt
+- <b>3.17.13</b> Fixes all known issues caused by nokogiri 1.56
 - <b>3.18.0</b> Dor::Versionable.close_version changes to deal with tag and description
 - <b>3.18.4</b> The exception caused by a lack of desc metadata is logged silently
 - <b>3.19.0</b> Optional params for version number and starting accessioning when archiving workflow
