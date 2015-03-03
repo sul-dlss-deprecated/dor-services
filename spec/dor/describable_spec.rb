@@ -9,6 +9,8 @@ class SimpleItem < ActiveFedora::Base
   include Dor::Describable
 end
 
+RSpec::Matchers.define_negated_matcher :a_hash_excluding, :a_hash_including
+
 describe Dor::Describable do
   before(:each) { stub_config   }
   after(:each)  { unstub_config }
@@ -586,18 +588,27 @@ describe Dor::Describable do
   end
 
   describe "to_solr" do
-    it "should include values from stanford_mods" do
+    before :each do
       allow(@obj).to receive(:milestones).and_return({})
-      doc = @obj.to_solr()
-      # require 'pp'; pp doc
-      expect(doc).not_to be_nil
-      expect(doc).to match a_hash_including(
+      @doc = @obj.to_solr()
+      expect(@doc).not_to be_nil
+    end
+    it "should include values from stanford_mods" do
+    # require 'pp'; pp doc
+      expect(@doc).to match a_hash_including(
         "sw_language_tesim"           => ["English"],
         "sw_genre_tesim"              => ["(none)"],
         "sw_format_tesim"             => ["Book"],
         "sw_subject_temporal_tesim"   => ["1800-1900"],
 #        "sw_subject_geographic_tesim" => []
       )
+    end
+    it "should not include empty values" do
+      @doc.keys.sort_by{|k| k.to_s}.each { |k|
+        expect(@doc).to include(k)
+        expect(@doc).to match a_hash_excluding({k => nil})
+        expect(@doc).to match a_hash_excluding({k => []})
+      }
     end
   end
 

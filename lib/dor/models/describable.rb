@@ -157,10 +157,17 @@ module Dor
 
     def to_solr(solr_doc=Hash.new, *args)
       super solr_doc, *args
-      # initialize multivalue targts if necessary
-      %w[ metadata_format_ssim sw_language_tesim sw_genre_tesim sw_format_tesim
-          sw_subject_temporal_tesim sw_subject_geographic_tesim mods_typeOfResource_tesim].each { |key|
-        solr_doc[key] ||= []
+      mods_sources = {
+        'sw_language_tesim'           => :sw_language_facet,
+        'sw_genre_tesim'              => :sw_genre,
+        'sw_format_tesim'             => :format_main,   # basically sw_typeOfResource_tesim
+        'sw_subject_temporal_tesim'   => :era_facet,
+        'sw_subject_geographic_tesim' => :geographic_facet,
+        'mods_typeOfResource_tesim'   => [:term_values, :typeOfResource]
+      }
+      keys = mods_sources.keys.concat(%w[ metadata_format_ssim ])
+      keys.each { |key|
+        solr_doc[key] ||= []     # initialize multivalue targts if necessary
       }
 
       solr_doc["metadata_format_ssim"] << self.metadata_format
@@ -185,15 +192,7 @@ module Dor
 
       begin
         mods = self.stanford_mods
-        sources = {
-          'sw_language_tesim'           => :sw_language_facet,
-          'sw_genre_tesim'              => :sw_genre,
-          'sw_format_tesim'             => :format_main,   # basically sw_typeOfResource_tesim
-          'sw_subject_temporal_tesim'   => :era_facet,
-          'sw_subject_geographic_tesim' => :geographic_facet,
-          'mods_typeOfResource_tesim'   => [:term_values, :typeOfResource]
-        }
-        sources.each_pair do |solr_key, meth|
+        mods_sources.each_pair do |solr_key, meth|
           vals = meth.is_a?(Array) ? mods.send(meth.shift, *meth) : mods.send(meth)
           solr_doc[solr_key].push *vals unless (vals.nil? || vals.empty?)
           # asterisk to avoid multi-dimensional array: push values, not the array
@@ -202,6 +201,8 @@ module Dor
       end
       # some fields get explicit "(none)" placeholder values, mostly for faceting
       %w[sw_language_tesim sw_genre_tesim sw_format_tesim].each { |key| solr_doc[key] = ['(none)'] if solr_doc[key].empty? }
+      # otherwise remove empties
+      keys.each{ |key| solr_doc.delete(key) if (solr_doc[key].nil? || solr_doc[key].empty?)}
       solr_doc
     end
 
