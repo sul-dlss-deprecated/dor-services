@@ -28,7 +28,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'om', '~> 1.8.0'
   s.add_dependency 'progressbar', '~> 0.21.0'
   s.add_dependency 'rdf', '~> 1.0.9.0' # 1.0.10 breaks
-  s.add_dependency 'rest-client', '~> 1.6.7'
+  s.add_dependency 'rest-client', '~> 1.7'
   s.add_dependency 'rsolr-ext', '~> 1.0.3'
   s.add_dependency 'ruby-cache', '~> 0.3.0'
   s.add_dependency 'ruby-graphviz', '~> 1.0.9'
