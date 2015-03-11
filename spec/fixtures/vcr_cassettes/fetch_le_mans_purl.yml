@@ -1,0 +1,450 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:dc235vd9662?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 11 Mar 2015 21:10:30 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Content-Type:
+      - text/xml
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="UTF-8"?><objectProfile  xmlns="http://www.fedora.info/definitions/1/0/access/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:dc235vd9662"
+        ><objLabel>Le Mans, 1955 ; Mille Miglia 1956</objLabel><objOwnerId>fedoraAdmin</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2012-05-03T20:38:34.666Z</objCreateDate><objLastModDate>2015-03-11T20:48:25.710Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Adc235vd9662/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Adc235vd9662/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
+    http_version: 
+  recorded_at: Wed, 11 Mar 2015 21:10:31 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:dc235vd9662/datastreams?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 11 Mar 2015 21:10:30 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Content-Type:
+      - text/xml
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="UTF-8"?><objectDatastreams  xmlns="http://www.fedora.info/definitions/1/0/access/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
+        http://www.fedora-commons.org/definitions/1/0/listDatastreams.xsd" pid="druid:dc235vd9662"
+        baseURL="https://localhost:443/fedora/" >    <datastream dsid="DC" label="Dublin
+        Core Record for this object" mimeType="text/xml" />    <datastream dsid="RELS-EXT"
+        label="Fedora Object-to-Object Relationship Metadata" mimeType="application/rdf+xml"
+        />    <datastream dsid="contentMetadata" label="Content Metadata" mimeType="text/xml"
+        />    <datastream dsid="descMetadata" label="Descriptive Metadata" mimeType="text/xml"
+        />    <datastream dsid="embargoMetadata" label="Embargo metadata" mimeType="text/xml"
+        />    <datastream dsid="events" label="Events" mimeType="text/xml" />    <datastream
+        dsid="identityMetadata" label="Identity Metadata" mimeType="text/xml" />    <datastream
+        dsid="provenanceMetadata" label="Provenance Metadata" mimeType="text/xml"
+        />    <datastream dsid="rightsMetadata" label="Rights Metadata" mimeType="text/xml"
+        />    <datastream dsid="technicalMetadata" label="Technical Metadata" mimeType="text/xml"
+        />    <datastream dsid="workflows" label="Workflow" mimeType="application/xml"
+        /></objectDatastreams>
+    http_version: 
+  recorded_at: Wed, 11 Mar 2015 21:10:32 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:dc235vd9662/datastreams/RELS-EXT?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 11 Mar 2015 21:10:30 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Content-Type:
+      - text/xml
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/ http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:dc235vd9662" dsID="RELS-EXT"><dsLabel>Fedora Object-to-Object Relationship Metadata</dsLabel>
+        <dsVersionID>RELS-EXT.4</dsVersionID>
+        <dsCreateDate>2012-08-10T23:19:16.308Z</dsCreateDate>
+        <dsState>A</dsState>
+        <dsMIME>application/rdf+xml</dsMIME>
+        <dsFormatURI></dsFormatURI>
+        <dsControlGroup>X</dsControlGroup>
+        <dsSize>810</dsSize>
+        <dsVersionable>true</dsVersionable>
+        <dsInfoType></dsInfoType>
+        <dsLocation>druid:dc235vd9662+RELS-EXT+RELS-EXT.4</dsLocation>
+        <dsLocationType></dsLocationType>
+        <dsChecksumType>DISABLED</dsChecksumType>
+        <dsChecksum>none</dsChecksum>
+        </datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 11 Mar 2015 21:10:32 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:dc235vd9662/datastreams/RELS-EXT/content
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 11 Mar 2015 21:10:30 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Accept-Ranges:
+      - bytes
+      Content-Disposition:
+      - inline; filename="Fedora Object-to-Object Relationship Metadata.rdf"
+      Etag:
+      - c0c141bdba7d594eed5ab7c21c7442b5
+      Last-Modified:
+      - Fri, 10 Aug 2012 23:19:16 GMT
+      Content-Type:
+      - application/rdf+xml
+      Content-Length:
+      - '810'
+    body:
+      encoding: UTF-8
+      string: |2
+
+        <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+          <rdf:Description rdf:about="info:fedora/druid:dc235vd9662">
+            <hydra:isGovernedBy rdf:resource="info:fedora/druid:qv648vd4392"></hydra:isGovernedBy>
+            <fedora-model:hasModel rdf:resource="info:fedora/afmodel:Dor_Item"></fedora-model:hasModel>
+            <fedora:isMemberOf rdf:resource="info:fedora/druid:wz243gf4151"></fedora:isMemberOf>
+            <fedora:isMemberOf rdf:resource="info:fedora/druid:wz243gf4151"></fedora:isMemberOf>
+            <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:wz243gf4151"></fedora:isMemberOfCollection>
+          </rdf:Description>
+        </rdf:RDF>
+    http_version: 
+  recorded_at: Wed, 11 Mar 2015 21:10:32 GMT
+- request:
+    method: get
+    uri: https://sul-dor-test.stanford.edu/fedora/objects/druid:dc235vd9662/datastreams/workflows?format=xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 11 Mar 2015 21:10:30 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Content-Type:
+      - text/xml
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?><datastreamProfile  xmlns="http://www.fedora.info/definitions/1/0/management/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/ http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:dc235vd9662" dsID="workflows"><dsLabel>Workflow</dsLabel>
+        <dsVersionID>workflows.3</dsVersionID>
+        <dsCreateDate>2015-02-04T22:00:22.026Z</dsCreateDate>
+        <dsState>A</dsState>
+        <dsMIME>application/xml</dsMIME>
+        <dsFormatURI></dsFormatURI>
+        <dsControlGroup>E</dsControlGroup>
+        <dsSize>0</dsSize>
+        <dsVersionable>false</dsVersionable>
+        <dsInfoType></dsInfoType>
+        <dsLocation>https://lyberservices-test.stanford.edu/workflow/dor/objects/druid:dc235vd9662/workflows</dsLocation>
+        <dsLocationType>URL</dsLocationType>
+        <dsChecksumType>DISABLED</dsChecksumType>
+        <dsChecksum>none</dsChecksum>
+        </datastreamProfile>
+    http_version: 
+  recorded_at: Wed, 11 Mar 2015 21:10:32 GMT
+- request:
+    method: get
+    uri: http://purl-test.stanford.edu/dc235vd9662.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      Date:
+      - Wed, 11 Mar 2015 21:10:31 GMT
+      Server:
+      - Apache/2.2.15 (Red Hat)
+      X-Powered-By:
+      - Phusion Passenger (mod_rails/mod_rack) 3.0.19
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      Etag:
+      - '"8adc73ee4a7f38c57d73604f96c2a4bd"'
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - e29b2e64-69e3-4b0a-b330-37eebf19e9e8
+      X-Runtime:
+      - '0.029072'
+      Status:
+      - '200'
+      Content-Length:
+      - '3065'
+      Content-Type:
+      - application/xml; charset=utf-8
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <publicObject id="druid:dc235vd9662" published="2015-02-05T11:09:34-08:00">
+          <identityMetadata>
+            <sourceId source="Revs">2011-023CHAM-1.0_0001</sourceId>
+            <objectId>druid:dc235vd9662</objectId>
+            <objectCreator>DOR</objectCreator>
+            <objectLabel>Le Mans, 1955 ; Mille Miglia 1956</objectLabel>
+            <objectType>item</objectType>
+            <adminPolicy>druid:qv648vd4392</adminPolicy>
+            <otherId name="uuid">f36fcad6-955f-11e1-9027-0050569b52c6</otherId>
+            <tag>Project : Revs</tag>
+            <tag>Project : ReleaseSpecTesting : Batch1</tag>
+            <release to="Kurita">true</release>
+            <release to="Atago">false</release>
+            <release to="Mogami">true</release>
+          </identityMetadata>
+          <contentMetadata objectId="dc235vd9662" type="image">
+            <resource sequence="1" id="dc235vd9662_1" type="image">
+              <label>Item 1</label>
+              <file id="2011-023Cham-1.0_0001.jp2" mimetype="image/jp2" size="1965344">
+                <imageData width="4004" height="2600"/>
+              </file>
+            </resource>
+          </contentMetadata>
+          <rightsMetadata>
+            <copyright>
+              <human type="copyright">Courtesy of Collier Collection. All rights reserved unless otherwise indicated.</human>
+            </copyright>
+            <access type="discover">
+              <machine>
+                <world/>
+              </machine>
+            </access>
+            <access type="read">
+              <machine>
+                <group>stanford</group>
+              </machine>
+            </access>
+            <use>
+              <human type="useAndReproduction">Users must contact the The Revs Institute for Automobile Research for re-use and reproduction information.</human>
+            </use>
+          </rightsMetadata>
+          <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <rdf:Description rdf:about="info:fedora/druid:dc235vd9662">
+              <fedora:isMemberOf rdf:resource="info:fedora/druid:wz243gf4151"/>
+              <fedora:isMemberOf rdf:resource="info:fedora/druid:wz243gf4151"/>
+              <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:wz243gf4151"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+            <dc:type>StillImage</dc:type>
+            <dc:type>digital image</dc:type>
+            <dc:subject>Automobile--History</dc:subject>
+            <dc:date>1955 , 1956</dc:date>
+            <dc:title>Le Mans, 1955 ; Mille Miglia 1956</dc:title>
+            <dc:identifier>2011-023CHAM-1.0_0001</dc:identifier>
+            <dc:relation type="collection">The Marcus Chambers Collection of the Revs Institute</dc:relation>
+          </oai_dc:dc>
+          <ReleaseDigest>
+            <release to="Kurita">true</release>
+            <release to="Atago">false</release>
+            <release to="Mogami">true</release>
+          </ReleaseDigest>
+        </publicObject>
+    http_version: 
+  recorded_at: Wed, 11 Mar 2015 21:10:32 GMT
+- request:
+    method: get
+    uri: http://purl-test.stanford.edu/dc235vd9662.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      Date:
+      - Wed, 11 Mar 2015 21:11:07 GMT
+      Server:
+      - Apache/2.2.15 (Red Hat)
+      X-Powered-By:
+      - Phusion Passenger (mod_rails/mod_rack) 3.0.19
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      Etag:
+      - '"8adc73ee4a7f38c57d73604f96c2a4bd"'
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 8b7dc994-2196-4abb-95bf-1456978cafe9
+      X-Runtime:
+      - '0.021949'
+      Status:
+      - '200'
+      Content-Length:
+      - '3065'
+      Content-Type:
+      - application/xml; charset=utf-8
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <publicObject id="druid:dc235vd9662" published="2015-02-05T11:09:34-08:00">
+          <identityMetadata>
+            <sourceId source="Revs">2011-023CHAM-1.0_0001</sourceId>
+            <objectId>druid:dc235vd9662</objectId>
+            <objectCreator>DOR</objectCreator>
+            <objectLabel>Le Mans, 1955 ; Mille Miglia 1956</objectLabel>
+            <objectType>item</objectType>
+            <adminPolicy>druid:qv648vd4392</adminPolicy>
+            <otherId name="uuid">f36fcad6-955f-11e1-9027-0050569b52c6</otherId>
+            <tag>Project : Revs</tag>
+            <tag>Project : ReleaseSpecTesting : Batch1</tag>
+            <release to="Kurita">true</release>
+            <release to="Atago">false</release>
+            <release to="Mogami">true</release>
+          </identityMetadata>
+          <contentMetadata objectId="dc235vd9662" type="image">
+            <resource sequence="1" id="dc235vd9662_1" type="image">
+              <label>Item 1</label>
+              <file id="2011-023Cham-1.0_0001.jp2" mimetype="image/jp2" size="1965344">
+                <imageData width="4004" height="2600"/>
+              </file>
+            </resource>
+          </contentMetadata>
+          <rightsMetadata>
+            <copyright>
+              <human type="copyright">Courtesy of Collier Collection. All rights reserved unless otherwise indicated.</human>
+            </copyright>
+            <access type="discover">
+              <machine>
+                <world/>
+              </machine>
+            </access>
+            <access type="read">
+              <machine>
+                <group>stanford</group>
+              </machine>
+            </access>
+            <use>
+              <human type="useAndReproduction">Users must contact the The Revs Institute for Automobile Research for re-use and reproduction information.</human>
+            </use>
+          </rightsMetadata>
+          <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <rdf:Description rdf:about="info:fedora/druid:dc235vd9662">
+              <fedora:isMemberOf rdf:resource="info:fedora/druid:wz243gf4151"/>
+              <fedora:isMemberOf rdf:resource="info:fedora/druid:wz243gf4151"/>
+              <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:wz243gf4151"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+            <dc:type>StillImage</dc:type>
+            <dc:type>digital image</dc:type>
+            <dc:subject>Automobile--History</dc:subject>
+            <dc:date>1955 , 1956</dc:date>
+            <dc:title>Le Mans, 1955 ; Mille Miglia 1956</dc:title>
+            <dc:identifier>2011-023CHAM-1.0_0001</dc:identifier>
+            <dc:relation type="collection">The Marcus Chambers Collection of the Revs Institute</dc:relation>
+          </oai_dc:dc>
+          <ReleaseDigest>
+            <release to="Kurita">true</release>
+            <release to="Atago">false</release>
+            <release to="Mogami">true</release>
+          </ReleaseDigest>
+        </publicObject>
+    http_version: 
+  recorded_at: Wed, 11 Mar 2015 21:11:09 GMT
+recorded_with: VCR 2.9.3

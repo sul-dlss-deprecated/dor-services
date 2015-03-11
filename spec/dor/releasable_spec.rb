@@ -5,14 +5,17 @@ describe Dor::Releasable, :vcr do
     Dor::Config.push! do
       solrizer.url "http://127.0.0.1:8080/solr/argo_test"
       fedora.url "https://sul-dor-test.stanford.edu/fedora"
+      stacks.document_cache_host "purl-test.stanford.edu"
     end
 
     VCR.use_cassette('fetch_bryar_transam') do
-      @bryar_trans_am = Dor::Item.find('druid:bb004bn8654')
+      @bryar_trans_am_druid = 'druid:bb004bn8654'
+      @bryar_trans_am = Dor::Item.find(@bryar_trans_am_druid)
       @bryar_trans_am_admin_tags = @bryar_trans_am.tags
       @bryar_trans_am_release_tags = @bryar_trans_am.release_nodes
       @array_of_times = [Time.parse('2015-01-06 23:33:47Z').iso8601, Time.parse('2015-01-07 23:33:47Z').iso8601, Time.parse('2015-01-08 23:33:47Z').iso8601, Time.parse('2015-01-09 23:33:47Z').iso8601]
     end
+    
   end
 
   after :each do
@@ -24,7 +27,7 @@ describe Dor::Releasable, :vcr do
     before :each do
       @dummy_tags = [{'when' => @array_of_times[0], 'tag' => "Project: Jim Harbaugh's Finest Moments At Stanford.", "what" => "self"}, {'when' => @array_of_times[1], 'tag' => "Project: Jim Harbaugh's Even Finer Moments At Michigan.", "what" => "collection"}]
     end
-
+    
     it 'should return the most recent tag from an array of release tags' do
       expect(@bryar_trans_am.newest_release_tag_in_an_array(@dummy_tags)).to eq(@dummy_tags[1])
     end
@@ -202,12 +205,14 @@ describe "Adding release nodes", :vcr do
       end
       solrizer.url "http://127.0.0.1:8080/solr/argo_test"
       fedora.url "https://sul-dor-test.stanford.edu/fedora"
+      stacks.document_cache_host "purl-test.stanford.edu"
       
     end
     
     VCR.use_cassette('releaseable_sample_obj') do
       @item = Dor::Item.find('druid:bb004bn8654')
       @release_nodes = @item.release_nodes
+      @le_mans_druid = 'druid:dc235vd9662'
     end
   end
   
@@ -288,6 +293,43 @@ describe "Adding release nodes", :vcr do
     n = Nokogiri('<release tag="Project : Fitch: Batch1" to="Revs" what="collection" when="2015-01-06T23:33:47Z" who="carrickr">true</release>').xpath('//release')[0]
     expect(@item.release_tag_node_to_hash(n)).to eq({:to=>"Revs", :attrs=>{"tag"=> "Project : Fitch: Batch1", "what"=>"collection", "when"=>Time.parse('2015-01-06 23:33:47Z'), "who"=>"carrickr", "release"=>true}}) 
   end
+  
+  describe 'Getting XML From Purl' do 
+    it 'should remove the druid prefix if it is present' do
+      expect(@item.remove_druid_prefix).to eq('bb004bn8654')
+    end
+    
+    it 'should return the full url for a druid' do
+      expect(@item.form_purl_url).to eq("http://#{Dor::Config.stacks.document_cache_host}/bb004bn8654.xml")
+    end
+    
+    it 'should get the purl xml for a druid' do
+      VCR.use_cassette('fetch_purl_test_xml') do
+        x = @item.get_xml_from_purl
+        expect(x.class).to eq(Nokogiri::HTML::Document)
+        expect(x.xpath("//html/body/publicobject")[0].attr("id")).to eq(@item.id)
+      end
+    end
+    
+    it 'should get a list of release tags in druid for a druid' do
+      VCR.use_cassette('fetch_le_mans_purl') do
+        item = Dor::Item.find(@le_mans_druid)
+        x = item.get_xml_from_purl
+        expect(item.get_release_tags_from_purl_xml(x)).to match_array(['Kurita', 'Mogami','Atago'])
+      end
+    end
+    
+    it 'should add in release tags as false for targets that are listed on the purl but not in new tag generation' do
+      VCR.use_cassette('fetch_le_mans_purl') do
+        item = Dor::Item.find(@le_mans_druid)
+        x = item.get_xml_from_purl
+        expect(item.add_tags_from_purl({})).to match({"Kurita"=>false, "Atago"=>false, "Mogami"=>false})
+      end
+    end
+    
+  end
+  
+  
   
 
   
