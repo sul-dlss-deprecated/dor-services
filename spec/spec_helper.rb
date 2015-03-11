@@ -20,6 +20,7 @@ require 'equivalent-xml'
 require 'fakeweb'
 require 'pry'
 require 'tmpdir'
+require 'nokogiri'
 
 # ::ENABLE_SOLR_UPDATES = true
 
