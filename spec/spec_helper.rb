@@ -40,6 +40,7 @@ module Dor::SpecHelpers
       stacks.local_document_cache_root File.join(fixture_dir, "purl")
       sdr.local_workspace_root         File.join(fixture_dir, "workspace")
       sdr.local_export_home            File.join(fixture_dir, "export")
+      stacks.document_cache_host "purl-test.stanford.edu"
     end
     allow(ActiveFedora).to receive(:fedora).and_return(double('frepo').as_null_object)
   end

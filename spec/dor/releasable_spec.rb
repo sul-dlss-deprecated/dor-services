@@ -303,6 +303,7 @@ describe "Adding release nodes", :vcr do
       expect(@item.form_purl_url).to eq("http://#{Dor::Config.stacks.document_cache_host}/bb004bn8654.xml")
     end
     
+    
     it 'should get the purl xml for a druid' do
       VCR.use_cassette('fetch_purl_test_xml') do
         x = @item.get_xml_from_purl
@@ -311,7 +312,16 @@ describe "Adding release nodes", :vcr do
       end
     end
     
-    it 'should get a list of release tags in druid for a druid' do
+    it 'should not raise an error for a 404 when attempted to obtain a purl' do
+      VCR.use_cassette('purl_404') do
+        #expect(Time).to receive(:now).and_return(@now).at_least(:once)
+        expect(@item).to receive(:id).and_return("druid:IAmABadDruid").at_least(:once)
+        expect(@item.get_xml_from_purl.class).to eq(Nokogiri::HTML::Document)
+      end
+    end
+    
+    #TODO:  These two are pending because first we need to create and object in purl with a release data section, then we can record a purl fetch for them
+    xit 'should get a list of release tags in druid for a druid' do
       VCR.use_cassette('fetch_le_mans_purl') do
         item = Dor::Item.find(@le_mans_druid)
         x = item.get_xml_from_purl
@@ -319,7 +329,7 @@ describe "Adding release nodes", :vcr do
       end
     end
     
-    it 'should add in release tags as false for targets that are listed on the purl but not in new tag generation' do
+    xit 'should add in release tags as false for targets that are listed on the purl but not in new tag generation' do
       VCR.use_cassette('fetch_le_mans_purl') do
         item = Dor::Item.find(@le_mans_druid)
         x = item.get_xml_from_purl
