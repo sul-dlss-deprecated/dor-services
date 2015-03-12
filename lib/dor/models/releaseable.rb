@@ -11,7 +11,7 @@ module Dor
     #@return [String] The XML release node as a string, with ReleaseDigest as the root document
     def generate_release_xml
       builder = Nokogiri::XML::Builder.new do |xml|
-        xml.ReleaseDigest {
+        xml.ReleaseData {
           self.released_for.each do |project,released_value|
             xml.release(released_value["release"],:to=>project)
           end  
@@ -314,16 +314,23 @@ module Dor
     #
     #@params druid [String]
     #
-    
+    #@raises [OpenURI::HTTPError]
+    #
     #Fetches purl xml for a druid
     #
-    #@return [Nokogiri::HTML::Document] the parsed xml for the druid
+    #@return [Nokogiri::HTML::Document] the parsed xml for the druid or an empty document if no purl is found
     def get_xml_from_purl
-      id = self.remove_druid_prefix
-      with_retries(:max_retries => 5, :base_sleep_seconds => 3, :max_sleep_seconds=> 5, :rescue => OpenURI::HTTPError) { 
-        #If you change the method used for opening the webpage, you can change the :rescue param to handle the new method's errors
-        return Nokogiri::HTML(open(self.form_purl_url))
-      }
+        handler = Proc.new do |exception, attempt_number, total_delay|
+          #We assume a 404 means the document has never been published before and thus has no purl
+          #The strip is needed before the actual message is "404 "
+          return Nokogiri::HTML::Document.new if exception.message.strip == "404"
+        end
+
+        with_retries(:max_retries => 5, :base_sleep_seconds => 3, :max_sleep_seconds=> 5, :rescue => OpenURI::HTTPError, :handler => handler) {
+           #If you change the method used for opening the webpage, you can change the :rescue param to handle the new method's errors
+           return Nokogiri::HTML(open(self.form_purl_url))
+         }
+       
     end
     
     #Since purl does not use the druid: prefix but much of dor does, use this function to strip the druid: if needed
@@ -351,7 +358,7 @@ module Dor
     #
     #@return [Array] An array containing all the release tags 
     def get_release_tags_from_purl_xml(doc)
-      nodes = doc.xpath("//html/body/publicobject/releasedigest").children 
+      nodes = doc.xpath("//html/body/publicobject/releasedata").children 
       #We only want the nodes with a name that isn't text
       return_array = []
       nodes.each do |n|
