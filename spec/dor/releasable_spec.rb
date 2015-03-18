@@ -308,7 +308,7 @@ describe "Adding release nodes", :vcr do
       VCR.use_cassette('fetch_purl_test_xml') do
         x = @item.get_xml_from_purl
         expect(x.class).to eq(Nokogiri::HTML::Document)
-        expect(x.xpath("//html/body/publicobject")[0].attr("id")).to eq(@item.id)
+        expect(x.at_xpath("//html/body/publicobject").attr("id")).to eq(@item.id)
       end
     end
     
