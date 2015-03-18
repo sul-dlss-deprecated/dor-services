@@ -73,11 +73,12 @@ describe Dor::Publishable do
   end
 
   describe "#public_xml" do
+    #@item.add_tags_from_purl.stub.and_return({})
 
     context "produces xml with" do
         before(:each) do
           @now = Time.now
-          expect(Time).to receive(:now).and_return(@now)
+          expect(Time).to receive(:now).and_return(@now).at_least(:once)
           @p_xml = Nokogiri::XML(@item.public_xml)
         end
 
