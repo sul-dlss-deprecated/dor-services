@@ -15,6 +15,7 @@ module Workflow
         t.elapsed(:path=>{:attribute=>"elapsed"})
         t.lifecycle(:path=>{:attribute=>"lifecycle"})
         t.attempts(:path=>{:attribute=>"attempts"}, :index_as => [:not_searchable])
+        t.version(:path=>{:attribute=>"version"})
       }
     end
     @@definitions={}
@@ -30,9 +31,10 @@ module Workflow
     def priority
       processes.map {|proc| proc.priority.to_i }.detect(0) {|p| p > 0}
     end
-    
+
+    # @return [Boolean] if any process node does not have version, returns true, false otherwise (all processes have version)
     def active?
-      processes.any? { |proc| !proc.version }
+      ng_xml.at_xpath("/workflow/process[not(@version)]") ? true : false
     end
 
     def definition
@@ -66,7 +68,8 @@ module Workflow
       if ng_xml.search("/workflow/process").length == 0
         return []
       end
-      @processes ||= if self.definition
+      @processes ||=
+      if self.definition
         self.definition.processes.collect do |process|
           node = ng_xml.at("/workflow/process[@name = '#{process.name}']")
           process.update!(node,self) unless node.nil?
