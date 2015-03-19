@@ -992,4 +992,226 @@ http_interactions:
         when=\"2015-01-21T22:26:03Z\" who=\"carrickr\">true</release>\n</identityMetadata>\n"
     http_version: 
   recorded_at: Wed, 21 Jan 2015 22:26:35 GMT
+- request:
+    method: get
+    uri: http://purl-test.stanford.edu/bb537hc4022.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: ''
+    headers:
+      Date:
+      - Thu, 19 Mar 2015 19:36:16 GMT
+      Server:
+      - Apache/2.2.15 (Red Hat)
+      X-Powered-By:
+      - Phusion Passenger (mod_rails/mod_rack) 3.0.19
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      Cache-Control:
+      - no-cache
+      X-Request-Id:
+      - beb2e604-dd99-4780-b130-4929c2690bb1
+      X-Runtime:
+      - '0.101414'
+      Status:
+      - '404'
+      Content-Length:
+      - '2484'
+      Content-Type:
+      - text/html; charset=utf-8
+    body:
+      encoding: US-ASCII
+      string: ! "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
+        \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n
+        \ <head>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"
+        />\n    <title>Stanford Digital Repository</title>\n    <link rel=\"shortcut
+        icon\" href=\"favicon.ico\" />\n    <link href=\"/assets/site.css?body=1\"
+        media=\"screen\" rel=\"stylesheet\" />\n  </head>\n  <body>\n    <div id=\"container\">\n
+        \     <div id=\"banner\"><h1>Stanford Digital Repository</h1></div>\n      <div
+        id=\"contents\">\n        <div class=\"dialog\">\n  <h2>The item you requested
+        is not available.</h2>\n  <p>The item you requested is not yet available.
+        It will be available at this URL when Library processing is completed.</p>\n</div>\n\n
+        \     </div>\n    </div>\n\n    <div id=\"footer\">\n  <div class=\"footer-contents\">\n
+        \   <div class=\"footer-sul\">\n      <div class=\"footer-logo\">\n        <a
+        href=\"http://library.stanford.edu\" target=\"_blank\"><img src=\"/images/footer-sul-logo.png\"></a>\n
+        \     </div>\n      <div class=\"footer-links\">\n        <a href=\"http://library.stanford.edu\"
+        target=\"_blank\">Stanford University Libraries</a>\n        <a href=\"http://searchworks.stanford.edu\"
+        target=\"_blank\">SearchWorks</a>\n        <a href=\"http://library.stanford.edu/ejournals\"
+        target=\"_blank\">eJournals</a>\n        <a href=\"hhttp://library.stanford.edu/myawrap.html\"
+        target=\"_blank\">My Account</a>\n        <a href=\"http://library.stanford.edu/ask\"
+        target=\"_blank\">Ask Us</a>\n      </div>\n    </div>\n    <div class=\"footer-su\">\n
+        \     <div class=\"footer-logo\">\n        <a href=\"http://www.stanford.edu\"
+        target=\"_blank\"><img src=\"/images/footer-stanford-logo.png\"></a>\n      </div>\n
+        \     <div class=\"footer-links\">\n        <a href=\"http://www.stanford.edu\"
+        target=\"_blank\">SU Home</a>\n        <a href=\"http://visit.stanford.edu/plan/maps.html\"
+        target=\"_blank\">Maps &amp; Directions</a>\n        <a href=\"http://www.stanford.edu/search/\"
+        target=\"_blank\">Search Stanford</a>\n        <a href=\"http://www.stanford.edu/site/terms.html\"
+        target=\"_blank\">Terms of Use</a>\n        <a href=\"http://www.stanford.edu/site/copyright.html\"
+        target=\"_blank\">Copyright Complaints</a>\n        </br>&copy; Stanford University,
+        Stanford, California 94305\n      </div>\n    </div>\n  </div>\n</div>\n    <script
+        src=\"/assets/jquery.js?body=1\"></script>\n<script src=\"/assets/jquery.truncator.js?body=1\"></script>\n<script
+        src=\"/assets/application.js?body=1\"></script>\n\n    \n  </body>\n</html>\n"
+    http_version: 
+  recorded_at: Thu, 19 Mar 2015 19:36:16 GMT
+- request:
+    method: get
+    uri: http://purl-test.stanford.edu/bb537hc4022.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: ''
+    headers:
+      Date:
+      - Thu, 19 Mar 2015 19:36:19 GMT
+      Server:
+      - Apache/2.2.15 (Red Hat)
+      X-Powered-By:
+      - Phusion Passenger (mod_rails/mod_rack) 3.0.19
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      Cache-Control:
+      - no-cache
+      X-Request-Id:
+      - de61e2a8-7a7b-4617-9117-fa3a50136949
+      X-Runtime:
+      - '0.064866'
+      Status:
+      - '404'
+      Content-Length:
+      - '2484'
+      Content-Type:
+      - text/html; charset=utf-8
+    body:
+      encoding: US-ASCII
+      string: ! "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
+        \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n
+        \ <head>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"
+        />\n    <title>Stanford Digital Repository</title>\n    <link rel=\"shortcut
+        icon\" href=\"favicon.ico\" />\n    <link href=\"/assets/site.css?body=1\"
+        media=\"screen\" rel=\"stylesheet\" />\n  </head>\n  <body>\n    <div id=\"container\">\n
+        \     <div id=\"banner\"><h1>Stanford Digital Repository</h1></div>\n      <div
+        id=\"contents\">\n        <div class=\"dialog\">\n  <h2>The item you requested
+        is not available.</h2>\n  <p>The item you requested is not yet available.
+        It will be available at this URL when Library processing is completed.</p>\n</div>\n\n
+        \     </div>\n    </div>\n\n    <div id=\"footer\">\n  <div class=\"footer-contents\">\n
+        \   <div class=\"footer-sul\">\n      <div class=\"footer-logo\">\n        <a
+        href=\"http://library.stanford.edu\" target=\"_blank\"><img src=\"/images/footer-sul-logo.png\"></a>\n
+        \     </div>\n      <div class=\"footer-links\">\n        <a href=\"http://library.stanford.edu\"
+        target=\"_blank\">Stanford University Libraries</a>\n        <a href=\"http://searchworks.stanford.edu\"
+        target=\"_blank\">SearchWorks</a>\n        <a href=\"http://library.stanford.edu/ejournals\"
+        target=\"_blank\">eJournals</a>\n        <a href=\"hhttp://library.stanford.edu/myawrap.html\"
+        target=\"_blank\">My Account</a>\n        <a href=\"http://library.stanford.edu/ask\"
+        target=\"_blank\">Ask Us</a>\n      </div>\n    </div>\n    <div class=\"footer-su\">\n
+        \     <div class=\"footer-logo\">\n        <a href=\"http://www.stanford.edu\"
+        target=\"_blank\"><img src=\"/images/footer-stanford-logo.png\"></a>\n      </div>\n
+        \     <div class=\"footer-links\">\n        <a href=\"http://www.stanford.edu\"
+        target=\"_blank\">SU Home</a>\n        <a href=\"http://visit.stanford.edu/plan/maps.html\"
+        target=\"_blank\">Maps &amp; Directions</a>\n        <a href=\"http://www.stanford.edu/search/\"
+        target=\"_blank\">Search Stanford</a>\n        <a href=\"http://www.stanford.edu/site/terms.html\"
+        target=\"_blank\">Terms of Use</a>\n        <a href=\"http://www.stanford.edu/site/copyright.html\"
+        target=\"_blank\">Copyright Complaints</a>\n        </br>&copy; Stanford University,
+        Stanford, California 94305\n      </div>\n    </div>\n  </div>\n</div>\n    <script
+        src=\"/assets/jquery.js?body=1\"></script>\n<script src=\"/assets/jquery.truncator.js?body=1\"></script>\n<script
+        src=\"/assets/application.js?body=1\"></script>\n\n    \n  </body>\n</html>\n"
+    http_version: 
+  recorded_at: Thu, 19 Mar 2015 19:36:19 GMT
+- request:
+    method: get
+    uri: http://purl-test.stanford.edu/bb537hc4022.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: ''
+    headers:
+      Date:
+      - Thu, 19 Mar 2015 19:36:22 GMT
+      Server:
+      - Apache/2.2.15 (Red Hat)
+      X-Powered-By:
+      - Phusion Passenger (mod_rails/mod_rack) 3.0.19
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      Cache-Control:
+      - no-cache
+      X-Request-Id:
+      - 566d87e7-7e57-4547-90ca-6dd6d6c4fa81
+      X-Runtime:
+      - '0.064505'
+      Status:
+      - '404'
+      Content-Length:
+      - '2484'
+      Content-Type:
+      - text/html; charset=utf-8
+    body:
+      encoding: US-ASCII
+      string: ! "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
+        \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n
+        \ <head>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"
+        />\n    <title>Stanford Digital Repository</title>\n    <link rel=\"shortcut
+        icon\" href=\"favicon.ico\" />\n    <link href=\"/assets/site.css?body=1\"
+        media=\"screen\" rel=\"stylesheet\" />\n  </head>\n  <body>\n    <div id=\"container\">\n
+        \     <div id=\"banner\"><h1>Stanford Digital Repository</h1></div>\n      <div
+        id=\"contents\">\n        <div class=\"dialog\">\n  <h2>The item you requested
+        is not available.</h2>\n  <p>The item you requested is not yet available.
+        It will be available at this URL when Library processing is completed.</p>\n</div>\n\n
+        \     </div>\n    </div>\n\n    <div id=\"footer\">\n  <div class=\"footer-contents\">\n
+        \   <div class=\"footer-sul\">\n      <div class=\"footer-logo\">\n        <a
+        href=\"http://library.stanford.edu\" target=\"_blank\"><img src=\"/images/footer-sul-logo.png\"></a>\n
+        \     </div>\n      <div class=\"footer-links\">\n        <a href=\"http://library.stanford.edu\"
+        target=\"_blank\">Stanford University Libraries</a>\n        <a href=\"http://searchworks.stanford.edu\"
+        target=\"_blank\">SearchWorks</a>\n        <a href=\"http://library.stanford.edu/ejournals\"
+        target=\"_blank\">eJournals</a>\n        <a href=\"hhttp://library.stanford.edu/myawrap.html\"
+        target=\"_blank\">My Account</a>\n        <a href=\"http://library.stanford.edu/ask\"
+        target=\"_blank\">Ask Us</a>\n      </div>\n    </div>\n    <div class=\"footer-su\">\n
+        \     <div class=\"footer-logo\">\n        <a href=\"http://www.stanford.edu\"
+        target=\"_blank\"><img src=\"/images/footer-stanford-logo.png\"></a>\n      </div>\n
+        \     <div class=\"footer-links\">\n        <a href=\"http://www.stanford.edu\"
+        target=\"_blank\">SU Home</a>\n        <a href=\"http://visit.stanford.edu/plan/maps.html\"
+        target=\"_blank\">Maps &amp; Directions</a>\n        <a href=\"http://www.stanford.edu/search/\"
+        target=\"_blank\">Search Stanford</a>\n        <a href=\"http://www.stanford.edu/site/terms.html\"
+        target=\"_blank\">Terms of Use</a>\n        <a href=\"http://www.stanford.edu/site/copyright.html\"
+        target=\"_blank\">Copyright Complaints</a>\n        </br>&copy; Stanford University,
+        Stanford, California 94305\n      </div>\n    </div>\n  </div>\n</div>\n    <script
+        src=\"/assets/jquery.js?body=1\"></script>\n<script src=\"/assets/jquery.truncator.js?body=1\"></script>\n<script
+        src=\"/assets/application.js?body=1\"></script>\n\n    \n  </body>\n</html>\n"
+    http_version: 
+  recorded_at: Thu, 19 Mar 2015 19:36:22 GMT
 recorded_with: VCR 2.9.3
