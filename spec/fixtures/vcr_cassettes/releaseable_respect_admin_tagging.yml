@@ -2465,4 +2465,309 @@ http_interactions:
         when=\"2015-01-21T22:26:03Z\" who=\"carrickr\">true</release>\n</identityMetadata>\n"
     http_version: 
   recorded_at: Wed, 21 Jan 2015 22:54:00 GMT
+- request:
+    method: get
+    uri: http://purl-test.stanford.edu/dc235vd9662.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      Date:
+      - Thu, 19 Mar 2015 19:36:50 GMT
+      Server:
+      - Apache/2.2.15 (Red Hat)
+      X-Powered-By:
+      - Phusion Passenger (mod_rails/mod_rack) 3.0.19
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      Etag:
+      - ! '"8adc73ee4a7f38c57d73604f96c2a4bd"'
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 339dc4bd-5eaa-482a-a33f-df7d82954018
+      X-Runtime:
+      - '0.010917'
+      Status:
+      - '200'
+      Content-Length:
+      - '3065'
+      Content-Type:
+      - application/xml; charset=utf-8
+    body:
+      encoding: US-ASCII
+      string: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<publicObject id=\"druid:dc235vd9662\"
+        published=\"2015-02-05T11:09:34-08:00\">\n  <identityMetadata>\n    <sourceId
+        source=\"Revs\">2011-023CHAM-1.0_0001</sourceId>\n    <objectId>druid:dc235vd9662</objectId>\n
+        \   <objectCreator>DOR</objectCreator>\n    <objectLabel>Le Mans, 1955 ; Mille
+        Miglia 1956</objectLabel>\n    <objectType>item</objectType>\n    <adminPolicy>druid:qv648vd4392</adminPolicy>\n
+        \   <otherId name=\"uuid\">f36fcad6-955f-11e1-9027-0050569b52c6</otherId>\n
+        \   <tag>Project : Revs</tag>\n    <tag>Project : ReleaseSpecTesting : Batch1</tag>\n
+        \   <release to=\"Kurita\">true</release>\n    <release to=\"Atago\">false</release>\n
+        \   <release to=\"Mogami\">true</release>\n  </identityMetadata>\n  <contentMetadata
+        objectId=\"dc235vd9662\" type=\"image\">\n    <resource sequence=\"1\" id=\"dc235vd9662_1\"
+        type=\"image\">\n      <label>Item 1</label>\n      <file id=\"2011-023Cham-1.0_0001.jp2\"
+        mimetype=\"image/jp2\" size=\"1965344\">\n        <imageData width=\"4004\"
+        height=\"2600\"/>\n      </file>\n    </resource>\n  </contentMetadata>\n
+        \ <rightsMetadata>\n    <copyright>\n      <human type=\"copyright\">Courtesy
+        of Collier Collection. All rights reserved unless otherwise indicated.</human>\n
+        \   </copyright>\n    <access type=\"discover\">\n      <machine>\n        <world/>\n
+        \     </machine>\n    </access>\n    <access type=\"read\">\n      <machine>\n
+        \       <group>stanford</group>\n      </machine>\n    </access>\n    <use>\n
+        \     <human type=\"useAndReproduction\">Users must contact the The Revs Institute
+        for Automobile Research for re-use and reproduction information.</human>\n
+        \   </use>\n  </rightsMetadata>\n  <rdf:RDF xmlns:fedora=\"info:fedora/fedora-system:def/relations-external#\"
+        xmlns:fedora-model=\"info:fedora/fedora-system:def/model#\" xmlns:hydra=\"http://projecthydra.org/ns/relations#\"
+        xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n    <rdf:Description
+        rdf:about=\"info:fedora/druid:dc235vd9662\">\n      <fedora:isMemberOf rdf:resource=\"info:fedora/druid:wz243gf4151\"/>\n
+        \     <fedora:isMemberOf rdf:resource=\"info:fedora/druid:wz243gf4151\"/>\n
+        \     <fedora:isMemberOfCollection rdf:resource=\"info:fedora/druid:wz243gf4151\"/>\n
+        \   </rdf:Description>\n  </rdf:RDF>\n  <oai_dc:dc xmlns:dc=\"http://purl.org/dc/elements/1.1/\"
+        xmlns:srw_dc=\"info:srw/schema/1/dc-schema\" xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\"
+        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/
+        http://www.openarchives.org/OAI/2.0/oai_dc.xsd\">\n    <dc:type>StillImage</dc:type>\n
+        \   <dc:type>digital image</dc:type>\n    <dc:subject>Automobile--History</dc:subject>\n
+        \   <dc:date>1955 , 1956</dc:date>\n    <dc:title>Le Mans, 1955 ; Mille Miglia
+        1956</dc:title>\n    <dc:identifier>2011-023CHAM-1.0_0001</dc:identifier>\n
+        \   <dc:relation type=\"collection\">The Marcus Chambers Collection of the
+        Revs Institute</dc:relation>\n  </oai_dc:dc>\n  <ReleaseDigest>\n    <release
+        to=\"Kurita\">true</release>\n    <release to=\"Atago\">false</release>\n
+        \   <release to=\"Mogami\">true</release>\n  </ReleaseDigest>\n</publicObject>\n"
+    http_version: 
+  recorded_at: Thu, 19 Mar 2015 19:36:50 GMT
+- request:
+    method: get
+    uri: http://purl-test.stanford.edu/bc566xq6031.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: ''
+    headers:
+      Date:
+      - Thu, 19 Mar 2015 19:36:51 GMT
+      Server:
+      - Apache/2.2.15 (Red Hat)
+      X-Powered-By:
+      - Phusion Passenger (mod_rails/mod_rack) 3.0.19
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      Cache-Control:
+      - no-cache
+      X-Request-Id:
+      - 6e55dd98-1e96-46f6-889e-820682ee8c4b
+      X-Runtime:
+      - '0.063514'
+      Status:
+      - '404'
+      Content-Length:
+      - '2484'
+      Content-Type:
+      - text/html; charset=utf-8
+    body:
+      encoding: US-ASCII
+      string: ! "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
+        \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n
+        \ <head>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"
+        />\n    <title>Stanford Digital Repository</title>\n    <link rel=\"shortcut
+        icon\" href=\"favicon.ico\" />\n    <link href=\"/assets/site.css?body=1\"
+        media=\"screen\" rel=\"stylesheet\" />\n  </head>\n  <body>\n    <div id=\"container\">\n
+        \     <div id=\"banner\"><h1>Stanford Digital Repository</h1></div>\n      <div
+        id=\"contents\">\n        <div class=\"dialog\">\n  <h2>The item you requested
+        is not available.</h2>\n  <p>The item you requested is not yet available.
+        It will be available at this URL when Library processing is completed.</p>\n</div>\n\n
+        \     </div>\n    </div>\n\n    <div id=\"footer\">\n  <div class=\"footer-contents\">\n
+        \   <div class=\"footer-sul\">\n      <div class=\"footer-logo\">\n        <a
+        href=\"http://library.stanford.edu\" target=\"_blank\"><img src=\"/images/footer-sul-logo.png\"></a>\n
+        \     </div>\n      <div class=\"footer-links\">\n        <a href=\"http://library.stanford.edu\"
+        target=\"_blank\">Stanford University Libraries</a>\n        <a href=\"http://searchworks.stanford.edu\"
+        target=\"_blank\">SearchWorks</a>\n        <a href=\"http://library.stanford.edu/ejournals\"
+        target=\"_blank\">eJournals</a>\n        <a href=\"hhttp://library.stanford.edu/myawrap.html\"
+        target=\"_blank\">My Account</a>\n        <a href=\"http://library.stanford.edu/ask\"
+        target=\"_blank\">Ask Us</a>\n      </div>\n    </div>\n    <div class=\"footer-su\">\n
+        \     <div class=\"footer-logo\">\n        <a href=\"http://www.stanford.edu\"
+        target=\"_blank\"><img src=\"/images/footer-stanford-logo.png\"></a>\n      </div>\n
+        \     <div class=\"footer-links\">\n        <a href=\"http://www.stanford.edu\"
+        target=\"_blank\">SU Home</a>\n        <a href=\"http://visit.stanford.edu/plan/maps.html\"
+        target=\"_blank\">Maps &amp; Directions</a>\n        <a href=\"http://www.stanford.edu/search/\"
+        target=\"_blank\">Search Stanford</a>\n        <a href=\"http://www.stanford.edu/site/terms.html\"
+        target=\"_blank\">Terms of Use</a>\n        <a href=\"http://www.stanford.edu/site/copyright.html\"
+        target=\"_blank\">Copyright Complaints</a>\n        </br>&copy; Stanford University,
+        Stanford, California 94305\n      </div>\n    </div>\n  </div>\n</div>\n    <script
+        src=\"/assets/jquery.js?body=1\"></script>\n<script src=\"/assets/jquery.truncator.js?body=1\"></script>\n<script
+        src=\"/assets/application.js?body=1\"></script>\n\n    \n  </body>\n</html>\n"
+    http_version: 
+  recorded_at: Thu, 19 Mar 2015 19:36:51 GMT
+- request:
+    method: get
+    uri: http://purl-test.stanford.edu/bc566xq6031.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: ''
+    headers:
+      Date:
+      - Thu, 19 Mar 2015 19:36:54 GMT
+      Server:
+      - Apache/2.2.15 (Red Hat)
+      X-Powered-By:
+      - Phusion Passenger (mod_rails/mod_rack) 3.0.19
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      Cache-Control:
+      - no-cache
+      X-Request-Id:
+      - 30e62a38-91da-4b06-92ee-98fd2c5f66ba
+      X-Runtime:
+      - '0.066678'
+      Status:
+      - '404'
+      Content-Length:
+      - '2484'
+      Content-Type:
+      - text/html; charset=utf-8
+    body:
+      encoding: US-ASCII
+      string: ! "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
+        \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n
+        \ <head>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"
+        />\n    <title>Stanford Digital Repository</title>\n    <link rel=\"shortcut
+        icon\" href=\"favicon.ico\" />\n    <link href=\"/assets/site.css?body=1\"
+        media=\"screen\" rel=\"stylesheet\" />\n  </head>\n  <body>\n    <div id=\"container\">\n
+        \     <div id=\"banner\"><h1>Stanford Digital Repository</h1></div>\n      <div
+        id=\"contents\">\n        <div class=\"dialog\">\n  <h2>The item you requested
+        is not available.</h2>\n  <p>The item you requested is not yet available.
+        It will be available at this URL when Library processing is completed.</p>\n</div>\n\n
+        \     </div>\n    </div>\n\n    <div id=\"footer\">\n  <div class=\"footer-contents\">\n
+        \   <div class=\"footer-sul\">\n      <div class=\"footer-logo\">\n        <a
+        href=\"http://library.stanford.edu\" target=\"_blank\"><img src=\"/images/footer-sul-logo.png\"></a>\n
+        \     </div>\n      <div class=\"footer-links\">\n        <a href=\"http://library.stanford.edu\"
+        target=\"_blank\">Stanford University Libraries</a>\n        <a href=\"http://searchworks.stanford.edu\"
+        target=\"_blank\">SearchWorks</a>\n        <a href=\"http://library.stanford.edu/ejournals\"
+        target=\"_blank\">eJournals</a>\n        <a href=\"hhttp://library.stanford.edu/myawrap.html\"
+        target=\"_blank\">My Account</a>\n        <a href=\"http://library.stanford.edu/ask\"
+        target=\"_blank\">Ask Us</a>\n      </div>\n    </div>\n    <div class=\"footer-su\">\n
+        \     <div class=\"footer-logo\">\n        <a href=\"http://www.stanford.edu\"
+        target=\"_blank\"><img src=\"/images/footer-stanford-logo.png\"></a>\n      </div>\n
+        \     <div class=\"footer-links\">\n        <a href=\"http://www.stanford.edu\"
+        target=\"_blank\">SU Home</a>\n        <a href=\"http://visit.stanford.edu/plan/maps.html\"
+        target=\"_blank\">Maps &amp; Directions</a>\n        <a href=\"http://www.stanford.edu/search/\"
+        target=\"_blank\">Search Stanford</a>\n        <a href=\"http://www.stanford.edu/site/terms.html\"
+        target=\"_blank\">Terms of Use</a>\n        <a href=\"http://www.stanford.edu/site/copyright.html\"
+        target=\"_blank\">Copyright Complaints</a>\n        </br>&copy; Stanford University,
+        Stanford, California 94305\n      </div>\n    </div>\n  </div>\n</div>\n    <script
+        src=\"/assets/jquery.js?body=1\"></script>\n<script src=\"/assets/jquery.truncator.js?body=1\"></script>\n<script
+        src=\"/assets/application.js?body=1\"></script>\n\n    \n  </body>\n</html>\n"
+    http_version: 
+  recorded_at: Thu, 19 Mar 2015 19:36:54 GMT
+- request:
+    method: get
+    uri: http://purl-test.stanford.edu/bc566xq6031.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: ''
+    headers:
+      Date:
+      - Thu, 19 Mar 2015 19:36:57 GMT
+      Server:
+      - Apache/2.2.15 (Red Hat)
+      X-Powered-By:
+      - Phusion Passenger (mod_rails/mod_rack) 3.0.19
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      Cache-Control:
+      - no-cache
+      X-Request-Id:
+      - 1b01091c-b808-4c5d-b6d7-df34055ab577
+      X-Runtime:
+      - '0.066514'
+      Status:
+      - '404'
+      Content-Length:
+      - '2484'
+      Content-Type:
+      - text/html; charset=utf-8
+    body:
+      encoding: US-ASCII
+      string: ! "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
+        \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n
+        \ <head>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"
+        />\n    <title>Stanford Digital Repository</title>\n    <link rel=\"shortcut
+        icon\" href=\"favicon.ico\" />\n    <link href=\"/assets/site.css?body=1\"
+        media=\"screen\" rel=\"stylesheet\" />\n  </head>\n  <body>\n    <div id=\"container\">\n
+        \     <div id=\"banner\"><h1>Stanford Digital Repository</h1></div>\n      <div
+        id=\"contents\">\n        <div class=\"dialog\">\n  <h2>The item you requested
+        is not available.</h2>\n  <p>The item you requested is not yet available.
+        It will be available at this URL when Library processing is completed.</p>\n</div>\n\n
+        \     </div>\n    </div>\n\n    <div id=\"footer\">\n  <div class=\"footer-contents\">\n
+        \   <div class=\"footer-sul\">\n      <div class=\"footer-logo\">\n        <a
+        href=\"http://library.stanford.edu\" target=\"_blank\"><img src=\"/images/footer-sul-logo.png\"></a>\n
+        \     </div>\n      <div class=\"footer-links\">\n        <a href=\"http://library.stanford.edu\"
+        target=\"_blank\">Stanford University Libraries</a>\n        <a href=\"http://searchworks.stanford.edu\"
+        target=\"_blank\">SearchWorks</a>\n        <a href=\"http://library.stanford.edu/ejournals\"
+        target=\"_blank\">eJournals</a>\n        <a href=\"hhttp://library.stanford.edu/myawrap.html\"
+        target=\"_blank\">My Account</a>\n        <a href=\"http://library.stanford.edu/ask\"
+        target=\"_blank\">Ask Us</a>\n      </div>\n    </div>\n    <div class=\"footer-su\">\n
+        \     <div class=\"footer-logo\">\n        <a href=\"http://www.stanford.edu\"
+        target=\"_blank\"><img src=\"/images/footer-stanford-logo.png\"></a>\n      </div>\n
+        \     <div class=\"footer-links\">\n        <a href=\"http://www.stanford.edu\"
+        target=\"_blank\">SU Home</a>\n        <a href=\"http://visit.stanford.edu/plan/maps.html\"
+        target=\"_blank\">Maps &amp; Directions</a>\n        <a href=\"http://www.stanford.edu/search/\"
+        target=\"_blank\">Search Stanford</a>\n        <a href=\"http://www.stanford.edu/site/terms.html\"
+        target=\"_blank\">Terms of Use</a>\n        <a href=\"http://www.stanford.edu/site/copyright.html\"
+        target=\"_blank\">Copyright Complaints</a>\n        </br>&copy; Stanford University,
+        Stanford, California 94305\n      </div>\n    </div>\n  </div>\n</div>\n    <script
+        src=\"/assets/jquery.js?body=1\"></script>\n<script src=\"/assets/jquery.truncator.js?body=1\"></script>\n<script
+        src=\"/assets/application.js?body=1\"></script>\n\n    \n  </body>\n</html>\n"
+    http_version: 
+  recorded_at: Thu, 19 Mar 2015 19:36:57 GMT
 recorded_with: VCR 2.9.3

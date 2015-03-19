@@ -1968,4 +1968,87 @@ http_interactions:
         to=\"Atago\" what=\"collection\" when=\"2015-01-21T22:37:40Z\" who=\"carrickr\">false</release>\n</identityMetadata>\n"
     http_version: 
   recorded_at: Wed, 21 Jan 2015 23:22:19 GMT
+- request:
+    method: get
+    uri: http://purl-test.stanford.edu/dc235vd9662.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - ! '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      Date:
+      - Thu, 19 Mar 2015 19:37:08 GMT
+      Server:
+      - Apache/2.2.15 (Red Hat)
+      X-Powered-By:
+      - Phusion Passenger (mod_rails/mod_rack) 3.0.19
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      Etag:
+      - ! '"8adc73ee4a7f38c57d73604f96c2a4bd"'
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 02cafb41-f318-4069-83cc-8c1eb9bdcda9
+      X-Runtime:
+      - '0.012085'
+      Status:
+      - '200'
+      Content-Length:
+      - '3065'
+      Content-Type:
+      - application/xml; charset=utf-8
+    body:
+      encoding: US-ASCII
+      string: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<publicObject id=\"druid:dc235vd9662\"
+        published=\"2015-02-05T11:09:34-08:00\">\n  <identityMetadata>\n    <sourceId
+        source=\"Revs\">2011-023CHAM-1.0_0001</sourceId>\n    <objectId>druid:dc235vd9662</objectId>\n
+        \   <objectCreator>DOR</objectCreator>\n    <objectLabel>Le Mans, 1955 ; Mille
+        Miglia 1956</objectLabel>\n    <objectType>item</objectType>\n    <adminPolicy>druid:qv648vd4392</adminPolicy>\n
+        \   <otherId name=\"uuid\">f36fcad6-955f-11e1-9027-0050569b52c6</otherId>\n
+        \   <tag>Project : Revs</tag>\n    <tag>Project : ReleaseSpecTesting : Batch1</tag>\n
+        \   <release to=\"Kurita\">true</release>\n    <release to=\"Atago\">false</release>\n
+        \   <release to=\"Mogami\">true</release>\n  </identityMetadata>\n  <contentMetadata
+        objectId=\"dc235vd9662\" type=\"image\">\n    <resource sequence=\"1\" id=\"dc235vd9662_1\"
+        type=\"image\">\n      <label>Item 1</label>\n      <file id=\"2011-023Cham-1.0_0001.jp2\"
+        mimetype=\"image/jp2\" size=\"1965344\">\n        <imageData width=\"4004\"
+        height=\"2600\"/>\n      </file>\n    </resource>\n  </contentMetadata>\n
+        \ <rightsMetadata>\n    <copyright>\n      <human type=\"copyright\">Courtesy
+        of Collier Collection. All rights reserved unless otherwise indicated.</human>\n
+        \   </copyright>\n    <access type=\"discover\">\n      <machine>\n        <world/>\n
+        \     </machine>\n    </access>\n    <access type=\"read\">\n      <machine>\n
+        \       <group>stanford</group>\n      </machine>\n    </access>\n    <use>\n
+        \     <human type=\"useAndReproduction\">Users must contact the The Revs Institute
+        for Automobile Research for re-use and reproduction information.</human>\n
+        \   </use>\n  </rightsMetadata>\n  <rdf:RDF xmlns:fedora=\"info:fedora/fedora-system:def/relations-external#\"
+        xmlns:fedora-model=\"info:fedora/fedora-system:def/model#\" xmlns:hydra=\"http://projecthydra.org/ns/relations#\"
+        xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n    <rdf:Description
+        rdf:about=\"info:fedora/druid:dc235vd9662\">\n      <fedora:isMemberOf rdf:resource=\"info:fedora/druid:wz243gf4151\"/>\n
+        \     <fedora:isMemberOf rdf:resource=\"info:fedora/druid:wz243gf4151\"/>\n
+        \     <fedora:isMemberOfCollection rdf:resource=\"info:fedora/druid:wz243gf4151\"/>\n
+        \   </rdf:Description>\n  </rdf:RDF>\n  <oai_dc:dc xmlns:dc=\"http://purl.org/dc/elements/1.1/\"
+        xmlns:srw_dc=\"info:srw/schema/1/dc-schema\" xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\"
+        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/
+        http://www.openarchives.org/OAI/2.0/oai_dc.xsd\">\n    <dc:type>StillImage</dc:type>\n
+        \   <dc:type>digital image</dc:type>\n    <dc:subject>Automobile--History</dc:subject>\n
+        \   <dc:date>1955 , 1956</dc:date>\n    <dc:title>Le Mans, 1955 ; Mille Miglia
+        1956</dc:title>\n    <dc:identifier>2011-023CHAM-1.0_0001</dc:identifier>\n
+        \   <dc:relation type=\"collection\">The Marcus Chambers Collection of the
+        Revs Institute</dc:relation>\n  </oai_dc:dc>\n  <ReleaseDigest>\n    <release
+        to=\"Kurita\">true</release>\n    <release to=\"Atago\">false</release>\n
+        \   <release to=\"Mogami\">true</release>\n  </ReleaseDigest>\n</publicObject>\n"
+    http_version: 
+  recorded_at: Thu, 19 Mar 2015 19:37:08 GMT
 recorded_with: VCR 2.9.3
