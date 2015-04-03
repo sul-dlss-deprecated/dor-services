@@ -33,7 +33,7 @@ module Dor
       if opts.has_key?(k)
         # During local development, Hydrus (or some other app running Fedora locally)
         # does not want this call to initialize the workflows datastream.
-        initialize_workflow('versioningWF', 'dor', opts[k])
+        initialize_workflow('versioningWF', opts[k])
       else
         initialize_workflow('versioningWF')
       end

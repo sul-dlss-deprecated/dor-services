@@ -237,7 +237,7 @@ describe Dor::Governable do
   describe "initiate_apo_workflow" do
     it "calls Processable.initialize_workflow without creating a datastream when the object is new" do
       i = GovernableItem.new
-      expect(i).to receive(:initialize_workflow).with('accessionWF', 'dor', false)
+      expect(i).to receive(:initialize_workflow).with('accessionWF', false)
       i.initiate_apo_workflow('accessionWF')
     end
   end
@@ -292,7 +292,7 @@ describe Dor::Governable do
   describe "initiate_apo_workflow" do
     it "calls Processable.initialize_workflow without creating a datastream when the object is new" do
       i = GovernableItem.new
-      expect(i).to receive(:initialize_workflow).with('accessionWF', 'dor', false)
+      expect(i).to receive(:initialize_workflow).with('accessionWF', false)
       i.initiate_apo_workflow('accessionWF')
     end
   end

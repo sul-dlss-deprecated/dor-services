@@ -209,14 +209,14 @@ module Dor
     #  It will set the priorty of the new workflow to the current_priority if it is > 0
     #  It will set lane_id from the item's APO default workflow lane
     # @param [String] name of the workflow to be initialized
-    # @param [String] repo name of the repository to create workflow for
     # @param [Boolean] create_ds create a 'workflows' datastream in Fedora for the object
-    def initialize_workflow(name, repo='dor', create_ds=true, priority=0)
+    # @param [Integer] priority the workflow's priority level
+    def initialize_workflow(name, create_ds=true, priority=0)
       priority = workflows.current_priority if priority == 0
       opts = { :create_ds => create_ds }
       opts[:priority] = priority if(priority > 0)
       opts[:lane_id] = default_workflow_lane
-      Dor::WorkflowService.create_workflow(repo, self.pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
+      Dor::WorkflowService.create_workflow(Dor::WorkflowObject.initial_repo(name), self.pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
     end
 
 
