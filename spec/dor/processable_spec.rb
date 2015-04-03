@@ -344,10 +344,10 @@ describe Dor::Processable do
     it "sets the lane_id option from the object's APO" do
       apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
       item = instantiate_fixture('druid:ab123cd4567', ProcessableWithApoItem)
-      item.stub(:admin_policy_object) { apo }
-      expect(Dor::WorkflowObject).to receive(:initial_workflow) { '<xml/>' }
-      Dor::WorkflowService.should_receive(:create_workflow).with('dor', 'druid:ab123cd4567', 'accessionWF', '<xml/>', {:create_ds=>true, :lane_id=>"fast"})
-
+      allow(item).to receive(:admin_policy_object) { apo }
+      expect(Dor::WorkflowObject).to receive(:initial_workflow).and_return('<xml/>')
+      expect(Dor::WorkflowObject).to receive(:initial_repo).and_return('dor')
+      expect(Dor::WorkflowService).to receive(:create_workflow).with('dor', 'druid:ab123cd4567', 'accessionWF', '<xml/>', {:create_ds=>true, :lane_id=>"fast"})
       item.initialize_workflow('accessionWF')
     end
   end

@@ -22,14 +22,14 @@ describe Dor::SdrIngestService do
     @agreement_id = 'druid:xx098yy7654'
 
   end
-  
+
   after(:each) do
     Dor::Config.pop!
     if @export_dir.exist? and @export_dir.basename.to_s == 'export'
       @export_dir.rmtree
     end
   end
-  
+
   it "can access configuration settings" do
     sdr = Dor::Config.sdr
     sdr.local_workspace_root.should eql @fixtures.join("workspace").to_s
@@ -80,8 +80,8 @@ describe Dor::SdrIngestService do
   specify "SdrIngestService.transfer with content changes" do
     druid = 'druid:dd116zh0343'
     dor_item = double("dor_item")
-    dor_item.should_receive(:initialize_workflow).with('sdrIngestWF', 'sdr', false)
-    dor_item.stub(:pid).and_return(druid)
+    expect(dor_item).to receive(:initialize_workflow).with('sdrIngestWF', false)
+    allow(dor_item).to receive(:pid).and_return(druid)
     signature_catalog=Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
     Dor::SdrIngestService.should_receive(:get_signature_catalog).with(druid).
         and_return(signature_catalog)
@@ -121,8 +121,8 @@ describe Dor::SdrIngestService do
   specify "SdrIngestService.transfer with no change in content" do
     druid = 'druid:dd116zh0343'
     dor_item = double("dor_item")
-    dor_item.should_receive(:initialize_workflow).with('sdrIngestWF', 'sdr', false)
-    dor_item.stub(:pid).and_return(druid)
+    expect(dor_item).to receive(:initialize_workflow).with('sdrIngestWF', false)
+    allow(dor_item).to receive(:pid).and_return(druid)
     signature_catalog=Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
     Dor::SdrIngestService.should_receive(:get_signature_catalog).with(druid).
         and_return(signature_catalog)

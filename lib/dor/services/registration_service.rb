@@ -112,7 +112,7 @@ module Dor
         workflow_priority = params[:workflow_priority] ? params[:workflow_priority].to_i : 0
         
         Array(params[:seed_datastream]).each { |datastream_name| new_item.build_datastream(datastream_name) }
-        Array(params[:initiate_workflow]).each { |workflow_id| new_item.initialize_workflow(workflow_id, 'dor', !new_item.new_object?, workflow_priority)}
+        Array(params[:initiate_workflow]).each { |workflow_id| new_item.initialize_workflow(workflow_id, !new_item.new_object?, workflow_priority)}
 
         new_item.assert_content_model
         new_item.save

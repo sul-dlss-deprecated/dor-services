@@ -288,8 +288,9 @@ describe Dor::RegistrationService do
       lambda { Dor::RegistrationService.register_object(@params) }.should raise_error(Dor::DuplicateIdError)
     end
     it 'should set the workflow priority if one was passed in' do
-      Dor::Item.any_instance.should_receive(:initialize_workflow).with('digitizationWF','dor',false,50)
-      Dor::SearchService.stub(:query_by_id).and_return([nil])
+      expect_any_instance_of(Dor::Item).to receive(:initialize_workflow).with('digitizationWF',false,50)
+      allow(Dor::SearchService).to receive(:query_by_id).and_return([nil])
+      expect(Dor.logger).to receive(:warn).with(/failed to update solr index for druid:ab123cd4567/)
       @params[:workflow_priority] = 50
       @params[:initiate_workflow] = 'digitizationWF'
       Dor::RegistrationService.register_object(@params)

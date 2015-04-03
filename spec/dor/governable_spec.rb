@@ -239,7 +239,7 @@ end
   describe "initiate_apo_workflow" do
     it "calls Processable.initialize_workflow without creating a datastream when the object is new" do
       i = GovernableItem.new
-      i.should_receive(:initialize_workflow).with('accessionWF', 'dor', false)
+      expect(i).to receive(:initialize_workflow).with('accessionWF', false)
       i.initiate_apo_workflow('accessionWF')
     end
   end
@@ -291,14 +291,14 @@ it 'should add a collection' do
 		end
 	end
 
-	describe "initiate_apo_workflow" do
-	  it "calls Processable.initialize_workflow without creating a datastream when the object is new" do
-	    i = GovernableItem.new
-	    i.should_receive(:initialize_workflow).with('accessionWF', 'dor', false)
-	    i.initiate_apo_workflow('accessionWF')
-	  end
-	end
-	describe 'can_manage_item?' do
+  describe "initiate_apo_workflow" do
+    it "calls Processable.initialize_workflow without creating a datastream when the object is new" do
+      i = GovernableItem.new
+      expect(i).to receive(:initialize_workflow).with('accessionWF', false)
+      i.initiate_apo_workflow('accessionWF')
+    end
+  end
+  describe 'can_manage_item?' do
     it 'should match a group that has rights' do
       @item.can_manage_item?(['dor-administrator']).should == true
     end
