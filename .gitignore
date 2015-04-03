@@ -19,3 +19,4 @@ tmp.xml
 config/environments
 config/certs/*
 spec/certs/*
+spec/fixtures/workspace/.deletes
