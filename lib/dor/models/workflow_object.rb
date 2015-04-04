@@ -66,7 +66,7 @@ module Dor
     def self.find_and_cache_workflow_xml_and_repo name
       wobj = self.find_by_name(name)
       wf_xml = wobj.generate_initial_workflow
-      @@repo_cache[name] = wobj.repo
+      @@repo_cache[name] = wobj.definition.repo
       @@xml_cache[name] = wf_xml
     end
 
