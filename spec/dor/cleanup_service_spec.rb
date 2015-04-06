@@ -19,6 +19,7 @@ describe Dor::CleanupService do
     Dor::Config.push! do
       cleanup.local_workspace_root fixtures.join("workspace").to_s
       cleanup.local_export_home fixtures.join("export").to_s
+      cleanup.local_assembly_root fixtures.join("assembly").to_s
     end
 
 
