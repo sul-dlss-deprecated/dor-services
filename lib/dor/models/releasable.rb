@@ -261,7 +261,7 @@ module Dor
     #@params tag [Boolean] True or false for the release node
     #@params attrs [hash]  A hash of any attributes to be placed onto the tag 
     #@example
-    #  item.add_tag(true,:release,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket'})
+    #  item.add_tag(true,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket'})
     def add_release_node(release, attrs={})
       identity_metadata_ds = self.identityMetadata
       attrs[:when] = Time.now.utc.iso8601 if attrs[:when] == nil#add the timestamp
