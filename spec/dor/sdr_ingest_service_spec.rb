@@ -76,7 +76,7 @@ describe Dor::SdrIngestService do
   specify "SdrIngestService.transfer with content changes" do
     druid = 'druid:dd116zh0343'
     dor_item = double("dor_item")
-    expect(dor_item).to receive(:initialize_workflow).with('sdrIngestWF', 'sdr', false)
+    expect(dor_item).to receive(:initialize_workflow).with('sdrIngestWF', false)
     allow(dor_item).to receive(:pid).and_return(druid)
     signature_catalog=Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
     expect(Dor::SdrIngestService).to receive(:get_signature_catalog).with(druid).
@@ -117,7 +117,7 @@ describe Dor::SdrIngestService do
   specify "SdrIngestService.transfer with no change in content" do
     druid = 'druid:dd116zh0343'
     dor_item = double("dor_item")
-    expect(dor_item).to receive(:initialize_workflow).with('sdrIngestWF', 'sdr', false)
+    expect(dor_item).to receive(:initialize_workflow).with('sdrIngestWF', false)
     allow(dor_item).to receive(:pid).and_return(druid)
     signature_catalog=Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
     expect(Dor::SdrIngestService).to receive(:get_signature_catalog).with(druid).

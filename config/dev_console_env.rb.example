@@ -9,8 +9,8 @@ Dor::Config.configure do
 
   ssl do
     cert_file File.join(cert_dir,"robots-dor-dev.crt")
-    key_file File.join(cert_dir,"robots-dor-dev.key")
-    key_pass ''
+    key_file  File.join(cert_dir,"robots-dor-dev.key")
+    key_pass  ''
   end
 
   suri do
@@ -22,7 +22,7 @@ Dor::Config.configure do
   end
 
   metadata do
-    exist.url 'http://server/exist/rest/'
+    exist.url   'http://server/exist/rest/'
     catalog.url 'http://lyberservices-prod.stanford.edu/catalog/mods'
   end
 
@@ -37,24 +37,24 @@ Dor::Config.configure do
     local_document_cache_root '/purl'
   end
 
-  gsearch.url 'https://host/solr/gsearch'
-  solrizer.url 'https://host/solr'
-  workflow.url 'https://host/workflow/'
+  gsearch.url      'https://host/solr/gsearch'
+  solrizer.url     'https://host/solr'
+  workflow.url     'https://host/workflow/'
   dor_services.url 'https://host/dor/v1'
 
   cleanup do
     local_workspace_root '/dor/workspace'
-    local_export_home '/dor/export'
+    local_export_home    '/dor/export'
   end
 
   sdr do
     local_workspace_root '/dor/workspace'
-    local_export_home '/dor/export'
+    local_export_home    '/dor/export'
     datastreams do
-      contentMetadata 'required'
-      descMetadata 'required'
-      identityMetadata 'required'
-      provenanceMetadata 'required'
+      contentMetadata      'required'
+      descMetadata         'required'
+      identityMetadata     'required'
+      provenanceMetadata   'required'
       relationshipMetadata 'required'
       rightsMetadata 'optional'
       sourceMetadata 'optional'

@@ -9,7 +9,7 @@ module Dor
     end
 
     def initiate_apo_workflow(name)
-      self.initialize_workflow(name, 'dor', !self.new_object?)
+      self.initialize_workflow(name, !self.new_object?)
     end
 
     # Returns the default lane_id from the item's APO.  Will return 'default' if the item does not have

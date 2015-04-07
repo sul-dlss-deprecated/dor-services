@@ -1,3 +1,6 @@
+require 'open-uri'
+require 'retries'
+
 module Dor
   module Releasable
     extend ActiveSupport::Concern
@@ -8,7 +11,7 @@ module Dor
     #@return [String] The XML release node as a string, with ReleaseDigest as the root document
     def generate_release_xml
       builder = Nokogiri::XML::Builder.new do |xml|
-        xml.ReleaseDigest {
+        xml.ReleaseData {
           self.released_for.each do |project,released_value|
             xml.release(released_value["release"],:to=>project)
           end  
@@ -52,6 +55,9 @@ module Dor
         end
         
       end
+      
+      #See what the application is currently released for on Purl.  If something is released in purl but not listed here, it needs to be added as a false
+      released_hash = self.add_tags_from_purl(released_hash)
         
       return released_hash
     end
@@ -254,7 +260,7 @@ module Dor
     #
     #@params tag [Boolean] True or false for the release node
     #@params attrs [hash]  A hash of any attributes to be placed onto the tag 
-    # release tag example:
+    #@example
     #  item.add_tag(true,:release,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket'})
     def add_release_node(release, attrs={})
       identity_metadata_ds = self.identityMetadata
@@ -304,6 +310,86 @@ module Dor
         end
       end
       return return_hash
+    end
+    
+    #Get a list of all release nodes found in a purl document
+    #
+    #@params druid [String]
+    #
+    #@raises [OpenURI::HTTPError]
+    #
+    #Fetches purl xml for a druid
+    #
+    #@return [Nokogiri::HTML::Document] the parsed xml for the druid or an empty document if no purl is found
+    def get_xml_from_purl
+        handler = Proc.new do |exception, attempt_number, total_delay|
+          #We assume a 404 means the document has never been published before and thus has no purl
+          #The strip is needed before the actual message is "404 "
+          return Nokogiri::HTML::Document.new if exception.message.strip == "404"
+        end
+
+        with_retries(:max_retries => 5, :base_sleep_seconds => 3, :max_sleep_seconds=> 5, :rescue => OpenURI::HTTPError, :handler => handler) {
+           #If you change the method used for opening the webpage, you can change the :rescue param to handle the new method's errors
+           return Nokogiri::HTML(open(self.form_purl_url))
+         }
+       
+    end
+    
+    #Since purl does not use the druid: prefix but much of dor does, use this function to strip the druid: if needed
+    #
+    #@return [String] the druid sans the druid: or if there was no druid: prefix, the entire string you passed
+    def remove_druid_prefix
+      druid_prefix = "druid:"
+      return self.id.split(druid_prefix)[1] if self.id.split(druid_prefix).size > 1
+      return druid
+    end
+    
+    #Take the and create the entire purl url that will usable for the open method in open-uri, returns http
+    #
+    #params druid [String], the druid without or without the driud prefix
+    #
+    #return [String], the full url
+    def form_purl_url
+      prefix = "http://" 
+      return prefix + Dor::Config.stacks.document_cache_host + "/#{self.remove_druid_prefix}.xml"
+    end
+    
+    #Pull all release nodes from the public xml obtained via the purl query
+    #
+    #@params druid [Nokogiri::HTML::Document] The druid of the object you want
+    #
+    #@return [Array] An array containing all the release tags 
+    def get_release_tags_from_purl_xml(doc)
+      nodes = doc.xpath("//html/body/publicobject/releasedata").children 
+      #We only want the nodes with a name that isn't text
+      return_array = []
+      nodes.each do |n|
+        return_array << n.attr('to') if n.name != nil and n.name.downcase != "text"
+      end
+      return return_array.uniq 
+    end
+    
+    #Pull all release nodes from the public xml obtained via the purl query
+    #
+    #@return [Array] An array containing all the release tags 
+    def get_release_tags_from_purl
+      xml = self.get_xml_from_purl
+      return self.get_release_tags_from_purl_xml(xml)
+    end
+    
+    #This function calls purl and gets a list of all release tags currently in purl.  It then compares to the list you have generated.
+    #Any tag that is on purl, but not in the newly generated list is added to the new list with a value of false.
+    #
+    #params new_tags [Hash] a hash of all new tags in the form of {Project => Boolean}, where Project is a string
+    #
+    #return [Hash], a hash in the same form as new_tags, with all missing tags not in new_tags, but in current_tag_names, added in with a Boolean value of false
+    def add_tags_from_purl(new_tags) 
+      tags_currently_in_purl = self.get_release_tags_from_purl
+      missing_tags = tags_currently_in_purl.map(&:downcase) - new_tags.keys.map(&:downcase) 
+      missing_tags.each do |missing_tag|
+        new_tags[missing_tag.capitalize] = false
+      end
+      return new_tags
     end
 
   end

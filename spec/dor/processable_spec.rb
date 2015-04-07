@@ -52,12 +52,12 @@ describe Dor::Processable do
       before(:each) do
         allow(@item).to receive(:find_metadata_file).and_return(@dm_filename)
         allow(File).to receive(:read).and_return(@dm_fixture_xml)
+        @t = Time.now
       end
 
       it "file newer than datastream: should read content from file" do
-        t = Time.now
-        allow(File).to receive(:mtime).and_return(t)
-        allow(@item.descMetadata).to receive(:createDate).and_return(t - 99)
+        allow(File).to receive(:mtime).and_return(@t)
+        allow(@item.descMetadata).to receive(:createDate).and_return(@t - 99)
         xml = @dm_fixture_xml
         expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(xml)
         @item.build_datastream('descMetadata', true)
@@ -66,9 +66,8 @@ describe Dor::Processable do
       end
 
       it "file older than datastream: should use the builder" do
-        t = Time.now
-        allow(File).to receive(:mtime).and_return(t - 99)
-        allow(@item.descMetadata).to receive(:createDate).and_return(t)
+        allow(File).to receive(:mtime).and_return(@t - 99)
+        allow(@item.descMetadata).to receive(:createDate).and_return(@t)
         xml = @dm_builder_xml
         allow(@item).to receive(:fetch_descMetadata_datastream).and_return(xml)
         expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(xml)
@@ -137,19 +136,18 @@ describe Dor::Processable do
       '
 
       xml=Nokogiri::XML(xml)
-      @lifecycle_vals=[]
       allow(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
       allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
       @versionMD = Dor::VersionMetadataDS.from_xml(dsxml)
-    end
-    it 'should include the semicolon delimited version, an earliest published date and a status' do
       allow(@item).to receive(:versionMetadata).and_return(@versionMD)
-#      allow(@item.descMetadata).to receive(:to_solr).and_return({})
+    end
+
+    it 'should include the semicolon delimited version, an earliest published date and a status' do
+#     allow(@item.descMetadata).to receive(:to_solr).and_return({})
       expect(Dor.logger).to receive(:warn)
       solr_doc=@item.to_solr
-      lifecycle=solr_doc[Solrizer.solr_name('lifecycle', :displayable)]
       #lifecycle_display should have the semicolon delimited version
-      expect(lifecycle.include?("published:2012-01-27T05:06:54Z;2")).to be_truthy
+      expect(solr_doc[Solrizer.solr_name('lifecycle', :displayable)]).to include("published:2012-01-27T05:06:54Z;2")
       #published date should be the first published date
       expect(solr_doc[Solrizer.solr_name('published', :type => :date)]).to eq(solr_doc[Solrizer.solr_name('published_earliest', :type => :date)])
       expect(solr_doc[Solrizer.solr_name('status', :displayable)].first).to eq('v4 In accessioning (described, published)')
@@ -169,18 +167,15 @@ describe Dor::Processable do
     end
     it 'should create a last_modified_day field' do
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
-      allow(@item).to receive(:versionMetadata).and_return(@versionMD)
       solr_doc=@item.to_solr
       #the facet field should have a date in it.
       expect(solr_doc[Solrizer.solr_name('last_modified_day', :facetable)].length).to eq(1)
     end
     it 'should create a version field for each version, including the version number, tag and description' do
-      @item = instantiate_fixture('druid:ab123cd4567', ProcessableItem)
-      allow(@item).to receive(:versionMetadata).and_return(@versionMD)
+      expect(Dor.logger).to receive(:warn).with(/Cannot index druid:ab123cd4567\.descMetadata.*Dor::Item#generate_dublin_core produced incorrect xml/)
       solr_doc=@item.to_solr
-      #the facet field should have a date in it.
-      expect(solr_doc[Solrizer.solr_name('versions', :displayable)].length).to be > 1
-      expect(solr_doc[Solrizer.solr_name('versions', :displayable)].include?("4;2.2.0;Another typo")).to be_truthy
+      expect(solr_doc['versions_ssm'].length).to be > 1
+      expect(solr_doc['versions_ssm']).to include("4;2.2.0;Another typo")
     end
     it 'should handle a missing description for a version' do
       dsxml='
@@ -198,15 +193,18 @@ describe Dor::Processable do
       </version>
       </versionMetadata>
       '
-      @versionMD = Dor::VersionMetadataDS.from_xml(dsxml)
-      @item = instantiate_fixture('druid:ab123cd4567', ProcessableItem)
-      allow(@item).to receive(:versionMetadata).and_return(@versionMD)
+      allow(@item).to receive(:versionMetadata).and_return(Dor::VersionMetadataDS.from_xml(dsxml))
+      expect(Dor.logger).to receive(:warn).with(/Cannot index druid:ab123cd4567\.descMetadata.*Dor::Item#generate_dublin_core produced incorrect xml/)
       solr_doc=@item.to_solr
-      #the facet field should have a date in it.
-      expect(solr_doc[Solrizer.solr_name('versions', :displayable)]).to include "4;2.2.0;"
+      expect(solr_doc['versions_ssm']).to include("4;2.2.0;")
     end
   end
   describe 'status' do
+    before :each do
+      allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
+      @versionMD=double(Dor::VersionMetadataDS)
+      expect(@item).to receive(:versionMetadata).and_return(@versionMD)
+    end
     it 'should generate a status string' do
       xml='<?xml version="1.0" encoding="UTF-8"?>
       <lifecycle objectId="druid:gv054hp4128">
@@ -219,12 +217,8 @@ describe Dor::Processable do
       </lifecycle>
       '
       xml=Nokogiri::XML(xml)
-      @lifecycle_vals=[]
-      allow(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
-      allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
-      versionMD=double(Dor::VersionMetadataDS)
-      allow(versionMD).to receive(:current_version_id).and_return('4')
-      allow(@item).to receive(:versionMetadata).and_return(versionMD)
+      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
+      expect(@versionMD).to receive(:current_version_id).and_return('4')
       expect(@item.status).to eq('v4 In accessioning (described, published)')
     end
     it 'should generate a status string' do
@@ -235,12 +229,8 @@ describe Dor::Processable do
       </lifecycle>
       '
       xml=Nokogiri::XML(xml)
-      @lifecycle_vals=[]
-      allow(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
-      allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
-      versionMD=double(Dor::VersionMetadataDS)
-      allow(versionMD).to receive(:current_version_id).and_return('3')
-      allow(@item).to receive(:versionMetadata).and_return(versionMD)
+      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
+      expect(@versionMD).to receive(:current_version_id).and_return('3')
       expect(@item.status).to eq('v3 In accessioning (described, published)')
     end
     it 'should generate a status string' do
@@ -251,12 +241,8 @@ describe Dor::Processable do
       </lifecycle>
       '
       xml=Nokogiri::XML(xml)
-      @lifecycle_vals=[]
-      allow(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
-      allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
-      versionMD=double(Dor::VersionMetadataDS)
-      allow(versionMD).to receive(:current_version_id).and_return('3')
-      allow(@item).to receive(:versionMetadata).and_return(versionMD)
+      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
+      expect(@versionMD).to receive(:current_version_id).and_return('3')
       expect(@item.status).to eq('v3 In accessioning (described, published)')
     end
     it 'should handle a v2 accessioned object' do
@@ -277,14 +263,9 @@ describe Dor::Processable do
       <milestone date="2013-10-01T12:11:10-0700" version="2">accessioned</milestone>
       </lifecycle>'
       xml=Nokogiri::XML(xml)
-      @lifecycle_vals=[]
-      allow(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
-      allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
-      versionMD=double(Dor::VersionMetadataDS)
-      allow(versionMD).to receive(:current_version_id).and_return('2')
-      allow(@item).to receive(:versionMetadata).and_return(versionMD)
+      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
+      expect(@versionMD).to receive(:current_version_id).and_return('2')
       expect(@item.status).to eq('v2 Accessioned')
-
     end
     it 'should give a status of unknown if there arent any lifecycles for the current version, which indicates some malfunction in workflow.' do
       xml='<?xml version="1.0"?>
@@ -304,12 +285,8 @@ describe Dor::Processable do
       <milestone date="2013-10-01T12:11:10-0700" version="2">accessioned</milestone>
       </lifecycle>'
       xml=Nokogiri::XML(xml)
-      @lifecycle_vals=[]
-      allow(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
-      allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
-      versionMD=double(Dor::VersionMetadataDS)
-      allow(versionMD).to receive(:current_version_id).and_return('3')
-      allow(@item).to receive(:versionMetadata).and_return(versionMD)
+      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
+      expect(@versionMD).to receive(:current_version_id).and_return('3')
       expect(@item.status).to eq('v3 Unknown Status')
     end
     it 'should include a formatted date/time if one is requested' do
@@ -330,12 +307,8 @@ describe Dor::Processable do
       <milestone date="2013-10-01T12:11:10-0700" version="2">accessioned</milestone>
       </lifecycle>'
       xml=Nokogiri::XML(xml)
-      @lifecycle_vals=[]
-      allow(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
-      allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
-      versionMD=double(Dor::VersionMetadataDS)
-      allow(versionMD).to receive(:current_version_id).and_return('2')
-      allow(@item).to receive(:versionMetadata).and_return(versionMD)
+      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
+      expect(@versionMD).to receive(:current_version_id).and_return('2')
       expect(@item.status(true)).to eq('v2 Accessioned 2013-10-01 07:11PM')
     end
 
@@ -346,9 +319,9 @@ describe Dor::Processable do
       apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
       item = instantiate_fixture('druid:ab123cd4567', ProcessableWithApoItem)
       allow(item).to receive(:admin_policy_object) { apo }
-      expect(Dor::WorkflowObject).to receive(:initial_workflow) { '<xml/>' }
+      expect(Dor::WorkflowObject).to receive(:initial_workflow).and_return('<xml/>')
+      expect(Dor::WorkflowObject).to receive(:initial_repo).and_return('dor')
       expect(Dor::WorkflowService).to receive(:create_workflow).with('dor', 'druid:ab123cd4567', 'accessionWF', '<xml/>', {:create_ds=>true, :lane_id=>"fast"})
-
       item.initialize_workflow('accessionWF')
     end
   end

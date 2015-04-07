@@ -7,6 +7,10 @@ end
 group :development, :test do
   gem "simplecov",  :platform => [:ruby_19, :ruby_20, :ruby_21]
   gem "debugger", '1.6.3', :platform => :ruby_19
+  gem "pry-byebug", :platform => [:ruby_20, :ruby_21]
+end
+
+group :test do
   gem "vcr"
   gem 'webmock'
 end
