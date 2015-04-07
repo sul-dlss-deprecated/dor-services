@@ -22,19 +22,16 @@ describe Dor::ContentMetadataDS do
     </resource>
     </contentMetadata>'
     allow(Dor::Item).to receive(:find).and_return(@item)
-
+    @file = {
+      :name     => 'new_file.jp2',
+      :shelve   => 'no',
+      :publish  => 'no',
+      :preserve => 'no',
+      :size     => '12345'
+    }
+    @files = [@file]
   end
   describe 'add_resource' do
-    before(:all){
-      file={}
-      file[:name]='new_file.jp2'
-      file[:shelve]='no'
-      file[:publish]='no'
-      file[:preserve]='no'
-      @files=Array.new
-      @files[0]=file
-    }
-
     before(:each) do
       allow(Dor::Item).to receive(:save).and_return(true)
     end
@@ -65,91 +62,58 @@ describe Dor::ContentMetadataDS do
       @files[0][:md5]='123456'
       @files[0][:sha1]='56789'
       @item.contentMetadata.add_resource(@files,'resource',1)
-      xml=@item.contentMetadata.ng_xml
-      checksums=xml.search('//file[@id=\'new_file.jp2\']//checksum')
+      checksums=@item.contentMetadata.ng_xml.search('//file[@id=\'new_file.jp2\']//checksum')
       expect(checksums.length).to eq(2)
-      checksums.each do | checksum|
-        if checksum['type'] == 'md5'
-          expect(checksum.content).to eq('123456')
-        else
-          expect(checksum.content).to eq('56789')
-        end
+      checksums.each do |checksum|
+        expect(checksum.content).to eq(checksum['type'] == 'md5' ? '123456' : '56789')
       end
     end
     describe 'remove_resource' do
       it 'should remove the only resource' do
         @item.contentMetadata.remove_resource('0001')
-        xml=@item.contentMetadata.ng_xml
-        expect(xml.search('//resource').length).to eq(0)
+        expect(@item.contentMetadata.ng_xml.search('//resource').length).to eq(0)
       end
       it 'should remove one resource and renumber remaining resources' do
-        file={}
-        file[:name]='new_file.jp2'
-        file[:shelve]='no'
-        file[:publish]='no'
-        file[:preserve]='no'
-        @files=Array.new
-        @files[0]=file
-        allow(Dor::Item).to receive(:save).and_return(true)
-
         @item.contentMetadata.add_resource(@files,'resource',1)
         @item.contentMetadata.remove_resource('resource')
-        xml=@item.contentMetadata.ng_xml
-        resources=xml.search('//resource')
+        resources=@item.contentMetadata.ng_xml.search('//resource')
         expect(resources.length).to eq(1)
         expect(resources.first()['sequence']).to eq('1')
-
       end
     end
     end
     describe 'remove_file' do
       it 'should remove the file' do
         @item.contentMetadata.remove_file('gw177fc7976_00_0001.tif')
-        xml=@item.contentMetadata.ng_xml
-        expect(xml.search('//file').length).to eq(1)
+        expect(@item.contentMetadata.ng_xml.search('//file').length).to eq(1)
       end
     end
     describe 'add_file' do
-      before(:all){
-        @file={}
-        @file[:name]='new_file.jp2'
-        @file[:shelve]='no'
-        @file[:publish]='no'
-        @file[:preserve]='no'
-        @file[:size]='12345'
-      }
       it 'should add a file to the resource' do
+        @file[:size]='12345'
         @item.contentMetadata.add_file(@file,'0001')
         xml=@item.contentMetadata.ng_xml
-        files=xml.search('//resource[@id=\'0001\']/file')
-        expect(files.length).to eq(3)
+        hits=xml.search('//resource[@id=\'0001\']/file')
+        expect(hits.length).to eq(3)
         expect(xml.search('//file[@id=\'new_file.jp2\']').length).to eq(1)
         new_file=xml.search('//file[@id=\'new_file.jp2\']').first
-        expect(new_file['shelve']).to eq('no')
-        expect(new_file['publish']).to eq('no')
+        expect(new_file['shelve'  ]).to eq('no')
+        expect(new_file['publish' ]).to eq('no')
         expect(new_file['preserve']).to eq('no')
-        expect(new_file['size']).to eq('12345')
+        expect(new_file['size'    ]).to eq('12345')
       end
     end
     describe 'update_file' do
-      before(:all){
-        @file={}
-        @file[:name]='new_file.jp2'
-        @file[:shelve]='no'
-        @file[:publish]='no'
-        @file[:preserve]='no'
-        @file[:size]='12345'
-      }
       it 'should modify an existing file record' do
+        @file[:size]='12345'
         @item.contentMetadata.update_file(@file,'gw177fc7976_05_0001.jp2')
-        xml = @item.contentMetadata.ng_xml
-        file=xml.search('//file[@id=\'new_file.jp2\']')
+        file=@item.contentMetadata.ng_xml.search('//file[@id=\'new_file.jp2\']')
         expect(file.length).to eq(1)
         file=file.first
-        expect(file['shelve']).to eq('no')
-        expect(file['publish']).to eq('no')
+        expect(file['shelve'  ]).to eq('no')
+        expect(file['publish' ]).to eq('no')
         expect(file['preserve']).to eq('no')
-        expect(file['size']).to eq('12345')
+        expect(file['size'    ]).to eq('12345')
       end
       it 'should error out if there isnt an existing record to modify' do
         expect { @item.contentMetadata.update_file(@file,'gw177fc7976_05_0001_different.jp2')}.to raise_error
@@ -158,38 +122,29 @@ describe Dor::ContentMetadataDS do
     describe 'rename_file' do
       it 'should update the file id' do
         @item.contentMetadata.rename_file('gw177fc7976_05_0001.jp2','test.jp2')
-        xml = @item.contentMetadata.ng_xml
-        file=xml.search('//file[@id=\'test.jp2\']')
+        file=@item.contentMetadata.ng_xml.search('//file[@id=\'test.jp2\']')
         expect(file.length).to eq(1)
       end
     end
     describe 'move_resource' do
       it 'should renumber the resources correctly' do
-        file={}
-        file[:name]='new_file.jp2'
-        file[:shelve]='no'
-        file[:publish]='no'
-        file[:preserve]='no'
-        @files=Array.new
-        @files[0]=file
         @item.contentMetadata.add_resource(@files,'resource',1)
         @item.contentMetadata.move_resource('0001','2')
+        skip "No expectation defined!"
       end
     end
     describe 'update resource label' do
       it 'should update an existing label' do
         @item.contentMetadata.update_resource_label '0001', 'an old label'
         @item.contentMetadata.update_resource_label '0001', 'label!'
-        xml = @item.contentMetadata.ng_xml
-        labels=xml.search('//resource[@id=\'0001\']/label')
+        labels = @item.contentMetadata.ng_xml.search('//resource[@id=\'0001\']/label')
         expect(labels.length).to eq(1)
         expect(labels.first.content).to eq('label!')
       end
       it 'should add a new label' do
-         @item.contentMetadata.update_resource_label '0001', 'label!'
-          xml = @item.contentMetadata.ng_xml
-          labels=xml.search('//resource[@id=\'0001\']/label')
-          expect(labels.length).to eq(1)
+        @item.contentMetadata.update_resource_label '0001', 'label!'
+        labels = @item.contentMetadata.ng_xml.search('//resource[@id=\'0001\']/label')
+        expect(labels.length).to eq(1)
       end
     end
     describe 'update_resource_type' do
@@ -198,29 +153,16 @@ describe Dor::ContentMetadataDS do
       end
     end
     describe 'to_solr' do
-      it 'should generate a shelved file count' do
-        doc=@item.contentMetadata.to_solr
-        expect(doc[Solrizer.solr_name('shelved_content_file_count', :displayable)].first).to eq('1')
+      before :each do
+        @doc=@item.contentMetadata.to_solr
       end
-      it 'should generate a resource count' do
-        doc=@item.contentMetadata.to_solr
-        expect(doc[Solrizer.solr_name('resource_count', :displayable)].first).to eq('1')
-      end
-      it 'should generate a file count' do
-        doc=@item.contentMetadata.to_solr
-        expect(doc[Solrizer.solr_name('content_file_count', :displayable)].first).to eq('2')
-      end
-      it 'should generate a field called image_resource_count' do
-        doc=@item.contentMetadata.to_solr
-        expect(doc[Solrizer.solr_name('image_resource_count', :displayable)].first).to eq('1')
-      end
-      it 'should generate a field called first_shelved_image' do
-        doc=@item.contentMetadata.to_solr
-        expect(doc[Solrizer.solr_name('first_shelved_image', :displayable)].first).to eq('gw177fc7976_05_0001.jp2')
-      end
-      it 'should generate a field call preserved_size_display' do
-        doc=@item.contentMetadata.to_solr
-        expect(doc[Solrizer.solr_name('preserved_size', :searchable)].first).to eq('86774303')
+      it 'should generate required fields' do
+        expect(@doc[Solrizer.solr_name('shelved_content_file_count', :displayable)].first).to eq('1')
+        expect(@doc[Solrizer.solr_name('resource_count', :displayable)].first).to eq('1')
+        expect(@doc[Solrizer.solr_name('content_file_count', :displayable)].first).to eq('2')
+        expect(@doc[Solrizer.solr_name('image_resource_count', :displayable)].first).to eq('1')
+        expect(@doc[Solrizer.solr_name('first_shelved_image', :displayable)].first).to eq('gw177fc7976_05_0001.jp2')
+        expect(@doc[Solrizer.solr_name('preserved_size', :searchable)].first).to eq('86774303')
       end
     end
   describe 'set_content_type' do
@@ -236,4 +178,3 @@ describe Dor::ContentMetadataDS do
     end
   end
 end
-
