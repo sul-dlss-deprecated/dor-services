@@ -38,18 +38,18 @@ describe Dor::Editable do
     it 'should fetch the default collections' do
       expect(@item.default_collections).to eq(['druid:fz306fj8334'])
     end
-    it 'shouldnt fail on an item with an empty datastream' do
+    it 'should not fail on an item with an empty datastream' do
       expect(@empty_item.default_collections).to eq([])
     end
   end
   describe 'add_default_collection' do
     it 'should set the collection values' do
       @item.add_default_collection 'druid:fz306fj8335'
-      @item.default_collections == ['druid:fz306fj8335']
+      expect(@item.default_collections).to eq ['druid:fz306fj8334','druid:fz306fj8335']
     end
     it 'should work for empty datastreams' do
       @empty_item.add_default_collection 'druid:fz306fj8335'
-      @empty_item.default_collections == ['druid:fz306fj8335']
+      expect(@empty_item.default_collections).to eq ['druid:fz306fj8335']
     end
   end
   describe 'remove_default_collection' do
@@ -64,10 +64,10 @@ describe Dor::Editable do
     end
   end
   describe 'roles' do
-    it 'should create a roles has' do
+    it 'should create a roles hash' do
       expect(@item.roles).to eq({'dor-apo-manager'=>["workgroup:dlss:developers", "workgroup:dlss:pmag-staff", "workgroup:dlss:smpl-staff", "workgroup:dlss:dpg-staff", "workgroup:dlss:argo-access-spec", "sunetid:lmcrae"]})
     end
-    it 'shouldnt fail on an item with an empty datastream' do
+    it 'should not fail on an item with an empty datastream' do
       expect(@empty_item.roles).to eq({})
     end
   end
@@ -75,7 +75,7 @@ describe Dor::Editable do
     it 'should find the use statement' do
       expect(@item.use_statement).to eq('Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu.')
     end
-    it 'shouldnt fail on an item with an empty datastream' do
+    it 'should not fail on an item with an empty datastream' do
       expect(@empty_item.use_statement).to eq('')
     end
   end
@@ -135,7 +135,7 @@ describe Dor::Editable do
       @empty_item.creative_commons_license = ['hi']
       expect(@empty_item.creative_commons_license).to eq('hi')
     end
-    it 'shouldnt create multiple use nodes' do
+    it 'should not create multiple use nodes' do
       @empty_item.creative_commons_license = 'hi'
       @empty_item.creative_commons_license_human = 'greetings'
       @empty_item.use_statement = 'this is my use statement'
@@ -175,7 +175,7 @@ describe Dor::Editable do
     it 'should find the desc metadata format' do
       expect(@item.desc_metadata_format).to eq('MODS')
     end
-    it 'shouldnt fail on an item with an empty datastream' do
+    it 'should not fail on an item with an empty datastream' do
       expect(@empty_item.desc_metadata_format).to eq(nil)
     end
     it 'should set dark correctly' do
@@ -226,7 +226,7 @@ describe Dor::Editable do
     end
   end
   describe 'copyright_statement=' do
-    it 'shoudl work' do
+    it 'should assign' do
       @item.copyright_statement = 'hi'
       expect(@item.copyright_statement).to eq('hi')
     end
@@ -242,7 +242,7 @@ describe Dor::Editable do
     end
   end
   describe 'agreement=' do
-    it 'should work' do
+    it 'should assign' do
       pending "this test is probably checking AF internals"
       agr=double()
       allow(agr).to receive(:pid).and_return('druid:dd327qr3670')
@@ -288,13 +288,14 @@ describe Dor::Editable do
       allow(@item).to receive(:agreement).and_return('druid:agreement')
       allow(@item).to receive(:agreement_object).and_return(true)
       solr_doc = @item.to_solr
-      expect(solr_doc["default_rights_sim"]).to eq(['World'])
-      expect(solr_doc["agreement_sim"]).to eq(['druid:agreement'])
-    # expect(solr_doc["registration_default_collection_sim"]).to eq(["druid:fz306fj8334"])
-      expect(solr_doc["registration_workflow_id_sim"]).to eq(['digitizationWF'])
-      expect(solr_doc["use_statement_sim"]).to eq(["Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu."])
-      expect(solr_doc["copyright_sim"]).to eq(["Additional copyright info"])
-
+      expect(solr_doc).to match a_hash_including(
+        "default_rights_sim" => ['World'],
+        "agreement_sim"      => ['druid:agreement'],
+    #   "registration_default_collection_sim" => ["druid:fz306fj8334"],
+        "registration_workflow_id_sim" => ['digitizationWF'],
+        "use_statement_sim"  => ["Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu."],
+        "copyright_sim"      => ["Additional copyright info"]
+      )
     end
   end
 end
