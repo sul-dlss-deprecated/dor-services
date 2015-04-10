@@ -1,23 +1,19 @@
 module Dor
   module BasicItem
     extend ActiveSupport::Concern
-    
-    include Identifiable
+
     include Processable
-    include Governable
-    include Describable
-    include Publishable
     include Shelvable
-    include Embargoable
+    include Embargoable # implies Publishable implies Identifiable, Describable, Governable ...
     include Preservable
     include Assembleable
     include Versionable
     include Contentable
     include Geoable
     include Releasable
-    
+
   end
-  
+
   class Abstract < ::ActiveFedora::Base
     include Identifiable
   end
