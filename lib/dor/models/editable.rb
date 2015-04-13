@@ -2,6 +2,8 @@ module Dor
   module Editable
     extend ActiveSupport::Concern
 
+    ## Note: This is basically used just by APOs.  Arguably "editable" is the wrong name.
+
     included do
       belongs_to :agreement_object, :property => :referencesAgreement, :class_name => "Dor::Item"
     end
