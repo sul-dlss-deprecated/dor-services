@@ -69,7 +69,7 @@ module Dor
         add_solr_value(solr_doc,'ds_specs',ds.datastream_spec_string,:string,[:displayable]) unless ds.new?
       end
       add_solr_value(solr_doc, 'title_sort', self.label, :string, [:sortable])
-      title_attrs = [:searchable, :facetable, :displayable]
+      title_attrs = [:stored_searchable]
       rels_doc = Nokogiri::XML(self.datastreams['RELS-EXT'].content)
       apos=rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy','hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' )
       apos.each do |apo_node|
@@ -78,20 +78,20 @@ module Dor
         druid=druid.gsub('info:fedora/','')
         # check cache first
         if @@apo_hash.has_key?(druid) || @@hydrus_apo_hash.has_key?(druid)
-          add_solr_value(solr_doc, "hydrus_apo_title", @@hydrus_apo_hash[druid], :string, title_attrs) if @@hydrus_apo_hash.has_key? druid
-          add_solr_value(solr_doc, "apo_title", @@apo_hash[druid] , :string, title_attrs) if @@apo_hash.has_key? druid
+          add_solr_value(solr_doc, "hydrus_apo_title", @@hydrus_apo_hash[druid], :text, title_attrs) if @@hydrus_apo_hash.has_key? druid
+          add_solr_value(solr_doc, "apo_title", @@apo_hash[druid] , :text, title_attrs) if @@apo_hash.has_key? druid
         else
           begin
             apo_object=Dor.find(druid)
             if apo_object.tags.include? 'Project : Hydrus'
-              add_solr_value(solr_doc, "hydrus_apo_title", apo_object.label, :string, title_attrs)
+              add_solr_value(solr_doc, "hydrus_apo_title", apo_object.label, :text, title_attrs)
               @@hydrus_apo_hash[druid]=apo_object.label
             else
-              add_solr_value(solr_doc, "apo_title", apo_object.label, :string, title_attrs)
+              add_solr_value(solr_doc, "apo_title", apo_object.label, :text, title_attrs)
               @@apo_hash[druid]=apo_object.label
             end
           rescue
-            add_solr_value(solr_doc, "apo_title", druid, :string, title_attrs)
+            add_solr_value(solr_doc, "apo_title", druid, :text, title_attrs)
           end
         end
       end
