@@ -25,9 +25,10 @@ describe Dor::RightsMetadataDS do
   it "should have a rightsMetadata datastream" do
     expect(@item).to be_a(RightsHaver)
     expect(@item).to be_kind_of(Dor::Item)
-    skip "Not fully written"
-    #  binding.pry
     expect(@item.datastreams['rightsMetadata']).to be_a(Dor::RightsMetadataDS)
+    rm = @item.datastreams['rightsMetadata']
+  #  binding.pry
+    expect(rm).not_to be_nil
   end
 
   describe 'to_solr' do

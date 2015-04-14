@@ -7,8 +7,8 @@ module Dor
     # (2) this is real, not default
 
     set_terminology do |t|
-    #  t.root :path => 'rightsMetadata', :index_as => [:not_searchable]
-      t.root :path => 'rightz', :index_as => [:not_searchable]
+      t.root :path => 'rightsMetadata', :index_as => [:not_searchable]
+    # t.root :path => 'rightz', :index_as => [:not_searchable]
       t.copyright :path => 'copyright/human', :index_as => [:facetable]
       t.use_statement :path => '/use/human[@type=\'useAndReproduction\']', :index_as => [:facetable]
 
