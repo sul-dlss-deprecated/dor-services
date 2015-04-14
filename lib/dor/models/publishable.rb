@@ -10,7 +10,7 @@ module Dor
     include Presentable
 
     included do
-      has_metadata :name => "rightsMetadata", :type => ActiveFedora::OmDatastream, :label => 'Rights Metadata'
+      has_metadata :name => "rightsMetadata", :type => Dor::RightsMetadataDS, :label => 'Rights Metadata'
     end
 
     def build_rightsMetadata_datastream(ds)
