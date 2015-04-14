@@ -4,7 +4,7 @@ module Dor
 
     include Processable
     include Shelvable
-    include Embargoable # implies Publishable implies Identifiable, Describable, Governable ...
+    include Embargoable # implies Publishable implies Identifiable, Describable, Governable, Rightsable ...
     include Preservable
     include Assembleable
     include Versionable
