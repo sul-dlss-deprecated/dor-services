@@ -2,7 +2,7 @@ module Dor
   module Editable
     extend ActiveSupport::Concern
 
-    ## Note: This is basically used just by APOs.  Arguably "editable" is the wrong name.
+    ## This is basically used just by APOs.  Arguably "editable" is the wrong name.
 
     included do
       belongs_to :agreement_object, :property => :referencesAgreement, :class_name => "Dor::Item"
@@ -14,6 +14,7 @@ module Dor
       add_solr_value(solr_doc, "agreement", agreement, :string, [:facetable]) if agreement_object
       solr_doc
     end
+
     #Adds a person or group to a role in the APO role metadata datastream
     #
     #@param role   [String] the role the group or person will be filed under, ex. dor-apo-manager
@@ -43,8 +44,9 @@ module Dor
       end
       self.roleMetadata.content=xml.to_s
     end
+
     #remove all people groups and roles from the APO role metadata datastream
-    def purge_roles 
+    def purge_roles
       self.roleMetadata.ng_xml.search('/roleMetadata/role').each do |node|
         node.remove
       end

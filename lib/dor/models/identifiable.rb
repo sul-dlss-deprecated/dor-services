@@ -202,7 +202,7 @@ module Dor
 
     #Ensure that an administrative tag meets the proper mininum format
     #
-    #@params tag_str [String] the tag
+    #@param tag_str [String] the tag
     #
     #@return [Array] the tag split into an array via ':'
     def validate_tag_format(tag_str)
