@@ -107,24 +107,26 @@ module Dor
         next unless druid     # TODO: warning here would also be useful
         druid = druid.gsub('info:fedora/', '')
         if @@collection_hash.has_key?(druid) || @@hydrus_collection_hash.has_key?(druid)
-          add_solr_value(solr_doc, "hydrus_collection_title", @@hydrus_collection_hash[druid], :string, title_attrs) if @@hydrus_collection_hash.has_key? druid
-          add_solr_value(solr_doc, "collection_title", @@collection_hash[druid], :string, title_attrs) if @@collection_hash.has_key? druid
+          add_solr_value(solr_doc, "hydrus_collection_title", @@hydrus_collection_hash[druid], :text, title_attrs) if @@hydrus_collection_hash.has_key? druid
+          add_solr_value(solr_doc, "collection_title", @@collection_hash[druid], :text, title_attrs) if @@collection_hash.has_key? druid
         else
           begin
             collection_object = Dor.find(druid)
             if collection_object.tags.include? 'Project : Hydrus'
-              add_solr_value(solr_doc, "hydrus_collection_title", collection_object.label, :string, title_attrs)
+              add_solr_value(solr_doc, "hydrus_collection_title", collection_object.label, :text, title_attrs)
               @@hydrus_collection_hash[druid] = collection_object.label
             else
-              add_solr_value(solr_doc, "collection_title", collection_object.label, :string, title_attrs)
+              add_solr_value(solr_doc, "collection_title", collection_object.label, :text, title_attrs)
               @@collection_hash[druid] = collection_object.label
             end
           rescue
-            add_solr_value(solr_doc, "collection_title", druid, :string, title_attrs)
+            add_solr_value(solr_doc, "collection_title", druid, :text, title_attrs)
           end
         end
       end
+
       solr_doc["metadata_source_ssi"] = self.identity_metadata_source
+      
       solr_doc
     end
 
