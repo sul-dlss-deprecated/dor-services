@@ -126,8 +126,8 @@ module Dor
       end
 
       solr_doc["metadata_source_ssi"] = self.identity_metadata_source
-      
-      solr_doc
+
+      return solr_doc
     end
 
     #@return [String] calculated value for Solr index
