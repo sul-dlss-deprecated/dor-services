@@ -215,26 +215,27 @@ module Dor
 
     private
     def solrize_related_obj_titles(solr_doc, relationships, title_hash, hydrus_title_hash, field_name, hydrus_field_name)
-      title_attrs = [:stored_searchable]
+      title_type = :symbol
+      title_attrs = [] # type specified as :symbol is sufficient to get us an _ssim, could give :stored_searchable for atts if we also need a tesim
       relationships.each do |rel_node|
         rel_druid = rel_node['rdf:resource']
         next unless rel_druid   # TODO: warning here would also be useful
         rel_druid = rel_druid.gsub('info:fedora/', '')
         if title_hash.has_key?(rel_druid) || hydrus_title_hash.has_key?(rel_druid)
-          add_solr_value(solr_doc, hydrus_field_name, hydrus_title_hash[rel_druid], :text, title_attrs) if hydrus_title_hash.has_key? rel_druid
-          add_solr_value(solr_doc, field_name, title_hash[rel_druid], :text, title_attrs) if title_hash.has_key? rel_druid
+          add_solr_value(solr_doc, hydrus_field_name, hydrus_title_hash[rel_druid], title_type, title_attrs) if hydrus_title_hash.has_key? rel_druid
+          add_solr_value(solr_doc, field_name, title_hash[rel_druid], title_type, title_attrs) if title_hash.has_key? rel_druid
         else
           begin
             related_obj = Dor.find(rel_druid)
             if related_obj.tags.include? 'Project : Hydrus'
-              add_solr_value(solr_doc, hydrus_field_name, related_obj.label, :text, title_attrs)
+              add_solr_value(solr_doc, hydrus_field_name, related_obj.label, title_type, title_attrs)
               hydrus_title_hash[rel_druid] = related_obj.label
             else
-              add_solr_value(solr_doc, field_name, related_obj.label, :text, title_attrs)
+              add_solr_value(solr_doc, field_name, related_obj.label, title_type, title_attrs)
               title_hash[rel_druid] = related_obj.label
             end
           rescue
-            add_solr_value(solr_doc, field_name, rel_druid, :text, title_attrs)
+            add_solr_value(solr_doc, field_name, rel_druid, title_type, title_attrs)
           end
         end
       end

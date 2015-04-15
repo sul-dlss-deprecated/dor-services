@@ -170,7 +170,7 @@ describe Dor::Identifiable do
       #doc.keys.sort.each do |key|
       #  puts "#{key} #{doc[key]}"
       #end
-      expect(doc[Solrizer.solr_name('apo_title', :stored_searchable)].first).to eq('druid:fg890hi1234')
+      expect(doc[Solrizer.solr_name('apo_title', :symbol)].first).to eq('druid:fg890hi1234')
     end
     it 'should index metadata source' do
       expect(item.to_solr).to match a_hash_including('metadata_source_ssi' => 'Symphony')
