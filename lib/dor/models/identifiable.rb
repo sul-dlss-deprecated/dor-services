@@ -54,6 +54,7 @@ module Dor
     end
 
     ## Module-level variables, shared between ALL mixin includers!
+    # used for caching found values
     @@collection_hash={}
     @@apo_hash={}
     @@hydrus_apo_hash={}
@@ -74,11 +75,9 @@ module Dor
       add_solr_value(solr_doc, 'title_sort', self.label, :string, [:sortable])
 
       rels_doc = Nokogiri::XML(self.datastreams['RELS-EXT'].content)
-
       apos = rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy', 'hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-      solrize_related_obj_titles(solr_doc, apos, @@apo_hash, @@hydrus_apo_hash, "apo_title", "hydrus_apo_title")
-
       collections = rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+      solrize_related_obj_titles(solr_doc, apos, @@apo_hash, @@hydrus_apo_hash, "apo_title", "hydrus_apo_title")
       solrize_related_obj_titles(solr_doc, collections, @@collection_hash, @@hydrus_collection_hash, "collection_title", "hydrus_collection_title")
 
       solr_doc["metadata_source_ssi"] = self.identity_metadata_source
@@ -218,24 +217,24 @@ module Dor
     def solrize_related_obj_titles(solr_doc, relationships, title_hash, hydrus_title_hash, field_name, hydrus_field_name)
       title_attrs = [:stored_searchable]
       relationships.each do |rel_node|
-        druid = rel_node['rdf:resource']
-        next unless druid   # TODO: warning here would also be useful
-        druid = druid.gsub('info:fedora/', '')
-        if title_hash.has_key?(druid) || hydrus_title_hash.has_key?(druid)
-          add_solr_value(solr_doc, hydrus_field_name, hydrus_title_hash[druid], :text, title_attrs) if hydrus_title_hash.has_key? druid
-          add_solr_value(solr_doc, field_name, title_hash[druid], :text, title_attrs) if title_hash.has_key? druid
+        rel_druid = rel_node['rdf:resource']
+        next unless rel_druid   # TODO: warning here would also be useful
+        rel_druid = rel_druid.gsub('info:fedora/', '')
+        if title_hash.has_key?(rel_druid) || hydrus_title_hash.has_key?(rel_druid)
+          add_solr_value(solr_doc, hydrus_field_name, hydrus_title_hash[rel_druid], :text, title_attrs) if hydrus_title_hash.has_key? rel_druid
+          add_solr_value(solr_doc, field_name, title_hash[rel_druid], :text, title_attrs) if title_hash.has_key? rel_druid
         else
           begin
-            related_obj = Dor.find(druid)
+            related_obj = Dor.find(rel_druid)
             if related_obj.tags.include? 'Project : Hydrus'
               add_solr_value(solr_doc, hydrus_field_name, related_obj.label, :text, title_attrs)
-              hydrus_title_hash[druid] = related_obj.label
+              hydrus_title_hash[rel_druid] = related_obj.label
             else
               add_solr_value(solr_doc, field_name, related_obj.label, :text, title_attrs)
-              title_hash[druid] = related_obj.label
+              title_hash[rel_druid] = related_obj.label
             end
           rescue
-            add_solr_value(solr_doc, field_name, druid, :text, title_attrs)
+            add_solr_value(solr_doc, field_name, rel_druid, :text, title_attrs)
           end
         end
       end
