@@ -215,8 +215,8 @@ module Dor
 
     private
     def solrize_related_obj_titles(solr_doc, relationships, title_hash, hydrus_title_hash, field_name, hydrus_field_name)
-      title_type = :symbol
-      title_attrs = [] # type specified as :symbol is sufficient to get us an _ssim, could give :stored_searchable for atts if we also need a tesim
+      title_type = :symbol  # we'll get an _ssim because of the type
+      title_attrs = [:stored_searchable]  # we'll also get a _tesim from this attr
       relationships.each do |rel_node|
         rel_druid = rel_node['rdf:resource']
         next unless rel_druid   # TODO: warning here would also be useful
