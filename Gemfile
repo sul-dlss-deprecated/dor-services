@@ -8,6 +8,7 @@ group :development do
   gem "debugger", '1.6.3', :platform => :ruby_19
   gem "pry"
   gem "pry-debugger", '0.2.2', :platform => :ruby_19
+  gem "pry-byebug", :platform => [:ruby_20, :ruby_21]
 end
 
 group :test do
@@ -18,5 +19,5 @@ end
 # Dependencies are defined in dor-services.gemspec
 gemspec
 
-gem 'druid-tools', '0.3.1'
+gem 'druid-tools', '0.3.3'
 gem 'addressable', '2.3.5'
