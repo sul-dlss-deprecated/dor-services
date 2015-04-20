@@ -387,7 +387,7 @@ module Dor
       tags_currently_in_purl = self.get_release_tags_from_purl
       missing_tags = tags_currently_in_purl.map(&:downcase) - new_tags.keys.map(&:downcase) 
       missing_tags.each do |missing_tag|
-        new_tags[missing_tag.capitalize] = false
+        new_tags[missing_tag.capitalize] = {"release"=>false}
       end
       return new_tags
     end
