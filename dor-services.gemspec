@@ -43,7 +43,7 @@ Gem::Specification.new do |s|
 
   # Stanford dependencies
   s.add_dependency 'dor-workflow-service', '~> 1.7', '>= 1.7.1'
-  s.add_dependency 'druid-tools', '~> 0.4.0'
+  s.add_dependency 'druid-tools', '~> 0.4', '>= 0.4.1'
   s.add_dependency 'lyber-utils', '~> 0.1.2'
   s.add_dependency 'moab-versioning', '~> 1.4.4' # 1.3.2 fails, 1.4.3 fails
   s.add_dependency 'stanford-mods', '~> 0.0.14'
