@@ -91,7 +91,7 @@ describe Dor::Editable do
     it 'should find the copyright statement' do
       expect(@item.copyright_statement).to eq('Additional copyright info')
     end
-    it 'shouldnt fail on an item with an empty datastream' do
+    it 'should not fail on an item with an empty datastream' do
       expect(@empty_item.copyright_statement).to eq('')
     end
   end
@@ -121,7 +121,7 @@ describe Dor::Editable do
     it 'should find the creative commons license' do
       expect(@item.creative_commons_license).to eq('by-nc-sa')
     end
-    it 'shouldnt fail on an item with an empty datastream' do
+    it 'should not fail on an item with an empty datastream' do
       expect(@empty_item.creative_commons_license).to eq('')
     end
   end
@@ -140,6 +140,8 @@ describe Dor::Editable do
       @empty_item.creative_commons_license_human = 'greetings'
       @empty_item.use_statement = 'this is my use statement'
       expect(@empty_item.use_statement).to eq('this is my use statement')
+      expect(@empty_item.creative_commons_license_human).to eq 'greetings'
+      expect(@empty_item.creative_commons_license).to eq 'hi'
       expect(@empty_item.defaultObjectRights.ng_xml.search("//use").length).to eq(1)
     end
   end
@@ -206,7 +208,7 @@ describe Dor::Editable do
     it 'should get the title' do
       expect(@item.mods_title).to eq('Ampex')
     end
-    it 'shouldnt fail on an item with an empty datastream' do
+    it 'should not fail on an item with an empty datastream' do
       expect(@empty_item.mods_title).to eq('')
     end
   end
