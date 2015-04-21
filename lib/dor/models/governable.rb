@@ -87,6 +87,7 @@ module Dor
     end
     def rights
       return nil unless self.respond_to? :rightsMetadata
+      return nil if self.rightsMetadata.nil?
       xml = self.rightsMetadata.ng_xml
       return nil if xml.search('//rightsMetadata').length != 1      # ORLY?
       if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
