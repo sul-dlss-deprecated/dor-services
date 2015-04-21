@@ -4,29 +4,31 @@
 
 Require the following:
 
-    require 'dor-services'
+```ruby
+require 'dor-services'
+```
 
 Configuration is handled through the `Dor::Config` object:
 
 ```ruby
 Dor::Config.configure do
   # Basic DOR configuration
-  fedora.url = 'https://dor-dev.stanford.edu/fedora'
+  fedora.url  = 'https://dor-dev.stanford.edu/fedora'
   gsearch.url = 'http://dor-dev.stanford.edu/solr'
 
   # If using SSL certificates
   ssl do
     cert_file = File.dirname(__FILE__) + '/../certs/dummy.crt'
-    key_file = File.dirname(__FILE__) + '/../certs/dummy.key'
-    key_pass = 'dummy'
+    key_file  = File.dirname(__FILE__) + '/../certs/dummy.key'
+    key_pass  = 'dummy'
   end
 
   # If using SURI service
   suri do
     mint_ids = true
-    url = 'http://some.suri.host:8080'
+    url      = 'http://some.suri.host:8080'
     id_namespace = 'druid'
-    user = 'suriuser'
+    user     = 'suriuser'
     password = 'suripword'
   end
 end
@@ -38,13 +40,11 @@ Values can also be configured individually:
 
 ## Development and release process
 
-See the consul page for it at:
-https://consul.stanford.edu/display/dlssdev/How+to+release+and+use+a+DLSS+gem+to+the+gemserver
+See the [consul page](https://consul.stanford.edu/display/dlssdev/How+to+release+and+use+a+DLSS+gem+to+the+gemserver)
 
 ## Console
 
-You can start a pry session with the dor-services gem loaded by executing the
-script at
+You can start a pry session with the dor-services gem loaded by executing the script at:
 
     ./script/console
 
@@ -54,11 +54,13 @@ It will need the following in order to execute:
     ./config/certs/robots-dor-dev.crt
     ./config/certs/robots-dor-dev.key
 
-You can basically copy the
-`sul-lyberservices-dev:common-accessioning/current/config/environments/development.rb` file and the certs from there too
+To copy them from a known source:
+```bash
+scp sul-lyberservices-dev.stanford.edu:common-accessioning.old/common-accessioning/shared/config/certs/robots-dor-dev.* config/certs/
+scp sul-lyberservices-dev.stanford.edu:common-accessioning.old/common-accessioning/shared/config/environments/development.rb config/dev_console_env.rb
+```
 
-This is located in the `./script` subdirectory so that it does not get
-installed by clients of the gem
+Console is located in the `./script` subdirectory so that it does not get installed by clients of the gem.
 
 ## Releases
 
@@ -72,7 +74,6 @@ installed by clients of the gem
 *   **1.0.0**
     *   Richer response from Registration Service
     *   MD Toolkit metadata handler work with non-MODS metadata
-
 *   **1.0.1** Changed descMetadata fetcher to pull based on best available "other ID" instead of "source ID"
 *   **1.0.2** Added caching of metadata (250 records, 5 minute timeout)
 *   **1.0.3** Fix bug in build_datastream
@@ -91,37 +92,27 @@ installed by clients of the gem
 *   **1.4.1**
     *   Prettify/shrink public XML
     *   Improve `Dor::SearchService.gsearch` parameter handling
-
 *   **1.5.0**
     *   Add certificate-aware RSolr::Connection class
     *   Add `Dor::Base.touch(druid)` to trigger reindexing without ActiveFedora
-
 *   **1.6.0**
     *   Implement SdrIngestService and CleanupService
     *   Turn off ActiveFedora's automatic SOLR updating
-    *   Add MD Toolkit metadata handler workaround for NullPointerException in
-        eXist
-
+    *   Add MD Toolkit metadata handler workaround for NullPointerException in eXist
 *   **1.6.1** Fixed configuration of export directory in specs
 *   **1.6.2** Fixed configuration reference in cleanup spec
 *   **1.6.3** Simplify & speed up MD Toolkit metadata handler queries
-*   **1.6.4** Fix MetadataHandler spec tests to match new MD Toolkit
-    implementation
+*   **1.6.4** Fix MetadataHandler spec tests to match new MD Toolkit implementation
 *   **1.7.0**
     *   LYBERSTRUCTURE-138 Registration - read item-level agreementId from APO
-    *   LYBERSTRUCTURE-139 Registration - read relationships information from
-        APO
-
+    *   LYBERSTRUCTURE-139 Registration - read relationships information from APO
 *   **1.7.1**
     *   Minor tweaks to FOXML, identity metadata, and content metadata
     *   Normalize whitespace in descriptive metadata text fields
-
-*   **1.7.2** Add auto-updating Dor::Config.fedora.safeurl (url with user/pass
-    stripped)
+*   **1.7.2** Add auto-updating `Dor::Config.fedora.safeurl` (url with user/pass stripped)
 *   **2.0.0** **Major Release:**
     *   Service additions: SdrIngest, JHove, Cleanup, ProvenanceMetadata
-    *   New functionality: `Dor::SearchService#reindex(*pids)` uses gsearch's
-        XSLT internally
+    *   New functionality: `Dor::SearchService#reindex(*pids)` uses gsearch's XSLT internally
     *   Code cleanup: Merged redundant `RestClient::Resource.new()` calls into a
         single #client method on Dor::Config.fedora and Dor::Config.gsearch
     *   README formatting: Looks better in HTML, worse in text.
@@ -131,12 +122,10 @@ installed by clients of the gem
 *   **2.1.2** Add technicalMetadata to sdr_ingest_transfer's datastream list
 *   **2.2.0**
     *   New Datastreams: EmbargoMetadataDS and EventsDS
-    *   New Module: Dor::Embargo.  Can be mixed in to Dor objects to add
-        embargo functionality
+    *   New Module: Dor::Embargo.  Can be mixed in to Dor objects to add embargo functionality
     *   Gsearch xslt now indexes the embargoMetadata datastream
 
-*   **2.2.1** Mark EmbargoMetadataDS and EventsDS as dirty when their setters
-    are used
+*   **2.2.1** Mark EmbargoMetadataDS and EventsDS as dirty when their setters are used
 *   **2.2.2** Mark rightsMetadata as dirty when embargo is lifted
 *   **2.3.0**
     *   `Dor::WorkflowService#get_lifecycle`
@@ -151,8 +140,7 @@ installed by clients of the gem
 
 *   **2.4.1**
     *   Improve `Dor::Base.get_foxml()`
-    *   Index lifecycle directly from workflow processes instead of retrieving
-        lifecycle XML
+    *   Index lifecycle directly from workflow processes instead of retrieving lifecycle XML
 
 *   **2.4.2** Restrict gsearch stylesheet to pulling XML datastreams
 *   **2.5.0** Large-scale refactor of gsearch stylesheet and indexing methods
@@ -161,16 +149,13 @@ installed by clients of the gem
 *   **2.5.3**
     *   Handle empty <lifecycle> queries instead of a 404 exception
     *   Hotfix for public xml publishing from 2.3.1
-
 *   **2.5.4** Lock ActiveFedora at 3.0.4 for the time being -- higher versions
-    expect a fedora.yml file that we don't provide
+    expect a `fedora.yml` file that we don't provide
 *   **2.6.0** First usable release of reified workflow objects
 *   **2.6.1**
     *   Publish MODS descMetadata alongside public XML
     *   gsearch style sheet updates
-
-*   **2.6.2** Add relationship metadata (straight RELS-EXT clone) to public
-    XML
+*   **2.6.2** Add relationship metadata (straight RELS-EXT clone) to public XML
 *   **2.6.3** Filter irrelevant relationships out of public XML
 *   **3.0.0**
     *   Large-scale refactor of gem architecture
@@ -220,14 +205,11 @@ installed by clients of the gem
         and location mapping to published DC
 
 *   **3.1.0**
-    *   Restructured directory layout: Now organized into datastreams, models,
-        services, workflow, and utils
+    *   Restructured directory layout: Now organized into datastreams, models, services, workflow, and utils
     *   Move Dor-specific datastreams into `Dor::*` namespace
     *   Move `Dor::WorkflowService.get_objects_for_workstep` from lyber-core
-    *   Move remaining registration business logic from Argo's registration
-        controller to Dor::RegistrationService
-    *   Add dor-indexer (console) and dor-indexerd (daemon) executables to
-        reindex objects based on Fedora messages
+    *   Move remaining registration business logic from Argo's registration controller to Dor::RegistrationService
+    *   Add dor-indexer (console) and dor-indexerd (daemon) executables to reindex objects based on Fedora messages
 
 *   **3.1.1** Remove inline solrization of relationship referents
 *   **3.2.0**
@@ -266,18 +248,17 @@ installed by clients of the gem
 
 *   **3.4.0**
     *   Switch from explicit load to autoload for faster startup
-    *   Add Dor::Config.stomp (and Dor::Config.stomp.client)
-    *   Add resource-index-based Dor::SearchService.iterate_over_pids
+    *   Add `Dor::Config.stomp` (and `Dor::Config.stomp.client`)
+    *   Add resource-index-based `Dor::SearchService.iterate_over_pids`
 
 *   **3.4.1**
-    *   Fix field name bug in WorkflowObject.find_by_name
+    *   Fix field name bug in `WorkflowObject.find_by_name`
     *   Make the indexer queue/worker friendly
     *   Update tests to work with ActiveFedora 4.0
     *   Improve test stubbing to fix false (order-dependent) failures
 
 *   **3.4.2**
-    *   WorkflowService now requires active_support/core_ext explicitly in
-        order for robots to start
+    *   WorkflowService now requires active_support/core_ext explicitly in order for robots to start
 
 *   **3.5.0**
     *   Update active-fedora dependency to final 4.0.0 release
@@ -293,7 +274,7 @@ installed by clients of the gem
 
 *   **3.5.1** Hotfix for solrizing malformed tags
 *   **3.5.2**
-    *   Fix empty datastream check in Dor::Processable#build_datastream to
+    *   Fix empty datastream check in `Dor::Processable#build_datastream` to
         include cases where the content is equivalent to the default XML
         template for the datastream class
 
@@ -309,8 +290,7 @@ installed by clients of the gem
     *   Remediated objects are tagged with the version of dor-services that updated them
 
 *   **3.6.2** Minor migration and indexing bug fixes
-*   **3.6.3** Hotfix for `Describable#generate_dublin_core` raising the wrong
-    kind of exception
+*   **3.6.3** Hotfix for `Describable#generate_dublin_core` raising the wrong kind of exception
 *   **3.6.4** Add abstract to descMetadata
 *   **3.7.0** Use Moab versioning service in shelving
 *   **3.7.1** Make cm_inv_diff cache aspect-specific
@@ -322,27 +302,23 @@ installed by clients of the gem
 *   **3.8.1** (Unreleased)
 *   **3.8.2** SDR Ingest service hotfixes
 *   **3.8.3** Fix Timeout...rescue bug in dor-indexer
-*   **3.8.4** More robust exception handling in RegistrationService and
-    dor-indexer
+*   **3.8.4** More robust exception handling in RegistrationService and dor-indexer
 *   **3.9.0**
     *   Use options hash for Dor::WorkflowService update workflow and error methods
-    *   Move REST registration logic from Argo's ObjectsController#create to
-        Dor::RegistrationService#create_from_request
-    *   Monkey patch ActiveFedora::RelsExtDatastream.short_predicate to create
-        missing mappings on the fly.
+    *   Move REST registration logic from Argo's `ObjectsController#create` to `Dor::RegistrationService#create_from_request`
+    *   Monkey patch `ActiveFedora::RelsExtDatastream.short_predicate` to create missing mappings on the fly.
 
 *   **3.10.0** Added support for setting rights when registering an object.
-*   **3.10.1** Fixed a 1.87->1.93 syntax deprication issue
+*   **3.10.1** Fixed a 1.87->1.93 syntax deprecation issue
 *   **3.10.2** Changed the method for setting the rightsMetadata stream to trigger a save
 *   **3.10.3** Debugging failure to save rights metadata
 *   **3.10.4** Found the location where the report parameter from argo was being lost
 *   **3.10.5** Corrected the Stanford entry in rights metadata, and truncate the fedora label if it is too long
 *   **3.10.6** Removed a remnant from the previous change
 *   **3.10.7** Source id is now a required parameter for item registration
-*   **3.10.8** A descriptive metadata stream with basic mods created from the
-    label can be created in item registration
+*   **3.10.8** A descriptive metadata stream with basic mods created from the label can be created in item registration
 *   **3.11.0**
-    *   Dor::WorkflowObject.initial_workflow creates workflow xml from workflow definition objects
+    *   `Dor::WorkflowObject.initial_workflow` creates workflow xml from workflow definition objects
     *   Added Versionable concern
 
 *   **3.11.1** Include versionable concern with Dor::Item
@@ -355,33 +331,28 @@ installed by clients of the gem
         - Autoload the TechnicalMetadataService whenever dor-services is required
         - versionMetadata added at object creation and remediation
 
-*   **3.13.0** Create a Dor::DigitalStacksService.stacks_storage_dir method
+*   **3.13.0** Create a `Dor::DigitalStacksService.stacks_storage_dir` method
 *   **3.13.1** Patch to create workflows correctly for sdr
-*   **3.13.2** Embargo Update should update the datastream</b>
-*   **3.13.3** Another embargo fix</b>
-*   **3.13.4** initiate_apo_workflow does not create workflows datastream when
-    an object is new</b>
+*   **3.13.2** Embargo Update should update the datastream
+*   **3.13.3** Another embargo fix
+*   **3.13.4** initiate_apo_workflow does not create workflows datastream when an object is new
 *   **3.14.0**
     *   technicalMetadata bugfixes
     *   use sul-gems as new Gemfile source
 
-*   **3.14.1** Removed dor indexer and registration no longer requires a valid
-    label if md source is mdtoolkit or symphony"
+*   **3.14.1** Removed dor indexer and registration no longer requires a valid label if md source is mdtoolkit or symphony
 *   **3.14.6** Fixed a 1.9 incompatibility that was breaking things in argo
 *   **3.15.0** Use new dor-workflow-service gem
 *   **3.16.0** Add methods to query and close object versions
-*   **3.16.5** A number of changes to the to_solr methods to remove unneeded
-    stuff and add stuff that makes loading facets more efficient"
+*   **3.16.5** A number of changes to the `to_solr` methods to remove unneeded stuff and add stuff that makes loading facets more efficient
 *   **3.16.8** Added the ability to create a status string for and object and added that as an indexed field
 *   **3.16.9** Using moab-versioning >= 1.1.3
-*   **3.17.0** Versionable#close_version now archives versioningWF workflow. 
-    Requires a new Dor::Config param, dor_services.url
+*   **3.17.0** `Versionable#close_version` now archives versioningWF workflow.  Requires a new Dor::Config param, `dor_services.url`
 *   **3.17.1** Added roles and a solr field for the first shelved image in an object
-*   **3.17.2** Fixed a typo in get_collection_title and some tests that failed to catch the typo
+*   **3.17.2** Fixed a typo in `get_collection_title` and some tests that failed to catch the typo
 *   **3.17.3** TechnicalMetadataService and SdrIngestService now find content ok.  Updated gem dependencies
 *   **3.17.4** SdrIngestService was creating moab manifests that were missing SHA256 checksums
-*   **3.17.5** AddCollectionReference was causing the ng_xml for the desc
-    metadata in the current item instance to be polluted
+*   **3.17.5** AddCollectionReference was causing the `ng_xml` for the desc metadata in the current item instance to be polluted
 *   **3.17.6** Added a predicate mapping for hydrus
 *   **3.17.7** SdrIngestService was not handling case when new version has no new content files.
 *   **3.17.9** Now extracts all datastreams from Fedora even if file exists on disk.
@@ -389,7 +360,7 @@ installed by clients of the gem
 *   **3.17.11** Workflow was only set up to work with items from the dor repo.
 *   **3.17.12** BuildDatastream can now require the datastream be populated and raise an exception if it isnt
 *   **3.17.13** Fixes all known issues caused by nokogiri 1.56
-*   **3.18.0** Dor::Versionable.close_version changes to deal with tag and description
+*   **3.18.0** `Dor::Versionable.close_version` changes to deal with tag and description
 *   **3.18.4** The exception caused by a lack of desc metadata is logged silently
 *   **3.19.0** Optional params for version number and starting accessioning when archiving workflow
 *   **3.21.1** Allow user to specify resource type when adding a resource to content metadata
@@ -411,7 +382,7 @@ installed by clients of the gem
 *   **4.3.0** Add some missing hydrus solr fields
 *   **4.3.2** Bug fixes and refactoring of object status logic
 *   **4.4.3** Use moab 1.3.1
-*   **4.4.6** call super in Editable.to_solr
+*   **4.4.6** call super in `Editable.to_solr`
 *   **4.4.7** Use OM to index APO data
 *   **4.4.8** Fix a broken migration
 *   **4.4.9** add remote publishing via dor-services-app
