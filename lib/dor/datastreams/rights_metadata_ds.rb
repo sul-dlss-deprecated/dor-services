@@ -2,6 +2,8 @@ module Dor
   class RightsMetadataDS < ActiveFedora::OmDatastream
     require 'dor/rights_auth'
 
+    attr_writer :dra_object
+
     # This is separate from default_object_rights because
     # (1) we cannot default to such a permissive state
     # (2) this is real, not default
@@ -35,7 +37,7 @@ module Dor
             xml.machine{ xml.none }
           }
           xml.access(:type => 'read'){
-            xml.machine{ xml.none }
+            xml.machine{ xml.none }   # dark default
           }
           xml.use{
             xml.human(:type => 'useAndReproduction')
@@ -47,9 +49,14 @@ module Dor
       end.doc
     end
 
+    def dra_object
+      @dra_object ||= Dor::RightsAuth.parse(self.ng_xml, true)
+    end
+
     def to_solr(solr_doc=Hash.new, *args)
       super(solr_doc, *args)
-      # ...
+      dra = self.dra_object
+      solr_doc['rights_primary_ssi'] = dra.index_elements[:primary]
       solr_doc
     end
 
