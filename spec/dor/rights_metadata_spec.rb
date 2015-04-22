@@ -50,15 +50,14 @@ describe Dor::RightsMetadataDS do
 
   describe 'to_solr' do
     it 'should have correct primary' do
-      # binding.pry
       doc=@item.to_solr
-      # binding.pry
       expect(doc).to match a_hash_including(
         'rights_primary_ssi'  => 'stanford',
         "metadata_source_ssi" => "DOR",
         'title_tesim'         => ["Indianapolis 500"],
+        'rights_characteristics_ssim' => ["world_discover", "has_group_rights", "has_rule", "group|stanford", "world|no-download", "profile:group1|world1"]
       )
-      expect(doc).not_to include("rights_errors_ssim")
+      expect(doc).not_to include("rights_errors_ssim")  # don't include empties
     end
   end
 end
