@@ -1,22 +1,25 @@
-module Dor  
+module Dor
+
+  ## This is basically used just by APOs.  Arguably "editable" is the wrong name.
   module Editable
     extend ActiveSupport::Concern
 
     included do
       belongs_to :agreement_object, :property => :referencesAgreement, :class_name => "Dor::Item"
     end
-    
+
     def to_solr(solr_doc=Hash.new, *args)
       super(solr_doc, *args)
       add_solr_value(solr_doc, "default_rights", default_rights, :string, [:facetable])
       add_solr_value(solr_doc, "agreement", agreement, :string, [:facetable]) if agreement_object
       solr_doc
     end
+
     #Adds a person or group to a role in the APO role metadata datastream
     #
-    #@param role [String] the role the group or person will be filed under, ex. dor-apo-manager
+    #@param role   [String] the role the group or person will be filed under, ex. dor-apo-manager
     #@param entity [String] the name of the person or group, ex dlss:developers or sunetid:someone
-    #@param type [Symbol] :workgroup for a group or :person for a person
+    #@param type   [Symbol] :workgroup for a group or :person for a person
     def add_roleplayer role, entity, type=:workgroup
       xml=self.roleMetadata.ng_xml
       group = type == :workgroup ? 'group' : 'person'
@@ -41,8 +44,9 @@ module Dor
       end
       self.roleMetadata.content=xml.to_s
     end
+
     #remove all people groups and roles from the APO role metadata datastream
-    def purge_roles 
+    def purge_roles
       self.roleMetadata.ng_xml.search('/roleMetadata/role').each do |node|
         node.remove
       end
@@ -56,10 +60,10 @@ module Dor
     end
     #get all collections listed for this APO, used during registration
     #@return [Array] array of pids
-    def default_collections 
+    def default_collections
       return administrativeMetadata.term_values(:registration, :default_collection)
     end
-    #Add a collection to the listing of collections for items governed by this apo. 
+    #Add a collection to the listing of collections for items governed by this apo.
     #@param val [String] pid of the collection, ex. druid:ab123cd4567
     def add_default_collection val
       xml = self.administrativeMetadata.ng_xml
@@ -73,7 +77,7 @@ module Dor
       reg.add_child(node)
       self.administrativeMetadata.content=xml.to_s
     end
-    
+
     def remove_default_collection val
       xml = self.administrativeMetadata.ng_xml
       xml.search('//administrativeMetadata/registration/collection[@id=\''+val+'\']').remove
@@ -91,7 +95,7 @@ module Dor
       end
       roles
     end
-    def metadata_source 
+    def metadata_source
       self.administrativeMetadata.metadata_source.first
     end
     def metadata_source=(val)
@@ -131,23 +135,18 @@ module Dor
        self.defaultObjectRights.add_child_node(self.defaultObjectRights.ng_xml.root, :creative_commons)
       end
       self.defaultObjectRights.update_values({[:creative_commons_human] => val})
-      
     end
     #@return [String] A description of the rights defined in the default object rights datastream. Can be 'Stanford', 'World', 'Dark' or 'None'
     def default_rights
       xml=self.defaultObjectRights.ng_xml
       if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
         'Stanford'
+      elsif xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length ==1
+        'World'
+      elsif xml.search('//rightsMetadata/access[@type=\'discover\']/machine/none').length == 1
+        'Dark'
       else
-        if xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length ==1
-          'World'
-        else
-          if xml.search('//rightsMetadata/access[@type=\'discover\']/machine/none').length == 1
-            'Dark'
-          else
-            'None'
-          end
-        end
+        'None'
       end
     end
     #Set the rights in default object rights
@@ -157,36 +156,33 @@ module Dor
       rights_xml = self.defaultObjectRights.ng_xml
       rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
         node.children.remove
-        if rights=='dark'
-            world_node=Nokogiri::XML::Node.new('none',rights_xml)
-            node.add_child(world_node)
-        else
-            world_node=Nokogiri::XML::Node.new('world',rights_xml)
-          node.add_child(world_node)
-        end
+        world_node=Nokogiri::XML::Node.new((rights=='dark' ? 'none' : 'world'),rights_xml)
+        node.add_child(world_node)
       end
       rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
         node.children.remove
         machine_node=Nokogiri::XML::Node.new('machine',rights_xml)
-        if(rights=='world')
+        if rights == 'world'
           world_node=Nokogiri::XML::Node.new(rights,rights_xml)
           node.add_child(machine_node)
           machine_node.add_child(world_node)
-        elsif rights=='stanford'
+        elsif rights == 'stanford'
           world_node=Nokogiri::XML::Node.new(rights,rights_xml)
           node.add_child(machine_node)
           group_node=Nokogiri::XML::Node.new('group',rights_xml)
           group_node.content="Stanford"
           node.add_child(machine_node)
           machine_node.add_child(group_node)
-        elsif rights=='none' || rights == 'dark'
+        elsif rights == 'none' || rights == 'dark'
           none_node=Nokogiri::XML::Node.new('none',rights_xml)
           node.add_child(machine_node)
           machine_node.add_child(none_node)
+        else
+          raise ArgumentError, "Unrecognized rights value '#{rights}'"
         end
       end
     end
-    
+
     def desc_metadata_format
       self.administrativeMetadata.metadata_format.first
     end
@@ -220,7 +216,7 @@ module Dor
         wfs
       else
         []
-      end      
+      end
     end
     #set a single default workflow
     #@param wf [String] the name of the workflow, ex. 'digitizationWF'

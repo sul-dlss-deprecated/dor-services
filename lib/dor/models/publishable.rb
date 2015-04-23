@@ -8,17 +8,7 @@ module Dor
     include Describable
     include Itemizable
     include Presentable
-
-    included do
-      has_metadata :name => "rightsMetadata", :type => ActiveFedora::OmDatastream, :label => 'Rights Metadata'
-    end
-
-    def build_rightsMetadata_datastream(ds)
-      content_ds = self.admin_policy_object.datastreams['defaultObjectRights']
-      ds.dsLabel = 'Rights Metadata'
-      ds.ng_xml = content_ds.ng_xml.clone
-      ds.content = ds.ng_xml.to_xml
-    end
+    include Rightsable
 
     def public_relationships
       include_elements = ['fedora:isMemberOf','fedora:isMemberOfCollection']

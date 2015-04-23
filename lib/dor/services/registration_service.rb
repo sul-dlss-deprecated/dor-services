@@ -1,7 +1,6 @@
 require 'uuidtools'
 
 module Dor
-
   class RegistrationService
 
     class << self
@@ -173,7 +172,5 @@ module Dor
         end
       end
     end
-
   end
-
 end

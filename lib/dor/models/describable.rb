@@ -125,8 +125,8 @@ module Dor
         collection_title = Dor::Describable.get_collection_title(collection_obj)
         related_item_node=Nokogiri::XML::Node.new('relatedItem',doc)
         related_item_node['type']='host'
-        title_info_node=Nokogiri::XML::Node.new('titleInfo',doc)
-        title_node=Nokogiri::XML::Node.new('title',doc)
+        title_info_node = Nokogiri::XML::Node.new('titleInfo',doc)
+        title_node      = Nokogiri::XML::Node.new('title',doc)
         title_node.content=collection_title
 
         id_node=Nokogiri::XML::Node.new('identifier',doc)

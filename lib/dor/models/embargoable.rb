@@ -39,17 +39,6 @@ module Dor
       datastreams['events'].add_event("embargo", release_agent, "Embargo released")
     end
 
-    def world_doc
-      builder = Nokogiri::XML::Builder.new do |xml|
-        xml.access(:type => 'read') {
-          xml.machine {
-            xml.world
-          }
-        }
-      end
-      return builder.doc
-    end
-
     def release_20_pct_vis_embargo(release_agent="unknown")
       # Set status to released
       embargo_md = datastreams['embargoMetadata']
@@ -73,7 +62,7 @@ module Dor
 
     def update_embargo(new_date)
       if embargoMetadata.status != 'embargoed'
-        raise ArgumentError, 'You cannot change the embargo date of an item thant isnt embargoed.'
+        raise ArgumentError, 'You cannot change the embargo date of an item that is not embargoed.'
       end
       if new_date.past?
         raise ArgumentError, 'You cannot set the embargo date to a past date.'
