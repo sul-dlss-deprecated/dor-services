@@ -290,14 +290,12 @@ describe Dor::Editable do
       allow(@item).to receive(:agreement).and_return('druid:agreement')
       allow(@item).to receive(:agreement_object).and_return(true)
       solr_doc = @item.to_solr
-      expect(solr_doc).to match a_hash_including(
-        "default_rights_sim" => ['World'],
-        "agreement_sim"      => ['druid:agreement'],
-    #   "registration_default_collection_sim" => ["druid:fz306fj8334"],
-        "registration_workflow_id_sim" => ['digitizationWF'],
-        "use_statement_sim"  => ["Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu."],
-        "copyright_sim"      => ["Additional copyright info"]
-      )
+      expect(solr_doc).to match a_hash_including("default_rights_sim" => ['World'])
+      expect(solr_doc).to match a_hash_including("agreement_sim"      => ['druid:agreement'])
+    # expect(solr_doc).to match a_hash_including("registration_default_collection_sim" => ["druid:fz306fj8334"])
+      expect(solr_doc).to match a_hash_including("registration_workflow_id_sim" => ['digitizationWF'])
+      expect(solr_doc).to match a_hash_including("use_statement_sim"  => ["Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu."])
+      expect(solr_doc).to match a_hash_including("copyright_sim"      => ["Additional copyright info"])
     end
   end
 end

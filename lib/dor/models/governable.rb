@@ -1,6 +1,7 @@
 module Dor
   module Governable
     extend ActiveSupport::Concern
+    include Rightsable
 
     included do
       belongs_to :admin_policy_object, :property => :is_governed_by, :class_name => "Dor::AdminPolicyObject"
@@ -26,36 +27,11 @@ module Dor
     end
 
     def reset_to_apo_default()
-      rights_metadata_ds = self.rightsMetadata
-      rights_metadata_ds.content = admin_policy_object.rightsMetadata.ng_xml
+      self.rightsMetadata.content = admin_policy_object.rightsMetadata.ng_xml
     end
 
-    # slight misnomer: also sets discover rights!
     def set_read_rights(rights)
-      raise(ArgumentError, "Argument '#{rights}' is not a recognized value") unless ['world','stanford','none','dark'].include? rights
-      rights_xml = self.rightsMetadata.ng_xml
-      if (rights_xml.search('//rightsMetadata/access[@type=\'read\']').length==0)
-        raise('The rights metadata stream doesnt contain an entry for machine read permissions. Consider populating it from the APO before trying to change it.')
-      end
-      label = rights=='dark' ? 'none' : 'world'
-      rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
-        node.children.remove
-        node.add_child Nokogiri::XML::Node.new(label,rights_xml)
-      end
-      rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
-        node.children.remove
-        machine_node = Nokogiri::XML::Node.new('machine',rights_xml)
-        node.add_child(machine_node)
-        if rights == 'world'
-          machine_node.add_child Nokogiri::XML::Node.new(rights,rights_xml)
-        elsif rights == 'stanford'
-          group_node = Nokogiri::XML::Node.new('group',rights_xml)
-          group_node.content = "Stanford"
-          machine_node.add_child(group_node)
-        else  # we know it is none or dark by the argument filter (first line)
-          machine_node.add_child Nokogiri::XML::Node.new('none',rights_xml)
-        end
-      end
+      self.rightsMetadata.set_read_rights(rights)
     end
 
     def add_collection(collection_or_druid)
