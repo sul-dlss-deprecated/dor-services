@@ -212,6 +212,18 @@ module Dor
       return updated
     end
 
+    def get_related_obj_display_title(related_obj, default_title)
+      if related_obj
+        if related_obj.datastreams["DC"] && related_obj.datastreams["DC"].title
+          return related_obj.datastreams["DC"].title
+        else
+          return related_obj.label
+        end
+      end
+
+      return default_title
+    end
+
 
     private
     def solrize_related_obj_titles(solr_doc, relationships, title_hash, hydrus_title_hash, field_name, hydrus_field_name)
@@ -225,17 +237,14 @@ module Dor
           add_solr_value(solr_doc, hydrus_field_name, hydrus_title_hash[rel_druid], title_type, title_attrs) if hydrus_title_hash.has_key? rel_druid
           add_solr_value(solr_doc, field_name, title_hash[rel_druid], title_type, title_attrs) if title_hash.has_key? rel_druid
         else
-          begin
-            related_obj = Dor.find(rel_druid)
-            if related_obj.tags.include? 'Project : Hydrus'
-              add_solr_value(solr_doc, hydrus_field_name, related_obj.label, title_type, title_attrs)
-              hydrus_title_hash[rel_druid] = related_obj.label
-            else
-              add_solr_value(solr_doc, field_name, related_obj.label, title_type, title_attrs)
-              title_hash[rel_druid] = related_obj.label
-            end
-          rescue
-            add_solr_value(solr_doc, field_name, rel_druid, title_type, title_attrs)
+          related_obj = Dor.find(rel_druid)
+          related_obj_title = get_related_obj_display_title(related_obj, rel_druid)
+          if related_obj && related_obj.tags.include?('Project : Hydrus')
+            add_solr_value(solr_doc, hydrus_field_name, related_obj_title, title_type, title_attrs)
+            hydrus_title_hash[rel_druid] = related_obj_title
+          else
+            add_solr_value(solr_doc, field_name, related_obj_title, title_type, title_attrs)
+            title_hash[rel_druid] = related_obj_title
           end
         end
       end
