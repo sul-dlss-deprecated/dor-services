@@ -199,8 +199,8 @@ describe Dor::VersionMetadataDS do
   end
 
   describe 'sync_then_increment_version' do
-    it 'removes any version tags greater than the last known version, then creates a new version tag' do
-      xml = <<-XML
+
+    let(:five_versions_xml) {  <<-XML
       <versionMetadata objectId="druid:ab123cd4567">
         <version versionId="1" tag="1.0.0">
           <description>Initial Version</description>
@@ -219,10 +219,11 @@ describe Dor::VersionMetadataDS do
         </version>
       </versionMetadata>
       XML
+    }
 
-      ds = Dor::VersionMetadataDS.from_xml(xml)
+    it 'removes any version tags greater than the last known version, then creates a new version tag' do
+      ds = Dor::VersionMetadataDS.from_xml(five_versions_xml)
       allow(ds).to receive(:pid).and_return('druid:ab123cd4567')
-
 
       ds.sync_then_increment_version(2, :description => "Down to third version", :significance => :major)
 
@@ -240,9 +241,54 @@ describe Dor::VersionMetadataDS do
       </versionMetadata>
       XML
       )
-
     end
 
+    it 'increments the version if the requested version is equal to the current version' do
+      ds = Dor::VersionMetadataDS.from_xml(five_versions_xml)
+      allow(ds).to receive(:pid).and_return('druid:ab123cd4567')
+
+      ds.sync_then_increment_version(5, :description => "Up to 6", :significance => :major)
+
+      expect(ds.to_xml).to be_equivalent_to( <<-XML
+      <versionMetadata objectId="druid:ab123cd4567">
+        <version versionId="1" tag="1.0.0">
+          <description>Initial Version</description>
+        </version>
+        <version versionId="2" tag="1.1.0">
+          <description>minor update</description>
+        </version>
+        <version versionId="3" tag="2.1.0">
+          <description>minor update</description>
+        </version>
+        <version versionId="4" tag="3.1.0">
+          <description>minor update</description>
+        </version>
+        <version versionId="5" tag="4.1.0">
+          <description>minor update</description>
+        </version>
+        <version versionId="6" tag="5.0.0">
+          <description>Up to 6</description>
+        </version>
+      </versionMetadata>
+      XML
+      )
+    end
+
+    it 'performs synch and increment without any options' do
+      ds = Dor::VersionMetadataDS.from_xml(five_versions_xml)
+      allow(ds).to receive(:pid).and_return('druid:ab123cd4567')
+
+      ds.sync_then_increment_version(3)
+
+      expect(ds.current_version_id).to eq "4"
+    end
+
+    it 'raises an Exception if requested version is greater than current version' do
+      ds = Dor::VersionMetadataDS.from_xml(five_versions_xml)
+      allow(ds).to receive(:pid).and_return('druid:ab123cd4567')
+
+      expect{ ds.sync_then_increment_version(6) }.to raise_error(Dor::Exception, "Cannot sync to a version greater than current: 5, requested 6")
+    end
   end
 
 end
