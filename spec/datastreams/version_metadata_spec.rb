@@ -16,7 +16,7 @@ describe Dor::VersionMetadataDS do
     </versionMetadata>
     XML
   }
-  
+
   let(:first_xml) { <<-XML
     <versionMetadata>
     <version versionId="1" tag="1.0.0">
@@ -34,24 +34,24 @@ describe Dor::VersionMetadataDS do
     d.stub(:datastream_content).and_return(first_xml)
     d
   }
-        
-  
+
+
   describe "Marshalling to and from a Fedora Datastream" do
-    
+
     it "creates itself from xml" do
       ds = Dor::VersionMetadataDS.from_xml(dsxml)
       ds.find_by_terms(:version).size.should == 3
     end
-    
+
     it "creates a simple default with #new" do
       ds = Dor::VersionMetadataDS.new nil, 'versionMetadata'
       ds.stub(:pid).and_return('druid:ab123cd4567')
       ds.to_xml.should be_equivalent_to(first_xml)
     end
   end
-  
+
   describe "#increment_version" do
-        
+
     it "appends a new version block with an incremented versionId and converts significance to a tag" do
       v2 = <<-XML
       <versionMetadata objectId="druid:ab123cd4567">
@@ -66,7 +66,7 @@ describe Dor::VersionMetadataDS do
       ds.increment_version("minor update", :minor)
       ds.to_xml.should be_equivalent_to(v2)
     end
-    
+
     it "appends a new version block with an incremented versionId without passing in significance" do
       v2 = <<-XML
       <versionMetadata objectId="druid:ab123cd4567">
@@ -78,14 +78,14 @@ describe Dor::VersionMetadataDS do
       </version>
       </versionMetadata>
       XML
-      
+
       ds.increment_version("Next Version")
       ds.to_xml.should be_equivalent_to(v2)
     end
   end
-  
+
   describe "#update_current_version" do
-    
+
     let(:first_xml) { <<-XML
       <versionMetadata objectId="druid:ab123cd4567">
       <version versionId="1" tag="1.0.0">
@@ -110,7 +110,7 @@ describe Dor::VersionMetadataDS do
       XML
       )
     end
-    
+
     it "changes the previous value of tag with the new passed in version" do
       ds.increment_version("major update", :major) # Setting tag to 2.0.0
       ds.update_current_version :description => 'now minor update', :significance => :minor
@@ -126,7 +126,7 @@ describe Dor::VersionMetadataDS do
       XML
       )
     end
-    
+
     it "does not do anything if there is only 1 version" do
       ds.update_current_version :description => 'now minor update', :significance => :minor #should be ignored
       ds.to_xml.should be_equivalent_to( <<-XML
@@ -139,14 +139,14 @@ describe Dor::VersionMetadataDS do
       )
     end
   end
-  
+
   describe "#current_version_id" do
     it "finds the largest versionId within the versionMetadataDS" do
       ds = Dor::VersionMetadataDS.from_xml(dsxml)
       ds.current_version_id.should == '3'
     end
-  end  
-  
+  end
+
   describe 'current_tag' do
     it 'returns the tag of the lastest version' do
       ds = Dor::VersionMetadataDS.from_xml(dsxml)
@@ -159,9 +159,10 @@ describe Dor::VersionMetadataDS do
       </versionMetadata>'
       ds = Dor::VersionMetadataDS.from_xml(no_tag)
       ds.current_tag.should == ''
-    
+
     end
   end
+
   describe 'current_description' do
     it 'returns the description of the latest version' do
       ds = Dor::VersionMetadataDS.from_xml(dsxml)
@@ -175,12 +176,14 @@ describe Dor::VersionMetadataDS do
       ds.current_description.should == ''
     end
   end
+
   describe 'tag_for_version' do
     it 'should fetch the tag for a version' do
       ds = Dor::VersionMetadataDS.from_xml(dsxml)
       ds.tag_for_version('2').should == '2.0.0'
     end
   end
+
   describe 'description_for_version' do
     it 'should fetch the description for a version' do
       ds = Dor::VersionMetadataDS.from_xml(dsxml)
@@ -192,7 +195,55 @@ describe Dor::VersionMetadataDS do
       </version>
       </versionMetadata>'
       ds = Dor::VersionMetadataDS.from_xml(no_desc)
-      ds.description_for_version('3').should == ''    
+      ds.description_for_version('3').should == ''
     end
   end
+
+  describe 'sync_then_increment_version' do
+    it 'removes any version tags greater than the last known version, then creates a new version tag' do
+      xml = <<-XML
+      <versionMetadata objectId="druid:ab123cd4567">
+        <version versionId="1" tag="1.0.0">
+          <description>Initial Version</description>
+        </version>
+        <version versionId="2" tag="1.1.0">
+          <description>minor update</description>
+        </version>
+        <version versionId="3" tag="2.1.0">
+          <description>minor update</description>
+        </version>
+        <version versionId="4" tag="3.1.0">
+          <description>minor update</description>
+        </version>
+        <version versionId="5" tag="4.1.0">
+          <description>minor update</description>
+        </version>
+      </versionMetadata>
+      XML
+
+      ds = Dor::VersionMetadataDS.from_xml(xml)
+      allow(ds).to receive(:pid).and_return('druid:ab123cd4567')
+
+
+      ds.sync_then_increment_version(2, :description => "Down to third version", :significance => :major)
+
+      expect(ds.to_xml).to be_equivalent_to( <<-XML
+      <versionMetadata objectId="druid:ab123cd4567">
+        <version versionId="1" tag="1.0.0">
+          <description>Initial Version</description>
+        </version>
+        <version versionId="2" tag="1.1.0">
+          <description>minor update</description>
+        </version>
+        <version versionId="3" tag="2.0.0">
+          <description>Down to third version</description>
+        </version>
+      </versionMetadata>
+      XML
+      )
+
+    end
+
+  end
+
 end
