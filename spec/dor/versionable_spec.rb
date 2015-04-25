@@ -26,12 +26,13 @@ describe Dor::Versionable do
 
     context "normal behavior" do
       before(:each) do
-        Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
-        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
-        Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(nil)
-        obj.should_receive(:initialize_workflow).with('versioningWF')
-        obj.stub(:new_object?).and_return(false)
-        vmd_ds.should_receive(:save)
+        expect(Dor::WorkflowService).to receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
+        expect(Dor::WorkflowService).to receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
+        expect(Dor::WorkflowService).to receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(nil)
+        expect(Sdr::Client).to receive(:current_version).and_return(1)
+        expect(obj).to receive(:initialize_workflow).with('versioningWF')
+        allow(obj).to receive(:new_object?).and_return(false)
+        expect(vmd_ds).to receive(:save)
       end
 
       it "checks if an object has been accessioned and not yet opened" do
@@ -97,6 +98,15 @@ describe Dor::Versionable do
         Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(Time.new)
         expect { obj.open_new_version }.to raise_error(Dor::Exception, 'Object currently being accessioned')
       end
+
+      it "raises an exception if SDR's current version is greater than the current version" do
+        expect(Dor::WorkflowService).to receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
+        expect(Dor::WorkflowService).to receive(:get_active_lifecycle).with('dor', dr, 'opened').and_return(nil)
+        expect(Dor::WorkflowService).to receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(nil)
+        expect(Sdr::Client).to receive(:current_version).and_return(3)
+        expect { obj.open_new_version }.to raise_error(Dor::Exception, 'Cannot sync to a version greater than current: 1, requested 3')
+      end
+
     end
   end
 
@@ -172,4 +182,5 @@ describe Dor::Versionable do
       obj.allows_modification?.should == true
     end
   end
+
 end
