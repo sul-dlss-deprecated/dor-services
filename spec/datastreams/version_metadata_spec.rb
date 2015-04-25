@@ -161,6 +161,7 @@ describe Dor::VersionMetadataDS do
 
     end
   end
+
   describe 'current_description' do
     it 'returns the description of the latest version' do
       ds = Dor::VersionMetadataDS.from_xml(dsxml)
@@ -174,12 +175,14 @@ describe Dor::VersionMetadataDS do
       expect(ds.current_description).to eq('')
     end
   end
+
   describe 'tag_for_version' do
     it 'should fetch the tag for a version' do
       ds = Dor::VersionMetadataDS.from_xml(dsxml)
       expect(ds.tag_for_version('2')).to eq('2.0.0')
     end
   end
+
   describe 'description_for_version' do
     it 'should fetch the description for a version' do
       ds = Dor::VersionMetadataDS.from_xml(dsxml)
@@ -194,4 +197,52 @@ describe Dor::VersionMetadataDS do
       expect(ds.description_for_version('3')).to eq('')
     end
   end
+
+  describe 'sync_then_increment_version' do
+    it 'removes any version tags greater than the last known version, then creates a new version tag' do
+      xml = <<-XML
+      <versionMetadata objectId="druid:ab123cd4567">
+        <version versionId="1" tag="1.0.0">
+          <description>Initial Version</description>
+        </version>
+        <version versionId="2" tag="1.1.0">
+          <description>minor update</description>
+        </version>
+        <version versionId="3" tag="2.1.0">
+          <description>minor update</description>
+        </version>
+        <version versionId="4" tag="3.1.0">
+          <description>minor update</description>
+        </version>
+        <version versionId="5" tag="4.1.0">
+          <description>minor update</description>
+        </version>
+      </versionMetadata>
+      XML
+
+      ds = Dor::VersionMetadataDS.from_xml(xml)
+      allow(ds).to receive(:pid).and_return('druid:ab123cd4567')
+
+
+      ds.sync_then_increment_version(2, :description => "Down to third version", :significance => :major)
+
+      expect(ds.to_xml).to be_equivalent_to( <<-XML
+      <versionMetadata objectId="druid:ab123cd4567">
+        <version versionId="1" tag="1.0.0">
+          <description>Initial Version</description>
+        </version>
+        <version versionId="2" tag="1.1.0">
+          <description>minor update</description>
+        </version>
+        <version versionId="3" tag="2.0.0">
+          <description>Down to third version</description>
+        </version>
+      </versionMetadata>
+      XML
+      )
+
+    end
+
+  end
+
 end

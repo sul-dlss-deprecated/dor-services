@@ -168,9 +168,9 @@ module Dor
 
     # @return [String] The tag for the newest version
     def current_tag
-      current_version_node[:tag].to_s  
+      current_version_node[:tag].to_s
     end
-    
+
     def tag_for_version(versionId)
       nodes=self.ng_xml.search('//version[@versionId=\''+versionId+'\']')
       if nodes.length == 1
@@ -188,7 +188,7 @@ module Dor
         ''
       end
     end
-    
+
     # @return [String] The description for the current version
     def current_description
       desc_node=current_version_node.at_xpath('description')
@@ -197,7 +197,15 @@ module Dor
       end
       ''
     end
-    
+
+    def sync_then_increment_version known_version, opts = {}
+      while current_version_id.to_i != known_version
+        current_version_node.remove
+      end
+
+      increment_version(opts[:description], opts[:significance])
+    end
+
     private
 
     # @return [Nokogiri::XML::Node] Node representing the current version
@@ -210,5 +218,6 @@ module Dor
       tags = find_by_terms(:version, :tag)
       tags.map{|t| VersionTag.parse(t.value)}.max
     end
+
   end
 end
