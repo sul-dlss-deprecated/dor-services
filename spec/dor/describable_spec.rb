@@ -598,6 +598,8 @@ describe Dor::Describable do
         "sw_genre_tesim"              => ["(none)"],
         "sw_format_tesim"             => ["Book"],
         "sw_subject_temporal_tesim"   => ["1800-1900"],
+        "sw_pub_date_sort_ssi"        => '1911',
+        "sw_pub_date_facet_ssi"       => '1911',
 #        "sw_subject_geographic_tesim" => []
       )
     end
@@ -607,6 +609,22 @@ describe Dor::Describable do
         expect(@doc).to match a_hash_excluding({k => nil})
         expect(@doc).to match a_hash_excluding({k => []})
       }
+    end
+  end
+
+  describe "to_solr searchworks date-fu" do
+    before :each do
+      allow(@obj).to receive(:milestones).and_return({})
+      @obj.datastreams['descMetadata'].content = read_fixture('bs646cd8717_mods.xml')
+      @doc = @obj.to_solr()
+      expect(@doc).not_to be_nil
+    end
+    it "does temporal periods and pub_dates" do
+      expect(@doc).to match a_hash_including(
+        "sw_subject_temporal_tesim" => a_collection_containing_exactly("18th century","17th century"),
+        "sw_pub_date_sort_ssi"      => "1600",
+        "sw_pub_date_facet_ssi"     => "1600"
+      )
     end
   end
 

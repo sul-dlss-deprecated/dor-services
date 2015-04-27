@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.4" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
+  <titleInfo>
+    <title>Leon Kolb collection of portraits : engravings, etchings, mezzotints, lithographs, and acquatints, circa 1600-1850</title>
+  </titleInfo>
+  <name type="personal" usage="primary">
+    <namePart>Kolb, Leon</namePart>
+    <namePart type="date">1890-</namePart>
+  </name>
+  <typeOfResource collection="yes" manuscript="yes">mixed material</typeOfResource>
+  <genre authority="lcsh">Aquatint.</genre>
+  <genre authority="lcsh">Mezzotint engraving.</genre>
+  <genre authority="ftamc">Engravings.</genre>
+  <genre authority="ftamc">Etchings.</genre>
+  <genre authority="ftamc">Lithographs.</genre>
+  <originInfo>
+    <place>
+      <placeTerm authority="marccountry" type="code">cau</placeTerm>
+    </place>
+    <dateIssued encoding="marc" point="start" qualifier="questionable">1600</dateIssued>
+    <dateIssued encoding="marc" point="end" qualifier="questionable">1850</dateIssued>
+    <issuance>monographic</issuance>
+  </originInfo>
+  <language>
+    <languageTerm authority="iso639-2b" type="code">lat</languageTerm>
+  </language>
+  <physicalDescription>
+    <extent>20 linear feet (1855 items)</extent>
+    <note type="arrangement">Arranged by name of subject, each print is numbered for convenient reference in the various indices in the printed catalogue. Painters and engravers, printing techniques and social and historical positions of the subjects are identified and indexed as well.</note>
+  </physicalDescription>
+  <abstract>The subjects include rulers, statesmen, authors, scholars and other famous personages from ancient times to the nineteenth century. Most of the prints were produced in the 17th and 18th centuries from paintings by Hans Holbein, Anthony Vandyke, Godfrey Kneller, Peter Lely and other noted artists.</abstract>
+  <accessCondition type="restrictionOnAccess">Open for research; material must be requested at least 36 hours in advance of intended use.</accessCondition>
+  <note altRepGroup="00" type="statement of responsibility"/>
+  <note>Accession 1972-002 has been scanned (circa 1647 items). Accession 2010-110 (208 items) is not scanned, nor was it included in the published catalog. It has been added to the finding aid.</note>
+  <note>Published catalog available: Portraits: a catalog of the engravings, etchings, mezzotints, and lithographs presented to the Stanford University Library by Dr. and Mrs. Leon Kolb.[Stanford, Calif.] Stanford University, 1972</note>
+  <note type="acquisition">Gift of Dr. and Mrs. Leon Kolb, 1972. Accessions 1972-002 and 2010-110.</note>
+  <note type="biographical/historical">Dr. Kolb, Clinical Associate Professor Emeritus of Pharmacology in the Stanford School of Medicine, was a collector of books, prints, and objects d'art.</note>
+  <subject authority="lcsh">
+    <geographic>Europe</geographic>
+    <topic>Civilization</topic>
+    <temporal>18th century</temporal>
+  </subject>
+  <subject authority="lcsh">
+    <geographic>Europe</geographic>
+    <topic>History</topic>
+    <temporal>17th century</temporal>
+  </subject>
+  <location>
+    <physicalLocation>Department of Special Collections, Stanford University Libraries, Stanford, CA 94305.</physicalLocation>
+  </location>
+  <relatedItem>
+    <location>
+      <url displayLabel="Finding aid available online">http://www.oac.cdlib.org/findaid/ark:/13030/ft6h4nb2mk</url>
+    </location>
+  </relatedItem>
+  <recordInfo>
+    <descriptionStandard>aacr</descriptionStandard>
+    <descriptionStandard>dacs</descriptionStandard>
+    <recordContentSource authority="marcorg">CSt</recordContentSource>
+    <recordCreationDate encoding="marc">960814</recordCreationDate>
+    <recordIdentifier source="SIRSI">a4084372</recordIdentifier>
+    <recordOrigin>Converted from MARCXML to MODS version 3.4 using MARC21slim2MODS3-4_SDR.xsl (Version 1.2.5 2013/08/11)</recordOrigin>
+  </recordInfo>
+</mods>
