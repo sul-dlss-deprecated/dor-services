@@ -147,7 +147,7 @@ describe Dor::Processable do
       expect(Dor.logger).to receive(:warn)
       solr_doc=@item.to_solr
       #lifecycle_display should have the semicolon delimited version
-      expect(solr_doc[Solrizer.solr_name('lifecycle', :displayable)]).to include("published:2012-01-27T05:06:54Z;2")
+      expect(solr_doc['lifecycle_ssim']).to include("published:2012-01-27T05:06:54Z;2")
       #published date should be the first published date
       expect(solr_doc[Solrizer.solr_name('published', :type => :date)]).to eq(solr_doc[Solrizer.solr_name('published_earliest', :type => :date)])
       expect(solr_doc[Solrizer.solr_name('status', :displayable)].first).to eq('v4 In accessioning (described, published)')

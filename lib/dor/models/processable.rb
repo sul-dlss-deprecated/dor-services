@@ -167,15 +167,17 @@ module Dor
         end
       end
 
+      solr_doc['lifecycle_ssim'] ||= []
+
       self.milestones.each do |milestone|
         timestamp = milestone[:at].utc.xmlschema
         sortable_milestones[milestone[:milestone]] ||= []
         sortable_milestones[milestone[:milestone]] << timestamp
-        add_solr_value(solr_doc, 'lifecycle', milestone[:milestone], :string, [:searchable, :facetable])
         unless milestone[:version]
           milestone[:version]=current_version
         end
-        add_solr_value(solr_doc, 'lifecycle', "#{milestone[:milestone]}:#{timestamp};#{milestone[:version]}", :string, [:displayable])
+        solr_doc['lifecycle_ssim'] << milestone[:milestone]
+        add_solr_value(solr_doc, 'lifecycle', "#{milestone[:milestone]}:#{timestamp};#{milestone[:version]}", :symbol)
       end
 
       sortable_milestones.each do |milestone, unordered_dates|
@@ -184,13 +186,9 @@ module Dor
         add_solr_value(solr_doc, milestone+'_day', DateTime.parse(dates.last).beginning_of_day.utc.xmlschema.split('T').first, :string, [:stored_searchable, :facetable])
         add_solr_value(solr_doc, milestone, dates.first, :date, [:stored_searchable, :facetable])
 
-        #fields for OAI havester to sort on
-        add_solr_value(solr_doc, "#{milestone}_earliest_dt", dates.first, :date, [:sortable])
-        add_solr_value(solr_doc, "#{milestone}_latest_dt",   dates.last,  :date, [:sortable])
-
-        #for future faceting
-        add_solr_value(solr_doc, "#{milestone}_earliest", dates.first, :date, [:searchable, :facetable])
-        add_solr_value(solr_doc, "#{milestone}_latest",   dates.last,  :date, [:searchable, :facetable])
+        #fields for OAI havester to sort on: _dttsi is trie date +stored +indexed (single valued, i.e. sortable)
+        solr_doc["#{milestone}_earliest_dttsi"] = dates.first
+        solr_doc["#{milestone}_latest_dttsi"  ] = dates.last
       end
       add_solr_value(solr_doc,"status",status,:string, [:displayable])
 
