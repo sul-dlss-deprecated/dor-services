@@ -13,7 +13,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
       t.name_(:path => { :attribute => 'name' })
     end
     t.agreementId :index_as => [:searchable, :facetable]
-    t.tag :index_as => [:symbol, :searchable, :facetable]
+    t.tag :index_as => [:symbol]
     t.citationTitle
     t.objectCreator :index_as => [:searchable, :facetable]
     t.adminPolicy :index_as => [:not_searchable]
@@ -82,35 +82,52 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
   
   def to_solr(solr_doc=Hash.new, *args)
     super(solr_doc, *args)
+
     if digital_object.respond_to?(:profile)
-      digital_object.profile.each_pair do |property,value|
-        if property =~ /Date/
-          add_solr_value(solr_doc, property.underscore,  Time.parse(value).utc.xmlschema, :date, [:stored_searchable])
-        else
-          add_solr_value(solr_doc, property.underscore, value, :string, [:stored_searchable])
-        end
+      digital_object.profile.each_pair do |property, value|
+        add_solr_value(solr_doc, property.underscore, value, (property =~ /Date/ ? :date : :symbol), [:stored_searchable])
       end
     end
+
     if sourceId.present?
-      (name,id) = sourceId.split(/:/,2)
-      add_solr_value(solr_doc, "dor_id", id, :string, [:searchable, :facetable])
-      add_solr_value(solr_doc, "identifier", sourceId, :string, [:searchable, :facetable, :symbol])
-      add_solr_value(solr_doc, "source_id", sourceId, :string, [:symbol, :searchable, :facetable])
+      (name, id) = sourceId.split(/:/, 2)
+      add_solr_value(solr_doc, "dor_id", id, :symbol, [:stored_searchable])
+      add_solr_value(solr_doc, "identifier", sourceId, :symbol, [:stored_searchable])
+      add_solr_value(solr_doc, "source_id", sourceId, :symbol, [])
     end
     otherId.compact.each { |qid|
-      (name,id) = qid.split(/:/,2)
-      add_solr_value(solr_doc, "dor_id", id, :string, [:searchable, :facetable])
-      add_solr_value(solr_doc, "identifier", qid, :string, [:searchable, :facetable, :symbol])
-      add_solr_value(solr_doc, "#{name}_id", id, :string, [:symbol, :searchable, :facetable])
+      # this section will solrize barcode and catkey, which live in otherId
+      (name, id) = qid.split(/:/, 2)
+      add_solr_value(solr_doc, "dor_id", id, :symbol, [:stored_searchable])
+      add_solr_value(solr_doc, "identifier", qid, :symbol, [:stored_searchable])
+      add_solr_value(solr_doc, "#{name}_id", id, :symbol, [])
     }
-        
+    
+    # do some stuff to make tags in general and project tags specifically more easily searchable and facetable
     self.find_by_terms(:tag).each { |tag|
-      (top,rest) = tag.text.split(/:/,2)
+      (prefix, rest) = tag.text.split(/:/, 2)
+      prefix = prefix.downcase.strip.gsub(/\s/,'_')
       unless rest.nil?
-        add_solr_value(solr_doc, "#{top.downcase.strip.gsub(/\s/,'_')}_tag", rest.strip, :string, [:symbol, :searchable, :facetable])
+        # this part will index a value in a field specific to the tag, e.g. registered_by_tag_*, 
+        # book_tag_*, project_tag_*, remediated_by_tag_*, etc.  project_tag_* and registered_by_tag_*
+        # definitley get used, but most don't.  we can limit the prefixes that get solrized if things 
+        # get out of hand.
+        add_solr_value(solr_doc, "#{prefix}_tag", rest.strip, :symbol, [])
+      end
+
+      # solrize each possible prefix for the tag, inclusive of the full tag.
+      # e.g., for a tag such as "A : B : C", this will solrize to an _sim field 
+      # that contains ["A",  "A : B",  "A : B : C"].
+      tag_parts = tag.text.split(/:/)
+      progressive_tag_prefix = ''
+      tag_parts.each_with_index do |part, index|
+        progressive_tag_prefix += " : " if index > 0
+        progressive_tag_prefix += part.strip
+        add_solr_value(solr_doc, "tag", progressive_tag_prefix, :string, [:facetable])
       end
     }
-    solr_doc
+
+    return solr_doc
   end
 end #class
 end
