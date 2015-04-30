@@ -116,14 +116,14 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
       end
 
       # solrize each possible prefix for the tag, inclusive of the full tag.
-      # e.g., for a tag such as "A : B : C", this will solrize to an _sim field 
+      # e.g., for a tag such as "A : B : C", this will solrize to an _ssim field 
       # that contains ["A",  "A : B",  "A : B : C"].
       tag_parts = tag.text.split(/:/)
       progressive_tag_prefix = ''
       tag_parts.each_with_index do |part, index|
         progressive_tag_prefix += " : " if index > 0
         progressive_tag_prefix += part.strip
-        add_solr_value(solr_doc, "tag", progressive_tag_prefix, :string, [:facetable])
+        add_solr_value(solr_doc, "exploded_tag", progressive_tag_prefix, :symbol, [])
       end
     }
 
