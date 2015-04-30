@@ -149,8 +149,8 @@ describe Dor::Processable do
       #lifecycle_display should have the semicolon delimited version
       expect(solr_doc['lifecycle_ssim']).to include("published:2012-01-27T05:06:54Z;2")
       #published date should be the first published date
+      expect(solr_doc).to match a_hash_including('status_ssi' => 'v4 In accessioning (described, published)')
       expect(solr_doc[Solrizer.solr_name('published', :type => :date)]).to eq(solr_doc[Solrizer.solr_name('published_earliest', :type => :date)])
-      expect(solr_doc[Solrizer.solr_name('status', :displayable)].first).to eq('v4 In accessioning (described, published)')
       expect(solr_doc[Solrizer.solr_name('version_opened', :facetable)].first).to eq('2012-11-07')
     end
     it 'should skip the versioning related steps if a new version hasnt been opened' do

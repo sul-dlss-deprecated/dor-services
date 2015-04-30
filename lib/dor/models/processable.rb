@@ -106,6 +106,7 @@ module Dor
       Dor::WorkflowService.get_milestones('dor',self.pid)
     end
 
+    # @return [Hash] including :current_version, :status_code and :status_time
     def status_info()
       current_version = '1'
       begin
@@ -139,6 +140,8 @@ module Dor
       return {:current_version => current_version, :status_code => status_code, :status_time => status_time}
     end
 
+    # @param [Boolean] include_time
+    # @return [String] single composed status from status_info
     def status(include_time=false)
       status_info_hash = status_info
       current_version, status_code, status_time = status_info_hash[:current_version], status_info_hash[:status_code], status_info_hash[:status_time]
@@ -167,8 +170,6 @@ module Dor
         end
       end
 
-      solr_doc['lifecycle_ssim'] ||= []
-
       self.milestones.each do |milestone|
         timestamp = milestone[:at].utc.xmlschema
         sortable_milestones[milestone[:milestone]] ||= []
@@ -176,6 +177,7 @@ module Dor
         unless milestone[:version]
           milestone[:version]=current_version
         end
+        solr_doc['lifecycle_ssim'] ||= []
         solr_doc['lifecycle_ssim'] << milestone[:milestone]
         add_solr_value(solr_doc, 'lifecycle', "#{milestone[:milestone]}:#{timestamp};#{milestone[:version]}", :symbol)
       end
@@ -190,14 +192,14 @@ module Dor
         solr_doc["#{milestone}_earliest_dttsi"] = dates.first
         solr_doc["#{milestone}_latest_dttsi"  ] = dates.last
       end
-      add_solr_value(solr_doc,"status",status,:string, [:displayable])
+      solr_doc["status_ssi"] = status # status is singular (i.e. the current one)
 
       if sortable_milestones['opened']
         #add a facetable field for the date when the open version was opened
         opened_date=sortable_milestones['opened'].sort.last
         add_solr_value(solr_doc, "version_opened", DateTime.parse(opened_date).beginning_of_day.utc.xmlschema.split('T').first, :string, [ :searchable, :facetable])
       end
-      add_solr_value(solr_doc, "current_version", current_version.to_s, :string, [ :displayable , :facetable])
+      solr_doc["current_version_isi"] = current_version.to_i
       add_solr_value(solr_doc, "last_modified_day", self.modified_date.to_s.split('T').first, :string, [ :facetable ])
       add_solr_value(solr_doc, "rights", rights, :string, [:facetable]) if self.respond_to? :rights
       solr_doc
