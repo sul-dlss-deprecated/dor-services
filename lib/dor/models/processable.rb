@@ -143,13 +143,20 @@ module Dor
     # @param [Boolean] include_time
     # @return [String] single composed status from status_info
     def status(include_time=false)
-      status_info_hash = status_info
+      status_info_hash = status_info()
       current_version, status_code, status_time = status_info_hash[:current_version], status_info_hash[:status_code], status_info_hash[:status_time]
 
       #use the translation table to get the appropriate verbage for the latest step
       result = "v#{current_version} #{STATUS_CODE_DISP_TXT[status_code]}"
       result += " #{format_date(status_time)}" if include_time
       return result
+    end
+
+    # return the text translation of the status code, minus any trailing parenthetical explanation
+    # e.g. 'In accessioning (described)' and 'In accessioning (described, published)' both come back
+    # as 'In accessioning'
+    def simplified_status_code_disp_txt(status_code)
+      return STATUS_CODE_DISP_TXT[status_code].gsub(/\(.*\)$/, '').strip
     end
 
     def to_solr(solr_doc=Hash.new, *args)
@@ -195,7 +202,13 @@ module Dor
       solr_doc["current_version_isi"] = current_version.to_i
       add_solr_value(solr_doc, "last_modified_day", self.modified_date.to_s.split('T').first, :string, [ :facetable ])
       add_solr_value(solr_doc, "rights", rights, :string, [:facetable]) if self.respond_to? :rights
-      solr_doc
+
+      status_info_hash = status_info()
+      status_code = status_info_hash[:status_code]
+      add_solr_value(solr_doc, 'processing_status_text', simplified_status_code_disp_txt(status_code), :string, [:stored_sortable])
+      solr_doc['processing_status_code_isi'] = status_code # no _isi in Solrizer's default descriptors
+
+      return solr_doc
     end
 
     # Initilizes workflow for the object in the workflow service

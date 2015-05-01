@@ -301,4 +301,11 @@ describe Dor::Processable do
       item.initialize_workflow('accessionWF')
     end
   end
+
+  describe '#simplified_status_code_disp_txt' do
+    it "trims off parens but doesn't harm the strings otherwise" do
+      expect(@item.simplified_status_code_disp_txt(2)).to eq('In accessioning')
+      expect(@item.simplified_status_code_disp_txt(3)).to eq('In accessioning')
+    end
+  end
 end
