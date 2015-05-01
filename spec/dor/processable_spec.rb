@@ -155,7 +155,7 @@ describe Dor::Processable do
       expect(solr_doc['published_latest_dttsi'  ]).to eq("2012-11-07T00:59:39Z")
       expect(solr_doc['published_dttsim'].first).to eq(solr_doc['published_earliest_dttsi'])
       expect(solr_doc['published_dttsim'].last ).to eq(solr_doc['published_latest_dttsi'  ])
-      expect(solr_doc['published_dttsim'].size ).to eq(3)
+      expect(solr_doc['published_dttsim'].size ).to eq(3) # not 4 because 1 deduplicated value removed!
       expect(solr_doc['opened_earliest_dttsi']).to eq('2012-10-29T23:30:07Z') #  2012-10-29T16:30:07-0700
       expect(solr_doc['opened_latest_dttsi'  ]).to eq('2012-11-07T00:21:02Z') #  2012-11-06T16:21:02-0800
     end
