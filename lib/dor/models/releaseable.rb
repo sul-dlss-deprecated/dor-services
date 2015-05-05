@@ -5,11 +5,7 @@ module Dor
   module Releaseable
     extend ActiveSupport::Concern
     include Itemizable
-    
-<<<<<<< HEAD:lib/dor/models/releaseable.rb
-    #Generate XML structure for inclusion to Purl 
-=======
-    
+        
     #Add release tags to an item and initialize the item release workflow
     #
     #@params release_tags [Hash or Array] Either a hash of a single release tag.  Each tag should be in the form of {:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket', :release=>true/false}
@@ -33,7 +29,6 @@ module Dor
     end
 
     #Generate XML structure for inclusion to Purl
->>>>>>> ca6d4ad... Adding in a method to add tags and release in just one function.:lib/dor/models/releasable.rb
     #
     #@return [String] The XML release node as a string, with ReleaseDigest as the root document
     def generate_release_xml
