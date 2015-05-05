@@ -320,8 +320,7 @@ describe "Adding release nodes", :vcr do
       end
     end
     
-    #TODO:  These two are pending because first we need to create and object in purl with a release data section, then we can record a purl fetch for them
-    xit 'should get a list of release tags in druid for a druid' do
+    it 'should get a list of release tags in druid for a druid' do
       VCR.use_cassette('fetch_le_mans_purl') do
         item = Dor::Item.find(@le_mans_druid)
         x = item.get_xml_from_purl
@@ -329,20 +328,34 @@ describe "Adding release nodes", :vcr do
       end
     end
     
-    xit 'should add in release tags as false for targets that are listed on the purl but not in new tag generation' do
+    it 'should add in release tags as false for targets that are listed on the purl but not in new tag generation' do
       VCR.use_cassette('fetch_le_mans_purl') do
         item = Dor::Item.find(@le_mans_druid)
         x = item.get_xml_from_purl
-        expect(item.add_tags_from_purl({})).to match({"Kurita"=>false, "Atago"=>false, "Mogami"=>false})
+        generated_tags = {} #pretend no tags were found in the most recent dor object, so all tags in the purl should return false 
+        tags_currently_in_purl = item.get_release_tags_from_purl_xml(x) #These are the tags currently in purl
+        final_result_tags = item.add_tags_from_purl(generated_tags) #Final result of dor and purl tags
+        expect(final_result_tags.keys).to match(tags_currently_in_purl) #all tags currently in purl should be reflected 
+        final_result_tags.keys.each do |tag|
+          expect(final_result_tags[tag]).to match ({'release'=>false}) #all tags should be false for their releas
+        end
+      end
+    end
+    
+    it 'should add in release tags as false for targets that are listed on the purl but not in new tag generation' do
+      VCR.use_cassette('fetch_le_mans_purl') do
+        item = Dor::Item.find(@le_mans_druid)
+        x = item.get_xml_from_purl
+        generated_tags = {'Kurita'=>{'release'=>true}} #only kurita has returned as true
+        tags_currently_in_purl = item.get_release_tags_from_purl_xml(x) #These are the tags currently in purl
+        final_result_tags = item.add_tags_from_purl(generated_tags) #Final result of dor and purl tags
+        expect(final_result_tags.keys).to match(tags_currently_in_purl) #all tags currently in purl should be reflected 
+        final_result_tags.keys.each do |tag|
+          expect(final_result_tags[tag]).to match ({'release'=>false}) if tag != 'Kurita' #Kurita should still be true
+        end
+        expect(final_result_tags['Kurita']).to match ({'release'=>true})
       end
     end
     
   end
-  
-  
-  
-
-  
-  #expect{@item.valid_release_attributes_and_tag(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}
-    
 end
