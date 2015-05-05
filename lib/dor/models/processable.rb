@@ -200,7 +200,7 @@ module Dor
       end
       solr_doc["status_ssi"] = status # status is singular (i.e. the current one)
       solr_doc["current_version_isi"] = current_version.to_i
-      add_solr_value(solr_doc, "last_modified_day", self.modified_date.to_s.split('T').first, :string, [ :facetable ])
+      solr_doc["modified_latest_dttsi"] = self.modified_date.utc.xmlschema
       add_solr_value(solr_doc, "rights", rights, :string, [:facetable]) if self.respond_to? :rights
 
       status_info_hash = status_info()
