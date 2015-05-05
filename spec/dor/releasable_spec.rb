@@ -21,7 +21,7 @@ describe Dor::Releasable, :vcr do
   after :each do
     Dor::Config.pop!
   end
-
+  
   describe "Tag sorting, combining, and comparision functions" do
 
     before :each do
@@ -220,6 +220,27 @@ describe "Adding release nodes", :vcr do
     Dor::Config.pop!
   end
   
+  describe "Adding tags and workflows" do  
+    it "should release an item with one release tag supplied" do
+      allow(@item).to receive(:save).and_return(true) #stud out the true in that it we lack a connection to solr
+      expect(@item).to receive(:initialize_workflow).with('releaseWF') #Make sure releaseWF is called
+      expect(@item).to receive(:add_release_node).once     
+      expect(@item.add_release_nodes_and_start_releaseWF({:release=> true, :what=>'self', :who=>'carrickr',:to=>'FRDA'})).to eq(nil) #Should run and return void
+      
+    end
+    
+    it "should release an item with multiple release tags supplied" do
+      allow(@item).to receive(:save).and_return(true) #stud out the true in that it we lack a connection to solr
+      expect(@item).to receive(:initialize_workflow).with('releaseWF') #Make sure releaseWF is called
+      expect(@item).to receive(:add_release_node).twice   
+      tags = [{:release=> true, :what=>'self', :who=>'carrickr',:to=>'FRDA'},{:release=> true, :what=>'self', :who=>'carrickr',:to=>'Revs'}]  
+      expect(@item.add_release_nodes_and_start_releaseWF(tags)).to eq(nil) #Should run and return void
+      
+    end
+    
+    
+  end
+  
   it "should raise an error when no :who, :to,  or :what is supplied" do
       expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => nil, :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
       expect{@item.valid_release_attributes(false, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>nil, :what => 'collection', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
@@ -355,7 +376,6 @@ describe "Adding release nodes", :vcr do
         end
         expect(final_result_tags['Kurita']).to match ({'release'=>true})
       end
-    end
-    
+    end  
   end
 end
