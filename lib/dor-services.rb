@@ -4,7 +4,7 @@ require 'active_support/core_ext/module/attribute_accessors'
 module Dor
   @@registered_classes = {}
   mattr_reader :registered_classes
-  INDEX_VERSION_FIELD = 'dor_services_version_facet'
+  INDEX_VERSION_FIELD = 'dor_services_version_ssi'
 
   class << self
 
