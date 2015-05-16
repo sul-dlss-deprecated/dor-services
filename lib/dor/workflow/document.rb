@@ -125,7 +125,6 @@ module Workflow
       end
 
       solr_doc[Solrizer.solr_name('wf_wps', :symbol)].uniq! if solr_doc[Solrizer.solr_name('wf_wps', :symbol)]
-      solr_doc[Solrizer.solr_name('wf_wps', :symbol)].uniq! if solr_doc[Solrizer.solr_name('wf_wps', :symbol)]
       solr_doc[Solrizer.solr_name('wf_wsp', :symbol)].uniq! if solr_doc[Solrizer.solr_name('wf_wsp', :symbol)]
       solr_doc[Solrizer.solr_name('wf_swp', :symbol)].uniq! if solr_doc[Solrizer.solr_name('wf_swp', :symbol)]
       solr_doc['workflow_status'].uniq! if solr_doc['workflow_status']
