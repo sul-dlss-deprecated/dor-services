@@ -5,8 +5,30 @@ module Dor
   module Releaseable
     extend ActiveSupport::Concern
     include Itemizable
-    
-    #Generate XML structure for inclusion to Purl 
+        
+    #Add release tags to an item and initialize the item release workflow
+    #
+    #@params release_tags [Hash or Array] Either a hash of a single release tag.  Each tag should be in the form of {:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket', :release=>true/false}
+    #
+    #@raise [ArgumentError] Raised if the tags are improperly supplied
+    #
+    #
+    def add_release_nodes_and_start_releaseWF(release_tags)
+      release_tags = [release_tags] if release_tags.class != Array
+      
+      #Add in each tag
+      release_tags.each do |r_tag|
+        self.add_release_node(r_tag[:release],r_tag)
+      end
+      
+      #Save the item to dor so the robots work with the latest data
+      self.save 
+      
+      #Intialize the release workflow
+      self.initialize_workflow('releaseWF') 
+    end
+
+    #Generate XML structure for inclusion to Purl
     #
     #@return [String] The XML release node as a string, with ReleaseDigest as the root document
     def generate_release_xml
@@ -256,7 +278,7 @@ module Dor
     #
     #@return [Nokogiri::XML::Element] the tag added if successful 
     #
-    #@raise [RuntimeError] Raised if attributes are improperly supplied
+    #@raise [ArgumentError] Raised if attributes are improperly supplied
     #
     #@params tag [Boolean] True or false for the release node
     #@params attrs [hash]  A hash of any attributes to be placed onto the tag 
