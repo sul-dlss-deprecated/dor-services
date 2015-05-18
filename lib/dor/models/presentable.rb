@@ -6,7 +6,7 @@ module Dor
     DC_NS = {"dc"=>"http://purl.org/dc/elements/1.1/", "oai_dc"=>"http://www.openarchives.org/OAI/2.0/oai_dc/"}
 
     def iiif_presentation_manifest_needed? pub_obj_doc
-      if(pub_obj_doc.at_xpath('/publicObject/contentMetadata[@type="image"]/resource[@type="image"]'))
+      if(pub_obj_doc.at_xpath('/publicObject/contentMetadata[contains(@type,"image") or contains(@type,"map")]/resource[@type="image"]'))
         return true
       elsif(pub_obj_doc.at_xpath('/publicObject/contentMetadata[@type="book"]/resource[@type="page"]'))
         return true
