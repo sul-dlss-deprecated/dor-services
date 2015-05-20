@@ -80,7 +80,12 @@ module Dor
 
         canv = IIIF::Presentation::Canvas.new
         canv['@id'] = "#{purl_base_uri}/canvas/canvas-#{count}"
-        canv.label = res_node.at_xpath('label').text
+        label_node = res_node.at_xpath('label')
+        if label_node
+          canv.label = label_node.text
+        else
+          canv.label = "image"
+        end
         canv.height = height
         canv.width = width
 
