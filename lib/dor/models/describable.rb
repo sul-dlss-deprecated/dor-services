@@ -197,7 +197,8 @@ module Dor
           solr_doc[solr_key].push *vals unless (vals.nil? || vals.empty?)
           # asterisk to avoid multi-dimensional array: push values, not the array
         end
-        solr_doc['sw_pub_date_sort_ssi'] = mods.pub_date_sort
+        solr_doc['sw_pub_date_sort_ssi' ] = mods.pub_date_sort  # e.g. '0800'
+        solr_doc['sw_pub_date_facet_ssi'] = mods.pub_date_facet # e.g. '9th century'
       end
       # some fields get explicit "(none)" placeholder values, mostly for faceting
       %w[sw_language_tesim sw_genre_tesim sw_format_tesim].each { |key| solr_doc[key] = ['(none)'] if solr_doc[key].empty? }

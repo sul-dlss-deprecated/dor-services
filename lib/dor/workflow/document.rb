@@ -91,41 +91,42 @@ module Workflow
     def to_solr(solr_doc=Hash.new, *args)
       wf_name = self.workflowId.first
       repo = self.repository.first
-      add_solr_value(solr_doc, 'wf', wf_name, :string, [:facetable])
-      add_solr_value(solr_doc, 'wf_wps', wf_name, :string, [:facetable])
-      add_solr_value(solr_doc, 'wf_wsp', wf_name, :string, [:facetable])
+      wf_solr_type = :string
+      wf_solr_attrs = [:symbol]
+      add_solr_value(solr_doc, 'wf', wf_name, wf_solr_type, wf_solr_attrs)
+      add_solr_value(solr_doc, 'wf_wps', wf_name, wf_solr_type, wf_solr_attrs)
+      add_solr_value(solr_doc, 'wf_wsp', wf_name, wf_solr_type, wf_solr_attrs)
       status = processes.empty? ? 'empty' : (workflow_should_show_completed?(processes) ? 'completed' : 'active')
       errors = processes.select(&:error?).count
-      add_solr_value(solr_doc, 'workflow_status', [wf_name,status,errors,repo].join('|'), :string, [:displayable])
+      add_solr_value(solr_doc, 'workflow_status', [wf_name,status,errors,repo].join('|'), wf_solr_type, wf_solr_attrs)
 
       processes.each do |process|
         if process.status.present?
           #add a record of the robot having operated on this item, so we can track robot activity
           if process.date_time and process.status and (process.status == 'completed' || process.status == 'error')
-            add_solr_value(solr_doc, "wf_#{wf_name}_#{process.name}", process.date_time+'Z', :date)
+            solr_doc["wf_#{wf_name}_#{process.name}_dttsi"] = "#{process.date_time}Z"
           end
-          add_solr_value(solr_doc, 'wf_error', "#{wf_name}:#{process.name}:#{process.error_message}", :string, [:facetable,:displayable]) if process.error_message #index the error message without the druid so we hopefully get some overlap
-          add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}", :string, [:facetable])
-          add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}:#{process.name}", :string, [:facetable])
-          add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}", :string, [:facetable, :symbol])
-          add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.status}", :string, [:facetable, :symbol])
-          add_solr_value(solr_doc, 'wf_swp', "#{process.status}", :string, [:facetable])
-          add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}", :string, [:facetable])
-          add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}:#{process.name}", :string, [:facetable])
+          add_solr_value(solr_doc, 'wf_error', "#{wf_name}:#{process.name}:#{process.error_message}", wf_solr_type, wf_solr_attrs) if process.error_message #index the error message without the druid so we hopefully get some overlap
+          add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}", wf_solr_type, wf_solr_attrs)
+          add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}:#{process.name}", wf_solr_type, wf_solr_attrs)
+          add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)
+          add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.status}", wf_solr_type, wf_solr_attrs)
+          add_solr_value(solr_doc, 'wf_swp', "#{process.status}", wf_solr_type, wf_solr_attrs)
+          add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}", wf_solr_type, wf_solr_attrs)
+          add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)
           if process.state != process.status
-            add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.state}:#{process.name}", :string, [:facetable])
-            add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.state}", :string, [:facetable, :symbol])
-            add_solr_value(solr_doc, 'wf_swp', "#{process.state}", :string, [:facetable])
-            add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}", :string, [:facetable])
-            add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}:#{process.name}", :string, [:facetable])
+            add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.state}:#{process.name}", wf_solr_type, wf_solr_attrs)
+            add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.state}", wf_solr_type, wf_solr_attrs)
+            add_solr_value(solr_doc, 'wf_swp', "#{process.state}", wf_solr_type, wf_solr_attrs)
+            add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}", wf_solr_type, wf_solr_attrs)
+            add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)
           end
         end
       end
 
-      solr_doc[Solrizer.solr_name('wf_wps', :symbol)].uniq!    if solr_doc[Solrizer.solr_name('wf_wps', :symbol)]
-      solr_doc[Solrizer.solr_name('wf_wps', :facetable)].uniq!    if solr_doc[Solrizer.solr_name('wf_wps', :facetable)]
-      solr_doc[Solrizer.solr_name('wf_wsp', :facetable)].uniq!    if solr_doc[Solrizer.solr_name('wf_wsp', :facetable)]
-      solr_doc[Solrizer.solr_name('wf_swp', :facetable)].uniq!    if solr_doc[Solrizer.solr_name('wf_swp', :facetable)]
+      solr_doc[Solrizer.solr_name('wf_wps', :symbol)].uniq! if solr_doc[Solrizer.solr_name('wf_wps', :symbol)]
+      solr_doc[Solrizer.solr_name('wf_wsp', :symbol)].uniq! if solr_doc[Solrizer.solr_name('wf_wsp', :symbol)]
+      solr_doc[Solrizer.solr_name('wf_swp', :symbol)].uniq! if solr_doc[Solrizer.solr_name('wf_swp', :symbol)]
       solr_doc['workflow_status'].uniq! if solr_doc['workflow_status']
 
       solr_doc

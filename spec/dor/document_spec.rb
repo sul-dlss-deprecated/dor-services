@@ -127,7 +127,7 @@ describe Dor::Workflow::Document do
       d=Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
       doc=d.to_solr
-      expect(doc[Solrizer.solr_name('workflow_status', :displayable)].first).to eq('accessionWF|active|0|dor')
+      expect(doc[Solrizer.solr_name('workflow_status', :symbol)].first).to eq('accessionWF|active|0|dor')
     end
 
     it 'should index the right workflow status (completed) when all steps are completed or skipped' do
@@ -148,7 +148,7 @@ describe Dor::Workflow::Document do
       d=Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
       doc=d.to_solr
-      expect(doc).to match a_hash_including('workflow_status_ssm' => ['accessionWF|completed|0|dor'])
+      expect(doc).to match a_hash_including('workflow_status_ssim' => ['accessionWF|completed|0|dor'])
     end
 
     it 'should index the right workflow status (completed) when all steps have status of completed/skipped/nil/empty' do
@@ -169,7 +169,7 @@ describe Dor::Workflow::Document do
       d=Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
       doc=d.to_solr
-      expect(doc).to match a_hash_including('workflow_status_ssm' => ['accessionWF|completed|0|dor'])
+      expect(doc).to match a_hash_including('workflow_status_ssim' => ['accessionWF|completed|0|dor'])
     end
 
     it 'should index error messages' do
@@ -186,7 +186,7 @@ describe Dor::Workflow::Document do
       d=Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
       doc=d.to_solr
-      expect(doc[Solrizer.solr_name('wf_error', :displayable)].first).to eq('accessionWF:technical-metadata:druid:gv054hp4128 - Item error; caused by 413 Request Entity Too Large:')
+      expect(doc[Solrizer.solr_name('wf_error', :symbol)].first).to eq('accessionWF:technical-metadata:druid:gv054hp4128 - Item error; caused by 413 Request Entity Too Large:')
     end
   end
 end

@@ -147,13 +147,19 @@ describe Dor::Processable do
       expect(Dor.logger).to receive(:warn)
       solr_doc=@item.to_solr
       #lifecycle_display should have the semicolon delimited version
-      expect(solr_doc[Solrizer.solr_name('lifecycle', :displayable)]).to include("published:2012-01-27T05:06:54Z;2")
+      expect(solr_doc['lifecycle_ssim']).to include("published:2012-01-27T05:06:54Z;2")
       #published date should be the first published date
-      expect(solr_doc[Solrizer.solr_name('published', :type => :date)]).to eq(solr_doc[Solrizer.solr_name('published_earliest', :type => :date)])
-      expect(solr_doc[Solrizer.solr_name('status', :displayable)].first).to eq('v4 In accessioning (described, published)')
-      expect(solr_doc[Solrizer.solr_name('version_opened', :facetable)].first).to eq('2012-11-07')
+      expect(solr_doc).to match a_hash_including('status_ssi' => 'v4 In accessioning (described, published)')
+      expect(solr_doc).to match a_hash_including('opened_dttsim' => including('2012-11-07T00:21:02Z'))
+      expect(solr_doc['published_earliest_dttsi']).to eq("2012-01-27T05:06:54Z")
+      expect(solr_doc['published_latest_dttsi'  ]).to eq("2012-11-07T00:59:39Z")
+      expect(solr_doc['published_dttsim'].first).to eq(solr_doc['published_earliest_dttsi'])
+      expect(solr_doc['published_dttsim'].last ).to eq(solr_doc['published_latest_dttsi'  ])
+      expect(solr_doc['published_dttsim'].size ).to eq(3) # not 4 because 1 deduplicated value removed!
+      expect(solr_doc['opened_earliest_dttsi']).to eq('2012-10-29T23:30:07Z') #  2012-10-29T16:30:07-0700
+      expect(solr_doc['opened_latest_dttsi'  ]).to eq('2012-11-07T00:21:02Z') #  2012-11-06T16:21:02-0800
     end
-    it 'should skip the versioning related steps if a new version hasnt been opened' do
+    it 'should skip the versioning related steps if a new version has not been opened' do
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
       allow(Dor::WorkflowService).to receive(:query_lifecycle).and_return(Nokogiri::XML('<?xml version="1.0" encoding="UTF-8"?>
       <lifecycle objectId="druid:gv054hp4128">
@@ -165,11 +171,11 @@ describe Dor::Processable do
       solr_doc=@item.to_solr
       expect(solr_doc[Solrizer.solr_name('version_opened', :facetable)]).to be_nil
     end
-    it 'should create a last_modified_day field' do
+    it 'should create a modified_latest date field' do
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
       solr_doc=@item.to_solr
       #the facet field should have a date in it.
-      expect(solr_doc[Solrizer.solr_name('last_modified_day', :facetable)].length).to eq(1)
+      expect(solr_doc['modified_latest_dttsi']).to match /^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\dZ$/
     end
     it 'should create a version field for each version, including the version number, tag and description' do
       expect(Dor.logger).to receive(:warn).with(/Cannot index druid:ab123cd4567\.descMetadata.*Dor::Item#generate_dublin_core produced incorrect xml/)
@@ -199,7 +205,17 @@ describe Dor::Processable do
       expect(solr_doc['versions_ssm']).to include("4;2.2.0;")
     end
   end
-  describe 'status' do
+
+  describe 'status gv054hp4128' do
+    before :all do
+      xml = '<?xml version="1.0" encoding="UTF-8"?>
+      <lifecycle objectId="druid:gv054hp4128">
+      <milestone date="2012-11-06T16:19:15-0800" version="2">described</milestone>
+      <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
+      </lifecycle>
+      '
+      @gv054hp4128 = Nokogiri::XML(xml)
+    end
     before :each do
       allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
       @versionMD=double(Dor::VersionMetadataDS)
@@ -222,31 +238,20 @@ describe Dor::Processable do
       expect(@item.status).to eq('v4 In accessioning (described, published)')
     end
     it 'should generate a status string' do
-      xml='<?xml version="1.0" encoding="UTF-8"?>
-      <lifecycle objectId="druid:gv054hp4128">
-      <milestone date="2012-11-06T16:19:15-0800" version="2">described</milestone>
-      <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
-      </lifecycle>
-      '
-      xml=Nokogiri::XML(xml)
-      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
+      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(@gv054hp4128)
       expect(@versionMD).to receive(:current_version_id).and_return('3')
       expect(@item.status).to eq('v3 In accessioning (described, published)')
     end
     it 'should generate a status string' do
-      xml='<?xml version="1.0" encoding="UTF-8"?>
-      <lifecycle objectId="druid:gv054hp4128">
-      <milestone date="2012-11-06T16:19:15-0800" version="2">described</milestone>
-      <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
-      </lifecycle>
-      '
-      xml=Nokogiri::XML(xml)
-      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
+      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(@gv054hp4128)
       expect(@versionMD).to receive(:current_version_id).and_return('3')
       expect(@item.status).to eq('v3 In accessioning (described, published)')
     end
-    it 'should handle a v2 accessioned object' do
-      xml='<?xml version="1.0"?>
+  end
+
+  describe "status bd504dj1946" do
+    before :all do
+      @miles = '<?xml version="1.0"?>
       <lifecycle objectId="druid:bd504dj1946">
       <milestone date="2013-04-03T15:01:57-0700">registered</milestone>
       <milestone date="2013-04-03T16:20:19-0700">digitized</milestone>
@@ -262,56 +267,27 @@ describe Dor::Processable do
       <milestone date="2013-10-01T12:10:56-0700" version="2">deposited</milestone>
       <milestone date="2013-10-01T12:11:10-0700" version="2">accessioned</milestone>
       </lifecycle>'
-      xml=Nokogiri::XML(xml)
-      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
+      @xml = Nokogiri::XML(@miles)
+    end
+    before :each do
+      @versionMD = double(Dor::VersionMetadataDS)
+      allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
+      expect(@item).to receive(:versionMetadata).and_return(@versionMD)
+      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(@xml)
+    end
+
+    it 'should handle a v2 accessioned object' do
       expect(@versionMD).to receive(:current_version_id).and_return('2')
       expect(@item.status).to eq('v2 Accessioned')
     end
-    it 'should give a status of unknown if there arent any lifecycles for the current version, which indicates some malfunction in workflow.' do
-      xml='<?xml version="1.0"?>
-      <lifecycle objectId="druid:bd504dj1946">
-      <milestone date="2013-04-03T15:01:57-0700">registered</milestone>
-      <milestone date="2013-04-03T16:20:19-0700">digitized</milestone>
-      <milestone date="2013-04-16T14:18:20-0700" version="1">submitted</milestone>
-      <milestone date="2013-04-16T14:32:54-0700" version="1">described</milestone>
-      <milestone date="2013-04-16T14:55:10-0700" version="1">published</milestone>
-      <milestone date="2013-07-21T05:27:23-0700" version="1">deposited</milestone>
-      <milestone date="2013-07-21T05:28:09-0700" version="1">accessioned</milestone>
-      <milestone date="2013-08-15T11:59:16-0700" version="2">opened</milestone>
-      <milestone date="2013-10-01T12:01:07-0700" version="2">submitted</milestone>
-      <milestone date="2013-10-01T12:01:24-0700" version="2">described</milestone>
-      <milestone date="2013-10-01T12:05:38-0700" version="2">published</milestone>
-      <milestone date="2013-10-01T12:10:56-0700" version="2">deposited</milestone>
-      <milestone date="2013-10-01T12:11:10-0700" version="2">accessioned</milestone>
-      </lifecycle>'
-      xml=Nokogiri::XML(xml)
-      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
+    it 'should give a status of unknown if there are no lifecycles for the current version, indicating malfunction in workflow' do
       expect(@versionMD).to receive(:current_version_id).and_return('3')
       expect(@item.status).to eq('v3 Unknown Status')
     end
     it 'should include a formatted date/time if one is requested' do
-      xml='<?xml version="1.0"?>
-      <lifecycle objectId="druid:bd504dj1946">
-      <milestone date="2013-04-03T15:01:57-0700">registered</milestone>
-      <milestone date="2013-04-03T16:20:19-0700">digitized</milestone>
-      <milestone date="2013-04-16T14:18:20-0700" version="1">submitted</milestone>
-      <milestone date="2013-04-16T14:32:54-0700" version="1">described</milestone>
-      <milestone date="2013-04-16T14:55:10-0700" version="1">published</milestone>
-      <milestone date="2013-07-21T05:27:23-0700" version="1">deposited</milestone>
-      <milestone date="2013-07-21T05:28:09-0700" version="1">accessioned</milestone>
-      <milestone date="2013-08-15T11:59:16-0700" version="2">opened</milestone>
-      <milestone date="2013-10-01T12:01:07-0700" version="2">submitted</milestone>
-      <milestone date="2013-10-01T12:01:24-0700" version="2">described</milestone>
-      <milestone date="2013-10-01T12:05:38-0700" version="2">published</milestone>
-      <milestone date="2013-10-01T12:10:56-0700" version="2">deposited</milestone>
-      <milestone date="2013-10-01T12:11:10-0700" version="2">accessioned</milestone>
-      </lifecycle>'
-      xml=Nokogiri::XML(xml)
-      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
       expect(@versionMD).to receive(:current_version_id).and_return('2')
       expect(@item.status(true)).to eq('v2 Accessioned 2013-10-01 07:11PM')
     end
-
   end
 
   describe "#initialize_workflow" do
@@ -323,6 +299,13 @@ describe Dor::Processable do
       expect(Dor::WorkflowObject).to receive(:initial_repo).and_return('dor')
       expect(Dor::WorkflowService).to receive(:create_workflow).with('dor', 'druid:ab123cd4567', 'accessionWF', '<xml/>', {:create_ds=>true, :lane_id=>"fast"})
       item.initialize_workflow('accessionWF')
+    end
+  end
+
+  describe '#simplified_status_code_disp_txt' do
+    it "trims off parens but doesn't harm the strings otherwise" do
+      expect(@item.simplified_status_code_disp_txt(2)).to eq('In accessioning')
+      expect(@item.simplified_status_code_disp_txt(3)).to eq('In accessioning')
     end
   end
 end
