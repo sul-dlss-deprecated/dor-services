@@ -26,8 +26,9 @@ describe Dor::ContentMetadataDS do
     </file>
     </resource>
     </contentMetadata>'
-    allow(Dor::Item).to receive(:find).and_return(@item)
-    # allow(Dor::Item).to receive(:save).and_return(true)
+    expect(@item.contentMetadata).to be_content_changed
+
+    allow(Dor::Item).to receive(:find).with('druid:ab123cd4567').and_return(@item)
     @file = {
       :name     => 'new_file.jp2',
       :shelve   => 'no',
@@ -37,7 +38,17 @@ describe Dor::ContentMetadataDS do
     }
     @files = [@file]
     @cm = @item.contentMetadata
- #  expect(@cm).not_to receive(:save)
+    @cm.send(:clear_changes_information)       # pretend this datastream always had this content
+    @cm.send(:changes_applied)                 # pretend this datastream always had this content
+    expect(@cm).not_to receive(:save)
+    expect(@item).not_to receive(:save)
+  end
+
+  describe 'test instantiation' do
+    it 'should setup @file with ActiveRecord::Dirty conditions correctly' do
+    #  binding.pry
+      expect(@cm).not_to be_content_changed
+    end
   end
 
   describe 'add_resource' do
@@ -49,6 +60,7 @@ describe Dor::ContentMetadataDS do
       expect(node['id'      ]).to eq('resource')
       expect(node['type'    ]).to eq('file')
       expect(node['sequence']).to eq('1')
+      expect(@cm).to be_content_changed
     end
 
     it 'should add a resource with a type="image"' do
@@ -59,6 +71,7 @@ describe Dor::ContentMetadataDS do
       expect(node['id']      ).to eq('resource')
       expect(node['type']    ).to eq('image')
       expect(node['sequence']).to eq('1')
+      expect(@cm).to be_content_changed
     end
 
     it 'should add a resource with a checksum' do
@@ -70,6 +83,7 @@ describe Dor::ContentMetadataDS do
       checksums.each do |checksum|
         expect(checksum.content).to eq(checksum['type'] == 'md5' ? '123456' : '56789')
       end
+      expect(@cm).to be_content_changed
     end
   end
   describe 'remove_resource' do
@@ -83,12 +97,14 @@ describe Dor::ContentMetadataDS do
       resources=@cm.ng_xml.search('//resource')
       expect(resources.length).to eq(1)
       expect(resources.first()['sequence']).to eq('1')
+      expect(@cm).to be_content_changed
     end
   end
   describe 'remove_file' do
     it 'should remove the file' do
       @cm.remove_file('gw177fc7976_00_0001.tif')
       expect(@cm.ng_xml.search('//file').length).to eq(2)
+      expect(@cm).to be_content_changed
     end
   end
   describe 'add_file' do
@@ -103,6 +119,7 @@ describe Dor::ContentMetadataDS do
       expect(new_file['publish' ]).to eq('no')
       expect(new_file['preserve']).to eq('no')
       expect(new_file['size'    ]).to eq('12345')
+      expect(@cm).to be_content_changed
     end
   end
   describe 'update_file' do
@@ -115,6 +132,7 @@ describe Dor::ContentMetadataDS do
       expect(file['publish' ]).to eq('no')
       expect(file['preserve']).to eq('no')
       expect(file['size'    ]).to eq('12345')
+      expect(@cm).to be_content_changed
     end
     it 'should error out if there isnt an existing record to modify' do
       expect { @cm.update_file(@file,'gw177fc7976_05_0001_different.jp2')}.to raise_error
@@ -131,6 +149,7 @@ describe Dor::ContentMetadataDS do
     it 'should renumber the resources correctly' do
       @cm.add_resource(@files,'resource',1)
       @cm.move_resource('0001','2')
+      expect(@cm).to be_content_changed
       skip "No expectation defined!"
     end
   end
@@ -141,18 +160,21 @@ describe Dor::ContentMetadataDS do
       labels = @cm.ng_xml.search('//resource[@id=\'0001\']/label')
       expect(labels.length).to eq(1)
       expect(labels.first.content).to eq('label!')
+      expect(@cm).to be_content_changed
     end
     it 'should add a new label' do
       @cm.update_resource_label '0001', 'qbert!'
       labels = @cm.ng_xml.search('//resource[@id=\'0001\']/label')
       expect(labels.length).to eq(1)
       expect(labels.first.content).to eq('qbert!')
+      expect(@cm).to be_content_changed
     end
   end
   describe 'update_resource_type' do
     it 'should update an existing type' do
       @cm.update_resource_type '0001', 'book'
       skip "No expectation defined!"
+      expect(@cm).to be_content_changed
     end
   end
   describe 'to_solr' do
@@ -166,6 +188,7 @@ describe Dor::ContentMetadataDS do
       expect(@doc[Solrizer.solr_name('image_resource_count', :displayable)].first).to eq('1')
       expect(@doc[Solrizer.solr_name('first_shelved_image', :displayable)].first).to eq('gw177fc7976_05_0001.jp2')
       expect(@doc[Solrizer.solr_name('preserved_size', :searchable)].first).to eq('86774303')
+      expect(@cm).not_to be_content_changed
     end
   end
   describe 'set_content_type' do
@@ -173,11 +196,13 @@ describe Dor::ContentMetadataDS do
       @cm.set_content_type 'map', 'image', 'book', 'page'
       expect(@cm.ng_xml.search('//contentMetadata[@type=\'book\']').length).to eq(1)
       expect(@cm.ng_xml.search('//contentMetadata/resource[@type=\'page\']').length).to eq(1)
+      expect(@cm).to be_content_changed
     end
   end
   describe 'get stacks value' do
     it 'should read the stacks value' do
       expect(@cm.stacks).to eq(["/specialstack"])
+      expect(@cm).not_to be_content_changed
     end
   end
 end

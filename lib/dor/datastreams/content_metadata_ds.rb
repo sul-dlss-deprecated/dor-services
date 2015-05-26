@@ -72,7 +72,6 @@ module Dor
         file_node['mimetype']=file[:mime_type]
       end
       self.content=xml.to_s
-      self.save
     end
 
     def add_resource(files,resource_name, position,type="file")
@@ -85,7 +84,7 @@ module Dor
       max = xml.search('//resource').map{ |node| node['sequence'].to_i }.max
       #renumber all of the resources that will come after the newly added one
       while max>position do
-        node=xml.search('//resource[@sequence=\'' + position + '\']')
+        node=xml.search('//resource[@sequence=\'' + position.to_s + '\']')
         node.first[sequence]=max+1 if node.length>0
         max-=1
       end
@@ -110,7 +109,6 @@ module Dor
       end
       xml.search('//contentMetadata').first.add_child(node)
       self.content=xml.to_s
-      self.save
     end
 
     def remove_resource resource_name
@@ -125,7 +123,6 @@ module Dor
         position=position+1
       end
       self.content=xml.to_s
-      self.save
     end
 
     def remove_file file_name
@@ -134,7 +131,6 @@ module Dor
         node.remove
       end
       self.content=xml.to_s
-      self.save
     end
     def update_attributes file_name, publish, shelve, preserve
       xml=self.ng_xml
@@ -143,7 +139,6 @@ module Dor
       file_node['publish' ]=publish
       file_node['preserve']=preserve
       self.content=xml.to_s
-      self.save
     end
     def update_file file, old_file_id
       xml=self.ng_xml
@@ -164,7 +159,6 @@ module Dor
         file_node[x.to_s] = file[x] if file[x]
       }
       self.content=xml.to_s
-      self.save
     end
 
     # Terminology-based solrization is going to be painfully slow for large
@@ -214,9 +208,10 @@ module Dor
     def rename_file old_name, new_name
       xml=self.ng_xml
       file_node=xml.search('//file[@id=\''+old_name+'\']').first
+      content_will_change!
       file_node['id']=new_name
       self.content=xml.to_s
-      self.save
+      file_node
     end
 
     #Updates old label OR creates a new one if necessary
@@ -226,6 +221,7 @@ module Dor
     def update_resource_label resource_name, new_label
       node = singular_node('//resource[@id=\''+resource_name+'\']')
       labels = node.xpath('./label')
+      content_will_change!
       if(labels.length==0)
         #create a label
         label_node = Nokogiri::XML::Node.new('label',self.ng_xml)
@@ -234,6 +230,7 @@ module Dor
       else
         labels.first.content=new_label
       end
+      self.content=self.ng_xml.to_s
       return node
     end
 
@@ -241,6 +238,8 @@ module Dor
     #@param new_type [String] type value being assigned
     def update_resource_type resource_name, new_type
       singular_node('//resource[@id=\''+resource_name+'\']')['type']=new_type
+      content_will_change!
+      self.content=self.ng_xml.to_s
     end
 
     #You just *had* to have ordered lists in XML, didn't you?
@@ -253,6 +252,7 @@ module Dor
       position = node['sequence'].to_i
       new_position = new_position.to_i              # tolerate strings as a Legacy behavior
       return node if position == new_position
+      content_will_change!
       #otherwise, is the resource being moved earlier in the sequence or later?
       up = new_position>position
       others = new_position..(up ? position-1 : position+1)  # a range
@@ -261,6 +261,7 @@ module Dor
         item['sequence'] = (up ? i-1 : i+1).to_s    # if you're going up, everything else comes down and vice versa
       end
       node['sequence'] = new_position.to_s          # set the node we already had last, so we don't hit it twice!
+      self.content=self.ng_xml.to_s
       return node
     end
 
@@ -269,6 +270,8 @@ module Dor
     #@param new_resource_type [String] the new type for all resources, ex book
     def set_content_type old_type, old_resource_type, new_type, new_resource_type
       xml=self.ng_xml
+      return if old_type == new_type && old_resource_type == new_resource_type
+      content_will_change!
       xml.search('/contentMetadata[@type=\''+old_type+'\']').each do |node|
         node['type']=new_type
         xml.search('//resource[@type=\''+old_resource_type+'\']').each do |resource|
