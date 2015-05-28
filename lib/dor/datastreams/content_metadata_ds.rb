@@ -53,24 +53,15 @@ module Dor
       file_node['preserve'] = file[:preserve] ? file[:preserve] : ''
       node.add_child(file_node)
 
-      if file[:md5]
-        checksum_node=Nokogiri::XML::Node.new('checksum',xml)
-        checksum_node['type']='md5'
-        checksum_node.content=file[:md5]
+      [:md5, :sha1].each do |algo|
+        next unless file[algo]
+        checksum_node = Nokogiri::XML::Node.new('checksum',xml)
+        checksum_node['type'] = algo.to_s
+        checksum_node.content = file[algo]
         file_node.add_child(checksum_node)
       end
-      if file[:sha1]
-        checksum_node=Nokogiri::XML::Node.new('checksum',xml)
-        checksum_node['type']='sha1'
-        checksum_node.content=file[:sha1]
-        file_node.add_child(checksum_node)
-      end
-      if file[:size]
-        file_node['size']=file[:size]
-      end
-      if file[:mime_type]
-        file_node['mimetype']=file[:mime_type]
-      end
+      file_node['size'    ] = file[:size     ] if file[:size     ]
+      file_node['mimetype'] = file[:mime_type] if file[:mime_type]
       self.content=xml.to_s
       self.save
     end
@@ -169,42 +160,41 @@ module Dor
 
     # Terminology-based solrization is going to be painfully slow for large
     # contentMetadata streams. Just select the relevant elements instead.
+    # TODO: Call super()?
     def to_solr(solr_doc=Hash.new, *args)
       doc = self.ng_xml
-      if doc.root['type']
-        shelved_file_count=0
-        content_file_count=0
-        resource_count=0
-        preserved_size=0
-        resource_type_counts=Hash.new(0)  # default count
-        first_shelved_image=nil
-        add_solr_value(solr_doc, "content_type", doc.root['type'], :string, [:facetable, :symbol])
-        doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
-          resource_count+=1
-          resource_type_counts[resource['type']]+=1 if(resource['type'])
-          resource.xpath('file').each do |file|
-            content_file_count+=1
-            if file['shelve'] == 'yes'
-              shelved_file_count+=1
-              if first_shelved_image.nil? && file['id'].match(/jp2$/)
-                first_shelved_image=file['id']
-              end
+      return solr_doc unless doc.root['type']
+
+      preserved_size=0
+      counts = Hash.new(0)                # default count is zero
+      resource_type_counts = Hash.new(0)  # default count is zero
+      first_shelved_image=nil
+
+      doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
+        counts['resource']+=1
+        resource_type_counts[resource['type']]+=1 if resource['type']
+        resource.xpath('file').each do |file|
+          counts['content_file']+=1
+          preserved_size += file['size'].to_i if file['preserve'] == 'yes'
+          if file['shelve'] == 'yes'
+            counts['shelved_file']+=1
+            if first_shelved_image.nil? && file['id'].match(/jp2$/)
+              first_shelved_image=file['id']
             end
-            preserved_size += file['size'].to_i if file['preserve'] == 'yes'
           end
         end
-        add_solr_value(solr_doc, "content_file_count", content_file_count.to_s, :string, [:searchable, :displayable])
-        add_solr_value(solr_doc, "shelved_content_file_count", shelved_file_count.to_s, :string, [:searchable, :displayable])
-        add_solr_value(solr_doc, "resource_count", resource_count.to_s, :string, [:searchable, :displayable])
-        add_solr_value(solr_doc, "preserved_size", preserved_size.to_s, :string, [:searchable, :displayable])
-        resource_type_counts.each do |key, count|
-          add_solr_value(solr_doc, "resource_types", key, :string, [:symbol])
-          add_solr_value(solr_doc, key+"_resource_count", count.to_s, :string, [:searchable, :displayable])
-        end
-        unless first_shelved_image.nil?
-          add_solr_value(solr_doc, "first_shelved_image", first_shelved_image, :string, [:displayable])
-        end
       end
+      solr_doc["content_type_ssim"              ] = doc.root['type']
+      solr_doc["content_file_count_itsi"        ] = counts['content_file']
+      solr_doc["shelved_content_file_count_itsi"] = counts['shelved_file']
+      solr_doc["resource_count_itsi"            ] = counts['resource']
+      solr_doc["preserved_size_dbtsi"           ] = preserved_size        # double (trie) to support very large sizes
+      solr_doc["resource_types_ssim"            ] = resource_type_counts.keys if resource_type_counts.size > 0
+      resource_type_counts.each do |key, count|
+        solr_doc["#{key}_resource_count_itsi"] = count
+      end
+      # first_shelved_image is neither indexed nor multiple
+      solr_doc["first_shelved_image_ss"] = first_shelved_image unless first_shelved_image.nil?
       solr_doc
     end
 

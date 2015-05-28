@@ -160,12 +160,15 @@ describe Dor::ContentMetadataDS do
       @doc=@cm.to_solr
     end
     it 'should generate required fields' do
-      expect(@doc[Solrizer.solr_name('shelved_content_file_count', :displayable)].first).to eq('1')
-      expect(@doc[Solrizer.solr_name('resource_count', :displayable)].first).to eq('1')
-      expect(@doc[Solrizer.solr_name('content_file_count', :displayable)].first).to eq('3')
-      expect(@doc[Solrizer.solr_name('image_resource_count', :displayable)].first).to eq('1')
-      expect(@doc[Solrizer.solr_name('first_shelved_image', :displayable)].first).to eq('gw177fc7976_05_0001.jp2')
-      expect(@doc[Solrizer.solr_name('preserved_size', :searchable)].first).to eq('86774303')
+      {
+        'content_type_ssim'               => 'map',
+        'shelved_content_file_count_itsi' => 1,
+        'resource_count_itsi'             => 1,
+        'content_file_count_itsi'         => 3,
+        'image_resource_count_itsi'       => 1,
+        'first_shelved_image_ss'          => 'gw177fc7976_05_0001.jp2',
+        'preserved_size_dbtsi'             => 86774303
+      }.each {|k,v| expect(@doc[k]).to eq(v) }
     end
   end
   describe 'set_content_type' do
