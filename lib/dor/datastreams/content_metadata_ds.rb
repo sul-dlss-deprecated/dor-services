@@ -44,35 +44,24 @@ module Dor
     def add_file(file, resource_name)
       xml=self.ng_xml
       resource_nodes = xml.search('//resource[@id=\''+resource_name+'\']')
-      if resource_nodes.length==0
-        raise 'resource doesnt exist.'
-      end
+      raise 'resource doesnt exist.' if resource_nodes.length==0
       node=resource_nodes.first
       file_node=Nokogiri::XML::Node.new('file',xml)
       file_node['id']=file[:name]
-      file_node['shelve']=file[:shelve] ? file[:shelve] : ''
-      file_node['publish']=file[:publish] ? file[:publish] : ''
-      file_node['preserve']=file[:preserve] ? file[:preserve] : ''
+      file_node['shelve'  ] = file[:shelve  ] ? file[:shelve  ] : ''
+      file_node['publish' ] = file[:publish ] ? file[:publish ] : ''
+      file_node['preserve'] = file[:preserve] ? file[:preserve] : ''
       node.add_child(file_node)
 
-      if file[:md5]
-        checksum_node=Nokogiri::XML::Node.new('checksum',xml)
-        checksum_node['type']='md5'
-        checksum_node.content=file[:md5]
+      [:md5, :sha1].each do |algo|
+        next unless file[algo]
+        checksum_node = Nokogiri::XML::Node.new('checksum',xml)
+        checksum_node['type'] = algo.to_s
+        checksum_node.content = file[algo]
         file_node.add_child(checksum_node)
       end
-      if file[:sha1]
-        checksum_node=Nokogiri::XML::Node.new('checksum',xml)
-        checksum_node['type']='sha1'
-        checksum_node.content=file[:sha1]
-        file_node.add_child(checksum_node)
-      end
-      if file[:size]
-        file_node['size']=file[:size]
-      end
-      if file[:mime_type]
-        file_node['mimetype']=file[:mime_type]
-      end
+      file_node['size'    ] = file[:size     ] if file[:size     ]
+      file_node['mimetype'] = file[:mime_type] if file[:mime_type]
       self.content=xml.to_s
       self.save
     end
@@ -84,20 +73,12 @@ module Dor
       end
       node=nil
 
-      max=-1
-      xml.search('//resource').each do |node|
-        if node['sequence'].to_i>max
-          max=node['sequence'].to_i
-        end
-      end
+      max = xml.search('//resource').map{ |node| node['sequence'].to_i }.max
       #renumber all of the resources that will come after the newly added one
       while max>position do
         node=xml.search('//resource[@sequence=\'' + position + '\']')
-        if node.length>0
-          node=node.first
-          node[sequence]=max+1
-        end
-        max=max-1
+        node.first[sequence]=max+1 if node.length>0
+        max-=1
       end
       node=Nokogiri::XML::Node.new('resource',xml)
       node['sequence']=position.to_s
@@ -117,7 +98,7 @@ module Dor
           file_node.add_child(checksum_node)
         }
         file_node['size'] = file[:size] if file[:size]
-      end    
+      end
       xml.search('//contentMetadata').first.add_child(node)
       self.content=xml.to_s
       self.save
@@ -125,20 +106,12 @@ module Dor
 
     def remove_resource resource_name
       xml=self.ng_xml
-      position=-1
-
-      resources=xml.search('//resource[@id=\''+resource_name+'\']')
-      if resources.length!=1
-        raise 'Resource is missing or duplicated!'
-      end
-      position=resources.first['sequence']
-      resources.first.remove
-      position=position.to_i+1
+      node = singular_node('//resource[@id=\''+resource_name+'\']')
+      position = node['sequence'].to_i+1
+      node.remove
       while true
         res=xml.search('//resource[@sequence=\''+position.to_s+'\']')
-        if(res.length==0)
-          break
-        end
+        break if res.length==0
         res['sequence']=position.to_s
         position=position+1
       end
@@ -184,55 +157,50 @@ module Dor
       self.content=xml.to_s
       self.save
     end
+
     # Terminology-based solrization is going to be painfully slow for large
     # contentMetadata streams. Just select the relevant elements instead.
+    # TODO: Call super()?
     def to_solr(solr_doc=Hash.new, *args)
       doc = self.ng_xml
-      if doc.root['type']
-        shelved_file_count=0
-        content_file_count=0
-        resource_type_counts={}
-        resource_count=0
-        preserved_size=0
-        first_shelved_image=nil
-        add_solr_value(solr_doc, "content_type", doc.root['type'], :string, [:facetable, :symbol])
-        doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
-          resource_count+=1
-          if(resource['type'])
-            if resource_type_counts[resource['type']]
-              resource_type_counts[resource['type']]+=1
-            else
-              resource_type_counts[resource['type']]=1
+      return solr_doc unless doc.root['type']
+
+      preserved_size=0
+      counts = Hash.new(0)                # default count is zero
+      resource_type_counts = Hash.new(0)  # default count is zero
+      first_shelved_image=nil
+
+      doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
+        counts['resource']+=1
+        resource_type_counts[resource['type']]+=1 if resource['type']
+        resource.xpath('file').each do |file|
+          counts['content_file']+=1
+          preserved_size += file['size'].to_i if file['preserve'] == 'yes'
+          if file['shelve'] == 'yes'
+            counts['shelved_file']+=1
+            if first_shelved_image.nil? && file['id'].match(/jp2$/)
+              first_shelved_image=file['id']
             end
           end
-          resource.xpath('file').each do |file|
-            content_file_count+=1
-            if file['shelve'] == 'yes'
-              shelved_file_count+=1
-              if first_shelved_image.nil? && file['id'].match(/jp2$/)
-                first_shelved_image=file['id']
-              end
-            end
-            if file['preserve'] == 'yes'
-              preserved_size += file['size'].to_i
-            end
-          end
-        end
-        add_solr_value(solr_doc, "content_file_count", content_file_count.to_s, :string, [:searchable, :displayable])
-        add_solr_value(solr_doc, "shelved_content_file_count", shelved_file_count.to_s, :string, [:searchable, :displayable])
-        add_solr_value(solr_doc, "resource_count", resource_count.to_s, :string, [:searchable, :displayable])
-        add_solr_value(solr_doc, "preserved_size", preserved_size.to_s, :string, [:searchable, :displayable])
-        resource_type_counts.each do |key, count|
-          add_solr_value(solr_doc, "resource_types", key, :string, [:symbol])
-          add_solr_value(solr_doc, key+"_resource_count", count.to_s, :string, [:searchable, :displayable])
-        end
-        unless first_shelved_image.nil?
-          add_solr_value(solr_doc, "first_shelved_image", first_shelved_image, :string, [:displayable])
         end
       end
+      solr_doc["content_type_ssim"              ] = doc.root['type']
+      solr_doc["content_file_count_itsi"        ] = counts['content_file']
+      solr_doc["shelved_content_file_count_itsi"] = counts['shelved_file']
+      solr_doc["resource_count_itsi"            ] = counts['resource']
+      solr_doc["preserved_size_dbtsi"           ] = preserved_size        # double (trie) to support very large sizes
+      solr_doc["resource_types_ssim"            ] = resource_type_counts.keys if resource_type_counts.size > 0
+      resource_type_counts.each do |key, count|
+        solr_doc["#{key}_resource_count_itsi"] = count
+      end
+      # first_shelved_image is neither indexed nor multiple
+      solr_doc["first_shelved_image_ss"] = first_shelved_image unless first_shelved_image.nil?
       solr_doc
     end
 
+    #@param old_name [String] unique id attribute of the file element
+    #@param new_name [String] new unique id value being assigned
+    #@return [Nokogiri::XML::Element] the file node
     def rename_file old_name, new_name
       xml=self.ng_xml
       file_node=xml.search('//file[@id=\''+old_name+'\']').first
@@ -241,63 +209,52 @@ module Dor
       self.save
     end
 
+    #Updates old label OR creates a new one if necessary
+    #@param resource_name [String] unique id attribute of the resource
+    #@param new_label [String] label value being assigned
+    #@return [Nokogiri::XML::Element] the resource node
     def update_resource_label resource_name, new_label
-      xml=self.ng_xml
-      resource_node=xml.search('//resource[@id=\''+resource_name+'\']')
-      if(resource_node.length!=1)
-        raise 'Resource not found or duplicate found.'
-      end
-      labels=xml.search('//resource[@id=\''+resource_name+'\']/label')
+      node = singular_node('//resource[@id=\''+resource_name+'\']')
+      labels = node.xpath('./label')
       if(labels.length==0)
         #create a label
-        label_node = Nokogiri::XML::Node.new('label',xml)
+        label_node = Nokogiri::XML::Node.new('label',self.ng_xml)
         label_node.content=new_label
-        resource_node.first.add_child(label_node)
+        node.add_child(label_node)
       else
         labels.first.content=new_label
       end
-    end
-    def update_resource_type resource, new_type
-      xml=self.ng_xml
-      resource_node=xml.search('//resource[@id=\''+resource_name+'\']')
-      if(resource_node.length!=1)
-        raise 'Resource not found or duplicate found.'
-      end
-      resource_node.first['type']=new_type
+      return node
     end
 
-    def move_resource resource_name, new_position
-      xml=self.ng_xml
-      file_node=xml.search('//resource[@id=\''+resource_name+'\']')
-      if(file_node.length!=1)
-        raise 'Resource not found or duplicate found.'
-      end
-      position=file_node.first['sequence'].to_i
-      #is the resource being moved earlier in the sequence or later?
-      new_position=new_position.to_i
-      if new_position>position
-        counter=position
-        while true
-          if counter == position
-            break
-          end
-          item=xml.search('/resource[@id=\''+counter.to_s+'\']').first
-          counter=counter+1
-          item['sequence']=counter.to_s
-        end
-      else
-        counter=position
-        while true
-          if counter == new_position
-            break
-          end
-          item=xml.search('/resource[@id=\''+counter.to_s+'\']').first
-          counter=counter-1
-          item['sequence']=counter.to_s
-        end
-      end
+    #@param resource_name [String] unique id attribute of the resource
+    #@param new_type [String] type value being assigned
+    def update_resource_type resource_name, new_type
+      singular_node('//resource[@id=\''+resource_name+'\']')['type']=new_type
     end
-    #Set the content type to and the resource types for all resources
+
+    #You just *had* to have ordered lists in XML, didn't you?
+    #Re-enumerate the sequence numbers affected
+    #@param resource_name [String] unique id attribute of the resource
+    #@param new_position [Integer, String] new sequence number of the resource, or a string that looks like one
+    #@return [Nokogiri::XML::Element] the resource node
+    def move_resource resource_name, new_position
+      node = singular_node('//resource[@id=\''+resource_name+'\']')
+      position = node['sequence'].to_i
+      new_position = new_position.to_i              # tolerate strings as a Legacy behavior
+      return node if position == new_position
+      #otherwise, is the resource being moved earlier in the sequence or later?
+      up = new_position>position
+      others = new_position..(up ? position-1 : position+1)  # a range
+      others.each do |i|
+        item = self.ng_xml.at_xpath('/resource[@sequence=\''+i.to_s+'\']')
+        item['sequence'] = (up ? i-1 : i+1).to_s    # if you're going up, everything else comes down and vice versa
+      end
+      node['sequence'] = new_position.to_s          # set the node we already had last, so we don't hit it twice!
+      return node
+    end
+
+    #Set the content type and the resource types for all resources
     #@param new_type [String] the new content type, ex book
     #@param new_resource_type [String] the new type for all resources, ex book
     def set_content_type old_type, old_resource_type, new_type, new_resource_type
@@ -309,6 +266,18 @@ module Dor
         end
       end
       self.content=xml.to_s
+    end
+
+    # Only use this when you want the behavior of raising an exception if anything besides exactly one matching node
+    # is found.  Otherwise just use .xpath, .at_xpath or .search.
+    #@param xpath [String] accessor invocation for Nokogiri xpath
+    #@return [Nokogiri::XML::Element] the matched element
+    def singular_node xpath
+      node = self.ng_xml.search(xpath)
+      len  = node.length
+      raise "#{xpath} not found" if len < 1
+      raise "#{xpath} duplicated: #{len} found" if len != 1
+      node.first
     end
   end
 
