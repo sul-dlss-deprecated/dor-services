@@ -65,10 +65,10 @@ module Dor
       solr_doc[Dor::INDEX_VERSION_FIELD] = Dor::VERSION
       solr_doc['indexed_at_dtsi'] = Time.now.utc.xmlschema
       datastreams.values.each do |ds|
-        add_solr_value(solr_doc, 'ds_specs', ds.datastream_spec_string, :string, [:displayable]) unless ds.new?
+        add_solr_value(solr_doc, 'ds_specs', ds.datastream_spec_string, :string, [:symbol]) unless ds.new?
       end
 
-      add_solr_value(solr_doc, 'title_sort', self.label, :string, [:sortable])
+      add_solr_value(solr_doc, 'title_sort', self.label, :string, [:stored_sortable])
 
       rels_doc = Nokogiri::XML(self.datastreams['RELS-EXT'].content)
       apos = rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy', 'hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
