@@ -33,7 +33,7 @@ module Dor
         'label' => lbl,
         'attribution' => 'Provided by the Stanford University Libraries',
         'logo' => { 
-          '@id' => "http://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette/full/,400/0/default.jpg", 
+          '@id' => "http://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette/full/400,/0/default.jpg", 
           'service' => { 
             '@context' => "http://iiif.io/api/image/2/context.json", 
             '@id' => "http://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette", 
