@@ -31,10 +31,10 @@ describe 'Dor::SimpleDublinCoreDs' do
       </oai_dc:dc>'
 
       dublin = Dor::SimpleDublinCoreDs.from_xml(@xml)
-      expect(dublin.to_solr[Solrizer.solr_name('dc_title', :sortable)]).to be_a_kind_of(String)
-      expect(dublin.to_solr[Solrizer.solr_name('dc_title', :sortable)]).to eq 'title'
-      expect(dublin.to_solr[Solrizer.solr_name('dc_creator', :sortable)]).to be_a_kind_of(String)
-      expect(dublin.to_solr[Solrizer.solr_name('dc_creator', :sortable)]).to eq 'creator'
+      expect(dublin.to_solr[Solrizer.solr_name('dc_title', :stored_sortable)]).to be_a_kind_of(String)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_title', :stored_sortable)]).to eq 'title'
+      expect(dublin.to_solr[Solrizer.solr_name('dc_creator', :stored_sortable)]).to be_a_kind_of(String)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_creator', :stored_sortable)]).to eq 'creator'
     end
 
     it "should create sort fields for each type of identifier" do
@@ -46,10 +46,10 @@ describe 'Dor::SimpleDublinCoreDs' do
       </oai_dc:dc>'
 
       dublin = Dor::SimpleDublinCoreDs.from_xml(@xml)
-      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_druid', :sortable)]).to be_a_kind_of(String)
-      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_druid', :sortable)]).to eq 'identifier'
-      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_uuid', :sortable)]).to be_a_kind_of(String)
-      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_uuid', :sortable)]).to eq 'identifier2'
+      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_druid', :stored_sortable)]).to be_a_kind_of(String)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_druid', :stored_sortable)]).to eq 'identifier'
+      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_uuid', :stored_sortable)]).to be_a_kind_of(String)
+      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_uuid', :stored_sortable)]).to eq 'identifier2'
     end
     end
   end
