@@ -111,7 +111,7 @@ module Dor
       end
 
       def find_sdr_graveyard_apo_druid
-        r = Dor::SearchService.query('dc_title_t:"SDR Graveyard"', :fl => 'id')
+        r = Dor::SearchService.query('dc_title_tesim:"SDR Graveyard"', :fl => 'id')
         if r.docs.empty?
           nil
         else
