@@ -4,18 +4,18 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
   
   set_terminology do |t|
     t.root(:path=>"identityMetadata")
-    t.objectId :index_as => [:symbol, :searchable]
-    t.objectType :index_as => [:symbol, :searchable, :facetable]
+    t.objectId :index_as => [:symbol]
+    t.objectType :index_as => [:symbol]
     t.objectLabel
     t.citationCreator
     t.sourceId
     t.otherId(:path => 'otherId') do
       t.name_(:path => { :attribute => 'name' })
     end
-    t.agreementId :index_as => [:searchable, :facetable]
+    t.agreementId :index_as => [:stored_searchable, :symbol]
     t.tag :index_as => [:symbol]
     t.citationTitle
-    t.objectCreator :index_as => [:searchable, :facetable]
+    t.objectCreator :index_as => [:stored_searchable, :symbol]
     t.adminPolicy :index_as => [:not_searchable]
   end
   
