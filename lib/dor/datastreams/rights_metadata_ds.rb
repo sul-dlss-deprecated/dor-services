@@ -12,8 +12,8 @@ module Dor
 
     set_terminology do |t|
       t.root :path => 'rightsMetadata', :index_as => [:not_searchable]
-      t.copyright :path => 'copyright/human', :index_as => [:facetable]
-      t.use_statement :path => '/use/human[@type=\'useAndReproduction\']', :index_as => [:facetable]
+      t.copyright :path => 'copyright/human', :index_as => [:symbol]
+      t.use_statement :path => '/use/human[@type=\'useAndReproduction\']', :index_as => [:symbol]
 
       t.use do
         t.machine
@@ -99,7 +99,7 @@ module Dor
       solr_doc['rights_errors_ssim'] = dra.index_elements[:errors] if dra.index_elements[:errors].size > 0
       solr_doc['rights_characteristics_ssim'] = dra.index_elements[:terms] if dra.index_elements[:terms].size > 0
       # suppress empties
-      %w[use_statement_sim copyright_sim].each do |key|
+      %w[use_statement_ssim copyright_ssim].each do |key|
         solr_doc[key] = solr_doc[key].reject{ |val| val.nil? || val == '' }.flatten unless solr_doc[key].nil?
       end
       solr_doc
