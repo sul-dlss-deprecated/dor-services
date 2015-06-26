@@ -48,7 +48,7 @@ module Dor
       url = "objects/#{druid}/manifest/signatureCatalog.xml"
       response = sdr_client[url].get
       Moab::SignatureCatalog.parse(response)
-    rescue
+    rescue RestClient::ResourceNotFound
       Moab::SignatureCatalog.new(:digital_object_id => druid, :version_id => 0)
     end
 
