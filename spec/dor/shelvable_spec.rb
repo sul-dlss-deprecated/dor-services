@@ -141,7 +141,7 @@ describe Dor::Shelvable do
 
     it 'should return a relative stack' do
       item.contentMetadata.content = '<contentMetadata stacks="specialstacks"/>'
-      expect { item.get_stacks_location }.to raise_error
+      expect { item.get_stacks_location }.to raise_error(RuntimeError)
     end
   end
 

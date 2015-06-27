@@ -81,7 +81,7 @@ describe Dor::Contentable do
       end
     end
     it 'should raise an exception if the resource doesnt exist' do
-      expect{@item.add_file(@file,'abc0001','ab123cd4567_descMetadata.xml')}.to raise_error
+      expect{@item.add_file(@file,'abc0001','ab123cd4567_descMetadata.xml')}.to raise_error(RuntimeError)
     end
 
     it 'should work ok if the object was set up using the old directory structure' do
@@ -127,7 +127,7 @@ describe Dor::Contentable do
       end
     end
     it 'should raise an exception if there isnt a matching file record in the metadata' do
-      expect{ @item.replace_file(@file,'abcdgw177fc7976_00_0001.tif')}.to raise_error
+      expect{ @item.replace_file(@file,'abcdgw177fc7976_00_0001.tif')}.to raise_error(StandardError)
     end
   end
   describe 'get_file' do

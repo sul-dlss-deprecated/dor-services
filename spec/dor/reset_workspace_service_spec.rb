@@ -31,14 +31,14 @@ describe Dor::ResetWorkspaceService do
 
     it "should do nothing with truncated druid" do
       truncated_druid = "druid:tr111tr1111"
-      Dor::ResetWorkspaceService.reset_workspace_druid_tree(truncated_druid,"2",@workspace_root) 
+      Dor::ResetWorkspaceService.reset_workspace_druid_tree(truncated_druid,"2",@workspace_root)
       truncated_druid_tree_path = "#{@workspace_root}/tr/111/tr/1111/"
       expect(File.exists?("#{truncated_druid_tree_path}_v2")).to be_falsey
       expect(File.exists?(truncated_druid_tree_path)).to be_truthy
     end
 
     it "should throw an error if the directory is already archived" do
-      expect{ Dor::ResetWorkspaceService.reset_workspace_druid_tree(@archived_druid,"2",@workspace_root) }.to raise_error
+      expect{ Dor::ResetWorkspaceService.reset_workspace_druid_tree(@archived_druid,"2",@workspace_root) }.to raise_error(RuntimeError)
     end
 
     it "should archived the current directory even if there is an older archived that hasn't been cleaned up" do
@@ -82,7 +82,7 @@ describe Dor::ResetWorkspaceService do
       bag_path = "#{@export_root}/#{existent_id}"
       # puts bag_path
       FileUtils.mv( bag_path, "#{bag_path}_v2") unless File.exists?(bag_path+"_v2")
-      expect{ Dor::ResetWorkspaceService.reset_export_bag(existent_druid,"2",@export_root) }.to raise_error
+      expect{ Dor::ResetWorkspaceService.reset_export_bag(existent_druid,"2",@export_root) }.to raise_error(RuntimeError)
     end
 
     after(:each) do

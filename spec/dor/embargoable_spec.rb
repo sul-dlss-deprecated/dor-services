@@ -180,11 +180,11 @@ describe Dor::Embargoable do
 
     it 'should raise an error if the item isnt embargoed' do
       @embargo_item.release_embargo('application:embargo-release')
-      expect{@embargo_item.update_embargo(Time.now + 1.month)}.to raise_error
+      expect{@embargo_item.update_embargo(Time.now + 1.month)}.to raise_error(StandardError)
     end
 
     it 'should raise an exception if the new date is in the past' do
-      expect{@embargo_item.update_embargo(1.month.ago)}.to raise_error
+      expect{@embargo_item.update_embargo(1.month.ago)}.to raise_error(StandardError)
     end
   end
 end

@@ -506,7 +506,7 @@ describe Dor::Describable do
       @obj.descMetadata.ng_xml.search('//mods:mods/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
         node.remove
       end
-      expect {@obj.update_title('druid:oo201oo0001', 'new title')}.to raise_error
+      expect {@obj.update_title('druid:oo201oo0001', 'new title')}.to raise_error(StandardError)
     end
   end
   describe 'add_identifier' do
@@ -551,7 +551,7 @@ describe Dor::Describable do
     it 'should throw an exception if there is content in the descriptive metadata stream' do
       #@obj.stub(:descMetadata).and_return(ActiveFedora::OmDatastream.new)
       allow(@obj.descMetadata).to receive(:new?).and_return(false)
-      expect{@obj.set_desc_metadata_using_label()}.to raise_error
+      expect{@obj.set_desc_metadata_using_label()}.to raise_error(StandardError)
     end
     it 'should run if there is content in the descriptive metadata stream and force is true' do
       @obj.set_desc_metadata_using_label(false)

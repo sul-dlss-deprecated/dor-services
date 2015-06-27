@@ -42,7 +42,7 @@ describe Dor::Identifiable do
     it 'should raise an exception if a record of that type already exists' do
       item.add_other_Id('mdtoolkit','someid123')
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someid123')
-      expect{item.add_other_Id('mdtoolkit','someid123')}.to raise_error
+      expect{item.add_other_Id('mdtoolkit','someid123')}.to raise_error(RuntimeError)
     end
   end
 
@@ -100,7 +100,7 @@ describe Dor::Identifiable do
     it 'should raise an exception if there is an existing tag like it' do
       item.add_tag('sometag:someval')
       expect(item.identityMetadata.tags().include?('sometag : someval')).to be_truthy
-      expect {item.add_tag('sometag: someval')}.to raise_error
+      expect {item.add_tag('sometag: someval')}.to raise_error(RuntimeError)
     end
   end
 
