@@ -4,7 +4,7 @@ module Sdr
     class << self
 
       # @param [String] druid id of the object you want the version of
-      # @returns [Integer] the current version from SDR
+      # @return [Integer] the current version from SDR
       def current_version druid
         sdr_client = Dor::Config.sdr.rest_client
         xml = sdr_client["objects/#{druid}/current_version"].get
