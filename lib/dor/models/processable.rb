@@ -201,7 +201,7 @@ module Dor
       solr_doc["status_ssi"] = status # status is singular (i.e. the current one)
       solr_doc["current_version_isi"] = current_version.to_i
       solr_doc["modified_latest_dttsi"] = self.modified_date.to_datetime.utc.strftime('%FT%TZ')
-      add_solr_value(solr_doc, "rights", rights, :string, [:facetable]) if self.respond_to? :rights
+      add_solr_value(solr_doc, "rights", rights, :string, [:symbol]) if self.respond_to? :rights
 
       status_info_hash = status_info()
       status_code = status_info_hash[:status_code]
