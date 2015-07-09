@@ -16,7 +16,6 @@ module Dor
     include Discoverable
     include Geoable
     include Releaseable
-    
   end
   
   class Abstract < ::ActiveFedora::Base
