@@ -33,7 +33,7 @@ module Dor
     #@return [String] The XML release node as a string, with ReleaseDigest as the root document
     def generate_release_xml
       builder = Nokogiri::XML::Builder.new do |xml|
-        xml.ReleaseData {
+        xml.releaseData {
           self.released_for.each do |project,released_value|
             xml.release(released_value["release"],:to=>project)
           end  
