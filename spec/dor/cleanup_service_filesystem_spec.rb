@@ -6,6 +6,7 @@ describe 'Dor::CleanupService specs that check the file system' do
   let(:workspace_dir) { File.join(fixture_dir, 'workspace')}
   let(:export_dir) { File.join(fixture_dir, 'export')}
   let(:assembly_dir) { File.join(fixture_dir, 'assembly')}
+  let(:stacks_dir) { File.join(fixture_dir, 'stacks')}
 
   let(:druid_1) {'druid:cd456ef7890'}
   let(:druid_2) {'druid:cd456gh1234'}
@@ -15,12 +16,14 @@ describe 'Dor::CleanupService specs that check the file system' do
       config.cleanup.local_workspace_root workspace_dir
       config.cleanup.local_export_home export_dir
       config.cleanup.local_assembly_root assembly_dir
+      config.stacks.local_stacks_root stacks_dir
     end
 
     FileUtils.mkdir fixture_dir
     FileUtils.mkdir workspace_dir
     FileUtils.mkdir export_dir
     FileUtils.mkdir assembly_dir
+    FileUtils.mkdir stacks_dir
   end
 
   after(:each) do
@@ -98,6 +101,22 @@ describe 'Dor::CleanupService specs that check the file system' do
       Dor::CleanupService.cleanup item1
       expect(File).not_to exist(dr1_wspace.path)
     end
+  end
+
+  context 'CleanupService.cleanup_stacks' do
+
+    it 'prunes the item from the local stacks root' do
+      stacks_dr = DruidTools::StacksDruid.new(druid_1, Dor::Config.stacks.local_stacks_root)
+      stacks_dr.mkdir
+
+      create_tempfile stacks_dr.path
+      expect(File).to exist(stacks_dr.path)
+
+      Dor::CleanupService.cleanup_stacks druid_1
+      expect(File).to_not exist(stacks_dr.path)
+
+    end
+
   end
 
 

@@ -95,7 +95,7 @@ describe Dor::Processable do
 
       it 'should raise an exception if required datastream cannot be generated' do
         # Fails because there is no build_contentMetadata_datastream() method.
-        expect { @item.build_datastream('contentMetadata', false, true) }.to raise_error
+        expect { @item.build_datastream('contentMetadata', false, true) }.to raise_error(RuntimeError)
       end
 
     end

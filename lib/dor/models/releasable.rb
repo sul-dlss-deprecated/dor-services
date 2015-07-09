@@ -9,7 +9,7 @@ module Dor
     
     #Add release tags to an item and initialize the item release workflow
     #
-    #@params release_tags [Hash or Array] Either a hash of a single release tag.  Each tag should be in the form of {:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket', :release=>true/false}
+    #@param release_tags [Hash or Array] Either a hash of a single release tag.  Each tag should be in the form of {:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket', :release=>true/false}
     #
     #@raise [ArgumentError] Raised if the tags are improperly supplied
     #

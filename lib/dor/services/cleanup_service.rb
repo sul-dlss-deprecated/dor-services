@@ -61,7 +61,7 @@ module Dor
     end
 
     def self.cleanup_stacks(druid)
-      DruidTools::StacksDruid.new(druid, Config.stacks.local_storage_root).prune!
+      DruidTools::StacksDruid.new(druid, Config.stacks.local_stacks_root).prune!
     end
 
     def self.cleanup_purl_doc_cache(druid)

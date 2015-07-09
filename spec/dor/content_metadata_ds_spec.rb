@@ -117,7 +117,7 @@ describe Dor::ContentMetadataDS do
       expect(file['size'    ]).to eq('12345')
     end
     it 'should error out if there isnt an existing record to modify' do
-      expect { @cm.update_file(@file,'gw177fc7976_05_0001_different.jp2')}.to raise_error
+      expect { @cm.update_file(@file,'gw177fc7976_05_0001_different.jp2')}.to raise_error(StandardError)
     end
   end
   describe 'rename_file' do
