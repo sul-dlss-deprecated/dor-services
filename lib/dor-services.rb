@@ -116,9 +116,11 @@ module Dor
   autoload :Contentable, 'dor/models/contentable'
   autoload :Editable, 'dor/models/editable'
   autoload :Discoverable, 'dor/models/discoverable'
-  autoload :Geoable, 'dor/models/geoable'
-  autoload :Presentable, 'dor/models/presentable'
-  autoload :Releaseable, 'dor/models/releaseable'
+  autoload :Geoable,      'dor/models/geoable'
+  autoload :Presentable,  'dor/models/presentable'
+  autoload :Releaseable,   'dor/models/releaseable'
+  autoload :Rightsable,   'dor/models/rightsable'
+
 
 
   # ActiveFedora Classes

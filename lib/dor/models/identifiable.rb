@@ -226,7 +226,7 @@ module Dor
     
     #Add an administrative tag to an item, you will need to seperately save the item to write it to fedora
     #
-    #param tag [string] The tag you wish to add
+    #@param tag [string] The tag you wish to add
     def add_tag(tag)
         identity_metadata_ds = self.identityMetadata
         normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags)
@@ -242,6 +242,18 @@ module Dor
           node.remove
           removed = true
         end
+      end
+      return removed
+    end
+    
+    #Removes all displayTypes from an item in preparation of adding a new display type
+    #
+    #@return Boolean True if displayTypes were removed, False if no displayTypes were removed
+    def remove_displayTypes
+      removed = false
+      self.identityMetadata.ng_xml.search('//displayType').each do |node|
+          node.remove
+          removed = true
       end
       return removed
     end

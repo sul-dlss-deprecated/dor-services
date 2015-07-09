@@ -33,7 +33,7 @@ module Dor
     #@return [String] The XML release node as a string, with ReleaseDigest as the root document
     def generate_release_xml
       builder = Nokogiri::XML::Builder.new do |xml|
-        xml.ReleaseData {
+        xml.releaseData {
           self.released_for.each do |project,released_value|
             xml.release(released_value["release"],:to=>project)
           end  
@@ -282,13 +282,20 @@ module Dor
     #
     #@params tag [Boolean] True or false for the release node
     #@params attrs [hash]  A hash of any attributes to be placed onto the tag 
+    #Timestamp will be calculated by the function, if no displayType is passed in, it will default to file
+    #
     #@example
-    #  item.add_tag(true,:release,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket'})
+    #  item.add_tag(true,:release,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket', :displayType='filmstrip'})
     def add_release_node(release, attrs={})
       identity_metadata_ds = self.identityMetadata
-      attrs[:when] = Time.now.utc.iso8601 if attrs[:when] == nil#add the timestamp
+      attrs[:when] = Time.now.utc.iso8601 if attrs[:when].nil? #add the timestamp
+      attrs[:displayType] = 'file' if attrs[:displayType].nil? #default to file is no display type is passed
       valid_release_attributes(release, attrs)
   
+      #Remove the old displayType and then add the one for this tag
+      remove_displayTypes
+      identity_metadata_ds.add_value(:displayType, attrs[:displayType], {})
+      
       return identity_metadata_ds.add_value(:release, release.to_s, attrs)
     end
 
@@ -311,6 +318,8 @@ module Dor
       end
       raise ArgumentError, ":what must be self or collection" if ! what_correct
       raise ArgumentError, "the value set for this tag is not a boolean" if !!tag != tag
+      raise ArgumentError, ":displayType must be passed in as a String" unless attrs[:displayType].class == String
+      
       validate_tag_format(attrs[:tag]) if attrs[:tag] != nil #Will Raise exception if invalid tag
       return true
     end
