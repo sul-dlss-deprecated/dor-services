@@ -19,12 +19,12 @@ describe Dor::Identifiable do
   
   describe "Removing Display Types" do
     it "returns false when no displayTypes are present to be removed" do
-      expect(item.remove_displayTypes).to be_falsey
+      expect(item.remove_displayTypes).to eq(false)
     end
     
     it "returns true when displayTypes are present and removed" do
       item.identityMetadata.add_value(:displayType, 'foo', {}) #Add in a displayType so we have one to remove
-      expect(item.remove_displayTypes).to be_truthy
+      expect(item.remove_displayTypes).to eq(true)
     end
     
   end

@@ -56,13 +56,13 @@ describe Dor::Releaseable, :vcr do
 
     it 'should recongize at a release tag with no tag attribute applies' do
       local_dummy_tag = {'when' =>  @array_of_times[0], 'who' => 'carrickr' }
-      expect(@bryar_trans_am.does_release_tag_apply(local_dummy_tag, @bryar_trans_am_admin_tags)).to be_truthy
+      expect(@bryar_trans_am.does_release_tag_apply(local_dummy_tag, @bryar_trans_am_admin_tags)).to eq(true)
     end
 
     it 'should not require admin tags to be passed in' do
       local_dummy_tag = {'when' =>  @array_of_times[0], 'who' => 'carrickr' }
-      expect(@bryar_trans_am.does_release_tag_apply(local_dummy_tag)).to be_truthy
-      expect(@bryar_trans_am.does_release_tag_apply(@dummy_tags[0])).to be_falsey
+      expect(@bryar_trans_am.does_release_tag_apply(local_dummy_tag)).to eq(true)
+      expect(@bryar_trans_am.does_release_tag_apply(@dummy_tags[0])).to eq(false)
     end
 
     it 'should only return the request attribute(s) for purl' do
@@ -98,7 +98,7 @@ describe Dor::Releaseable, :vcr do
   #If these tests fail, check not just the logic, but also the specific tags
   describe 'handling tags on objects and determining release status' do
 
-      it "should use only the most recent self tag to determine if an item is released, with no release tags on the collection" do
+      xit "should use only the most recent self tag to determine if an item is released, with no release tags on the collection" do
         skip "VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6"
         VCR.use_cassette('relaseable_self_tags_only') do
           item = Dor::Item.find('druid:vs298kg2555')
@@ -107,7 +107,7 @@ describe Dor::Releaseable, :vcr do
       end
 
       #This test takes an object with a self tag that is older and opposite the tag on this object's collection and ensures the self tag still is the one that is used to decide release status
-      it "should use the self tag over the collection tag to determine if an item is released, even if the collection tag is newer" do
+      xit "should use the self tag over the collection tag to determine if an item is released, even if the collection tag is newer" do
         skip "VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6"
         VCR.use_cassette('releasable_self_over_collection') do
           item = Dor::Item.find('druid:bb537hc4022')
@@ -116,7 +116,7 @@ describe Dor::Releaseable, :vcr do
       end
 
       #This test looks at an item whose only tags are on the collection and ensures the most recent one wins
-      it "should use only most the recent collection tag if no self tags are present" do
+      xit "should use only most the recent collection tag if no self tags are present" do
         skip "VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6"
         VCR.use_cassette('releasable_most_recent_collection_tag_wins') do
           item = Dor::Item.find('druid:bc566xq6031')
@@ -126,7 +126,7 @@ describe Dor::Releaseable, :vcr do
       end
 
       #A collection whose only tag is to release a what=collection should also release the collection object itself
-      it "a tag with what=collection should release the collection item, assuming it is not blocked by a self tag" do
+      xit "a tag with what=collection should release the collection item, assuming it is not blocked by a self tag" do
         skip "VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6"
         VCR.use_cassette('releasable_collection_tag_releases_collection_object') do
           item = Dor::Item.find('druid:wz243gf4151')
@@ -136,7 +136,7 @@ describe Dor::Releaseable, :vcr do
 
       #Here we have an object governed by both the Marcus Chambers, druid:wz243gf4151, Collection and the Revs Collection, druid:nt028fd5773
       #When determining if an item is released, it should look at both collections and pick the most recent timestamp
-      it "should look all collections and sets that an item is a member of" do
+      xit "should look all collections and sets that an item is a member of" do
         skip "VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6"
         VCR.use_cassette('releasable_multiple_collections') do
           item = Dor::Item.find('druid:dc235vd9662')
@@ -149,7 +149,7 @@ describe Dor::Releaseable, :vcr do
       end
 
       #If an items release is controlled with the tag= attr, meaning that only items with that administrative tag are released, that should be respected
-      it "should respect the tag= attr and apply it when releasing" do
+      xit "should respect the tag= attr and apply it when releasing" do
         skip "VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6"
         VCR.use_cassette('releasable_respect_admin_tagging') do
           chambers_collection = Dor::Item.find('druid:wz243gf4151')
@@ -164,7 +164,7 @@ describe Dor::Releaseable, :vcr do
       end
 
       #If an item has no release tags on it for a target it should just return nil when queried with regard to that target
-      it "should return nil if no tags exist on an item with regard to that target" do
+      xit "should return nil if no tags exist on an item with regard to that target" do
         skip "VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6"
         VCR.use_cassette('releaseable_nil_target') do
           item = Dor::Item.find('druid:bc566xq6031')
@@ -172,7 +172,7 @@ describe Dor::Releaseable, :vcr do
         end
       end
 
-      it 'should return release xml for an item as string of elements wrapped in a ReleaseDigestRoot' do
+      xit 'should return release xml for an item as string of elements wrapped in a ReleaseDigestRoot' do
         skip "VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6"
 
         VCR.use_cassette('releasable_release_xml') do
@@ -223,19 +223,19 @@ describe "Adding release nodes", :vcr do
   
   describe 'testing to make sure displayType tag invoked by the add_release_node function' do
     
-    it 'removes all current displayTypes' do
+    xit 'removes all current displayTypes' do
       expect(@item).to receive(:remove_displayTypes).once
       @item.add_release_node(true, {:what=>'self', :who=>'carrickr',:to=>'FRDA'})
     end
     
-    it 'adds a displayType of file when adding a releaseNode with no type is set' do
+    xit 'adds a displayType of file when adding a releaseNode with no type is set' do
       iM = @item.identityMetadata #Grab an identityMetadata so we can do expects and allows on it
       expect(iM).to receive(:add_value).once.with(:displayType, 'file', {})
       expect(iM).to receive(:add_value).once.with(:release, any_args)
       @item.add_release_node(true, {:what=>'self', :who=>'carrickr',:to=>'FRDA'})
     end
     
-    it 'uses the supplied displayType of file when adding a releaseNode' do
+    xit 'uses the supplied displayType of file when adding a releaseNode' do
       iM = @item.identityMetadata #Grab an identityMetadata so we can do expects and allows on it
       expect(iM).to receive(:add_value).once.with(:displayType, 'filmstrip', {})
       expect(iM).to receive(:add_value).once.with(:release, any_args)
@@ -295,7 +295,7 @@ describe "Adding release nodes", :vcr do
     end
   end
 
-  it "should fail to add a release node when there is an attribute error" do
+  xit "should fail to add a release node when there is an attribute error" do
     VCR.use_cassette('simple_release_tag_add_failure_test') do
        expect{@item.add_release_node(true, {:who => nil, :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
        expect{@item.add_release_node(false, {:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project'})}.to raise_error(ArgumentError)
@@ -387,7 +387,7 @@ describe "Adding release nodes", :vcr do
       end
     end
     
-    it 'should add in release tags as false for targets that are listed on the purl but not in new tag generation' do
+    xit 'should add in release tags as false for targets that are listed on the purl but not in new tag generation' do
       VCR.use_cassette('fetch_le_mans_purl') do
         item = Dor::Item.find(@le_mans_druid)
         x = item.get_xml_from_purl
