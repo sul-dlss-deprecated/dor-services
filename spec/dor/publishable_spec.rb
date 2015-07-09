@@ -3,7 +3,7 @@ require 'spec_helper'
 class PublishableItem < ActiveFedora::Base
   include Dor::Publishable
   include Dor::Processable
-  include Dor::Releasable
+  include Dor::Releaseable
 end
 
 describe Dor::Publishable do
