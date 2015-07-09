@@ -126,6 +126,19 @@ describe Dor::Publishable do
          expect(@item.datastreams['rightsMetadata'].ng_xml.at_xpath("/rightsMetadata")).to be
          expect(@item.datastreams['RELS-EXT'].content).to be_equivalent_to @rels
        end
+       
+       it "does not include a releaseData element when there are no release tags" do
+         expect(@p_xml.at_xpath('/publicObject/releaseData')).to be nil
+       end
+       
+       it "does include a releaseData element when there is content inside it" do
+         #Fake a tag with at least one children
+         releaseData = "<releaseData><release>foo</release></releaseData>"
+         allow(@item).to receive(:generate_release_xml).and_return(releaseData)
+         p_xml = Nokogiri::XML(@item.public_xml)
+         expect(p_xml.at_xpath('/publicObject/releaseData')).to be
+       end
+       
     end
 
 
