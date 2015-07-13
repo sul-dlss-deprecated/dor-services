@@ -33,7 +33,7 @@ module Dor
 
       im=self.datastreams['identityMetadata'].ng_xml.clone
       im.search('//release').each {|node| node.remove} # remove any <release> tags from public xml which have full history
-      im.root.add_child(release_xml)  # now add in final <release> tag  #TODO:  Adding this breaks tests, rework these
+      im.root.add_child(release_xml) 
 
       pub.add_child(im.root) # add in modified identityMetadata datastream
       pub.add_child(self.datastreams['contentMetadata'].public_xml.root.clone)
@@ -43,7 +43,8 @@ module Dor
       pub.add_child(rels.clone) unless rels.nil? # TODO: Should never be nil in practice; working around an ActiveFedora quirk for testing
       pub.add_child(self.generate_dublin_core.root.clone)
       @public_xml_doc = pub # save this for possible IIIF Presentation manifest
-      pub.add_child(Nokogiri(self.generate_release_xml).root.clone)  #TODO:  Adding this breaks tests, rework these
+      pub.add_child(Nokogiri(self.generate_release_xml).root.clone) unless release_xml.children.size == 0 #If there are no release_tags, this prevents an empty <releaseData/> from being added
+      #Note we cannot base this on if an individual object has release tags or not, because the collection may cause one to be generated for an item, so we need to calculate it and then look at the final result
       new_pub = Nokogiri::XML(pub.to_xml) { |x| x.noblanks }
       new_pub.encoding = 'UTF-8'
       new_pub.to_xml
