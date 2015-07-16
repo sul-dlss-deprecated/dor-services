@@ -21,6 +21,9 @@ require 'pry'
 require 'tmpdir'
 require 'nokogiri'
 
+require 'dor_config'
+require 'vcr'
+
 # ::ENABLE_SOLR_UPDATES = true
 
 module Dor::SpecHelpers
@@ -67,6 +70,14 @@ RSpec.configure do |config|
   config.logger.level = Logger::WARN  # INFO and lesser messages are not notable
 end
 
+VCR.configure do |c|
+  c.cassette_library_dir = 'spec/fixtures/vcr_cassettes'
+  c.hook_into :webmock
+  c.allow_http_connections_when_no_cassette = true
+  c.default_cassette_options = { :record => :new_episodes }
+  c.configure_rspec_metadata!
+end
+
 def catch_stdio
   old_handles = [$stdout.dup, $stderr.dup]
   begin
@@ -88,14 +99,4 @@ module Kernel
   ensure
     $-v = saved_verbosity
   end
-end
-
-require 'dor_config'
-require 'vcr'
-VCR.configure do |c|
-  c.cassette_library_dir = 'spec/fixtures/vcr_cassettes'
-  c.hook_into :webmock
-  c.allow_http_connections_when_no_cassette = true
-  c.default_cassette_options = { :record => :new_episodes }
-  c.configure_rspec_metadata!
 end
