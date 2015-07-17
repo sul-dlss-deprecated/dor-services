@@ -115,7 +115,7 @@ describe Dor::Releaseable, :vcr do
       #This test takes an object with a self tag that is older and opposite the tag on this object's collection and ensures the self tag still is the one that is used to decide release status
       it "should use the self tag over the collection tag to determine if an item is released, even if the collection tag is newer" do
         skip "VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6"
-        VCR.use_cassette('releasable_self_over_collection') do
+        VCR.use_cassette('releaseable_self_over_collection') do
           item = Dor::Item.find('druid:bb537hc4022')
           expect(item.released_for['Kurita']['release']).to be_falsey
         end
@@ -124,7 +124,7 @@ describe Dor::Releaseable, :vcr do
       #This test looks at an item whose only tags are on the collection and ensures the most recent one wins
       it "should use only most the recent collection tag if no self tags are present" do
         skip "VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6"
-        VCR.use_cassette('releasable_most_recent_collection_tag_wins') do
+        VCR.use_cassette('releaseable_most_recent_collection_tag_wins') do
           item = Dor::Item.find('druid:bc566xq6031')
           expect(item.release_tags).to eq({})
           expect(item.released_for['Kurita']['release']).to be_truthy
@@ -134,7 +134,7 @@ describe Dor::Releaseable, :vcr do
       #A collection whose only tag is to release a what=collection should also release the collection object itself
       it "a tag with what=collection should release the collection item, assuming it is not blocked by a self tag" do
         skip "VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6"
-        VCR.use_cassette('releasable_collection_tag_releases_collection_object') do
+        VCR.use_cassette('releaseable_collection_tag_releases_collection_object') do
           item = Dor::Item.find('druid:wz243gf4151')
           expect(item.released_for['Kurita']['release']).to be_truthy
         end
@@ -144,7 +144,7 @@ describe Dor::Releaseable, :vcr do
       #When determining if an item is released, it should look at both collections and pick the most recent timestamp
       it "should look all collections and sets that an item is a member of" do
         skip "VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6"
-        VCR.use_cassette('releasable_multiple_collections') do
+        VCR.use_cassette('releaseable_multiple_collections') do
           item = Dor::Item.find('druid:dc235vd9662')
           expect(item.released_for['Atago']['release']).to be_truthy
           chambers_collection = Dor::Item.find('druid:wz243gf4151')
@@ -157,7 +157,7 @@ describe Dor::Releaseable, :vcr do
       #If an items release is controlled with the tag= attr, meaning that only items with that administrative tag are released, that should be respected
       it "should respect the tag= attr and apply it when releasing" do
         skip "VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6"
-        VCR.use_cassette('releasable_respect_admin_tagging') do
+        VCR.use_cassette('releaseable_respect_admin_tagging') do
           chambers_collection = Dor::Item.find('druid:wz243gf4151')
           expect(chambers_collection.release_tags['Mogami']).to eq( [{"what"=>"collection", "who"=>"carrickr", "tag"=>"Project : ReleaseSpecTesting : Batch1", "when"=>Time.parse('2015-01-21 22:46:22Z').iso8601, "release"=>true}])
           item_with_this_admin_tag = Dor::Item.find('druid:dc235vd9662')
@@ -181,7 +181,7 @@ describe Dor::Releaseable, :vcr do
       it 'should return release xml for an item as string of elements wrapped in a ReleaseDigestRoot' do
         skip "VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6"
 
-        VCR.use_cassette('releasable_release_xml') do
+        VCR.use_cassette('releaseable_release_xml') do
           item = Dor::Item.find('druid:dc235vd9662')
           release_xml = item.generate_release_xml
           expect(release_xml.class).to eq(String)
