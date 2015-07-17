@@ -1,5 +1,11 @@
 require 'spec_helper'
-#
+
+class ReleaseableItem < ActiveFedora::Base
+  include Dor::Releaseable
+  include Dor::Governable
+  include Dor::Identifiable
+end
+
 describe Dor::Releaseable, :vcr do
   before :each do
     Dor::Config.push! do
@@ -401,5 +407,24 @@ describe "Adding release nodes", :vcr do
         expect(final_result_tags['Kurita']).to match ({'release'=>true})
       end
     end  
+  end
+end
+
+describe 'to_solr' do
+  before(:each) { stub_config   }
+  after(:each)  { unstub_config }
+
+  before :each do
+    @rlsbl_item = instantiate_fixture('druid:ab123cd4567', ReleaseableItem)
+    @rlsbl_item.datastreams['identityMetadata'].content = read_fixture('identity_metadata_full.xml')
+  end
+
+  it "should solrize release tags" do
+    allow(@rlsbl_item).to receive(:released_for).and_return({"Project" => true, "test_target" => true, "test_nontarget" => false})
+
+    solr_doc = @rlsbl_item.to_solr({})
+
+    released_to_field_name = Solrizer.solr_name('released_to', :symbol)
+    expect(solr_doc).to match a_hash_including({released_to_field_name => ["Project", "test_target"]})
   end
 end

@@ -37,7 +37,7 @@ module Dor
           self.released_for.each do |project,released_value|
             xml.release(released_value["release"],:to=>project)
           end  
-          }        
+        }
         end
       return builder.to_xml
     end
@@ -421,5 +421,20 @@ module Dor
       return new_tags
     end
 
+    def to_solr(solr_doc=Hash.new, *args)
+      super(solr_doc, *args)
+
+      #TODO: sort of worried about the performance impact in bulk reindex 
+      # situations, since released_for recurses all parent collections.  jmartin 2015-07-14
+      released_for().each { |key, val|
+        add_solr_value(solr_doc, "released_to", key, :symbol, []) if val
+      }
+
+      #TODO: need to solrize whether item is released to purl?  does released_for 
+      # return that?  logic is:  "True when there is a published lifecycle and Access 
+      # Rights is anything but Dark"
+
+      return solr_doc
+    end
   end
 end
