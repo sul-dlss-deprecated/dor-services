@@ -3,12 +3,12 @@ class EventsDS < ActiveFedora::OmDatastream
   before_create :ensure_non_versionable
   
   set_terminology do |t|
-    t.root(:path => "events")
+    t.root(:path => 'events')
     t.event do
-      t.who :path => { :attribute => "who" }, :index_as => [:displayable, :not_searchable]
-      t.type_ :path => { :attribute => "type" }, :index_as => [:displayable, :not_searchable]
-      t.when :path => { :attribute => "when" }, :index_as => [:displayable, :not_searchable], :data_type => :date
-      t.message :path => "text()", :index_as => [:displayable, :not_searchable]
+      t.who     :path => { :attribute => 'who'  }, :index_as => [:displayable, :not_searchable]
+      t.type_   :path => { :attribute => 'type' }, :index_as => [:displayable, :not_searchable]
+      t.when    :path => { :attribute => 'when' }, :index_as => [:displayable, :not_searchable], :data_type => :date
+      t.message :path => 'text()', :index_as => [:displayable, :not_searchable]
     end
   end
   
@@ -21,7 +21,7 @@ class EventsDS < ActiveFedora::OmDatastream
   end
   
   def ensure_non_versionable
-    self.versionable = "false"
+    self.versionable = 'false'
   end
   
   # Adds an event to the datastream
@@ -29,7 +29,7 @@ class EventsDS < ActiveFedora::OmDatastream
   # @param [String] who who is responsible for this event. Sets the who attribute for the event
   # @param [String] message what happened. Sets the content of the event with this message
   def add_event(type, who, message)
-    ev = ng_xml.create_element "event", message, 
+    ev = ng_xml.create_element 'event', message, 
       :type => type, :who => who, :when => Time.now.xmlschema
     ng_xml.root.add_child(ev)
     ng_xml_will_change!
