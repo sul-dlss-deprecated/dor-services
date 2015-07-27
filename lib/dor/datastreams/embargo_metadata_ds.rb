@@ -96,11 +96,6 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
     find_by_terms(:release_access).first
   end
 
-  # @return [Nokogiri::XML::Element] The releaseAccess node
-  def release_access_node
-    find_by_terms(:release_access).first
-  end
-
   # Sets the embargaAccess node
   # @param [Nokogiri::XML::Document] new_doc Document that will replace the existing releaseAccess node
   def release_access_node=(new_doc)
