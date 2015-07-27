@@ -75,7 +75,7 @@ module Dor
 
       max = xml.search('//resource').map{ |node| node['sequence'].to_i }.max
       #renumber all of the resources that will come after the newly added one
-      while max>position do
+      while max>position
         node=xml.search('//resource[@sequence=\'' + position + '\']')
         node.first[sequence]=max+1 if node.length>0
         max-=1

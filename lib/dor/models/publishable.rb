@@ -33,7 +33,7 @@ module Dor
 
       im=self.datastreams['identityMetadata'].ng_xml.clone
       im.search('//release').each {|node| node.remove} # remove any <release> tags from public xml which have full history
-      im.root.add_child(release_xml) 
+      im.root.add_child(release_xml)
 
       pub.add_child(im.root) # add in modified identityMetadata datastream
       pub.add_child(self.datastreams['contentMetadata'].public_xml.root.clone)

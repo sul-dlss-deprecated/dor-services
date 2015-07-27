@@ -9,7 +9,7 @@ describe Dor::TechnicalMetadataService do
     @druid_tool = Hash.new
   end
 
-  before(:each) do    
+  before(:each) do
     @fixtures = fixtures = Pathname(File.dirname(__FILE__)).join("../fixtures")
     wsfixtures = fixtures.join("workspace").to_s
     Dor::Config.push! do

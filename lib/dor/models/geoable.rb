@@ -2,15 +2,15 @@ module Dor
   module Geoable
     extend ActiveSupport::Concern
 
-    class CrosswalkError < Exception; end    
-    
+    class CrosswalkError < Exception; end
+
     included do
-      has_metadata  :name => 'geoMetadata', 
-                    :type => Dor::GeoMetadataDS, 
-                    :label => 'Geographic Information Metadata in ISO 19139', 
+      has_metadata  :name => 'geoMetadata',
+                    :type => Dor::GeoMetadataDS,
+                    :label => 'Geographic Information Metadata in ISO 19139',
                     :control_group => 'M'
     end
-    
+
     # @return [String] XML
     def fetch_geoMetadata_datastream
       candidates = self.datastreams['identityMetadata'].otherId.collect { |oid| oid.to_s }

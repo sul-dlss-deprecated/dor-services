@@ -26,7 +26,7 @@ module Dor
 #      Rails.logger.error("Unable to mint id from suri: #{e.to_s}")
 #      raise e
     end
-  
-    
+
+
   end
 end

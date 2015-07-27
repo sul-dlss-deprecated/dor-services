@@ -42,23 +42,23 @@ module Dor
       content_pathname = Pathname(workspace_druid.find_filelist_parent('content', filelist))
       content_pathname
     end
-    
-    
-    # get the stack location based on the contentMetadata stacks attribute 
+
+
+    # get the stack location based on the contentMetadata stacks attribute
     # or using the default value from the config file if it doesn't exist
     def get_stacks_location
-      
+
       contentMetadataDS = self.datastreams['contentMetadata']
       unless contentMetadataDS.nil? or contentMetadataDS.stacks.length == 0
-        stacks_location = contentMetadataDS.stacks[0]        
+        stacks_location = contentMetadataDS.stacks[0]
         if stacks_location.start_with?"/"  #Absolute stacks path
           return stacks_location
-        else        
+        else
           raise "stacks attribute for item: "+self.id+ " contentMetadata should start with /. The current value is "+stacks_location
         end
-      end      
+      end
       return Config.stacks.local_stacks_root #Default stacks
-       
+
     end
   end
 end

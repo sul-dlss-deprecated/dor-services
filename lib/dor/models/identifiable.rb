@@ -195,7 +195,7 @@ module Dor
       end
       return removed
     end
-    
+
     #Removes all displayTypes from an item in preparation of adding a new display type
     #
     #@return Boolean True if displayTypes were removed, False if no displayTypes were removed

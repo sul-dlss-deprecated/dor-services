@@ -19,4 +19,3 @@ gem 'dor-rights-auth', :git => 'git@github.com:sul-dlss/dor-rights-auth.git', :b
 
 # Dependencies are defined in dor-services.gemspec
 gemspec
-

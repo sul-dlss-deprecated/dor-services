@@ -1,7 +1,7 @@
 module Dor
-class IdentityMetadataDS < ActiveFedora::OmDatastream 
+class IdentityMetadataDS < ActiveFedora::OmDatastream
   include SolrDocHelper
-  
+
   set_terminology do |t|
     t.root(:path=>"identityMetadata")
     t.objectId :index_as => [:symbol]
@@ -18,28 +18,28 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
     t.objectCreator :index_as => [:stored_searchable, :symbol]
     t.adminPolicy :index_as => [:not_searchable]
   end
-  
+
   define_template :value do |builder,name,value,attrs|
     builder.send(name.to_sym, value, attrs)
   end
-  
+
   def self.xml_template
     Nokogiri::XML('<identityMetadata/>')
   end #self.xml_template
-  
+
   def add_value(name, value, attrs={})
     add_child_node(ng_xml.root, :value, name, value, attrs)
   end
-  
+
   def objectId
     self.find_by_terms(:objectId).text
   end
-  
+
   def sourceId
     node = self.find_by_terms(:sourceId).first
     node ? [node['source'],node.text].join(':') : nil
   end
-  
+
   def sourceId=(value)
     node = self.find_by_terms(:sourceId).first
     unless value.present?
@@ -79,7 +79,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
     node.content = val
     node
   end
-  
+
   def to_solr(solr_doc=Hash.new, *args)
     super(solr_doc, *args)
 
@@ -102,21 +102,21 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
       add_solr_value(solr_doc, "identifier", qid, :symbol, [:stored_searchable])
       add_solr_value(solr_doc, "#{name}_id", id, :symbol, [])
     }
-    
+
     # do some stuff to make tags in general and project tags specifically more easily searchable and facetable
     self.find_by_terms(:tag).each { |tag|
       (prefix, rest) = tag.text.split(/:/, 2)
       prefix = prefix.downcase.strip.gsub(/\s/,'_')
       unless rest.nil?
-        # this part will index a value in a field specific to the tag, e.g. registered_by_tag_*, 
+        # this part will index a value in a field specific to the tag, e.g. registered_by_tag_*,
         # book_tag_*, project_tag_*, remediated_by_tag_*, etc.  project_tag_* and registered_by_tag_*
-        # definitley get used, but most don't.  we can limit the prefixes that get solrized if things 
+        # definitley get used, but most don't.  we can limit the prefixes that get solrized if things
         # get out of hand.
         add_solr_value(solr_doc, "#{prefix}_tag", rest.strip, :symbol, [])
       end
 
       # solrize each possible prefix for the tag, inclusive of the full tag.
-      # e.g., for a tag such as "A : B : C", this will solrize to an _ssim field 
+      # e.g., for a tag such as "A : B : C", this will solrize to an _ssim field
       # that contains ["A",  "A : B",  "A : B : C"].
       tag_parts = tag.text.split(/:/)
       progressive_tag_prefix = ''

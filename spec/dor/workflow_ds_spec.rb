@@ -83,4 +83,3 @@ describe Dor::WorkflowDs do
     end
   end
 end
-

@@ -32,13 +32,13 @@ module Dor
         '@id'   => "#{purl_base_uri}/iiif/manifest.json",
         'label' => lbl,
         'attribution' => 'Provided by the Stanford University Libraries',
-        'logo' => { 
-          '@id' => "http://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette/full/400,/0/default.jpg", 
-          'service' => { 
-            '@context' => "http://iiif.io/api/image/2/context.json", 
-            '@id' => "http://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette", 
-            'profile' => "http://iiif.io/api/image/2/level1.json" 
-            } 
+        'logo' => {
+          '@id' => "http://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette/full/400,/0/default.jpg",
+          'service' => {
+            '@context' => "http://iiif.io/api/image/2/context.json",
+            '@id' => "http://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette",
+            'profile' => "http://iiif.io/api/image/2/level1.json"
+            }
           },
         'seeAlso' => {
           '@id' => "#{purl_base_uri}.mods",

@@ -27,4 +27,3 @@ task :clean do
 end
 
 task :default => [:spec, :doc]
-
