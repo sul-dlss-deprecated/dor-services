@@ -139,8 +139,6 @@ module Dor
       content_metadata_pathname = metadata_dir.join('contentMetadata.xml')
       if content_metadata_pathname.exist?
         content_metadata_pathname.read
-      else
-        nil
       end
     end
 

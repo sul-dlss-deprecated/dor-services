@@ -20,7 +20,7 @@ module Dor
 
       #if the current version is still open, avoid this versioned directory
       if Dor::WorkflowService.get_lifecycle('dor', druid, 'accessioned').nil? then
-        last_version = last_version - 1
+        last_version -= 1
       end
       return last_version
     end

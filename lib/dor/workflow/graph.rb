@@ -78,7 +78,7 @@ class Graph
   def finish
     @processes.values.each do |process|
       process.node.fontname = 'Helvetica'
-      if process.id =~ %r{^#{qname}} and process.prerequisites.length == 0
+      if process.id =~ %r{^#{qname}} && process.prerequisites.length == 0
         (@root << process.node)[:arrowhead => 'none', :arrowtail => 'none', :dir => 'both', :style => 'invisible']
       end
     end

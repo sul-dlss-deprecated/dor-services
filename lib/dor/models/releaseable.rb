@@ -393,7 +393,7 @@ module Dor
       #We only want the nodes with a name that isn't text
       return_array = []
       nodes.each do |n|
-        return_array << n.attr('to') if !n.name.nil? and n.name.downcase != "text"
+        return_array << n.attr('to') if !n.name.nil? && n.name.downcase != "text"
       end
       return return_array.uniq
     end

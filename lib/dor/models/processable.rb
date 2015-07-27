@@ -42,7 +42,7 @@ module Dor
       # This is a work-around for some strange logic in ActiveFedora that
       # don't allow self.workflows.new? to work if we load the object using
       # .load_instance_from_solr.
-      return if self.respond_to? :inner_object and self.inner_object.is_a? ActiveFedora::SolrDigitalObject
+      return if self.respond_to?(:inner_object) && self.inner_object.is_a?(ActiveFedora::SolrDigitalObject)
 
       if self.workflows.new?
         workflows.mimeType = 'application/xml'
@@ -54,7 +54,7 @@ module Dor
       if datastream.new?
         true
       elsif datastream.class.respond_to?(:xml_template)
-        datastream.content.to_s.empty? or EquivalentXml.equivalent?(datastream.content, datastream.class.xml_template)
+        datastream.content.to_s.empty? || EquivalentXml.equivalent?(datastream.content, datastream.class.xml_template)
       else
         datastream.content.to_s.empty?
       end
@@ -84,7 +84,7 @@ module Dor
         ds.content = content
         ds.ng_xml = Nokogiri::XML(content) if ds.respond_to?(:ng_xml)
         ds.save unless ds.digital_object.new?
-      elsif force or empty_datastream?(ds)
+      elsif force || empty_datastream?(ds)
         meth = "build_#{datastream}_datastream".to_sym
         if respond_to?(meth)
           content = self.send(meth, ds)
@@ -118,8 +118,8 @@ module Dor
       #only get steps that are part of accessioning and part of the current version. That can mean they were archived with the current version
       #number, or they might be active (no version number).
       milestones.each do |m|
-        if STEPS.keys.include?(m[:milestone]) and (m[:version].nil? or m[:version] == current_version)
-          current_milestones << m unless m[:milestone] == 'registered' and current_version.to_i > 1
+        if STEPS.keys.include?(m[:milestone]) && (m[:version].nil? || m[:version] == current_version)
+          current_milestones << m unless m[:milestone] == 'registered' && current_version.to_i > 1
         end
       end
 

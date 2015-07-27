@@ -74,7 +74,7 @@ module Dor
         resp = solr.find params
         if block_given?
           cont = true
-          while cont and resp.docs.length > 0
+          while cont && resp.docs.length > 0
             cont = yield(resp)
             params[:rows] ||= resp.docs.length
             params[:start] += params[:rows]

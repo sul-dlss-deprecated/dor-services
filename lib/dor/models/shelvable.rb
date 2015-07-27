@@ -49,7 +49,7 @@ module Dor
     def get_stacks_location
 
       contentMetadataDS = self.datastreams['contentMetadata']
-      unless contentMetadataDS.nil? or contentMetadataDS.stacks.length == 0
+      unless contentMetadataDS.nil? || contentMetadataDS.stacks.length == 0
         stacks_location = contentMetadataDS.stacks[0]
         if stacks_location.start_with?"/"  #Absolute stacks path
           return stacks_location

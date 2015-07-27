@@ -113,7 +113,7 @@ module Dor
         res=xml.search('//resource[@sequence=\''+position.to_s+'\']')
         break if res.length==0
         res['sequence']=position.to_s
-        position=position+1
+        position+=1
       end
       self.content=xml.to_s
       self.save

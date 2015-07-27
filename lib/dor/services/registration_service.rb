@@ -52,7 +52,7 @@ module Dor
           end
         end
 
-        if (other_ids.has_key?(:uuid) or other_ids.has_key?('uuid')) == false
+        if (other_ids.has_key?(:uuid) || other_ids.has_key?('uuid')) == false
           other_ids[:uuid] = UUIDTools::UUID.timestamp_create.to_s
         end
         short_label = label.length>254 ? label[0,254] : label

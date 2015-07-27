@@ -47,7 +47,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
       nil
     else
       (source,val) = value.split(/:/,2)
-      unless source.present? and value.present?
+      unless source.present? && value.present?
         raise ArgumentError, "Source ID must follow the format namespace:value"
       end
       node = ng_xml.root.add_child('<sourceId/>').first if node.nil?

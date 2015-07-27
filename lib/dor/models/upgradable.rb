@@ -33,7 +33,7 @@ module Dor
       relevant = @@__upgrade_callbacks.select { |c| obj.is_a?(c.module) }.sort_by(&:version)
       results = relevant.collect do |c|
         result = c.block.call(obj)
-        if result and event_handler.respond_to?(:add_event)
+        if result && event_handler.respond_to?(:add_event)
           event_handler.add_event 'remediation', "#{c.module.name} #{c.version}", c.description
         end
         if result
