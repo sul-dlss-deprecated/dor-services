@@ -22,9 +22,7 @@ module Dor
 
       raise "The archived bag #{bag_dir}_v#{version} already existed." if  File.exists?("#{bag_dir}_v#{version}")
 
-      if File.exists?(bag_dir)
-        FileUtils.mv(bag_dir, "#{bag_dir}_v#{version}")
-      end
+      FileUtils.mv(bag_dir, "#{bag_dir}_v#{version}") if File.exists?(bag_dir)
 
       if File.exists?("#{bag_dir}.tar")
         FileUtils.mv("#{bag_dir}.tar", "#{bag_dir}_v#{version}.tar")

@@ -9,9 +9,7 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
 
   define_template :process do |builder,workflow,attrs|
     prereqs = attrs.delete('prerequisite')
-    if prereqs.is_a?(String)
-      prereqs = prereqs.split(/\s*,\s*/)
-    end
+    prereqs = prereqs.split(/\s*,\s*/) if prereqs.is_a?(String)
     attrs.keys.each { |k| attrs[k.to_s.dasherize.to_sym] = attrs.delete(k) }
     builder.process(attrs) do |node|
       Array(prereqs).each do |prereq|
@@ -68,9 +66,7 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
     self.ng_xml = Nokogiri::XML(%{<workflow-def id="#{hash['name']}" repository="#{hash['repository']}"/>})
     i = 0
     hash.each_pair do |k,v|
-      if v.is_a?(Hash)
-        add_process(v.merge({:name => k, :sequence => i+=1}))
-      end
+      add_process(v.merge({:name => k, :sequence => i+=1})) if v.is_a?(Hash)
     end
   end
 

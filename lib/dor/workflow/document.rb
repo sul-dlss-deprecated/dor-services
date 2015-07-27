@@ -53,9 +53,7 @@ module Workflow
     def graph(parent=nil, dir=nil)
       wf_definition = self.definition
       result = wf_definition ? Workflow::Graph.from_processes(wf_definition.repo, wf_definition.name, self.processes, parent) : nil
-      unless result.nil?
-        result['rankdir'] = dir || 'TB'
-      end
+      result['rankdir'] = dir || 'TB' unless result.nil?
       result
     end
 
@@ -65,9 +63,7 @@ module Workflow
 
     def processes
       #if the workflow service didnt return any processes, dont return any processes from the reified wf
-      if ng_xml.search("/workflow/process").length == 0
-        return []
-      end
+      return [] if ng_xml.search("/workflow/process").length == 0
       @processes ||=
       if self.definition
         self.definition.processes.collect do |process|

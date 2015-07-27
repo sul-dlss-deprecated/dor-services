@@ -21,9 +21,7 @@ handler = Class.new do
 
   def label(metadata)
     xml = Nokogiri::XML(metadata)
-    if xml.root.nil?
-      return ""
-    end
+    return "" if xml.root.nil?
     case xml.root.name
     when 'msDesc' then xml.xpath('/msDesc/msIdentifier/collection').text
     when 'mods'   then

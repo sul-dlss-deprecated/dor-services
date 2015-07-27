@@ -228,14 +228,14 @@ module Dor
     #handles formating utc date/time to human readable
     # XXX: bad form to hardcode TZ here.  Code smell abounds.
     def format_date datetime
-      begin
+
         d = datetime.is_a?(Time) ? datetime :
             DateTime.parse(datetime).in_time_zone(ActiveSupport::TimeZone.new("Pacific Time (US & Canada)"))
         I18n.l(d).strftime('%Y-%m-%d %I:%M%p')
       rescue
         d = datetime.is_a?(Time) ? datetime : Time.parse(datetime.to_s)
         d.strftime('%Y-%m-%d %I:%M%p')
-      end
+
     end
   end
 

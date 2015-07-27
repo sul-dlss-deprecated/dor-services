@@ -143,9 +143,7 @@ class Graph
         edge.dir = 'both'
         edge.arrowhead = 'none'
         edge.arrowtail = 'none'
-        if (wf1 != wf2)
-          edge.style = 'dashed'
-        end
+        edge.style = 'dashed' if (wf1 != wf2)
         self.prerequisites << process
       }
       return self

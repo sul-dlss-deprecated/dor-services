@@ -24,7 +24,7 @@ class SimpleDublinCoreDs < ActiveFedora::OmDatastream
   def to_solr(solr_doc=Hash.new, *args)
     # There are a whole bunch of namespace-related things that can go
     # wrong with this terminology. Until it's fixed in OM, ignore them all.
-    begin
+
       doc = super solr_doc, *args
 
       add_solr_value(doc, 'dc_title',   self.title.first,   :string, [:stored_sortable, :stored_searchable])
@@ -42,7 +42,7 @@ class SimpleDublinCoreDs < ActiveFedora::OmDatastream
     rescue Exception => e
       warn "ERROR in SimpleDublinCoreDs to_solr()! #{e}"
       solr_doc
-    end
+
   end
 end
 end

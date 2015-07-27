@@ -80,9 +80,7 @@ module Dor
           end
           new_item.add_relationship short_predicate, rel['rdf:resource']
         end
-        if collection
-          new_item.add_collection(collection)
-        end
+        new_item.add_collection(collection) if collection
         if (rights && ['item','collection'].include?(object_type))
           rights_xml=apo_object.defaultObjectRights.ng_xml
           new_item.datastreams['rightsMetadata'].content=rights_xml.to_s

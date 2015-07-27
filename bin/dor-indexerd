@@ -47,9 +47,7 @@ else
 end
 
 
-if log_dir.empty?
-  File.join(Dir.pwd,'log')
-end
+File.join(Dir.pwd,'log') if log_dir.empty?
 
 
 options = {

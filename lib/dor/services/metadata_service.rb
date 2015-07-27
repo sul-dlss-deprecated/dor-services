@@ -64,9 +64,7 @@ module Dor
 
       def handler_for(prefix)
         handler = handlers[prefix.to_sym]
-        if handler.nil?
-          raise MetadataError, "Unkown metadata prefix: #{prefix}"
-        end
+        raise MetadataError, "Unkown metadata prefix: #{prefix}" if handler.nil?
         return handler
       end
 

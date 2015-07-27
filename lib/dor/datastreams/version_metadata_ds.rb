@@ -15,9 +15,7 @@ module Dor
 
     # @param [String] raw_tag the value of the tag attribute from a Version node
     def self.parse(raw_tag)
-      unless(raw_tag =~ /(\d+)\.(\d+)\.(\d+)/)
-        return nil
-      end
+      return nil unless (raw_tag =~ /(\d+)\.(\d+)\.(\d+)/)
       VersionTag.new $1, $2, $3
     end
 
@@ -188,9 +186,7 @@ module Dor
     # @return [String] The description for the current version
     def current_description
       desc_node=current_version_node.at_xpath('description')
-      if desc_node
-        return desc_node.content
-      end
+      return desc_node.content if desc_node
       ''
     end
 

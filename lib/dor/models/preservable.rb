@@ -13,9 +13,7 @@ module Dor
       workflow_provenance = create_workflow_provenance(workflow_id, event_text)
       dsname = 'provenanceMetadata'
       ds = datastreams[dsname]
-      unless datastreams.keys.include?(dsname)
-        ds.label = 'Provenance Metadata'
-      end
+      ds.label = 'Provenance Metadata' unless datastreams.keys.include?(dsname)
       ds.ng_xml = workflow_provenance
       ds.content=ds.ng_xml.to_s
       ds.save

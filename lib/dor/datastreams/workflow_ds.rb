@@ -46,7 +46,7 @@ class WorkflowDs < ActiveFedora::OmDatastream
   end
 
   def content
-    begin
+
       @content ||= Dor::WorkflowService.get_workflow_xml 'dor', self.pid, nil
     rescue RestClient::ResourceNotFound
       xml = Nokogiri::XML(%{<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<workflows objectId="#{self.pid}"/>})
@@ -57,7 +57,7 @@ class WorkflowDs < ActiveFedora::OmDatastream
         end
       end
       @content ||= xml.to_xml
-    end
+
   end
 
   def workflows

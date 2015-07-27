@@ -137,9 +137,7 @@ module Dor
     # @return [String] Return the contents of the contentMetadata.xml file from the content directory
     def self.get_content_metadata(metadata_dir)
       content_metadata_pathname = metadata_dir.join('contentMetadata.xml')
-      if content_metadata_pathname.exist?
-        content_metadata_pathname.read
-      end
+      content_metadata_pathname.read if content_metadata_pathname.exist?
     end
 
     # @param [Pathname] metadata_dir The location of the the object's metadata files
