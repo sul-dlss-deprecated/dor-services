@@ -53,73 +53,31 @@ module Dor
       end
     end
 
-    ## Module-level variables, shared between ALL mixin includers!
+    ## Module-level variables, shared between ALL mixin includers (and ALL *their* includers/extenders)!
+    ## used for caching found values
     @@collection_hash={}
     @@apo_hash={}
-    @@hydrus_apo_hash={}
-    @@hydrus_collection_hash={}
 
     def to_solr(solr_doc=Hash.new, *args)
       self.assert_content_model
       super(solr_doc, *args)
+
       solr_doc[Dor::INDEX_VERSION_FIELD] = Dor::VERSION
-      solr_doc['indexed_at_dtsi' ] = Time.now.utc.xmlschema
-      solr_doc['indexed_day_dtsi'] = Time.now.beginning_of_day.utc.xmlschema  # technically unnecessary, but convenient
+      solr_doc['indexed_at_dtsi'] = Time.now.utc.xmlschema
       datastreams.values.each do |ds|
-        add_solr_value(solr_doc,'ds_specs',ds.datastream_spec_string,:string,[:displayable]) unless ds.new?
+        add_solr_value(solr_doc, 'ds_specs', ds.datastream_spec_string, :string, [:symbol]) unless ds.new?
       end
-      add_solr_value(solr_doc, 'title_sort', self.label, :string, [:sortable])
-      title_attrs = [:searchable, :facetable, :displayable]
+
+      add_solr_value(solr_doc, 'title_sort', self.label, :string, [:stored_sortable])
+
       rels_doc = Nokogiri::XML(self.datastreams['RELS-EXT'].content)
-      apos=rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy','hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' )
-      apos.each do |apo_node|
-        druid = apo_node['rdf:resource']
-        next unless druid   # TODO: a warning about the bad APO would be nice
-        druid=druid.gsub('info:fedora/','')
-        # check cache first
-        if @@apo_hash.has_key?(druid) || @@hydrus_apo_hash.has_key?(druid)
-          add_solr_value(solr_doc, "hydrus_apo_title", @@hydrus_apo_hash[druid], :string, title_attrs) if @@hydrus_apo_hash.has_key? druid
-          add_solr_value(solr_doc, "apo_title", @@apo_hash[druid] , :string, title_attrs) if @@apo_hash.has_key? druid
-        else
-          begin
-            apo_object=Dor.find(druid)
-            if apo_object.tags.include? 'Project : Hydrus'
-              add_solr_value(solr_doc, "hydrus_apo_title", apo_object.label, :string, title_attrs)
-              @@hydrus_apo_hash[druid]=apo_object.label
-            else
-              add_solr_value(solr_doc, "apo_title", apo_object.label, :string, title_attrs)
-              @@apo_hash[druid]=apo_object.label
-            end
-          rescue
-            add_solr_value(solr_doc, "apo_title", druid, :string, title_attrs)
-          end
-        end
-      end
-      collections=rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection','fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' )
-      collections.each do |collection_node|
-        druid=collection_node['rdf:resource']
-        next unless druid     ## TODO: warning here would also be useful
-        druid=druid.gsub('info:fedora/','')
-        if @@collection_hash.has_key?(druid) || @@hydrus_collection_hash.has_key?(druid)
-          add_solr_value(solr_doc, "hydrus_collection_title", @@hydrus_collection_hash[druid], :string, title_attrs) if @@hydrus_collection_hash.has_key? druid
-          add_solr_value(solr_doc, "collection_title", @@collection_hash[druid], :string, title_attrs) if @@collection_hash.has_key? druid
-        else
-          begin
-            collection_object=Dor.find(druid)
-            if collection_object.tags.include? 'Project : Hydrus'
-              add_solr_value(solr_doc, "hydrus_collection_title", collection_object.label, :string, title_attrs)
-              @@hydrus_collection_hash[druid]=collection_object.label
-            else
-              add_solr_value(solr_doc, "collection_title", collection_object.label, :string, title_attrs)
-              @@collection_hash[druid]=collection_object.label
-            end
-          rescue
-            add_solr_value(solr_doc, "collection_title", druid, :string, title_attrs)
-          end
-        end
-      end
+      apos = rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy', 'hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+      collections = rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+      solrize_related_obj_titles(solr_doc, apos, @@apo_hash, "apo_title")
+      solrize_related_obj_titles(solr_doc, collections, @@collection_hash, "collection_title")
+
       solr_doc["metadata_source_ssi"] = self.identity_metadata_source
-      solr_doc
+      return solr_doc
     end
 
     #@return [String] calculated value for Solr index
@@ -202,7 +160,7 @@ module Dor
 
     #Ensure that an administrative tag meets the proper mininum format
     #
-    #@params tag_str [String] the tag
+    #@param tag_str [String] the tag
     #
     #@return [Array] the tag split into an array via ':'
     def validate_tag_format(tag_str)
@@ -220,7 +178,7 @@ module Dor
 
     #Add an administrative tag to an item, you will need to seperately save the item to write it to fedora
     #
-    #param tag [string] The tag you wish to add
+    #@param tag [string] The tag you wish to add
     def add_tag(tag)
         identity_metadata_ds = self.identityMetadata
         normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags)
@@ -237,6 +195,18 @@ module Dor
       end
       return removed
     end
+    
+    #Removes all displayTypes from an item in preparation of adding a new display type
+    #
+    #@return Boolean True if displayTypes were removed, False if no displayTypes were removed
+    def remove_displayTypes
+      removed = false
+      self.identityMetadata.ng_xml.search('//displayType').each do |node|
+          node.remove
+          removed = true
+      end
+      return removed
+    end
 
     def update_tag(old_tag, new_tag)
       updated = false
@@ -247,6 +217,38 @@ module Dor
         end
       end
       return updated
+    end
+
+    def get_related_obj_display_title(related_obj, default_title)
+      if related_obj
+        if related_obj.datastreams["DC"] && related_obj.datastreams["DC"].title
+          return related_obj.datastreams["DC"].title
+        else
+          return related_obj.label
+        end
+      end
+
+      return default_title
+    end
+
+
+    private
+    def solrize_related_obj_titles(solr_doc, relationships, title_hash, field_name)
+      title_type = :symbol  # we'll get an _ssim because of the type
+      title_attrs = [:stored_searchable]  # we'll also get a _tesim from this attr
+      relationships.each do |rel_node|
+        rel_druid = rel_node['rdf:resource']
+        next unless rel_druid   # TODO: warning here would also be useful
+        rel_druid = rel_druid.gsub('info:fedora/', '')
+        if title_hash.has_key?(rel_druid)
+          add_solr_value(solr_doc, field_name, title_hash[rel_druid], title_type, title_attrs)
+        else
+          related_obj = Dor.find(rel_druid)
+          related_obj_title = get_related_obj_display_title(related_obj, rel_druid)
+          add_solr_value(solr_doc, field_name, related_obj_title, title_type, title_attrs)
+          title_hash[rel_druid] = related_obj_title
+        end
+      end
     end
   end
 end

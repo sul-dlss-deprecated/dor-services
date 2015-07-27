@@ -28,10 +28,10 @@ describe Dor::Governable do
 
   describe 'set_read_rights error handling' do
     it 'should raise an exception if the rights option doesnt match the accepted values' do
-      expect{@item.set_read_rights('"druid:oo201oo0001"','Something')}.to raise_error
+      expect{@item.set_read_rights('"druid:oo201oo0001"','Something')}.to raise_error(ArgumentError)
     end
     it 'should raise an exception if the rights option doesnt match the accepted values' do
-      expect{@item.set_read_rights('mambo')}.to raise_error
+      expect{@item.set_read_rights('mambo')}.to raise_error(ArgumentError)
     end
     it 'should segfault' do
       skip "No expectation implemented"
@@ -138,7 +138,7 @@ describe Dor::Governable do
       allow(@item).to receive(:milestones).and_return({})
       @item.set_read_rights('world')
       solr_doc=@item.to_solr
-      expect(solr_doc).to match a_hash_including('rights_sim' => ['World'], :id => @item.pid)
+      expect(solr_doc).to match a_hash_including('rights_ssim' => ['World'], :id => @item.pid)
     end
     it 'should shouldnt error if there is nothing in the datastream' do
       allow(@item).to receive(:milestones).and_return({})

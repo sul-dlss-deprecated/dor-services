@@ -43,8 +43,7 @@ module Dor
     end
     
     
-    # @param [String] druid The identifier for the object whose reset data is to be removed
-    # @param [String] base The base directory to delete from
+    # @param [String] base_druid_tree The base directory to delete from
     # @param [Integer] last_version The last version that the data should be removed until version 1
     # @return [void] prepares a list of reset directories that should be removed
     def self.get_reset_dir_list(last_version, base_druid_tree)

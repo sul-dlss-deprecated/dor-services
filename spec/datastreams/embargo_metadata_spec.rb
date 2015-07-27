@@ -134,7 +134,7 @@ describe Dor::EmbargoMetadataDS do
 
     it "rejects Documents that do not have a root node of releaseAccess" do
       embargo_xml = "<incorrect/>"
-      expect { ds.release_access_node = Nokogiri::XML(embargo_xml) }.to raise_error
+      expect { ds.release_access_node = Nokogiri::XML(embargo_xml) }.to raise_error(RuntimeError)
     end
   end
 

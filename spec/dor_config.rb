@@ -18,16 +18,16 @@ Dor.configure do
   end
 
   metadata do
-    exist.url 'http://mdtkUser:mdtkPass@example.edu/exist/rest/'
+    exist.url   'http://mdtkUser:mdtkPass@example.edu/exist/rest/'
     catalog.url 'http://example.edu/catalog/mods'
   end
 
   gsearch do
     rest_url 'https://example.edu/gsearch/rest'
-    url 'https://example.edu/solr/gsearch'
+    url      'https://example.edu/solr/gsearch'
   end
-  solrizer.url 'https://example.edu/solr/solrizer'
-  workflow.url 'http://example.edu/workflow/'
-  sdr.url 'http://example.edu/sdr'
+  solrizer.url     'https://example.edu/solr/solrizer'
+  workflow.url     'http://example.edu/workflow/'
+  sdr.url          'http://example.edu/sdr'
   dor_services.url 'https://example.edu/dor'
 end

@@ -36,14 +36,15 @@ Gem::Specification.new do |s|
   s.add_dependency 'solrizer', '~> 3.0'
   s.add_dependency 'systemu', '~> 2.6.0'
   s.add_dependency 'uuidtools', '~> 2.1.4'
-  s.add_dependency 'validatable', '~> 1.6.7'
+# s.add_dependency 'validatable', '~> 1.6.7'
   s.add_dependency 'osullivan', '~> 0.0.3'
-  s.add_dependency 'addressable', '2.3.5'
+  s.add_dependency 'addressable', '2.3.5'  # lock to workaround frozen Addressable::URI runtime errors
   s.add_dependency 'retries'
 
   # Stanford dependencies
   s.add_dependency 'dor-workflow-service', '~> 1.7', '>= 1.7.1'
-  s.add_dependency 'druid-tools', '~> 0.4'
+  s.add_dependency 'druid-tools', '~> 0.4', '>= 0.4.1'
+  s.add_dependency 'dor-rights-auth', '~> 1.0', '>= 1.0.1'
   s.add_dependency 'lyber-utils', '~> 0.1.2'
   s.add_dependency 'moab-versioning', '~> 1.4.4' # 1.3.2 fails, 1.4.3 fails
   s.add_dependency 'stanford-mods', '~> 1.1'

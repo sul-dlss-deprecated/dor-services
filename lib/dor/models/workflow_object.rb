@@ -12,7 +12,7 @@ module Dor
     has_metadata :name => "workflowDefinition", :type => Dor::WorkflowDefinitionDs, :label => 'Workflow Definition'
 
     def self.find_by_name(name, opts={})
-      Dor.find_all(%{#{Solrizer.solr_name "objectType", :facetable}:"#{self.object_type}" #{Solrizer.solr_name "workflow_name", :symbol}:"#{name}"}, opts).first
+      Dor.find_all(%{#{Solrizer.solr_name "objectType", :symbol}:"#{self.object_type}" #{Solrizer.solr_name "workflow_name", :symbol}:"#{name}"}, opts).first
     end
 
     # Searches for the workflow definition object in DOR, then
@@ -51,7 +51,7 @@ module Dor
       client = Dor::WorkflowService.workflow_resource
       xml = client["workflow_archive?repository=#{definition.repo}&workflow=#{definition.name}&count-only=true"].get
       count = Nokogiri::XML(xml).at_xpath('/objects/@count').value
-      add_solr_value(solr_doc,"#{definition.name}_archived",count,:integer,[:displayable])
+      solr_doc["#{definition.name}_archived_isi"] = count
       solr_doc
     end
 
@@ -62,7 +62,7 @@ module Dor
     alias_method :generate_intial_workflow, :generate_initial_workflow
 
     # Searches DOR for the workflow definition object.  It then caches the workflow repository and xml
-    # @param [String] naem the name of the workflow
+    # @param [String] name the name of the workflow
     def self.find_and_cache_workflow_xml_and_repo name
       wobj = self.find_by_name(name)
       wf_xml = wobj.generate_initial_workflow

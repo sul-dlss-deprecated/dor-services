@@ -106,6 +106,7 @@ module Dor
       Dor::WorkflowService.get_milestones('dor',self.pid)
     end
 
+    # @return [Hash] including :current_version, :status_code and :status_time
     def status_info()
       current_version = '1'
       begin
@@ -139,14 +140,23 @@ module Dor
       return {:current_version => current_version, :status_code => status_code, :status_time => status_time}
     end
 
+    # @param [Boolean] include_time
+    # @return [String] single composed status from status_info
     def status(include_time=false)
-      status_info_hash = status_info
+      status_info_hash = status_info()
       current_version, status_code, status_time = status_info_hash[:current_version], status_info_hash[:status_code], status_info_hash[:status_time]
 
       #use the translation table to get the appropriate verbage for the latest step
       result = "v#{current_version} #{STATUS_CODE_DISP_TXT[status_code]}"
       result += " #{format_date(status_time)}" if include_time
       return result
+    end
+
+    # return the text translation of the status code, minus any trailing parenthetical explanation
+    # e.g. 'In accessioning (described)' and 'In accessioning (described, published)' both come back
+    # as 'In accessioning'
+    def simplified_status_code_disp_txt(status_code)
+      return STATUS_CODE_DISP_TXT[status_code].gsub(/\(.*\)$/, '').strip
     end
 
     def to_solr(solr_doc=Hash.new, *args)
@@ -171,38 +181,34 @@ module Dor
         timestamp = milestone[:at].utc.xmlschema
         sortable_milestones[milestone[:milestone]] ||= []
         sortable_milestones[milestone[:milestone]] << timestamp
-        add_solr_value(solr_doc, 'lifecycle', milestone[:milestone], :string, [:searchable, :facetable])
-        unless milestone[:version]
-          milestone[:version]=current_version
-        end
-        add_solr_value(solr_doc, 'lifecycle', "#{milestone[:milestone]}:#{timestamp};#{milestone[:version]}", :string, [:displayable])
+        milestone[:version] ||= current_version
+        solr_doc['lifecycle_ssim'] ||= []
+        solr_doc['lifecycle_ssim'] << milestone[:milestone]
+        add_solr_value(solr_doc, 'lifecycle', "#{milestone[:milestone]}:#{timestamp};#{milestone[:version]}", :symbol)
       end
 
       sortable_milestones.each do |milestone, unordered_dates|
         dates = unordered_dates.sort
-        #create the published_dt and published_day fields and the like
-        add_solr_value(solr_doc, milestone+'_day', DateTime.parse(dates.last).beginning_of_day.utc.xmlschema.split('T').first, :string, [:stored_searchable, :facetable])
-        add_solr_value(solr_doc, milestone, dates.first, :date, [:stored_searchable, :facetable])
-
-        #fields for OAI havester to sort on
-        add_solr_value(solr_doc, "#{milestone}_earliest_dt", dates.first, :date, [:sortable])
-        add_solr_value(solr_doc, "#{milestone}_latest_dt",   dates.last,  :date, [:sortable])
-
-        #for future faceting
-        add_solr_value(solr_doc, "#{milestone}_earliest", dates.first, :date, [:searchable, :facetable])
-        add_solr_value(solr_doc, "#{milestone}_latest",   dates.last,  :date, [:searchable, :facetable])
+        #create the published_dttsi and published_day fields and the like
+        dates.each do |date|
+          solr_doc["#{milestone}_dttsim"] ||= []
+          solr_doc["#{milestone}_dttsim"] << date unless solr_doc["#{milestone}_dttsim"].include?(date)
+        end
+        #fields for OAI havester to sort on: _dttsi is trie date +stored +indexed (single valued, i.e. sortable)
+        solr_doc["#{milestone}_earliest_dttsi"] = dates.first
+        solr_doc["#{milestone}_latest_dttsi"  ] = dates.last
       end
-      add_solr_value(solr_doc,"status",status,:string, [:displayable])
+      solr_doc["status_ssi"] = status # status is singular (i.e. the current one)
+      solr_doc["current_version_isi"] = current_version.to_i
+      solr_doc["modified_latest_dttsi"] = self.modified_date.to_datetime.utc.strftime('%FT%TZ')
+      add_solr_value(solr_doc, "rights", rights, :string, [:symbol]) if self.respond_to? :rights
 
-      if sortable_milestones['opened']
-        #add a facetable field for the date when the open version was opened
-        opened_date=sortable_milestones['opened'].sort.last
-        add_solr_value(solr_doc, "version_opened", DateTime.parse(opened_date).beginning_of_day.utc.xmlschema.split('T').first, :string, [ :searchable, :facetable])
-      end
-      add_solr_value(solr_doc, "current_version", current_version.to_s, :string, [ :displayable , :facetable])
-      add_solr_value(solr_doc, "last_modified_day", self.modified_date.to_s.split('T').first, :string, [ :facetable ])
-      add_solr_value(solr_doc, "rights", rights, :string, [:facetable]) if self.respond_to? :rights
-      solr_doc
+      status_info_hash = status_info()
+      status_code = status_info_hash[:status_code]
+      add_solr_value(solr_doc, 'processing_status_text', simplified_status_code_disp_txt(status_code), :string, [:stored_sortable])
+      solr_doc['processing_status_code_isi'] = status_code # no _isi in Solrizer's default descriptors
+
+      return solr_doc
     end
 
     # Initilizes workflow for the object in the workflow service
@@ -213,12 +219,10 @@ module Dor
     # @param [Integer] priority the workflow's priority level
     def initialize_workflow(name, create_ds=true, priority=0)
       priority = workflows.current_priority if priority == 0
-      opts = { :create_ds => create_ds }
+      opts = { :create_ds => create_ds, :lane_id => default_workflow_lane }
       opts[:priority] = priority if(priority > 0)
-      opts[:lane_id] = default_workflow_lane
       Dor::WorkflowService.create_workflow(Dor::WorkflowObject.initial_repo(name), self.pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
     end
-
 
     private
     #handles formating utc date/time to human readable

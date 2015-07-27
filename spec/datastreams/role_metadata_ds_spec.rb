@@ -17,7 +17,8 @@ describe Dor::RoleMetadataDS do
       ds = Dor::RoleMetadataDS.from_xml xml
       doc = ds.to_solr
 
-      expect(doc['apo_register_permissions_sim']).to include('workgroup:dlss:dor-admin')
+      expect(doc['apo_register_permissions_ssim']).to include('workgroup:dlss:dor-admin')
+      expect(doc['apo_register_permissions_tesim']).to include('workgroup:dlss:dor-admin')
     end
 
     it "does not index apo_register_permissions from hydrus roles" do
@@ -33,7 +34,8 @@ describe Dor::RoleMetadataDS do
       ds = Dor::RoleMetadataDS.from_xml xml
       doc = ds.to_solr
 
-      expect(doc).to_not have_key('apo_register_permissions_sim')
+      expect(doc).to_not have_key('apo_register_permissions_ssim')
+      expect(doc).to_not have_key('apo_register_permissions_tesim')
     end
   end
 end

@@ -107,7 +107,7 @@ module Dor
       end
     end
 
-    # @return [Fixnum] value of the most current versionId
+    # @return [String] value of the most current versionId
     def current_version_id
       current_version=current_version_node
       if current_version.nil?
@@ -151,11 +151,6 @@ module Dor
       self.content = ng_xml.to_s
     end
 
-    # @return [String] The value of the greatest versionId
-    def current_version_id
-      current_version_node[:versionId].to_s
-    end
-
     # @return [Boolean] returns true if the current version has a tag and a description, false otherwise
     def current_version_closeable?
       current = current_version_node
@@ -168,9 +163,9 @@ module Dor
 
     # @return [String] The tag for the newest version
     def current_tag
-      current_version_node[:tag].to_s  
+      current_version_node[:tag].to_s
     end
-    
+
     def tag_for_version(versionId)
       nodes=self.ng_xml.search('//version[@versionId=\''+versionId+'\']')
       if nodes.length == 1
@@ -179,6 +174,7 @@ module Dor
         ''
       end
     end
+
     # @return [String] The description for the specified version, or empty string if there is no description
     def description_for_version(versionId)
       nodes=self.ng_xml.search('//version[@versionId=\''+versionId+'\']')
@@ -188,7 +184,7 @@ module Dor
         ''
       end
     end
-    
+
     # @return [String] The description for the current version
     def current_description
       desc_node=current_version_node.at_xpath('description')
@@ -197,7 +193,29 @@ module Dor
       end
       ''
     end
-    
+
+    # Compares the current_version with the passed in known_version (usually SDRs version)
+    #   If the known_version is greater than the current version, then all version nodes greater than the known_version are removed,
+    #   then the current_version is incremented.  This repairs the case where a previous call to open a new verison
+    #   updates the versionMetadata datastream, but versioningWF is not initiated.  Prevents the versions from getting
+    #   out of synch with SDR
+    #
+    # @param [Integer] known_version object version you wish to synch to, usually SDR's version
+    # @param [Hash] opts optional parameters
+    # @option opts [String] :description describes the version change
+    # @option opts [Symbol] :significance which part of the version tag to increment
+    def sync_then_increment_version known_version, opts = {}
+      cv = current_version_id.to_i
+      raise Dor::Exception.new("Cannot sync to a version greater than current: #{cv}, requested #{known_version}") if cv < known_version
+
+      while cv != known_version &&
+        current_version_node.remove
+        cv = current_version_id.to_i
+      end
+
+      increment_version(opts[:description], opts[:significance])
+    end
+
     private
 
     # @return [Nokogiri::XML::Node] Node representing the current version
@@ -210,5 +228,6 @@ module Dor
       tags = find_by_terms(:version, :tag)
       tags.map{|t| VersionTag.parse(t.value)}.max
     end
+
   end
 end

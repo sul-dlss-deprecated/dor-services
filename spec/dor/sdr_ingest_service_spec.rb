@@ -70,7 +70,7 @@ describe Dor::SdrIngestService do
     ds_hash = {ds_name => mock_datastream }
     mock_item = double("item")
     expect(mock_item).to receive(:datastreams).and_return(ds_hash)
-    expect {Dor::SdrIngestService.get_datastream_content(mock_item ,'dummy', 'required')}.to raise_exception
+    expect {Dor::SdrIngestService.get_datastream_content(mock_item ,'dummy', 'required')}.to raise_exception(RuntimeError)
   end
 
   specify "SdrIngestService.transfer with content changes" do

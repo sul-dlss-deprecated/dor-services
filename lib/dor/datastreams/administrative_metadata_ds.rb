@@ -17,14 +17,14 @@ class AdministrativeMetadataDS < ActiveFedora::OmDatastream
     t.registration :index_as => [:not_searchable] do
       t.agreementId
       t.itemTag
-      t.workflow_id :path => 'workflow/@id', :index_as => [:symbol, :facetable]
+      t.workflow_id :path => 'workflow/@id', :index_as => [:symbol]
       t.default_collection :path => 'collection/@id'
     end
     t.workflow :path => 'registration/workflow'
     t.deposit :index_as => [:not_searchable]
 
     t.accessioning :index_as => [:not_searchable] do
-      t.workflow_id :path => 'workflow/@id', :index_as => [:facetable]
+      t.workflow_id :path => 'workflow/@id', :index_as => [:symbol]
     end
 
     t.preservation :index_as => [:not_searchable]

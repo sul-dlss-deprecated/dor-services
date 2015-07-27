@@ -2,21 +2,43 @@ require 'open-uri'
 require 'retries'
 
 module Dor
-  module Releasable
+  module Releaseable
     extend ActiveSupport::Concern
     include Itemizable
+        
+    #Add release tags to an item and initialize the item release workflow
+    #
+    #@params release_tags [Hash or Array] Either a hash of a single release tag.  Each tag should be in the form of {:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket', :release=>true/false}
+    #
+    #@raise [ArgumentError] Raised if the tags are improperly supplied
+    #
+    #
+    def add_release_nodes_and_start_releaseWF(release_tags)
+      release_tags = [release_tags] unless release_tags.class == Array
+      
+      #Add in each tag
+      release_tags.each do |r_tag|
+        self.add_release_node(r_tag[:release],r_tag)
+      end
+      
+      #Save the item to dor so the robots work with the latest data
+      self.save 
+      
+      #Intialize the release workflow
+      self.initialize_workflow('releaseWF') 
+    end
 
-    #Generate XML structure for inclusion to Purl 
+    #Generate XML structure for inclusion to Purl
     #
     #@return [String] The XML release node as a string, with ReleaseDigest as the root document
     def generate_release_xml
       builder = Nokogiri::XML::Builder.new do |xml|
-        xml.ReleaseData {
+        xml.releaseData {
           self.released_for.each do |project,released_value|
             xml.release(released_value["release"],:to=>project)
           end  
-        }        
-      end
+        }
+        end
       return builder.to_xml
     end
     
@@ -91,7 +113,7 @@ module Dor
     #@return [Hash] the combined hash with uniquiness enforced 
     def combine_two_release_tag_hashes(hash_one, hash_two)
       hash_two.keys.each do |key|
-        hash_one[key] = hash_two[key] if hash_one[key].nil?
+        hash_one[key] = hash_two[key] if hash_one[key] == nil
         hash_one[key] = (hash_one[key] + hash_two[key]).uniq if hash_one[key] != nil
       end
       return hash_one
@@ -161,9 +183,9 @@ module Dor
     #@return [Boolean] true or false if it applies (not true or false if it is released, that is the release_tag data)
     def does_release_tag_apply(release_tag, admin_tags=false)
       #Is the tag global or restricted 
-      return true if release_tag['tag'].nil?  #there is no specific tag specificied, so that means this tag is global to all members of the collection, it applies, return true
+      return true if release_tag['tag'] == nil  #there is no specific tag specificied, so that means this tag is global to all members of the collection, it applies, return true
         
-      admin_tags = self.tags unless admin_tags #We use false instead of [], since an item can have no admin_tags that which point we'd be passing down this variable as [] and would not an attempt to retrieve it
+      admin_tags = self.tags if ! admin_tags #We use false instead of [], since an item can have no admin_tags that which point we'd be passing down this variable as [] and would not an attempt to retrieve it
       return admin_tags.include?(release_tag['tag'])
     end
     
@@ -256,17 +278,24 @@ module Dor
     #
     #@return [Nokogiri::XML::Element] the tag added if successful 
     #
-    #@raise [RuntimeError] Raised if attributes are improperly supplied
+    #@raise [ArgumentError] Raised if attributes are improperly supplied
     #
     #@params tag [Boolean] True or false for the release node
     #@params attrs [hash]  A hash of any attributes to be placed onto the tag 
+    #Timestamp will be calculated by the function, if no displayType is passed in, it will default to file
+    #
     #@example
-    #  item.add_tag(true,:release,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket'})
+    #  item.add_tag(true,:release,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket', :displayType='filmstrip'})
     def add_release_node(release, attrs={})
       identity_metadata_ds = self.identityMetadata
-      attrs[:when] = Time.now.utc.iso8601 if attrs[:when] == nil#add the timestamp
+      attrs[:when] = Time.now.utc.iso8601 if attrs[:when].nil? #add the timestamp
+      attrs[:displayType] = 'file' if attrs[:displayType].nil? #default to file is no display type is passed
       valid_release_attributes(release, attrs)
   
+      #Remove the old displayType and then add the one for this tag
+      remove_displayTypes
+      identity_metadata_ds.add_value(:displayType, attrs[:displayType], {})
+      
       return identity_metadata_ds.add_value(:release, release.to_s, attrs)
     end
 
@@ -282,15 +311,15 @@ module Dor
       [:who, :to, :what].each do |check_attr|
         raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
-  
+
       what_correct = false
       ['self', 'collection'].each do |allowed_what_value|
         what_correct = true if attrs[:what] == allowed_what_value
       end
       raise ArgumentError, ":what must be self or collection" if ! what_correct
-  
       raise ArgumentError, "the value set for this tag is not a boolean" if !!tag != tag
-      #identity_metadata_ds = self.identityMetadata
+      raise ArgumentError, ":displayType must be passed in as a String" unless attrs[:displayType].class == String
+      
       validate_tag_format(attrs[:tag]) if attrs[:tag] != nil #Will Raise exception if invalid tag
       return true
     end
@@ -387,10 +416,25 @@ module Dor
       tags_currently_in_purl = self.get_release_tags_from_purl
       missing_tags = tags_currently_in_purl.map(&:downcase) - new_tags.keys.map(&:downcase) 
       missing_tags.each do |missing_tag|
-        new_tags[missing_tag.capitalize] = false
+        new_tags[missing_tag.capitalize] = {"release"=>false}
       end
       return new_tags
     end
 
+    def to_solr(solr_doc=Hash.new, *args)
+      super(solr_doc, *args)
+
+      #TODO: sort of worried about the performance impact in bulk reindex 
+      # situations, since released_for recurses all parent collections.  jmartin 2015-07-14
+      released_for().each { |key, val|
+        add_solr_value(solr_doc, "released_to", key, :symbol, []) if val
+      }
+
+      #TODO: need to solrize whether item is released to purl?  does released_for 
+      # return that?  logic is:  "True when there is a published lifecycle and Access 
+      # Rights is anything but Dark"
+
+      return solr_doc
+    end
   end
 end

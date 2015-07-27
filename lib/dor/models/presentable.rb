@@ -6,7 +6,7 @@ module Dor
     DC_NS = {"dc"=>"http://purl.org/dc/elements/1.1/", "oai_dc"=>"http://www.openarchives.org/OAI/2.0/oai_dc/"}
 
     def iiif_presentation_manifest_needed? pub_obj_doc
-      if(pub_obj_doc.at_xpath('/publicObject/contentMetadata[@type="image"]/resource[@type="image"]'))
+      if(pub_obj_doc.at_xpath('/publicObject/contentMetadata[contains(@type,"image") or contains(@type,"map")]/resource[@type="image"]'))
         return true
       elsif(pub_obj_doc.at_xpath('/publicObject/contentMetadata[@type="book"]/resource[@type="page"]'))
         return true
@@ -32,6 +32,14 @@ module Dor
         '@id'   => "#{purl_base_uri}/iiif/manifest.json",
         'label' => lbl,
         'attribution' => 'Provided by the Stanford University Libraries',
+        'logo' => { 
+          '@id' => "http://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette/full/400,/0/default.jpg", 
+          'service' => { 
+            '@context' => "http://iiif.io/api/image/2/context.json", 
+            '@id' => "http://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette", 
+            'profile' => "http://iiif.io/api/image/2/level1.json" 
+            } 
+          },
         'seeAlso' => {
           '@id' => "#{purl_base_uri}.mods",
           'format' => 'application/mods+xml'
@@ -80,7 +88,12 @@ module Dor
 
         canv = IIIF::Presentation::Canvas.new
         canv['@id'] = "#{purl_base_uri}/canvas/canvas-#{count}"
-        canv.label = res_node.at_xpath('label').text
+        label_node = res_node.at_xpath('label')
+        if label_node
+          canv.label = label_node.text
+        else
+          canv.label = "image"
+        end
         canv.height = height
         canv.width = width
 

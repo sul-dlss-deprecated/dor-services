@@ -1,8 +1,9 @@
+require 'dor/utils/sdr_client'
+
 module Dor
   module Versionable
     extend ActiveSupport::Concern
-    include Processable
-    include Upgradable
+    include Processable # implies Upgradable
 
     included do
       has_metadata :name => 'versionMetadata', :type => Dor::VersionMetadataDS, :label => 'Version Metadata', :autocreate => true
@@ -24,8 +25,10 @@ module Dor
       raise Dor::Exception, 'Object already opened for versioning' if(new_version_open?)
       raise Dor::Exception, 'Object currently being accessioned' if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'submitted'))
 
+      sdr_version = Sdr::Client.current_version pid
+
       vmd_ds = datastreams['versionMetadata']
-      vmd_ds.increment_version
+      vmd_ds.sync_then_increment_version sdr_version
       vmd_ds.content = vmd_ds.ng_xml.to_s
       vmd_ds.save unless self.new_object?
 

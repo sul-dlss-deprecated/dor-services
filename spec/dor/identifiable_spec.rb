@@ -16,6 +16,18 @@ describe Dor::Identifiable do
     allow(ds).to receive(:new?).and_return(false)
     item
   end
+  
+  describe "Removing Display Types" do
+    it "returns false when no displayTypes are present to be removed" do
+      expect(item.remove_displayTypes).to be_falsey
+    end
+    
+    it "returns true when displayTypes are present and removed" do
+      item.identityMetadata.add_value(:displayType, 'foo', {}) #Add in a displayType so we have one to remove
+      expect(item.remove_displayTypes).to be_truthy
+    end
+    
+  end
 
   it "should have an identityMetadata datastream" do
     expect(item.datastreams['identityMetadata']).to be_a(Dor::IdentityMetadataDS)
@@ -42,7 +54,7 @@ describe Dor::Identifiable do
     it 'should raise an exception if a record of that type already exists' do
       item.add_other_Id('mdtoolkit','someid123')
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someid123')
-      expect{item.add_other_Id('mdtoolkit','someid123')}.to raise_error
+      expect{item.add_other_Id('mdtoolkit','someid123')}.to raise_error(RuntimeError)
     end
   end
 
@@ -100,7 +112,7 @@ describe Dor::Identifiable do
     it 'should raise an exception if there is an existing tag like it' do
       item.add_tag('sometag:someval')
       expect(item.identityMetadata.tags().include?('sometag : someval')).to be_truthy
-      expect {item.add_tag('sometag: someval')}.to raise_error
+      expect {item.add_tag('sometag: someval')}.to raise_error(RuntimeError)
     end
   end
 
@@ -158,23 +170,53 @@ describe Dor::Identifiable do
 
   describe 'to_solr' do
     it 'should generate collection and apo title fields' do
-      xml='<rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      mock_apo_druid = 'druid:fg890hi1234'
+      mock_rels_ext_xml = %{<rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
             xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:hydra="http://projecthydra.org/ns/relations#">
             <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
               <fedora-model:hasModel rdf:resource="info:fedora/testObject"/>
-              <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
+              <hydra:isGovernedBy rdf:resource="info:fedora/#{mock_apo_druid}"/>
             </rdf:Description>
-          </rdf:RDF>'
-      allow(item.datastreams['RELS-EXT']).to receive(:content).and_return(xml)
-      doc=item.to_solr
-      #doc.keys.sort.each do |key|
-      #  puts "#{key} #{doc[key]}"
-      #end
-      expect(doc[Solrizer.solr_name('apo_title', :facetable)].first).to eq('druid:fg890hi1234')
+          </rdf:RDF>}
+
+      allow(item.datastreams['RELS-EXT']).to receive(:content).and_return(mock_rels_ext_xml)
+      allow(Dor).to receive(:find).with(mock_apo_druid).and_return(nil)
+
+      doc = item.to_solr
+
+      expect(doc[Solrizer.solr_name('apo_title', :symbol)].first).to eq(mock_apo_druid)
+      expect(doc[Solrizer.solr_name('apo_title', :stored_searchable)].first).to eq(mock_apo_druid)
     end
     it 'should index metadata source' do
       expect(item.to_solr).to match a_hash_including('metadata_source_ssi' => 'Symphony')
     end
   end
+  describe 'get_related_obj_display_title' do
+    it 'should return the dc:title if it is available' do
+      mock_apo_title = "apo title"
+      mock_apo_obj = double(Dor::AdminPolicyObject)
+      mock_dc_datastream = double(Dor::SimpleDublinCoreDs)
 
+      allow(mock_dc_datastream).to receive(:title).and_return(mock_apo_title)
+      allow(mock_apo_obj).to receive(:datastreams).and_return({"DC" => mock_dc_datastream})
+
+      mock_default_title = "druid:zy098xw7654"
+      expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_apo_title)
+    end
+    it 'should return the fedora label if the dc:title is not available' do
+      mock_apo_label = "object label"
+      mock_apo_obj = double(Dor::AdminPolicyObject)
+
+      allow(mock_apo_obj).to receive(:label).and_return(mock_apo_label)
+      allow(mock_apo_obj).to receive(:datastreams).and_return({})
+
+      mock_default_title = "druid:zy098xw7654"
+      expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_apo_label)
+    end
+    it 'should return the default if the related object is nil' do
+      mock_apo_obj = nil
+      mock_default_title = "druid:zy098xw7654"
+      expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_default_title)
+    end
+  end
 end

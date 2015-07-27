@@ -69,6 +69,14 @@ describe Dor::Presentable do
       "@type": "sc:Manifest",
       "label": "Roman Imperial denarius",
       "attribution": "(c) 2009 by Jasper Wilcox. All rights reserved.",
+      "logo": { 
+        "@id": "http://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette/full/400,/0/default.jpg", 
+        "service": { 
+          "@context": "http://iiif.io/api/image/2/context.json", 
+          "@id": "http://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette", 
+          "profile": "http://iiif.io/api/image/2/level1.json" 
+        } 
+      },
       "seeAlso": {
         "@id": "https://purl-dev.stanford.edu/bp778zp8790.mods",
         "format": "application/mods+xml"
@@ -250,14 +258,60 @@ describe Dor::Presentable do
         expected_json = JSON.parse manifest
         expect(built_json).to eq(expected_json)
       end
+
+      describe 'error handling' do
+
+        let(:content_md) {<<-XML
+          <contentMetadata objectId="bp778zp8790" type="map">
+            <resource id="bp778zp8790_1" sequence="1" type="image">
+              <file id="bp778zp8790_00_0001.jp2" mimetype="image/jp2" size="132906">
+                <imageData width="790" height="790"/>
+              </file>
+            </resource>
+          </contentMetadata>
+          XML
+        }
+
+        it 'deals with contentMetadata/resource nodes without failing' do
+          item = PresentableItem.new(:pid => druid)
+          pub_doc = Nokogiri::XML pub_xml
+          built_json = JSON.parse(item.build_iiif_manifest(pub_doc))
+          expect(built_json['sequences'].first['canvases'].first['label']).to eq('image')
+        end
+      end
     end
 
-    describe '#iiif_presentation_manifest_needed? for images' do
+    describe '#iiif_presentation_manifest_needed?' do
+
       it 'returns true when the public_xml contentMetadata has an image resource' do
         item = PresentableItem.new(:pid => druid)
         pub_doc = Nokogiri::XML pub_xml
         expect(item.iiif_presentation_manifest_needed? pub_doc).to be true
       end
+
+      describe 'for a map' do
+
+        let(:content_md) {<<-XML
+          <contentMetadata objectId="bp778zp8790" type="map">
+            <resource id="bp778zp8790_1" sequence="1" type="image">
+              <label>Image 1</label>
+              <file id="bp778zp8790_00_0001.jp2" mimetype="image/jp2" size="132906">
+                <imageData width="790" height="790"/>
+              </file>
+            </resource>
+          </contentMetadata>
+          XML
+        }
+
+        it 'returns true when the public_xml contentMetadata has a map resource' do
+          item = PresentableItem.new(:pid => druid)
+
+          pub_doc = Nokogiri::XML pub_xml
+          expect(item.iiif_presentation_manifest_needed? pub_doc).to be true
+        end
+
+      end
+
     end
 
   end

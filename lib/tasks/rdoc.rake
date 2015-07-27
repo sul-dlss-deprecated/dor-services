@@ -11,11 +11,11 @@ namespace :doc do
 
     YARD::Rake::YardocTask.new(:generate) do |yt|
       yt.files   =  Dir.glob(File.join(project_root, 'lib', '*.rb')) + 
-                    Dir.glob(File.join(project_root, 'lib', '**', '*.rb')) +
-                   [ File.join(project_root, 'README.rdoc') ] +
+                    Dir.glob(File.join(project_root, 'lib', '**', '*.rb')) + ['-']
+                   [ File.join(project_root, 'README.md') ] +
                    [ File.join(project_root, 'LICENSE') ]
                    
-      yt.options = ['--output-dir', doc_destination, '--readme', 'README.rdoc']
+      yt.options = ['--output-dir', doc_destination, '--readme', 'README.md']
     end
   rescue LoadError
     desc "Generate YARD Documentation"

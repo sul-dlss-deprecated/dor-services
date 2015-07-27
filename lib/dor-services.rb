@@ -4,7 +4,7 @@ require 'active_support/core_ext/module/attribute_accessors'
 module Dor
   @@registered_classes = {}
   mattr_reader :registered_classes
-  INDEX_VERSION_FIELD = 'dor_services_version_facet'
+  INDEX_VERSION_FIELD = 'dor_services_version_ssi'
 
   class << self
 
@@ -40,7 +40,7 @@ module Dor
       resp.docs.collect do |solr_doc|
         doc_version = solr_doc[INDEX_VERSION_FIELD].first rescue '0.0.0'
         doc_version = Gem::Version.new(doc_version)
-        object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType',:facetable)]).first
+        object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType', :symbol)]).first
         object_class = registered_classes[object_type] || ActiveFedora::Base
         if opts[:lightweight] and doc_version >= Gem::Version.new('3.1.0')
           begin
@@ -78,63 +78,66 @@ module Dor
   require 'druid-tools'
 
   # datastreams
-  autoload :AdministrativeMetadataDS,  'dor/datastreams/administrative_metadata_ds'
-  autoload :ContentMetadataDS, 'dor/datastreams/content_metadata_ds'
-  autoload :DescMetadataDS,  'dor/datastreams/desc_metadata_ds'
-  autoload :EmbargoMetadataDS, 'dor/datastreams/embargo_metadata_ds'
-  autoload :EventsDS,  'dor/datastreams/events_ds'
-  autoload :GeoMetadataDS,  'dor/datastreams/geo_metadata_ds'
-  autoload :IdentityMetadataDS,  'dor/datastreams/identity_metadata_ds'
-  autoload :RoleMetadataDS,  'dor/datastreams/role_metadata_ds'
-  autoload :WorkflowDefinitionDs,  'dor/datastreams/workflow_definition_ds'
-  autoload :WorkflowDs,  'dor/datastreams/workflow_ds'
-  autoload :VersionMetadataDS,  'dor/datastreams/version_metadata_ds'
-  autoload :DefaultObjectRightsDS,  'dor/datastreams/default_object_rights_ds'
-  autoload :SimpleDublinCoreDs, 'dor/datastreams/simple_dublin_core_ds'
+  autoload :AdministrativeMetadataDS,    'dor/datastreams/administrative_metadata_ds'
+  autoload :ContentMetadataDS,           'dor/datastreams/content_metadata_ds'
+  autoload :DescMetadataDS,              'dor/datastreams/desc_metadata_ds'
+  autoload :EmbargoMetadataDS,           'dor/datastreams/embargo_metadata_ds'
+  autoload :EventsDS,                    'dor/datastreams/events_ds'
+  autoload :GeoMetadataDS,               'dor/datastreams/geo_metadata_ds'
+  autoload :IdentityMetadataDS,          'dor/datastreams/identity_metadata_ds'
+  autoload :RightsMetadataDS,            'dor/datastreams/rights_metadata_ds'
+  autoload :RoleMetadataDS,              'dor/datastreams/role_metadata_ds'
+  autoload :WorkflowDefinitionDs,        'dor/datastreams/workflow_definition_ds'
+  autoload :WorkflowDs,                  'dor/datastreams/workflow_ds'
+  autoload :VersionMetadataDS,           'dor/datastreams/version_metadata_ds'
+  autoload :DefaultObjectRightsDS,       'dor/datastreams/default_object_rights_ds'
+  autoload :SimpleDublinCoreDs,          'dor/datastreams/simple_dublin_core_ds'
 
   # DOR Concerns
   autoload :Identifiable, 'dor/models/identifiable'
-  autoload :Itemizable, 'dor/models/itemizable'
-  autoload :Processable, 'dor/models/processable'
-  autoload :Governable, 'dor/models/governable'
-  autoload :Describable, 'dor/models/describable'
-  autoload :Publishable, 'dor/models/publishable'
-  autoload :Shelvable, 'dor/models/shelvable'
-  autoload :Embargoable, 'dor/models/embargoable'
-  autoload :Preservable, 'dor/models/preservable'
+  autoload :Itemizable,   'dor/models/itemizable'
+  autoload :Processable,  'dor/models/processable'
+  autoload :Governable,   'dor/models/governable'
+  autoload :Describable,  'dor/models/describable'
+  autoload :Publishable,  'dor/models/publishable'
+  autoload :Shelvable,    'dor/models/shelvable'
+  autoload :Embargoable,  'dor/models/embargoable'
+  autoload :Preservable,  'dor/models/preservable'
   autoload :Assembleable, 'dor/models/assembleable'
-  autoload :Upgradable, 'dor/models/upgradable'
-  autoload :Eventable, 'dor/models/eventable'
-  autoload :Versionable, 'dor/models/versionable'
-  autoload :Contentable, 'dor/models/contentable'
-  autoload :Editable, 'dor/models/editable'
-  autoload :Geoable, 'dor/models/geoable'
-  autoload :Presentable, 'dor/models/presentable'
-  autoload :Releasable, 'dor/models/releasable'
+  autoload :Upgradable,   'dor/models/upgradable'
+  autoload :Eventable,    'dor/models/eventable'
+  autoload :Versionable,  'dor/models/versionable'
+  autoload :Contentable,  'dor/models/contentable'
+  autoload :Editable,     'dor/models/editable'
+  autoload :Discoverable, 'dor/models/discoverable'
+  autoload :Geoable,      'dor/models/geoable'
+  autoload :Presentable,  'dor/models/presentable'
+  autoload :Releaseable,   'dor/models/releaseable'
+  autoload :Rightsable,   'dor/models/rightsable'
 
 
   # ActiveFedora Classes
-  autoload :Abstract, 'dor/models/item'
-  autoload :Item, 'dor/models/item'
-  autoload :Set, 'dor/models/set'
+  autoload :Abstract,   'dor/models/item'
+  autoload :Item,       'dor/models/item'
+  autoload :Set,        'dor/models/set'
   autoload :Collection, 'dor/models/collection'
   autoload :AdminPolicyObject, 'dor/models/admin_policy_object'
-  autoload :WorkflowObject, 'dor/models/workflow_object'
+  autoload :WorkflowObject,    'dor/models/workflow_object'
 
   # Services
-  autoload :SearchService, 'dor/services/search_service'
-  autoload :MetadataService, 'dor/services/metadata_service'
-  autoload :RegistrationService, 'dor/services/registration_service'
-  autoload :SuriService, 'dor/services/suri_service'
-  autoload :WorkflowService, 'dor/services/workflow_service'
-  autoload :DigitalStacksService, 'dor/services/digital_stacks_service'
-  autoload :SdrIngestService, 'dor/services/sdr_ingest_service'
-  autoload :CleanupService, 'dor/services/cleanup_service'
+  autoload :SearchService,             'dor/services/search_service'
+  autoload :MetadataService,           'dor/services/metadata_service'
+  autoload :RegistrationService,       'dor/services/registration_service'
+  autoload :SuriService,               'dor/services/suri_service'
+  autoload :WorkflowService,           'dor/services/workflow_service'
+  autoload :DigitalStacksService,      'dor/services/digital_stacks_service'
+  autoload :SdrIngestService,          'dor/services/sdr_ingest_service'
+  autoload :CleanupService,            'dor/services/cleanup_service'
   autoload :ProvenanceMetadataService, 'dor/services/provenance_metadata_service'
-  autoload :TechnicalMetadataService, 'dor/services/technical_metadata_service'
-  autoload :MergeService, 'dor/services/merge_service'
-  autoload :ResetWorkspaceService, 'dor/services/reset_workspace_service'
-  autoload :CleanupResetService, 'dor/services/cleanup_reset_service'
+  autoload :TechnicalMetadataService,  'dor/services/technical_metadata_service'
+  autoload :MergeService,              'dor/services/merge_service'
+  autoload :ResetWorkspaceService,     'dor/services/reset_workspace_service'
+  autoload :CleanupResetService,       'dor/services/cleanup_reset_service'
 
   # Versioning Classes
   module Versioning
@@ -143,8 +146,8 @@ module Dor
 
   # Workflow Classes
   module Workflow
-    autoload :Graph, 'dor/workflow/graph'
-    autoload :Process, 'dor/workflow/process'
+    autoload :Graph,    'dor/workflow/graph'
+    autoload :Process,  'dor/workflow/process'
     autoload :Document, 'dor/workflow/document'
   end
 end
