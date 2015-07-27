@@ -153,7 +153,7 @@ module Dor
     # determine whether the file in question is present in the object's workspace.
     def is_file_in_workspace? filename
       druid_obj = DruidTools::Druid.new(self.pid, Dor::Config.stacks.local_workspace_root)
-      return druid_obj.find_content(filename) != nil
+      return !druid_obj.find_content(filename).nil?
     end
 
     # Appends contentMetadata file resources from the source objects to this object

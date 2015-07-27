@@ -208,7 +208,7 @@ module Dor
     end
 
     def update_title(new_title)
-      if not update_simple_field('mods:mods/mods:titleInfo/mods:title',new_title)
+      unless update_simple_field('mods:mods/mods:titleInfo/mods:title',new_title)
         raise 'Descriptive metadata has no title to update!'
       end
     end

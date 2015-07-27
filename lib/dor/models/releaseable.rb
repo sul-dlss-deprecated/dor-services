@@ -72,7 +72,7 @@ module Dor
       #We now have the keys for all potential releases, we need to check the tags and the most recent time stamp with an explicit true or false wins, in a nil case, the lack of an explicit false tag we do nothing
       (potential_applicable_release_tags.keys-released_hash.keys).each do |key|  #don't bother checking the ones already added to the release hash, they were added due to a self tag and that has won
         latest_applicable_tag_for_key = latest_applicable_release_tag_in_array(potential_applicable_release_tags[key], administrative_tags)
-        if latest_applicable_tag_for_key != nil #We have a valid tag, record it
+        unless latest_applicable_tag_for_key.nil? #We have a valid tag, record it
           released_hash[key] = self.clean_release_tag_for_purl(latest_applicable_tag_for_key)
         end
 
@@ -113,8 +113,8 @@ module Dor
     #@return [Hash] the combined hash with uniquiness enforced
     def combine_two_release_tag_hashes(hash_one, hash_two)
       hash_two.keys.each do |key|
-        hash_one[key] = hash_two[key] if hash_one[key] == nil
-        hash_one[key] = (hash_one[key] + hash_two[key]).uniq if hash_one[key] != nil
+        hash_one[key] = hash_two[key] if hash_one[key].nil?
+        hash_one[key] = (hash_one[key] + hash_two[key]).uniq unless hash_one[key].nil?
       end
       return hash_one
     end
@@ -183,9 +183,9 @@ module Dor
     #@return [Boolean] true or false if it applies (not true or false if it is released, that is the release_tag data)
     def does_release_tag_apply(release_tag, admin_tags=false)
       #Is the tag global or restricted
-      return true if release_tag['tag'] == nil  #there is no specific tag specificied, so that means this tag is global to all members of the collection, it applies, return true
+      return true if release_tag['tag'].nil?  #there is no specific tag specificied, so that means this tag is global to all members of the collection, it applies, return true
 
-      admin_tags = self.tags if ! admin_tags #We use false instead of [], since an item can have no admin_tags that which point we'd be passing down this variable as [] and would not an attempt to retrieve it
+      admin_tags = self.tags unless admin_tags #We use false instead of [], since an item can have no admin_tags that which point we'd be passing down this variable as [] and would not an attempt to retrieve it
       return admin_tags.include?(release_tag['tag'])
     end
 
@@ -216,7 +216,7 @@ module Dor
       return_hash = {}
       release_tags.each do |release_tag|
         hashed_node = self.release_tag_node_to_hash(release_tag)
-        if return_hash[hashed_node[:to]] != nil
+        if !return_hash[hashed_node[:to]].nil?
           return_hash[hashed_node[:to]] << hashed_node[:attrs]
         else
            return_hash[hashed_node[:to]] = [hashed_node[:attrs]]
@@ -258,7 +258,7 @@ module Dor
     #
     #@params attrs [hash] A hash of attributes for the tag, must contain: :when, a ISO 8601 timestamp; :who, to identify who or what added the tag; and :to, a string identifying the release target
     def valid_release_attributes_and_tag(tag, attrs={})
-      raise ArgumentError, ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z') == nil
+      raise ArgumentError, ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z').nil?
       [:who, :to, :what].each do |check_attr|
         raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
@@ -267,9 +267,9 @@ module Dor
       ['self', 'collection'].each do |allowed_what_value|
         what_correct = true if attrs[:what] == allowed_what_value
       end
-      raise ArgumentError, ":what must be self or collection" if ! what_correct
+      raise ArgumentError, ":what must be self or collection" unless what_correct
       raise ArgumentError, "the value set for this tag is not a boolean" if !!tag != tag
-      validate_tag_format(attrs[:tag]) if attrs[:tag] != nil #Will Raise exception if invalid tag
+      validate_tag_format(attrs[:tag]) unless attrs[:tag].nil? #Will Raise exception if invalid tag
       return true
     end
 
@@ -307,7 +307,7 @@ module Dor
     #
     #@params attrs [hash] A hash of attributes for the tag, must contain :when, a ISO 8601 timestamp and :who to identify who or what added the tag, :to,
     def valid_release_attributes(tag, attrs={})
-      raise ArgumentError, ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z') == nil
+      raise ArgumentError, ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z').nil?
       [:who, :to, :what].each do |check_attr|
         raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
@@ -316,11 +316,11 @@ module Dor
       ['self', 'collection'].each do |allowed_what_value|
         what_correct = true if attrs[:what] == allowed_what_value
       end
-      raise ArgumentError, ":what must be self or collection" if ! what_correct
+      raise ArgumentError, ":what must be self or collection" unless what_correct
       raise ArgumentError, "the value set for this tag is not a boolean" if !!tag != tag
       raise ArgumentError, ":displayType must be passed in as a String" unless attrs[:displayType].class == String
 
-      validate_tag_format(attrs[:tag]) if attrs[:tag] != nil #Will Raise exception if invalid tag
+      validate_tag_format(attrs[:tag]) unless attrs[:tag].nil? #Will Raise exception if invalid tag
       return true
     end
 
@@ -332,7 +332,7 @@ module Dor
       return_hash = {}
       release_tags.each do |release_tag|
         hashed_node = self.release_tag_node_to_hash(release_tag)
-        if return_hash[hashed_node[:to]] != nil
+        if !return_hash[hashed_node[:to]].nil?
           return_hash[hashed_node[:to]] << hashed_node[:attrs]
         else
            return_hash[hashed_node[:to]] = [hashed_node[:attrs]]
@@ -393,7 +393,7 @@ module Dor
       #We only want the nodes with a name that isn't text
       return_array = []
       nodes.each do |n|
-        return_array << n.attr('to') if n.name != nil and n.name.downcase != "text"
+        return_array << n.attr('to') if !n.name.nil? and n.name.downcase != "text"
       end
       return return_array.uniq
     end

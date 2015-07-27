@@ -99,7 +99,7 @@ module Dor
     #   The data is updated to the latest format.
     def self.get_dor_technical_metadata(dor_item)
       ds = "technicalMetadata"
-      if dor_item.datastreams.keys.include?(ds) and not dor_item.datastreams[ds].new?
+      if dor_item.datastreams.keys.include?(ds) and !dor_item.datastreams[ds].new?
         dor_techmd = dor_item.datastreams[ds].content
       else
         return nil
