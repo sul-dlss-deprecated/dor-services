@@ -44,7 +44,6 @@ describe Dor::TechnicalMetadataService do
 
   end
 
-
   after(:each) do
     Dor::Config.pop!
   end
@@ -242,7 +241,6 @@ describe Dor::TechnicalMetadataService do
       end
     end
   end
-
 
   specify "Dor::TechnicalMetadataService.get_file_nodes" do
     techmd = @repo_techmd["jq937jp0017"]

@@ -91,7 +91,6 @@ describe Dor::ResetWorkspaceService do
     end
   end
 
-
   def create_bag_tar(file_name)
     tarfile_pathname = @export_pathname.join(file_name+".tar")
     tarfile_pathname.open('w') { |file| file.write("test tar\n") }

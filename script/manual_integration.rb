@@ -76,7 +76,6 @@ module Util
   end
 end
 
-
 class MergeIntegrationTest
   include Util::Tar
 
@@ -128,10 +127,7 @@ class MergeIntegrationTest
     Dor::MergeService.merge_into_primary druids.shift, druids
   end
 
-
-
 end
-
 
 #
 # p_pid = 'druid:ps262bn7350'
@@ -165,7 +161,6 @@ end
 # ms.check_objects_editable
 # ms.move_metadata_and_content
 # ms.decomission_secondaries
-
 
 # 2nd merge druids
 # %w(fq996gt6655 pf986hr8937 xz522yc4008 zf307yb9756)

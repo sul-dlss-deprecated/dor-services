@@ -19,7 +19,6 @@ Options:
         -h, --help                 Display this screen
 EOC
 
-
 # check for a valid command
 unless %w(start stop restart status).include? ARGV[0]
   puts banner
@@ -46,9 +45,7 @@ else
   puts "Log dir not specified"
 end
 
-
 File.join(Dir.pwd,'log') if log_dir.empty?
-
 
 options = {
   :multiple=>ARGV.any? { |arg| arg =~ %r{^/queue/}},

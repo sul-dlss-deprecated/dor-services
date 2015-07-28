@@ -231,7 +231,6 @@ module Dor
       return default_title
     end
 
-
     private
     def solrize_related_obj_titles(solr_doc, relationships, title_hash, field_name)
       title_type = :symbol  # we'll get an _ssim because of the type

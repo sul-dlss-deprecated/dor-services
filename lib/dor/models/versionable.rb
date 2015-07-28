@@ -16,14 +16,11 @@ module Dor
     # @option opts [Hash] :vers_md_upd_info If present, used to add to the events datastream and set the desc and significance on the versionMetadata datastream
     # @raise [Dor::Exception] if the object hasn't been accessioned, or if a version is already opened
     def open_new_version(opts = {})
-      # During local development, we need a way to open a new version
-      # even if the object has not been accessioned.
+      # During local development, we need a way to open a new version even if the object has not been accessioned.
       raise(Dor::Exception, 'Object net yet accessioned') unless
-        opts[:assume_accessioned] ||
-        Dor::WorkflowService.get_lifecycle('dor', pid, 'accessioned')
-
-      raise Dor::Exception, 'Object already opened for versioning' if(new_version_open?)
-      raise Dor::Exception, 'Object currently being accessioned' if(Dor::WorkflowService.get_active_lifecycle('dor', pid, 'submitted'))
+        opts[:assume_accessioned] || Dor::WorkflowService.get_lifecycle('dor', pid, 'accessioned')
+      raise Dor::Exception, 'Object already opened for versioning' if new_version_open?
+      raise Dor::Exception, 'Object currently being accessioned' if Dor::WorkflowService.get_active_lifecycle('dor', pid, 'submitted')
 
       sdr_version = Sdr::Client.current_version pid
 
@@ -34,19 +31,17 @@ module Dor
 
       k = :create_workflows_ds
       if opts.has_key?(k)
-        # During local development, Hydrus (or some other app running Fedora locally)
-        # does not want this call to initialize the workflows datastream.
+        # During local development, Hydrus (or another app w/ local Fedora) does not want to initialize workflows datastream.
         initialize_workflow('versioningWF', opts[k])
       else
         initialize_workflow('versioningWF')
       end
 
       vmd_upd_info = opts[:vers_md_upd_info]
-      if vmd_upd_info
-        datastreams['events'].add_event("open", vmd_upd_info[:opening_user_name], "Version #{vmd_ds.current_version_id.to_s} opened")
-        vmd_ds.update_current_version({:description => vmd_upd_info[:description], :significance => vmd_upd_info[:significance].to_sym})
-        save
-      end
+      return unless vmd_upd_info
+      datastreams['events'].add_event("open", vmd_upd_info[:opening_user_name], "Version #{vmd_ds.current_version_id.to_s} opened")
+      vmd_ds.update_current_version({:description => vmd_upd_info[:description], :significance => vmd_upd_info[:significance].to_sym})
+      save
     end
 
     def current_version

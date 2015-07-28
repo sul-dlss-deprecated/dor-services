@@ -38,16 +38,14 @@ module Dor
       'opened' => 1
     }
 
+    # This is a work-around for some strange logic in ActiveFedora that
+    # don't allow self.workflows.new? to work if we load the object using
+    # .load_instance_from_solr.
     def set_workflows_datastream_location
-      # This is a work-around for some strange logic in ActiveFedora that
-      # don't allow self.workflows.new? to work if we load the object using
-      # .load_instance_from_solr.
       return if self.respond_to?(:inner_object) && self.inner_object.is_a?(ActiveFedora::SolrDigitalObject)
-
-      if self.workflows.new?
-        workflows.mimeType = 'application/xml'
-        workflows.dsLocation = File.join(Dor::Config.workflow.url,"dor/objects/#{self.pid}/workflows")
-      end
+      return unless self.workflows.new?
+      workflows.mimeType   = 'application/xml'
+      workflows.dsLocation = File.join(Dor::Config.workflow.url,"dor/objects/#{self.pid}/workflows")
     end
 
     def empty_datastream?(datastream)
@@ -235,6 +233,5 @@ module Dor
 
     end
   end
-
 
 end

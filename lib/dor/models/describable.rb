@@ -32,12 +32,11 @@ module Dor
 
     def build_descMetadata_datastream(ds)
       content = fetch_descMetadata_datastream
-      unless content.nil?
-        ds.dsLabel = 'Descriptive Metadata'
-        ds.ng_xml = Nokogiri::XML(content)
-        ds.ng_xml.normalize_text!
-        ds.content = ds.ng_xml.to_xml
-      end
+      return nil if content.nil?
+      ds.dsLabel = 'Descriptive Metadata'
+      ds.ng_xml = Nokogiri::XML(content)
+      ds.ng_xml.normalize_text!
+      ds.content = ds.ng_xml.to_xml
     end
 
     # Generates Dublin Core from the MODS in the descMetadata datastream using the LoC mods2dc stylesheet
@@ -208,9 +207,7 @@ module Dor
     end
 
     def update_title(new_title)
-      unless update_simple_field('mods:mods/mods:titleInfo/mods:title',new_title)
-        raise 'Descriptive metadata has no title to update!'
-      end
+      raise 'Descriptive metadata has no title to update!' unless update_simple_field('mods:mods/mods:titleInfo/mods:title', new_title)
     end
     def add_identifier(type, value)
       ds_xml=self.descMetadata.ng_xml

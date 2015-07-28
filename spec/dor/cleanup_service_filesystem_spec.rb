@@ -119,6 +119,4 @@ describe 'Dor::CleanupService specs that check the file system' do
 
   end
 
-
-
 end

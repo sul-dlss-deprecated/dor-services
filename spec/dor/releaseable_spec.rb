@@ -34,7 +34,6 @@ describe Dor::Releaseable, :vcr do
       @dummy_tags = [{'when' => @array_of_times[0], 'tag' => "Project: Jim Harbaugh's Finest Moments At Stanford.", "what" => "self"}, {'when' => @array_of_times[1], 'tag' => "Project: Jim Harbaugh's Even Finer Moments At Michigan.", "what" => "collection"}]
     end
 
-
     it 'should return the most recent tag from an array of release tags' do
       expect(@bryar_trans_am.newest_release_tag_in_an_array(@dummy_tags)).to eq(@dummy_tags[1])
     end
@@ -267,7 +266,6 @@ describe "Adding release nodes", :vcr do
 
     end
 
-
   end
 
   it "should raise an error when no :who, :to,  or :what is supplied" do
@@ -352,7 +350,6 @@ describe "Adding release nodes", :vcr do
     it 'should return the full url for a druid' do
       expect(@item.form_purl_url).to eq("http://#{Dor::Config.stacks.document_cache_host}/bb004bn8654.xml")
     end
-
 
     it 'should get the purl xml for a druid' do
       VCR.use_cassette('fetch_purl_test_xml') do

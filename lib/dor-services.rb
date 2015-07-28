@@ -115,7 +115,6 @@ module Dor
   autoload :Releaseable,   'dor/models/releaseable'
   autoload :Rightsable,   'dor/models/rightsable'
 
-
   # ActiveFedora Classes
   autoload :Abstract,   'dor/models/item'
   autoload :Item,       'dor/models/item'

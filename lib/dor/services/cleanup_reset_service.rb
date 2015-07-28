@@ -42,7 +42,6 @@ module Dor
       base_druid.prune_ancestors(base_druid.pathname.parent)
     end
 
-
     # @param [String] base_druid_tree The base directory to delete from
     # @param [Integer] last_version The last version that the data should be removed until version 1
     # @return [void] prepares a list of reset directories that should be removed

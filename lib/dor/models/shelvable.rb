@@ -43,7 +43,6 @@ module Dor
       content_pathname
     end
 
-
     # get the stack location based on the contentMetadata stacks attribute
     # or using the default value from the config file if it doesn't exist
     def get_stacks_location

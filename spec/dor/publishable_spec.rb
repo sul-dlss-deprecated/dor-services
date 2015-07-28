@@ -141,7 +141,6 @@ describe Dor::Publishable do
 
     end
 
-
     describe "#publish_metadata" do
 
       context "with no world discover access in rightsMetadata" do

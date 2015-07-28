@@ -446,7 +446,6 @@ describe Dor::Describable do
     end
   end
 
-
   describe 'get_collection_title' do
     before(:each) do
       @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
