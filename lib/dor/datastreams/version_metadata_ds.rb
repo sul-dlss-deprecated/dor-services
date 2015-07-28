@@ -15,7 +15,7 @@ module Dor
 
     # @param [String] raw_tag the value of the tag attribute from a Version node
     def self.parse(raw_tag)
-      return nil unless (raw_tag =~ /(\d+)\.(\d+)\.(\d+)/)
+      return nil unless raw_tag =~ /(\d+)\.(\d+)\.(\d+)/
       VersionTag.new $1, $2, $3
     end
 
@@ -43,7 +43,7 @@ module Dor
     end
 
     def to_s
-      "#{@major.to_s}.#{@minor.to_s}.#{admin.to_s}"
+      "#{@major}.#{@minor}.#{admin}"
     end
   end
 
@@ -79,7 +79,7 @@ module Dor
     # @param [Symbol] significance optional which part of the version tag to increment
     #  :major, :minor, :admin (see VersionTag#increment)
     def increment_version(description = nil, significance = nil)
-      if( find_by_terms(:version).size == 0)
+      if ( find_by_terms(:version).size == 0)
         v = ng_xml.create_element "version",
         :versionId => '1', :tag => '1.0.0'
         d = ng_xml.create_element "description", "Initial Version"
@@ -92,13 +92,13 @@ module Dor
         current_tag = VersionTag.parse(current[:tag])
 
         v = ng_xml.create_element "version", :versionId => (current_id + 1).to_s
-        if(significance && current_tag)
+        if significance && current_tag
           v[:tag] = current_tag.increment(significance).to_s
         end
         ng_xml.root['objectId'] = pid
         ng_xml.root.add_child(v)
 
-        if(description)
+        if description
           d = ng_xml.create_element "description", description
           v.add_child d
         end
@@ -124,18 +124,18 @@ module Dor
       return if find_by_terms(:version).size == 1
       return if opts.empty?
       current = current_version_node
-      if(opts.include? :description)
+      if opts.include? :description
         d = current.at_xpath('description')
-        if(d)
+        if d
           d.content = opts[:description]
         else
           d_node = ng_xml.create_element "description", opts[:description]
           current.add_child d_node
         end
       end
-      if(opts.include? :significance)
+      if opts.include? :significance
         # tricky because if there is no tag, we have to find the newest
-        if(current[:tag].nil?)
+        if current[:tag].nil?
           current[:tag] = newest_tag.increment(opts[:significance]).to_s
         else
           # get rid of the current tag
@@ -152,7 +152,7 @@ module Dor
     # @return [Boolean] returns true if the current version has a tag and a description, false otherwise
     def current_version_closeable?
       current = current_version_node
-      if(current[:tag] && current.at_xpath('description'))
+      if current[:tag] && current.at_xpath('description')
         return true
       else
         return false

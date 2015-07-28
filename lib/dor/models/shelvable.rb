@@ -50,11 +50,8 @@ module Dor
       contentMetadataDS = self.datastreams['contentMetadata']
       unless contentMetadataDS.nil? || contentMetadataDS.stacks.length == 0
         stacks_location = contentMetadataDS.stacks[0]
-        if stacks_location.start_with?"/"  #Absolute stacks path
-          return stacks_location
-        else
-          raise "stacks attribute for item: "+self.id+ " contentMetadata should start with /. The current value is "+stacks_location
-        end
+        return stacks_location if stacks_location.start_with? "/"  #Absolute stacks path
+        raise "stacks attribute for item: "+self.id+ " contentMetadata should start with /. The current value is "+stacks_location
       end
       return Config.stacks.local_stacks_root #Default stacks
 

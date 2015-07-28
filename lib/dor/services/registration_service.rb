@@ -81,13 +81,13 @@ module Dor
           new_item.add_relationship short_predicate, rel['rdf:resource']
         end
         new_item.add_collection(collection) if collection
-        if (rights && %w(item collection).include?(object_type))
+        if rights && %w(item collection).include?(object_type)
           rights_xml=apo_object.defaultObjectRights.ng_xml
           new_item.datastreams['rightsMetadata'].content=rights_xml.to_s
           new_item.set_read_rights(rights) unless rights == 'default'    # already defaulted to default!
         end
         #create basic mods from the label
-        if(metadata_source=='label')
+        if (metadata_source=='label')
           ds=new_item.build_datastream('descMetadata');
           builder = Nokogiri::XML::Builder.new { |xml|
             xml.mods( 'xmlns' => 'http://www.loc.gov/mods/v3', 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',:version => '3.3', "xsi:schemaLocation" => 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd'){

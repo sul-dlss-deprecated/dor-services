@@ -86,11 +86,7 @@ describe Dor::Contentable do
 
     it 'should work ok if the object was set up using the old directory structure' do
       allow(@sftp).to receive(:stat!) do |arg|
-        if ! arg=~ /desc/ && ! arg=~/ab123/
-          #do nothing
-        else
-          raise(Net::SFTP::StatusException.new @resp, 'sup')
-        end
+        raise(Net::SFTP::StatusException.new @resp, 'sup') if arg =~ /desc/ || arg =~ /ab123/
       end
       @item.add_file(@file,'0001','ab123cd4567_descMetadata.xml')
       xml=@item.contentMetadata.ng_xml

@@ -21,7 +21,7 @@ module Dor
     # @param [String] name the name of the workflow
     # @return [String] the initial workflow xml
     def self.initial_workflow(name)
-      return @@xml_cache[name] if(@@xml_cache.include?(name))
+      return @@xml_cache[name] if @@xml_cache.include?(name)
 
       self.find_and_cache_workflow_xml_and_repo name
       @@xml_cache[name]
@@ -32,7 +32,7 @@ module Dor
     # @param [String] name the name of the workflow
     # @return [String] the initial workflow xml
     def self.initial_repo(name)
-      return @@repo_cache[name] if(@@repo_cache.include?(name))
+      return @@repo_cache[name] if @@repo_cache.include?(name)
 
       self.find_and_cache_workflow_xml_and_repo name
       @@repo_cache[name]

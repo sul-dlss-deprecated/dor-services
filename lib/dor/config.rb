@@ -91,7 +91,7 @@ module Dor
         next unless config.fedora[key].present?
         stack = Kernel.caller.dup
         stack.shift while stack[0] =~ %r{(active_support/callbacks|dor/config|dor-services)\.rb}
-        ActiveSupport::Deprecation.warn "Dor::Config -- fedora.#{key.to_s} is deprecated. Please use ssl.#{key.to_s} instead.", stack
+        ActiveSupport::Deprecation.warn "Dor::Config -- fedora.#{key} is deprecated. Please use ssl.#{key} instead.", stack
         config.ssl[key] = config.fedora[key] unless config.ssl[key].present?
         config.fedora.delete(key)
       end

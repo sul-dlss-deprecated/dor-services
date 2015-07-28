@@ -83,7 +83,7 @@ class WorkflowDs < ActiveFedora::OmDatastream
   # @return [Integer] value of the priority.  Defaults to 0 if none of the workflows are expedited
   def current_priority
     cp = workflows.detect {|wf| wf.expedited? }
-    return 0 if(cp.nil?)
+    return 0 if cp.nil?
     cp.priority.to_i
   end
 

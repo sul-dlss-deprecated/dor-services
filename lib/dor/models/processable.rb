@@ -215,7 +215,7 @@ module Dor
     def initialize_workflow(name, create_ds=true, priority=0)
       priority = workflows.current_priority if priority == 0
       opts = { :create_ds => create_ds, :lane_id => default_workflow_lane }
-      opts[:priority] = priority if(priority > 0)
+      opts[:priority] = priority if priority > 0
       Dor::WorkflowService.create_workflow(Dor::WorkflowObject.initial_repo(name), self.pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
     end
 

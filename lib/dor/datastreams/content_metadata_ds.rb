@@ -213,7 +213,7 @@ module Dor
     def update_resource_label resource_name, new_label
       node = singular_node('//resource[@id=\''+resource_name+'\']')
       labels = node.xpath('./label')
-      if(labels.length==0)
+      if (labels.length==0)
         #create a label
         label_node = Nokogiri::XML::Node.new('label',self.ng_xml)
         label_node.content=new_label
