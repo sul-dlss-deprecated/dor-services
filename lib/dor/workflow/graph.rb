@@ -15,16 +15,15 @@ class Graph
     wf = self.new(config['repository'], name, parent)
     config.keys.each { |p| wf.add_process(p.to_s) unless RESERVED_KEYS.include?(p) }
     config.keys.each { |p|
-      if wf.processes[p]
-        Array(config[p]['prerequisite']).each { |prereq|
-          prereq.sub!(/^#{config['repository']}:#{name}:/e,'')
-          if wf.processes[prereq]
-            wf.processes[p].depends_on(wf.processes[prereq])
-          else
-            wf.processes[p].depends_on(wf.add_process(prereq).set_status('external'))
-          end
-        }
-      end
+      next unless wf.processes[p]
+      Array(config[p]['prerequisite']).each { |prereq|
+        prereq.sub!(/^#{config['repository']}:#{name}:/e,'')
+        if wf.processes[prereq]
+          wf.processes[p].depends_on(wf.processes[prereq])
+        else
+          wf.processes[p].depends_on(wf.add_process(prereq).set_status('external'))
+        end
+      }
     }
     wf.finish
     return wf

@@ -168,20 +168,17 @@ module Dor
       preserved_size=0
       counts = Hash.new(0)                # default count is zero
       resource_type_counts = Hash.new(0)  # default count is zero
-      first_shelved_image=nil
+      first_shelved_image = nil
 
       doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
-        counts['resource']+=1
-        resource_type_counts[resource['type']]+=1 if resource['type']
+        counts['resource'] += 1
+        resource_type_counts[resource['type']] += 1 if resource['type']
         resource.xpath('file').each do |file|
-          counts['content_file']+=1
+          counts['content_file'] += 1
           preserved_size += file['size'].to_i if file['preserve'] == 'yes'
-          if file['shelve'] == 'yes'
-            counts['shelved_file']+=1
-            if first_shelved_image.nil? && file['id'].match(/jp2$/)
-              first_shelved_image=file['id']
-            end
-          end
+          next unless file['shelve'] == 'yes'
+          counts['shelved_file'] += 1
+          first_shelved_image ||= file['id'] if file['id'].match(/jp2$/)
         end
       end
       solr_doc["content_type_ssim"              ] = doc.root['type']

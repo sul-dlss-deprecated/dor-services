@@ -129,12 +129,9 @@ module Dor
       current_milestones.each do |m|
         name = m[:milestone]
         time = m[:at].utc.xmlschema
-        if STEPS.keys.include? name
-          if STEPS[name] > status_code
-            status_code = STEPS[name]
-            status_time = time
-          end
-        end
+        next unless STEPS.keys.include?(name) && STEPS[name] > status_code
+        status_code = STEPS[name]
+        status_time = time
       end
 
       return {:current_version => current_version, :status_code => status_code, :status_time => status_time}

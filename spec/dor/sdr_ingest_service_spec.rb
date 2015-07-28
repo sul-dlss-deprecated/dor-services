@@ -11,7 +11,7 @@ describe Dor::SdrIngestService do
     end
 
     @export_dir = Pathname(Dor::Config.sdr.local_export_home)
-    if @export_dir.exist? and @export_dir.basename.to_s == 'export'
+    if @export_dir.exist? && @export_dir.basename.to_s == 'export'
       @export_dir.rmtree
     end
     @export_dir.mkdir
@@ -21,7 +21,7 @@ describe Dor::SdrIngestService do
 
   after(:each) do
     Dor::Config.pop!
-    if @export_dir.exist? and @export_dir.basename.to_s == 'export'
+    if @export_dir.exist? && @export_dir.basename.to_s == 'export'
       @export_dir.rmtree
     end
   end
