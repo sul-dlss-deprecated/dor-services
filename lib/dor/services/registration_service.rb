@@ -39,7 +39,7 @@ module Dor
         rights=nil
         if params[:rights]
           rights=params[:rights]
-          unless ['world','stanford','dark','default','none'].include? rights
+          unless %w(world stanford dark default none).include? rights
             raise Dor::ParameterError, "Unknown rights setting '#{rights}' when calling #{self.name}.register_object"
           end
         end
@@ -81,7 +81,7 @@ module Dor
           new_item.add_relationship short_predicate, rel['rdf:resource']
         end
         new_item.add_collection(collection) if collection
-        if (rights && ['item','collection'].include?(object_type))
+        if (rights && %w(item collection).include?(object_type))
           rights_xml=apo_object.defaultObjectRights.ng_xml
           new_item.datastreams['rightsMetadata'].content=rights_xml.to_s
           new_item.set_read_rights(rights) unless rights == 'default'    # already defaulted to default!

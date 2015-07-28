@@ -21,7 +21,7 @@ EOC
 
 
 # check for a valid command
-unless ['start','stop','restart','status'].include? ARGV[0]
+unless %w(start stop restart status).include? ARGV[0]
   puts banner
   exit 7
 end

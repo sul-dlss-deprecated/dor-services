@@ -235,7 +235,7 @@ module Dor
       end
 
       what_correct = false
-      ['self', 'collection'].each do |allowed_what_value|
+      %w(self collection).each do |allowed_what_value|
         what_correct = true if attrs[:what] == allowed_what_value
       end
       raise ArgumentError, ":what must be self or collection" unless what_correct
@@ -281,7 +281,7 @@ module Dor
       end
 
       what_correct = false
-      ['self', 'collection'].each do |allowed_what_value|
+      %w(self collection).each do |allowed_what_value|
         what_correct = true if attrs[:what] == allowed_what_value
       end
       raise ArgumentError, ":what must be self or collection" unless what_correct

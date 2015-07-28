@@ -13,7 +13,7 @@ handler = Class.new do
   end
 
   def prefixes
-    ['catkey','barcode']
+    %w(catkey barcode)
   end
 end
 

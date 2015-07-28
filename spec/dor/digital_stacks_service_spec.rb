@@ -148,7 +148,7 @@ describe Dor::DigitalStacksService do
 
   def get_shelve_list(content_diff)
     shelve_list = Array.new
-    [:added, :copyadded, :modified,].each do |change_type|
+    [:added, :copyadded, :modified].each do |change_type|
       subset = content_diff.subset(change_type) # {Moab::FileGroupDifferenceSubset
       subset.files.each do |moab_file| # {Moab::FileInstanceDifference}
         moab_signature = moab_file.signatures.last # {Moab::FileSignature}

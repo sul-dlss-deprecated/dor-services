@@ -68,7 +68,7 @@ begin
       pid    = @msg.headers['pid']
       method = @msg.headers['methodName']
 
-      if ["addDatastream", "addRelationship","ingest","modifyDatastreamByValue","modifyDatastreamByReference","modifyObject","purgeDatastream","purgeRelationship","reindex"].include? method
+      if %w(addDatastream addRelationship ingest modifyDatastreamByValue modifyDatastreamByReference modifyObject purgeDatastream purgeRelationship reindex).include? method
         begin
           obj = Dor.load_instance pid
           Dor::SearchService.solr.add(obj.to_solr, :add_attributes => {:commitWithin => 10}) unless obj.nil?
