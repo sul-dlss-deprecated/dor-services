@@ -56,7 +56,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
       node
     end
   end
-  def tags()
+  def tags
       result=[]
       self.ng_xml.search('//tag').each do |node|
         result << node.content

@@ -267,7 +267,7 @@ describe Dor::RegistrationService do
       @params[:label]=''
       @params[:metadata_source]='mdtoolkit'
       allow(Dor::SearchService).to receive(:query_by_id).and_return([nil])
-      allow(Dor::logger).to receive(:warn)
+      allow(Dor.logger).to receive(:warn)
       Dor::RegistrationService.register_object(@params)
     end
 

@@ -79,11 +79,9 @@ describe Dor::SdrIngestService do
     expect(dor_item).to receive(:initialize_workflow).with('sdrIngestWF', false)
     allow(dor_item).to receive(:pid).and_return(druid)
     signature_catalog=Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
-    expect(Dor::SdrIngestService).to receive(:get_signature_catalog).with(druid).
-        and_return(signature_catalog)
+    expect(Dor::SdrIngestService).to receive(:get_signature_catalog).with(druid).and_return(signature_catalog)
     metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
-    expect(Dor::SdrIngestService).to receive(:extract_datastreams).with(dor_item, an_instance_of(DruidTools::Druid)).
-        and_return(metadata_dir)
+    expect(Dor::SdrIngestService).to receive(:extract_datastreams).with(dor_item, an_instance_of(DruidTools::Druid)).and_return(metadata_dir)
     Dor::SdrIngestService.transfer(dor_item)
     files = Array.new
     @fixtures.join('export/dd116zh0343').find { |f| files << f.relative_path_from(@fixtures).to_s }
@@ -119,15 +117,13 @@ describe Dor::SdrIngestService do
     dor_item = double("dor_item")
     expect(dor_item).to receive(:initialize_workflow).with('sdrIngestWF', false)
     allow(dor_item).to receive(:pid).and_return(druid)
-    signature_catalog=Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
-    expect(Dor::SdrIngestService).to receive(:get_signature_catalog).with(druid).
-        and_return(signature_catalog)
-    metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
+    signature_catalog = Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
+    expect(Dor::SdrIngestService).to receive(:get_signature_catalog).with(druid).and_return(signature_catalog)
+    metadata_dir        = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
     v1_content_metadata = @fixtures.join('sdr_repo/dd116zh0343/v0001/data/metadata/contentMetadata.xml')
-    expect(Dor::SdrIngestService).to receive(:get_content_metadata).with(metadata_dir).
-            and_return(v1_content_metadata.read)
-    expect(Dor::SdrIngestService).to receive(:extract_datastreams).with(dor_item, an_instance_of(DruidTools::Druid)).
-        and_return(metadata_dir)
+    expect(Dor::SdrIngestService).to receive(:get_content_metadata).with(metadata_dir).and_return(v1_content_metadata.read)
+    expect(Dor::SdrIngestService).to receive(:extract_datastreams).with(dor_item, an_instance_of(DruidTools::Druid)).and_return(metadata_dir)
+
     Dor::SdrIngestService.transfer(dor_item)
     files = Array.new
     @fixtures.join('export/dd116zh0343').find { |f| files << f.relative_path_from(@fixtures).to_s }
@@ -192,10 +188,8 @@ describe Dor::SdrIngestService do
     version_inventory = Moab::FileInventory.new()
     version_inventory.groups << Moab::FileGroup.new(:group_id => 'content')
     metadata_group = Moab::FileGroup.new(:group_id => 'metadata')
-    expect(Dor::SdrIngestService).to receive(:get_content_inventory).with(metadata_dir, druid, version_id).
-      and_return(version_inventory)
-    expect(Dor::SdrIngestService).to receive(:get_metadata_file_group).with(metadata_dir).
-      and_return(metadata_group)
+    expect(Dor::SdrIngestService).to receive(:get_content_inventory).with(metadata_dir, druid, version_id).and_return(version_inventory)
+    expect(Dor::SdrIngestService).to receive(:get_metadata_file_group).with(metadata_dir).and_return(metadata_group)
     result = Dor::SdrIngestService.get_version_inventory(metadata_dir, druid, version_id)
     expect(result).to be_instance_of Moab::FileInventory
     expect(result.groups.size).to eq 2

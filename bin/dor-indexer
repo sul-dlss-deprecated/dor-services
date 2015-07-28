@@ -58,7 +58,7 @@ begin
   @conn.subscribe(@destination, {'activemq.subscriptionName' => @clientid, :ack => 'client'})
   while true
     begin
-      Timeout::timeout(300) do
+      Timeout.timeout(300) do
         @msg = @conn.receive
       end
       if @msg.nil?

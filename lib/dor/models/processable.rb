@@ -98,7 +98,7 @@ module Dor
       return ds
     end
 
-    def cleanup()
+    def cleanup
       CleanupService.cleanup(self)
     end
 
@@ -107,7 +107,7 @@ module Dor
     end
 
     # @return [Hash] including :current_version, :status_code and :status_time
-    def status_info()
+    def status_info
       current_version = '1'
       begin
         current_version = self.versionMetadata.current_version_id
