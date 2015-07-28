@@ -33,13 +33,13 @@ describe Dor::GeoMetadataDS do
 
     it '#metadata' do
       expect(@doc['co2_pipe'].metadata.root.name).to eq('MD_Metadata')
-      @doc['co2_pipe'].metadata.root.children.size == 33
+      expect(@doc['co2_pipe'].metadata.root.children.size).to eq(33)
       expect(@doc['oil_gas_fields'].metadata.root.name).to eq('MD_Metadata')
-      @doc['oil_gas_fields'].metadata.root.children.size == 33
+      expect(@doc['oil_gas_fields'].metadata.root.children.size).to eq(33)
     end
 
     it '#feature_catalogue' do
-      expect(@doc['co2_pipe'].feature_catalogue.nil?).not_to be_nil
+      expect(@doc['co2_pipe'].feature_catalogue).not_to be_nil
       expect(@doc['co2_pipe'].feature_catalogue.root.name).to eq('FC_FeatureCatalogue')
       expect(@doc['co2_pipe'].feature_catalogue.root.children.size).to eq(17)
       expect(@doc['oil_gas_fields'].feature_catalogue).not_to be_nil
