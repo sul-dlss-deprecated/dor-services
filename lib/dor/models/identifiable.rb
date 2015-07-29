@@ -219,7 +219,7 @@ module Dor
         rel_druid = rel_node['rdf:resource']
         next unless rel_druid   # TODO: warning here would also be useful
         rel_druid = rel_druid.gsub('info:fedora/', '')
-        if title_hash.has_key?(rel_druid)
+        if title_hash.key?(rel_druid)
           add_solr_value(solr_doc, field_name, title_hash[rel_druid], title_type, title_attrs)
         else
           related_obj = Dor.find(rel_druid)

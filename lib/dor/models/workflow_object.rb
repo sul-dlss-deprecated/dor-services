@@ -12,7 +12,7 @@ module Dor
     has_metadata :name => "workflowDefinition", :type => Dor::WorkflowDefinitionDs, :label => 'Workflow Definition'
 
     def self.find_by_name(name, opts={})
-      Dor.find_all(%{#{Solrizer.solr_name "objectType", :symbol}:"#{self.object_type}" #{Solrizer.solr_name "workflow_name", :symbol}:"#{name}"}, opts).first
+      Dor.find_all(%{#{Solrizer.solr_name 'objectType', :symbol}:"#{self.object_type}" #{Solrizer.solr_name 'workflow_name', :symbol}:"#{name}"}, opts).first
     end
 
     # Searches for the workflow definition object in DOR, then

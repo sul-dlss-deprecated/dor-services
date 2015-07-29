@@ -9,7 +9,7 @@ module Dor
       t.stacks      :path => '/contentMetadata/@stacks', :index_as => [:not_searchable]
       t.resource(:index_as => [:not_searchable]) do
         t.id_       :path => { :attribute => 'id' }
-        t.sequence  :path => { :attribute => 'sequence' }#, :data_type => :integer
+        t.sequence  :path => { :attribute => 'sequence' } #, :data_type => :integer
         t.type_     :path => { :attribute => 'type' }, :index_as => [:displayable]
         t.attribute(:path => 'attr', :index_as => [:not_searchable]) do
           t.name    :path => { :attribute => 'name' }, :index_as => [:not_searchable]
@@ -18,10 +18,10 @@ module Dor
           t.id_      :path => { :attribute => 'id' }
           t.mimeType :path => { :attribute => 'mimeType' }, :index_as => [:displayable]
           t.dataType :path => { :attribute => 'dataType' }, :index_as => [:displayable]
-          t.size     :path => { :attribute => 'size'     }, :index_as => [:displayable]#, :data_type => :long
-          t.shelve   :path => { :attribute => 'shelve'   }, :index_as => [:not_searchable]#, :data_type => :boolean
-          t.publish  :path => { :attribute => 'publish'  }, :index_as => [:not_searchable]#, :data_type => :boolean
-          t.preserve :path => { :attribute => 'preserve' }, :index_as => [:not_searchable]#, :data_type => :boolean
+          t.size     :path => { :attribute => 'size'     }, :index_as => [:displayable] #, :data_type => :long
+          t.shelve   :path => { :attribute => 'shelve'   }, :index_as => [:not_searchable] #, :data_type => :boolean
+          t.publish  :path => { :attribute => 'publish'  }, :index_as => [:not_searchable] #, :data_type => :boolean
+          t.preserve :path => { :attribute => 'preserve' }, :index_as => [:not_searchable] #, :data_type => :boolean
           t.checksum do
             t.type_ :path => { :attribute => 'type' }
           end

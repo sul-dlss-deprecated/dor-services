@@ -11,7 +11,7 @@ module Workflow
       t.process {
         t.name_(:path=>{:attribute=>"name"})
         t.status(:path=>{:attribute=>"status"})
-        t.timestamp(:path=>{:attribute=>"datetime"})#, :data_type => :date)
+        t.timestamp(:path=>{:attribute=>"datetime"}) #, :data_type => :date)
         t.elapsed(:path=>{:attribute=>"elapsed"})
         t.lifecycle(:path=>{:attribute=>"lifecycle"})
         t.attempts(:path=>{:attribute=>"attempts"}, :index_as => [:not_searchable])
@@ -39,7 +39,7 @@ module Workflow
 
     def definition
       @definition ||= begin
-        if @@definitions.has_key? self.workflowId.first
+        if @@definitions.key? self.workflowId.first
           @@definitions[self.workflowId.first]
         else
           wfo = Dor::WorkflowObject.find_by_name(self.workflowId.first)

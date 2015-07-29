@@ -30,7 +30,7 @@ module Dor
       vmd_ds.save unless self.new_object?
 
       k = :create_workflows_ds
-      if opts.has_key?(k)
+      if opts.key?(k)
         # During local development, Hydrus (or another app w/ local Fedora) does not want to initialize workflows datastream.
         initialize_workflow('versioningWF', opts[k])
       else

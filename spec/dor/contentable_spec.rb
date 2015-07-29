@@ -9,7 +9,7 @@ class SpecNode
   include ActiveFedora::SemanticNode
 
   attr_accessor :pid
-  def initialize (params={})
+  def initialize(params={})
     self.pid = params[:pid]
   end
   def internal_uri

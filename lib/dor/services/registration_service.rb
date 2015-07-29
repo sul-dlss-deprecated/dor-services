@@ -52,7 +52,7 @@ module Dor
           end
         end
 
-        if (other_ids.has_key?(:uuid) || other_ids.has_key?('uuid')) == false
+        if (other_ids.key?(:uuid) || other_ids.key?('uuid')) == false
           other_ids[:uuid] = UUIDTools::UUID.timestamp_create.to_s
         end
         short_label = label.length>254 ? label[0,254] : label
@@ -75,7 +75,7 @@ module Dor
           short_predicate = ActiveFedora::RelsExtDatastream.short_predicate rel.namespace.href+rel.name
           if short_predicate.nil?
             ix = 0
-            ix += 1 while ActiveFedora::Predicates.predicate_mappings[rel.namespace.href].has_key?(short_predicate = :"extra_predicate_#{ix}")
+            ix += 1 while ActiveFedora::Predicates.predicate_mappings[rel.namespace.href].key?(short_predicate = :"extra_predicate_#{ix}")
             ActiveFedora::Predicates.predicate_mappings[rel.namespace.href][short_predicate] = rel.name
           end
           new_item.add_relationship short_predicate, rel['rdf:resource']

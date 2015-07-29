@@ -35,7 +35,7 @@ module Dor
     # @param [Moab::FileGroupDifference] content_diff The differences between the current contentMetadata and the previously ingested version
     # @param [DruidTools::Druid] workspace_druid the location of the object's files in the workspace area
     # @return [Pathname] The location of the object's content files in the workspace area
-    def workspace_content_dir (content_diff, workspace_druid)
+    def workspace_content_dir(content_diff, workspace_druid)
       deltas = content_diff.file_deltas
       filelist = deltas[:modified] + deltas[:added] + deltas[:copyadded].collect{|old,new| new}
       return nil if filelist.empty?
