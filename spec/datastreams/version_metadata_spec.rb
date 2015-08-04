@@ -25,7 +25,6 @@ describe Dor::VersionMetadataDS do
     XML
   }
 
-
   let(:ds) {
     d = Dor::VersionMetadataDS.new double(:pid => 'druid:ab123cd4567', :new? => false, :repository => double()), 'versionMetadata'
     allow(d).to receive(:new?).and_return(false)
@@ -33,7 +32,6 @@ describe Dor::VersionMetadataDS do
     allow(d).to receive(:datastream_content).and_return(first_xml)
     d
   }
-
 
   describe "Marshalling to and from a Fedora Datastream" do
 

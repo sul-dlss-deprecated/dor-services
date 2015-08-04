@@ -49,7 +49,7 @@ module Workflow
     def date_time     ;@attrs['datetime']       ; end
 
     def archived?
-      return true if(@attrs['archived'] =~ /true$/i)
+      return true if @attrs['archived'] =~ /true$/i
       return false
     end
 

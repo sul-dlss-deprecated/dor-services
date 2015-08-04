@@ -35,14 +35,13 @@ module Dor
     # @param [Moab::FileGroupDifference] content_diff The differences between the current contentMetadata and the previously ingested version
     # @param [DruidTools::Druid] workspace_druid the location of the object's files in the workspace area
     # @return [Pathname] The location of the object's content files in the workspace area
-    def workspace_content_dir (content_diff, workspace_druid)
+    def workspace_content_dir(content_diff, workspace_druid)
       deltas = content_diff.file_deltas
       filelist = deltas[:modified] + deltas[:added] + deltas[:copyadded].collect{|old,new| new}
       return nil if filelist.empty?
       content_pathname = Pathname(workspace_druid.find_filelist_parent('content', filelist))
       content_pathname
     end
-
 
     # get the stack location based on the contentMetadata stacks attribute
     # or using the default value from the config file if it doesn't exist
@@ -51,11 +50,8 @@ module Dor
       contentMetadataDS = self.datastreams['contentMetadata']
       unless contentMetadataDS.nil? || contentMetadataDS.stacks.length == 0
         stacks_location = contentMetadataDS.stacks[0]
-        if stacks_location.start_with?"/"  #Absolute stacks path
-          return stacks_location
-        else
-          raise "stacks attribute for item: "+self.id+ " contentMetadata should start with /. The current value is "+stacks_location
-        end
+        return stacks_location if stacks_location.start_with? "/"  #Absolute stacks path
+        raise "stacks attribute for item: "+self.id+ " contentMetadata should start with /. The current value is "+stacks_location
       end
       return Config.stacks.local_stacks_root #Default stacks
 

@@ -18,7 +18,7 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
           prereq_name = repo
           repo = nil
         end
-        if (repo == workflow.repo && wf = workflow.name)
+        if repo == workflow.repo && wf = workflow.name
           repo = nil
           wf = nil
         end
@@ -79,7 +79,7 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
     processes.each { |proc|
       doc.create_element 'process' do |node|
         node['name'] = proc.name
-        if(proc.status)
+        if proc.status
           node['status'] = proc.status
           node['attempts'] = '1'
         else

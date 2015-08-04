@@ -38,16 +38,14 @@ module Dor
       'opened' => 1
     }
 
+    # This is a work-around for some strange logic in ActiveFedora that
+    # don't allow self.workflows.new? to work if we load the object using
+    # .load_instance_from_solr.
     def set_workflows_datastream_location
-      # This is a work-around for some strange logic in ActiveFedora that
-      # don't allow self.workflows.new? to work if we load the object using
-      # .load_instance_from_solr.
       return if self.respond_to?(:inner_object) && self.inner_object.is_a?(ActiveFedora::SolrDigitalObject)
-
-      if self.workflows.new?
-        workflows.mimeType = 'application/xml'
-        workflows.dsLocation = File.join(Dor::Config.workflow.url,"dor/objects/#{self.pid}/workflows")
-      end
+      return unless self.workflows.new?
+      workflows.mimeType   = 'application/xml'
+      workflows.dsLocation = File.join(Dor::Config.workflow.url,"dor/objects/#{self.pid}/workflows")
     end
 
     def empty_datastream?(datastream)
@@ -98,7 +96,7 @@ module Dor
       return ds
     end
 
-    def cleanup()
+    def cleanup
       CleanupService.cleanup(self)
     end
 
@@ -107,7 +105,7 @@ module Dor
     end
 
     # @return [Hash] including :current_version, :status_code and :status_time
-    def status_info()
+    def status_info
       current_version = '1'
       begin
         current_version = self.versionMetadata.current_version_id
@@ -129,12 +127,9 @@ module Dor
       current_milestones.each do |m|
         name = m[:milestone]
         time = m[:at].utc.xmlschema
-        if STEPS.keys.include? name
-          if STEPS[name] > status_code
-            status_code = STEPS[name]
-            status_time = time
-          end
-        end
+        next unless STEPS.keys.include?(name) && STEPS[name] > status_code
+        status_code = STEPS[name]
+        status_time = time
       end
 
       return {:current_version => current_version, :status_code => status_code, :status_time => status_time}
@@ -220,7 +215,7 @@ module Dor
     def initialize_workflow(name, create_ds=true, priority=0)
       priority = workflows.current_priority if priority == 0
       opts = { :create_ds => create_ds, :lane_id => default_workflow_lane }
-      opts[:priority] = priority if(priority > 0)
+      opts[:priority] = priority if priority > 0
       Dor::WorkflowService.create_workflow(Dor::WorkflowObject.initial_repo(name), self.pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
     end
 
@@ -238,6 +233,5 @@ module Dor
 
     end
   end
-
 
 end

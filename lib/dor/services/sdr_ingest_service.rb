@@ -74,7 +74,7 @@ module Dor
     #   If not found, return nil unless it is a required datastream in which case raise exception
     def self.get_datastream_content(dor_item, ds_name, required)
       ds = (ds_name == 'relationshipMetadata' ? 'RELS-EXT' : ds_name)
-      if dor_item.datastreams.keys.include?(ds) && ! dor_item.datastreams[ds].new?
+      if dor_item.datastreams.keys.include?(ds) && !dor_item.datastreams[ds].new?
         return dor_item.datastreams[ds].content
       elsif (required == 'optional')
         return nil

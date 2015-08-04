@@ -42,7 +42,7 @@ module Dor
         doc_version = Gem::Version.new(doc_version)
         object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType', :symbol)]).first
         object_class = registered_classes[object_type] || ActiveFedora::Base
-        if opts[:lightweight] and doc_version >= Gem::Version.new('3.1.0')
+        if opts[:lightweight] && doc_version >= Gem::Version.new('3.1.0')
           begin
             object_class.load_instance_from_solr solr_doc['id'], solr_doc
           rescue Exception => e
@@ -114,7 +114,6 @@ module Dor
   autoload :Presentable,  'dor/models/presentable'
   autoload :Releaseable,   'dor/models/releaseable'
   autoload :Rightsable,   'dor/models/rightsable'
-
 
   # ActiveFedora Classes
   autoload :Abstract,   'dor/models/item'

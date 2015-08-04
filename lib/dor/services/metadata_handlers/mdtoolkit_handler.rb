@@ -31,7 +31,7 @@ handler = Class.new do
   end
 
   def prefixes
-    ['mdtoolkit','druid']
+    %w(mdtoolkit druid)
   end
 end
 

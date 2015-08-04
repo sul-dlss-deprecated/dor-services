@@ -22,7 +22,6 @@ describe Dor::CleanupService do
       cleanup.local_assembly_root fixtures.join("assembly").to_s
     end
 
-
     @druid = 'druid:aa123bb4567'
     @workspace_root_pathname = Pathname(Dor::Config.cleanup.local_workspace_root)
     @workitem_pathname       = Pathname(DruidTools::Druid.new(@druid,@workspace_root_pathname.to_s).path)

@@ -17,7 +17,6 @@ def item_from_foxml(foxml, item_class = Dor::Base)
       result.add_datastream(ds)
     end
 
-
     if ds.is_a?(ActiveFedora::OmDatastream)
       result.datastreams[dsid] = ds.class.from_xml(Nokogiri::XML(content), ds)
     elsif ds.is_a?(ActiveFedora::RelsExtDatastream)

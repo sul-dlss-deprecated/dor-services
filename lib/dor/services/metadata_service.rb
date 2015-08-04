@@ -22,9 +22,9 @@ module Dor
       @@cache = Cache.new(nil, nil, 250, 300)
 
       def register(handler_class)
-        ['fetch', 'label', 'prefixes'].each do |method|
+        %w(fetch label prefixes).each do |method|
           unless handler_class.instance_methods.include?(method) || handler_class.instance_methods.include?(method.to_sym)
-            raise TypeError, "Metadata handlers must define ##{method.to_s}"
+            raise TypeError, "Metadata handlers must define ##{method}"
           end
         end
         handler = handler_class.new

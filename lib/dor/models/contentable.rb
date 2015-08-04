@@ -178,7 +178,7 @@ module Dor
           resource_copy.xpath('file').each do |secondary_file|
             secondary_file['id'] = new_secondary_file_name(secondary_file['id'], max_sequence)
 
-            if primary_cm.at_xpath("//file[@id = '#{secondary_file["id"]}']")
+            if primary_cm.at_xpath("//file[@id = '#{secondary_file['id']}']")
               raise Dor::Exception.new "File '#{secondary_file['id']}' from secondary object #{src_pid} already exist in primary object: #{self.pid}"
             end
           end

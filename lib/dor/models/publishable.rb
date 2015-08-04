@@ -54,7 +54,7 @@ module Dor
     #  otherwise, it prunes the object's metadata from the document cache
     def publish_metadata
       rights = datastreams['rightsMetadata'].ng_xml.clone.remove_namespaces!
-      if(rights.at_xpath("//rightsMetadata/access[@type='discover']/machine/world"))
+      if rights.at_xpath("//rightsMetadata/access[@type='discover']/machine/world")
         dc_xml = self.generate_dublin_core.to_xml {|config| config.no_declaration}
         DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'dc')
         DigitalStacksService.transfer_to_document_store(pid, self.datastreams['identityMetadata'].to_xml, 'identityMetadata')

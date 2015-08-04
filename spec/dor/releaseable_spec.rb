@@ -34,7 +34,6 @@ describe Dor::Releaseable, :vcr do
       @dummy_tags = [{'when' => @array_of_times[0], 'tag' => "Project: Jim Harbaugh's Finest Moments At Stanford.", "what" => "self"}, {'when' => @array_of_times[1], 'tag' => "Project: Jim Harbaugh's Even Finer Moments At Michigan.", "what" => "collection"}]
     end
 
-
     it 'should return the most recent tag from an array of release tags' do
       expect(@bryar_trans_am.newest_release_tag_in_an_array(@dummy_tags)).to eq(@dummy_tags[1])
     end
@@ -185,7 +184,7 @@ describe Dor::Releaseable, :vcr do
           item = Dor::Item.find('druid:dc235vd9662')
           release_xml = item.generate_release_xml
           expect(release_xml.class).to eq(String)
-          true_or_false = ['true', 'false']
+          true_or_false = %w(true false)
           xml_obj = Nokogiri(release_xml)
           xml_obj.xpath('//release').each do |release_node|
             expect(release_node.name).to eq('release')  #Well, duh
@@ -267,7 +266,6 @@ describe "Adding release nodes", :vcr do
 
     end
 
-
   end
 
   it "should raise an error when no :who, :to,  or :what is supplied" do
@@ -279,7 +277,7 @@ describe "Adding release nodes", :vcr do
   it "should raise an error when :who, :to, :what are supplied but are not strings" do
     expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 1, :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
     expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>true, :what => 'collection', :tag => 'Project:Fitch:Batch2', :displayType => 'file'})}.to raise_error(ArgumentError)
-    expect{@item.valid_release_attributes(false, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => ['i','am','an','array'], :tag => 'Project:Fitch:Batch2', :displayType => 'file'})}.to raise_error(ArgumentError)
+    expect{@item.valid_release_attributes(false, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => %w(i am an array), :tag => 'Project:Fitch:Batch2', :displayType => 'file'})}.to raise_error(ArgumentError)
   end
 
   it "should not raise an error when :what is self or collection" do
@@ -353,7 +351,6 @@ describe "Adding release nodes", :vcr do
       expect(@item.form_purl_url).to eq("http://#{Dor::Config.stacks.document_cache_host}/bb004bn8654.xml")
     end
 
-
     it 'should get the purl xml for a druid' do
       VCR.use_cassette('fetch_purl_test_xml') do
         x = @item.get_xml_from_purl
@@ -375,7 +372,7 @@ describe "Adding release nodes", :vcr do
       VCR.use_cassette('fetch_le_mans_purl') do
         item = Dor::Item.find(@le_mans_druid)
         x = item.get_xml_from_purl
-        expect(item.get_release_tags_from_purl_xml(x)).to match_array(['Kurita', 'Mogami','Atago'])
+        expect(item.get_release_tags_from_purl_xml(x)).to match_array(%w(Kurita Mogami Atago))
       end
     end
 
@@ -425,6 +422,6 @@ describe 'to_solr' do
     solr_doc = @rlsbl_item.to_solr({})
 
     released_to_field_name = Solrizer.solr_name('released_to', :symbol)
-    expect(solr_doc).to match a_hash_including({released_to_field_name => ["Project", "test_target"]})
+    expect(solr_doc).to match a_hash_including({released_to_field_name => %w(Project test_target)})
   end
 end

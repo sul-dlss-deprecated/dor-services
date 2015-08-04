@@ -4,7 +4,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
 
   set_terminology do |t|
     t.root(:path=>"identityMetadata")
-    t.objectId :index_as => [:symbol]
+    t.objectId   :index_as => [:symbol]
     t.objectType :index_as => [:symbol]
     t.objectLabel
     t.citationCreator
@@ -16,7 +16,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
     t.tag :index_as => [:symbol]
     t.citationTitle
     t.objectCreator :index_as => [:stored_searchable, :symbol]
-    t.adminPolicy :index_as => [:not_searchable]
+    t.adminPolicy   :index_as => [:not_searchable]
   end
 
   define_template :value do |builder,name,value,attrs|
@@ -25,7 +25,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
 
   def self.xml_template
     Nokogiri::XML('<identityMetadata/>')
-  end #self.xml_template
+  end
 
   def add_value(name, value, attrs={})
     add_child_node(ng_xml.root, :value, name, value, attrs)
@@ -42,27 +42,22 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
 
   def sourceId=(value)
     node = self.find_by_terms(:sourceId).first
-    unless value.present?
+    unless value.present?   # so setting it to '' is the same as removal: worth documenting maybe?
       node.remove unless node.nil?
-      nil
-    else
-      (source,val) = value.split(/:/,2)
-      unless source.present? && value.present?
-        raise ArgumentError, "Source ID must follow the format namespace:value"
-      end
-      node = ng_xml.root.add_child('<sourceId/>').first if node.nil?
-      node['source'] = source
-      node.content = val
-      node
+      return nil
     end
+    (source, val) = value.split(/:/, 2)
+    raise ArgumentError, "Source ID must follow the format namespace:value, not '#{value}'" unless source.present? && val.present?
+    node ||= ng_xml.root.add_child('<sourceId/>').first
+    node['source'] = source
+    node.content = val
+    node
   end
-  def tags()
-      result=[]
-      self.ng_xml.search('//tag').each do |node|
-        result << node.content
-      end
-      result
+
+  def tags
+    self.ng_xml.search('//tag').collect(&:content)
   end
+
   def otherId(type = nil)
     result = self.find_by_terms(:otherId).to_a
     if type.nil?
@@ -73,7 +68,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
   end
 
   def add_otherId(other_id)
-    (name,val) = other_id.split(/:/,2)
+    (name, val) = other_id.split(/:/, 2)
     node = ng_xml.root.add_child('<otherId/>').first
     node['name'] = name
     node.content = val
