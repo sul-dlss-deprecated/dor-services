@@ -12,8 +12,8 @@ class DescMetadataDS < ActiveFedora::OmDatastream
       end
     end
     t.subject(:index_as => [:not_searchable]) do
-      t.geographic :index_as => [:stored_searchable]
-      t.topic      :index_as => [:stored_searchable]
+      t.geographic :index_as => [:symbol, :stored_searchable]
+      t.topic      :index_as => [:symbol, :stored_searchable]
       t.temporal   :index_as => [:stored_searchable]
     end
     t.title_info(:path=>"titleInfo") {
@@ -24,7 +24,7 @@ class DescMetadataDS < ActiveFedora::OmDatastream
     t.coordinates :index_as => [:searchable]
     t.extent      :index_as => [:searchable]
     t.scale       :index_as => [:searchable]
-    t.topic       :index_as => [:stored_searchable]
+    t.topic       :index_as => [:symbol, :stored_searchable]
     t.abstract    :index_as => [:stored_searchable]
   end
 

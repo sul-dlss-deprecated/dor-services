@@ -158,11 +158,17 @@ module Dor
     def to_solr(solr_doc=Hash.new, *args)
       super solr_doc, *args
       mods_sources = {
+        'sw_language_ssim'           => :sw_language_facet,
         'sw_language_tesim'           => :sw_language_facet,
+        'sw_genre_ssim'               => :sw_genre,
         'sw_genre_tesim'              => :sw_genre,
+        'sw_format_ssim'              => :format_main,   # basically sw_typeOfResource_ssim
         'sw_format_tesim'             => :format_main,   # basically sw_typeOfResource_tesim
+        'sw_subject_temporal_ssim'    => :era_facet,
         'sw_subject_temporal_tesim'   => :era_facet,
+        'sw_subject_geographic_ssim'  => :geographic_facet,
         'sw_subject_geographic_tesim' => :geographic_facet,
+        'mods_typeOfResource_ssim'    => [:term_values, :typeOfResource],
         'mods_typeOfResource_tesim'   => [:term_values, :typeOfResource]
       }
       keys = mods_sources.keys.concat(%w[ metadata_format_ssim ])
