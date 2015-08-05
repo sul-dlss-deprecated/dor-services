@@ -25,24 +25,23 @@ class SimpleDublinCoreDs < ActiveFedora::OmDatastream
     # There are a whole bunch of namespace-related things that can go
     # wrong with this terminology. Until it's fixed in OM, ignore them all.
 
-      doc = super solr_doc, *args
+    doc = super solr_doc, *args
 
-      add_solr_value(doc, 'dc_title',   self.title.first,   :string, [:stored_sortable, :stored_searchable])
-      add_solr_value(doc, 'dc_creator', self.creator.first, :string, [:stored_sortable, :stored_searchable])
+    add_solr_value(doc, 'dc_title',   self.title.first,   :string, [:stored_sortable, :stored_searchable])
+    add_solr_value(doc, 'dc_creator', self.creator.first, :string, [:stored_sortable, :stored_searchable])
 
-      identifiers = {}
+    identifiers = {}
 
-      self.identifier.each { |i| ns, val = i.split(":"); identifiers[ns] ||= val }
+    self.identifier.each { |i| ns, val = i.split(":"); identifiers[ns] ||= val }
 
-      identifiers.each do |ns, val|
-        add_solr_value(doc, "dc_identifier_#{ns}", val, :string, [:stored_sortable, :stored_searchable])
-      end
+    identifiers.each do |ns, val|
+      add_solr_value(doc, "dc_identifier_#{ns}", val, :string, [:stored_sortable, :stored_searchable])
+    end
 
-      return doc
-    rescue Exception => e
-      warn "ERROR in SimpleDublinCoreDs to_solr()! #{e}"
-      solr_doc
-
+    return doc
+  rescue Exception => e
+    warn "ERROR in SimpleDublinCoreDs to_solr()! #{e}"
+    solr_doc
   end
 end
 end
