@@ -10,7 +10,7 @@ module Dor
     def self.cleanup_by_reset_druid(druid)
       last_version = get_druid_last_version(druid) 
       cleanup_reset_workspace_content(druid, last_version, Config.cleanup.local_workspace_root)
-      cleanup_reset_workspace_content(druid, last_version, Config.cleanup.local_assembly_root)
+      cleanup_assembly_content(druid, Config.cleanup.local_assembly_root)
       cleanup_reset_export(druid, last_version)
     end
     
@@ -96,5 +96,11 @@ module Dor
       return reset_bags      
     end
 
+    # @param [String] druid The identifier for the object whose data is to be removed
+    # @param [String] base The base directory to delete from
+    # @return [void] remove the object's data files from the assembly area
+    def self.cleanup_assembly_content(druid, base)
+      DruidTools::Druid.new(druid, base).prune!
+    end
   end
 end
