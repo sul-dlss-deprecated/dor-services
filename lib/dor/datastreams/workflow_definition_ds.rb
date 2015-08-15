@@ -94,7 +94,7 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
 
   def to_solr(solr_doc=Hash.new,*args)
     super(solr_doc,*args)
-    add_solr_value(solr_doc, "workflow_name", self.name, :symbol, [:searchable])
+    add_solr_value(solr_doc, "workflow_name", self.name, :symbol, [:symbol])
     processes.each do |p|
       add_solr_value(solr_doc, "process", "#{p.name}|#{p.label}", :symbol, [:displayable])
     end
