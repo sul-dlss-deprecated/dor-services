@@ -21,9 +21,9 @@ class DescMetadataDS < ActiveFedora::OmDatastream
         t.main_title_lang(:path=>{:attribute=> "xml:lang"})
       }
     }
-    t.coordinates :index_as => [:searchable]
-    t.extent      :index_as => [:searchable]
-    t.scale       :index_as => [:searchable]
+    t.coordinates :index_as => [:symbol]
+    t.extent      :index_as => [:symbol]
+    t.scale       :index_as => [:symbol]
     t.topic       :index_as => [:symbol, :stored_searchable]
     t.abstract    :index_as => [:stored_searchable]
   end
