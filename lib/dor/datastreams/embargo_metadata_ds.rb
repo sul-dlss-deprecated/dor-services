@@ -9,7 +9,7 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
     t.embargo_status(:path => 'status', :index_as => [:symbol])
     t.release_date(:path => "releaseDate", :index_as => [:dateable])
     t.release_access(:path => "releaseAccess")
-    t.twenty_pct_status( :path => "twentyPctVisibilityStatus", :index_as => [:facetable])
+    t.twenty_pct_status( :path => "twentyPctVisibilityStatus", :index_as => [:symbol])
     t.twenty_pct_release_date(:path => "twentyPctVisibilityReleaseDate")
   end
 

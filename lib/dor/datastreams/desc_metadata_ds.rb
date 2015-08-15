@@ -17,7 +17,7 @@ class DescMetadataDS < ActiveFedora::OmDatastream
       t.temporal   :index_as => [:stored_searchable]
     end
     t.title_info(:path=>"titleInfo") {
-      t.main_title(:index_as=>[:facetable], :path=>"title", :label=>"title") {
+      t.main_title(:index_as=>[:symbol], :path=>"title", :label=>"title") {
         t.main_title_lang(:path=>{:attribute=> "xml:lang"})
       }
     }

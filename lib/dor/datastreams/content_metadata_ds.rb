@@ -27,10 +27,10 @@ module Dor
           end
         end
         t.shelved_file(:path => 'file', :attributes => {:shelve=>'yes'}, :index_as => [:not_searchable]) do
-          t.id_ :path => { :attribute => 'id' }, :index_as => [:displayable, :searchable]
+          t.id_ :path => { :attribute => 'id' }, :index_as => [:displayable, :stored_searchable]
         end
       end
-      t.shelved_file_id :proxy => [:resource, :shelved_file, :id], :index_as => [:displayable, :searchable]
+      t.shelved_file_id :proxy => [:resource, :shelved_file, :id], :index_as => [:displayable, :stored_searchable]
     end
 
     def public_xml

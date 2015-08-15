@@ -169,7 +169,7 @@ describe Dor::Processable do
       <milestone date="2012-11-06T16:59:39-0800">published</milestone>
       </lifecycle>'))
       solr_doc=@item.to_solr
-      expect(solr_doc[Solrizer.solr_name('version_opened', :facetable)]).to be_nil
+      expect(solr_doc['opened_dttsim']).to be_nil
     end
     it 'should create a modified_latest date field' do
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
