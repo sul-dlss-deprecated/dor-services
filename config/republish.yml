@@ -1,0 +1,4 @@
+#
+# The script/republish.rb tool requires a URL for the dor-services-app endpoint
+#
+url: https://user:pw@localhost/dor
