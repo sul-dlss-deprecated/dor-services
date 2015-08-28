@@ -5,6 +5,7 @@
 require 'uri'
 require 'yaml'
 require 'rest-client'
+require 'logger'
 
 if ARGV.first == '--help' || ARGV.size < 1
   puts 'Usage: republish.rb druid1 [... druid2 ...]'
@@ -12,6 +13,9 @@ if ARGV.first == '--help' || ARGV.size < 1
 end
 
 CONF_FN = 'config/republish.yml'
+
+log = Logger.new(File.open('log/republish.log', 'a'))
+log.level = Logger::WARN
 
 fail "Must have configuration file #{CONF_FN}" unless File.size?(CONF_FN)
 config = YAML.load(File.read(CONF_FN))
@@ -29,11 +33,11 @@ ARGV.each do |druid|
 
     # POST to dor-services-app's REST API
     endpoint["v1/objects/#{druid}/publish"].post('') do |response|
-      puts "#{druid}: #{response.code} code from republish"
-      puts "#{druid}: ERROR: unexpected status code" unless response.code == 200
+      log.info "#{druid}: #{response.code} code from republish"
+      log.error "#{druid}: ERROR: unexpected status code" unless response.code == 200
     end
   rescue => e
-    puts "#{druid}: ERROR: cannot republish: #{e.message}"
+    log.error "#{druid}: ERROR: cannot republish: #{e.message}"
   end
 end
 
