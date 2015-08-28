@@ -15,7 +15,7 @@ end
 CONF_FN = 'config/republish.yml'
 
 log = Logger.new(File.open('log/republish.log', 'a'))
-log.level = Logger::WARN
+log.level = Logger::INFO
 
 fail "Must have configuration file #{CONF_FN}" unless File.size?(CONF_FN)
 config = YAML.load(File.read(CONF_FN))
