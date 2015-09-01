@@ -7,6 +7,7 @@ module Dor
     include Publishable
     include Versionable
     include Discoverable
+    include Releaseable
 
     has_many :members, :property => :is_member_of_collection, :inbound => true, :class_name => "ActiveFedora::Base"
     has_object_type 'collection'
