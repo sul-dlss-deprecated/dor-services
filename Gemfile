@@ -4,16 +4,13 @@ group :development do
   gem 'awesome_print'
   gem "ruby-debug", :platform => :ruby_18
   gem "rcov", :platform => :ruby_18
-  gem "simplecov", :platform => [:ruby_19, :ruby_20, :ruby_21]
   gem "debugger", '1.6.3', :platform => :ruby_19
   gem "pry"
   gem "pry-debugger", '0.2.2', :platform => :ruby_19
 end
 
-
 group :development, :test do
   gem "simplecov",  :platform => [:ruby_19, :ruby_20, :ruby_21]
-  gem "debugger", '1.6.3', :platform => :ruby_19
 end
 
 group :test do
