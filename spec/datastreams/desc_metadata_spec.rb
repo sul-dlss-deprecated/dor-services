@@ -49,7 +49,11 @@ describe Dor::DescMetadataDS do
     it "should solrize correctly" do
       doc = @dsdoc.to_solr
       expect(doc).to match a_hash_including('subject_temporal_tesim'   => ["1890-1910", "20th century", "another"])
+      expect(doc).to match a_hash_including('subject_topic_ssim'       => ["Topic1: Boring Part","Topic2: The Interesting Part!"])
       expect(doc).to match a_hash_including('subject_topic_tesim'      => ["Topic1: Boring Part","Topic2: The Interesting Part!"])
+      expect(doc).to match a_hash_including('topic_ssim'               => ["Topic1: Boring Part","Topic2: The Interesting Part!"])
+      expect(doc).to match a_hash_including('topic_tesim'              => ["Topic1: Boring Part","Topic2: The Interesting Part!"])
+      expect(doc).to match a_hash_including('subject_geographic_ssim'  => ["First Place", "Other Place, Nation;"])
       expect(doc).to match a_hash_including('subject_geographic_tesim' => ["First Place", "Other Place, Nation;"])
       expect(doc).to match a_hash_including('abstract_tesim'           => ["Abstract contents."])
     end

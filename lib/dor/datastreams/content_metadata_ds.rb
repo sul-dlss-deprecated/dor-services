@@ -9,7 +9,7 @@ module Dor
       t.stacks      :path => '/contentMetadata/@stacks', :index_as => [:not_searchable]
       t.resource(:index_as => [:not_searchable]) do
         t.id_       :path => { :attribute => 'id' }
-        t.sequence  :path => { :attribute => 'sequence' }#, :data_type => :integer
+        t.sequence  :path => { :attribute => 'sequence' } #, :data_type => :integer
         t.type_     :path => { :attribute => 'type' }, :index_as => [:displayable]
         t.attribute(:path => 'attr', :index_as => [:not_searchable]) do
           t.name    :path => { :attribute => 'name' }, :index_as => [:not_searchable]
@@ -18,19 +18,19 @@ module Dor
           t.id_      :path => { :attribute => 'id' }
           t.mimeType :path => { :attribute => 'mimeType' }, :index_as => [:displayable]
           t.dataType :path => { :attribute => 'dataType' }, :index_as => [:displayable]
-          t.size     :path => { :attribute => 'size'     }, :index_as => [:displayable]#, :data_type => :long
-          t.shelve   :path => { :attribute => 'shelve'   }, :index_as => [:not_searchable]#, :data_type => :boolean
-          t.publish  :path => { :attribute => 'publish'  }, :index_as => [:not_searchable]#, :data_type => :boolean
-          t.preserve :path => { :attribute => 'preserve' }, :index_as => [:not_searchable]#, :data_type => :boolean
+          t.size     :path => { :attribute => 'size'     }, :index_as => [:displayable] #, :data_type => :long
+          t.shelve   :path => { :attribute => 'shelve'   }, :index_as => [:not_searchable] #, :data_type => :boolean
+          t.publish  :path => { :attribute => 'publish'  }, :index_as => [:not_searchable] #, :data_type => :boolean
+          t.preserve :path => { :attribute => 'preserve' }, :index_as => [:not_searchable] #, :data_type => :boolean
           t.checksum do
             t.type_ :path => { :attribute => 'type' }
           end
         end
         t.shelved_file(:path => 'file', :attributes => {:shelve=>'yes'}, :index_as => [:not_searchable]) do
-          t.id_ :path => { :attribute => 'id' }, :index_as => [:displayable, :searchable]
+          t.id_ :path => { :attribute => 'id' }, :index_as => [:displayable, :stored_searchable]
         end
       end
-      t.shelved_file_id :proxy => [:resource, :shelved_file, :id], :index_as => [:displayable, :searchable]
+      t.shelved_file_id :proxy => [:resource, :shelved_file, :id], :index_as => [:displayable, :stored_searchable]
     end
 
     def public_xml
@@ -65,7 +65,74 @@ module Dor
       self.content=xml.to_s
       self.save
     end
+    
+    #
+    # Generates the XML tree for externalFile references. For example,
+    #
+    #     <externalFile objectId="druid:mn123pq4567" resourceId="Image01" fileid="image_01.jp2000" />
+    #
+    # @param [String] objectId the linked druid
+    # @param [String] resourceId the linked druid's resource identifier
+    # @param [String] fileId the linked druid's resource's file identifier
+    #
+    # @return [Nokogiri::XML::Element]
+    #
+    def generate_external_file_node(objectId, resourceId, fileId)
+      externalFile = Nokogiri::XML::Element.new('externalFile', self.ng_xml)
+      externalFile[:objectId] = objectId
+      externalFile[:resourceId] = resourceId
+      externalFile[:fileid] = fileId
+      externalFile
+    end
+    
+    #
+    # Generates the XML tree for virtual resource relationship reference. For example,
+    #
+    #     <relationship type="alsoAvailableAs" objectId="druid:mn123pq4567" />
+    #
+    # @param [String] objectId the linked druid
+    #
+    # @return [Nokogiri::XML::Element]
+    #
+    def generate_also_available_as_node(objectId)
+      relationship = Nokogiri::XML::Element.new('relationship', self.ng_xml)
+      relationship[:type] = 'alsoAvailableAs'
+      relationship[:objectId] = objectId
+      relationship
+    end
 
+    #
+    # Copies the child's resource into the parent (self) as a virtual resource.
+    # Assumes the resource isn't a duplicate of an existing virtual or real resource.
+    # 
+    # @param [Dor::Item] child
+    # @param [Nokogiri::XML::Element] child_resource
+    #
+    # @return [Nokogiri::XML::Element] the new resource that was added to the contentMetadata
+    #
+    def add_virtual_resource(child, child_resource)
+      # create a virtual resource element with attributes linked to the child
+      sequence_max = self.ng_xml.search('//resource').map{ |node| node[:sequence].to_i }.max
+      resource = Nokogiri::XML::Element.new('resource', self.ng_xml)
+      resource[:type] = child_resource[:type]
+      resource[:sequence] = sequence_max + 1
+      resource[:id] = child_resource[:id]
+      
+      label = Nokogiri::XML::Element.new('label', self.ng_xml)
+      label.content = child_resource.search('label').first.content
+      resource << label
+      
+      # iterate over all the published files and link to them
+      child_resource.search('file[@publish=\'yes\']').each do |file|
+        resource << generate_external_file_node(child.pid, child_resource[:id], file[:id])
+      end
+      resource << generate_also_available_as_node(child.pid)
+      
+      # save the virtual resource as a sibling and return
+      self.ng_xml.root << resource
+      resource
+    end
+    
     def add_resource(files,resource_name, position,type="file")
       xml=self.ng_xml
       if xml.search('//resource[@id=\''+resource_name+'\']').length>0
@@ -75,7 +142,7 @@ module Dor
 
       max = xml.search('//resource').map{ |node| node['sequence'].to_i }.max
       #renumber all of the resources that will come after the newly added one
-      while max>position do
+      while max>position
         node=xml.search('//resource[@sequence=\'' + position + '\']')
         node.first[sequence]=max+1 if node.length>0
         max-=1
@@ -113,7 +180,7 @@ module Dor
         res=xml.search('//resource[@sequence=\''+position.to_s+'\']')
         break if res.length==0
         res['sequence']=position.to_s
-        position=position+1
+        position+=1
       end
       self.content=xml.to_s
       self.save
@@ -168,20 +235,17 @@ module Dor
       preserved_size=0
       counts = Hash.new(0)                # default count is zero
       resource_type_counts = Hash.new(0)  # default count is zero
-      first_shelved_image=nil
+      first_shelved_image = nil
 
       doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
-        counts['resource']+=1
-        resource_type_counts[resource['type']]+=1 if resource['type']
+        counts['resource'] += 1
+        resource_type_counts[resource['type']] += 1 if resource['type']
         resource.xpath('file').each do |file|
-          counts['content_file']+=1
+          counts['content_file'] += 1
           preserved_size += file['size'].to_i if file['preserve'] == 'yes'
-          if file['shelve'] == 'yes'
-            counts['shelved_file']+=1
-            if first_shelved_image.nil? && file['id'].match(/jp2$/)
-              first_shelved_image=file['id']
-            end
-          end
+          next unless file['shelve'] == 'yes'
+          counts['shelved_file'] += 1
+          first_shelved_image ||= file['id'] if file['id'].match(/jp2$/)
         end
       end
       solr_doc["content_type_ssim"              ] = doc.root['type']
@@ -216,7 +280,7 @@ module Dor
     def update_resource_label resource_name, new_label
       node = singular_node('//resource[@id=\''+resource_name+'\']')
       labels = node.xpath('./label')
-      if(labels.length==0)
+      if (labels.length==0)
         #create a label
         label_node = Nokogiri::XML::Node.new('label',self.ng_xml)
         label_node.content=new_label

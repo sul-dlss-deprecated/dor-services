@@ -33,7 +33,7 @@ module Dor
 
       im=self.datastreams['identityMetadata'].ng_xml.clone
       im.search('//release').each {|node| node.remove} # remove any <release> tags from public xml which have full history
-      im.root.add_child(release_xml) 
+      im.root.add_child(release_xml)
 
       pub.add_child(im.root) # add in modified identityMetadata datastream
       pub.add_child(self.datastreams['contentMetadata'].public_xml.root.clone)
@@ -54,7 +54,7 @@ module Dor
     #  otherwise, it prunes the object's metadata from the document cache
     def publish_metadata
       rights = datastreams['rightsMetadata'].ng_xml.clone.remove_namespaces!
-      if(rights.at_xpath("//rightsMetadata/access[@type='discover']/machine/world"))
+      if rights.at_xpath("//rightsMetadata/access[@type='discover']/machine/world")
         dc_xml = self.generate_dublin_core.to_xml {|config| config.no_declaration}
         DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'dc')
         DigitalStacksService.transfer_to_document_store(pid, self.datastreams['identityMetadata'].to_xml, 'identityMetadata')

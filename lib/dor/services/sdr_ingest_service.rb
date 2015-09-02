@@ -74,7 +74,7 @@ module Dor
     #   If not found, return nil unless it is a required datastream in which case raise exception
     def self.get_datastream_content(dor_item, ds_name, required)
       ds = (ds_name == 'relationshipMetadata' ? 'RELS-EXT' : ds_name)
-      if dor_item.datastreams.keys.include?(ds) && ! dor_item.datastreams[ds].new?
+      if dor_item.datastreams.keys.include?(ds) && !dor_item.datastreams[ds].new?
         return dor_item.datastreams[ds].content
       elsif (required == 'optional')
         return nil
@@ -137,11 +137,7 @@ module Dor
     # @return [String] Return the contents of the contentMetadata.xml file from the content directory
     def self.get_content_metadata(metadata_dir)
       content_metadata_pathname = metadata_dir.join('contentMetadata.xml')
-      if content_metadata_pathname.exist?
-        content_metadata_pathname.read
-      else
-        nil
-      end
+      content_metadata_pathname.read if content_metadata_pathname.exist?
     end
 
     # @param [Pathname] metadata_dir The location of the the object's metadata files

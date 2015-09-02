@@ -2,7 +2,7 @@ module Dor
 
   class MergeService
 
-    def MergeService.merge_into_primary primary_druid, secondary_druids, tag, logger = nil
+    def self.merge_into_primary primary_druid, secondary_druids, tag, logger = nil
       # TODO test the secondary_obj to see if we've processed it already
       merge_service = Dor::MergeService.new primary_druid, secondary_druids, tag, logger
       merge_service.check_objects_editable
@@ -24,12 +24,9 @@ module Dor
     end
 
     def check_objects_editable
-      unless @primary.allows_modification?
-        raise Dor::Exception.new "Primary object is not editable: #{@primary.pid}"
-      end
-      if ( non_editable = (@secondary_objs.detect {|obj| ! obj.allows_modification? } ))
-        raise Dor::Exception.new "Secondary object is not editable: #{non_editable.pid}"
-      end
+      raise Dor::Exception.new("Primary object is not editable: #{@primary.pid}") unless @primary.allows_modification?
+      non_editable = @secondary_objs.detect {|obj| !obj.allows_modification? }
+      raise Dor::Exception.new "Secondary object is not editable: #{non_editable.pid}" if non_editable
     end
 
     def move_metadata_and_content
@@ -47,7 +44,6 @@ module Dor
       primary_cm = @primary.contentMetadata.ng_xml
 
       @secondary_objs.each do |secondary|
-
         sec_druid = DruidTools::Druid.new secondary.pid, Dor::Config.stacks.local_workspace_root
         secondary.contentMetadata.ng_xml.xpath("//resource").each do |src_resource|
           primary_resource = primary_cm.at_xpath "//resource[attr[@name = 'mergedFromPid']/text() = '#{secondary.pid}' and

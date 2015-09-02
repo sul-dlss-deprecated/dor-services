@@ -4,7 +4,7 @@ Dor::Identifiable.on_upgrade '3.11.6', 'Fix up invalid URIs in objects' do |obj|
     false
   rescue URI::InvalidURIError
     true
-  rescue 
+  rescue
     false
   end
 

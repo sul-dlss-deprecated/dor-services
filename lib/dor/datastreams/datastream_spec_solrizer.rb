@@ -1,7 +1,7 @@
 module DatastreamSpecSolrizer
   extend ActiveSupport::Concern
   include SolrDocHelper
-  
+
   def datastream_spec_string
     s = begin
       controlGroup == 'E' ? content.to_s.length : size

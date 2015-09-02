@@ -87,7 +87,7 @@ describe Dor::EventsDS do
         count += 1
       end
 
-      expect(all_types).to eq(['eems', 'eems', 'embargo', 'embargo'])
+      expect(all_types).to eq(%w(eems eems embargo embargo))
       expect(all_whos).to eq(['sunetid:jwible', 'sunetid:jwible', 'sunetid:hfrost', 'application:embargo'])
       expect(count).to be 4
     end

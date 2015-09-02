@@ -24,7 +24,7 @@ module Dor
     # @param [Moab::FileSignature] moab_signature The fixity values of the file
     # @return [Boolean] true if file deleted, false otherwise
     def self.delete_file(file_pathname, moab_signature)
-      if file_pathname.exist? and (file_pathname.size == moab_signature.size)
+      if file_pathname.exist? && (file_pathname.size == moab_signature.size)
         file_signature = Moab::FileSignature.new.signature_from_file(file_pathname)
         if (file_signature == moab_signature)
           file_pathname.delete
@@ -65,7 +65,7 @@ module Dor
     # @param [Moab::FileSignature] moab_signature The fixity values of the file
     # @return [Boolean] true if file renamed, false otherwise
     def self.rename_file(old_pathname, new_pathname, moab_signature)
-      if old_pathname.exist? and (old_pathname.size == moab_signature.size)
+      if old_pathname.exist? && (old_pathname.size == moab_signature.size)
         file_signature = Moab::FileSignature.new.signature_from_file(old_pathname)
         if (file_signature == moab_signature)
           new_pathname.parent.mkpath
@@ -82,7 +82,7 @@ module Dor
     # @param [Moab::FileGroupDifference] content_diff the content file version differences report
     def self.shelve_to_stacks(workspace_content_pathname, stacks_object_pathname, content_diff)
       return false if workspace_content_pathname.nil?
-      [:added, :copyadded, :modified,].each do |change_type|
+      [:added, :copyadded, :modified].each do |change_type|
         subset = content_diff.subset(change_type) # {Moab::FileGroupDifferenceSubset
         subset.files.each do |moab_file| # {Moab::FileInstanceDifference}
           moab_signature = moab_file.signatures.last # {Moab::FileSignature}

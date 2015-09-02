@@ -99,7 +99,7 @@ module Dor
     #   The data is updated to the latest format.
     def self.get_dor_technical_metadata(dor_item)
       ds = "technicalMetadata"
-      if dor_item.datastreams.keys.include?(ds) and not dor_item.datastreams[ds].new?
+      if dor_item.datastreams.keys.include?(ds) && !dor_item.datastreams[ds].new?
         dor_techmd = dor_item.datastreams[ds].content
       else
         return nil
@@ -127,7 +127,7 @@ module Dor
     # @param [Array<String>] new_files The list of filenames for files that are either added or modifed since the previous version
     # @return [String] The technicalMetadata datastream for the new files of the new digital object version
     def self.get_new_technical_metadata(druid, new_files)
-      return nil if new_files.nil? or new_files.empty?
+      return nil if new_files.nil? || new_files.empty?
       workspace = DruidTools::Druid.new(druid, Dor::Config.sdr.local_workspace_root)
       content_dir = workspace.find_filelist_parent('content',new_files)
       temp_dir = workspace.temp_dir
@@ -223,4 +223,3 @@ module Dor
   end
 
 end
-

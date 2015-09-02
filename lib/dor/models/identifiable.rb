@@ -19,10 +19,8 @@ module Dor
     end
 
     def initialize attrs={}
-      if Dor::Config.suri.mint_ids
-        unless attrs[:pid]
-          attrs = attrs.merge!({:pid=>Dor::SuriService.mint_id, :new_object => true})
-        end
+      if Dor::Config.suri.mint_ids && !attrs[:pid]
+        attrs = attrs.merge!({:pid=>Dor::SuriService.mint_id, :new_object => true})
       end
       super
     end
@@ -80,7 +78,7 @@ module Dor
       return solr_doc
     end
 
-    #@return [String] calculated value for Solr index
+    # @return [String] calculated value for Solr index
     def identity_metadata_source
       if self.identityMetadata.otherId('catkey').first ||
          self.identityMetadata.otherId('barcode').first
@@ -104,25 +102,17 @@ module Dor
     end
 
     def update_other_Id(type, new_val, val=nil)
-      updated=false
-      self.identityMetadata.ng_xml.search('//otherId[@name=\''+type+'\']').each do |node|
-        if node.content==val || val.nil?
-          node.content=new_val
-          updated=true
-        end
-      end
-      return updated
+      self.identityMetadata.ng_xml.search('//otherId[@name=\''+type+'\']')
+        .select{ |node| val.nil? || node.content == val }
+        .each  { |node| node.content = new_val }
+        .any?
     end
 
     def remove_other_Id(type, val=nil)
-      removed=false
-      self.identityMetadata.ng_xml.search('//otherId[@name=\''+type+'\']').each do |node|
-        if node.content===val || val.nil?
-          node.remove
-          removed=true
-        end
-      end
-      return removed
+      self.identityMetadata.ng_xml.search('//otherId[@name=\''+type+'\']')
+        .select{ |node| val.nil? || node.content == val }
+        .each(&:remove)
+        .any?
     end
 
     # turns a tag string into an array with one element per tag part.
@@ -158,11 +148,9 @@ module Dor
       return normalized_tag
     end
 
-    #Ensure that an administrative tag meets the proper mininum format
-    #
-    #@param tag_str [String] the tag
-    #
-    #@return [Array] the tag split into an array via ':'
+    # Ensure that an administrative tag meets the proper mininum format
+    # @param tag_str [String] the tag
+    # @return [Array] the tag split into an array via ':'
     def validate_tag_format(tag_str)
       tag_arr = split_tag_to_arr(tag_str)
 
@@ -176,9 +164,8 @@ module Dor
       return tag_arr
     end
 
-    #Add an administrative tag to an item, you will need to seperately save the item to write it to fedora
-    #
-    #@param tag [string] The tag you wish to add
+    # Add an administrative tag to an item, you will need to seperately save the item to write it to fedora
+    # @param tag [string] The tag you wish to add
     def add_tag(tag)
         identity_metadata_ds = self.identityMetadata
         normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags)
@@ -186,37 +173,30 @@ module Dor
     end
 
     def remove_tag(tag)
-      removed = false
-      self.identityMetadata.ng_xml.search('//tag').each do |node|
-        if normalize_tag(node.content) === normalize_tag(tag)
-          node.remove
-          removed = true
-        end
-      end
-      return removed
+      normtag = normalize_tag(tag)
+      self.identityMetadata.ng_xml.search('//tag')
+        .select{ |node| normalize_tag(node.content) == normtag }
+        .each(&:remove)
+        .any?
     end
-    
-    #Removes all displayTypes from an item in preparation of adding a new display type
-    #
-    #@return Boolean True if displayTypes were removed, False if no displayTypes were removed
+
+    # Removes all displayTypes from an item in preparation of adding a new display type
+    # @return Boolean True if displayTypes were removed, False if no displayTypes were removed
     def remove_displayTypes
-      removed = false
-      self.identityMetadata.ng_xml.search('//displayType').each do |node|
-          node.remove
-          removed = true
-      end
-      return removed
+      nodes = self.identityMetadata.ng_xml.search('//displayType')
+      # NOTE: .each after search is different than normal ruby enumerator:
+      # ~ ng_xml.search('//nonexistant_tag').each(&:foo) == 0
+      # ~ [].each(&:foo) == []
+      nodes.each(&:remove)
+      nodes.any?
     end
 
     def update_tag(old_tag, new_tag)
-      updated = false
-      self.identityMetadata.ng_xml.search('//tag').each do |node|
-        if normalize_tag(node.content) == normalize_tag(old_tag)
-          node.content = normalize_tag(new_tag)
-          updated = true
-        end
-      end
-      return updated
+      normtag = normalize_tag(old_tag)
+      self.identityMetadata.ng_xml.search('//tag')
+        .select{ |node| normalize_tag(node.content) == normtag }
+        .each  { |node| node.content = normalize_tag(new_tag)  }
+        .any?
     end
 
     def get_related_obj_display_title(related_obj, default_title)
@@ -231,7 +211,6 @@ module Dor
       return default_title
     end
 
-
     private
     def solrize_related_obj_titles(solr_doc, relationships, title_hash, field_name)
       title_type = :symbol  # we'll get an _ssim because of the type
@@ -240,7 +219,7 @@ module Dor
         rel_druid = rel_node['rdf:resource']
         next unless rel_druid   # TODO: warning here would also be useful
         rel_druid = rel_druid.gsub('info:fedora/', '')
-        if title_hash.has_key?(rel_druid)
+        if title_hash.key?(rel_druid)
           add_solr_value(solr_doc, field_name, title_hash[rel_druid], title_type, title_attrs)
         else
           related_obj = Dor.find(rel_druid)

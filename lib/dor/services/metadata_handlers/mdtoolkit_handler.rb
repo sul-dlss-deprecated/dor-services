@@ -21,19 +21,17 @@ handler = Class.new do
 
   def label(metadata)
     xml = Nokogiri::XML(metadata)
-    if xml.root.nil?
-      return ""
-    end
+    return "" if xml.root.nil?
     case xml.root.name
     when 'msDesc' then xml.xpath('/msDesc/msIdentifier/collection').text
-    when 'mods'   then 
+    when 'mods'   then
       xml.root.add_namespace_definition('mods','http://www.loc.gov/mods/v3')
       xml.xpath('/mods:mods/mods:titleInfo[1]').xpath('mods:title|mods:nonSort').collect { |n| n.text }.join(' ').strip
     end
   end
 
   def prefixes
-    ['mdtoolkit','druid']
+    %w(mdtoolkit druid)
   end
 end
 

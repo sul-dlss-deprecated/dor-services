@@ -153,7 +153,7 @@ module Dor
     # determine whether the file in question is present in the object's workspace.
     def is_file_in_workspace? filename
       druid_obj = DruidTools::Druid.new(self.pid, Dor::Config.stacks.local_workspace_root)
-      return druid_obj.find_content(filename) != nil
+      return !druid_obj.find_content(filename).nil?
     end
 
     # Appends contentMetadata file resources from the source objects to this object
@@ -178,7 +178,7 @@ module Dor
           resource_copy.xpath('file').each do |secondary_file|
             secondary_file['id'] = new_secondary_file_name(secondary_file['id'], max_sequence)
 
-            if primary_cm.at_xpath("//file[@id = '#{secondary_file["id"]}']")
+            if primary_cm.at_xpath("//file[@id = '#{secondary_file['id']}']")
               raise Dor::Exception.new "File '#{secondary_file['id']}' from secondary object #{src_pid} already exist in primary object: #{self.pid}"
             end
           end
@@ -228,6 +228,11 @@ module Dor
       # eliminate rightsMetadata. set it to <rightsMetadata/> ?
       rightsMetadata.content = '<rightsMetadata/>'
       add_tag "Decommissioned : #{tag}"
+    end
+    
+    # <fedora:isConstituentOf rdf:resource="info:fedora/druid:hj097bm8879" />
+    def add_constituent(druid)
+      add_relationship :is_constituent_of, ActiveFedora::Base.find(druid)      
     end
   end
 end

@@ -38,23 +38,21 @@ module Dor
       'opened' => 1
     }
 
+    # This is a work-around for some strange logic in ActiveFedora that
+    # don't allow self.workflows.new? to work if we load the object using
+    # .load_instance_from_solr.
     def set_workflows_datastream_location
-      # This is a work-around for some strange logic in ActiveFedora that
-      # don't allow self.workflows.new? to work if we load the object using
-      # .load_instance_from_solr.
-      return if self.respond_to? :inner_object and self.inner_object.is_a? ActiveFedora::SolrDigitalObject
-
-      if self.workflows.new?
-        workflows.mimeType = 'application/xml'
-        workflows.dsLocation = File.join(Dor::Config.workflow.url,"dor/objects/#{self.pid}/workflows")
-      end
+      return if self.respond_to?(:inner_object) && self.inner_object.is_a?(ActiveFedora::SolrDigitalObject)
+      return unless self.workflows.new?
+      workflows.mimeType   = 'application/xml'
+      workflows.dsLocation = File.join(Dor::Config.workflow.url,"dor/objects/#{self.pid}/workflows")
     end
 
     def empty_datastream?(datastream)
       if datastream.new?
         true
       elsif datastream.class.respond_to?(:xml_template)
-        datastream.content.to_s.empty? or EquivalentXml.equivalent?(datastream.content, datastream.class.xml_template)
+        datastream.content.to_s.empty? || EquivalentXml.equivalent?(datastream.content, datastream.class.xml_template)
       else
         datastream.content.to_s.empty?
       end
@@ -84,7 +82,7 @@ module Dor
         ds.content = content
         ds.ng_xml = Nokogiri::XML(content) if ds.respond_to?(:ng_xml)
         ds.save unless ds.digital_object.new?
-      elsif force or empty_datastream?(ds)
+      elsif force || empty_datastream?(ds)
         meth = "build_#{datastream}_datastream".to_sym
         if respond_to?(meth)
           content = self.send(meth, ds)
@@ -98,7 +96,7 @@ module Dor
       return ds
     end
 
-    def cleanup()
+    def cleanup
       CleanupService.cleanup(self)
     end
 
@@ -107,7 +105,7 @@ module Dor
     end
 
     # @return [Hash] including :current_version, :status_code and :status_time
-    def status_info()
+    def status_info
       current_version = '1'
       begin
         current_version = self.versionMetadata.current_version_id
@@ -118,8 +116,8 @@ module Dor
       #only get steps that are part of accessioning and part of the current version. That can mean they were archived with the current version
       #number, or they might be active (no version number).
       milestones.each do |m|
-        if STEPS.keys.include?(m[:milestone]) and (m[:version].nil? or m[:version] == current_version)
-          current_milestones << m unless m[:milestone] == 'registered' and current_version.to_i > 1
+        if STEPS.keys.include?(m[:milestone]) && (m[:version].nil? || m[:version] == current_version)
+          current_milestones << m unless m[:milestone] == 'registered' && current_version.to_i > 1
         end
       end
 
@@ -129,12 +127,9 @@ module Dor
       current_milestones.each do |m|
         name = m[:milestone]
         time = m[:at].utc.xmlschema
-        if STEPS.keys.include? name
-          if STEPS[name] > status_code
-            status_code = STEPS[name]
-            status_time = time
-          end
-        end
+        next unless STEPS.keys.include?(name) && STEPS[name] > status_code
+        status_code = STEPS[name]
+        status_time = time
       end
 
       return {:current_version => current_version, :status_code => status_code, :status_time => status_time}
@@ -220,7 +215,7 @@ module Dor
     def initialize_workflow(name, create_ds=true, priority=0)
       priority = workflows.current_priority if priority == 0
       opts = { :create_ds => create_ds, :lane_id => default_workflow_lane }
-      opts[:priority] = priority if(priority > 0)
+      opts[:priority] = priority if priority > 0
       Dor::WorkflowService.create_workflow(Dor::WorkflowObject.initial_repo(name), self.pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
     end
 
@@ -228,16 +223,15 @@ module Dor
     #handles formating utc date/time to human readable
     # XXX: bad form to hardcode TZ here.  Code smell abounds.
     def format_date datetime
-      begin
+
         d = datetime.is_a?(Time) ? datetime :
             DateTime.parse(datetime).in_time_zone(ActiveSupport::TimeZone.new("Pacific Time (US & Canada)"))
         I18n.l(d).strftime('%Y-%m-%d %I:%M%p')
       rescue
         d = datetime.is_a?(Time) ? datetime : Time.parse(datetime.to_s)
         d.strftime('%Y-%m-%d %I:%M%p')
-      end
+
     end
   end
-
 
 end

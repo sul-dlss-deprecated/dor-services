@@ -138,7 +138,6 @@ describe Dor::Contentable do
       expect(merged_cm.at_xpath("//resource[@sequence = '2']/@id").value).to eq('ab123cd0001_2')
     end
 
-
     it "raises an exception if new file name collides with an existing primary file" do
       primary.contentMetadata.content = <<-XML
       <?xml version="1.0"?>

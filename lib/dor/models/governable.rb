@@ -26,7 +26,7 @@ module Dor
       lane
     end
 
-    def reset_to_apo_default()
+    def reset_to_apo_default
       self.rightsMetadata.content = admin_policy_object.rightsMetadata.ng_xml
     end
 

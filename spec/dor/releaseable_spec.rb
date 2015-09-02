@@ -27,14 +27,13 @@ describe Dor::Releaseable, :vcr do
   after :each do
     Dor::Config.pop!
   end
-  
+
   describe "Tag sorting, combining, and comparision functions" do
 
     before :each do
       @dummy_tags = [{'when' => @array_of_times[0], 'tag' => "Project: Jim Harbaugh's Finest Moments At Stanford.", "what" => "self"}, {'when' => @array_of_times[1], 'tag' => "Project: Jim Harbaugh's Even Finer Moments At Michigan.", "what" => "collection"}]
     end
-    
-   
+
     it 'should return the most recent tag from an array of release tags' do
       expect(@bryar_trans_am.newest_release_tag_in_an_array(@dummy_tags)).to eq(@dummy_tags[1])
     end
@@ -185,7 +184,7 @@ describe Dor::Releaseable, :vcr do
           item = Dor::Item.find('druid:dc235vd9662')
           release_xml = item.generate_release_xml
           expect(release_xml.class).to eq(String)
-          true_or_false = ['true', 'false']
+          true_or_false = %w(true false)
           xml_obj = Nokogiri(release_xml)
           xml_obj.xpath('//release').each do |release_node|
             expect(release_node.name).to eq('release')  #Well, duh
@@ -226,21 +225,21 @@ describe "Adding release nodes", :vcr do
   after :all do
     Dor::Config.pop!
   end
-  
+
   describe 'testing to make sure displayType tag invoked by the add_release_node function' do
-    
+
     it 'removes all current displayTypes' do
       expect(@item).to receive(:remove_displayTypes).once
       @item.add_release_node(true, {:what=>'self', :who=>'carrickr',:to=>'FRDA'})
     end
-    
+
     it 'adds a displayType of file when adding a releaseNode with no type is set' do
       iM = @item.identityMetadata #Grab an identityMetadata so we can do expects and allows on it
       expect(iM).to receive(:add_value).once.with(:displayType, 'file', {})
       expect(iM).to receive(:add_value).once.with(:release, any_args)
       @item.add_release_node(true, {:what=>'self', :who=>'carrickr',:to=>'FRDA'})
     end
-    
+
     it 'uses the supplied displayType of file when adding a releaseNode' do
       iM = @item.identityMetadata #Grab an identityMetadata so we can do expects and allows on it
       expect(iM).to receive(:add_value).once.with(:displayType, 'filmstrip', {})
@@ -248,28 +247,27 @@ describe "Adding release nodes", :vcr do
       @item.add_release_node(true, {:what=>'self', :who=>'carrickr',:to=>'FRDA', :displayType => 'filmstrip'})
     end
   end
-  
-  describe "Adding tags and workflows" do  
+
+  describe "Adding tags and workflows" do
     it "should release an item with one release tag supplied" do
       allow(@item).to receive(:save).and_return(true) #stud out the true in that it we lack a connection to solr
       expect(@item).to receive(:initialize_workflow).with('releaseWF') #Make sure releaseWF is called
-      expect(@item).to receive(:add_release_node).once     
+      expect(@item).to receive(:add_release_node).once
       expect(@item.add_release_nodes_and_start_releaseWF({:release=> true, :what=>'self', :who=>'carrickr',:to=>'FRDA'})).to eq(nil) #Should run and return void
-      
+
     end
-     
+
     it "should release an item with multiple release tags supplied" do
       allow(@item).to receive(:save).and_return(true) #stud out the true in that it we lack a connection to solr
       expect(@item).to receive(:initialize_workflow).with('releaseWF') #Make sure releaseWF is called
-      expect(@item).to receive(:add_release_node).twice   
-      tags = [{:release=> true, :what=>'self', :who=>'carrickr',:to=>'FRDA'},{:release=> true, :what=>'self', :who=>'carrickr',:to=>'Revs'}]  
+      expect(@item).to receive(:add_release_node).twice
+      tags = [{:release=> true, :what=>'self', :who=>'carrickr',:to=>'FRDA'},{:release=> true, :what=>'self', :who=>'carrickr',:to=>'Revs'}]
       expect(@item.add_release_nodes_and_start_releaseWF(tags)).to eq(nil) #Should run and return void
-      
+
     end
-    
-    
+
   end
-  
+
   it "should raise an error when no :who, :to,  or :what is supplied" do
       expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => nil, :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
       expect{@item.valid_release_attributes(false, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>nil, :what => 'collection', :tag => 'Project:Fitch:Batch2', :displayType => 'file'})}.to raise_error(ArgumentError)
@@ -279,7 +277,7 @@ describe "Adding release nodes", :vcr do
   it "should raise an error when :who, :to, :what are supplied but are not strings" do
     expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 1, :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
     expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>true, :what => 'collection', :tag => 'Project:Fitch:Batch2', :displayType => 'file'})}.to raise_error(ArgumentError)
-    expect{@item.valid_release_attributes(false, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => ['i','am','an','array'], :tag => 'Project:Fitch:Batch2', :displayType => 'file'})}.to raise_error(ArgumentError)
+    expect{@item.valid_release_attributes(false, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => %w(i am an array), :tag => 'Project:Fitch:Batch2', :displayType => 'file'})}.to raise_error(ArgumentError)
   end
 
   it "should not raise an error when :what is self or collection" do
@@ -290,7 +288,7 @@ describe "Adding release nodes", :vcr do
   it "should raise an error when :what is a string but is not self or collection" do
     expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'foo', :tag => 'Project:Fitch:Batch2', :displayType => 'file'})}.to raise_error(ArgumentError)
   end
-  
+
   it "raises an argument error when :displayType is not provided as a string" do
     expect{@item.valid_release_attributes(true, {:when=>'2015-01-05T23:23:45Z',:who => 'carrickr', :to =>'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2', :displayType => ['file']})}.to raise_error(ArgumentError)
   end
@@ -353,7 +351,6 @@ describe "Adding release nodes", :vcr do
       expect(@item.form_purl_url).to eq("http://#{Dor::Config.stacks.document_cache_host}/bb004bn8654.xml")
     end
 
-
     it 'should get the purl xml for a druid' do
       VCR.use_cassette('fetch_purl_test_xml') do
         x = @item.get_xml_from_purl
@@ -375,7 +372,7 @@ describe "Adding release nodes", :vcr do
       VCR.use_cassette('fetch_le_mans_purl') do
         item = Dor::Item.find(@le_mans_druid)
         x = item.get_xml_from_purl
-        expect(item.get_release_tags_from_purl_xml(x)).to match_array(['Kurita', 'Mogami','Atago'])
+        expect(item.get_release_tags_from_purl_xml(x)).to match_array(%w(Kurita Mogami Atago))
       end
     end
 
@@ -383,16 +380,16 @@ describe "Adding release nodes", :vcr do
       VCR.use_cassette('fetch_le_mans_purl') do
         item = Dor::Item.find(@le_mans_druid)
         x = item.get_xml_from_purl
-        generated_tags = {} #pretend no tags were found in the most recent dor object, so all tags in the purl should return false 
+        generated_tags = {} #pretend no tags were found in the most recent dor object, so all tags in the purl should return false
         tags_currently_in_purl = item.get_release_tags_from_purl_xml(x) #These are the tags currently in purl
         final_result_tags = item.add_tags_from_purl(generated_tags) #Final result of dor and purl tags
-        expect(final_result_tags.keys).to match(tags_currently_in_purl) #all tags currently in purl should be reflected 
+        expect(final_result_tags.keys).to match(tags_currently_in_purl) #all tags currently in purl should be reflected
         final_result_tags.keys.each do |tag|
           expect(final_result_tags[tag]).to match ({'release'=>false}) #all tags should be false for their releas
         end
       end
     end
-    
+
     it 'should add in release tags as false for targets that are listed on the purl but not in new tag generation' do
       VCR.use_cassette('fetch_le_mans_purl') do
         item = Dor::Item.find(@le_mans_druid)
@@ -400,13 +397,13 @@ describe "Adding release nodes", :vcr do
         generated_tags = {'Kurita'=>{'release'=>true}} #only kurita has returned as true
         tags_currently_in_purl = item.get_release_tags_from_purl_xml(x) #These are the tags currently in purl
         final_result_tags = item.add_tags_from_purl(generated_tags) #Final result of dor and purl tags
-        expect(final_result_tags.keys).to match(tags_currently_in_purl) #all tags currently in purl should be reflected 
+        expect(final_result_tags.keys).to match(tags_currently_in_purl) #all tags currently in purl should be reflected
         final_result_tags.keys.each do |tag|
           expect(final_result_tags[tag]).to match ({'release'=>false}) if tag != 'Kurita' #Kurita should still be true
         end
         expect(final_result_tags['Kurita']).to match ({'release'=>true})
       end
-    end  
+    end
   end
 end
 
@@ -425,6 +422,6 @@ describe 'to_solr' do
     solr_doc = @rlsbl_item.to_solr({})
 
     released_to_field_name = Solrizer.solr_name('released_to', :symbol)
-    expect(solr_doc).to match a_hash_including({released_to_field_name => ["Project", "test_target"]})
+    expect(solr_doc).to match a_hash_including({released_to_field_name => %w(Project test_target)})
   end
 end

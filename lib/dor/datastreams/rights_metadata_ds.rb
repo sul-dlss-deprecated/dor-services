@@ -65,7 +65,7 @@ module Dor
     # slight misnomer: also sets discover rights!
     # TODO: convert xpath reads to dra_object calls
     def set_read_rights(rights)
-      raise(ArgumentError, "Argument '#{rights}' is not a recognized value") unless ['world','stanford','none','dark'].include? rights
+      raise(ArgumentError, "Argument '#{rights}' is not a recognized value") unless %w(world stanford none dark).include? rights
       rights_xml = self.ng_xml
       if (rights_xml.search('//rightsMetadata/access[@type=\'read\']').length==0)
         raise('The rights metadata stream doesnt contain an entry for machine read permissions. Consider populating it from the APO before trying to change it.')

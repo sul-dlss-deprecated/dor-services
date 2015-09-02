@@ -446,7 +446,6 @@ describe Dor::Describable do
     end
   end
 
-
   describe 'get_collection_title' do
     before(:each) do
       @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
@@ -594,13 +593,14 @@ describe Dor::Describable do
     it "should include values from stanford_mods" do
     # require 'pp'; pp doc
       expect(@doc).to match a_hash_including(
+        "sw_language_ssim"            => ["English"],
         "sw_language_tesim"           => ["English"],
-        "sw_genre_tesim"              => ["(none)"],
+        "sw_format_ssim"              => ["Book"],
         "sw_format_tesim"             => ["Book"],
+        "sw_subject_temporal_ssim"    => ["1800-1900"],
         "sw_subject_temporal_tesim"   => ["1800-1900"],
         "sw_pub_date_sort_ssi"        => '1911',
-        "sw_pub_date_facet_ssi"       => '1911',
-#        "sw_subject_geographic_tesim" => []
+        "sw_pub_date_facet_ssi"       => '1911'
       )
     end
     it "should not include empty values" do
@@ -612,18 +612,32 @@ describe Dor::Describable do
     end
   end
 
-  describe "to_solr searchworks date-fu" do
+  describe "to_solr: more mods stuff" do
     before :each do
       allow(@obj).to receive(:milestones).and_return({})
       @obj.datastreams['descMetadata'].content = read_fixture('bs646cd8717_mods.xml')
       @doc = @obj.to_solr()
       expect(@doc).not_to be_nil
     end
-    it "does temporal periods and pub_dates" do
+    it "searchworks date-fu: temporal periods and pub_dates" do
       expect(@doc).to match a_hash_including(
+        "sw_subject_temporal_ssim"  => a_collection_containing_exactly("18th century","17th century"),
         "sw_subject_temporal_tesim" => a_collection_containing_exactly("18th century","17th century"),
         "sw_pub_date_sort_ssi"      => "1600",
         "sw_pub_date_facet_ssi"     => "1600"
+      )
+    end
+    it "subject geographic fields" do
+      expect(@doc).to match a_hash_including(
+        "sw_subject_geographic_ssim"  => ["Europe", "Europe"],
+        "sw_subject_geographic_tesim" => ["Europe", "Europe"]
+      )
+    end
+    it "genre fields" do
+      genre_list = ["Aquatint.", "Mezzotint engraving.", "Engravings.", "Etchings.", "Lithographs."]
+      expect(@doc).to match a_hash_including(
+        "sw_genre_ssim"               => genre_list,
+        "sw_genre_tesim"              => genre_list
       )
     end
   end
