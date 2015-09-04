@@ -28,7 +28,7 @@ module Dor
       release_access = embargo_md.release_access_node
       release_access.xpath('//releaseAccess/access').each do |new_access|
         access_sibling = rights_xml.at_xpath("//rightsMetadata/access[last()]")
-        if(access_sibling)
+        if access_sibling
           access_sibling.add_next_sibling(new_access.clone)
         else
           rights_xml.root.add_child(new_access.clone)
@@ -50,7 +50,7 @@ module Dor
 
       # Replace rights <access> nodes with 1 machine/world node
       access_sibling = rights_xml.at_xpath("//rightsMetadata/access[last()]")
-      if(access_sibling)
+      if access_sibling
         access_sibling.add_next_sibling(world_doc.root.clone)
       else
         rights_xml.root.add_child(world_doc.root.clone)

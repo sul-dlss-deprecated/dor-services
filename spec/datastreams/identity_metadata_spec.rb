@@ -64,6 +64,14 @@ describe Dor::IdentityMetadataDS do
       expect(@dsdoc.to_xml).to be_equivalent_to resultxml
     end
 
+    it 'should raise on malformed sourceIDs' do
+      expect{@dsdoc.sourceId = 'ab110cd8219'      }.to raise_exception(ArgumentError)
+      expect{@dsdoc.sourceId = 'qqqq:'            }.to raise_exception(ArgumentError)
+      expect{@dsdoc.sourceId = ':qqqq'            }.to raise_exception(ArgumentError)
+      pending 'Design intention needs to be clarified'
+      expect{@dsdoc.sourceId = 'test::ab110cd8219'}.to raise_exception(ArgumentError)
+    end
+
     it "creates a simple default with #new" do
       new_doc = Dor::IdentityMetadataDS.new nil, 'identityMetadata'
       expect(new_doc.to_xml).to be_equivalent_to '<identityMetadata/>'

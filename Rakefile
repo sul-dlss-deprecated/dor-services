@@ -23,8 +23,7 @@ task :rcov => [:spec]
 
 task :clean do
   puts 'Cleaning old coverage.data'
-  FileUtils.rm('coverage.data') if(File.exists? 'coverage.data')
+  FileUtils.rm('coverage.data') if File.exists? 'coverage.data'
 end
 
 task :default => [:spec, :doc]
-

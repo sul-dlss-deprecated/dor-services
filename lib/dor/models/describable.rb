@@ -32,12 +32,11 @@ module Dor
 
     def build_descMetadata_datastream(ds)
       content = fetch_descMetadata_datastream
-      unless content.nil?
-        ds.dsLabel = 'Descriptive Metadata'
-        ds.ng_xml = Nokogiri::XML(content)
-        ds.ng_xml.normalize_text!
-        ds.content = ds.ng_xml.to_xml
-      end
+      return nil if content.nil?
+      ds.dsLabel = 'Descriptive Metadata'
+      ds.ng_xml = Nokogiri::XML(content)
+      ds.ng_xml.normalize_text!
+      ds.content = ds.ng_xml.to_xml
     end
 
     # Generates Dublin Core from the MODS in the descMetadata datastream using the LoC mods2dc stylesheet
@@ -54,7 +53,7 @@ module Dor
       dc_doc = xslt.transform(desc_md)
       # Remove empty nodes
       dc_doc.xpath('/oai_dc:dc/*[count(text()) = 0]').remove
-      if(dc_doc.root.nil? || dc_doc.root.children.size == 0)
+      if dc_doc.root.nil? || dc_doc.root.children.size == 0
         raise CrosswalkError, "Dor::Item#generate_dublin_core produced incorrect xml:\n#{dc_doc.to_xml}"
       end
       dc_doc
@@ -158,11 +157,17 @@ module Dor
     def to_solr(solr_doc=Hash.new, *args)
       super solr_doc, *args
       mods_sources = {
+        'sw_language_ssim'           => :sw_language_facet,
         'sw_language_tesim'           => :sw_language_facet,
+        'sw_genre_ssim'               => :sw_genre,
         'sw_genre_tesim'              => :sw_genre,
+        'sw_format_ssim'              => :format_main,   # basically sw_typeOfResource_ssim
         'sw_format_tesim'             => :format_main,   # basically sw_typeOfResource_tesim
+        'sw_subject_temporal_ssim'    => :era_facet,
         'sw_subject_temporal_tesim'   => :era_facet,
+        'sw_subject_geographic_ssim'  => :geographic_facet,
         'sw_subject_geographic_tesim' => :geographic_facet,
+        'mods_typeOfResource_ssim'    => [:term_values, :typeOfResource],
         'mods_typeOfResource_tesim'   => [:term_values, :typeOfResource]
       }
       keys = mods_sources.keys.concat(%w[ metadata_format_ssim ])
@@ -194,7 +199,7 @@ module Dor
         mods = self.stanford_mods
         mods_sources.each_pair do |solr_key, meth|
           vals = meth.is_a?(Array) ? mods.send(meth.shift, *meth) : mods.send(meth)
-          solr_doc[solr_key].push *vals unless (vals.nil? || vals.empty?)
+          solr_doc[solr_key].push *vals unless vals.nil? || vals.empty?
           # asterisk to avoid multi-dimensional array: push values, not the array
         end
         solr_doc['sw_pub_date_sort_ssi' ] = mods.pub_date_sort  # e.g. '0800'
@@ -203,14 +208,12 @@ module Dor
       # some fields get explicit "(none)" placeholder values, mostly for faceting
       %w[sw_language_tesim sw_genre_tesim sw_format_tesim].each { |key| solr_doc[key] = ['(none)'] if solr_doc[key].empty? }
       # otherwise remove empties
-      keys.each{ |key| solr_doc.delete(key) if (solr_doc[key].nil? || solr_doc[key].empty?)}
+      keys.each{ |key| solr_doc.delete(key) if solr_doc[key].nil? || solr_doc[key].empty?}
       solr_doc
     end
 
     def update_title(new_title)
-      if not update_simple_field('mods:mods/mods:titleInfo/mods:title',new_title)
-        raise 'Descriptive metadata has no title to update!'
-      end
+      raise 'Descriptive metadata has no title to update!' unless update_simple_field('mods:mods/mods:titleInfo/mods:title', new_title)
     end
     def add_identifier(type, value)
       ds_xml=self.descMetadata.ng_xml
@@ -252,7 +255,7 @@ module Dor
       xml=obj.descMetadata.ng_xml
       title=''
       title_node = xml.at_xpath('//mods:mods/mods:titleInfo/mods:title','mods' => 'http://www.loc.gov/mods/v3')
-      if(title_node)
+      if title_node
         title = title_node.content
         subtitle=xml.at_xpath('//mods:mods/mods:titleInfo/mods:subTitle','mods' => 'http://www.loc.gov/mods/v3')
         title += " (#{subtitle.content})" if subtitle

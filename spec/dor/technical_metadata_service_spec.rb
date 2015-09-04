@@ -9,7 +9,7 @@ describe Dor::TechnicalMetadataService do
     @druid_tool = Hash.new
   end
 
-  before(:each) do    
+  before(:each) do
     @fixtures = fixtures = Pathname(File.dirname(__FILE__)).join("../fixtures")
     wsfixtures = fixtures.join("workspace").to_s
     Dor::Config.push! do
@@ -20,8 +20,8 @@ describe Dor::TechnicalMetadataService do
     @workspace_pathname = Pathname(wsfixtures)
 
     @inventory_differences = Hash.new
-    @deltas = Hash.new
-    @new_files = Hash.new
+    @deltas      = Hash.new
+    @new_files   = Hash.new
     @repo_techmd = Hash.new
     @new_file_techmd = Hash.new
     @expected_techmd = Hash.new
@@ -44,7 +44,6 @@ describe Dor::TechnicalMetadataService do
 
   end
 
-
   after(:each) do
     Dor::Config.pop!
   end
@@ -61,14 +60,10 @@ describe Dor::TechnicalMetadataService do
     @object_ids.each do |id|
       dor_item = double(Dor::Item)
       allow(dor_item).to receive(:pid).and_return("druid:#{id}")
-      expect(Dor::TechnicalMetadataService).to receive(:get_content_group_diff).with(dor_item).
-          and_return(@inventory_differences[id])
+      expect(Dor::TechnicalMetadataService).to receive(:get_content_group_diff).with(dor_item).and_return(@inventory_differences[id])
       expect(Dor::TechnicalMetadataService).to receive(:get_file_deltas).with(@inventory_differences[id]).and_return(@deltas[id])
-      expect(Dor::TechnicalMetadataService).to receive(:get_old_technical_metadata).with(dor_item).
-          and_return(@repo_techmd[id])
-      expect(Dor::TechnicalMetadataService).to receive(:get_new_technical_metadata).with(
-          dor_item.pid, an_instance_of(Array)).
-          and_return(@new_file_techmd[id])
+      expect(Dor::TechnicalMetadataService).to receive(:get_old_technical_metadata).with(dor_item).and_return(@repo_techmd[id])
+      expect(Dor::TechnicalMetadataService).to receive(:get_new_technical_metadata).with(dor_item.pid, an_instance_of(Array)).and_return(@new_file_techmd[id])
       mock_datastream = double("datastream")
       ds_hash = {"technicalMetadata" => mock_datastream}
       allow(dor_item).to receive(:datastreams).and_return(ds_hash)
@@ -85,9 +80,9 @@ describe Dor::TechnicalMetadataService do
     @object_ids.each do |id|
       group_diff = @inventory_differences[id]
       inventory_diff = Moab::FileInventoryDifference.new(
-          :digital_object_id=>"druid:#{id}",
-          :basis=>"old_content_metadata",
-          :other=>"new_content_metadata",
+          :digital_object_id => "druid:#{id}",
+          :basis => "old_content_metadata",
+          :other => "new_content_metadata",
           :report_datetime => Time.now.to_s
       )
       inventory_diff.group_differences << group_diff
@@ -102,9 +97,9 @@ describe Dor::TechnicalMetadataService do
     @object_ids.each do |id|
       group_diff = @inventory_differences[id]
       inventory_diff = Moab::FileInventoryDifference.new(
-          :digital_object_id=>"druid:#{id}",
-          :basis=>"old_content_metadata",
-          :other=>"new_content_metadata"
+          :digital_object_id => "druid:#{id}",
+          :basis => "old_content_metadata",
+          :other => "new_content_metadata"
       )
       deltas = Dor::TechnicalMetadataService.get_file_deltas(group_diff)
       expect(deltas).to eq(@deltas[id])
@@ -131,18 +126,15 @@ describe Dor::TechnicalMetadataService do
 
   specify "Dor::TechnicalMetadataService.get_sdr_technical_metadata" do
     druid = "druid:du000ps9999"
-    allow(Dor::TechnicalMetadataService).to receive(:get_sdr_metadata).with(druid, "technicalMetadata").
-        and_raise(RestClient::ResourceNotFound)
+    allow(Dor::TechnicalMetadataService).to receive(:get_sdr_metadata).with(druid, "technicalMetadata").and_raise(RestClient::ResourceNotFound)
     sdr_techmd = Dor::TechnicalMetadataService.get_sdr_technical_metadata(druid)
-    expect(sdr_techmd).to eq(nil)
+    expect(sdr_techmd).to be_nil
 
-    allow(Dor::TechnicalMetadataService).to receive(:get_sdr_metadata).with(druid, "technicalMetadata").
-        and_return('<technicalMetadata/>')
+    allow(Dor::TechnicalMetadataService).to receive(:get_sdr_metadata).with(druid, "technicalMetadata").and_return('<technicalMetadata/>')
     sdr_techmd = Dor::TechnicalMetadataService.get_sdr_technical_metadata(druid)
     expect(sdr_techmd).to eq('<technicalMetadata/>')
 
-    allow(Dor::TechnicalMetadataService).to receive(:get_sdr_metadata).with(druid, "technicalMetadata").
-        and_return('<jhove/>')
+    allow(Dor::TechnicalMetadataService).to receive(:get_sdr_metadata).with(druid, "technicalMetadata").and_return('<jhove/>')
     jhove_service = double(JhoveService)
     allow(JhoveService).to receive(:new).and_return(jhove_service)
     allow(jhove_service).to receive(:upgrade_technical_metadata).and_return("upgraded techmd")
@@ -152,14 +144,14 @@ describe Dor::TechnicalMetadataService do
 
   specify "Dor::TechnicalMetadataService.get_dor_technical_metadata" do
     dor_item = double(Dor::Item)
-    tech_ds = double("techmd datastream")
+    tech_ds  = double('techmd datastream')
     allow(tech_ds).to receive(:content).and_return('<technicalMetadata/>')
     datastreams = {'technicalMetadata'=>tech_ds}
     allow(dor_item).to receive(:datastreams).and_return(datastreams)
 
     allow(tech_ds).to receive(:new?).and_return(true)
     dor_techmd = Dor::TechnicalMetadataService.get_dor_technical_metadata(dor_item)
-    expect(dor_techmd).to eq(nil)
+    expect(dor_techmd).to be_nil
 
     allow(tech_ds).to receive(:new?).and_return(false)
     dor_techmd = Dor::TechnicalMetadataService.get_dor_technical_metadata(dor_item)
@@ -249,7 +241,6 @@ describe Dor::TechnicalMetadataService do
       end
     end
   end
-
 
   specify "Dor::TechnicalMetadataService.get_file_nodes" do
     techmd = @repo_techmd["jq937jp0017"]

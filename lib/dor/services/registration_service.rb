@@ -39,7 +39,7 @@ module Dor
         rights=nil
         if params[:rights]
           rights=params[:rights]
-          unless ['world','stanford','dark','default','none'].include? rights
+          unless %w(world stanford dark default none).include? rights
             raise Dor::ParameterError, "Unknown rights setting '#{rights}' when calling #{self.name}.register_object"
           end
         end
@@ -52,7 +52,7 @@ module Dor
           end
         end
 
-        if (other_ids.has_key?(:uuid) or other_ids.has_key?('uuid')) == false
+        if (other_ids.key?(:uuid) || other_ids.key?('uuid')) == false
           other_ids[:uuid] = UUIDTools::UUID.timestamp_create.to_s
         end
         short_label = label.length>254 ? label[0,254] : label
@@ -75,21 +75,19 @@ module Dor
           short_predicate = ActiveFedora::RelsExtDatastream.short_predicate rel.namespace.href+rel.name
           if short_predicate.nil?
             ix = 0
-            ix += 1 while ActiveFedora::Predicates.predicate_mappings[rel.namespace.href].has_key?(short_predicate = :"extra_predicate_#{ix}")
+            ix += 1 while ActiveFedora::Predicates.predicate_mappings[rel.namespace.href].key?(short_predicate = :"extra_predicate_#{ix}")
             ActiveFedora::Predicates.predicate_mappings[rel.namespace.href][short_predicate] = rel.name
           end
           new_item.add_relationship short_predicate, rel['rdf:resource']
         end
-        if collection
-          new_item.add_collection(collection)
-        end
-        if (rights && ['item','collection'].include?(object_type))
+        new_item.add_collection(collection) if collection
+        if rights && %w(item collection).include?(object_type)
           rights_xml=apo_object.defaultObjectRights.ng_xml
           new_item.datastreams['rightsMetadata'].content=rights_xml.to_s
           new_item.set_read_rights(rights) unless rights == 'default'    # already defaulted to default!
         end
         #create basic mods from the label
-        if(metadata_source=='label')
+        if (metadata_source=='label')
           ds=new_item.build_datastream('descMetadata');
           builder = Nokogiri::XML::Builder.new { |xml|
             xml.mods( 'xmlns' => 'http://www.loc.gov/mods/v3', 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',:version => '3.3', "xsi:schemaLocation" => 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd'){

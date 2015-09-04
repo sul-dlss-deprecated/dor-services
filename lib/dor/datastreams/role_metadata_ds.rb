@@ -33,7 +33,6 @@ class RoleMetadataDS < ActiveFedora::OmDatastream
     end.doc
   end
 
-
   def to_solr(solr_doc=Hash.new, *args)
     self.find_by_xpath('/roleMetadata/role/*').each do |actor|
       role_type = actor.parent['type']

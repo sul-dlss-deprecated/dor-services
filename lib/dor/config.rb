@@ -70,7 +70,7 @@ module Dor
           }
         },
         :sdr => {
-          :rest_client => Confstruct.deferred { |c| config.make_rest_client c.url },
+          :rest_client => Confstruct.deferred { |c| config.make_rest_client c.url }
         },
         :gsearch => {
           :rest_client => Confstruct.deferred { |c| config.make_rest_client c.rest_url },
@@ -88,13 +88,12 @@ module Dor
       config[:stomp][:host] ||= URI.parse(config.fedora.url).host rescue nil
 
       [:cert_file, :key_file, :key_pass].each do |key|
+        next unless config.fedora[key].present?
         stack = Kernel.caller.dup
         stack.shift while stack[0] =~ %r{(active_support/callbacks|dor/config|dor-services)\.rb}
-        if config.fedora[key].present?
-          ActiveSupport::Deprecation.warn "Dor::Config -- fedora.#{key.to_s} is deprecated. Please use ssl.#{key.to_s} instead.", stack
-          config.ssl[key] = config.fedora[key] unless config.ssl[key].present?
-          config.fedora.delete(key)
-        end
+        ActiveSupport::Deprecation.warn "Dor::Config -- fedora.#{key} is deprecated. Please use ssl.#{key} instead.", stack
+        config.ssl[key] = config.fedora[key] unless config.ssl[key].present?
+        config.fedora.delete(key)
       end
 
       if ActiveFedora.respond_to?(:configurator)

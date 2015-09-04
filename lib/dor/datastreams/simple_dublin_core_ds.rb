@@ -24,25 +24,24 @@ class SimpleDublinCoreDs < ActiveFedora::OmDatastream
   def to_solr(solr_doc=Hash.new, *args)
     # There are a whole bunch of namespace-related things that can go
     # wrong with this terminology. Until it's fixed in OM, ignore them all.
-    begin
-      doc = super solr_doc, *args
 
-      add_solr_value(doc, 'dc_title',   self.title.first,   :string, [:stored_sortable, :stored_searchable])
-      add_solr_value(doc, 'dc_creator', self.creator.first, :string, [:stored_sortable, :stored_searchable])
+    doc = super solr_doc, *args
 
-      identifiers = {}
+    add_solr_value(doc, 'dc_title',   self.title.first,   :string, [:stored_sortable, :stored_searchable])
+    add_solr_value(doc, 'dc_creator', self.creator.first, :string, [:stored_sortable, :stored_searchable])
 
-      self.identifier.each { |i| ns, val = i.split(":"); identifiers[ns] ||= val }
+    identifiers = {}
 
-      identifiers.each do |ns, val|
-        add_solr_value(doc, "dc_identifier_#{ns}", val, :string, [:stored_sortable, :stored_searchable])
-      end
+    self.identifier.each { |i| ns, val = i.split(":"); identifiers[ns] ||= val }
 
-      return doc
-    rescue Exception => e
-      warn "ERROR in SimpleDublinCoreDs to_solr()! #{e}"
-      solr_doc
+    identifiers.each do |ns, val|
+      add_solr_value(doc, "dc_identifier_#{ns}", val, :string, [:stored_sortable, :stored_searchable])
     end
+
+    return doc
+  rescue Exception => e
+    warn "ERROR in SimpleDublinCoreDs to_solr()! #{e}"
+    solr_doc
   end
 end
 end

@@ -74,7 +74,7 @@ module Dor
         resp = solr.find params
         if block_given?
           cont = true
-          while cont and resp.docs.length > 0
+          while cont && resp.docs.length > 0
             cont = yield(resp)
             params[:rows] ||= resp.docs.length
             params[:start] += params[:rows]
@@ -91,7 +91,7 @@ module Dor
         elsif id.is_a?(Array) # Two values: [ 'google', 'STANFORD_0123456789' ]
           id = id.join(':')
         end
-        q = %{#{Solrizer.solr_name 'identifier', :facetable}:"#{id}"}
+        q = %{#{Solrizer.solr_name 'identifier', :stored_searchable}:"#{id}"}
         result = []
         resp = query(q, :fl => 'id', :rows => 1000) do |resp|
           result += resp.docs.collect { |doc| doc['id'] }

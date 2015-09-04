@@ -4,7 +4,7 @@ Dor::Identifiable.on_upgrade '3.14.8', 'Fix up invalid URIs in content-augmented
     false
   rescue URI::InvalidURIError
     true
-  rescue 
+  rescue
     false
   end
 

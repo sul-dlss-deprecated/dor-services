@@ -11,7 +11,7 @@ module Workflow
       t.process {
         t.name_(:path=>{:attribute=>"name"})
         t.status(:path=>{:attribute=>"status"})
-        t.timestamp(:path=>{:attribute=>"datetime"})#, :data_type => :date)
+        t.timestamp(:path=>{:attribute=>"datetime"}) #, :data_type => :date)
         t.elapsed(:path=>{:attribute=>"elapsed"})
         t.lifecycle(:path=>{:attribute=>"lifecycle"})
         t.attempts(:path=>{:attribute=>"attempts"}, :index_as => [:not_searchable])
@@ -39,13 +39,13 @@ module Workflow
 
     def definition
       @definition ||= begin
-        if @@definitions.has_key? self.workflowId.first
+        if @@definitions.key? self.workflowId.first
           @@definitions[self.workflowId.first]
         else
-        wfo = Dor::WorkflowObject.find_by_name(self.workflowId.first)
-        wf_def=wfo ? wfo.definition : nil
-        @@definitions[self.workflowId.first] = wf_def
-        wf_def
+          wfo = Dor::WorkflowObject.find_by_name(self.workflowId.first)
+          wf_def=wfo ? wfo.definition : nil
+          @@definitions[self.workflowId.first] = wf_def
+          wf_def
         end
       end
     end
@@ -53,9 +53,7 @@ module Workflow
     def graph(parent=nil, dir=nil)
       wf_definition = self.definition
       result = wf_definition ? Workflow::Graph.from_processes(wf_definition.repo, wf_definition.name, self.processes, parent) : nil
-      unless result.nil?
-        result['rankdir'] = dir || 'TB'
-      end
+      result['rankdir'] = dir || 'TB' unless result.nil?
       result
     end
 
@@ -65,9 +63,7 @@ module Workflow
 
     def processes
       #if the workflow service didnt return any processes, dont return any processes from the reified wf
-      if ng_xml.search("/workflow/process").length == 0
-        return []
-      end
+      return [] if ng_xml.search("/workflow/process").length == 0
       @processes ||=
       if self.definition
         self.definition.processes.collect do |process|
@@ -93,7 +89,7 @@ module Workflow
       repo = self.repository.first
       wf_solr_type = :string
       wf_solr_attrs = [:symbol]
-      add_solr_value(solr_doc, 'wf', wf_name, wf_solr_type, wf_solr_attrs)
+      add_solr_value(solr_doc, 'wf',     wf_name, wf_solr_type, wf_solr_attrs)
       add_solr_value(solr_doc, 'wf_wps', wf_name, wf_solr_type, wf_solr_attrs)
       add_solr_value(solr_doc, 'wf_wsp', wf_name, wf_solr_type, wf_solr_attrs)
       status = processes.empty? ? 'empty' : (workflow_should_show_completed?(processes) ? 'completed' : 'active')
@@ -101,27 +97,25 @@ module Workflow
       add_solr_value(solr_doc, 'workflow_status', [wf_name,status,errors,repo].join('|'), wf_solr_type, wf_solr_attrs)
 
       processes.each do |process|
-        if process.status.present?
-          #add a record of the robot having operated on this item, so we can track robot activity
-          if process.date_time and process.status and (process.status == 'completed' || process.status == 'error')
-            solr_doc["wf_#{wf_name}_#{process.name}_dttsi"] = "#{process.date_time}Z"
-          end
-          add_solr_value(solr_doc, 'wf_error', "#{wf_name}:#{process.name}:#{process.error_message}", wf_solr_type, wf_solr_attrs) if process.error_message #index the error message without the druid so we hopefully get some overlap
-          add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}", wf_solr_type, wf_solr_attrs)
-          add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}:#{process.name}", wf_solr_type, wf_solr_attrs)
-          add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)
-          add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.status}", wf_solr_type, wf_solr_attrs)
-          add_solr_value(solr_doc, 'wf_swp', "#{process.status}", wf_solr_type, wf_solr_attrs)
-          add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}", wf_solr_type, wf_solr_attrs)
-          add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)
-          if process.state != process.status
-            add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.state}:#{process.name}", wf_solr_type, wf_solr_attrs)
-            add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.state}", wf_solr_type, wf_solr_attrs)
-            add_solr_value(solr_doc, 'wf_swp', "#{process.state}", wf_solr_type, wf_solr_attrs)
-            add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}", wf_solr_type, wf_solr_attrs)
-            add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)
-          end
+        next unless process.status.present?
+        #add a record of the robot having operated on this item, so we can track robot activity
+        if process.date_time && process.status && (process.status == 'completed' || process.status == 'error')
+          solr_doc["wf_#{wf_name}_#{process.name}_dttsi"] = "#{process.date_time}Z"
         end
+        add_solr_value(solr_doc, 'wf_error', "#{wf_name}:#{process.name}:#{process.error_message}", wf_solr_type, wf_solr_attrs) if process.error_message #index the error message without the druid so we hopefully get some overlap
+        add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}", wf_solr_type, wf_solr_attrs)
+        add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}:#{process.name}", wf_solr_type, wf_solr_attrs)
+        add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)
+        add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.status}", wf_solr_type, wf_solr_attrs)
+        add_solr_value(solr_doc, 'wf_swp', "#{process.status}", wf_solr_type, wf_solr_attrs)
+        add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}", wf_solr_type, wf_solr_attrs)
+        add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)
+        next unless process.state != process.status
+        add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.state}:#{process.name}", wf_solr_type, wf_solr_attrs)
+        add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.state}", wf_solr_type, wf_solr_attrs)
+        add_solr_value(solr_doc, 'wf_swp', "#{process.state}", wf_solr_type, wf_solr_attrs)
+        add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}", wf_solr_type, wf_solr_attrs)
+        add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)
       end
 
       solr_doc[Solrizer.solr_name('wf_wps', :symbol)].uniq! if solr_doc[Solrizer.solr_name('wf_wps', :symbol)]

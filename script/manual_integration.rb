@@ -15,7 +15,7 @@ module Util
       Gem::Package::TarWriter.new(tarfile) do |tar|
         Dir[File.join(path, "**/*")].each do |file|
           mode = File.stat(file).mode
-          relative_file = file.sub /^#{Regexp::escape path}\/?/, ''
+          relative_file = file.sub /^#{Regexp.escape path}\/?/, ''
 
           if File.directory?(file)
             tar.mkdir relative_file, mode
@@ -76,7 +76,6 @@ module Util
   end
 end
 
-
 class MergeIntegrationTest
   include Util::Tar
 
@@ -128,10 +127,7 @@ class MergeIntegrationTest
     Dor::MergeService.merge_into_primary druids.shift, druids
   end
 
-
-
 end
-
 
 #
 # p_pid = 'druid:ps262bn7350'
@@ -166,11 +162,7 @@ end
 # ms.move_metadata_and_content
 # ms.decomission_secondaries
 
-
 # 2nd merge druids
 # %w(fq996gt6655 pf986hr8937 xz522yc4008 zf307yb9756)
 # pids = %w(fq996gt6655 pf986hr8937 xz522yc4008 zf307yb9756)
 # mit = MergeIntegrationTest.new pids, '/home/lyberadmin/wmene/frda2'
-
-
-
