@@ -11,7 +11,6 @@ Gem::Specification.new do |s|
   s.email       = ["mbklein@stanford.edu"]
   s.summary     = "Ruby implmentation of DOR services used by the SULAIR Digital Library"
   s.description = "Contains classes to register objects and initialize workflows"
-  s.executables = ["dor-indexer","dor-indexerd"]
   s.licenses    = ['ALv2', 'Stanford University']
 
   s.required_rubygems_version = ">= 1.3.6"
