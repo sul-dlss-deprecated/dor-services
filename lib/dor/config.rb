@@ -27,6 +27,7 @@ module Dor
       end
       params = { :dor_services_url => result.dor_services.url }
       params[:timeout] = result.workflow.timeout if result.workflow.timeout
+    # params[:logger]  = Logger.new('logs/workflow_service.log', 'weekly') # if you want to control the logger, insert it here.
       Dor::WorkflowService.configure result.workflow.url, params
       return result
     end
@@ -58,7 +59,7 @@ module Dor
     set_callback :initialize, :after do |config|
       config.deep_merge!({
         :fedora => {
-          :client => Confstruct.deferred { |c| config.make_rest_client c.url },
+          :client  => Confstruct.deferred { |c| config.make_rest_client c.url },
           :safeurl => Confstruct.deferred { |c|
             begin
               fedora_uri = URI.parse(config.fedora.url)
@@ -74,11 +75,11 @@ module Dor
         },
         :gsearch => {
           :rest_client => Confstruct.deferred { |c| config.make_rest_client c.rest_url },
-          :client => Confstruct.deferred { |c| config.make_rest_client c.url }
+          :client      => Confstruct.deferred { |c| config.make_rest_client c.url }
         },
         :stomp => {
           :connection => Confstruct.deferred { |c| Stomp::Connection.new c.user, c.password, c.host, c.port, true, 5, { 'client-id' => c.client_id }},
-          :client => Confstruct.deferred { |c| Stomp::Client.new c.user, c.password, c.host, c.port }
+          :client     => Confstruct.deferred { |c| Stomp::Client.new c.user, c.password, c.host, c.port }
         }
       })
       true
