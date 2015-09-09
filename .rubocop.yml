@@ -6,3 +6,6 @@ Style/FileName:
     - 'lib/dor/migrations/identifiable/assert_adminPolicy.rb'
     - 'lib/dor-services.rb'
 
+# Configuration parameters: AllowURI, URISchemes.
+Metrics/LineLength:
+  Max: 200
