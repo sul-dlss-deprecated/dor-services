@@ -1,7 +1,5 @@
 require 'spec_helper'
-require 'dor/services/technical_metadata_service'
 require 'moab_stanford'
-require 'fakeweb'
 
 describe Dor::TechnicalMetadataService do
 

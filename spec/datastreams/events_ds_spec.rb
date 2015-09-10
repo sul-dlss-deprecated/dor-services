@@ -1,6 +1,4 @@
 require 'spec_helper'
-require 'dor/datastreams/events_ds'
-require 'equivalent-xml'
 
 describe Dor::EventsDS do
   

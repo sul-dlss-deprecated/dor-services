@@ -1,6 +1,4 @@
 require 'spec_helper'
-require 'foxml_helper'
-require 'dor/services/registration_service'
 require 'net/http'
 
 describe Dor::RegistrationService do

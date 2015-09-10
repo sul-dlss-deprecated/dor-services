@@ -1,9 +1,7 @@
 require 'spec_helper'
 require 'moab_stanford'
-require 'dor/services/digital_stacks_service'
 
 describe Dor::DigitalStacksService do
-
 
   before(:each) do
     @content_diff_reports = Pathname('spec').join('fixtures','content_diff_reports')

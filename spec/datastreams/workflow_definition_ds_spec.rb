@@ -1,6 +1,4 @@
 require 'spec_helper'
-require 'nokogiri'
-require 'equivalent-xml'
 
 describe Dor::WorkflowDefinitionDs do
   let(:dsxml) { <<-EOF

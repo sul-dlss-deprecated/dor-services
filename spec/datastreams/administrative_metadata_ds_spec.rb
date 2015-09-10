@@ -1,6 +1,4 @@
 require 'spec_helper'
-require 'dor/datastreams/administrative_metadata_ds'
-require 'equivalent-xml'
 
 describe Dor::AdministrativeMetadataDS do
 

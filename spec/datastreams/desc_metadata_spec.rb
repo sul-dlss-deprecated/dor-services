@@ -1,11 +1,8 @@
 require 'spec_helper'
-require 'nokogiri'
-require 'equivalent-xml'
-require 'dor/datastreams/desc_metadata_ds'
 
 describe Dor::DescMetadataDS do
   context "Marshalling to and from a Fedora Datastream" do
-    before(:each) do
+    before :each do
       @dsxml =<<-EOF
         <mods xmlns="http://www.loc.gov/mods/v3"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3"

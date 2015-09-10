@@ -1,9 +1,5 @@
 # encoding: UTF-8
-
 require 'spec_helper'
-require 'nokogiri'
-require 'equivalent-xml'
-require 'dor/datastreams/geo_metadata_ds'
 
 describe Dor::GeoMetadataDS do
 

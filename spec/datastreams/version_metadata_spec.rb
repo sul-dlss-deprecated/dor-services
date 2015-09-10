@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'dor/datastreams/version_metadata_ds'
 
 describe Dor::VersionMetadataDS do
   let(:dsxml)  { <<-XML

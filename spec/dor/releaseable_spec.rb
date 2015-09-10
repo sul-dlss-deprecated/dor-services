@@ -1,5 +1,5 @@
 require 'spec_helper'
-#
+
 describe Dor::Releaseable, :vcr do
   before :each do
     Dor::Config.push! do

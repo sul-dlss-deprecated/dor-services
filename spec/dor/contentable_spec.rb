@@ -1,7 +1,5 @@
 require 'spec_helper'
-require File.expand_path(File.dirname(__FILE__) + '/../../lib/dor/models/contentable')
 require 'net/sftp'
-
 
 class ContentableItem < ActiveFedora::Base
   include Dor::Contentable

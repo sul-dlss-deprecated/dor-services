@@ -1,7 +1,4 @@
 require 'spec_helper'
-require 'nokogiri'
-require 'equivalent-xml'
-require 'dor/datastreams/embargo_metadata_ds'
 
 describe Dor::EmbargoMetadataDS do
   context "Marshalling to and from a Fedora Datastream" do

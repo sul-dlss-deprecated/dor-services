@@ -1,6 +1,4 @@
 require 'spec_helper'
-require 'dor/services/sdr_ingest_service'
-
 require 'fileutils'
 
 describe Dor::SdrIngestService do
