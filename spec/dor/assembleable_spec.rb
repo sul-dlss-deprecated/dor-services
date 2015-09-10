@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 class AssembleableItem < ActiveFedora::Base
   include Dor::Assembleable

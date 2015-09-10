@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 require 'dor/datastreams/administrative_metadata_ds'
 require 'equivalent-xml'
 

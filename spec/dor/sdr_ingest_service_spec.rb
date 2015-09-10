@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 require 'dor/services/sdr_ingest_service'
 
 require 'fileutils'

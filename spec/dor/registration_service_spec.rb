@@ -1,5 +1,5 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require File.expand_path(File.dirname(__FILE__) + '/../foxml_helper')
+require 'spec_helper'
+require 'foxml_helper'
 require 'dor/services/registration_service'
 require 'net/http'
 

@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 class GovernableItem < ActiveFedora::Base
   include Dor::Itemizable
