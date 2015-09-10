@@ -25,12 +25,7 @@ module Dor
       Workflow::Document.new(xml.to_s)
     end
 
-    def [](wf)
-      xml = Dor::WorkflowService.get_workflow_xml('dor', pid, wf)
-      xml = Nokogiri::XML(xml)
-      return nil if xml.xpath('workflow').length == 0
-      Workflow::Document.new(xml.to_s)
-    end
+    alias :[] :get_workflow
 
     def ensure_xml_loaded
       ng_xml
