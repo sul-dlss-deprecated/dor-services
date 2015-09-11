@@ -90,6 +90,7 @@ module Dor
           machine_node.add_child Nokogiri::XML::Node.new('none',rights_xml)
         end
       end
+      content = rights_xml.to_xml
     end
 
     def to_solr(solr_doc=Hash.new, *args)
