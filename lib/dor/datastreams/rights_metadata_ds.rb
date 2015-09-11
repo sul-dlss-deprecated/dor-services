@@ -90,7 +90,7 @@ module Dor
           machine_node.add_child Nokogiri::XML::Node.new('none',rights_xml)
         end
       end
-      content = rights_xml.to_xml
+      self.content = rights_xml.to_xml
       content_will_change!
     end
 
