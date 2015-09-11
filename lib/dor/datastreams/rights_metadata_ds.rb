@@ -91,6 +91,7 @@ module Dor
         end
       end
       content = rights_xml.to_xml
+      content_will_change!
     end
 
     def to_solr(solr_doc=Hash.new, *args)
