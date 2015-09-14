@@ -63,6 +63,7 @@ module Dor
       add_metadata 'Contributor', '//oai_dc:dc/dc:contributor', metadata, pub_obj_doc
       add_metadata 'Publisher', '//oai_dc:dc/dc:publisher', metadata, pub_obj_doc
       add_metadata 'Date', '//oai_dc:dc/dc:date', metadata, pub_obj_doc
+      add_metadata 'PublishVersion', '/publicObject/@publishVersion', metadata, pub_obj_doc
 
       # Save off the first dc:description without displayLabel
       if (desc = pub_obj_doc.at_xpath('//oai_dc:dc/dc:description[not(@displayLabel)]', DC_NS))

@@ -94,6 +94,10 @@ describe Dor::Publishable do
         expect(@p_xml.at_xpath('/publicObject/@published').value).to eq(@now.xmlschema)
       end
 
+      it 'a published version' do
+        expect(@p_xml.at_xpath('/publicObject/@publishVersion').value).to eq('dor-services/' + Dor::VERSION)
+      end
+
       it 'identityMetadata' do
         expect(@p_xml.at_xpath('/publicObject/identityMetadata')).to be
       end
