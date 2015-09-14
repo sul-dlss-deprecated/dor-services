@@ -120,27 +120,37 @@ module Dor
       collections.each do |collection_node|
         druid = collection_node['rdf:resource']
         druid = druid.gsub('info:fedora/', '')
+        
         collection_obj = Dor::Item.find(druid)
         collection_title = Dor::Describable.get_collection_title(collection_obj)
+        
         related_item_node = Nokogiri::XML::Node.new('relatedItem', doc)
         related_item_node['type'] = 'host'
+
         title_info_node = Nokogiri::XML::Node.new('titleInfo', doc)
         title_node      = Nokogiri::XML::Node.new('title', doc)
         title_node.content = collection_title
+        title_info_node << title_node
 
-        id_node = Nokogiri::XML::Node.new('identifier', doc)
-        id_node['type'] = 'uri'
-        id_node.content = "http://#{Dor::Config.stacks.document_cache_host}/#{druid.split(':').last}"
+        # e.g., 
+        #   <location>
+        #     <url>http://purl.stanford.edu/rh056sr3313</url>
+        #   </location>
+        loc_node = doc.create_element('location')
+        url_node = doc.create_element('url')
+        url_node.content = "http://#{Dor::Config.stacks.document_cache_host}/#{druid.split(':').last}"
+        loc_node << url_node
 
         type_node = Nokogiri::XML::Node.new('typeOfResource', doc)
         type_node['collection'] = 'yes'
-        doc.root.add_child(related_item_node)
-        related_item_node.add_child(title_info_node)
-        title_info_node.add_child(title_node)
-        related_item_node.add_child(id_node)
-        related_item_node.add_child(type_node)
+        
+        related_item_node << title_info_node
+        related_item_node << loc_node
+        related_item_node << type_node
+        doc.root << related_item_node
       end
     end
+
     def metadata_namespace
       desc_md = datastreams['descMetadata'].ng_xml
       if desc_md.nil? || desc_md.root.nil? || desc_md.root.namespace.nil?
