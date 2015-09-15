@@ -10,14 +10,14 @@ module Dor
     end
 
     def initiate_apo_workflow(name)
-      self.initialize_workflow(name, !self.new_object?)
+      initialize_workflow(name, !self.new_object?)
     end
 
     # Returns the default lane_id from the item's APO.  Will return 'default' if the item does not have
     #   and APO, or if the APO does not have a default_lane
     # @return [String] the lane id
     def default_workflow_lane
-      return 'default' if self.admin_policy_object.nil?  # TODO log warning?
+      return 'default' if admin_policy_object.nil?  # TODO: log warning?
 
       admin_md = admin_policy_object.datastreams['administrativeMetadata']
       return 'default' unless admin_md.respond_to? :default_workflow_lane
@@ -27,11 +27,11 @@ module Dor
     end
 
     def reset_to_apo_default
-      self.rightsMetadata.content = admin_policy_object.rightsMetadata.ng_xml
+      rightsMetadata.content = admin_policy_object.rightsMetadata.ng_xml
     end
 
     def set_read_rights(rights)
-      self.rightsMetadata.set_read_rights(rights)
+      rightsMetadata.set_read_rights(rights)
     end
 
     def add_collection(collection_or_druid)
@@ -41,8 +41,8 @@ module Dor
         when Dor::Collection
           collection_or_druid
       end
-      self.collections << collection
-      self.sets << collection
+      collections << collection
+      sets << collection
     end
 
     def remove_collection(collection_or_druid)
@@ -54,8 +54,8 @@ module Dor
           collection_or_druid
       end
 
-      self.collections.delete(collection)
-      self.sets.delete(collection)
+      collections.delete(collection)
+      sets.delete(collection)
     end
     #set the rights metadata datastream to the content of the APO's default object rights
     def reapplyAdminPolicyObjectDefaults
@@ -63,8 +63,8 @@ module Dor
     end
     def rights
       return nil unless self.respond_to? :rightsMetadata
-      return nil if self.rightsMetadata.nil?
-      xml = self.rightsMetadata.ng_xml
+      return nil if rightsMetadata.nil?
+      xml = rightsMetadata.ng_xml
       return nil if xml.search('//rightsMetadata').length != 1      # ORLY?
       if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
         'Stanford'
@@ -101,7 +101,7 @@ module Dor
       ['dor-administrator', 'sdr-administrator', 'dor-apo-manager', 'dor-apo-depositor', 'dor-viewer', 'sdr-viewer']
     end
     def intersect arr1, arr2
-      return (arr1 & arr2).length > 0
+      (arr1 & arr2).length > 0
     end
     def can_manage_item? roles
       intersect roles, groups_which_manage_item

@@ -34,7 +34,7 @@ module Dor
     end
 
     def public_xml
-      result = self.ng_xml.clone
+      result = ng_xml.clone
       result.xpath('/contentMetadata/resource[not(file[(@deliver="yes" or @publish="yes")])]'   ).each { |n| n.remove }
       result.xpath('/contentMetadata/resource/file[not(@deliver="yes" or @publish="yes")]'      ).each { |n| n.remove }
       result.xpath('/contentMetadata/resource/file').xpath('@preserve|@shelve|@publish|@deliver').each { |n| n.remove }
@@ -42,7 +42,7 @@ module Dor
       result
     end
     def add_file(file, resource_name)
-      xml=self.ng_xml
+      xml=ng_xml
       resource_nodes = xml.search('//resource[@id=\''+resource_name+'\']')
       raise 'resource doesnt exist.' if resource_nodes.length==0
       node=resource_nodes.first
@@ -63,11 +63,11 @@ module Dor
       file_node['size'    ] = file[:size     ] if file[:size     ]
       file_node['mimetype'] = file[:mime_type] if file[:mime_type]
       self.content=xml.to_s
-      self.save
+      save
     end
 
     def add_resource(files,resource_name, position,type="file")
-      xml=self.ng_xml
+      xml=ng_xml
       if xml.search('//resource[@id=\''+resource_name+'\']').length>0
         raise 'resource '+resource_name+' already exists'
       end
@@ -101,11 +101,11 @@ module Dor
       end
       xml.search('//contentMetadata').first.add_child(node)
       self.content=xml.to_s
-      self.save
+      save
     end
 
     def remove_resource resource_name
-      xml=self.ng_xml
+      xml=ng_xml
       node = singular_node('//resource[@id=\''+resource_name+'\']')
       position = node['sequence'].to_i+1
       node.remove
@@ -116,28 +116,28 @@ module Dor
         position+=1
       end
       self.content=xml.to_s
-      self.save
+      save
     end
 
     def remove_file file_name
-      xml=self.ng_xml
+      xml=ng_xml
       xml.search('//file[@id=\''+file_name+'\']').each do |node|
         node.remove
       end
       self.content=xml.to_s
-      self.save
+      save
     end
     def update_attributes file_name, publish, shelve, preserve
-      xml=self.ng_xml
+      xml=ng_xml
       file_node=xml.search('//file[@id=\''+file_name+'\']').first
       file_node['shelve'  ]=shelve
       file_node['publish' ]=publish
       file_node['preserve']=preserve
       self.content=xml.to_s
-      self.save
+      save
     end
     def update_file file, old_file_id
-      xml=self.ng_xml
+      xml=ng_xml
       file_node=xml.search('//file[@id=\''+old_file_id+'\']').first
       file_node['id']=file[:name]
       [:md5, :sha1].each { |algo|
@@ -155,14 +155,14 @@ module Dor
         file_node[x.to_s] = file[x] if file[x]
       }
       self.content=xml.to_s
-      self.save
+      save
     end
 
     # Terminology-based solrization is going to be painfully slow for large
     # contentMetadata streams. Just select the relevant elements instead.
     # TODO: Call super()?
     def to_solr(solr_doc=Hash.new, *args)
-      doc = self.ng_xml
+      doc = ng_xml
       return solr_doc unless doc.root['type']
 
       preserved_size=0
@@ -199,11 +199,11 @@ module Dor
     #@param new_name [String] new unique id value being assigned
     #@return [Nokogiri::XML::Element] the file node
     def rename_file old_name, new_name
-      xml=self.ng_xml
+      xml=ng_xml
       file_node=xml.search('//file[@id=\''+old_name+'\']').first
       file_node['id']=new_name
       self.content=xml.to_s
-      self.save
+      save
     end
 
     #Updates old label OR creates a new one if necessary
@@ -215,13 +215,13 @@ module Dor
       labels = node.xpath('./label')
       if (labels.length==0)
         #create a label
-        label_node = Nokogiri::XML::Node.new('label',self.ng_xml)
+        label_node = Nokogiri::XML::Node.new('label',ng_xml)
         label_node.content=new_label
         node.add_child(label_node)
       else
         labels.first.content=new_label
       end
-      return node
+      node
     end
 
     #@param resource_name [String] unique id attribute of the resource
@@ -244,18 +244,18 @@ module Dor
       up = new_position>position
       others = new_position..(up ? position-1 : position+1)  # a range
       others.each do |i|
-        item = self.ng_xml.at_xpath('/resource[@sequence=\''+i.to_s+'\']')
+        item = ng_xml.at_xpath('/resource[@sequence=\''+i.to_s+'\']')
         item['sequence'] = (up ? i-1 : i+1).to_s    # if you're going up, everything else comes down and vice versa
       end
       node['sequence'] = new_position.to_s          # set the node we already had last, so we don't hit it twice!
-      return node
+      node
     end
 
     #Set the content type and the resource types for all resources
     #@param new_type [String] the new content type, ex book
     #@param new_resource_type [String] the new type for all resources, ex book
     def set_content_type old_type, old_resource_type, new_type, new_resource_type
-      xml=self.ng_xml
+      xml=ng_xml
       xml.search('/contentMetadata[@type=\''+old_type+'\']').each do |node|
         node['type']=new_type
         xml.search('//resource[@type=\''+old_resource_type+'\']').each do |resource|
@@ -270,7 +270,7 @@ module Dor
     #@param xpath [String] accessor invocation for Nokogiri xpath
     #@return [Nokogiri::XML::Element] the matched element
     def singular_node xpath
-      node = self.ng_xml.search(xpath)
+      node = ng_xml.search(xpath)
       len  = node.length
       raise "#{xpath} not found" if len < 1
       raise "#{xpath} duplicated: #{len} found" if len != 1

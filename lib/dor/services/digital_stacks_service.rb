@@ -14,7 +14,7 @@ module Dor
         subset.files.each do |moab_file| # {Moab::FileInstanceDifference}
           moab_signature = moab_file.signatures.first # {Moab::FileSignature}
           file_pathname = stacks_object_pathname.join(moab_file.basis_path)
-          self.delete_file(file_pathname, moab_signature)
+          delete_file(file_pathname, moab_signature)
         end
       end
     end
@@ -31,7 +31,7 @@ module Dor
           return true
         end
       end
-      return false
+      false
     end
 
     # Rename files from stacks that have change type 'renamed' using an intermediate temp filename.
@@ -46,7 +46,7 @@ module Dor
         moab_signature = moab_file.signatures.first # {Moab::FileSignature}
         original_pathname = stacks_object_pathname.join(moab_file.basis_path)
         temp_pathname = stacks_object_pathname.join(moab_signature.checksums.values.last)
-        self.rename_file(original_pathname, temp_pathname, moab_signature)
+        rename_file(original_pathname, temp_pathname, moab_signature)
       end
 
       # 2nd Pass - rename files from checksum-based name to new name
@@ -54,7 +54,7 @@ module Dor
         moab_signature = moab_file.signatures.first # {Moab::FileSignature}
         temp_pathname = stacks_object_pathname.join(moab_signature.checksums.values.last)
         new_pathname = stacks_object_pathname.join(moab_file.other_path)
-        self.rename_file(temp_pathname, new_pathname, moab_signature)
+        rename_file(temp_pathname, new_pathname, moab_signature)
       end
 
     end
@@ -73,7 +73,7 @@ module Dor
           return true
         end
       end
-      return false
+      false
     end
 
     # Add files to stacks that have change type 'added', 'copyadded' or 'modified'.
@@ -89,7 +89,7 @@ module Dor
           filename = (change_type == :modified) ? moab_file.basis_path : moab_file.other_path
           workspace_pathname = workspace_content_pathname.join(filename)
           stacks_pathname = stacks_object_pathname.join(filename)
-          self.copy_file(workspace_pathname, stacks_pathname, moab_signature)
+          copy_file(workspace_pathname, stacks_pathname, moab_signature)
         end
       end
       true
@@ -110,7 +110,7 @@ module Dor
         FileUtils.cp workspace_pathname.to_s, stacks_pathname.to_s
         return true
       end
-      return false
+      false
     end
 
     ### depricated ???
@@ -127,7 +127,7 @@ module Dor
     end
 
     # Assumes the digital stacks storage root is mounted to the local file system
-    # TODO since this is delegating to the Druid, this method may not be necessary
+    # TODO: since this is delegating to the Druid, this method may not be necessary
     def self.prune_stacks_dir(id)
       stacks_druid_tree = DruidTools::StacksDruid.new(id, Config.stacks.local_stacks_root)
       stacks_druid_tree.prune!

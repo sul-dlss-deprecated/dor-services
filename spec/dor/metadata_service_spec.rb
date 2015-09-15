@@ -9,11 +9,11 @@ describe Dor::MetadataService do
   it "should register a new metadata handler" do
     handler = Class.new do
       def fetch(prefix, identifier)
-        return identifier
+        identifier
       end
 
       def label(metadata)
-        return "title: #{metadata}"
+        "title: #{metadata}"
       end
 
       def prefixes

@@ -12,7 +12,7 @@ module Dor
     has_metadata :name => "workflowDefinition", :type => Dor::WorkflowDefinitionDs, :label => 'Workflow Definition'
 
     def self.find_by_name(name, opts={})
-      Dor.find_all(%{#{Solrizer.solr_name 'objectType', :symbol}:"#{self.object_type}" #{Solrizer.solr_name 'workflow_name', :symbol}:"#{name}"}, opts).first
+      Dor.find_all(%{#{Solrizer.solr_name 'objectType', :symbol}:"#{object_type}" #{Solrizer.solr_name 'workflow_name', :symbol}:"#{name}"}, opts).first
     end
 
     # Searches for the workflow definition object in DOR, then
@@ -23,7 +23,7 @@ module Dor
     def self.initial_workflow(name)
       return @@xml_cache[name] if @@xml_cache.include?(name)
 
-      self.find_and_cache_workflow_xml_and_repo name
+      find_and_cache_workflow_xml_and_repo name
       @@xml_cache[name]
     end
 
@@ -34,7 +34,7 @@ module Dor
     def self.initial_repo(name)
       return @@repo_cache[name] if @@repo_cache.include?(name)
 
-      self.find_and_cache_workflow_xml_and_repo name
+      find_and_cache_workflow_xml_and_repo name
       @@repo_cache[name]
     end
 
@@ -43,7 +43,7 @@ module Dor
     end
 
     def graph *args
-      self.definition.graph *args
+      definition.graph *args
     end
 
     def to_solr solr_doc=Hash.new, *args
@@ -64,7 +64,7 @@ module Dor
     # Searches DOR for the workflow definition object.  It then caches the workflow repository and xml
     # @param [String] name the name of the workflow
     def self.find_and_cache_workflow_xml_and_repo name
-      wobj = self.find_by_name(name)
+      wobj = find_by_name(name)
       wf_xml = wobj.generate_initial_workflow
       @@repo_cache[name] = wobj.definition.repo
       @@xml_cache[name] = wf_xml

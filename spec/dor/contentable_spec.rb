@@ -50,7 +50,7 @@ describe Dor::Contentable do
     </contentMetadata>'
     allow(Dor::Item).to receive(:find).and_return(@item)
     file_path=File.dirname(__FILE__) + '/../fixtures/ab123cd4567_descMetadata.xml'
-   #allow_any_instance_of(DruidTools::Druid).to receive(:path).and_return("#{file_path}/ab123cd4567/ab123cd4567_descMetadata.xml")
+    #allow_any_instance_of(DruidTools::Druid).to receive(:path).and_return("#{file_path}/ab123cd4567/ab123cd4567_descMetadata.xml")
     @sftp=double(Net::SFTP)
     @resp=double(Net::SFTP::Response)
     allow(@resp).to receive(:code).and_return(123)

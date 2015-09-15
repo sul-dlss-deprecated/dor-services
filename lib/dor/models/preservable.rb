@@ -30,9 +30,9 @@ module Dor
     # @return [Nokogiri::Document]
     def create_workflow_provenance(workflow_id, event_text)
       builder = Nokogiri::XML::Builder.new do |xml|
-        xml.provenanceMetadata(:objectId => self.pid) {
+        xml.provenanceMetadata(:objectId => pid) {
           xml.agent(:name => 'DOR') {
-            xml.what(:object => self.pid) {
+            xml.what(:object => pid) {
               xml.event(:who => "DOR-#{workflow_id}", :when => Time.new.iso8601) {
                 xml.text(event_text)
               }

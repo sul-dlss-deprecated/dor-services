@@ -17,7 +17,7 @@ module Dor
       if Dor::Config.stacks.local_workspace_root.nil?
         raise ArgumentError, 'Missing Dor::Config.stacks.local_workspace_root'
       end
-      druid = DruidTools::Druid.new(self.pid, Dor::Config.stacks.local_workspace_root)
+      druid = DruidTools::Druid.new(pid, Dor::Config.stacks.local_workspace_root)
       diff_pattern = File.join(druid.temp_dir, DIFF_FILENAME + '.*')
       FileUtils.rm_f Dir.glob(diff_pattern)
     end
@@ -40,14 +40,14 @@ module Dor
         raise Dor::ParameterError, 'Missing Dor::Config.sdr.rest_client'
       end
       sdr_client = Dor::Config.sdr.rest_client
-      current_content = self.datastreams['contentMetadata'].content
+      current_content = datastreams['contentMetadata'].content
       if current_content.nil?
         raise Dor::Exception, "Missing contentMetadata datastream"
       end
       query_string = { :subset => subset.to_s }
       query_string[:version] = version.to_s unless version.nil?
       query_string = URI.encode_www_form(query_string)
-      sdr_query = "objects/#{self.pid}/#{DIFF_QUERY}?#{query_string}"
+      sdr_query = "objects/#{pid}/#{DIFF_QUERY}?#{query_string}"
       response = sdr_client[sdr_query].post(current_content, :content_type => 'application/xml')
       response
     end

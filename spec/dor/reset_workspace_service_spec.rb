@@ -19,7 +19,7 @@ describe Dor::ResetWorkspaceService do
        @archived_druid = "druid:vr111vr1111"
        @archived_druid_tree_path = "#{@workspace_root}/vr/111/vr/1111/vr111vr1111"
 
-       #To make sure the directory name is as expected am111am1111
+       # To make sure the directory name is as expected am111am1111
        FileUtils.mv(@druid_tree_path+"_v2", @druid_tree_path) if File.exists?(@druid_tree_path+"_v2")
     end
 
@@ -49,7 +49,7 @@ describe Dor::ResetWorkspaceService do
     end
 
     after(:each) do
-      #To reset the environment to its original format
+      # To reset the environment to its original format
       FileUtils.mv(@druid_tree_path+"_v2", @druid_tree_path) if File.exists?(@druid_tree_path+"_v2")
       FileUtils.mv( "#{@archived_druid_tree_path}_v3",@archived_druid_tree_path) if File.exists?(@archived_druid_tree_path+"_v3")
     end
@@ -63,8 +63,8 @@ describe Dor::ResetWorkspaceService do
       @bag_path = "#{@export_root}/#{id}"
       create_bag_dir(id)
       create_bag_tar(id)
-   #   FileUtils.mv("#{@bag_path}_v2", @bag_path) if File.exists?(@bag_path+"_v2")
-   #   FileUtils.mv("#{@bag_path}_v2.tar", @bag_path+".tar") if File.exists?(@bag_path+"_v2.tar")
+      # FileUtils.mv("#{@bag_path}_v2", @bag_path) if File.exists?(@bag_path+"_v2")
+      # FileUtils.mv("#{@bag_path}_v2.tar", @bag_path+".tar") if File.exists?(@bag_path+"_v2.tar")
     end
 
     it "should rename the export bags directory and tar files" do

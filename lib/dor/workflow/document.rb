@@ -39,41 +39,41 @@ module Workflow
 
     def definition
       @definition ||= begin
-        if @@definitions.key? self.workflowId.first
-          @@definitions[self.workflowId.first]
+        if @@definitions.key? workflowId.first
+          @@definitions[workflowId.first]
         else
-          wfo = Dor::WorkflowObject.find_by_name(self.workflowId.first)
+          wfo = Dor::WorkflowObject.find_by_name(workflowId.first)
           wf_def=wfo ? wfo.definition : nil
-          @@definitions[self.workflowId.first] = wf_def
+          @@definitions[workflowId.first] = wf_def
           wf_def
         end
       end
     end
 
     def graph(parent=nil, dir=nil)
-      wf_definition = self.definition
-      result = wf_definition ? Workflow::Graph.from_processes(wf_definition.repo, wf_definition.name, self.processes, parent) : nil
+      wf_definition = definition
+      result = wf_definition ? Workflow::Graph.from_processes(wf_definition.repo, wf_definition.name, processes, parent) : nil
       result['rankdir'] = dir || 'TB' unless result.nil?
       result
     end
 
     def [](value)
-      self.processes.find { |p| p.name == value }
+      processes.find { |p| p.name == value }
     end
 
     def processes
       #if the workflow service didnt return any processes, dont return any processes from the reified wf
       return [] if ng_xml.search("/workflow/process").length == 0
       @processes ||=
-      if self.definition
-        self.definition.processes.collect do |process|
+      if definition
+        definition.processes.collect do |process|
           node = ng_xml.at("/workflow/process[@name = '#{process.name}']")
           process.update!(node,self) unless node.nil?
           process
         end
       else
-        self.find_by_terms(:workflow, :process).collect do |x|
-          pnode = Dor::Workflow::Process.new(self.repository, self.workflowId, {})
+        find_by_terms(:workflow, :process).collect do |x|
+          pnode = Dor::Workflow::Process.new(repository, workflowId, {})
           pnode.update!(x,self)
           pnode
         end.sort_by(&:datetime)
@@ -81,12 +81,12 @@ module Workflow
     end
 
     def workflow_should_show_completed? processes
-      return processes.all?{|p| ['skipped', 'completed', '', nil].include?(p.status)}
+      processes.all?{|p| ['skipped', 'completed', '', nil].include?(p.status)}
     end
 
     def to_solr(solr_doc=Hash.new, *args)
-      wf_name = self.workflowId.first
-      repo = self.repository.first
+      wf_name = workflowId.first
+      repo = repository.first
       wf_solr_type = :string
       wf_solr_attrs = [:symbol]
       add_solr_value(solr_doc, 'wf',     wf_name, wf_solr_type, wf_solr_attrs)
@@ -127,7 +127,7 @@ module Workflow
     end
 
     def inspect
-      "#<#{self.class.name}:#{self.object_id}>"
+      "#<#{self.class.name}:#{object_id}>"
     end
   end
 end

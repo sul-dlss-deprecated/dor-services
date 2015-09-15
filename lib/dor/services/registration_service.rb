@@ -7,11 +7,11 @@ module Dor
       def register_object(params = {})
         Dor.ensure_models_loaded!
         [:object_type, :label].each do |required_param|
-          raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{self.name}.register_object" unless params[required_param]
+          raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{name}.register_object" unless params[required_param]
         end
         metadata_source = params[:metadata_source]
         if params[:label].length<1 && (metadata_source=='label' || metadata_source=='none')
-          raise Dor::ParameterError, "label cannot be empty to call #{self.name}.register_object"
+          raise Dor::ParameterError, "label cannot be empty to call #{name}.register_object"
         end
         object_type = params[:object_type]
         item_class = Dor.registered_classes[object_type]
@@ -40,7 +40,7 @@ module Dor
         if params[:rights]
           rights=params[:rights]
           unless %w(world stanford dark default none).include? rights
-            raise Dor::ParameterError, "Unknown rights setting '#{rights}' when calling #{self.name}.register_object"
+            raise Dor::ParameterError, "Unknown rights setting '#{rights}' when calling #{name}.register_object"
           end
         end
 
@@ -88,7 +88,7 @@ module Dor
         end
         #create basic mods from the label
         if (metadata_source=='label')
-          ds=new_item.build_datastream('descMetadata');
+          ds = new_item.build_datastream('descMetadata')
           builder = Nokogiri::XML::Builder.new { |xml|
             xml.mods( 'xmlns' => 'http://www.loc.gov/mods/v3', 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',:version => '3.3', "xsi:schemaLocation" => 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd'){
               xml.titleInfo{
@@ -96,7 +96,7 @@ module Dor
               }
             }
           }
-          ds.content=builder.to_xml
+          ds.content = builder.to_xml
         end
 
         workflow_priority = params[:workflow_priority] ? params[:workflow_priority].to_i : 0
@@ -117,7 +117,7 @@ module Dor
         rescue StandardError => e
           Dor.logger.warn "Dor::RegistrationService.register_object failed to update solr index for #{new_item.pid}: #<#{e.class.name}: #{e.message}>"
         end
-        return(new_item)
+        (new_item)
       end
 
       def create_from_request(params)
@@ -153,9 +153,9 @@ module Dor
           :collection         => params[:collection],
           :workflow_priority  => params[:workflow_priority]
         }
-        dor_params.delete_if { |k,v| v.nil? }
+        dor_params.delete_if { |k, v| v.nil? }
 
-        dor_obj = self.register_object(dor_params)
+        dor_obj = register_object(dor_params)
         pid = dor_obj.pid
         location = URI.parse(Dor::Config.fedora.safeurl.sub(/\/*$/,'/')).merge("objects/#{pid}").to_s
         reg_response = dor_params.dup.merge({ :location => location, :pid => pid })
@@ -163,11 +163,8 @@ module Dor
 
       private
       def ids_to_hash(ids)
-        if ids.nil?
-          nil
-        else
-          Hash[Array(ids).collect { |id| id.split(/:/) }]
-        end
+        return nil if ids.nil?
+        Hash[Array(ids).collect { |id| id.split(/:/) }]
       end
     end
   end

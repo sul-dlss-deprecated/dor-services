@@ -3,7 +3,7 @@ require 'active_support/core_ext/module/attribute_accessors'
 
 module A
   extend ::ActiveSupport::Concern
-# included do puts "INCLUDING A" end
+  # included do puts "INCLUDING A" end
   def foobar(val='')
     (begin super(val) rescue val end) + 'A'
   end
@@ -12,7 +12,7 @@ end
 module B
   extend ::ActiveSupport::Concern
   include A
-# included do puts "INCLUDING B" end
+  # included do puts "INCLUDING B" end
   def foobar(val='')
     super + 'B'
   end

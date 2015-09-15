@@ -591,7 +591,7 @@ describe Dor::Describable do
       expect(@doc).not_to be_nil
     end
     it "should include values from stanford_mods" do
-    # require 'pp'; pp doc
+      # require 'pp'; pp doc
       expect(@doc).to match a_hash_including(
         "sw_language_ssim"            => ["English"],
         "sw_language_tesim"           => ["English"],
@@ -629,8 +629,8 @@ describe Dor::Describable do
     end
     it "subject geographic fields" do
       expect(@doc).to match a_hash_including(
-        "sw_subject_geographic_ssim"  => ["Europe", "Europe"],
-        "sw_subject_geographic_tesim" => ["Europe", "Europe"]
+        "sw_subject_geographic_ssim"  => %w(Europe Europe),
+        "sw_subject_geographic_tesim" => %w(Europe Europe)
       )
     end
     it "genre fields" do

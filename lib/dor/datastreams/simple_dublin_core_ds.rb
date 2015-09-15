@@ -18,7 +18,7 @@ class SimpleDublinCoreDs < ActiveFedora::OmDatastream
       }
     end
 
-    return builder.doc
+    builder.doc
   end
 
   def to_solr(solr_doc=Hash.new, *args)
@@ -27,12 +27,12 @@ class SimpleDublinCoreDs < ActiveFedora::OmDatastream
 
     doc = super solr_doc, *args
 
-    add_solr_value(doc, 'dc_title',   self.title.first,   :string, [:stored_sortable, :stored_searchable])
-    add_solr_value(doc, 'dc_creator', self.creator.first, :string, [:stored_sortable, :stored_searchable])
+    add_solr_value(doc, 'dc_title',   title.first,   :string, [:stored_sortable, :stored_searchable])
+    add_solr_value(doc, 'dc_creator', creator.first, :string, [:stored_sortable, :stored_searchable])
 
     identifiers = {}
 
-    self.identifier.each { |i| ns, val = i.split(":"); identifiers[ns] ||= val }
+    identifier.each { |i| ns, val = i.split(":"); identifiers[ns] ||= val }
 
     identifiers.each do |ns, val|
       add_solr_value(doc, "dc_identifier_#{ns}", val, :string, [:stored_sortable, :stored_searchable])

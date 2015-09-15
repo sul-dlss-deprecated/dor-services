@@ -4,17 +4,17 @@ module Dor
 
   class MetadataError < Exception ; end
 
-#  class MetadataHandler
-#
-#    def fetch(prefix, identifier)
-#      ### Return metadata for prefix/identifier combo
-#    end
-#
-#    def label(metadata)
-#      ### Return a Fedora-compatible label from the metadata format returned by #fetch
-#    end
-#
-#  end
+  #  class MetadataHandler
+  #
+  #    def fetch(prefix, identifier)
+  #      ### Return metadata for prefix/identifier combo
+  #    end
+  #
+  #    def label(metadata)
+  #      ### Return a Fedora-compatible label from the metadata format returned by #fetch
+  #    end
+  #
+  #  end
 
   class MetadataService
 
@@ -31,11 +31,11 @@ module Dor
         handler.prefixes.each do |prefix|
           handlers[prefix.to_sym] = handler
         end
-        return handler
+        handler
       end
 
       def known_prefixes
-        return handlers.keys
+        handlers.keys
       end
 
       def can_resolve?(identifier)
@@ -65,7 +65,7 @@ module Dor
       def handler_for(prefix)
         handler = handlers[prefix.to_sym]
         raise MetadataError, "Unkown metadata prefix: #{prefix}" if handler.nil?
-        return handler
+        handler
       end
 
       private

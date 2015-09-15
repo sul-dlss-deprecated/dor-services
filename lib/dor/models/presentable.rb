@@ -17,7 +17,7 @@ module Dor
 
     # Bypass this method if there are no image resources in contentMetadata
     def build_iiif_manifest pub_obj_doc
-      id = self.pid.split(':').last
+      id = pid.split(':').last
 
       lbl_node = pub_obj_doc.at_xpath '//oai_dc:dc/dc:title', DC_NS
       if lbl_node.nil?

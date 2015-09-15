@@ -4,16 +4,16 @@ module Dor
 
     #add a file to a resource, not to be confused with add a resource to an object
     def add_file file, resource, file_name, mime_type=nil,publish='no', shelve='no', preserve='no'
-      contentMD=self.datastreams['contentMetadata']
+      contentMD=datastreams['contentMetadata']
       xml=contentMD.ng_xml
       #make sure the resource exists
       if xml.search('//resource[@id=\''+resource+'\']').length == 0
         raise 'resource doesnt exist.'
       end
       sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey'])
-      druid_tools=DruidTools::Druid.new(self.pid,Config.content.content_base_dir)
+      druid_tools=DruidTools::Druid.new(pid,Config.content.content_base_dir)
       location=druid_tools.path(file_name)
-      oldlocation=location.gsub('/'+self.pid.gsub('druid:',''),'')
+      oldlocation=location.gsub('/'+pid.gsub('druid:',''),'')
       md5=Digest::MD5.file(file.path).hexdigest
       sha1=Digest::SHA1.file(file.path).hexdigest
       size=File.size?(file.path)
@@ -26,7 +26,7 @@ module Dor
           raise 'The file '+file_name+' already exists!'
         rescue Net::SFTP::StatusException
           sftp.upload!(file.path,location)
-          self.contentMetadata.add_file file_hash,resource
+          contentMetadata.add_file file_hash,resource
         end
       rescue Net::SFTP::StatusException
         #the directory layout doesnt match the new style, so use the old style.
@@ -36,7 +36,7 @@ module Dor
         rescue Net::SFTP::StatusException
           #the file doesnt already exist, which is good. Add it
           sftp.upload!(file.path,oldlocation)
-          self.contentMetadata.add_file file_hash,resource
+          contentMetadata.add_file file_hash,resource
         end
       end
       #can only arrive at this point if a non status exception occurred.
@@ -44,10 +44,10 @@ module Dor
 
     def replace_file file,file_name
       sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey'])
-      item=Dor::Item.find(self.pid)
-      druid_tools=DruidTools::Druid.new(self.pid,Config.content.content_base_dir)
+      item=Dor::Item.find(pid)
+      druid_tools=DruidTools::Druid.new(pid,Config.content.content_base_dir)
       location=druid_tools.path(file_name)
-      oldlocation=location.gsub('/'+self.pid.gsub('druid:',''),'')
+      oldlocation=location.gsub('/'+pid.gsub('druid:',''),'')
 
       md5=Digest::MD5.file(file.path).hexdigest
       sha1=Digest::SHA1.file(file.path).hexdigest
@@ -66,7 +66,7 @@ module Dor
     end
 
     def get_preserved_file file, version
-      preservation_server=Config.content.sdr_server+'/sdr/objects/'+self.pid+"/content/"
+      preservation_server=Config.content.sdr_server+'/sdr/objects/'+pid+"/content/"
       file=URI.encode(file)
       add=preservation_server+file+"?version="+version
       uri = URI(add)
@@ -78,9 +78,9 @@ module Dor
     end
 
     def get_file file
-      druid_tools=DruidTools::Druid.new(self.pid,Config.content.content_base_dir)
+      druid_tools=DruidTools::Druid.new(pid,Config.content.content_base_dir)
       location=druid_tools.path(file)
-      oldlocation=location.gsub('/'+file,'').gsub('/'+self.pid.gsub('druid:',''),'')+'/'+file
+      oldlocation=location.gsub('/'+file,'').gsub('/'+pid.gsub('druid:',''),'')+'/'+file
       sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey'])
       begin
         data=sftp.download!(location)
@@ -89,9 +89,9 @@ module Dor
       end
     end
     def remove_file filename
-      druid_tools=DruidTools::Druid.new(self.pid,Config.content.content_base_dir)
+      druid_tools=DruidTools::Druid.new(pid,Config.content.content_base_dir)
       location=druid_tools.path(filename)
-      oldlocation=location.gsub('/'+self.pid.gsub('druid:',''),'')
+      oldlocation=location.gsub('/'+pid.gsub('druid:',''),'')
       sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey'])
       begin
         data=sftp.remove!(location)
@@ -102,28 +102,28 @@ module Dor
         rescue Net::SFTP::StatusException
         end
       end
-      self.contentMetadata.remove_file filename
+      contentMetadata.remove_file filename
     end
     def rename_file old_name, new_name
-      druid_tools=DruidTools::Druid.new(self.pid,Config.content.content_base_dir)
+      druid_tools=DruidTools::Druid.new(pid,Config.content.content_base_dir)
       location=druid_tools.path(old_name)
-      oldlocation=location.gsub('/'+self.pid.gsub('druid:',''),'')
+      oldlocation=location.gsub('/'+pid.gsub('druid:',''),'')
       sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey'])
       begin
         data=sftp.rename!(location,location.gsub(old_name,new_name))
       rescue
         data=sftp.rename!(oldlocation,oldlocation.gsub(old_name,new_name))
       end
-      self.contentMetadata.rename_file(old_name, new_name)
+      contentMetadata.rename_file(old_name, new_name)
     end
     def remove_resource resource_name
       #run delete for all of the files in the resource
-      xml=self.contentMetadata.ng_xml
+      xml=contentMetadata.ng_xml
       files=xml.search('//resource[@id=\''+resource_name+'\']/file').each do |file|
-        self.remove_file(file['id'])
+        remove_file(file['id'])
       end
       #remove the resource record from the metadata and renumber the resource sequence
-      self.contentMetadata.remove_resource resource_name
+      contentMetadata.remove_resource resource_name
     end
 
     #list files in the workspace
@@ -131,9 +131,9 @@ module Dor
       filename='none'
       files=[]
       sftp=Net::SFTP.start(Config.content.content_server,Config.content.content_user,:auth_methods=>['publickey'])
-      druid_tools=DruidTools::Druid.new(self.pid,Config.content.content_base_dir)
+      druid_tools=DruidTools::Druid.new(pid,Config.content.content_base_dir)
       location=druid_tools.path(filename).gsub(filename,'')
-      oldlocation=location.gsub('/'+self.pid.gsub('druid:',''),'')
+      oldlocation=location.gsub('/'+pid.gsub('druid:',''),'')
       begin
         sftp.dir.entries(location, "*") do |file|
           files<<file.name
@@ -147,13 +147,13 @@ module Dor
           return files
         end
       end
-      return files
+      files
     end
 
     # determine whether the file in question is present in the object's workspace.
     def is_file_in_workspace? filename
-      druid_obj = DruidTools::Druid.new(self.pid, Dor::Config.stacks.local_workspace_root)
-      return !druid_obj.find_content(filename).nil?
+      druid_obj = DruidTools::Druid.new(pid, Dor::Config.stacks.local_workspace_root)
+      !druid_obj.find_content(filename).nil?
     end
 
     # Appends contentMetadata file resources from the source objects to this object
@@ -179,7 +179,7 @@ module Dor
             secondary_file['id'] = new_secondary_file_name(secondary_file['id'], max_sequence)
 
             if primary_cm.at_xpath("//file[@id = '#{secondary_file['id']}']")
-              raise Dor::Exception.new "File '#{secondary_file['id']}' from secondary object #{src_pid} already exist in primary object: #{self.pid}"
+              raise Dor::Exception.new "File '#{secondary_file['id']}' from secondary object #{src_pid} already exist in primary object: #{pid}"
             end
           end
 
@@ -201,7 +201,7 @@ module Dor
           resource_copy.first_element_child.add_previous_sibling attr_node
         end
       end
-      self.contentMetadata.content_will_change!
+      contentMetadata.content_will_change!
     end
 
     def new_secondary_file_name old_name, sequence_num

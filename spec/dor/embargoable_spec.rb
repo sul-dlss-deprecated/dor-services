@@ -75,9 +75,9 @@ describe Dor::Embargoable do
       @eds = @embargo_item.datastreams['embargoMetadata']
       @eds.status = 'embargoed'
       @eds.release_date = Time.now - 100000
-      @eds.release_access_node = Nokogiri::XML(release_access) {|config|config.default_xml.noblanks}
+      @eds.release_access_node = Nokogiri::XML(release_access) {|config| config.default_xml.noblanks}
 
-      @embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config|config.default_xml.noblanks}
+      @embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config| config.default_xml.noblanks}
       @embargo_item.release_embargo('application:embargo-release')
     end
 
@@ -127,8 +127,8 @@ describe Dor::Embargoable do
     before(:each) do
       eds.status = 'embargoed'
       eds.release_date = Time.now - 100000
-      eds.release_access_node = Nokogiri::XML(release_access) {|config|config.default_xml.noblanks}
-      embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config|config.default_xml.noblanks}
+      eds.release_access_node = Nokogiri::XML(release_access) {|config| config.default_xml.noblanks}
+      embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config| config.default_xml.noblanks}
       embargo_item.release_20_pct_vis_embargo('application:embargo-release')
     end
 
@@ -166,10 +166,10 @@ describe Dor::Embargoable do
       @eds = @embargo_item.datastreams['embargoMetadata']
       @eds.status = 'embargoed'
       @eds.release_date = Time.now - 100000
-      @eds.release_access_node = Nokogiri::XML(release_access) {|config|config.default_xml.noblanks}
+      @eds.release_access_node = Nokogiri::XML(release_access) {|config| config.default_xml.noblanks}
 
       allow_any_instance_of(ActiveFedora::OmDatastream).to receive(:save).and_return(true)
-      @embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config|config.default_xml.noblanks}
+      @embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config| config.default_xml.noblanks}
     end
 
     it 'should update the embargo date' do

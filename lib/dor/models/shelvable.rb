@@ -25,7 +25,7 @@ module Dor
     # retrieve the differences between the current contentMetadata and the previously ingested version
     # (filtering to select only the files that should be shelved to stacks)
     def get_shelve_diff
-      inventory_diff_xml = self.get_content_diff(:shelve)
+      inventory_diff_xml = get_content_diff(:shelve)
       inventory_diff = Moab::FileInventoryDifference.parse(inventory_diff_xml)
       shelve_diff = inventory_diff.group_difference("content")
       shelve_diff
@@ -47,13 +47,13 @@ module Dor
     # or using the default value from the config file if it doesn't exist
     def get_stacks_location
 
-      contentMetadataDS = self.datastreams['contentMetadata']
+      contentMetadataDS = datastreams['contentMetadata']
       unless contentMetadataDS.nil? || contentMetadataDS.stacks.length == 0
         stacks_location = contentMetadataDS.stacks[0]
         return stacks_location if stacks_location.start_with? "/"  #Absolute stacks path
-        raise "stacks attribute for item: "+self.id+ " contentMetadata should start with /. The current value is "+stacks_location
+        raise "stacks attribute for item: "+id+ " contentMetadata should start with /. The current value is "+stacks_location
       end
-      return Config.stacks.local_stacks_root #Default stacks
+      Config.stacks.local_stacks_root #Default stacks
 
     end
   end

@@ -30,9 +30,9 @@ module Dor
     def self.cleanup_export(druid)
       id = druid.split(':').last
       bag_dir = File.join(Config.cleanup.local_export_home, id)
-      self.remove_branch(bag_dir)
+      remove_branch(bag_dir)
       tarfile = "#{bag_dir}.tar"
-      self.remove_branch(tarfile)
+      remove_branch(tarfile)
     end
 
     # @param [Pathname,String] pathname The full path of the branch to be removed

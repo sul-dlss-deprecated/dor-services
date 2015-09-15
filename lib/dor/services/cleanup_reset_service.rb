@@ -22,7 +22,7 @@ module Dor
       if Dor::WorkflowService.get_lifecycle('dor', druid, 'accessioned').nil? then
         last_version -= 1
       end
-      return last_version
+      last_version
     end
 
     # @param [String] druid The identifier for the object whose reset data is to be removed
@@ -47,11 +47,11 @@ module Dor
     # @return [void] prepares a list of reset directories that should be removed
     def self.get_reset_dir_list(last_version, base_druid_tree)
       reset_directories = []
-      for i in 1..last_version
+      (1..last_version).each do |i|
         reset_path = "#{base_druid_tree}_v#{i}"
         reset_directories.append(reset_path) if File.exists?(reset_path)
       end
-      return reset_directories
+      reset_directories
     end
 
     # @param [String] druid The identifier for the object whose reset bags data is to be removed
@@ -76,11 +76,11 @@ module Dor
     # @return [void] prepares a list of reset bag directories that should be removed
     def self.get_reset_bag_dir_list(last_version, base_bag_directory)
       reset_bags = []
-      for i in 1..last_version do
+      (1..last_version).each do |i|
         reset_path = "#{base_bag_directory}_v#{i}"
         reset_bags.append(reset_path) if File.exists?(reset_path)
       end
-      return reset_bags
+      reset_bags
     end
 
     # @param [String] base_bag_directory The base bag directory including the export home and druid id
@@ -88,11 +88,11 @@ module Dor
     # @return [void] prepares a list of reset bag tars that should be removed
     def self.get_reset_bag_tar_list(last_version, base_bag_directory)
       reset_bags = []
-      for i in 1..last_version do
+      (1..last_version).each do |i|
         reset_path = "#{base_bag_directory}_v#{i}.tar"
-        reset_bags.append(reset_path)  if File.exists?(reset_path)
+        reset_bags.append(reset_path) if File.exists?(reset_path)
       end
-      return reset_bags
+      reset_bags
     end
 
     # @param [String] druid The identifier for the object whose data is to be removed

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 class RightsHaver < Dor::Item
-#   include Dor::Rightsable
+  # include Dor::Rightsable
 end
 
 describe Dor::RightsMetadataDS do
@@ -10,7 +10,7 @@ describe Dor::RightsMetadataDS do
 
   before(:each) do
     @item = instantiate_fixture('druid:bb046xn0881', RightsHaver)
-  #  allow(@item).to receive(:new?).and_return(false)
+    # allow(@item).to receive(:new?).and_return(false)
     allow(@item).to receive(:workflows).and_return(double())
     allow(Dor::Item).to receive(:find).with('druid:bb046xn0881').and_return(@item)
     allow(Dor::WorkflowService).to receive(:get_milestones).and_return([])

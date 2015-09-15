@@ -22,7 +22,7 @@ describe Dor::Governable do
 
   before :each do
     @item = instantiate_fixture("druid:oo201oo0001", Dor::AdminPolicyObject)
-   # @item.stub(:new_record? => false)
+    # @item.stub(:new_record? => false)
     allow(Dor::Collection).to receive(:find).with("druid:oo201oo0002").and_return(mock_collection)
   end
 

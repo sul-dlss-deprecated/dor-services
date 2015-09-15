@@ -17,7 +17,7 @@ class EventsDS < ActiveFedora::OmDatastream
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.events
     end
-    return builder.doc
+    builder.doc
   end
 
   def ensure_non_versionable

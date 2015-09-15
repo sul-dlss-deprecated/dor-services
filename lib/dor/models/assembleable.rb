@@ -2,7 +2,7 @@ module Dor
   module Assembleable
 
     def initialize_workspace(source=nil)
-      druid = DruidTools::Druid.new(self.pid, Config.stacks.local_workspace_root)
+      druid = DruidTools::Druid.new(pid, Config.stacks.local_workspace_root)
       if source.nil?
         druid.mkdir
       else

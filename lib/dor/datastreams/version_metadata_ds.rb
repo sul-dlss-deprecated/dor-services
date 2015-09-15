@@ -5,12 +5,12 @@ module Dor
 
     attr_reader :major, :minor, :admin
 
-    def <=>(anOther)
-      diff = @major <=> anOther.major
+    def <=>(other)
+      diff = @major <=> other.major
       return diff if diff != 0
-      diff = @minor <=> anOther.minor
+      diff = @minor <=> other.minor
       return diff if diff != 0
-      @admin <=> anOther.admin
+      @admin <=> other.admin
     end
 
     # @param [String] raw_tag the value of the tag attribute from a Version node
@@ -68,7 +68,7 @@ module Dor
           }
         }
       end
-      return builder.doc
+      builder.doc
     end
 
     def ensure_non_versionable
@@ -165,7 +165,7 @@ module Dor
     end
 
     def tag_for_version(versionId)
-      nodes=self.ng_xml.search('//version[@versionId=\''+versionId+'\']')
+      nodes=ng_xml.search('//version[@versionId=\''+versionId+'\']')
       if nodes.length == 1
         nodes.first['tag'].to_s
       else
@@ -175,7 +175,7 @@ module Dor
 
     # @return [String] The description for the specified version, or empty string if there is no description
     def description_for_version(versionId)
-      nodes=self.ng_xml.search('//version[@versionId=\''+versionId+'\']')
+      nodes=ng_xml.search('//version[@versionId=\''+versionId+'\']')
       if nodes.length == 1 && nodes.first.at_xpath('description')
         nodes.first.at_xpath('description').content.to_s
       else

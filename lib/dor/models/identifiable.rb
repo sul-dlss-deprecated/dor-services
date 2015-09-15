@@ -27,7 +27,7 @@ module Dor
 
     # helper method to get the tags as an array
     def tags
-      self.identityMetadata.tag
+      identityMetadata.tag
     end
 
     # helper method to get just the content type tag
@@ -57,7 +57,7 @@ module Dor
     @@apo_hash={}
 
     def to_solr(solr_doc=Hash.new, *args)
-      self.assert_content_model
+      assert_content_model
       super(solr_doc, *args)
 
       solr_doc[Dor::INDEX_VERSION_FIELD] = Dor::VERSION
@@ -66,24 +66,24 @@ module Dor
         add_solr_value(solr_doc, 'ds_specs', ds.datastream_spec_string, :string, [:symbol]) unless ds.new?
       end
 
-      add_solr_value(solr_doc, 'title_sort', self.label, :string, [:stored_sortable])
+      add_solr_value(solr_doc, 'title_sort', label, :string, [:stored_sortable])
 
-      rels_doc = Nokogiri::XML(self.datastreams['RELS-EXT'].content)
+      rels_doc = Nokogiri::XML(datastreams['RELS-EXT'].content)
       apos = rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy', 'hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
       collections = rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
       solrize_related_obj_titles(solr_doc, apos, @@apo_hash, "apo_title")
       solrize_related_obj_titles(solr_doc, collections, @@collection_hash, "collection_title")
 
-      solr_doc["metadata_source_ssi"] = self.identity_metadata_source
-      return solr_doc
+      solr_doc["metadata_source_ssi"] = identity_metadata_source
+      solr_doc
     end
 
     # @return [String] calculated value for Solr index
     def identity_metadata_source
-      if self.identityMetadata.otherId('catkey').first ||
-         self.identityMetadata.otherId('barcode').first
+      if identityMetadata.otherId('catkey').first ||
+         identityMetadata.otherId('barcode').first
         'Symphony'
-      elsif self.identityMetadata.otherId('mdtoolkit').first
+      elsif identityMetadata.otherId('mdtoolkit').first
         'Metadata Toolkit'
       else
         'DOR'
@@ -91,25 +91,25 @@ module Dor
     end
 
     def set_source_id(source_id)
-      self.identityMetadata.sourceId = source_id
+      identityMetadata.sourceId = source_id
     end
 
     def add_other_Id(type,val)
-      if self.identityMetadata.otherId(type).length>0
+      if identityMetadata.otherId(type).length>0
         raise 'There is an existing entry for '+type+', consider using update_other_Id().'
       end
-      self.identityMetadata.add_otherId(type+':'+val)
+      identityMetadata.add_otherId(type+':'+val)
     end
 
     def update_other_Id(type, new_val, val=nil)
-      self.identityMetadata.ng_xml.search('//otherId[@name=\''+type+'\']')
+      identityMetadata.ng_xml.search('//otherId[@name=\''+type+'\']')
         .select{ |node| val.nil? || node.content == val }
         .each  { |node| node.content = new_val }
         .any?
     end
 
     def remove_other_Id(type, val=nil)
-      self.identityMetadata.ng_xml.search('//otherId[@name=\''+type+'\']')
+      identityMetadata.ng_xml.search('//otherId[@name=\''+type+'\']')
         .select{ |node| val.nil? || node.content == val }
         .each(&:remove)
         .any?
@@ -118,17 +118,17 @@ module Dor
     # turns a tag string into an array with one element per tag part.
     # split on ":", disregard leading and trailing whitespace on tokens.
     def split_tag_to_arr(tag_str)
-      return tag_str.split(":").map {|str| str.strip}
+      tag_str.split(":").map {|str| str.strip}
     end
 
     # turn a tag array back into a tag string with a standard format
     def normalize_tag_arr(tag_arr)
-      return tag_arr.join(' : ')
+      tag_arr.join(' : ')
     end
 
     # take a tag string and return a normalized tag string
     def normalize_tag(tag_str)
-      return normalize_tag_arr(split_tag_to_arr(tag_str))
+      normalize_tag_arr(split_tag_to_arr(tag_str))
     end
 
     # take a proposed tag string and a list of the existing tags for the object being edited.  if
@@ -145,7 +145,7 @@ module Dor
         raise "An existing tag (#{dupe_existing_tag}) is the same, consider using update_tag?"
       end
 
-      return normalized_tag
+      normalized_tag
     end
 
     # Ensure that an administrative tag meets the proper mininum format
@@ -161,20 +161,20 @@ module Dor
       if tag_arr.detect {|str| str.empty?}
         raise ArgumentError, "Invalid tag structure: tag '#{tag_str}' contains empty elements"
       end
-      return tag_arr
+      tag_arr
     end
 
     # Add an administrative tag to an item, you will need to seperately save the item to write it to fedora
     # @param tag [string] The tag you wish to add
     def add_tag(tag)
-        identity_metadata_ds = self.identityMetadata
+        identity_metadata_ds = identityMetadata
         normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags)
         identity_metadata_ds.add_value(:tag, normalized_tag)
     end
 
     def remove_tag(tag)
       normtag = normalize_tag(tag)
-      self.identityMetadata.ng_xml.search('//tag')
+      identityMetadata.ng_xml.search('//tag')
         .select{ |node| normalize_tag(node.content) == normtag }
         .each(&:remove)
         .any?
@@ -183,7 +183,7 @@ module Dor
     # Removes all displayTypes from an item in preparation of adding a new display type
     # @return Boolean True if displayTypes were removed, False if no displayTypes were removed
     def remove_displayTypes
-      nodes = self.identityMetadata.ng_xml.search('//displayType')
+      nodes = identityMetadata.ng_xml.search('//displayType')
       # NOTE: .each after search is different than normal ruby enumerator:
       # ~ ng_xml.search('//nonexistant_tag').each(&:foo) == 0
       # ~ [].each(&:foo) == []
@@ -193,7 +193,7 @@ module Dor
 
     def update_tag(old_tag, new_tag)
       normtag = normalize_tag(old_tag)
-      self.identityMetadata.ng_xml.search('//tag')
+      identityMetadata.ng_xml.search('//tag')
         .select{ |node| normalize_tag(node.content) == normtag }
         .each  { |node| node.content = normalize_tag(new_tag)  }
         .any?
@@ -208,7 +208,7 @@ module Dor
         end
       end
 
-      return default_title
+      default_title
     end
 
     private

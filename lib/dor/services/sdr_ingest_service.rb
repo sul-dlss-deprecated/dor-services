@@ -61,7 +61,7 @@ module Dor
       Config.sdr.datastreams.to_hash.each_pair do |ds_name, required|
         ds_name = ds_name.to_s
         metadata_file = metadata_dir.join("#{ds_name}.xml")
-        metadata_string = self.get_datastream_content(dor_item, ds_name, required)
+        metadata_string = get_datastream_content(dor_item, ds_name, required)
         metadata_file.open('w') { |f| f << metadata_string } if metadata_string
       end
       metadata_dir

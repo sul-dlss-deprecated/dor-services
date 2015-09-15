@@ -100,19 +100,19 @@ class AdministrativeMetadataDS < ActiveFedora::OmDatastream
   #################################################################################
 
   def default_workflow_lane= lane
-    self.defaults.initiate_workflow.lane = lane
+    defaults.initiate_workflow.lane = lane
   end
 
   def default_workflow_lane
-    self.defaults.initiate_workflow.lane.first
+    defaults.initiate_workflow.lane.first
   end
 
   def default_shelving_path= path
-    self.defaults.shelving.path = path
+    defaults.shelving.path = path
   end
 
   def default_shelving_path
-    self.defaults.shelving.path.first
+    defaults.shelving.path.first
   end
 
 end

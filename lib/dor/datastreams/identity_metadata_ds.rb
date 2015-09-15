@@ -32,16 +32,16 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
   end
 
   def objectId
-    self.find_by_terms(:objectId).text
+    find_by_terms(:objectId).text
   end
 
   def sourceId
-    node = self.find_by_terms(:sourceId).first
+    node = find_by_terms(:sourceId).first
     node ? [node['source'],node.text].join(':') : nil
   end
 
   def sourceId=(value)
-    node = self.find_by_terms(:sourceId).first
+    node = find_by_terms(:sourceId).first
     unless value.present?   # so setting it to '' is the same as removal: worth documenting maybe?
       node.remove unless node.nil?
       return nil
@@ -55,11 +55,11 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
   end
 
   def tags
-    self.ng_xml.search('//tag').collect(&:content)
+    ng_xml.search('//tag').collect(&:content)
   end
 
   def otherId(type = nil)
-    result = self.find_by_terms(:otherId).to_a
+    result = find_by_terms(:otherId).to_a
     if type.nil?
       result.collect { |n| [n['name'],n.text].join(':') }
     else
@@ -99,7 +99,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
     }
 
     # do some stuff to make tags in general and project tags specifically more easily searchable and facetable
-    self.find_by_terms(:tag).each { |tag|
+    find_by_terms(:tag).each { |tag|
       (prefix, rest) = tag.text.split(/:/, 2)
       prefix = prefix.downcase.strip.gsub(/\s/,'_')
       unless rest.nil?
@@ -122,7 +122,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
       end
     }
 
-    return solr_doc
+    solr_doc
   end
 end #class
 end

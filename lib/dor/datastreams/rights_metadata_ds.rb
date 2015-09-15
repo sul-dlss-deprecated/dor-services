@@ -57,7 +57,7 @@ module Dor
     end
 
     def dra_object
-      @dra_object ||= Dor::RightsAuth.parse(self.ng_xml, true)
+      @dra_object ||= Dor::RightsAuth.parse(ng_xml, true)
     end
 
     # @param rights [string] archetypical rights to assign: 'world', 'stanford', 'none' or 'dark'
@@ -66,7 +66,7 @@ module Dor
     # TODO: convert xpath reads to dra_object calls
     def set_read_rights(rights)
       raise(ArgumentError, "Argument '#{rights}' is not a recognized value") unless %w(world stanford none dark).include? rights
-      rights_xml = self.ng_xml
+      rights_xml = ng_xml
       if (rights_xml.search('//rightsMetadata/access[@type=\'read\']').length==0)
         raise('The rights metadata stream doesnt contain an entry for machine read permissions. Consider populating it from the APO before trying to change it.')
       end
@@ -96,7 +96,7 @@ module Dor
 
     def to_solr(solr_doc=Hash.new, *args)
       super(solr_doc, *args)
-      dra = self.dra_object
+      dra = dra_object
       solr_doc['rights_primary_ssi'] = dra.index_elements[:primary]
       solr_doc['rights_errors_ssim'] = dra.index_elements[:errors] if dra.index_elements[:errors].size > 0
       solr_doc['rights_characteristics_ssim'] = dra.index_elements[:terms] if dra.index_elements[:terms].size > 0

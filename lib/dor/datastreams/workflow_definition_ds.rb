@@ -37,12 +37,12 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
   end
 
   def graph(parent = nil)
-    Workflow::Graph.from_processes(self.repo, self.name, self.processes, parent)
+    Workflow::Graph.from_processes(repo, name, processes, parent)
   end
 
   def processes
     ng_xml.xpath('/workflow-def/process').collect do |node|
-      Workflow::Process.new(self.repo, self.name, node)
+      Workflow::Process.new(repo, name, node)
     end.sort { |a,b| (a.sequence || 0) <=> (b.sequence || 0) }
   end
 
@@ -94,7 +94,7 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
 
   def to_solr(solr_doc=Hash.new,*args)
     super(solr_doc,*args)
-    add_solr_value(solr_doc, "workflow_name", self.name, :symbol, [:symbol])
+    add_solr_value(solr_doc, "workflow_name", name, :symbol, [:symbol])
     processes.each do |p|
       add_solr_value(solr_doc, "process", "#{p.name}|#{p.label}", :symbol, [:displayable])
     end
@@ -102,7 +102,7 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
   end
 
   def to_yaml
-    YAML.dump(self.configuration)
+    YAML.dump(configuration)
   end
 
 end

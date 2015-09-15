@@ -19,15 +19,15 @@ module Dor
     # @param [boolean] ns_aware namespace awareness toggle for from_nk_node()
     def stanford_mods(content=nil, ns_aware=true)
       m = Stanford::Mods::Record.new
-      desc = content.nil? ? self.descMetadata.ng_xml : content
+      desc = content.nil? ? descMetadata.ng_xml : content
       m.from_nk_node(desc.root, ns_aware)
       m
     end
 
     def fetch_descMetadata_datastream
-      candidates = self.datastreams['identityMetadata'].otherId.collect { |oid| oid.to_s }
+      candidates = datastreams['identityMetadata'].otherId.collect { |oid| oid.to_s }
       metadata_id = Dor::MetadataService.resolvable(candidates).first
-      return metadata_id.nil? ? nil : Dor::MetadataService.fetch(metadata_id.to_s)
+      metadata_id.nil? ? nil : Dor::MetadataService.fetch(metadata_id.to_s)
     end
 
     def build_descMetadata_datastream(ds)
@@ -43,13 +43,13 @@ module Dor
     #    Should not be used for the Fedora DC datastream
     # @raise [Exception] Raises an Exception if the generated DC is empty or has no children
     def generate_dublin_core
-      format = self.metadata_format
+      format = metadata_format
       if format.nil?
         raise CrosswalkError, "Unknown descMetadata namespace: #{metadata_namespace.inspect}"
       end
       xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/#{format}2dc.xslt")) )
-      desc_md = self.descMetadata.ng_xml.dup(1)
-      self.add_collection_reference(desc_md)
+      desc_md = descMetadata.ng_xml.dup(1)
+      add_collection_reference(desc_md)
       dc_doc = xslt.transform(desc_md)
       # Remove empty nodes
       dc_doc.xpath('/oai_dc:dc/*[count(text()) = 0]').remove
@@ -60,7 +60,7 @@ module Dor
     end
 
     def generate_public_desc_md
-      doc = self.descMetadata.ng_xml.dup(1)
+      doc = descMetadata.ng_xml.dup(1)
       add_collection_reference(doc)
       add_access_conditions(doc)
       new_doc = Nokogiri::XML(doc.to_xml) { |x| x.noblanks }
@@ -74,7 +74,7 @@ module Dor
     def add_access_conditions(doc)
       # clear out any existing accessConditions
       doc.xpath('//mods:accessCondition', 'mods' => 'http://www.loc.gov/mods/v3').each {|n| n.remove}
-      rights = self.datastreams['rightsMetadata'].ng_xml
+      rights = datastreams['rightsMetadata'].ng_xml
 
       rights.xpath('//use/human[@type="useAndReproduction"]').each do |use|
         txt = use.text.strip
@@ -106,8 +106,8 @@ module Dor
     # @param [Nokogiri::XML::Document] doc A copy of the descriptiveMetadata of the object
     # @note this method modifies the passed in doc
     def add_collection_reference(doc)
-      return unless self.methods.include? :public_relationships
-      collections=self.public_relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection',
+      return unless methods.include? :public_relationships
+      collections=public_relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection',
                                        'fedora' => 'info:fedora/fedora-system:def/relations-external#',
                                        'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' )
       return if collections.empty?
@@ -142,7 +142,7 @@ module Dor
       end
     end
     def metadata_namespace
-      desc_md = self.datastreams['descMetadata'].ng_xml
+      desc_md = datastreams['descMetadata'].ng_xml
       if desc_md.nil? || desc_md.root.nil? || desc_md.root.namespace.nil?
         return nil
       else
@@ -175,9 +175,9 @@ module Dor
         solr_doc[key] ||= []     # initialize multivalue targts if necessary
       }
 
-      solr_doc["metadata_format_ssim"] << self.metadata_format
+      solr_doc["metadata_format_ssim"] << metadata_format
       begin
-        dc_doc = self.generate_dublin_core
+        dc_doc = generate_dublin_core
         dc_doc.xpath('/oai_dc:dc/*').each do |node|
           add_solr_value(solr_doc, "public_dc_#{node.name}", node.text, :string, [:stored_searchable])
         end
@@ -192,11 +192,11 @@ module Dor
         creator_title=creator+title
         add_solr_value(solr_doc, 'creator_title', creator_title , :string, [:stored_sortable])
       rescue CrosswalkError => e
-        ActiveFedora.logger.warn "Cannot index #{self.pid}.descMetadata: #{e.message}"
+        ActiveFedora.logger.warn "Cannot index #{pid}.descMetadata: #{e.message}"
       end
 
       begin
-        mods = self.stanford_mods
+        mods = stanford_mods
         mods_sources.each_pair do |solr_key, meth|
           vals = meth.is_a?(Array) ? mods.send(meth.shift, *meth) : mods.send(meth)
           solr_doc[solr_key].push *vals unless vals.nil? || vals.empty?
@@ -216,7 +216,7 @@ module Dor
       raise 'Descriptive metadata has no title to update!' unless update_simple_field('mods:mods/mods:titleInfo/mods:title', new_title)
     end
     def add_identifier(type, value)
-      ds_xml=self.descMetadata.ng_xml
+      ds_xml=descMetadata.ng_xml
       ds_xml.search('//mods:mods','mods' => 'http://www.loc.gov/mods/v3').each do |node|
         new_node=Nokogiri::XML::Node.new('identifier',ds_xml) #this ends up being mods:identifier without having to specify the namespace
         new_node['type']=type
@@ -225,18 +225,18 @@ module Dor
       end
     end
     def delete_identifier(type,value=nil)
-      ds_xml=self.descMetadata.ng_xml
+      ds_xml=descMetadata.ng_xml
       ds_xml.search('//mods:identifier','mods' => 'http://www.loc.gov/mods/v3').each do |node|
         if node.content == value || value.nil?
           node.remove
           return true
         end
       end
-      return false
+      false
     end
 
     def set_desc_metadata_using_label(force=false)
-      ds=self.descMetadata
+      ds=descMetadata
       unless force || ds.new?
         raise 'Cannot proceed, there is already content in the descriptive metadata datastream: '+ds.content.to_s
       end
@@ -248,7 +248,7 @@ module Dor
           }
         }
       }
-      self.descMetadata.content=builder.to_xml
+      descMetadata.content=builder.to_xml
     end
 
     def self.get_collection_title(obj)
@@ -266,12 +266,12 @@ module Dor
     private
     #generic updater useful for updating things like title or subtitle which can only have a single occurance and must be present
     def update_simple_field(field,new_val)
-      ds_xml=self.descMetadata.ng_xml
+      ds_xml=descMetadata.ng_xml
       ds_xml.search('//'+field,'mods' => 'http://www.loc.gov/mods/v3').each do |node|
         node.content=new_val
         return true
       end
-      return false
+      false
     end
 
     # Builds case-insensitive xpath translate function call that will match the attribute to a value

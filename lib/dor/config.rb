@@ -28,17 +28,17 @@ module Dor
       params = { :dor_services_url => result.dor_services.url }
       params[:timeout] = result.workflow.timeout if result.workflow.timeout
       Dor::WorkflowService.configure result.workflow.url, params
-      return result
+      result
     end
 
     def autoconfigure(url, cert_file=Config.ssl.cert_file, key_file=Config.ssl.key_file, key_pass=Config.ssl.key_pass)
       client = make_rest_client(url, cert_file, key_file, key_pass)
       config = Confstruct::Configuration.symbolize_hash JSON.parse(client.get :accept => 'application/json')
-      self.configure(config)
+      configure(config)
     end
 
     def sanitize
-      self.dup
+      dup
     end
 
     def make_rest_client(url, cert=Config.ssl.cert_file, key=Config.ssl.key_file, pass=Config.ssl.key_pass)
@@ -99,11 +99,11 @@ module Dor
       if ActiveFedora.respond_to?(:configurator)
         if config.solrizer.url.present?
           ActiveFedora::SolrService.register
-          ActiveFedora::SolrService.instance.instance_variable_set :@conn, self.make_solr_connection
+          ActiveFedora::SolrService.instance.instance_variable_set :@conn, make_solr_connection
         end
       else
-        ActiveFedora::RubydoraConnection.connect self.fedora_config if self.fedora.url.present?
-        if self.solrizer.url.present?
+        ActiveFedora::RubydoraConnection.connect fedora_config if fedora.url.present?
+        if solrizer.url.present?
           ActiveFedora::SolrService.register config.solrizer.url, config.solrizer.opts
           conn = ActiveFedora::SolrService.instance.conn.connection
           if config.ssl.cert_file.present?
@@ -123,15 +123,15 @@ module Dor
     def init *args; end
 
     def fedora_config
-      fedora_uri = URI.parse(self.fedora.url)
-      connection_opts = { :url => self.fedora.safeurl, :user => fedora_uri.user, :password => fedora_uri.password }
-      connection_opts[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(self.ssl.cert_file)) if self.ssl.cert_file.present?
-      connection_opts[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(self.ssl.key_file),self.ssl.key_pass) if self.ssl.key_file.present?
+      fedora_uri = URI.parse(fedora.url)
+      connection_opts = { :url => fedora.safeurl, :user => fedora_uri.user, :password => fedora_uri.password }
+      connection_opts[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(ssl.cert_file)) if ssl.cert_file.present?
+      connection_opts[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(ssl.key_file),ssl.key_pass) if ssl.key_file.present?
       connection_opts
     end
 
     def solr_config
-      { :url => self.solrizer.url }
+      { :url => solrizer.url }
     end
 
     def predicate_config

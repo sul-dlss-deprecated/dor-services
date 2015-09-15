@@ -21,73 +21,73 @@ module Dor
     #@param entity [String] the name of the person or group, ex dlss:developers or sunetid:someone
     #@param type   [Symbol] :workgroup for a group or :person for a person
     def add_roleplayer role, entity, type=:workgroup
-      xml=self.roleMetadata.ng_xml
+      xml = roleMetadata.ng_xml
       group = type == :workgroup ? 'group' : 'person'
       nodes = xml.search('/roleMetadata/role[@type=\''+role+'\']')
       if nodes.length > 0
-        group_node=Nokogiri::XML::Node.new(group, xml)
-        id_node=Nokogiri::XML::Node.new('identifier', xml)
+        group_node = Nokogiri::XML::Node.new(group, xml)
+        id_node = Nokogiri::XML::Node.new('identifier', xml)
         group_node.add_child(id_node)
-        id_node.content=entity
-        id_node['type']=type.to_s
+        id_node.content = entity
+        id_node['type'] = type.to_s
         nodes.first.add_child(group_node)
       else
-        node=Nokogiri::XML::Node.new('role', xml)
-        node['type']=role
-        group_node=Nokogiri::XML::Node.new(group, xml)
+        node = Nokogiri::XML::Node.new('role', xml)
+        node['type'] = role
+        group_node = Nokogiri::XML::Node.new(group, xml)
         node.add_child group_node
-        id_node=Nokogiri::XML::Node.new('identifier', xml)
+        id_node = Nokogiri::XML::Node.new('identifier', xml)
         group_node.add_child(id_node)
-        id_node.content=entity
-        id_node['type']=type.to_s
+        id_node.content = entity
+        id_node['type'] = type.to_s
         xml.search('/roleMetadata').first.add_child(node)
       end
-      self.roleMetadata.content=xml.to_s
+      roleMetadata.content = xml.to_s
     end
 
     #remove all people groups and roles from the APO role metadata datastream
     def purge_roles
-      self.roleMetadata.ng_xml.search('/roleMetadata/role').each do |node|
+      roleMetadata.ng_xml.search('/roleMetadata/role').each do |node|
         node.remove
       end
     end
 
     def mods_title
-      return self.descMetadata.term_values(:title_info, :main_title).first
+      descMetadata.term_values(:title_info, :main_title).first
     end
     def mods_title=(val)
-      self.descMetadata.update_values({[:title_info, :main_title] => val})
+      descMetadata.update_values({[:title_info, :main_title] => val})
     end
     #get all collections listed for this APO, used during registration
     #@return [Array] array of pids
     def default_collections
-      return administrativeMetadata.term_values(:registration, :default_collection)
+      administrativeMetadata.term_values(:registration, :default_collection)
     end
     #Add a collection to the listing of collections for items governed by this apo.
     #@param val [String] pid of the collection, ex. druid:ab123cd4567
     def add_default_collection val
-      xml = self.administrativeMetadata.ng_xml
-      reg=xml.search('//administrativeMetadata/registration').first
+      xml = administrativeMetadata.ng_xml
+      reg = xml.search('//administrativeMetadata/registration').first
       unless reg
         reg=Nokogiri::XML::Node.new('registration',xml)
         xml.search('/administrativeMetadata').first.add_child(reg)
       end
-      node=Nokogiri::XML::Node.new('collection',xml)
-      node['id']=val
+      node = Nokogiri::XML::Node.new('collection',xml)
+      node['id'] = val
       reg.add_child(node)
-      self.administrativeMetadata.content=xml.to_s
+      administrativeMetadata.content = xml.to_s
     end
 
     def remove_default_collection val
-      xml = self.administrativeMetadata.ng_xml
+      xml = administrativeMetadata.ng_xml
       xml.search('//administrativeMetadata/registration/collection[@id=\''+val+'\']').remove
-      self.administrativeMetadata.content=xml.to_s
+      administrativeMetadata.content = xml.to_s
     end
     #Get all roles defined in the role metadata, and the people or groups in those roles. Groups are prefixed with 'workgroup:'
     #@return [Hash] role => ['person','group'] ex. {"dor-apo-manager" => ["workgroup:dlss:developers", "sunetid:lmcrae"]
     def roles
       roles={}
-      self.roleMetadata.ng_xml.search('/roleMetadata/role').each do |role|
+      roleMetadata.ng_xml.search('/roleMetadata/role').each do |role|
         roles[role['type']]=[]
         role.search('identifier').each do |entity|
           roles[role['type']] << entity['type'] + ':' + entity.text()
@@ -96,49 +96,49 @@ module Dor
       roles
     end
     def metadata_source
-      self.administrativeMetadata.metadata_source.first
+      administrativeMetadata.metadata_source.first
     end
     def metadata_source=(val)
-      if self.administrativeMetadata.descMetadata.nil?
-        self.administrativeMetadata.add_child_node(self.administrativeMetadata, :descMetadata)
+      if administrativeMetadata.descMetadata.nil?
+        administrativeMetadata.add_child_node(administrativeMetadata, :descMetadata)
       end
-      self.administrativeMetadata.update_values({[:descMetadata, :source] => val})
+      administrativeMetadata.update_values({[:descMetadata, :source] => val})
     end
     def use_statement
-      self.defaultObjectRights.use_statement.first
+      defaultObjectRights.use_statement.first
     end
     def use_statement=(val)
-      self.defaultObjectRights.update_values({[:use_statement] => val})
+      defaultObjectRights.update_values({[:use_statement] => val})
     end
     def copyright_statement
-      self.defaultObjectRights.copyright.first
+      defaultObjectRights.copyright.first
     end
     def copyright_statement=(val)
-      self.defaultObjectRights.update_values({[:copyright] => val})
+      defaultObjectRights.update_values({[:copyright] => val})
     end
     def creative_commons_license
-      self.defaultObjectRights.creative_commons.first
+      defaultObjectRights.creative_commons.first
     end
     def creative_commons_license_human
-      self.defaultObjectRights.creative_commons_human.first
+      defaultObjectRights.creative_commons_human.first
     end
     def creative_commons_license=(val)
-      (machine, human)=val
+      (machine, human) = val
       if creative_commons_license.nil?
-        self.defaultObjectRights.add_child_node(self.defaultObjectRights.ng_xml.root, :creative_commons)
+        defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, :creative_commons)
       end
-      self.defaultObjectRights.update_values({[:creative_commons] => val})
+      defaultObjectRights.update_values({[:creative_commons] => val})
     end
     def creative_commons_license_human=(val)
       if creative_commons_license_human.nil?
-        #add the nodes
-       self.defaultObjectRights.add_child_node(self.defaultObjectRights.ng_xml.root, :creative_commons)
+        # add the nodes
+        defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, :creative_commons)
       end
-      self.defaultObjectRights.update_values({[:creative_commons_human] => val})
+      defaultObjectRights.update_values({[:creative_commons_human] => val})
     end
-    #@return [String] A description of the rights defined in the default object rights datastream. Can be 'Stanford', 'World', 'Dark' or 'None'
+    # @return [String] A description of the rights defined in the default object rights datastream. Can be 'Stanford', 'World', 'Dark' or 'None'
     def default_rights
-      xml=self.defaultObjectRights.ng_xml
+      xml = defaultObjectRights.ng_xml
       if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
         'Stanford'
       elsif xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length ==1
@@ -149,11 +149,11 @@ module Dor
         'None'
       end
     end
-    #Set the rights in default object rights
-    #@param rights [String] Stanford, World, Dark, or None
+    # Set the rights in default object rights
+    # @param rights [String] Stanford, World, Dark, or None
     def default_rights=(rights)
-      rights=rights.downcase
-      rights_xml = self.defaultObjectRights.ng_xml
+      rights = rights.downcase
+      rights_xml = defaultObjectRights.ng_xml
       rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
         node.children.remove
         world_node=Nokogiri::XML::Node.new((rights=='dark' ? 'none' : 'world'),rights_xml)
@@ -184,30 +184,30 @@ module Dor
     end
 
     def desc_metadata_format
-      self.administrativeMetadata.metadata_format.first
+      administrativeMetadata.metadata_format.first
     end
     def desc_metadata_format=(format)
       #create the node if it isnt there already
-      unless self.administrativeMetadata.metadata_format.first
-        self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :metadata_format)
+      unless administrativeMetadata.metadata_format.first
+        administrativeMetadata.add_child_node(administrativeMetadata.ng_xml.root, :metadata_format)
       end
-      self.administrativeMetadata.update_values({[:metadata_format] => format})
+      administrativeMetadata.update_values({[:metadata_format] => format})
     end
     def desc_metadata_source
-      self.administrativeMetadata.metadata_source.first
+      administrativeMetadata.metadata_source.first
     end
     def desc_metadata_source=(source)
       #create the node if it isnt there already
-      unless self.administrativeMetadata.metadata_source.first
-        self.administrativeMetadata.add_child_node(self.administrativeMetadata.ng_xml.root, :metadata_source)
+      unless administrativeMetadata.metadata_source.first
+        administrativeMetadata.add_child_node(administrativeMetadata.ng_xml.root, :metadata_source)
       end
-      self.administrativeMetadata.update_values({[:metadata_source] => format})
+      administrativeMetadata.update_values({[:metadata_source] => format})
     end
     #List of default workflows, used to provide choices at registration
     #@return [Array] and array of pids, ex ['druid:ab123cd4567']
     def default_workflows
-      xml=self.administrativeMetadata.ng_xml
-      nodes=self.administrativeMetadata.term_values(:registration, :workflow_id)
+      xml=administrativeMetadata.ng_xml
+      nodes=administrativeMetadata.term_values(:registration, :workflow_id)
       if nodes.length > 0
         wfs=[]
         nodes.each do |node|
@@ -221,7 +221,7 @@ module Dor
     #set a single default workflow
     #@param wf [String] the name of the workflow, ex. 'digitizationWF'
     def default_workflow=(wf)
-      xml = self.administrativeMetadata.ng_xml
+      xml = administrativeMetadata.ng_xml
       nodes=xml.search('//registration/workflow')
       if nodes.first
         nodes.first['id']=wf

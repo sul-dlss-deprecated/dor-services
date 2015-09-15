@@ -98,7 +98,7 @@ describe Dor::CleanupResetService do
       expect(File.exists?(base_workspace_druid_path.to_s+"_v1")).to be_falsey
       expect(File.exists?(base_assembly_druid_dir)).to be_falsey
     end
-        
+
   end
 
   #cleanup_reset_workspace_content

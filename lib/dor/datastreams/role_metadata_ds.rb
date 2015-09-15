@@ -34,7 +34,7 @@ class RoleMetadataDS < ActiveFedora::OmDatastream
   end
 
   def to_solr(solr_doc=Hash.new, *args)
-    self.find_by_xpath('/roleMetadata/role/*').each do |actor|
+    find_by_xpath('/roleMetadata/role/*').each do |actor|
       role_type = actor.parent['type']
       val = [actor.at_xpath('identifier/@type'), actor.at_xpath('identifier/text()')].join ':'
       add_solr_value(solr_doc, "apo_role_#{actor.name}_#{role_type}", val, :string, [:symbol])

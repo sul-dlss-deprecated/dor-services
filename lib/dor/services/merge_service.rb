@@ -3,7 +3,7 @@ module Dor
   class MergeService
 
     def self.merge_into_primary primary_druid, secondary_druids, tag, logger = nil
-      # TODO test the secondary_obj to see if we've processed it already
+      # TODO: test the secondary_obj to see if we've processed it already
       merge_service = Dor::MergeService.new primary_druid, secondary_druids, tag, logger
       merge_service.check_objects_editable
       merge_service.move_metadata_and_content
@@ -52,7 +52,7 @@ module Dor
           src_resource.xpath("//file/@id").map {|id| id.value }.each do |file_id|
             copy_path = sec_druid.find_content file_id
             new_name = secondary.new_secondary_file_name(file_id, sequence)
-            # TODO verify new_name exists in primary_cm?
+            # TODO: verify new_name exists in primary_cm?
             FileUtils.cp(copy_path, File.join(dest_path, "/#{new_name}"))
           end
         end
@@ -78,13 +78,13 @@ module Dor
     end
 
     # Remove content from stacks
-    # TODO might set workflow status in future for robot to do
+    # TODO: might set workflow status in future for robot to do
     def unshelve
       DigitalStacksService.prune_stacks_dir @current_secondary.pid
     end
 
     # Withdraw item from Purl
-    # TODO might set workflow status in future for robot to do
+    # TODO: might set workflow status in future for robot to do
     def unpublish
       @current_secondary.publish_metadata
     end

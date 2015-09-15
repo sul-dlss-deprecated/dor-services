@@ -42,10 +42,10 @@ module Dor
     # don't allow self.workflows.new? to work if we load the object using
     # .load_instance_from_solr.
     def set_workflows_datastream_location
-      return if self.respond_to?(:inner_object) && self.inner_object.is_a?(ActiveFedora::SolrDigitalObject)
-      return unless self.workflows.new?
+      return if self.respond_to?(:inner_object) && inner_object.is_a?(ActiveFedora::SolrDigitalObject)
+      return unless workflows.new?
       workflows.mimeType   = 'application/xml'
-      workflows.dsLocation = File.join(Dor::Config.workflow.url,"dor/objects/#{self.pid}/workflows")
+      workflows.dsLocation = File.join(Dor::Config.workflow.url,"dor/objects/#{pid}/workflows")
     end
 
     def empty_datastream?(datastream)
@@ -63,7 +63,7 @@ module Dor
     # Returns the path to it or nil.
     def find_metadata_file(datastream)
       druid = DruidTools::Druid.new(pid, Dor::Config.stacks.local_workspace_root)
-      return druid.find_metadata("#{datastream}.xml")
+      druid.find_metadata("#{datastream}.xml")
     end
 
     # Takes the name of a datastream, as a string (fooMetadata).
@@ -85,7 +85,7 @@ module Dor
       elsif force || empty_datastream?(ds)
         meth = "build_#{datastream}_datastream".to_sym
         if respond_to?(meth)
-          content = self.send(meth, ds)
+          content = send(meth, ds)
           ds.save unless ds.digital_object.new?
         end
       end
@@ -93,7 +93,7 @@ module Dor
       if is_required && empty_datastream?(ds)
         raise "Required datastream #{datastream} could not be populated!"
       end
-      return ds
+      ds
     end
 
     def cleanup
@@ -101,14 +101,14 @@ module Dor
     end
 
     def milestones
-      Dor::WorkflowService.get_milestones('dor',self.pid)
+      Dor::WorkflowService.get_milestones('dor',pid)
     end
 
     # @return [Hash] including :current_version, :status_code and :status_time
     def status_info
       current_version = '1'
       begin
-        current_version = self.versionMetadata.current_version_id
+        current_version = versionMetadata.current_version_id
       rescue
       end
 
@@ -132,7 +132,7 @@ module Dor
         status_time = time
       end
 
-      return {:current_version => current_version, :status_code => status_code, :status_time => status_time}
+      {:current_version => current_version, :status_code => status_code, :status_time => status_time}
     end
 
     # @param [Boolean] include_time
@@ -144,14 +144,14 @@ module Dor
       #use the translation table to get the appropriate verbage for the latest step
       result = "v#{current_version} #{STATUS_CODE_DISP_TXT[status_code]}"
       result += " #{format_date(status_time)}" if include_time
-      return result
+      result
     end
 
     # return the text translation of the status code, minus any trailing parenthetical explanation
     # e.g. 'In accessioning (described)' and 'In accessioning (described, published)' both come back
     # as 'In accessioning'
     def simplified_status_code_disp_txt(status_code)
-      return STATUS_CODE_DISP_TXT[status_code].gsub(/\(.*\)$/, '').strip
+      STATUS_CODE_DISP_TXT[status_code].gsub(/\(.*\)$/, '').strip
     end
 
     def to_solr(solr_doc=Hash.new, *args)
@@ -159,7 +159,7 @@ module Dor
       sortable_milestones = {}
       current_version='1'
       begin
-        current_version = self.versionMetadata.current_version_id
+        current_version = versionMetadata.current_version_id
       rescue
       end
       current_version_num=current_version.to_i
@@ -167,12 +167,12 @@ module Dor
       if self.respond_to?('versionMetadata')
         #add an entry with version id, tag and description for each version
         while current_version_num > 0
-          add_solr_value(solr_doc, 'versions', current_version_num.to_s + ';' + self.versionMetadata.tag_for_version(current_version_num.to_s) + ';' + self.versionMetadata.description_for_version(current_version_num.to_s), :string, [:displayable])
+          add_solr_value(solr_doc, 'versions', current_version_num.to_s + ';' + versionMetadata.tag_for_version(current_version_num.to_s) + ';' + versionMetadata.description_for_version(current_version_num.to_s), :string, [:displayable])
           current_version_num -= 1
         end
       end
 
-      self.milestones.each do |milestone|
+      milestones.each do |milestone|
         timestamp = milestone[:at].utc.xmlschema
         sortable_milestones[milestone[:milestone]] ||= []
         sortable_milestones[milestone[:milestone]] << timestamp
@@ -195,7 +195,7 @@ module Dor
       end
       solr_doc["status_ssi"] = status # status is singular (i.e. the current one)
       solr_doc["current_version_isi"] = current_version.to_i
-      solr_doc["modified_latest_dttsi"] = self.modified_date.to_datetime.utc.strftime('%FT%TZ')
+      solr_doc["modified_latest_dttsi"] = modified_date.to_datetime.utc.strftime('%FT%TZ')
       add_solr_value(solr_doc, "rights", rights, :string, [:symbol]) if self.respond_to? :rights
 
       status_info_hash = status_info()
@@ -203,7 +203,7 @@ module Dor
       add_solr_value(solr_doc, 'processing_status_text', simplified_status_code_disp_txt(status_code), :string, [:stored_sortable])
       solr_doc['processing_status_code_isi'] = status_code # no _isi in Solrizer's default descriptors
 
-      return solr_doc
+      solr_doc
     end
 
     # Initilizes workflow for the object in the workflow service
@@ -216,7 +216,7 @@ module Dor
       priority = workflows.current_priority if priority == 0
       opts = { :create_ds => create_ds, :lane_id => default_workflow_lane }
       opts[:priority] = priority if priority > 0
-      Dor::WorkflowService.create_workflow(Dor::WorkflowObject.initial_repo(name), self.pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
+      Dor::WorkflowService.create_workflow(Dor::WorkflowObject.initial_repo(name), pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
     end
 
     private

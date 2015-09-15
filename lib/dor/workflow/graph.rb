@@ -12,7 +12,7 @@ class Graph
   attr_reader :repo, :name, :processes, :graph, :root
 
   def self.from_config(name, config, parent = nil)
-    wf = self.new(config['repository'], name, parent)
+    wf = new(config['repository'], name, parent)
     config.keys.each { |p| wf.add_process(p.to_s) unless RESERVED_KEYS.include?(p) }
     config.keys.each { |p|
       next unless wf.processes[p]
@@ -26,11 +26,11 @@ class Graph
       }
     }
     wf.finish
-    return wf
+    wf
   end
 
   def self.from_processes(repo, name, processes, parent = nil)
-    wf = self.new(repo, name, parent)
+    wf = new(repo, name, parent)
     processes.each { |p|
       wf.add_process(p.name).status = p.state || 'unknown'
     }
@@ -45,7 +45,7 @@ class Graph
       }
     }
     wf.finish
-    return wf
+    wf
   end
 
   def initialize(repo, name, parent = nil)
@@ -53,7 +53,7 @@ class Graph
     @name = name
     if parent.nil?
       @graph = GraphViz.new(qname)
-      @root = self.add_nodes(name)
+      @root = add_nodes(name)
     else
       @graph = parent.subgraph(qname)
       @root = parent.add_nodes(name)
@@ -71,7 +71,7 @@ class Graph
     pqname = name.split(/:/).length == 3 ? name : [qname,name].join(':')
     p = Process.new(self, pqname, name)
     @processes[name] = p
-    return p
+    p
   end
 
   def finish
@@ -83,11 +83,11 @@ class Graph
     end
 
     @root.fontname = 'Helvetica'
-    return self
+    self
   end
 
   def inspect
-    "#{self.to_s[0..-2]} #{repo}:#{name} (#{processes.keys.join(', ')})>"
+    "#{to_s[0..-2]} #{repo}:#{name} (#{processes.keys.join(', ')})>"
   end
 
   def method_missing(sym,*args)
@@ -109,7 +109,7 @@ class Graph
       @node.shape = 'box'
       @node.label = name
       @prerequisites = []
-      self.set_status('unknown')
+      set_status('unknown')
     end
 
     def id
@@ -131,11 +131,11 @@ class Graph
 
     def set_status(s)
       self.status = s
-      return self
+      self
     end
 
     def depends_on(*processes)
-      wf1 = self.id.split(/:/)[0..1].join(':')
+      wf1 = id.split(/:/)[0..1].join(':')
       processes.each { |process|
         wf2 = process.id.split(/:/)[0..1].join(':')
         edge = (process.node << @node)
@@ -143,9 +143,9 @@ class Graph
         edge.arrowhead = 'none'
         edge.arrowtail = 'none'
         edge.style = 'dashed' if (wf1 != wf2)
-        self.prerequisites << process
+        prerequisites << process
       }
-      return self
+      self
     end
 
     def same_as(process)

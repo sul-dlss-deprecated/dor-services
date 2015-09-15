@@ -31,7 +31,7 @@ module Dor
     # indexed.
     # @param [String] pid The object's PID
     def find pid, opts={}
-      self.find_all(%{id:"#{pid}"}, opts).first || self.load_instance(pid)
+      find_all(%{id:"#{pid}"}, opts).first || load_instance(pid)
     end
 
     def find_all query, opts={}

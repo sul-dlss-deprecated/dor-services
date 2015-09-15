@@ -104,7 +104,7 @@ describe Dor::Processable do
 
   describe 'to_solr' do
     before :each do
-      xml='<?xml version="1.0" encoding="UTF-8"?>
+      xml = '<?xml version="1.0" encoding="UTF-8"?>
       <lifecycle objectId="druid:gv054hp4128">
       <milestone date="2012-01-26T21:06:54-0800" version="2">published</milestone>
       <milestone date="2012-10-29T16:30:07-0700" version="2">opened</milestone>
@@ -135,7 +135,7 @@ describe Dor::Processable do
       </versionMetadata>
       '
 
-      xml=Nokogiri::XML(xml)
+      xml = Nokogiri::XML(xml)
       allow(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
       allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
       @versionMD = Dor::VersionMetadataDS.from_xml(dsxml)
@@ -143,12 +143,12 @@ describe Dor::Processable do
     end
 
     it 'should include the semicolon delimited version, an earliest published date and a status' do
-#     allow(@item.descMetadata).to receive(:to_solr).and_return({})
+      #     allow(@item.descMetadata).to receive(:to_solr).and_return({})
       expect(Dor.logger).to receive(:warn)
       solr_doc=@item.to_solr
       #lifecycle_display should have the semicolon delimited version
       expect(solr_doc['lifecycle_ssim']).to include("published:2012-01-27T05:06:54Z;2")
-      #published date should be the first published date
+      # published date should be the first published date
       expect(solr_doc).to match a_hash_including('status_ssi' => 'v4 In accessioning (described, published)')
       expect(solr_doc).to match a_hash_including('opened_dttsim' => including('2012-11-07T00:21:02Z'))
       expect(solr_doc['published_earliest_dttsi']).to eq("2012-01-27T05:06:54Z")
@@ -173,13 +173,13 @@ describe Dor::Processable do
     end
     it 'should create a modified_latest date field' do
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
-      solr_doc=@item.to_solr
-      #the facet field should have a date in it.
+      solr_doc = @item.to_solr
+      # the facet field should have a date in it.
       expect(solr_doc['modified_latest_dttsi']).to match /^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\dZ$/
     end
     it 'should create a version field for each version, including the version number, tag and description' do
       expect(Dor.logger).to receive(:warn).with(/Cannot index druid:ab123cd4567\.descMetadata.*Dor::Item#generate_dublin_core produced incorrect xml/)
-      solr_doc=@item.to_solr
+      solr_doc = @item.to_solr
       expect(solr_doc['versions_ssm'].length).to be > 1
       expect(solr_doc['versions_ssm']).to include("4;2.2.0;Another typo")
     end
@@ -201,7 +201,7 @@ describe Dor::Processable do
       '
       allow(@item).to receive(:versionMetadata).and_return(Dor::VersionMetadataDS.from_xml(dsxml))
       expect(Dor.logger).to receive(:warn).with(/Cannot index druid:ab123cd4567\.descMetadata.*Dor::Item#generate_dublin_core produced incorrect xml/)
-      solr_doc=@item.to_solr
+      solr_doc = @item.to_solr
       expect(solr_doc['versions_ssm']).to include("4;2.2.0;")
     end
   end
@@ -218,7 +218,7 @@ describe Dor::Processable do
     end
     before :each do
       allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
-      @versionMD=double(Dor::VersionMetadataDS)
+      @versionMD = double(Dor::VersionMetadataDS)
       expect(@item).to receive(:versionMetadata).and_return(@versionMD)
     end
     it 'should generate a status string' do

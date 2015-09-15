@@ -37,7 +37,7 @@ describe Dor::ContentMetadataDS do
     }
     @files = [@file]
     @cm = @item.contentMetadata
- #  expect(@cm).not_to receive(:save)
+    # expect(@cm).not_to receive(:save)
   end
 
   describe 'add_resource' do
@@ -123,7 +123,7 @@ describe Dor::ContentMetadataDS do
   describe 'rename_file' do
     it 'should update the file id' do
       @cm.rename_file('gw177fc7976_05_0001.jp2','test.jp2')
-      file=@cm.ng_xml.search('//file[@id=\'test.jp2\']')
+      file = @cm.ng_xml.search('//file[@id=\'test.jp2\']')
       expect(file.length).to eq(1)
     end
   end
@@ -157,7 +157,7 @@ describe Dor::ContentMetadataDS do
   end
   describe 'to_solr' do
     before :each do
-      @doc=@cm.to_solr
+      @doc = @cm.to_solr
     end
     it 'should generate required fields' do
       {
