@@ -33,14 +33,6 @@ describe Dor::Governable do
     it 'should raise an exception if the rights option doesnt match the accepted values' do
       expect{@item.set_read_rights('mambo')}.to raise_error(ArgumentError)
     end
-    it 'should segfault' do
-      skip 'No expectation implemented'
-      doc = Nokogiri::XML('<oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
-        <dc:identifier>druid:ab123cd4567</dc:identifier>
-      </oai_dc:dc>')
-      node = doc.xpath('//element').first
-      new_node = doc.root.clone
-    end
   end
 
   describe 'set_read_rights' do
@@ -243,39 +235,34 @@ describe Dor::Governable do
   end
 
   describe '#default_workflow_lane' do
+    before :each do
+      @item = instantiate_fixture('druid:ab123cd4567', GovernableItem)
+    end
     it "returns the default lane as defined in the object's APO" do
       apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
-      item = instantiate_fixture('druid:ab123cd4567', GovernableItem)
-      allow(item).to receive(:admin_policy_object) { apo }
-      expect(item.default_workflow_lane).to eq 'fast'
+      allow(@item).to receive(:admin_policy_object) { apo }
+      expect(@item.default_workflow_lane).to eq 'fast'
     end
-
     it "returns the value 'default' if the object does not have an APO" do
-      item = instantiate_fixture('druid:ab123cd4567', GovernableItem)
-      allow(item).to receive(:admin_policy_object) { nil }
-      expect(item.default_workflow_lane).to eq 'default'
+      allow(@item).to receive(:admin_policy_object) { nil }
+      expect(@item.default_workflow_lane).to eq 'default'
     end
-
     it "returns the value 'default' if the object's APO does not have a default lane defined" do
       apo  = instantiate_fixture('druid:zt570tx3016', Dor::AdminPolicyObject)
-      item = instantiate_fixture('druid:ab123cd4567', GovernableItem)
-      allow(item).to receive(:admin_policy_object) { apo }
-      expect(item.default_workflow_lane).to eq 'default'
+      allow(@item).to receive(:admin_policy_object) { apo }
+      expect(@item.default_workflow_lane).to eq 'default'
     end
-
     it "returns the value 'default' for a newly created object" do
       apo  = instantiate_fixture('druid:zt570tx3016', Dor::AdminPolicyObject)
       item = GovernableItem.new
       item.admin_policy_object = apo
       expect(item.default_workflow_lane).to eq 'default'
     end
-
   end
 
   describe 'add_collection' do
     it 'should add a collection' do
       @item.add_collection('druid:oo201oo0002')
-      rels_ext_ds = @item.datastreams['RELS-EXT']
       expect(@item.collection_ids).to include('druid:oo201oo0002')
     end
   end
@@ -283,7 +270,6 @@ describe Dor::Governable do
   describe 'remove_collection' do
     it 'should delete a collection' do
       @item.add_collection('druid:oo201oo0002')
-      rels_ext_ds = @item.datastreams['RELS-EXT']
       expect(@item.collection_ids).to include('druid:oo201oo0002')
       @item.remove_collection('druid:oo201oo0002')
     end
