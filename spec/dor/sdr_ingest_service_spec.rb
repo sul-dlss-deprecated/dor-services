@@ -60,81 +60,74 @@ describe Dor::SdrIngestService do
     end
   end
 
-  specify 'SdrIngestService.transfer with content changes' do
-    druid = 'druid:dd116zh0343'
-    dor_item = double('dor_item')
-    expect(dor_item).to receive(:initialize_workflow).with('sdrIngestWF', false)
-    allow(dor_item).to receive(:pid).and_return(druid)
-    signature_catalog = Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
-    expect(Dor::SdrIngestService).to receive(:get_signature_catalog).with(druid).and_return(signature_catalog)
-    metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
-    expect(Dor::SdrIngestService).to receive(:extract_datastreams).with(dor_item, an_instance_of(DruidTools::Druid)).and_return(metadata_dir)
-    Dor::SdrIngestService.transfer(dor_item)
-    files = []
-    @fixtures.join('export/dd116zh0343').find { |f| files << f.relative_path_from(@fixtures).to_s }
-    expect(files.sort).to eq([
-        'export/dd116zh0343',
-        'export/dd116zh0343/bag-info.txt',
-        'export/dd116zh0343/bagit.txt',
-        'export/dd116zh0343/data',
-        'export/dd116zh0343/data/content',
-        'export/dd116zh0343/data/content/folder1PuSu',
-        'export/dd116zh0343/data/content/folder1PuSu/story3m.txt',
-        'export/dd116zh0343/data/content/folder1PuSu/story5a.txt',
-        'export/dd116zh0343/data/content/folder3PaSd',
-        'export/dd116zh0343/data/content/folder3PaSd/storyDm.txt',
-        'export/dd116zh0343/data/content/folder3PaSd/storyFa.txt',
-        'export/dd116zh0343/data/metadata',
-        'export/dd116zh0343/data/metadata/contentMetadata.xml',
-        'export/dd116zh0343/data/metadata/tech-generated.xml',
-        'export/dd116zh0343/data/metadata/technicalMetadata.xml',
-        'export/dd116zh0343/data/metadata/versionMetadata.xml',
-        'export/dd116zh0343/manifest-md5.txt',
-        'export/dd116zh0343/manifest-sha1.txt',
-        'export/dd116zh0343/manifest-sha256.txt',
-        'export/dd116zh0343/tagmanifest-md5.txt',
-        'export/dd116zh0343/tagmanifest-sha1.txt',
-        'export/dd116zh0343/tagmanifest-sha256.txt',
-        'export/dd116zh0343/versionAdditions.xml',
-        'export/dd116zh0343/versionInventory.xml'])
+  describe 'transfer' do
+    before :each do
+      druid = 'druid:dd116zh0343'
+      @dor_item = double('dor_item')
+      expect(@dor_item).to receive(:initialize_workflow).with('sdrIngestWF', false)
+      allow(@dor_item).to receive(:pid).and_return(druid)
+      signature_catalog = Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
+      @metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
+      expect(Dor::SdrIngestService).to receive(:get_signature_catalog).with(druid).and_return(signature_catalog)
+      expect(Dor::SdrIngestService).to receive(:extract_datastreams).with(@dor_item, an_instance_of(DruidTools::Druid)).and_return(@metadata_dir)
+      @files = []
+    end
+    specify 'with content changes' do
+      Dor::SdrIngestService.transfer(@dor_item)
+      @fixtures.join('export/dd116zh0343').find { |f| @files << f.relative_path_from(@fixtures).to_s }
+      expect(@files.sort).to eq([
+          'export/dd116zh0343',
+          'export/dd116zh0343/bag-info.txt',
+          'export/dd116zh0343/bagit.txt',
+          'export/dd116zh0343/data',
+          'export/dd116zh0343/data/content',
+          'export/dd116zh0343/data/content/folder1PuSu',
+          'export/dd116zh0343/data/content/folder1PuSu/story3m.txt',
+          'export/dd116zh0343/data/content/folder1PuSu/story5a.txt',
+          'export/dd116zh0343/data/content/folder3PaSd',
+          'export/dd116zh0343/data/content/folder3PaSd/storyDm.txt',
+          'export/dd116zh0343/data/content/folder3PaSd/storyFa.txt',
+          'export/dd116zh0343/data/metadata',
+          'export/dd116zh0343/data/metadata/contentMetadata.xml',
+          'export/dd116zh0343/data/metadata/tech-generated.xml',
+          'export/dd116zh0343/data/metadata/technicalMetadata.xml',
+          'export/dd116zh0343/data/metadata/versionMetadata.xml',
+          'export/dd116zh0343/manifest-md5.txt',
+          'export/dd116zh0343/manifest-sha1.txt',
+          'export/dd116zh0343/manifest-sha256.txt',
+          'export/dd116zh0343/tagmanifest-md5.txt',
+          'export/dd116zh0343/tagmanifest-sha1.txt',
+          'export/dd116zh0343/tagmanifest-sha256.txt',
+          'export/dd116zh0343/versionAdditions.xml',
+          'export/dd116zh0343/versionInventory.xml'])
+    end
+    specify 'with no change in content' do
+      v1_content_metadata = @fixtures.join('sdr_repo/dd116zh0343/v0001/data/metadata/contentMetadata.xml')
+      expect(Dor::SdrIngestService).to receive(:get_content_metadata).with(@metadata_dir).and_return(v1_content_metadata.read)
+      Dor::SdrIngestService.transfer(@dor_item)
+      @fixtures.join('export/dd116zh0343').find { |f| @files << f.relative_path_from(@fixtures).to_s }
+      expect(@files.sort).to eq([
+          'export/dd116zh0343',
+          'export/dd116zh0343/bag-info.txt',
+          'export/dd116zh0343/bagit.txt',
+          'export/dd116zh0343/data',
+          'export/dd116zh0343/data/metadata',
+          'export/dd116zh0343/data/metadata/contentMetadata.xml',
+          'export/dd116zh0343/data/metadata/tech-generated.xml',
+          'export/dd116zh0343/data/metadata/technicalMetadata.xml',
+          'export/dd116zh0343/data/metadata/versionMetadata.xml',
+          'export/dd116zh0343/manifest-md5.txt',
+          'export/dd116zh0343/manifest-sha1.txt',
+          'export/dd116zh0343/manifest-sha256.txt',
+          'export/dd116zh0343/tagmanifest-md5.txt',
+          'export/dd116zh0343/tagmanifest-sha1.txt',
+          'export/dd116zh0343/tagmanifest-sha256.txt',
+          'export/dd116zh0343/versionAdditions.xml',
+          'export/dd116zh0343/versionInventory.xml'])
+    end
   end
 
-  specify 'SdrIngestService.transfer with no change in content' do
-    druid = 'druid:dd116zh0343'
-    dor_item = double('dor_item')
-    expect(dor_item).to receive(:initialize_workflow).with('sdrIngestWF', false)
-    allow(dor_item).to receive(:pid).and_return(druid)
-    signature_catalog = Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
-    expect(Dor::SdrIngestService).to receive(:get_signature_catalog).with(druid).and_return(signature_catalog)
-    metadata_dir        = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
-    v1_content_metadata = @fixtures.join('sdr_repo/dd116zh0343/v0001/data/metadata/contentMetadata.xml')
-    expect(Dor::SdrIngestService).to receive(:get_content_metadata).with(metadata_dir).and_return(v1_content_metadata.read)
-    expect(Dor::SdrIngestService).to receive(:extract_datastreams).with(dor_item, an_instance_of(DruidTools::Druid)).and_return(metadata_dir)
-
-    Dor::SdrIngestService.transfer(dor_item)
-    files = []
-    @fixtures.join('export/dd116zh0343').find { |f| files << f.relative_path_from(@fixtures).to_s }
-    expect(files.sort).to eq([
-        'export/dd116zh0343',
-        'export/dd116zh0343/bag-info.txt',
-        'export/dd116zh0343/bagit.txt',
-        'export/dd116zh0343/data',
-        'export/dd116zh0343/data/metadata',
-        'export/dd116zh0343/data/metadata/contentMetadata.xml',
-        'export/dd116zh0343/data/metadata/tech-generated.xml',
-        'export/dd116zh0343/data/metadata/technicalMetadata.xml',
-        'export/dd116zh0343/data/metadata/versionMetadata.xml',
-        'export/dd116zh0343/manifest-md5.txt',
-        'export/dd116zh0343/manifest-sha1.txt',
-        'export/dd116zh0343/manifest-sha256.txt',
-        'export/dd116zh0343/tagmanifest-md5.txt',
-        'export/dd116zh0343/tagmanifest-sha1.txt',
-        'export/dd116zh0343/tagmanifest-sha256.txt',
-        'export/dd116zh0343/versionAdditions.xml',
-        'export/dd116zh0343/versionInventory.xml'])
-  end
-
-  specify 'SdrIngestService.get_signature_catalog' do
+  specify 'get_signature_catalog' do
     druid = 'druid:zz000zz0000'
     resource = Dor::Config.sdr.rest_client["objects/#{druid}/manifest/signatureCatalog.xml"]
     FakeWeb.register_uri(:get, resource.url, :body => '<signatureCatalog objectId="druid:zz000zz0000" versionId="0" catalogDatetime="" fileCount="0" byteCount="0" blockCount="0"/>')
@@ -145,7 +138,7 @@ describe Dor::SdrIngestService do
     expect(catalog.version_id).to eq 0
   end
 
-  specify 'SdrIngestService.extract_datastreams' do
+  specify 'extract_datastreams' do
     dor_item = double('workitem')
     metadata_dir = double('metadata dir')
     workspace = double('workspace')
@@ -168,7 +161,7 @@ describe Dor::SdrIngestService do
     Dor::SdrIngestService.extract_datastreams(dor_item, workspace)
   end
 
-  specify 'SdrIngestService.get_version_inventory' do
+  specify 'get_version_inventory' do
     metadata_dir = double(Pathname)
     druid = 'druid:ab123cd4567'
     version_id = 2
@@ -182,7 +175,7 @@ describe Dor::SdrIngestService do
     expect(result.groups.size).to eq 2
   end
 
-  specify 'SdrIngestService.get_content_inventory' do
+  specify 'get_content_inventory' do
     metadata_dir = @fixtures.join('workspace/ab/123/cd/4567/ab123cd4567/metadata')
     druid = 'druid:ab123cd4567'
     version_id = 2
@@ -202,7 +195,7 @@ describe Dor::SdrIngestService do
     expect(version_inventory.groups.size).to eq 0
   end
 
-  specify 'SdrIngestService.get_content_metadata' do
+  specify 'get_content_metadata' do
     metadata_dir = @fixtures.join('workspace/ab/123/cd/4567/ab123cd4567/metadata')
     content_metadata = Dor::SdrIngestService.get_content_metadata(metadata_dir)
     expect(content_metadata).to match(/<contentMetadata /)
@@ -213,7 +206,7 @@ describe Dor::SdrIngestService do
     expect(content_metadata).to be_nil
   end
 
-  specify 'SdrIngestService.get_metadata_file_group' do
+  specify 'get_metadata_file_group' do
     metadata_dir = double(Pathname)
     file_group = double(Moab::FileGroup)
     expect(FileGroup).to receive(:new).with({:group_id => 'metadata'}).and_return(file_group)
@@ -221,18 +214,18 @@ describe Dor::SdrIngestService do
     Dor::SdrIngestService.get_metadata_file_group(metadata_dir)
   end
 
-  specify 'SdrIngestService.verify_version_id' do
+  specify 'verify_version_id' do
     expect(Dor::SdrIngestService.verify_version_id('/mypath/myfile', 2, 2)).to be_truthy
     expect{Dor::SdrIngestService.verify_version_id('/mypath/myfile', 1, 2)}.to raise_exception('Version mismatch in /mypath/myfile, expected 1, found 2')
   end
 
-  specify 'SdrIngestService.vmfile_version_id' do
+  specify 'vmfile_version_id' do
     metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
     vmfile = metadata_dir.join('versionMetadata.xml')
     expect(Dor::SdrIngestService.vmfile_version_id(vmfile)).to eq 2
   end
 
-  specify 'SdrIngestService.verify_pathname' do
+  specify 'verify_pathname' do
     metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
     expect(Dor::SdrIngestService.verify_pathname(metadata_dir)).to be_truthy
     vmfile = metadata_dir.join('versionMetadata.xml')
