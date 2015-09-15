@@ -7,29 +7,25 @@ describe Dor::SdrIngestService do
     @fixtures = fixtures = Pathname(File.dirname(__FILE__)).join('../fixtures')
     Dor::Config.push! do
       sdr.local_workspace_root fixtures.join('workspace').to_s
-      sdr.local_export_home fixtures.join('export').to_s
+      sdr.local_export_home    fixtures.join('export').to_s
     end
 
     @export_dir = Pathname(Dor::Config.sdr.local_export_home)
-    if @export_dir.exist? && @export_dir.basename.to_s == 'export'
-      @export_dir.rmtree
-    end
+    @export_dir.rmtree if @export_dir.exist? && @export_dir.basename.to_s == 'export'
     @export_dir.mkdir
-    @druid = 'druid:aa123bb4567'
+    @druid        = 'druid:aa123bb4567'
     @agreement_id = 'druid:xx098yy7654'
   end
 
   after(:each) do
     Dor::Config.pop!
-    if @export_dir.exist? && @export_dir.basename.to_s == 'export'
-      @export_dir.rmtree
-    end
+    @export_dir.rmtree if @export_dir.exist? && @export_dir.basename.to_s == 'export'
   end
 
   it 'can access configuration settings' do
     sdr = Dor::Config.sdr
-    expect(sdr.local_workspace_root).to eql @fixtures.join('workspace').to_s
-    expect(sdr.local_export_home).to eql @fixtures.join('export').to_s
+    expect(sdr.local_workspace_root).to eq @fixtures.join('workspace').to_s
+    expect(sdr.local_export_home).to eq @fixtures.join('export').to_s
   end
 
   it 'can find the fixtures workspace and export folders' do
@@ -37,40 +33,31 @@ describe Dor::SdrIngestService do
     expect(File.directory?(Dor::Config.sdr.local_export_home)).to be_truthy
   end
 
-  it 'can retrieve content of a required metadata datastream' do
-    ds_name = 'myMetadata'
-    metadata_string = '<metadata/>'
-    mock_datastream = double('datastream')
-    expect(mock_datastream).to receive(:new?).and_return(false)
-    expect(mock_datastream).to receive(:content).and_return(metadata_string)
-    ds_hash = {ds_name => mock_datastream }
-    mock_item = double('item')
-    expect(mock_item).to receive(:datastreams).exactly(3).times.and_return(ds_hash)
-    result = Dor::SdrIngestService.get_datastream_content(mock_item , ds_name, 'required')
-    expect(result).to eql metadata_string
-  end
-
-  it 'can return nil if optional datastream does not exist in the item' do
-    ds_name = 'myMetadata'
-    metadata_string = '<metadata/>'
-    mock_datastream = double('datastream')
-    expect(mock_datastream).to receive(:content).never
-    ds_hash = {ds_name => mock_datastream }
-    mock_item = double('item')
-    expect(mock_item).to receive(:datastreams).and_return(ds_hash)
-    result = Dor::SdrIngestService.get_datastream_content(mock_item , 'dummy', 'optional')
-    expect(result).to be_nil
-  end
-
-  it 'can raise exception if required datastream does not exist in the item' do
-    ds_name = 'myMetadata'
-    metadata_string = '<double/>'
-    mock_datastream = double('datastream')
-    expect(mock_datastream).to receive(:content).never
-    ds_hash = {ds_name => mock_datastream }
-    mock_item = double('item')
-    expect(mock_item).to receive(:datastreams).and_return(ds_hash)
-    expect {Dor::SdrIngestService.get_datastream_content(mock_item , 'dummy', 'required')}.to raise_exception(RuntimeError)
+  describe 'get_datastream_content' do
+    before :each do
+      @ds_name = 'myMetadata'
+      @mock_item = double('item')
+      @mock_datastream = double('datastream')
+    end
+    it 'retrieves content of a required datastream' do
+      metadata_string = '<metadata/>'
+      expect(@mock_datastream).to receive(:new?).and_return(false)
+      expect(@mock_datastream).to receive(:content).and_return(metadata_string)
+      expect(@mock_item).to receive(:datastreams).exactly(3).times.and_return({ @ds_name => @mock_datastream })
+      expect(Dor::SdrIngestService.get_datastream_content(@mock_item, @ds_name, 'required')).to eq metadata_string
+    end
+    context 'when datastream is empty or missing' do
+      before :each do
+        expect(@mock_datastream).not_to receive(:content)
+        expect(@mock_item).to receive(:datastreams).and_return({ @ds_name => @mock_datastream })
+      end
+      it 'returns nil if datastream was optional' do
+        expect(Dor::SdrIngestService.get_datastream_content(@mock_item, 'dummy', 'optional')).to be_nil
+      end
+      it 'raises exception if datastream was required' do
+        expect{Dor::SdrIngestService.get_datastream_content(@mock_item, 'dummy', 'required')}.to raise_exception(RuntimeError)
+      end
+    end
   end
 
   specify 'SdrIngestService.transfer with content changes' do
@@ -235,8 +222,8 @@ describe Dor::SdrIngestService do
   end
 
   specify 'SdrIngestService.verify_version_id' do
-    expect(Dor::SdrIngestService.verify_version_id('/mypath/myfile', expected = 2, found = 2)).to be_truthy
-    expect{Dor::SdrIngestService.verify_version_id('/mypath/myfile', expected = 1, found = 2)}.to raise_exception('Version mismatch in /mypath/myfile, expected 1, found 2')
+    expect(Dor::SdrIngestService.verify_version_id('/mypath/myfile', 2, 2)).to be_truthy
+    expect{Dor::SdrIngestService.verify_version_id('/mypath/myfile', 1, 2)}.to raise_exception('Version mismatch in /mypath/myfile, expected 1, found 2')
   end
 
   specify 'SdrIngestService.vmfile_version_id' do
