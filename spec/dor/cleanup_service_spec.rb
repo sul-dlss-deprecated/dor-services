@@ -14,22 +14,22 @@ describe Dor::CleanupService do
     #   If it's called using Object#instance_eval or Module#class_eval
     #   then the context of the block will be changed and you won't be able to access your instance variables.
     # ModCons is using instance_eval, so you cannot use @fixture_dir in the configure call
-    @fixtures=fixtures=Pathname(File.dirname(__FILE__)).join("../fixtures")
+    @fixtures = fixtures = Pathname(File.dirname(__FILE__)).join('../fixtures')
 
     Dor::Config.push! do
-      cleanup.local_workspace_root fixtures.join("workspace").to_s
-      cleanup.local_export_home fixtures.join("export").to_s
-      cleanup.local_assembly_root fixtures.join("assembly").to_s
+      cleanup.local_workspace_root fixtures.join('workspace').to_s
+      cleanup.local_export_home fixtures.join('export').to_s
+      cleanup.local_assembly_root fixtures.join('assembly').to_s
     end
 
     @druid = 'druid:aa123bb4567'
     @workspace_root_pathname = Pathname(Dor::Config.cleanup.local_workspace_root)
-    @workitem_pathname       = Pathname(DruidTools::Druid.new(@druid,@workspace_root_pathname.to_s).path)
+    @workitem_pathname       = Pathname(DruidTools::Druid.new(@druid, @workspace_root_pathname.to_s).path)
     @workitem_pathname.rmtree if @workitem_pathname.exist?
     @export_pathname         = Pathname(Dor::Config.cleanup.local_export_home)
     @export_pathname.rmtree   if @export_pathname.exist?
     @bag_pathname     = @export_pathname.join(@druid.split(':').last)
-    @tarfile_pathname = @export_pathname.join(@bag_pathname+".tar")
+    @tarfile_pathname = @export_pathname.join(@bag_pathname + '.tar')
   end
 
   before(:each) do
@@ -47,44 +47,44 @@ describe Dor::CleanupService do
     Dor::Config.pop!
   end
 
-  it "can access configuration settings" do
+  it 'can access configuration settings' do
     cleanup = Dor::Config.cleanup
-    expect(cleanup.local_workspace_root).to eql @fixtures.join("workspace").to_s
-    expect(cleanup.local_export_home).to eql @fixtures.join("export").to_s
+    expect(cleanup.local_workspace_root).to eql @fixtures.join('workspace').to_s
+    expect(cleanup.local_export_home).to eql @fixtures.join('export').to_s
   end
 
-  it "can find the fixtures workspace and export folders" do
+  it 'can find the fixtures workspace and export folders' do
     expect(File.directory?(Dor::Config.cleanup.local_workspace_root)).to be_truthy
     expect(File.directory?(Dor::Config.cleanup.local_export_home)).to be_truthy
   end
 
-  specify "Dor::CleanupService.cleanup" do
+  specify 'Dor::CleanupService.cleanup' do
     expect(Dor::CleanupService).to receive(:cleanup_export).once.with(@druid)
     mock_item = double('item')
     expect(mock_item).to receive(:druid).and_return(@druid)
     Dor::CleanupService.cleanup(mock_item)
   end
 
-  specify "Dor::CleanupService.cleanup_export" do
+  specify 'Dor::CleanupService.cleanup_export' do
     expect(Dor::CleanupService).to receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567').to_s)
     expect(Dor::CleanupService).to receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567.tar').to_s)
     Dor::CleanupService.cleanup_export(@druid)
   end
 
-  specify "Dor::CleanupService.remove_branch non-existing branch" do
+  specify 'Dor::CleanupService.remove_branch non-existing branch' do
     @bag_pathname.rmtree if @bag_pathname.exist?
     expect(@bag_pathname).not_to receive(:rmtree)
     Dor::CleanupService.remove_branch(@bag_pathname)
   end
 
-  specify "Dor::CleanupService.remove_branch existing branch" do
+  specify 'Dor::CleanupService.remove_branch existing branch' do
     @bag_pathname.mkpath
     expect(@bag_pathname.exist?).to be_truthy
     expect(@bag_pathname).to receive(:rmtree)
     Dor::CleanupService.remove_branch(@bag_pathname)
   end
 
-  it "can do a complete cleanup" do
+  it 'can do a complete cleanup' do
     expect(@workitem_pathname.join('content').exist?).to be_truthy
     expect(@bag_pathname.exist?).to be_truthy
     expect(@tarfile_pathname.exist?).to be_truthy

@@ -9,7 +9,7 @@ end
 # Same for the canvas template
 
 describe Dor::Presentable do
-  let(:druid) {"druid:bp778zp8790"}
+  let(:druid) {'druid:bp778zp8790'}
 
   let(:pub_xml) { <<-XML
     <?xml version="1.0" encoding="UTF-8"?>

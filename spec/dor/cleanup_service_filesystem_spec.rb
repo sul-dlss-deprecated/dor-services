@@ -37,7 +37,7 @@ describe 'Dor::CleanupService specs that check the file system' do
     end
   end
 
-  context "CleanupService.cleanup" do
+  context 'CleanupService.cleanup' do
     let(:item1) { double('item1') }
     let(:item2) { double('item1') }
 
@@ -46,7 +46,7 @@ describe 'Dor::CleanupService specs that check the file system' do
       allow(item2).to receive(:druid) { druid_2 }
     end
 
-    it "correctly prunes directories" do
+    it 'correctly prunes directories' do
       dr1_wspace = DruidTools::Druid.new(druid_1, workspace_dir)
       dr2_wspace = DruidTools::Druid.new(druid_2, workspace_dir)
       dr1_assembly = DruidTools::Druid.new(druid_1, assembly_dir)
@@ -94,7 +94,7 @@ describe 'Dor::CleanupService specs that check the file system' do
       expect(File).not_to exist(File.join(workspace_dir, 'cd'))
     end
 
-    it "cleans up without assembly content" do
+    it 'cleans up without assembly content' do
       dr1_wspace = DruidTools::Druid.new(druid_1, workspace_dir)
       dr1_wspace.mkdir
 

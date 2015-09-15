@@ -22,10 +22,10 @@ module Workflow
         'label'        => node.at_xpath('label/text()').to_s,
         'batch_limit'  => node['batch-limit'] ? node['batch-limit'].to_i : nil,
         'error_limit'  => node['error-limit'] ? node['error-limit'].to_i : nil,
-        'priority'     => node['priority']    ? node['priority'].to_i    : 0,
+        'priority'     => node['priority'] ? node['priority'].to_i : 0,
         'prerequisite' => node.xpath('prereq').collect { |p|
           repo = (p['repository'].nil? || p['repository'] == @repo    ) ? nil : p['repository']
-          wf   = (p['workflow'].nil?   || p['workflow']   == @workflow) ? nil : p['workflow']
+          wf   = (p['workflow'].nil? || p['workflow'] == @workflow) ? nil : p['workflow']
           [repo, wf, p.text.to_s].compact.join(':')
         }
       }
@@ -85,7 +85,7 @@ module Workflow
     def update!(info, new_owner = nil)
       @owner = new_owner unless new_owner.nil?
       if info.is_a? Nokogiri::XML::Node
-        info = Hash[info.attributes.collect { |k,v| [k,v.value] }]
+        info = Hash[info.attributes.collect { |k, v| [k, v.value] }]
       end
       @attrs.merge! info
     end

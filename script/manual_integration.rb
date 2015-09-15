@@ -11,9 +11,9 @@ module Util
     # Returns a StringIO whose underlying String
     # is the contents of the tar file.
     def tar(path)
-      tarfile = StringIO.new("")
+      tarfile = StringIO.new('')
       Gem::Package::TarWriter.new(tarfile) do |tar|
-        Dir[File.join(path, "**/*")].each do |file|
+        Dir[File.join(path, '**/*')].each do |file|
           mode = File.stat(file).mode
           relative_file = file.sub /^#{Regexp.escape path}\/?/, ''
 
@@ -21,7 +21,7 @@ module Util
             tar.mkdir relative_file, mode
           else
             tar.add_file relative_file, mode do |tf|
-              File.open(file, "rb") { |f| tf.write f.read }
+              File.open(file, 'rb') { |f| tf.write f.read }
             end
           end
         end
@@ -35,7 +35,7 @@ module Util
     # returning a new StringIO representing the
     # compressed file.
     def gzip(tarfile)
-      gz = StringIO.new("")
+      gz = StringIO.new('')
       z = Zlib::GzipWriter.new(gz)
       z.write tarfile.string
       z.close # this is necessary!
@@ -66,7 +66,7 @@ module Util
           else
             destination_directory = File.dirname(destination_file)
             FileUtils.mkdir_p destination_directory unless File.directory?(destination_directory)
-            File.open destination_file, "wb" do |f|
+            File.open destination_file, 'wb' do |f|
               f.print tarfile.read
             end
           end
@@ -86,7 +86,7 @@ class MergeIntegrationTest
   end
 
   def delete_objs
-    @pids.map{ |p| 'druid:' + p }.each do |pid|
+    @pids.map { |p| 'druid:' + p }.each do |pid|
       begin
         i = Dor::Item.find pid
         i.delete if i
@@ -97,7 +97,7 @@ class MergeIntegrationTest
 
   def load_foxml(delete = true)
     delete_objs if delete
-    @pids.map{|p| File.join(@fixture_dir, "druid_#{p}.foxml.xml")}.each do |foxml|
+    @pids.map {|p| File.join(@fixture_dir, "druid_#{p}.foxml.xml")}.each do |foxml|
       ActiveFedora::FixtureLoader.import_to_fedora foxml
     end
   end
@@ -114,7 +114,7 @@ class MergeIntegrationTest
   end
 
   def publish_shelve
-    @pids.map{|p| "druid:#{p}"}.each do |pid|
+    @pids.map {|p| "druid:#{p}"}.each do |pid|
       i = Dor::Item.find pid
       change_manifest = Dor::Versioning::FileInventoryDifference.new(i.get_content_diff(:shelve))
       Dor::DigitalStacksService.shelve_to_stacks i.pid, change_manifest.file_sets(:added, :content)
@@ -123,7 +123,7 @@ class MergeIntegrationTest
   end
 
   def merge
-    druids = @pids.map{|p| "druid:#{p}"}
+    druids = @pids.map {|p| "druid:#{p}"}
     Dor::MergeService.merge_into_primary druids.shift, druids
   end
 

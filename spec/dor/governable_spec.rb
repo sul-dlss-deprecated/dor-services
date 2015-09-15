@@ -21,25 +21,25 @@ describe Dor::Governable do
   }
 
   before :each do
-    @item = instantiate_fixture("druid:oo201oo0001", Dor::AdminPolicyObject)
+    @item = instantiate_fixture('druid:oo201oo0001', Dor::AdminPolicyObject)
     # @item.stub(:new_record? => false)
-    allow(Dor::Collection).to receive(:find).with("druid:oo201oo0002").and_return(mock_collection)
+    allow(Dor::Collection).to receive(:find).with('druid:oo201oo0002').and_return(mock_collection)
   end
 
   describe 'set_read_rights error handling' do
     it 'should raise an exception if the rights option doesnt match the accepted values' do
-      expect{@item.set_read_rights('"druid:oo201oo0001"','Something')}.to raise_error(ArgumentError)
+      expect{@item.set_read_rights('"druid:oo201oo0001"', 'Something')}.to raise_error(ArgumentError)
     end
     it 'should raise an exception if the rights option doesnt match the accepted values' do
       expect{@item.set_read_rights('mambo')}.to raise_error(ArgumentError)
     end
     it 'should segfault' do
-      skip "No expectation implemented"
-      doc=Nokogiri::XML('<oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+      skip 'No expectation implemented'
+      doc = Nokogiri::XML('<oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
         <dc:identifier>druid:ab123cd4567</dc:identifier>
       </oai_dc:dc>')
-      node=doc.xpath('//element').first
-      new_node=doc.root.clone
+      node = doc.xpath('//element').first
+      new_node = doc.root.clone
     end
   end
 
@@ -137,13 +137,13 @@ describe Dor::Governable do
     it 'should include a rights facet' do
       allow(@item).to receive(:milestones).and_return({})
       @item.set_read_rights('world')
-      solr_doc=@item.to_solr
+      solr_doc = @item.to_solr
       expect(solr_doc).to match a_hash_including('rights_ssim' => ['World'], :id => @item.pid)
     end
     it 'should shouldnt error if there is nothing in the datastream' do
       allow(@item).to receive(:milestones).and_return({})
       allow(@item).to receive(:rightsMetadata).and_return(ActiveFedora::OmDatastream.new)
-      solr_doc=@item.to_solr
+      solr_doc = @item.to_solr
       expect(solr_doc).not_to include('rights_facet')
     end
   end
@@ -151,8 +151,8 @@ describe Dor::Governable do
   describe 'add_collection' do
     it 'should add a collection' do
       @item.add_collection('druid:oo201oo0002')
-      rels_ext_ds=@item.datastreams['RELS-EXT']
-      xml=Nokogiri::XML(rels_ext_ds.to_rels_ext.to_s)
+      rels_ext_ds = @item.datastreams['RELS-EXT']
+      xml = Nokogiri::XML(rels_ext_ds.to_rels_ext.to_s)
       expect(xml).to be_equivalent_to <<-XML
       <?xml version="1.0" encoding="UTF-8"?>
       <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#">
@@ -170,10 +170,10 @@ describe Dor::Governable do
   describe 'remove_collection' do
     it 'should delete a collection' do
       @item.add_collection('druid:oo201oo0002')
-      rels_ext_ds=@item.datastreams['RELS-EXT']
+      rels_ext_ds = @item.datastreams['RELS-EXT']
       @item.remove_collection('druid:oo201oo0002')
       rels_ext_ds.serialize!
-      xml=Nokogiri::XML(rels_ext_ds.content.to_s)
+      xml = Nokogiri::XML(rels_ext_ds.content.to_s)
       expect(xml).to be_equivalent_to <<-XML
       <?xml version="1.0" encoding="UTF-8"?>
       <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#">
@@ -234,15 +234,15 @@ describe Dor::Governable do
     end
   end
 
-  describe "initiate_apo_workflow" do
-    it "calls Processable.initialize_workflow without creating a datastream when the object is new" do
+  describe 'initiate_apo_workflow' do
+    it 'calls Processable.initialize_workflow without creating a datastream when the object is new' do
       i = GovernableItem.new
       expect(i).to receive(:initialize_workflow).with('accessionWF', false)
       i.initiate_apo_workflow('accessionWF')
     end
   end
 
-  describe "#default_workflow_lane" do
+  describe '#default_workflow_lane' do
     it "returns the default lane as defined in the object's APO" do
       apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
       item = instantiate_fixture('druid:ab123cd4567', GovernableItem)
@@ -275,7 +275,7 @@ describe Dor::Governable do
   describe 'add_collection' do
     it 'should add a collection' do
       @item.add_collection('druid:oo201oo0002')
-      rels_ext_ds=@item.datastreams['RELS-EXT']
+      rels_ext_ds = @item.datastreams['RELS-EXT']
       expect(@item.collection_ids).to include('druid:oo201oo0002')
     end
   end
@@ -283,14 +283,14 @@ describe Dor::Governable do
   describe 'remove_collection' do
     it 'should delete a collection' do
       @item.add_collection('druid:oo201oo0002')
-      rels_ext_ds=@item.datastreams['RELS-EXT']
+      rels_ext_ds = @item.datastreams['RELS-EXT']
       expect(@item.collection_ids).to include('druid:oo201oo0002')
       @item.remove_collection('druid:oo201oo0002')
     end
   end
 
-  describe "initiate_apo_workflow" do
-    it "calls Processable.initialize_workflow without creating a datastream when the object is new" do
+  describe 'initiate_apo_workflow' do
+    it 'calls Processable.initialize_workflow without creating a datastream when the object is new' do
       i = GovernableItem.new
       expect(i).to receive(:initialize_workflow).with('accessionWF', false)
       i.initiate_apo_workflow('accessionWF')
@@ -376,7 +376,7 @@ describe Dor::Governable do
   describe 'reapplyAdminPolicyObjectDefaults' do
     it 'should update rightsMetadata from the APO defaultObjectRights' do
       expect(@item.rightsMetadata.ng_xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length).to eq(1)
-      @apo = instantiate_fixture("druid_zt570tx3016", Dor::AdminPolicyObject)
+      @apo = instantiate_fixture('druid_zt570tx3016', Dor::AdminPolicyObject)
       expect(@item).to receive(:admin_policy_object).and_return(@apo)
       @item.reapplyAdminPolicyObjectDefaults
       expect(@item.rightsMetadata.ng_xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length).to eq(0)

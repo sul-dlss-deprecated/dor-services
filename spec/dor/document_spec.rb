@@ -4,12 +4,12 @@ describe Dor::Workflow::Document do
 
   before(:each) do
     #stub the wf definition. The workflow document updates the processes in the definition with the values from the xml.
-    @wf_definition=double(Dor::WorkflowObject)
-    wf_definition_procs=[]
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name'=>'hello', 'lifecycle'=>'lc', 'status'=>'stat', 'sequence'=>'1'})
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name'=>'goodbye', 'status'=>'waiting', 'sequence'=>'2'})
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name'=>'technical-metadata', 'status'=>'error', 'sequence'=>'3'})
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name'=>'some-other-step', 'sequence'=>'4'})
+    @wf_definition = double(Dor::WorkflowObject)
+    wf_definition_procs = []
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name' => 'hello', 'lifecycle' => 'lc', 'status' => 'stat', 'sequence' => '1'})
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name' => 'goodbye', 'status' => 'waiting', 'sequence' => '2'})
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name' => 'technical-metadata', 'status' => 'error', 'sequence' => '3'})
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name' => 'some-other-step', 'sequence' => '4'})
 
     allow(@wf_definition).to receive(:processes).and_return(wf_definition_procs)
   end
@@ -22,7 +22,7 @@ describe Dor::Workflow::Document do
       eos
 
       #xml=Nokogiri::XML(xml)
-      d=Dor::Workflow::Document.new(xml)
+      d = Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
       expect(d.processes.length).to eq(0)
     end
@@ -36,10 +36,10 @@ describe Dor::Workflow::Document do
       </workflow>
       eos
 
-      d=Dor::Workflow::Document.new(xml)
+      d = Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
       expect(d.processes.length).to eq(4)
-      proc=d.processes.first
+      proc = d.processes.first
       expect(proc.name).to eq('hello')
       expect(proc.status).to eq('stat')
       expect(proc.lifecycle).to eq('lc')
@@ -60,7 +60,7 @@ describe Dor::Workflow::Document do
       </workflow>
       eos
 
-      d=Dor::Workflow::Document.new(xml)
+      d = Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
       expect(d.expedited?).to be_falsey
     end
@@ -76,7 +76,7 @@ describe Dor::Workflow::Document do
       </workflow>
       eos
 
-      d=Dor::Workflow::Document.new(xml)
+      d = Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
       expect(d.expedited?).to be_truthy
     end
@@ -93,7 +93,7 @@ describe Dor::Workflow::Document do
       </workflow>
       eos
 
-      d=Dor::Workflow::Document.new(xml)
+      d = Dor::Workflow::Document.new(xml)
       expect(d.active?).to be_truthy
     end
 
@@ -106,7 +106,7 @@ describe Dor::Workflow::Document do
       </workflow>
       eos
 
-      d=Dor::Workflow::Document.new(xml)
+      d = Dor::Workflow::Document.new(xml)
       expect(d.active?).to be_falsey
     end
   end
@@ -124,9 +124,9 @@ describe Dor::Workflow::Document do
       </workflow>
       eos
 
-      d=Dor::Workflow::Document.new(xml)
+      d = Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
-      doc=d.to_solr
+      doc = d.to_solr
       expect(doc[Solrizer.solr_name('workflow_status', :symbol)].first).to eq('accessionWF|active|0|dor')
     end
 
@@ -145,9 +145,9 @@ describe Dor::Workflow::Document do
       </workflow>
       eos
 
-      d=Dor::Workflow::Document.new(xml)
+      d = Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
-      doc=d.to_solr
+      doc = d.to_solr
       expect(doc).to match a_hash_including('workflow_status_ssim' => ['accessionWF|completed|0|dor'])
     end
 
@@ -166,9 +166,9 @@ describe Dor::Workflow::Document do
       </workflow>
       eos
 
-      d=Dor::Workflow::Document.new(xml)
+      d = Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
-      doc=d.to_solr
+      doc = d.to_solr
       expect(doc).to match a_hash_including('workflow_status_ssim' => ['accessionWF|completed|0|dor'])
     end
 
@@ -183,9 +183,9 @@ describe Dor::Workflow::Document do
       </workflow>
       eos
 
-      d=Dor::Workflow::Document.new(xml)
+      d = Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
-      doc=d.to_solr
+      doc = d.to_solr
       expect(doc[Solrizer.solr_name('wf_error', :symbol)].first).to eq('accessionWF:technical-metadata:druid:gv054hp4128 - Item error; caused by 413 Request Entity Too Large:')
     end
   end

@@ -3,23 +3,23 @@ require 'net/http'
 
 describe Dor::RegistrationService do
 
-  context "#register_object" do
+  context '#register_object' do
 
     before(:each) { stub_config }
     after(:each)  { unstub_config }
 
     before :each do
       @pid = 'druid:ab123cd4567'
-      allow(Dor::SuriService).to receive(:mint_id).and_return("druid:ab123cd4567")
+      allow(Dor::SuriService).to receive(:mint_id).and_return('druid:ab123cd4567')
       @mock_repo = double(Rubydora::Repository).as_null_object
       if ActiveFedora::Base.respond_to?(:connection_for_pid)
         allow(ActiveFedora::Base).to receive(:connection_for_pid).and_return(@mock_repo)
       else
-        ActiveFedora.stub_chain(:fedora,:connection).and_return(@mock_repo)
+        ActiveFedora.stub_chain(:fedora, :connection).and_return(@mock_repo)
       end
       @mock_solr = double(RSolr::Connection).as_null_object
       allow(Dor::SearchService).to receive(:solr).and_return(@mock_solr)
-      @apo  = instantiate_fixture("druid:fg890hi1234", Dor::AdminPolicyObject)
+      @apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
       allow(@apo).to receive(:new_record?).and_return false
 
       allow_any_instance_of(Dor::Item).to receive(:save).and_return(true)
@@ -34,7 +34,7 @@ describe Dor::RegistrationService do
         :label => 'Google : Scanned Book 12345',
         :source_id => { :barcode => 9191919191 },
         :other_ids => { :catkey => '000', :uuid => '111' },
-        :tags => ['Google : Google Tag!','Google : Other Google Tag!']
+        :tags => ['Google : Google Tag!', 'Google : Other Google Tag!']
       }
     end
 
@@ -47,7 +47,7 @@ describe Dor::RegistrationService do
       coll
     }
 
-    it "should properly register an object" do
+    it 'should properly register an object' do
       @params[:collection] = 'druid:something'
       expect(Dor::Collection).to receive(:find).with('druid:something').and_return(mock_collection)
       allow(Dor::SearchService).to receive(:query_by_id).and_return([])
@@ -73,9 +73,9 @@ describe Dor::RegistrationService do
       XML
     end
 
-    it "should properly register an object even if indexing fails" do
+    it 'should properly register an object even if indexing fails' do
       allow(Dor::SearchService).to receive(:query_by_id).and_return([])
-      allow_any_instance_of(Dor::Item).to receive(:update_index).and_raise("503 Service Unavailable")
+      allow_any_instance_of(Dor::Item).to receive(:update_index).and_raise('503 Service Unavailable')
       expect(Dor.logger).to receive(:warn).with(/failed to update solr index for druid:ab123cd4567/)
 
       obj = Dor::RegistrationService.register_object(@params)
@@ -96,8 +96,8 @@ describe Dor::RegistrationService do
       XML
     end
 
-    it "should set rightsMetadata based on the APO default when passed rights=default" do
-      @params[:rights]='default'
+    it 'should set rightsMetadata based on the APO default when passed rights=default' do
+      @params[:rights] = 'default'
       allow(Dor::SearchService).to receive(:query_by_id).and_return([])
       expect_any_instance_of(Dor::Item).to receive(:update_index).and_return(true)
 
@@ -130,8 +130,8 @@ describe Dor::RegistrationService do
       XML
     end
 
-    it "should set rightsMetadata based on the APO default but replace read rights to be world when passed rights=world " do
-      @params[:rights]='world'
+    it 'should set rightsMetadata based on the APO default but replace read rights to be world when passed rights=world ' do
+      @params[:rights] = 'world'
       allow(Dor::SearchService).to receive(:query_by_id).and_return([])
       expect_any_instance_of(Dor::Item).to receive(:update_index).and_return(true)
 
@@ -163,8 +163,8 @@ describe Dor::RegistrationService do
               </rightsMetadata>
       XML
     end
-    it "should set rightsMetadata based on the APO default but replace read rights to be world when passed rights=world " do
-      @params[:rights]='world'
+    it 'should set rightsMetadata based on the APO default but replace read rights to be world when passed rights=world ' do
+      @params[:rights] = 'world'
       allow(Dor::SearchService).to receive(:query_by_id).and_return([])
       expect_any_instance_of(Dor::Item).to receive(:update_index).and_return(true)
 
@@ -197,9 +197,9 @@ describe Dor::RegistrationService do
       XML
     end
 
-    it "should set rightsMetadata based on the APO default but replace read rights even if it is a collection" do
-      @params[:rights]='stanford'
-      @params[:object_type]='collection'
+    it 'should set rightsMetadata based on the APO default but replace read rights even if it is a collection' do
+      @params[:rights] = 'stanford'
+      @params[:object_type] = 'collection'
       allow(Dor::SearchService).to receive(:query_by_id).and_return([])
       expect_any_instance_of(Dor::Collection).to receive(:update_index).and_return(true)
 
@@ -232,8 +232,8 @@ describe Dor::RegistrationService do
       XML
     end
 
-    it "should set the descriptive metadata to basic mods using the label as title if passed metadata_source=label " do
-      @params[:metadata_source]='label'
+    it 'should set the descriptive metadata to basic mods using the label as title if passed metadata_source=label ' do
+      @params[:metadata_source] = 'label'
       allow(Dor::SearchService).to receive(:query_by_id).and_return([])
       expect_any_instance_of(Dor::Item).to receive(:update_index).and_return(true)
 
@@ -252,44 +252,44 @@ describe Dor::RegistrationService do
       XML
     end
 
-    it "should raise an exception if a required parameter is missing" do
+    it 'should raise an exception if a required parameter is missing' do
       @params.delete(:object_type)
       expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::ParameterError)
     end
 
-    it "should raise an exception if the label empty and metadata_source is label or none" do
-      @params[:label]=''
-      @params[:metadata_source]='label'
+    it 'should raise an exception if the label empty and metadata_source is label or none' do
+      @params[:label] = ''
+      @params[:metadata_source] = 'label'
       allow(Dor::SearchService).to receive(:query_by_id).and_return([nil])
       expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::ParameterError)
     end
-    it "should not raise an exception if the label is empty and metadata_source is mdtoolkit" do
-      @params[:label]=''
-      @params[:metadata_source]='mdtoolkit'
+    it 'should not raise an exception if the label is empty and metadata_source is mdtoolkit' do
+      @params[:label] = ''
+      @params[:metadata_source] = 'mdtoolkit'
       allow(Dor::SearchService).to receive(:query_by_id).and_return([nil])
       allow(Dor.logger).to receive(:warn)
       Dor::RegistrationService.register_object(@params)
     end
 
-    it "should raise an exception if registering a duplicate PID" do
+    it 'should raise an exception if registering a duplicate PID' do
       @params[:pid] = @pid
       expect(Dor::SearchService).to receive(:query_by_id).with('druid:ab123cd4567').and_return([@pid])
       expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::DuplicateIdError)
     end
 
-    it "should raise an exception if the label is longer than 255 chars" do
+    it 'should raise an exception if the label is longer than 255 chars' do
       allow(Dor::SearchService).to receive(:query_by_id).and_return([])
       expect(Dor.logger).to receive(:warn)
-      @params[:label]='a'*256
+      @params[:label] = 'a' * 256
       obj = Dor::RegistrationService.register_object(@params)
-      expect(obj.label).to eq('a'*254)
+      expect(obj.label).to eq('a' * 254)
     end
-    it "should raise an exception if registering a duplicate source ID" do
+    it 'should raise an exception if registering a duplicate source ID' do
       expect(Dor::SearchService).to receive(:query_by_id).with('barcode:9191919191').and_return([@pid])
       expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::DuplicateIdError)
     end
     it 'should set the workflow priority if one was passed in' do
-      expect_any_instance_of(Dor::Item).to receive(:initialize_workflow).with('digitizationWF',false,50)
+      expect_any_instance_of(Dor::Item).to receive(:initialize_workflow).with('digitizationWF', false, 50)
       allow(Dor::SearchService).to receive(:query_by_id).and_return([nil])
       expect(Dor.logger).to receive(:warn).with(/failed to update solr index for druid:ab123cd4567/)
       @params[:workflow_priority] = 50

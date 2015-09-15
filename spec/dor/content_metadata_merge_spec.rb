@@ -49,9 +49,9 @@ describe Dor::Contentable do
     XML
   end
 
-  describe "#copy_file_resources" do
+  describe '#copy_file_resources' do
 
-    it "copies all the file resources from a secondary object to a primary object" do
+    it 'copies all the file resources from a secondary object to a primary object' do
       src1.contentMetadata.content = <<-XML
       <?xml version="1.0"?>
       <contentMetadata objectId="ab123cd0002" type="map">
@@ -88,7 +88,7 @@ describe Dor::Contentable do
       expect(primary.contentMetadata).to be_changed
     end
 
-    it "copies all the files within a resource to the primary object" do
+    it 'copies all the files within a resource to the primary object' do
       src1.contentMetadata.content = <<-XML
       <?xml version="1.0"?>
       <contentMetadata objectId="ab123cd0002" type="map">
@@ -117,7 +117,7 @@ describe Dor::Contentable do
       expect(merged_cm.at_xpath("//resource[@sequence = '2']/file[last()]/@id").value).to eq('orig_2.tiff')
     end
 
-    it "uses the contentMetadata objectId as the base id for copied resources if the secondary resource does not have a type attribute" do
+    it 'uses the contentMetadata objectId as the base id for copied resources if the secondary resource does not have a type attribute' do
       src1.contentMetadata.content = <<-XML
       <?xml version="1.0"?>
       <contentMetadata objectId="ab123cd0002" type="map">
@@ -138,7 +138,7 @@ describe Dor::Contentable do
       expect(merged_cm.at_xpath("//resource[@sequence = '2']/@id").value).to eq('ab123cd0001_2')
     end
 
-    it "raises an exception if new file name collides with an existing primary file" do
+    it 'raises an exception if new file name collides with an existing primary file' do
       primary.contentMetadata.content = <<-XML
       <?xml version="1.0"?>
       <contentMetadata objectId="ab123cd0001" type="map">
@@ -168,7 +168,7 @@ describe Dor::Contentable do
       expect{primary.copy_file_resources([src1_pid])}.to raise_error Dor::Exception
     end
 
-    it "processes more than one source object at a time" do
+    it 'processes more than one source object at a time' do
       src1.contentMetadata.content = <<-XML
       <?xml version="1.0"?>
       <contentMetadata objectId="ab123cd0002" type="map">
@@ -210,9 +210,9 @@ describe Dor::Contentable do
       expect(merged_cm.at_xpath("//resource[@sequence = '3']/attr[@name = 'mergedFromResource']").text).to eq('ab123cd0003_1')
     end
 
-    context "<label> processing" do
+    context '<label> processing' do
 
-      it "copies resource level labels" do
+      it 'copies resource level labels' do
         src1.contentMetadata.content = <<-XML
         <?xml version="1.0"?>
         <contentMetadata objectId="ab123cd0002" type="map">
@@ -234,7 +234,7 @@ describe Dor::Contentable do
         expect(merged_cm.at_xpath("//resource[@sequence = '2']/label").text).to eq('Image From the Lab')
       end
 
-      it "detects sequence numbers at the end of the label and increments them when appending to primary contentMetadata" do
+      it 'detects sequence numbers at the end of the label and increments them when appending to primary contentMetadata' do
         src1.contentMetadata.content = <<-XML
         <?xml version="1.0"?>
         <contentMetadata objectId="ab123cd0002" type="map">

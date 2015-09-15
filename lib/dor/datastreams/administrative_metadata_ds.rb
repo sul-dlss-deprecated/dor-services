@@ -43,8 +43,8 @@ class AdministrativeMetadataDS < ActiveFedora::OmDatastream
   end
 
   define_template :default_collection do |xml|
-    xml.administrativeMetadata{
-      xml.registration{
+    xml.administrativeMetadata {
+      xml.registration {
         xml.collection(:id => '')
       }
     }
@@ -52,21 +52,21 @@ class AdministrativeMetadataDS < ActiveFedora::OmDatastream
 
   define_template :agreementId do |xml|
     xml.administrativeMetadata {
-      xml.registration{
+      xml.registration {
         xml.agreementId
       }
     }
   end
 
   define_template :metadata_format do |xml|
-     xml.descMetadata{
+     xml.descMetadata {
        xml.format
      }
   end
 
   define_template :metadata_source do |xml|
-    xml.administrativeMetadata{
-      xml.descMetadata{
+    xml.administrativeMetadata {
+      xml.descMetadata {
        xml.source
       }
     }
@@ -74,15 +74,15 @@ class AdministrativeMetadataDS < ActiveFedora::OmDatastream
 
   define_template :registration do |xml|
     xml.administrativeMetadata {
-      xml.registration{
-        xml.workflow(:id=> '')
+      xml.registration {
+        xml.workflow(:id => '')
       }
     }
   end
 
   define_template :default_collection do |xml|
     xml.administrativeMetadata {
-      xml.registration{
+      xml.registration {
         xml.collection
       }
     }
@@ -90,7 +90,7 @@ class AdministrativeMetadataDS < ActiveFedora::OmDatastream
 
   def self.xml_template
     Nokogiri::XML::Builder.new do |xml|
-      xml.administrativeMetadata{ }
+      xml.administrativeMetadata { }
     end.doc
   end
 
@@ -99,7 +99,7 @@ class AdministrativeMetadataDS < ActiveFedora::OmDatastream
   # Hides complexity/verbosity of OM TermOperators for simple, non-repeating values
   #################################################################################
 
-  def default_workflow_lane= lane
+  def default_workflow_lane=(lane)
     defaults.initiate_workflow.lane = lane
   end
 
@@ -107,7 +107,7 @@ class AdministrativeMetadataDS < ActiveFedora::OmDatastream
     defaults.initiate_workflow.lane.first
   end
 
-  def default_shelving_path= path
+  def default_shelving_path=(path)
     defaults.shelving.path = path
   end
 

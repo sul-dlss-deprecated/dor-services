@@ -27,27 +27,27 @@ describe Dor::Processable do
     @item.contentMetadata.content = '<contentMetadata/>'
   end
 
-  it "has a workflows datastream" do
+  it 'has a workflows datastream' do
     expect(@item.datastreams['workflows']).to be_a(Dor::WorkflowDs)
   end
 
-  it "should load its content directly from the workflow service" do
-    expect(Dor::WorkflowService).to receive(:get_workflow_xml).with('dor','druid:ab123cd4567',nil)
+  it 'should load its content directly from the workflow service' do
+    expect(Dor::WorkflowService).to receive(:get_workflow_xml).with('dor', 'druid:ab123cd4567', nil)
     @item.datastreams['workflows'].content
   end
 
-  context "build_datastream()" do
+  context 'build_datastream()' do
 
     before(:each) do
       # Paths to two files with the same content.
-      f1 = "workspace/ab/123/cd/4567/ab123cd4567/metadata/descMetadata.xml"
-      f2 = "workspace/ab/123/cd/4567/desc_metadata.xml"
+      f1 = 'workspace/ab/123/cd/4567/ab123cd4567/metadata/descMetadata.xml'
+      f2 = 'workspace/ab/123/cd/4567/desc_metadata.xml'
       @dm_filename = File.join(@fixture_dir, f1)  # Path used inside build_datastream().
       @dm_fixture_xml = read_fixture(f2)          # Path to fixture.
       @dm_builder_xml = @dm_fixture_xml.sub(/FROM_FILE/, 'FROM_BUILDER')
     end
 
-    context "datastream exists as a file" do
+    context 'datastream exists as a file' do
 
       before(:each) do
         allow(@item).to receive(:find_metadata_file).and_return(@dm_filename)
@@ -55,7 +55,7 @@ describe Dor::Processable do
         @t = Time.now
       end
 
-      it "file newer than datastream: should read content from file" do
+      it 'file newer than datastream: should read content from file' do
         allow(File).to receive(:mtime).and_return(@t)
         allow(@item.descMetadata).to receive(:createDate).and_return(@t - 99)
         xml = @dm_fixture_xml
@@ -65,7 +65,7 @@ describe Dor::Processable do
         expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@dm_builder_xml)
       end
 
-      it "file older than datastream: should use the builder" do
+      it 'file older than datastream: should use the builder' do
         allow(File).to receive(:mtime).and_return(@t - 99)
         allow(@item.descMetadata).to receive(:createDate).and_return(@t)
         xml = @dm_builder_xml
@@ -78,13 +78,13 @@ describe Dor::Processable do
 
     end
 
-    context "datastream does not exist as a file" do
+    context 'datastream does not exist as a file' do
 
       before(:each) do
         allow(@item).to receive(:find_metadata_file).and_return(nil)
       end
 
-      it "should use the datastream builder" do
+      it 'should use the datastream builder' do
         xml = @dm_builder_xml
         allow(@item).to receive(:fetch_descMetadata_datastream).and_return(xml)
         expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(xml)
@@ -118,7 +118,7 @@ describe Dor::Processable do
       <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
       <milestone date="2012-11-06T16:59:39-0800">published</milestone>
       </lifecycle>'
-      dsxml='
+      dsxml = '
       <versionMetadata objectId="druid:ab123cd4567">
       <version versionId="1" tag="1.0.0">
       <description>Initial version</description>
@@ -145,14 +145,14 @@ describe Dor::Processable do
     it 'should include the semicolon delimited version, an earliest published date and a status' do
       #     allow(@item.descMetadata).to receive(:to_solr).and_return({})
       expect(Dor.logger).to receive(:warn)
-      solr_doc=@item.to_solr
+      solr_doc = @item.to_solr
       #lifecycle_display should have the semicolon delimited version
-      expect(solr_doc['lifecycle_ssim']).to include("published:2012-01-27T05:06:54Z;2")
+      expect(solr_doc['lifecycle_ssim']).to include('published:2012-01-27T05:06:54Z;2')
       # published date should be the first published date
       expect(solr_doc).to match a_hash_including('status_ssi' => 'v4 In accessioning (described, published)')
       expect(solr_doc).to match a_hash_including('opened_dttsim' => including('2012-11-07T00:21:02Z'))
-      expect(solr_doc['published_earliest_dttsi']).to eq("2012-01-27T05:06:54Z")
-      expect(solr_doc['published_latest_dttsi'  ]).to eq("2012-11-07T00:59:39Z")
+      expect(solr_doc['published_earliest_dttsi']).to eq('2012-01-27T05:06:54Z')
+      expect(solr_doc['published_latest_dttsi'  ]).to eq('2012-11-07T00:59:39Z')
       expect(solr_doc['published_dttsim'].first).to eq(solr_doc['published_earliest_dttsi'])
       expect(solr_doc['published_dttsim'].last ).to eq(solr_doc['published_latest_dttsi'  ])
       expect(solr_doc['published_dttsim'].size ).to eq(3) # not 4 because 1 deduplicated value removed!
@@ -168,7 +168,7 @@ describe Dor::Processable do
       <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
       <milestone date="2012-11-06T16:59:39-0800">published</milestone>
       </lifecycle>'))
-      solr_doc=@item.to_solr
+      solr_doc = @item.to_solr
       expect(solr_doc['opened_dttsim']).to be_nil
     end
     it 'should create a modified_latest date field' do
@@ -181,10 +181,10 @@ describe Dor::Processable do
       expect(Dor.logger).to receive(:warn).with(/Cannot index druid:ab123cd4567\.descMetadata.*Dor::Item#generate_dublin_core produced incorrect xml/)
       solr_doc = @item.to_solr
       expect(solr_doc['versions_ssm'].length).to be > 1
-      expect(solr_doc['versions_ssm']).to include("4;2.2.0;Another typo")
+      expect(solr_doc['versions_ssm']).to include('4;2.2.0;Another typo')
     end
     it 'should handle a missing description for a version' do
-      dsxml='
+      dsxml = '
       <versionMetadata objectId="druid:ab123cd4567">
       <version versionId="1" tag="1.0.0">
       <description>Initial version</description>
@@ -202,7 +202,7 @@ describe Dor::Processable do
       allow(@item).to receive(:versionMetadata).and_return(Dor::VersionMetadataDS.from_xml(dsxml))
       expect(Dor.logger).to receive(:warn).with(/Cannot index druid:ab123cd4567\.descMetadata.*Dor::Item#generate_dublin_core produced incorrect xml/)
       solr_doc = @item.to_solr
-      expect(solr_doc['versions_ssm']).to include("4;2.2.0;")
+      expect(solr_doc['versions_ssm']).to include('4;2.2.0;')
     end
   end
 
@@ -222,7 +222,7 @@ describe Dor::Processable do
       expect(@item).to receive(:versionMetadata).and_return(@versionMD)
     end
     it 'should generate a status string' do
-      xml='<?xml version="1.0" encoding="UTF-8"?>
+      xml = '<?xml version="1.0" encoding="UTF-8"?>
       <lifecycle objectId="druid:gv054hp4128">
       <milestone date="2012-11-06T16:19:15-0800" version="2">described</milestone>
       <milestone date="2012-11-06T16:21:02-0800">opened</milestone>
@@ -232,7 +232,7 @@ describe Dor::Processable do
       <milestone date="2012-11-06T16:59:39-0800">published</milestone>
       </lifecycle>
       '
-      xml=Nokogiri::XML(xml)
+      xml = Nokogiri::XML(xml)
       expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
       expect(@versionMD).to receive(:current_version_id).and_return('4')
       expect(@item.status).to eq('v4 In accessioning (described, published)')
@@ -249,7 +249,7 @@ describe Dor::Processable do
     end
   end
 
-  describe "status bd504dj1946" do
+  describe 'status bd504dj1946' do
     before :all do
       @miles = '<?xml version="1.0"?>
       <lifecycle objectId="druid:bd504dj1946">
@@ -290,14 +290,14 @@ describe Dor::Processable do
     end
   end
 
-  describe "#initialize_workflow" do
+  describe '#initialize_workflow' do
     it "sets the lane_id option from the object's APO" do
       apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
       item = instantiate_fixture('druid:ab123cd4567', ProcessableWithApoItem)
       allow(item).to receive(:admin_policy_object) { apo }
       expect(Dor::WorkflowObject).to receive(:initial_workflow).and_return('<xml/>')
       expect(Dor::WorkflowObject).to receive(:initial_repo).and_return('dor')
-      expect(Dor::WorkflowService).to receive(:create_workflow).with('dor', 'druid:ab123cd4567', 'accessionWF', '<xml/>', {:create_ds=>true, :lane_id=>"fast"})
+      expect(Dor::WorkflowService).to receive(:create_workflow).with('dor', 'druid:ab123cd4567', 'accessionWF', '<xml/>', {:create_ds => true, :lane_id => 'fast'})
       item.initialize_workflow('accessionWF')
     end
   end

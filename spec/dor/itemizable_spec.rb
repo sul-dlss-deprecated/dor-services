@@ -15,12 +15,12 @@ describe Dor::Itemizable do
     @item.contentMetadata.content = '<contentMetadata/>'
   end
 
-  it "has a contentMetadata datastream" do
+  it 'has a contentMetadata datastream' do
     expect(@item.datastreams['contentMetadata']).to be_a(Dor::ContentMetadataDS)
   end
 
-  it "should retrieve a content diff" do
-    skip "write a diff test"
+  it 'should retrieve a content diff' do
+    skip 'write a diff test'
   end
 
 end

@@ -20,7 +20,7 @@ module Dor
     }
 
     # hash with all namespaces
-    XMLNS = Hash[NS.map {|k,v| ["xmlns:#{k}", v]}]
+    XMLNS = Hash[NS.map {|k, v| ["xmlns:#{k}", v]}]
 
     # schema locations
     NS_XSD = NS.keys.collect {|k| "#{NS[k]} #{NS[k]}/#{k}.xsd"}
@@ -40,11 +40,8 @@ module Dor
     #     or nil if not provided
     def feature_catalogue
       root = ng_xml.xpath('/rdf:RDF/rdf:Description/gfc:FC_FeatureCatalogue', XMLNS)
-      if root.nil? || root.empty?
-        nil # Feature catalog is optional
-      else
-        Nokogiri::XML(root.first.to_xml)
-      end
+      return nil if root.nil? || root.empty?  # Feature catalog is optional
+      Nokogiri::XML(root.first.to_xml)
     end
 
     # @return [Nokogiri::XML::Document] Contains skeleton geoMetadata XML
@@ -54,7 +51,7 @@ module Dor
       Nokogiri::XML::Builder.new do |xml|
         xml['rdf'].RDF XMLNS,
           'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
-          "xsi:schemaLocation" => NS_XSD.join(' ') do
+          'xsi:schemaLocation' => NS_XSD.join(' ') do
           xml['rdf'].Description 'rdf:about' => nil do
             xml['gmd'].MD_Metadata
           end
@@ -69,9 +66,7 @@ module Dor
     #      with .w, .e, .n., .s for west, east, north, south as floats
     def to_bbox
       params = { 'xmlns:gmd' => NS[:gmd], 'xmlns:gco' => NS[:gco] }
-      bb = metadata.xpath(
-        '//gmd:EX_Extent/gmd:geographicElement' +
-        '/gmd:EX_GeographicBoundingBox', params).first
+      bb = metadata.xpath('//gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox', params).first
       Struct.new(:w, :e, :n, :s).new(
         bb.xpath('gmd:westBoundLongitude/gco:Decimal', params).text.to_f,
         bb.xpath('gmd:eastBoundLongitude/gco:Decimal', params).text.to_f,

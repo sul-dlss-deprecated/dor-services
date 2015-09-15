@@ -2,7 +2,7 @@ module Dor
 
   class MergeService
 
-    def self.merge_into_primary primary_druid, secondary_druids, tag, logger = nil
+    def self.merge_into_primary(primary_druid, secondary_druids, tag, logger = nil)
       # TODO: test the secondary_obj to see if we've processed it already
       merge_service = Dor::MergeService.new primary_druid, secondary_druids, tag, logger
       merge_service.check_objects_editable
@@ -11,7 +11,7 @@ module Dor
       # kick off commonAccessioning for the primary?
     end
 
-    def initialize primary_druid, secondary_pids, tag, logger = nil
+    def initialize(primary_druid, secondary_pids, tag, logger = nil)
       @primary = Dor::Item.find primary_druid
       @secondary_pids = secondary_pids
       @secondary_objs = secondary_pids.map {|pid|  Dor::Item.find pid }
@@ -45,11 +45,11 @@ module Dor
 
       @secondary_objs.each do |secondary|
         sec_druid = DruidTools::Druid.new secondary.pid, Dor::Config.stacks.local_workspace_root
-        secondary.contentMetadata.ng_xml.xpath("//resource").each do |src_resource|
+        secondary.contentMetadata.ng_xml.xpath('//resource').each do |src_resource|
           primary_resource = primary_cm.at_xpath "//resource[attr[@name = 'mergedFromPid']/text() = '#{secondary.pid}' and
                                                              attr[@name = 'mergedFromResource']/text() = '#{src_resource['id']}' ]"
           sequence = primary_resource['sequence']
-          src_resource.xpath("//file/@id").map {|id| id.value }.each do |file_id|
+          src_resource.xpath('//file/@id').map {|id| id.value }.each do |file_id|
             copy_path = sec_druid.find_content file_id
             new_name = secondary.new_secondary_file_name(file_id, sequence)
             # TODO: verify new_name exists in primary_cm?

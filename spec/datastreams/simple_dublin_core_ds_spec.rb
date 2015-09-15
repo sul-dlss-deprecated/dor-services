@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe 'Dor::SimpleDublinCoreDs' do
 
-  describe "#to_solr" do
-    it "should do OM mapping" do
+  describe '#to_solr' do
+    it 'should do OM mapping' do
       @xml = '<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/">
         <dc:title>title</dc:title>
         <dc:creator>creator</dc:creator>
@@ -20,8 +20,8 @@ describe 'Dor::SimpleDublinCoreDs' do
       expect(dublin.to_solr[id_field]     ).to eq ['identifier']
     end
 
-    context "sort fields" do
-    it "should only produce single valued fields" do
+    context 'sort fields' do
+    it 'should only produce single valued fields' do
       @xml = '<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/">
         <dc:title>title</dc:title>
         <dc:title>title2</dc:title>
@@ -37,7 +37,7 @@ describe 'Dor::SimpleDublinCoreDs' do
       expect(dublin.to_solr[Solrizer.solr_name('dc_creator', :stored_sortable)]).to eq 'creator'
     end
 
-    it "should create sort fields for each type of identifier" do
+    it 'should create sort fields for each type of identifier' do
       @xml = '<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/">
         <dc:identifier>druid:identifier</dc:identifier>
         <dc:identifier>druid:identifier2</dc:identifier>

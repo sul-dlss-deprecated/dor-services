@@ -3,7 +3,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
   include SolrDocHelper
 
   set_terminology do |t|
-    t.root(:path=>"identityMetadata")
+    t.root(:path => 'identityMetadata')
     t.objectId   :index_as => [:symbol]
     t.objectType :index_as => [:symbol]
     t.objectLabel
@@ -19,7 +19,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
     t.adminPolicy   :index_as => [:not_searchable]
   end
 
-  define_template :value do |builder,name,value,attrs|
+  define_template :value do |builder, name, value, attrs|
     builder.send(name.to_sym, value, attrs)
   end
 
@@ -27,7 +27,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
     Nokogiri::XML('<identityMetadata/>')
   end
 
-  def add_value(name, value, attrs={})
+  def add_value(name, value, attrs = {})
     add_child_node(ng_xml.root, :value, name, value, attrs)
   end
 
@@ -37,7 +37,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
 
   def sourceId
     node = find_by_terms(:sourceId).first
-    node ? [node['source'],node.text].join(':') : nil
+    node ? [node['source'], node.text].join(':') : nil
   end
 
   def sourceId=(value)
@@ -61,7 +61,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
   def otherId(type = nil)
     result = find_by_terms(:otherId).to_a
     if type.nil?
-      result.collect { |n| [n['name'],n.text].join(':') }
+      result.collect { |n| [n['name'], n.text].join(':') }
     else
       result.select { |n| n['name'] == type }.collect { |n| n.text }
     end
@@ -75,7 +75,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
     node
   end
 
-  def to_solr(solr_doc=Hash.new, *args)
+  def to_solr(solr_doc = {}, *args)
     super(solr_doc, *args)
 
     if digital_object.respond_to?(:profile)
@@ -86,22 +86,22 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
 
     if sourceId.present?
       (name, id) = sourceId.split(/:/, 2)
-      add_solr_value(solr_doc, "dor_id", id, :symbol, [:stored_searchable])
-      add_solr_value(solr_doc, "identifier", sourceId, :symbol, [:stored_searchable])
-      add_solr_value(solr_doc, "source_id", sourceId, :symbol, [])
+      add_solr_value(solr_doc, 'dor_id', id, :symbol, [:stored_searchable])
+      add_solr_value(solr_doc, 'identifier', sourceId, :symbol, [:stored_searchable])
+      add_solr_value(solr_doc, 'source_id', sourceId, :symbol, [])
     end
     otherId.compact.each { |qid|
       # this section will solrize barcode and catkey, which live in otherId
       (name, id) = qid.split(/:/, 2)
-      add_solr_value(solr_doc, "dor_id", id, :symbol, [:stored_searchable])
-      add_solr_value(solr_doc, "identifier", qid, :symbol, [:stored_searchable])
+      add_solr_value(solr_doc, 'dor_id', id, :symbol, [:stored_searchable])
+      add_solr_value(solr_doc, 'identifier', qid, :symbol, [:stored_searchable])
       add_solr_value(solr_doc, "#{name}_id", id, :symbol, [])
     }
 
     # do some stuff to make tags in general and project tags specifically more easily searchable and facetable
     find_by_terms(:tag).each { |tag|
       (prefix, rest) = tag.text.split(/:/, 2)
-      prefix = prefix.downcase.strip.gsub(/\s/,'_')
+      prefix = prefix.downcase.strip.gsub(/\s/, '_')
       unless rest.nil?
         # this part will index a value in a field specific to the tag, e.g. registered_by_tag_*,
         # book_tag_*, project_tag_*, remediated_by_tag_*, etc.  project_tag_* and registered_by_tag_*
@@ -116,9 +116,9 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
       tag_parts = tag.text.split(/:/)
       progressive_tag_prefix = ''
       tag_parts.each_with_index do |part, index|
-        progressive_tag_prefix += " : " if index > 0
+        progressive_tag_prefix += ' : ' if index > 0
         progressive_tag_prefix += part.strip
-        add_solr_value(solr_doc, "exploded_tag", progressive_tag_prefix, :symbol, [])
+        add_solr_value(solr_doc, 'exploded_tag', progressive_tag_prefix, :symbol, [])
       end
     }
 

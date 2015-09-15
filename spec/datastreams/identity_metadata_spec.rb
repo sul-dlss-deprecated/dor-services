@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe Dor::IdentityMetadataDS do
-  context "Marshalling to and from a Fedora Datastream" do
+  context 'Marshalling to and from a Fedora Datastream' do
     before(:each) do
-      @dsxml =<<-EOF
+      @dsxml = <<-EOF
         <identityMetadata>
           <objectCreator>DOR</objectCreator>
           <objectId>druid:bb110sm8219</objectId>
@@ -20,31 +20,31 @@ describe Dor::IdentityMetadataDS do
       @dsdoc = Dor::IdentityMetadataDS.from_xml(@dsxml)
     end
 
-    it "creates itself from xml" do
+    it 'creates itself from xml' do
       expect(@dsdoc.term_values(:objectId)).to eq(['druid:bb110sm8219'])
       expect(@dsdoc.term_values(:objectType)).to eq(['item'])
       expect(@dsdoc.term_values(:objectLabel)).to eq(['AMERICQVE | SEPTENTRIONALE'])
-      expect(@dsdoc.term_values(:tag)).to match_array(['MDForm : mclaughlin','Project : McLaughlin Maps'])
-      expect(@dsdoc.term_values(:otherId)).to match_array(["bb110sm8219","b382ee92-da77-11e0-9036-0016034322e4"])
+      expect(@dsdoc.term_values(:tag)).to match_array(['MDForm : mclaughlin', 'Project : McLaughlin Maps'])
+      expect(@dsdoc.term_values(:otherId)).to match_array(['bb110sm8219', 'b382ee92-da77-11e0-9036-0016034322e4'])
       expect(@dsdoc.term_values(:sourceId)).to eq(['bb110sm8219'])
-      expect(@dsdoc.objectId).to eq("druid:bb110sm8219")
-      expect(@dsdoc.otherId).to eq(["mdtoolkit:bb110sm8219","uuid:b382ee92-da77-11e0-9036-0016034322e4"])
+      expect(@dsdoc.objectId).to eq('druid:bb110sm8219')
+      expect(@dsdoc.otherId).to eq(['mdtoolkit:bb110sm8219', 'uuid:b382ee92-da77-11e0-9036-0016034322e4'])
       expect(@dsdoc.otherId('mdtoolkit')).to eq(['bb110sm8219'])
       expect(@dsdoc.otherId('uuid')).to eq(['b382ee92-da77-11e0-9036-0016034322e4'])
       expect(@dsdoc.otherId('bogus')).to eq([])
       expect(@dsdoc.sourceId).to eq('sulair:bb110sm8219')
     end
 
-    it "should be able to read ID fields as attributes" do
-      expect(@dsdoc.objectId).to eq("druid:bb110sm8219")
-      expect(@dsdoc.otherId).to eq(["mdtoolkit:bb110sm8219","uuid:b382ee92-da77-11e0-9036-0016034322e4"])
+    it 'should be able to read ID fields as attributes' do
+      expect(@dsdoc.objectId).to eq('druid:bb110sm8219')
+      expect(@dsdoc.otherId).to eq(['mdtoolkit:bb110sm8219', 'uuid:b382ee92-da77-11e0-9036-0016034322e4'])
       expect(@dsdoc.otherId('mdtoolkit')).to eq(['bb110sm8219'])
       expect(@dsdoc.otherId('uuid')).to eq(['b382ee92-da77-11e0-9036-0016034322e4'])
       expect(@dsdoc.otherId('bogus')).to eq([])
       expect(@dsdoc.sourceId).to eq('sulair:bb110sm8219')
     end
 
-    it "should be able to set the sourceID" do
+    it 'should be able to set the sourceID' do
       resultxml = <<-EOF
         <identityMetadata>
           <objectCreator>DOR</objectCreator>
@@ -72,12 +72,12 @@ describe Dor::IdentityMetadataDS do
       expect{@dsdoc.sourceId = 'test::ab110cd8219'}.to raise_exception(ArgumentError)
     end
 
-    it "creates a simple default with #new" do
+    it 'creates a simple default with #new' do
       new_doc = Dor::IdentityMetadataDS.new nil, 'identityMetadata'
       expect(new_doc.to_xml).to be_equivalent_to '<identityMetadata/>'
     end
 
-    it "should properly add elements" do
+    it 'should properly add elements' do
       resultxml = <<-EOF
         <identityMetadata>
           <objectId>druid:ab123cd4567</objectId>
@@ -93,7 +93,7 @@ describe Dor::IdentityMetadataDS do
       new_doc.add_value('tag', 'Created By : Spec Tests')
       expect(new_doc.to_xml).to be_equivalent_to resultxml
       expect(new_doc.objectId).to eq('druid:ab123cd4567')
-      expect(new_doc.otherId).to match_array(['mdtoolkit:ab123cd4567','uuid:12345678-abcd-1234-ef01-23456789abcd'])
+      expect(new_doc.otherId).to match_array(['mdtoolkit:ab123cd4567', 'uuid:12345678-abcd-1234-ef01-23456789abcd'])
     end
   end
 

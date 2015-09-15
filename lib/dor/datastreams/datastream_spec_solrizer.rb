@@ -9,7 +9,7 @@ module DatastreamSpecSolrizer
       0
     end
     v = versionID.nil? ? '0' : versionID.to_s.split(/\./).last
-    [dsid,controlGroup,mimeType,v,s,label].join("|")
+    [dsid, controlGroup, mimeType, v, s, label].join('|')
   end
 end
 

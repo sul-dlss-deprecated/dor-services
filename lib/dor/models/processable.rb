@@ -45,7 +45,7 @@ module Dor
       return if self.respond_to?(:inner_object) && inner_object.is_a?(ActiveFedora::SolrDigitalObject)
       return unless workflows.new?
       workflows.mimeType   = 'application/xml'
-      workflows.dsLocation = File.join(Dor::Config.workflow.url,"dor/objects/#{pid}/workflows")
+      workflows.dsLocation = File.join(Dor::Config.workflow.url, "dor/objects/#{pid}/workflows")
     end
 
     def empty_datastream?(datastream)
@@ -101,7 +101,7 @@ module Dor
     end
 
     def milestones
-      Dor::WorkflowService.get_milestones('dor',pid)
+      Dor::WorkflowService.get_milestones('dor', pid)
     end
 
     # @return [Hash] including :current_version, :status_code and :status_time
@@ -137,7 +137,7 @@ module Dor
 
     # @param [Boolean] include_time
     # @return [String] single composed status from status_info
-    def status(include_time=false)
+    def status(include_time = false)
       status_info_hash = status_info()
       current_version, status_code, status_time = status_info_hash[:current_version], status_info_hash[:status_code], status_info_hash[:status_time]
 
@@ -154,15 +154,15 @@ module Dor
       STATUS_CODE_DISP_TXT[status_code].gsub(/\(.*\)$/, '').strip
     end
 
-    def to_solr(solr_doc=Hash.new, *args)
+    def to_solr(solr_doc = {}, *args)
       super(solr_doc, *args)
       sortable_milestones = {}
-      current_version='1'
+      current_version = '1'
       begin
         current_version = versionMetadata.current_version_id
       rescue
       end
-      current_version_num=current_version.to_i
+      current_version_num = current_version.to_i
 
       if self.respond_to?('versionMetadata')
         #add an entry with version id, tag and description for each version
@@ -193,10 +193,10 @@ module Dor
         solr_doc["#{milestone}_earliest_dttsi"] = dates.first
         solr_doc["#{milestone}_latest_dttsi"  ] = dates.last
       end
-      solr_doc["status_ssi"] = status # status is singular (i.e. the current one)
-      solr_doc["current_version_isi"] = current_version.to_i
-      solr_doc["modified_latest_dttsi"] = modified_date.to_datetime.utc.strftime('%FT%TZ')
-      add_solr_value(solr_doc, "rights", rights, :string, [:symbol]) if self.respond_to? :rights
+      solr_doc['status_ssi'] = status # status is singular (i.e. the current one)
+      solr_doc['current_version_isi'] = current_version.to_i
+      solr_doc['modified_latest_dttsi'] = modified_date.to_datetime.utc.strftime('%FT%TZ')
+      add_solr_value(solr_doc, 'rights', rights, :string, [:symbol]) if self.respond_to? :rights
 
       status_info_hash = status_info()
       status_code = status_info_hash[:status_code]
@@ -212,7 +212,7 @@ module Dor
     # @param [String] name of the workflow to be initialized
     # @param [Boolean] create_ds create a 'workflows' datastream in Fedora for the object
     # @param [Integer] priority the workflow's priority level
-    def initialize_workflow(name, create_ds=true, priority=0)
+    def initialize_workflow(name, create_ds = true, priority = 0)
       priority = workflows.current_priority if priority == 0
       opts = { :create_ds => create_ds, :lane_id => default_workflow_lane }
       opts[:priority] = priority if priority > 0
@@ -222,10 +222,10 @@ module Dor
     private
     #handles formating utc date/time to human readable
     # XXX: bad form to hardcode TZ here.  Code smell abounds.
-    def format_date datetime
+    def format_date(datetime)
 
         d = datetime.is_a?(Time) ? datetime :
-            DateTime.parse(datetime).in_time_zone(ActiveSupport::TimeZone.new("Pacific Time (US & Canada)"))
+            DateTime.parse(datetime).in_time_zone(ActiveSupport::TimeZone.new('Pacific Time (US & Canada)'))
         I18n.l(d).strftime('%Y-%m-%d %I:%M%p')
       rescue
         d = datetime.is_a?(Time) ? datetime : Time.parse(datetime.to_s)

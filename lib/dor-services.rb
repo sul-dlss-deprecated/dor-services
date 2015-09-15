@@ -8,7 +8,7 @@ module Dor
 
   class << self
 
-    def configure *args, &block
+    def configure(*args, &block)
       Dor::Config.configure *args, &block
     end
 
@@ -16,7 +16,7 @@ module Dor
     # to adapt it to. This is necessary when the object is not indexed, or the
     # index is missing the objectType property.
     # @param [String] pid The object's PID
-    def load_instance pid
+    def load_instance(pid)
       ensure_models_loaded!
       obj = Dor::Abstract.find pid
       return nil if obj.new_object?
@@ -30,11 +30,11 @@ module Dor
     # Dor.load_instance() if the item is not in the index, or is improperly
     # indexed.
     # @param [String] pid The object's PID
-    def find pid, opts={}
+    def find(pid, opts = {})
       find_all(%{id:"#{pid}"}, opts).first || load_instance(pid)
     end
 
-    def find_all query, opts={}
+    def find_all(query, opts = {})
       ensure_models_loaded!
       resp = SearchService.query query, opts
       resp.docs.collect do |solr_doc|

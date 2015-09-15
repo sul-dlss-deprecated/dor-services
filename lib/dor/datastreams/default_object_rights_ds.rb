@@ -17,30 +17,30 @@ module Dor
 
     define_template :creative_commons do |xml|
       xml.use {
-        xml.human(:type => "creativeCommons")
-        xml.machine(:type => "creativeCommons")
+        xml.human(:type => 'creativeCommons')
+        xml.machine(:type => 'creativeCommons')
       }
     end
 
     def self.xml_template
       Nokogiri::XML::Builder.new do |xml|
-        xml.rightsMetadata{
-          xml.access(:type => 'discover'){
-            xml.machine{
+        xml.rightsMetadata {
+          xml.access(:type => 'discover') {
+            xml.machine {
               xml.world
             }
           }
-          xml.access(:type => 'read'){
-            xml.machine{
+          xml.access(:type => 'read') {
+            xml.machine {
               xml.world
             }
           }
-          xml.use{
+          xml.use {
             xml.human(:type => 'useAndReproduction')
-            xml.human(:type => "creativeCommons")
-            xml.machine(:type => "creativeCommons")
+            xml.human(:type => 'creativeCommons')
+            xml.machine(:type => 'creativeCommons')
           }
-          xml.copyright{
+          xml.copyright {
             xml.human
           }
         }

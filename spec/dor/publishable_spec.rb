@@ -61,89 +61,88 @@ describe Dor::Publishable do
     allow(@item).to receive(:add_collection_reference).and_return(@mods)
   end
 
-  it "has a rightsMetadata datastream" do
+  it 'has a rightsMetadata datastream' do
     expect(@item.datastreams['rightsMetadata']).to be_a(ActiveFedora::OmDatastream)
   end
 
-  it "should provide a rightsMetadata datastream builder" do
+  it 'should provide a rightsMetadata datastream builder' do
     rights_md = @apo.defaultObjectRights.content
     expect(@item.datastreams['rightsMetadata'].ng_xml.to_s).not_to be_equivalent_to(rights_md)
-    @item.build_datastream('rightsMetadata',true)
+    @item.build_datastream('rightsMetadata', true)
     expect(@item.datastreams['rightsMetadata'].ng_xml.to_s).to be_equivalent_to(rights_md)
   end
 
-  describe "#public_xml" do
+  describe '#public_xml' do
     #@item.add_tags_from_purl.stub.and_return({})
 
-    context "produces xml with" do
-        before(:each) do
-          @now = Time.now
-          expect(Time).to receive(:now).and_return(@now).at_least(:once)
-          @p_xml = Nokogiri::XML(@item.public_xml)
-        end
+    context 'produces xml with' do
+      before(:each) do
+        @now = Time.now
+        expect(Time).to receive(:now).and_return(@now).at_least(:once)
+        @p_xml = Nokogiri::XML(@item.public_xml)
+      end
 
-       it "an encoding of UTF-8" do
-         expect(@p_xml.encoding).to match(/UTF-8/)
-       end
+      it 'an encoding of UTF-8' do
+        expect(@p_xml.encoding).to match(/UTF-8/)
+      end
 
-       it "an id attribute" do
-         expect(@p_xml.at_xpath('/publicObject/@id').value).to match(/^druid:ab123cd4567/)
-       end
+      it 'an id attribute' do
+        expect(@p_xml.at_xpath('/publicObject/@id').value).to match(/^druid:ab123cd4567/)
+      end
 
-       it "a published attribute" do
-         expect(@p_xml.at_xpath('/publicObject/@published').value).to eq(@now.xmlschema)
-       end
+      it 'a published attribute' do
+        expect(@p_xml.at_xpath('/publicObject/@published').value).to eq(@now.xmlschema)
+      end
 
-       it "identityMetadata" do
-         expect(@p_xml.at_xpath('/publicObject/identityMetadata')).to be
-       end
+      it 'identityMetadata' do
+        expect(@p_xml.at_xpath('/publicObject/identityMetadata')).to be
+      end
 
-       it "contentMetadata" do
-         expect(@p_xml.at_xpath('/publicObject/contentMetadata')).to be
-       end
+      it 'contentMetadata' do
+        expect(@p_xml.at_xpath('/publicObject/contentMetadata')).to be
+      end
 
-       it "rightsMetadata" do
-         expect(@p_xml.at_xpath('/publicObject/rightsMetadata')).to be
-       end
+      it 'rightsMetadata' do
+        expect(@p_xml.at_xpath('/publicObject/rightsMetadata')).to be
+      end
 
-       it "generated dublin core" do
-         expect(@p_xml.at_xpath('/publicObject/oai_dc:dc', 'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/')).to be
-       end
+      it 'generated dublin core' do
+        expect(@p_xml.at_xpath('/publicObject/oai_dc:dc', 'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/')).to be
+      end
 
-       it "relationships" do
-         ns = { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'hydra' => 'http://projecthydra.org/ns/relations#',
-           'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'fedora-model' => 'info:fedora/fedora-system:def/model#' }
-         expect(@p_xml.at_xpath('/publicObject/rdf:RDF', ns)).to be
-         expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOf', ns)).to be
-         expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOfCollection', ns)).to be
-         expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora-model:hasModel', ns)).not_to be
-         expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/hydra:isGovernedBy', ns)).not_to be
-       end
+      it 'relationships' do
+        ns = { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'hydra' => 'http://projecthydra.org/ns/relations#',
+          'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'fedora-model' => 'info:fedora/fedora-system:def/model#' }
+        expect(@p_xml.at_xpath('/publicObject/rdf:RDF', ns)).to be
+        expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOf', ns)).to be
+        expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOfCollection', ns)).to be
+        expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora-model:hasModel', ns)).not_to be
+        expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/hydra:isGovernedBy', ns)).not_to be
+      end
 
-       it "clones of the content of the other datastreams, keeping the originals in tact" do
-         expect(@item.datastreams['identityMetadata'].ng_xml.at_xpath("/identityMetadata")).to be
-         expect(@item.datastreams['contentMetadata'].ng_xml.at_xpath("/contentMetadata")).to be
-         expect(@item.datastreams['rightsMetadata'].ng_xml.at_xpath("/rightsMetadata")).to be
-         expect(@item.datastreams['RELS-EXT'].content).to be_equivalent_to @rels
-       end
+      it 'clones of the content of the other datastreams, keeping the originals in tact' do
+        expect(@item.datastreams['identityMetadata'].ng_xml.at_xpath('/identityMetadata')).to be
+        expect(@item.datastreams['contentMetadata'].ng_xml.at_xpath('/contentMetadata')).to be
+        expect(@item.datastreams['rightsMetadata'].ng_xml.at_xpath('/rightsMetadata')).to be
+        expect(@item.datastreams['RELS-EXT'].content).to be_equivalent_to @rels
+      end
 
-       it "does not include a releaseData element when there are no release tags" do
-         expect(@p_xml.at_xpath('/publicObject/releaseData')).to be nil
-       end
+      it 'does not include a releaseData element when there are no release tags' do
+        expect(@p_xml.at_xpath('/publicObject/releaseData')).to be nil
+      end
 
-       it "does include a releaseData element when there is content inside it" do
-         #Fake a tag with at least one children
-         releaseData = "<releaseData><release>foo</release></releaseData>"
-         allow(@item).to receive(:generate_release_xml).and_return(releaseData)
-         p_xml = Nokogiri::XML(@item.public_xml)
-         expect(p_xml.at_xpath('/publicObject/releaseData')).to be
-       end
+      it 'does include a releaseData element when there is content inside it' do
+        #Fake a tag with at least one children
+        releaseData = '<releaseData><release>foo</release></releaseData>'
+        allow(@item).to receive(:generate_release_xml).and_return(releaseData)
+        p_xml = Nokogiri::XML(@item.public_xml)
+        expect(p_xml.at_xpath('/publicObject/releaseData')).to be
+      end
 
     end
 
-    describe "#publish_metadata" do
-
-      context "with no world discover access in rightsMetadata" do
+    describe '#publish_metadata' do
+      context 'with no world discover access in rightsMetadata' do
 
         let(:purl_root) { Dir.mktmpdir }
 
@@ -174,7 +173,7 @@ describe Dor::Publishable do
           Dor::Config.pop!
         end
 
-        it "does not publish the object" do
+        it 'does not publish the object' do
           expect(Dor::DigitalStacksService).not_to receive(:transfer_to_document_store)
           @item.publish_metadata
         end
@@ -183,15 +182,14 @@ describe Dor::Publishable do
           # create druid tree and content in purl root
           druid1 = DruidTools::Druid.new @item.pid, purl_root
           druid1.mkdir
-          File.open(File.join(druid1.path, 'tmpfile'), 'w') {|f| f.write "junk" }
+          File.open(File.join(druid1.path, 'tmpfile'), 'w') {|f| f.write 'junk' }
 
           @item.publish_metadata
           expect(File).to_not exist(druid1.path)
         end
       end
 
-      context "copies to the document cache" do
-
+      context 'copies to the document cache' do
         before(:each) do
           expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<identityMetadata/, 'identityMetadata')
           expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<contentMetadata/, 'contentMetadata')
@@ -200,34 +198,32 @@ describe Dor::Publishable do
           expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<publicObject/, 'public')
           expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<mods:mods/, 'mods')
         end
-
-        it "identityMetadta, contentMetadata, rightsMetadata, generated dublin core, and public xml" do
+        it 'identityMetadta, contentMetadata, rightsMetadata, generated dublin core, and public xml' do
           @item.rightsMetadata.content = "<rightsMetadata><access type='discover'><machine><world/></machine></access></rightsMetadata>"
           @item.publish_metadata
         end
-
-        it "even when rightsMetadata uses xml namespaces" do
+        it 'even when rightsMetadata uses xml namespaces' do
           @item.rightsMetadata.content = %q(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1"><access type='discover'><machine><world/></machine></access></rightsMetadata>)
           @item.publish_metadata
         end
       end
     end
 
-    context "error handling" do
-      it "throws an exception if any of the required datastreams are missing" do
-        skip "write an error handling test"
+    context 'error handling' do
+      it 'throws an exception if any of the required datastreams are missing' do
+        skip 'write an error handling test'
       end
     end
   end
-  describe 'publish remotely' do
-  before(:each) do
-    Dor::Config.push! {|config| config.dor_services.url 'https://lyberservices-test.stanford.edu/dor'}
 
-    allow_any_instance_of(RestClient::Resource).to receive(:post)
-  end
-  it 'should hit the correct url' do
-    expect(@item.publish_metadata_remotely).to eq('https://lyberservices-test.stanford.edu/dor/v1/objects/druid:ab123cd4567/publish')
-  end
+  describe 'publish remotely' do
+    before(:each) do
+      Dor::Config.push! {|config| config.dor_services.url 'https://lyberservices-test.stanford.edu/dor'}
+      allow_any_instance_of(RestClient::Resource).to receive(:post)
+    end
+    it 'should hit the correct url' do
+      expect(@item.publish_metadata_remotely).to eq('https://lyberservices-test.stanford.edu/dor/v1/objects/druid:ab123cd4567/publish')
+    end
   end
 
 end

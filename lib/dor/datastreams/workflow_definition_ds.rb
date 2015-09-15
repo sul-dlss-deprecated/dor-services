@@ -3,17 +3,17 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
   include SolrDocHelper
 
   set_terminology do |t|
-    t.root(:path => "workflow-def", :index_as => [:not_searchable])
+    t.root(:path => 'workflow-def', :index_as => [:not_searchable])
     t.process(:index_as => [:not_searchable])
   end
 
-  define_template :process do |builder,workflow,attrs|
+  define_template :process do |builder, workflow, attrs|
     prereqs = attrs.delete('prerequisite')
     prereqs = prereqs.split(/\s*,\s*/) if prereqs.is_a?(String)
     attrs.keys.each { |k| attrs[k.to_s.dasherize.to_sym] = attrs.delete(k) }
     builder.process(attrs) do |node|
       Array(prereqs).each do |prereq|
-        (repo,wf,prereq_name) = prereq.split(/:/)
+        (repo, wf, prereq_name) = prereq.split(/:/)
         if prereq_name.nil?
           prereq_name = repo
           repo = nil
@@ -43,7 +43,7 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
   def processes
     ng_xml.xpath('/workflow-def/process').collect do |node|
       Workflow::Process.new(repo, name, node)
-    end.sort { |a,b| (a.sequence || 0) <=> (b.sequence || 0) }
+    end.sort { |a, b| (a.sequence || 0) <=> (b.sequence || 0) }
   end
 
   def name
@@ -65,15 +65,15 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
   def configuration=(hash)
     self.ng_xml = Nokogiri::XML(%{<workflow-def id="#{hash['name']}" repository="#{hash['repository']}"/>})
     i = 0
-    hash.each_pair do |k,v|
-      add_process(v.merge({:name => k, :sequence => i+=1})) if v.is_a?(Hash)
+    hash.each_pair do |k, v|
+      add_process(v.merge({:name => k, :sequence => i += 1})) if v.is_a?(Hash)
     end
   end
 
   # Creates the xml used by Dor::WorkflowService.create_workflow
   # @return [String] An object's initial workflow as defined by the <workflow-def> in content
   def initial_workflow
-    doc = Nokogiri::XML("<workflow/>")
+    doc = Nokogiri::XML('<workflow/>')
     root = doc.root
     root['id'] = name
     processes.each { |proc|
@@ -92,11 +92,11 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
     Nokogiri::XML(doc.to_xml) { |x| x.noblanks }.to_xml { |config| config.no_declaration }
   end
 
-  def to_solr(solr_doc=Hash.new,*args)
-    super(solr_doc,*args)
-    add_solr_value(solr_doc, "workflow_name", name, :symbol, [:symbol])
+  def to_solr(solr_doc = {}, *args)
+    super(solr_doc, *args)
+    add_solr_value(solr_doc, 'workflow_name', name, :symbol, [:symbol])
     processes.each do |p|
-      add_solr_value(solr_doc, "process", "#{p.name}|#{p.label}", :symbol, [:displayable])
+      add_solr_value(solr_doc, 'process', "#{p.name}|#{p.label}", :symbol, [:displayable])
     end
     solr_doc
   end

@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Dor::AdministrativeMetadataDS do
 
-  context "defaults terms" do
-    it "#default_workflow_lane gets and sets the attribute defaults/initiateWorkflow/@lane" do
+  context 'defaults terms' do
+    it '#default_workflow_lane gets and sets the attribute defaults/initiateWorkflow/@lane' do
       ds = Dor::AdministrativeMetadataDS.new
       ds.default_workflow_lane = 'slow'
 
@@ -18,7 +18,7 @@ describe Dor::AdministrativeMetadataDS do
       expect(ds.default_workflow_lane).to eq('slow')
     end
 
-    it "#default_shelving_path gets and sets the attribute defaults/shelving/@path " do
+    it '#default_shelving_path gets and sets the attribute defaults/shelving/@path ' do
       ds = Dor::AdministrativeMetadataDS.new
       ds.default_shelving_path = '/hoover'
 

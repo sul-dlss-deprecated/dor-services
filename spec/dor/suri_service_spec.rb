@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Dor::SuriService do
 
-  describe "an enabled SuriService" do
+  describe 'an enabled SuriService' do
     before(:each) do
       Dor::Config.push! do
         suri do
@@ -24,28 +24,28 @@ describe Dor::SuriService do
       Dor::Config.pop!
     end
 
-    it "should mint a druid using RestClient::Resource" do
-      expect(@my_client).to receive(:post).with("").and_return('foo')
-      expect(@my_client).to receive(:[]).with("identifiers?quantity=1").and_return(@my_client)
+    it 'should mint a druid using RestClient::Resource' do
+      expect(@my_client).to receive(:post).with('').and_return('foo')
+      expect(@my_client).to receive(:[]).with('identifiers?quantity=1').and_return(@my_client)
       expect(Dor::SuriService.mint_id).to eq("#{Dor::Config.suri.id_namespace}:foo")
     end
 
-    it "should mint several druids if a quantity is passed in" do
-      expect(@my_client).to receive(:post).with("").and_return("foo\nbar\nbaz")
-      expect(@my_client).to receive(:[]).with("identifiers?quantity=3").and_return(@my_client)
-      expect(Dor::SuriService.mint_id(3)).to eq(["#{Dor::Config.suri.id_namespace}:foo","#{Dor::Config.suri.id_namespace}:bar","#{Dor::Config.suri.id_namespace}:baz"])
+    it 'should mint several druids if a quantity is passed in' do
+      expect(@my_client).to receive(:post).with('').and_return("foo\nbar\nbaz")
+      expect(@my_client).to receive(:[]).with('identifiers?quantity=3').and_return(@my_client)
+      expect(Dor::SuriService.mint_id(3)).to eq(["#{Dor::Config.suri.id_namespace}:foo", "#{Dor::Config.suri.id_namespace}:bar", "#{Dor::Config.suri.id_namespace}:baz"])
     end
 
-    it "should throw log an error and rethrow the exception if Connect fails." do
-      e = "thrown exception"
+    it 'should throw log an error and rethrow the exception if Connect fails.' do
+      e = 'thrown exception'
       ex = Exception.new(e)
-      expect(@my_client).to receive(:post).with("").and_raise(ex)
-      expect{ Dor::SuriService.mint_id }.to raise_error(Exception, "thrown exception")
+      expect(@my_client).to receive(:post).with('').and_raise(ex)
+      expect{ Dor::SuriService.mint_id }.to raise_error(Exception, 'thrown exception')
     end
 
   end
 
-  describe "a disabled SuriService" do
+  describe 'a disabled SuriService' do
     before :all do
       Dor::Config.push! { suri.mint_ids false }
     end
@@ -55,7 +55,7 @@ describe Dor::SuriService do
       if ActiveFedora::Base.respond_to?(:connection_for_pid)
         allow(ActiveFedora::Base).to receive(:connection_for_pid).and_return(@mock_repo)
       else
-        ActiveFedora.stub_chain(:fedora,:connection).and_return(@mock_repo)
+        ActiveFedora.stub_chain(:fedora, :connection).and_return(@mock_repo)
       end
     end
 
@@ -85,7 +85,7 @@ describe Dor::SuriService do
       </pidList>
       EOXML
       expect(@mock_repo).to receive(:next_pid).with(:numPIDs => 3).and_return(xml_response)
-      expect(Dor::SuriService.mint_id(3)).to eq(['pid:123','pid:456','pid:789'])
+      expect(Dor::SuriService.mint_id(3)).to eq(['pid:123', 'pid:456', 'pid:789'])
       Dor::Config.suri.pop
     end
   end

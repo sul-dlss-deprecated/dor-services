@@ -6,7 +6,7 @@ describe Dor::ContentMetadataDS do
 
   before(:each) do
     @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
-    @item.contentMetadata.content='<?xml version="1.0"?>
+    @item.contentMetadata.content = '<?xml version="1.0"?>
     <contentMetadata objectId="druid:gw177fc7976" type="map" stacks="/specialstack">
     <resource id="0001" sequence="1" type="image">
     <file format="JPEG2000" id="gw177fc7976_05_0001.jp2" mimetype="image/jp2" preserve="yes" publish="yes" shelve="yes" size="5143883">
@@ -42,8 +42,8 @@ describe Dor::ContentMetadataDS do
 
   describe 'add_resource' do
     it 'should add a resource with default type="file"' do
-      @cm.add_resource(@files,'resource',1)
-      nodes=@cm.ng_xml.search('//resource[@id=\'resource\']')
+      @cm.add_resource(@files, 'resource', 1)
+      nodes = @cm.ng_xml.search('//resource[@id=\'resource\']')
       expect(nodes.length).to eq(1)
       node = nodes.first
       expect(node['id'      ]).to eq('resource')
@@ -52,8 +52,8 @@ describe Dor::ContentMetadataDS do
     end
 
     it 'should add a resource with a type="image"' do
-      @cm.add_resource(@files,'resource',1,'image')
-      nodes=@cm.ng_xml.search('//resource[@id=\'resource\']')
+      @cm.add_resource(@files, 'resource', 1, 'image')
+      nodes = @cm.ng_xml.search('//resource[@id=\'resource\']')
       expect(nodes.length).to eq(1)
       node = nodes.first
       expect(node['id']      ).to eq('resource')
@@ -62,10 +62,10 @@ describe Dor::ContentMetadataDS do
     end
 
     it 'should add a resource with a checksum' do
-      @files[0][:md5 ]='123456'
-      @files[0][:sha1]='56789'
-      @cm.add_resource(@files,'resource',1)
-      checksums=@cm.ng_xml.search('//file[@id=\'new_file.jp2\']//checksum')
+      @files[0][:md5 ] = '123456'
+      @files[0][:sha1] = '56789'
+      @cm.add_resource(@files, 'resource', 1)
+      checksums = @cm.ng_xml.search('//file[@id=\'new_file.jp2\']//checksum')
       expect(checksums.length).to eq(2)
       checksums.each do |checksum|
         expect(checksum.content).to eq(checksum['type'] == 'md5' ? '123456' : '56789')
@@ -78,9 +78,9 @@ describe Dor::ContentMetadataDS do
       expect(@cm.ng_xml.search('//resource').length).to eq(0)
     end
     it 'should remove one resource and renumber remaining resources' do
-      @cm.add_resource(@files,'resource',1)
+      @cm.add_resource(@files, 'resource', 1)
       @cm.remove_resource('resource')
-      resources=@cm.ng_xml.search('//resource')
+      resources = @cm.ng_xml.search('//resource')
       expect(resources.length).to eq(1)
       expect(resources.first()['sequence']).to eq('1')
     end
@@ -93,12 +93,12 @@ describe Dor::ContentMetadataDS do
   end
   describe 'add_file' do
     it 'should add a file to the resource' do
-      @cm.add_file(@file,'0001')
-      xml=@cm.ng_xml
-      hits=xml.search('//resource[@id=\'0001\']/file')
+      @cm.add_file(@file, '0001')
+      xml = @cm.ng_xml
+      hits = xml.search('//resource[@id=\'0001\']/file')
       expect(hits.length).to eq(4)
       expect(xml.search('//file[@id=\'new_file.jp2\']').length).to eq(1)
-      new_file=xml.search('//file[@id=\'new_file.jp2\']').first
+      new_file = xml.search('//file[@id=\'new_file.jp2\']').first
       expect(new_file['shelve'  ]).to eq('no')
       expect(new_file['publish' ]).to eq('no')
       expect(new_file['preserve']).to eq('no')
@@ -107,31 +107,31 @@ describe Dor::ContentMetadataDS do
   end
   describe 'update_file' do
     it 'should modify an existing file record' do
-      @cm.update_file(@file,'gw177fc7976_05_0001.jp2')
-      file=@cm.ng_xml.search('//file[@id=\'new_file.jp2\']')
+      @cm.update_file(@file, 'gw177fc7976_05_0001.jp2')
+      file = @cm.ng_xml.search('//file[@id=\'new_file.jp2\']')
       expect(file.length).to eq(1)
-      file=file.first
+      file = file.first
       expect(file['shelve'  ]).to eq('no')
       expect(file['publish' ]).to eq('no')
       expect(file['preserve']).to eq('no')
       expect(file['size'    ]).to eq('12345')
     end
     it 'should error out if there isnt an existing record to modify' do
-      expect { @cm.update_file(@file,'gw177fc7976_05_0001_different.jp2')}.to raise_error(StandardError)
+      expect { @cm.update_file(@file, 'gw177fc7976_05_0001_different.jp2')}.to raise_error(StandardError)
     end
   end
   describe 'rename_file' do
     it 'should update the file id' do
-      @cm.rename_file('gw177fc7976_05_0001.jp2','test.jp2')
+      @cm.rename_file('gw177fc7976_05_0001.jp2', 'test.jp2')
       file = @cm.ng_xml.search('//file[@id=\'test.jp2\']')
       expect(file.length).to eq(1)
     end
   end
   describe 'move_resource' do
     it 'should renumber the resources correctly' do
-      @cm.add_resource(@files,'resource',1)
-      @cm.move_resource('0001','2')
-      skip "No expectation defined!"
+      @cm.add_resource(@files, 'resource', 1)
+      @cm.move_resource('0001', '2')
+      skip 'No expectation defined!'
     end
   end
   describe 'update resource label' do
@@ -152,7 +152,7 @@ describe Dor::ContentMetadataDS do
   describe 'update_resource_type' do
     it 'should update an existing type' do
       @cm.update_resource_type '0001', 'book'
-      skip "No expectation defined!"
+      skip 'No expectation defined!'
     end
   end
   describe 'to_solr' do
@@ -168,7 +168,7 @@ describe Dor::ContentMetadataDS do
         'image_resource_count_itsi'       => 1,
         'first_shelved_image_ss'          => 'gw177fc7976_05_0001.jp2',
         'preserved_size_dbtsi'             => 86774303
-      }.each {|k,v| expect(@doc[k]).to eq(v) }
+      }.each {|k, v| expect(@doc[k]).to eq(v) }
     end
   end
   describe 'set_content_type' do
@@ -180,7 +180,7 @@ describe Dor::ContentMetadataDS do
   end
   describe 'get stacks value' do
     it 'should read the stacks value' do
-      expect(@cm.stacks).to eq(["/specialstack"])
+      expect(@cm.stacks).to eq(['/specialstack'])
     end
   end
 end

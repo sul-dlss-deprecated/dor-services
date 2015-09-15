@@ -47,7 +47,7 @@ describe Dor::MergeService do
     FileUtils.remove_entry workspace
   end
 
-  describe "#copy_workspace_content" do
+  describe '#copy_workspace_content' do
 
     before(:each) do
       primary.contentMetadata.content = <<-XML
@@ -78,7 +78,7 @@ describe Dor::MergeService do
       create_tempfile pri_druid_tree.path, 'image_a.jp2'
     end
 
-    it "copies the content in the workspace from the secondary object to the primary" do
+    it 'copies the content in the workspace from the secondary object to the primary' do
       secondary.contentMetadata.content = <<-XML
       <?xml version="1.0"?>
       <contentMetadata objectId="ab123cd0002" type="map">

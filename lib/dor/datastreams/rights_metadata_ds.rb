@@ -26,26 +26,26 @@ module Dor
 
     define_template :creative_commons do |xml|
       xml.use {
-        xml.human(:type => "creativeCommons")
-        xml.machine(:type => "creativeCommons")
+        xml.human(:type => 'creativeCommons')
+        xml.machine(:type => 'creativeCommons')
       }
     end
 
     def self.xml_template
       Nokogiri::XML::Builder.new do |xml|
-        xml.rightsMetadata{
-          xml.access(:type => 'discover'){
-            xml.machine{ xml.none }
+        xml.rightsMetadata {
+          xml.access(:type => 'discover') {
+            xml.machine { xml.none }
           }
-          xml.access(:type => 'read'){
-            xml.machine{ xml.none }   # dark default
+          xml.access(:type => 'read') {
+            xml.machine { xml.none }   # dark default
           }
-          xml.use{
+          xml.use {
             xml.human(:type => 'useAndReproduction')
-            xml.human(:type => "creativeCommons")
-            xml.machine(:type => "creativeCommons")
+            xml.human(:type => 'creativeCommons')
+            xml.machine(:type => 'creativeCommons')
           }
-          xml.copyright{ xml.human }
+          xml.copyright { xml.human }
         }
       end.doc
     end
@@ -67,34 +67,34 @@ module Dor
     def set_read_rights(rights)
       raise(ArgumentError, "Argument '#{rights}' is not a recognized value") unless %w(world stanford none dark).include? rights
       rights_xml = ng_xml
-      if (rights_xml.search('//rightsMetadata/access[@type=\'read\']').length==0)
+      if (rights_xml.search('//rightsMetadata/access[@type=\'read\']').length == 0)
         raise('The rights metadata stream doesnt contain an entry for machine read permissions. Consider populating it from the APO before trying to change it.')
       end
-      label = rights=='dark' ? 'none' : 'world'
+      label = rights == 'dark' ? 'none' : 'world'
       @dra_object = nil # until TODO complete, we'll expect to have to reparse after modification
       rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
         node.children.remove
-        node.add_child Nokogiri::XML::Node.new(label,rights_xml)
+        node.add_child Nokogiri::XML::Node.new(label, rights_xml)
       end
       rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
         node.children.remove
-        machine_node = Nokogiri::XML::Node.new('machine',rights_xml)
+        machine_node = Nokogiri::XML::Node.new('machine', rights_xml)
         node.add_child(machine_node)
         if rights == 'world'
-          machine_node.add_child Nokogiri::XML::Node.new(rights,rights_xml)
+          machine_node.add_child Nokogiri::XML::Node.new(rights, rights_xml)
         elsif rights == 'stanford'
-          group_node = Nokogiri::XML::Node.new('group',rights_xml)
-          group_node.content = "Stanford"
+          group_node = Nokogiri::XML::Node.new('group', rights_xml)
+          group_node.content = 'Stanford'
           machine_node.add_child(group_node)
         else  # we know it is none or dark by the argument filter (first line)
-          machine_node.add_child Nokogiri::XML::Node.new('none',rights_xml)
+          machine_node.add_child Nokogiri::XML::Node.new('none', rights_xml)
         end
       end
       self.content = rights_xml.to_xml
       content_will_change!
     end
 
-    def to_solr(solr_doc=Hash.new, *args)
+    def to_solr(solr_doc = {}, *args)
       super(solr_doc, *args)
       dra = dra_object
       solr_doc['rights_primary_ssi'] = dra.index_elements[:primary]
@@ -102,7 +102,7 @@ module Dor
       solr_doc['rights_characteristics_ssim'] = dra.index_elements[:terms] if dra.index_elements[:terms].size > 0
       # suppress empties
       %w[use_statement_ssim copyright_ssim].each do |key|
-        solr_doc[key] = solr_doc[key].reject{ |val| val.nil? || val == '' }.flatten unless solr_doc[key].nil?
+        solr_doc[key] = solr_doc[key].reject { |val| val.nil? || val == '' }.flatten unless solr_doc[key].nil?
       end
       solr_doc
     end

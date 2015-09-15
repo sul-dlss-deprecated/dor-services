@@ -26,7 +26,7 @@ module Dor
             t.type_ :path => { :attribute => 'type' }
           end
         end
-        t.shelved_file(:path => 'file', :attributes => {:shelve=>'yes'}, :index_as => [:not_searchable]) do
+        t.shelved_file(:path => 'file', :attributes => {:shelve => 'yes'}, :index_as => [:not_searchable]) do
           t.id_ :path => { :attribute => 'id' }, :index_as => [:displayable, :stored_searchable]
         end
       end
@@ -42,12 +42,12 @@ module Dor
       result
     end
     def add_file(file, resource_name)
-      xml=ng_xml
-      resource_nodes = xml.search('//resource[@id=\''+resource_name+'\']')
-      raise 'resource doesnt exist.' if resource_nodes.length==0
-      node=resource_nodes.first
-      file_node=Nokogiri::XML::Node.new('file',xml)
-      file_node['id']=file[:name]
+      xml = ng_xml
+      resource_nodes = xml.search('//resource[@id=\'' + resource_name + '\']')
+      raise 'resource doesnt exist.' if resource_nodes.length == 0
+      node = resource_nodes.first
+      file_node = Nokogiri::XML::Node.new('file', xml)
+      file_node['id'] = file[:name]
       file_node['shelve'  ] = file[:shelve  ] ? file[:shelve  ] : ''
       file_node['publish' ] = file[:publish ] ? file[:publish ] : ''
       file_node['preserve'] = file[:preserve] ? file[:preserve] : ''
@@ -55,44 +55,44 @@ module Dor
 
       [:md5, :sha1].each do |algo|
         next unless file[algo]
-        checksum_node = Nokogiri::XML::Node.new('checksum',xml)
+        checksum_node = Nokogiri::XML::Node.new('checksum', xml)
         checksum_node['type'] = algo.to_s
         checksum_node.content = file[algo]
         file_node.add_child(checksum_node)
       end
       file_node['size'    ] = file[:size     ] if file[:size     ]
       file_node['mimetype'] = file[:mime_type] if file[:mime_type]
-      self.content=xml.to_s
+      self.content = xml.to_s
       save
     end
 
-    def add_resource(files,resource_name, position,type="file")
-      xml=ng_xml
-      if xml.search('//resource[@id=\''+resource_name+'\']').length>0
-        raise 'resource '+resource_name+' already exists'
+    def add_resource(files, resource_name, position, type = 'file')
+      xml = ng_xml
+      if xml.search('//resource[@id=\'' + resource_name + '\']').length > 0
+        raise 'resource ' + resource_name + ' already exists'
       end
-      node=nil
+      node = nil
 
-      max = xml.search('//resource').map{ |node| node['sequence'].to_i }.max
+      max = xml.search('//resource').map { |node| node['sequence'].to_i }.max
       #renumber all of the resources that will come after the newly added one
-      while max>position
-        node=xml.search('//resource[@sequence=\'' + position + '\']')
-        node.first[sequence]=max+1 if node.length>0
-        max-=1
+      while max > position
+        node = xml.search('//resource[@sequence=\'' + position + '\']')
+        node.first[sequence] = max + 1 if node.length > 0
+        max -= 1
       end
-      node=Nokogiri::XML::Node.new('resource',xml)
-      node['sequence']=position.to_s
-      node['id']=resource_name
-      node['type']=type
+      node = Nokogiri::XML::Node.new('resource', xml)
+      node['sequence'] = position.to_s
+      node['id'] = resource_name
+      node['type'] = type
       files.each do |file|
-        file_node=Nokogiri::XML::Node.new('file',xml)
+        file_node = Nokogiri::XML::Node.new('file', xml)
         %w[shelve publish preserve].each {|x| file_node[x] = file[x.to_sym] ? file[x.to_sym] : '' }
         file_node['id'] = file[:name]
         node.add_child(file_node)
 
         [:md5, :sha1].each { |algo|
           next if file[algo].nil?
-          checksum_node = Nokogiri::XML::Node.new('checksum',xml)
+          checksum_node = Nokogiri::XML::Node.new('checksum', xml)
           checksum_node['type'] = algo.to_s
           checksum_node.content = file[algo]
           file_node.add_child(checksum_node)
@@ -100,77 +100,77 @@ module Dor
         file_node['size'] = file[:size] if file[:size]
       end
       xml.search('//contentMetadata').first.add_child(node)
-      self.content=xml.to_s
+      self.content = xml.to_s
       save
     end
 
-    def remove_resource resource_name
-      xml=ng_xml
-      node = singular_node('//resource[@id=\''+resource_name+'\']')
-      position = node['sequence'].to_i+1
+    def remove_resource(resource_name)
+      xml = ng_xml
+      node = singular_node('//resource[@id=\'' + resource_name + '\']')
+      position = node['sequence'].to_i + 1
       node.remove
-      while true
-        res=xml.search('//resource[@sequence=\''+position.to_s+'\']')
-        break if res.length==0
-        res['sequence']=position.to_s
-        position+=1
+      loop do
+        res = xml.search('//resource[@sequence=\'' + position.to_s + '\']')
+        break if res.length == 0
+        res['sequence'] = position.to_s
+        position += 1
       end
-      self.content=xml.to_s
+      self.content = xml.to_s
       save
     end
 
-    def remove_file file_name
-      xml=ng_xml
-      xml.search('//file[@id=\''+file_name+'\']').each do |node|
+    def remove_file(file_name)
+      xml = ng_xml
+      xml.search('//file[@id=\'' + file_name + '\']').each do |node|
         node.remove
       end
-      self.content=xml.to_s
+      self.content = xml.to_s
       save
     end
-    def update_attributes file_name, publish, shelve, preserve
-      xml=ng_xml
-      file_node=xml.search('//file[@id=\''+file_name+'\']').first
-      file_node['shelve'  ]=shelve
-      file_node['publish' ]=publish
-      file_node['preserve']=preserve
-      self.content=xml.to_s
+    def update_attributes(file_name, publish, shelve, preserve)
+      xml = ng_xml
+      file_node = xml.search('//file[@id=\'' + file_name + '\']').first
+      file_node['shelve'  ] = shelve
+      file_node['publish' ] = publish
+      file_node['preserve'] = preserve
+      self.content = xml.to_s
       save
     end
-    def update_file file, old_file_id
-      xml=ng_xml
-      file_node=xml.search('//file[@id=\''+old_file_id+'\']').first
-      file_node['id']=file[:name]
+    def update_file(file, old_file_id)
+      xml = ng_xml
+      file_node = xml.search('//file[@id=\'' + old_file_id + '\']').first
+      file_node['id'] = file[:name]
       [:md5, :sha1].each { |algo|
         next if file[algo].nil?
-        checksum_node = xml.search('//file[@id=\''+old_file_id+'\']/checksum[@type=\'' + algo.to_s + '\']').first
+        checksum_node = xml.search('//file[@id=\'' + old_file_id + '\']/checksum[@type=\'' + algo.to_s + '\']').first
         if checksum_node.nil?
-          checksum_node = Nokogiri::XML::Node.new('checksum',xml)
+          checksum_node = Nokogiri::XML::Node.new('checksum', xml)
           file_node.add_child(checksum_node)
         end
         checksum_node['type'] = algo.to_s
         checksum_node.content = file[algo]
       }
 
-      [:size, :shelve, :preserve, :publish].each{ |x|
+      [:size, :shelve, :preserve, :publish].each { |x|
         file_node[x.to_s] = file[x] if file[x]
       }
-      self.content=xml.to_s
+      self.content = xml.to_s
       save
     end
 
     # Terminology-based solrization is going to be painfully slow for large
     # contentMetadata streams. Just select the relevant elements instead.
     # TODO: Call super()?
-    def to_solr(solr_doc=Hash.new, *args)
+    def to_solr(solr_doc = {}, *args)
       doc = ng_xml
       return solr_doc unless doc.root['type']
 
-      preserved_size=0
+      preserved_size = 0
       counts = Hash.new(0)                # default count is zero
       resource_type_counts = Hash.new(0)  # default count is zero
       first_shelved_image = nil
 
-      doc.xpath('contentMetadata/resource').sort { |a,b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
+      doc.xpath('contentMetadata/resource').sort { |a, b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
         counts['resource'] += 1
         resource_type_counts[resource['type']] += 1 if resource['type']
         resource.xpath('file').each do |file|
@@ -181,28 +181,28 @@ module Dor
           first_shelved_image ||= file['id'] if file['id'].match(/jp2$/)
         end
       end
-      solr_doc["content_type_ssim"              ] = doc.root['type']
-      solr_doc["content_file_count_itsi"        ] = counts['content_file']
-      solr_doc["shelved_content_file_count_itsi"] = counts['shelved_file']
-      solr_doc["resource_count_itsi"            ] = counts['resource']
-      solr_doc["preserved_size_dbtsi"           ] = preserved_size        # double (trie) to support very large sizes
-      solr_doc["resource_types_ssim"            ] = resource_type_counts.keys if resource_type_counts.size > 0
+      solr_doc['content_type_ssim'              ] = doc.root['type']
+      solr_doc['content_file_count_itsi'        ] = counts['content_file']
+      solr_doc['shelved_content_file_count_itsi'] = counts['shelved_file']
+      solr_doc['resource_count_itsi'            ] = counts['resource']
+      solr_doc['preserved_size_dbtsi'           ] = preserved_size        # double (trie) to support very large sizes
+      solr_doc['resource_types_ssim'            ] = resource_type_counts.keys if resource_type_counts.size > 0
       resource_type_counts.each do |key, count|
         solr_doc["#{key}_resource_count_itsi"] = count
       end
       # first_shelved_image is neither indexed nor multiple
-      solr_doc["first_shelved_image_ss"] = first_shelved_image unless first_shelved_image.nil?
+      solr_doc['first_shelved_image_ss'] = first_shelved_image unless first_shelved_image.nil?
       solr_doc
     end
 
     #@param old_name [String] unique id attribute of the file element
     #@param new_name [String] new unique id value being assigned
     #@return [Nokogiri::XML::Element] the file node
-    def rename_file old_name, new_name
-      xml=ng_xml
-      file_node=xml.search('//file[@id=\''+old_name+'\']').first
-      file_node['id']=new_name
-      self.content=xml.to_s
+    def rename_file(old_name, new_name)
+      xml = ng_xml
+      file_node = xml.search('//file[@id=\'' + old_name + '\']').first
+      file_node['id'] = new_name
+      self.content = xml.to_s
       save
     end
 
@@ -210,24 +210,24 @@ module Dor
     #@param resource_name [String] unique id attribute of the resource
     #@param new_label [String] label value being assigned
     #@return [Nokogiri::XML::Element] the resource node
-    def update_resource_label resource_name, new_label
-      node = singular_node('//resource[@id=\''+resource_name+'\']')
+    def update_resource_label(resource_name, new_label)
+      node = singular_node('//resource[@id=\'' + resource_name + '\']')
       labels = node.xpath('./label')
-      if (labels.length==0)
+      if (labels.length == 0)
         #create a label
-        label_node = Nokogiri::XML::Node.new('label',ng_xml)
-        label_node.content=new_label
+        label_node = Nokogiri::XML::Node.new('label', ng_xml)
+        label_node.content = new_label
         node.add_child(label_node)
       else
-        labels.first.content=new_label
+        labels.first.content = new_label
       end
       node
     end
 
     #@param resource_name [String] unique id attribute of the resource
     #@param new_type [String] type value being assigned
-    def update_resource_type resource_name, new_type
-      singular_node('//resource[@id=\''+resource_name+'\']')['type']=new_type
+    def update_resource_type(resource_name, new_type)
+      singular_node('//resource[@id=\'' + resource_name + '\']')['type'] = new_type
     end
 
     #You just *had* to have ordered lists in XML, didn't you?
@@ -235,17 +235,17 @@ module Dor
     #@param resource_name [String] unique id attribute of the resource
     #@param new_position [Integer, String] new sequence number of the resource, or a string that looks like one
     #@return [Nokogiri::XML::Element] the resource node
-    def move_resource resource_name, new_position
-      node = singular_node('//resource[@id=\''+resource_name+'\']')
+    def move_resource(resource_name, new_position)
+      node = singular_node('//resource[@id=\'' + resource_name + '\']')
       position = node['sequence'].to_i
       new_position = new_position.to_i              # tolerate strings as a Legacy behavior
       return node if position == new_position
       #otherwise, is the resource being moved earlier in the sequence or later?
-      up = new_position>position
-      others = new_position..(up ? position-1 : position+1)  # a range
+      up = new_position > position
+      others = new_position..(up ? position - 1 : position + 1)  # a range
       others.each do |i|
-        item = ng_xml.at_xpath('/resource[@sequence=\''+i.to_s+'\']')
-        item['sequence'] = (up ? i-1 : i+1).to_s    # if you're going up, everything else comes down and vice versa
+        item = ng_xml.at_xpath('/resource[@sequence=\'' + i.to_s + '\']')
+        item['sequence'] = (up ? i - 1 : i + 1).to_s    # if you're going up, everything else comes down and vice versa
       end
       node['sequence'] = new_position.to_s          # set the node we already had last, so we don't hit it twice!
       node
@@ -254,22 +254,22 @@ module Dor
     #Set the content type and the resource types for all resources
     #@param new_type [String] the new content type, ex book
     #@param new_resource_type [String] the new type for all resources, ex book
-    def set_content_type old_type, old_resource_type, new_type, new_resource_type
-      xml=ng_xml
-      xml.search('/contentMetadata[@type=\''+old_type+'\']').each do |node|
-        node['type']=new_type
-        xml.search('//resource[@type=\''+old_resource_type+'\']').each do |resource|
-          resource['type']=new_resource_type
+    def set_content_type(old_type, old_resource_type, new_type, new_resource_type)
+      xml = ng_xml
+      xml.search('/contentMetadata[@type=\'' + old_type + '\']').each do |node|
+        node['type'] = new_type
+        xml.search('//resource[@type=\'' + old_resource_type + '\']').each do |resource|
+          resource['type'] = new_resource_type
         end
       end
-      self.content=xml.to_s
+      self.content = xml.to_s
     end
 
     # Only use this when you want the behavior of raising an exception if anything besides exactly one matching node
     # is found.  Otherwise just use .xpath, .at_xpath or .search.
     #@param xpath [String] accessor invocation for Nokogiri xpath
     #@return [Nokogiri::XML::Element] the matched element
-    def singular_node xpath
+    def singular_node(xpath)
       node = ng_xml.search(xpath)
       len  = node.length
       raise "#{xpath} not found" if len < 1

@@ -51,10 +51,10 @@ module Dor
     before_create :ensure_non_versionable
 
     set_terminology do |t|
-      t.root(:path => "versionMetadata")
+      t.root(:path => 'versionMetadata')
       t.version do
-        t.version_id :path => { :attribute => "versionID" }
-        t.tag :path => { :attribute => "tag" }
+        t.version_id :path => { :attribute => 'versionID' }
+        t.tag :path => { :attribute => 'tag' }
         t.description
       end
     end
@@ -72,7 +72,7 @@ module Dor
     end
 
     def ensure_non_versionable
-      self.versionable = "false"
+      self.versionable = 'false'
     end
 
     # @param [String] description optional text describing version change
@@ -80,9 +80,9 @@ module Dor
     #  :major, :minor, :admin (see VersionTag#increment)
     def increment_version(description = nil, significance = nil)
       if ( find_by_terms(:version).size == 0)
-        v = ng_xml.create_element "version",
+        v = ng_xml.create_element 'version',
         :versionId => '1', :tag => '1.0.0'
-        d = ng_xml.create_element "description", "Initial Version"
+        d = ng_xml.create_element 'description', 'Initial Version'
         ng_xml.root['objectId'] = pid
         ng_xml.root.add_child(v)
         v.add_child d
@@ -91,7 +91,7 @@ module Dor
         current_id = current[:versionId].to_i
         current_tag = VersionTag.parse(current[:tag])
 
-        v = ng_xml.create_element "version", :versionId => (current_id + 1).to_s
+        v = ng_xml.create_element 'version', :versionId => (current_id + 1).to_s
         if significance && current_tag
           v[:tag] = current_tag.increment(significance).to_s
         end
@@ -99,7 +99,7 @@ module Dor
         ng_xml.root.add_child(v)
 
         if description
-          d = ng_xml.create_element "description", description
+          d = ng_xml.create_element 'description', description
           v.add_child d
         end
       end
@@ -107,7 +107,7 @@ module Dor
 
     # @return [String] value of the most current versionId
     def current_version_id
-      current_version=current_version_node
+      current_version = current_version_node
       if current_version.nil?
         return '1'
       else
@@ -129,7 +129,7 @@ module Dor
         if d
           d.content = opts[:description]
         else
-          d_node = ng_xml.create_element "description", opts[:description]
+          d_node = ng_xml.create_element 'description', opts[:description]
           current.add_child d_node
         end
       end
@@ -140,7 +140,7 @@ module Dor
         else
           # get rid of the current tag
           tags = find_by_terms(:version, :tag)
-          sorted_tags = tags.map{|t| VersionTag.parse(t.value)}.sort
+          sorted_tags = tags.map {|t| VersionTag.parse(t.value)}.sort
           current_tag = sorted_tags[sorted_tags.length - 2]           # Get the second greatest tag since we are dropping the current, greatest
           current[:tag] = current_tag.increment(opts[:significance]).to_s
         end
@@ -165,7 +165,7 @@ module Dor
     end
 
     def tag_for_version(versionId)
-      nodes=ng_xml.search('//version[@versionId=\''+versionId+'\']')
+      nodes = ng_xml.search('//version[@versionId=\'' + versionId + '\']')
       if nodes.length == 1
         nodes.first['tag'].to_s
       else
@@ -175,7 +175,7 @@ module Dor
 
     # @return [String] The description for the specified version, or empty string if there is no description
     def description_for_version(versionId)
-      nodes=ng_xml.search('//version[@versionId=\''+versionId+'\']')
+      nodes = ng_xml.search('//version[@versionId=\'' + versionId + '\']')
       if nodes.length == 1 && nodes.first.at_xpath('description')
         nodes.first.at_xpath('description').content.to_s
       else
@@ -185,7 +185,7 @@ module Dor
 
     # @return [String] The description for the current version
     def current_description
-      desc_node=current_version_node.at_xpath('description')
+      desc_node = current_version_node.at_xpath('description')
       return desc_node.content if desc_node
       ''
     end
@@ -200,7 +200,7 @@ module Dor
     # @param [Hash] opts optional parameters
     # @option opts [String] :description describes the version change
     # @option opts [Symbol] :significance which part of the version tag to increment
-    def sync_then_increment_version known_version, opts = {}
+    def sync_then_increment_version(known_version, opts = {})
       cv = current_version_id.to_i
       raise Dor::Exception.new("Cannot sync to a version greater than current: #{cv}, requested #{known_version}") if cv < known_version
 
@@ -222,7 +222,7 @@ module Dor
 
     def newest_tag
       tags = find_by_terms(:version, :tag)
-      tags.map{|t| VersionTag.parse(t.value)}.max
+      tags.map {|t| VersionTag.parse(t.value)}.max
     end
 
   end

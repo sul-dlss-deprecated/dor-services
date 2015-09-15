@@ -10,7 +10,7 @@ describe Dor::WorkflowDs do
   end
   describe '[]' do
     it 'should build a Document object if there is xml' do
-    xml='<?xml version="1.0" encoding="UTF-8"?>
+    xml = '<?xml version="1.0" encoding="UTF-8"?>
     <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
         <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
             datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
@@ -34,9 +34,9 @@ describe Dor::WorkflowDs do
             datetime="2012-11-06T16:19:15-0800" status="completed" name="descriptive-metadata"/>
         <process version="2" elapsed="0.0" archived="true" attempts="2"
             datetime="2012-11-06T16:19:16-0800" status="completed" name="content-metadata"/>'
-      allow(Dor::WorkflowService).to receive(:get_workflow_xml).and_return(xml)
-      accessionWF=@item.workflows['accessionWF']
-      expect(accessionWF).not_to be_nil
+    allow(Dor::WorkflowService).to receive(:get_workflow_xml).and_return(xml)
+    accessionWF = @item.workflows['accessionWF']
+    expect(accessionWF).not_to be_nil
     end
     it 'should return nil if the xml is empty' do
       allow(Dor::WorkflowService).to receive(:get_workflow_xml).and_return('')
@@ -45,7 +45,7 @@ describe Dor::WorkflowDs do
   end
   describe 'get_workflow' do
     it 'should build a Document object if there is xml' do
-      xml='<?xml version="1.0" encoding="UTF-8"?>
+      xml = '<?xml version="1.0" encoding="UTF-8"?>
        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
         <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
             datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
@@ -70,7 +70,7 @@ describe Dor::WorkflowDs do
         <process version="2" elapsed="0.0" archived="true" attempts="2"
             datetime="2012-11-06T16:19:16-0800" status="completed" name="content-metadata"/>'
       allow(Dor::WorkflowService).to receive(:get_workflow_xml).and_return(xml)
-      accessionWF=@item.workflows.get_workflow 'accessionWF'
+      accessionWF = @item.workflows.get_workflow 'accessionWF'
       expect(accessionWF).not_to be_nil
     end
     it 'should return nil if the xml is empty' do
@@ -78,8 +78,8 @@ describe Dor::WorkflowDs do
       expect(@item.workflows.get_workflow('accessionWF')).to be_nil
     end
     it 'should request the workflow for a different repository if one is specified' do
-      expect(Dor::WorkflowService).to receive(:get_workflow_xml).with('sdr','druid:ab123cd4567','accessionWF').and_return('')
-      @item.workflows.get_workflow('accessionWF','sdr')
+      expect(Dor::WorkflowService).to receive(:get_workflow_xml).with('sdr', 'druid:ab123cd4567', 'accessionWF').and_return('')
+      @item.workflows.get_workflow('accessionWF', 'sdr')
     end
   end
 end

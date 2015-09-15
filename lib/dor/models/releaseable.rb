@@ -15,7 +15,7 @@ module Dor
 
       #Add in each tag
       release_tags.each do |r_tag|
-        add_release_node(r_tag[:release],r_tag)
+        add_release_node(r_tag[:release], r_tag)
       end
 
       #Save the item to dor so the robots work with the latest data
@@ -31,7 +31,7 @@ module Dor
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.releaseData {
           released_for.each do |project, released_value|
-            xml.release(released_value["release"],:to=>project)
+            xml.release(released_value['release'], :to => project)
           end
         }
         end
@@ -65,7 +65,7 @@ module Dor
       administrative_tags = tags  #Get them once here and pass them down
 
       #We now have the keys for all potential releases, we need to check the tags and the most recent time stamp with an explicit true or false wins, in a nil case, the lack of an explicit false tag we do nothing
-      (potential_applicable_release_tags.keys-released_hash.keys).each do |key|  #don't bother checking the ones already added to the release hash, they were added due to a self tag and that has won
+      (potential_applicable_release_tags.keys - released_hash.keys).each do |key|  #don't bother checking the ones already added to the release hash, they were added due to a self tag and that has won
         latest_applicable_tag_for_key = latest_applicable_release_tag_in_array(potential_applicable_release_tags[key], administrative_tags)
         unless latest_applicable_tag_for_key.nil? #We have a valid tag, record it
           released_hash[key] = clean_release_tag_for_purl(latest_applicable_tag_for_key)
@@ -115,7 +115,7 @@ module Dor
     def get_tags_for_what_value(tags, what_target)
       return_hash = {}
       tags.keys.each do |key|
-        self_tags =  tags[key].select{|tag| tag['what'] == what_target.downcase}
+        self_tags =  tags[key].select {|tag| tag['what'] == what_target.downcase}
         return_hash[key] = self_tags if self_tags.size > 0
       end
       return_hash
@@ -160,7 +160,7 @@ module Dor
     # @param release_tag [Hash] the tag in a hashed form
     # @param admin_tags [Array] the administrative tags on an item, if not supplied it will attempt to retrieve them
     # @return [Boolean] true or false if it applies (not true or false if it is released, that is the release_tag data)
-    def does_release_tag_apply(release_tag, admin_tags=false)
+    def does_release_tag_apply(release_tag, admin_tags = false)
       #Is the tag global or restricted
       return true if release_tag['tag'].nil?  #there is no specific tag specificied, so that means this tag is global to all members of the collection, it applies, return true
 
@@ -210,11 +210,11 @@ module Dor
       attrs = rtag.attributes
       return_hash = { :to => attrs[to].value }
       attrs.tap { |a| a.delete(to)}
-      attrs[release] = rtag.text.downcase == "true" #save release as a boolean
+      attrs[release] = rtag.text.downcase == 'true' #save release as a boolean
       return_hash[:attrs] = attrs
 
       #convert all the attrs beside :to to strings, they are currently Nokogiri::XML::Attr
-      (return_hash[:attrs].keys-[to]).each do |a|
+      (return_hash[:attrs].keys - [to]).each do |a|
         return_hash[:attrs][a] =  return_hash[:attrs][a].to_s if a != release
       end
 
@@ -228,8 +228,8 @@ module Dor
     # @param attrs [hash] A hash of attributes for the tag, must contain: :when, a ISO 8601 timestamp; :who, to identify who or what added the tag; and :to, a string identifying the release target
     # @raise [RuntimeError]  Raises an error of the first fault in the release tag
     # @return [Boolean] Returns true if no errors found
-    def valid_release_attributes_and_tag(tag, attrs={})
-      raise ArgumentError, ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z').nil?
+    def valid_release_attributes_and_tag(tag, attrs = {})
+      raise ArgumentError, ':when is not iso8601' if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z').nil?
       [:who, :to, :what].each do |check_attr|
         raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
@@ -238,8 +238,8 @@ module Dor
       %w(self collection).each do |allowed_what_value|
         what_correct = true if attrs[:what] == allowed_what_value
       end
-      raise ArgumentError, ":what must be self or collection" unless what_correct
-      raise ArgumentError, "the value set for this tag is not a boolean" if !!tag != tag
+      raise ArgumentError, ':what must be self or collection' unless what_correct
+      raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag
       validate_tag_format(attrs[:tag]) unless attrs[:tag].nil? #Will Raise exception if invalid tag
       true
     end
@@ -255,7 +255,7 @@ module Dor
     #
     # @example
     #  item.add_tag(true,:release,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket', :displayType='filmstrip'})
-    def add_release_node(release, attrs={})
+    def add_release_node(release, attrs = {})
       identity_metadata_ds = identityMetadata
       attrs[:when] = Time.now.utc.iso8601 if attrs[:when].nil? #add the timestamp
       attrs[:displayType] = 'file' if attrs[:displayType].nil? #default to file is no display type is passed
@@ -274,8 +274,8 @@ module Dor
     # @param attrs [hash] A hash of attributes for the tag, must contain :when, a ISO 8601 timestamp and :who to identify who or what added the tag, :to,
     # @raise [ArgumentError]  Raises an error of the first fault in the release tag
     # @return [Boolean] Returns true if no errors found
-    def valid_release_attributes(tag, attrs={})
-      raise ArgumentError, ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z').nil?
+    def valid_release_attributes(tag, attrs = {})
+      raise ArgumentError, ':when is not iso8601' if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z').nil?
       [:who, :to, :what].each do |check_attr|
         raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
@@ -284,9 +284,9 @@ module Dor
       %w(self collection).each do |allowed_what_value|
         what_correct = true if attrs[:what] == allowed_what_value
       end
-      raise ArgumentError, ":what must be self or collection" unless what_correct
-      raise ArgumentError, "the value set for this tag is not a boolean" if !!tag != tag
-      raise ArgumentError, ":displayType must be passed in as a String" unless attrs[:displayType].class == String
+      raise ArgumentError, ':what must be self or collection' unless what_correct
+      raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag
+      raise ArgumentError, ':displayType must be passed in as a String' unless attrs[:displayType].class == String
 
       validate_tag_format(attrs[:tag]) unless attrs[:tag].nil? #Will Raise exception if invalid tag
       true
@@ -316,10 +316,10 @@ module Dor
       handler = Proc.new do |exception, attempt_number, total_delay|
         #We assume a 404 means the document has never been published before and thus has no purl
         #The strip is needed before the actual message is "404 "
-        return Nokogiri::HTML::Document.new if exception.message.strip == "404"
+        return Nokogiri::HTML::Document.new if exception.message.strip == '404'
       end
 
-      with_retries(:max_retries => 5, :base_sleep_seconds => 3, :max_sleep_seconds=> 5, :rescue => OpenURI::HTTPError, :handler => handler) {
+      with_retries(:max_retries => 5, :base_sleep_seconds => 3, :max_sleep_seconds => 5, :rescue => OpenURI::HTTPError, :handler => handler) {
          #If you change the method used for opening the webpage, you can change the :rescue param to handle the new method's errors
          return Nokogiri::HTML(open(form_purl_url))
        }
@@ -328,7 +328,7 @@ module Dor
     # Since purl does not use the druid: prefix but much of dor does, use this function to strip the druid: if needed
     # @return [String] the druid sans the druid: or if there was no druid: prefix, the entire string you passed
     def remove_druid_prefix
-      druid_prefix = "druid:"
+      druid_prefix = 'druid:'
       return id.split(druid_prefix)[1] if id.split(druid_prefix).size > 1
       druid
     end
@@ -336,7 +336,7 @@ module Dor
     # Take the and create the entire purl url that will usable for the open method in open-uri, returns http
     # @return [String], the full url
     def form_purl_url
-      prefix = "http://"
+      prefix = 'http://'
       prefix + Dor::Config.stacks.document_cache_host + "/#{remove_druid_prefix}.xml"
     end
 
@@ -344,11 +344,11 @@ module Dor
     # @param doc [Nokogiri::HTML::Document] The druid of the object you want
     # @return [Array] An array containing all the release tags
     def get_release_tags_from_purl_xml(doc)
-      nodes = doc.xpath("//html/body/publicobject/releasedata").children
+      nodes = doc.xpath('//html/body/publicobject/releasedata').children
       #We only want the nodes with a name that isn't text
       return_array = []
       nodes.each do |n|
-        return_array << n.attr('to') if !n.name.nil? && n.name.downcase != "text"
+        return_array << n.attr('to') if !n.name.nil? && n.name.downcase != 'text'
       end
       return_array.uniq
     end
@@ -369,18 +369,18 @@ module Dor
       tags_currently_in_purl = get_release_tags_from_purl
       missing_tags = tags_currently_in_purl.map(&:downcase) - new_tags.keys.map(&:downcase)
       missing_tags.each do |missing_tag|
-        new_tags[missing_tag.capitalize] = {"release"=>false}
+        new_tags[missing_tag.capitalize] = {'release' => false}
       end
       new_tags
     end
 
-    def to_solr(solr_doc=Hash.new, *args)
+    def to_solr(solr_doc = {}, *args)
       super(solr_doc, *args)
 
       #TODO: sort of worried about the performance impact in bulk reindex
       # situations, since released_for recurses all parent collections.  jmartin 2015-07-14
       released_for().each { |key, val|
-        add_solr_value(solr_doc, "released_to", key, :symbol, []) if val
+        add_solr_value(solr_doc, 'released_to', key, :symbol, []) if val
       }
 
       #TODO: need to solrize whether item is released to purl?  does released_for

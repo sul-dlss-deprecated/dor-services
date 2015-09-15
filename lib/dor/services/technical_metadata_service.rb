@@ -25,9 +25,9 @@ module Dor
         return true
       else
         merged_nodes = merge_file_nodes(old_techmd, new_techmd, deltas)
-        final_techmd = build_technical_metadata(druid,merged_nodes)
+        final_techmd = build_technical_metadata(druid, merged_nodes)
       end
-      ds = dor_item.datastreams["technicalMetadata"]
+      ds = dor_item.datastreams['technicalMetadata']
       ds.dsLabel = 'Technical Metadata'
       ds.content = final_techmd
       ds.save
@@ -41,7 +41,7 @@ module Dor
           require 'jhove_service'
         rescue LoadError => e
           puts e.inspect
-          raise "jhove-service dependency gem was not found.  Please add it to your Gemfile and run bundle install"
+          raise 'jhove-service dependency gem was not found.  Please add it to your Gemfile and run bundle install'
         end
       end
     end
@@ -51,7 +51,7 @@ module Dor
     def self.get_content_group_diff(dor_item)
       inventory_diff_xml = dor_item.get_content_diff('all')
       inventory_diff = Moab::FileInventoryDifference.parse(inventory_diff_xml)
-      content_group_diff = inventory_diff.group_difference("content")
+      content_group_diff = inventory_diff.group_difference('content')
       content_group_diff
     end
 
@@ -81,7 +81,7 @@ module Dor
     #   The data is updated to the latest format.
     def self.get_sdr_technical_metadata(druid)
       begin
-        sdr_techmd = get_sdr_metadata(druid, "technicalMetadata")
+        sdr_techmd = get_sdr_metadata(druid, 'technicalMetadata')
       rescue RestClient::ResourceNotFound => e
         return nil
       end
@@ -98,7 +98,7 @@ module Dor
     # @return [String] The technicalMetadata datastream from the previous version of the digital object (fetched from DOR fedora).
     #   The data is updated to the latest format.
     def self.get_dor_technical_metadata(dor_item)
-      ds = "technicalMetadata"
+      ds = 'technicalMetadata'
       if dor_item.datastreams.keys.include?(ds) && !dor_item.datastreams[ds].new?
         dor_techmd = dor_item.datastreams[ds].content
       else
@@ -129,10 +129,10 @@ module Dor
     def self.get_new_technical_metadata(druid, new_files)
       return nil if new_files.nil? || new_files.empty?
       workspace = DruidTools::Druid.new(druid, Dor::Config.sdr.local_workspace_root)
-      content_dir = workspace.find_filelist_parent('content',new_files)
+      content_dir = workspace.find_filelist_parent('content', new_files)
       temp_dir = workspace.temp_dir
       jhove_service = ::JhoveService.new(temp_dir)
-      jhove_service.digital_object_id=druid
+      jhove_service.digital_object_id = druid
       fileset_file = write_fileset(temp_dir, new_files)
       jhove_output_file = jhove_service.run_jhove(content_dir, fileset_file)
       tech_md_file = jhove_service.create_technical_metadata(jhove_output_file)
@@ -155,7 +155,7 @@ module Dor
     def self.merge_file_nodes(old_techmd, new_techmd, deltas)
       old_file_nodes = get_file_nodes(old_techmd)
       new_file_nodes = get_file_nodes(new_techmd)
-      merged_nodes = Hash.new
+      merged_nodes = {}
       deltas[:identical].each do |path|
         merged_nodes[path] = old_file_nodes[path]
       end
@@ -165,12 +165,12 @@ module Dor
       deltas[:added].each do |path|
         merged_nodes[path] = new_file_nodes[path]
       end
-      deltas[:renamed].each do |oldpath,newpath|
+      deltas[:renamed].each do |oldpath, newpath|
         clone = old_file_nodes[oldpath].clone
         clone.sub!(/<file\s*id.*?["'].*?["'].*?>/, "<file id='#{newpath}'>")
         merged_nodes[newpath] = clone
       end
-      deltas[:copyadded].each do |oldpath,newpath|
+      deltas[:copyadded].each do |oldpath, newpath|
         clone = old_file_nodes[oldpath].clone
         clone.sub!(/<file\s*id.*?["'].*?["'].*?>/, "<file id='#{newpath}'>")
         merged_nodes[newpath] = clone
@@ -181,9 +181,9 @@ module Dor
     # @param [String] technical_metadata A technicalMetadata datastream contents
     # @return [Hash<String,Nokogiri::XML::Node>] The set of nodes from a technicalMetadata datastream , indexed by filename
     def self.get_file_nodes(technical_metadata)
-      file_hash = Hash.new
+      file_hash = {}
       return file_hash if technical_metadata.nil?
-      current_file = Array.new
+      current_file = []
       path = nil
       in_file = false
       technical_metadata.each_line do |line|
@@ -194,7 +194,7 @@ module Dor
         elsif line =~ /^\s*<\/file>/
           current_file << line
           file_hash[path] = current_file.join
-          current_file = Array.new
+          current_file = []
           path = nil
           in_file = false
         elsif in_file
@@ -216,7 +216,7 @@ module Dor
       EOF
       doc = techmd_root
       merged_nodes.keys.sort.each {|path| doc << merged_nodes[path] }
-      doc << "</technicalMetadata>"
+      doc << '</technicalMetadata>'
       doc
     end
 

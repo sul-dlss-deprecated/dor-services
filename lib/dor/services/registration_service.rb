@@ -10,7 +10,7 @@ module Dor
           raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{name}.register_object" unless params[required_param]
         end
         metadata_source = params[:metadata_source]
-        if params[:label].length<1 && (metadata_source=='label' || metadata_source=='none')
+        if params[:label].length < 1 && (metadata_source == 'label' || metadata_source == 'none')
           raise Dor::ParameterError, "label cannot be empty to call #{name}.register_object"
         end
         object_type = params[:object_type]
@@ -36,15 +36,15 @@ module Dor
           pid = Dor::SuriService.mint_id
         end
 
-        rights=nil
+        rights = nil
         if params[:rights]
-          rights=params[:rights]
+          rights = params[:rights]
           unless %w(world stanford dark default none).include? rights
             raise Dor::ParameterError, "Unknown rights setting '#{rights}' when calling #{name}.register_object"
           end
         end
 
-        source_id_string = [source_id.keys.first,source_id[source_id.keys.first]].compact.join(':')
+        source_id_string = [source_id.keys.first, source_id[source_id.keys.first]].compact.join(':')
         unless source_id.empty?
           existing_pid = SearchService.query_by_id("#{source_id_string}").first
           unless existing_pid.nil?
@@ -55,7 +55,7 @@ module Dor
         if (other_ids.key?(:uuid) || other_ids.key?('uuid')) == false
           other_ids[:uuid] = UUIDTools::UUID.timestamp_create.to_s
         end
-        short_label = label.length>254 ? label[0,254] : label
+        short_label = label.length > 254 ? label[0, 254] : label
         apo_object = Dor.find(admin_policy, :lightweight => true)
         adm_xml = apo_object.administrativeMetadata.ng_xml
 
@@ -67,12 +67,12 @@ module Dor
         idmd.add_value(:objectCreator, 'DOR')
         idmd.add_value(:objectLabel, label)
         idmd.add_value(:objectType, object_type)
-        other_ids.each_pair { |name,value| idmd.add_otherId("#{name}:#{value}") }
+        other_ids.each_pair { |name, value| idmd.add_otherId("#{name}:#{value}") }
         tags.each { |tag| idmd.add_value(:tag, tag) }
         new_item.admin_policy_object = apo_object
 
         adm_xml.xpath('/administrativeMetadata/relationships/*').each do |rel|
-          short_predicate = ActiveFedora::RelsExtDatastream.short_predicate rel.namespace.href+rel.name
+          short_predicate = ActiveFedora::RelsExtDatastream.short_predicate rel.namespace.href + rel.name
           if short_predicate.nil?
             ix = 0
             ix += 1 while ActiveFedora::Predicates.predicate_mappings[rel.namespace.href].key?(short_predicate = :"extra_predicate_#{ix}")
@@ -82,16 +82,16 @@ module Dor
         end
         new_item.add_collection(collection) if collection
         if rights && %w(item collection).include?(object_type)
-          rights_xml=apo_object.defaultObjectRights.ng_xml
-          new_item.datastreams['rightsMetadata'].content=rights_xml.to_s
+          rights_xml = apo_object.defaultObjectRights.ng_xml
+          new_item.datastreams['rightsMetadata'].content = rights_xml.to_s
           new_item.set_read_rights(rights) unless rights == 'default'    # already defaulted to default!
         end
         #create basic mods from the label
-        if (metadata_source=='label')
+        if (metadata_source == 'label')
           ds = new_item.build_datastream('descMetadata')
           builder = Nokogiri::XML::Builder.new { |xml|
-            xml.mods( 'xmlns' => 'http://www.loc.gov/mods/v3', 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',:version => '3.3', "xsi:schemaLocation" => 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd'){
-              xml.titleInfo{
+            xml.mods( 'xmlns' => 'http://www.loc.gov/mods/v3', 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance', :version => '3.3', 'xsi:schemaLocation' => 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd') {
+              xml.titleInfo {
                 xml.title label
               }
             }
@@ -157,7 +157,7 @@ module Dor
 
         dor_obj = register_object(dor_params)
         pid = dor_obj.pid
-        location = URI.parse(Dor::Config.fedora.safeurl.sub(/\/*$/,'/')).merge("objects/#{pid}").to_s
+        location = URI.parse(Dor::Config.fedora.safeurl.sub(/\/*$/, '/')).merge("objects/#{pid}").to_s
         reg_response = dor_params.dup.merge({ :location => location, :pid => pid })
       end
 

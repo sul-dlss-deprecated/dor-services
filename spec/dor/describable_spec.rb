@@ -30,25 +30,25 @@ describe Dor::Describable do
     allow(@simple).to receive(:add_solr_value) do |doc, field, value, otherstuff|
       if field == 'creator_title'
         expect(value).to eq('George, Henry, 1839-1897The complete works of Henry George')
-        found=1
+        found = 1
       end
     end
     @simple.to_solr({})
     expect(found).to eq 1
   end
 
-  it "should have a descMetadata datastream" do
+  it 'should have a descMetadata datastream' do
     expect(@item.datastreams['descMetadata']).to be_a(Dor::DescMetadataDS)
   end
 
-  it "should know its metadata format" do
+  it 'should know its metadata format' do
     allow(@item).to receive(:find_metadata_file).and_return(nil)
     FakeWeb.register_uri(:get, "#{Dor::Config.metadata.catalog.url}/?barcode=36105049267078", :body => read_fixture('ab123cd4567_descMetadata.xml'))
     @item.build_datastream('descMetadata')
     expect(@item.metadata_format).to eq('mods')
   end
 
-  it "should provide a descMetadata datastream builder" do
+  it 'should provide a descMetadata datastream builder' do
     allow(@item).to receive(:find_metadata_file).and_return(nil)
     Dor::MetadataService.class_eval { class << self; alias_method :_fetch, :fetch; end }
     expect(Dor::MetadataService).to receive(:fetch).with('barcode:36105049267078') { Dor::MetadataService._fetch('barcode:36105049267078') }
@@ -65,25 +65,25 @@ describe Dor::Describable do
     expect(@item.datastreams['descMetadata'].ng_xml.to_s).not_to be_equivalent_to(xml)
   end
 
-  it "produces dublin core from the MODS in the descMetadata datastream" do
+  it 'produces dublin core from the MODS in the descMetadata datastream' do
     b = Dor::Item.new
     b.datastreams['descMetadata'].content = read_fixture('ex1_mods.xml')
     expect(b.generate_dublin_core).to be_equivalent_to read_fixture('ex1_dc.xml')
   end
 
-  it "produces dublin core Stanford-specific mapping for repository, collection and location, from the MODS in the descMetadata datastream" do
+  it 'produces dublin core Stanford-specific mapping for repository, collection and location, from the MODS in the descMetadata datastream' do
     b = Dor::Item.new
     b.datastreams['descMetadata'].content = read_fixture('ex2_related_mods.xml')
     expect(b.generate_dublin_core).to be_equivalent_to read_fixture('ex2_related_dc.xml')
   end
 
-  it "throws an exception if the generated dc has no root element" do
+  it 'throws an exception if the generated dc has no root element' do
     b = DescribableItem.new
     b.datastreams['descMetadata'].content = '<tei><stuff>ha</stuff></tei>'
     expect {b.generate_dublin_core}.to raise_error(Dor::Describable::CrosswalkError)
   end
 
-  describe "#add_access_conditions" do
+  describe '#add_access_conditions' do
 
     let(:rights_xml) { <<-XML
       <rightsMetadata>
@@ -127,25 +127,25 @@ describe Dor::Describable do
       obj.datastreams['descMetadata'].ng_xml.dup(1)
     }
 
-    it "adds useAndReproduction accessConditions based on rightsMetadata" do
+    it 'adds useAndReproduction accessConditions based on rightsMetadata' do
       obj.add_access_conditions(public_mods)
       expect(public_mods.xpath('//mods:accessCondition[@type="useAndReproduction"]').size).to eq 1
       expect(public_mods.xpath('//mods:accessCondition[@type="useAndReproduction"]').text).to match(/yada/)
     end
 
-    it "adds copyright accessConditions based on rightsMetadata" do
+    it 'adds copyright accessConditions based on rightsMetadata' do
       obj.add_access_conditions(public_mods)
       expect(public_mods.xpath('//mods:accessCondition[@type="copyright"]').size).to eq 1
       expect(public_mods.xpath('//mods:accessCondition[@type="copyright"]').text).to match(/Property rights reside with/)
     end
 
-    it "adds license accessCondtitions based on creativeCommons or openDataCommons statements" do
+    it 'adds license accessCondtitions based on creativeCommons or openDataCommons statements' do
       obj.add_access_conditions(public_mods)
       expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq 1
       expect(public_mods.xpath('//mods:accessCondition[@type="license"]').text).to match(/by-nc: This work is licensed under/)
     end
 
-    it "searches for creativeCommons and openData /use/machine/@type case-insensitively" do
+    it 'searches for creativeCommons and openData /use/machine/@type case-insensitively' do
       rxml = <<-XML
         <rightsMetadata>
           <use>
@@ -162,7 +162,7 @@ describe Dor::Describable do
       expect(public_mods.xpath('//mods:accessCondition[@type="license"]').text).to match(/by-nc: Open Data hoo ha/)
     end
 
-    it "does not add license accessConditions when createCommons or openData has a value of none in rightsMetadata" do
+    it 'does not add license accessConditions when createCommons or openData has a value of none in rightsMetadata' do
       rxml = <<-XML
         <rightsMetadata>
           <use>
@@ -175,14 +175,14 @@ describe Dor::Describable do
       expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq 0
     end
 
-    it "removes any pre-existing accessConditions already in the mods" do
+    it 'removes any pre-existing accessConditions already in the mods' do
       expect(obj.descMetadata.ng_xml.xpath('//mods:accessCondition[text()[contains(.,"Public Services")]]').count).to eq 1
       obj.add_access_conditions(public_mods)
       expect(public_mods.xpath('//mods:accessCondition').size).to eq 3
       expect(public_mods.xpath('//mods:accessCondition[text()[contains(.,"Public Services")]]').count).to eq 0
     end
 
-    it "deals with mods declared as the default xmlns" do
+    it 'deals with mods declared as the default xmlns' do
       mods = read_fixture('mods_default_ns.xml')
       b = Dor::Item.new
       b.datastreams['descMetadata'].content = mods
@@ -195,7 +195,7 @@ describe Dor::Describable do
       expect(new_mods.xpath('//mods:accessCondition[text()[contains(.,"Should not be here anymore")]]', 'mods' => 'http://www.loc.gov/mods/v3').count).to eq(0)
     end
 
-    describe "does not add empty mods nodes when the rightsMetadata has empty" do
+    describe 'does not add empty mods nodes when the rightsMetadata has empty' do
 
       let(:blank_rights_xml) { <<-XML
         <rightsMetadata>
@@ -229,17 +229,17 @@ describe Dor::Describable do
         b
       }
 
-      it "useAndReproduction nodes" do
+      it 'useAndReproduction nodes' do
         blank_obj.add_access_conditions(public_mods)
         expect(public_mods.xpath('//mods:accessCondition[@type="useAndReproduction"]').size).to eq 0
       end
 
-      it "copyright nodes" do
+      it 'copyright nodes' do
         blank_obj.add_access_conditions(public_mods)
         expect(public_mods.xpath('//mods:accessCondition[@type="copyright"]').size).to eq 0
       end
 
-      it "license nodes" do
+      it 'license nodes' do
         blank_obj.add_access_conditions(public_mods)
         expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq 0
       end
@@ -252,7 +252,7 @@ describe Dor::Describable do
     before(:each) do
       Dor::Config.push! { stacks.document_cache_host 'purl.stanford.edu' }
 
-      relationships_xml=<<-XML
+      relationships_xml = <<-XML
       <?xml version="1.0"?>
       <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
       <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
@@ -261,7 +261,7 @@ describe Dor::Describable do
       </rdf:Description>
       </rdf:RDF>
       XML
-      relationships=Nokogiri::XML(relationships_xml)
+      relationships = Nokogiri::XML(relationships_xml)
       allow(@item).to receive(:public_relationships).and_return(relationships)
 
       @collection = instantiate_fixture('druid:ab123cd4567', Dor::Item)
@@ -274,13 +274,13 @@ describe Dor::Describable do
       Dor::Config.pop!
     end
 
-    describe "relatedItem" do
+    describe 'relatedItem' do
       before(:each) do
         @xml = Nokogiri::XML(read_fixture('ex2_related_mods.xml'))
         @collection.datastreams['descMetadata'].content = Nokogiri::XML(read_fixture('ex1_mods.xml')).to_s
       end
 
-      it "adds a relatedItem node for the collection if the item is a member of a collection" do
+      it 'adds a relatedItem node for the collection if the item is a member of a collection' do
         @xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']').each do |node|
           node.parent.remove()
         end
@@ -296,7 +296,7 @@ describe Dor::Describable do
         expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
       end
 
-      it "replaces an existing relatedItem if there is a parent collection with title" do
+      it 'replaces an existing relatedItem if there is a parent collection with title' do
         @item.add_collection_reference(@xml)
         expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@xml)
         collections      = @xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
@@ -309,8 +309,8 @@ describe Dor::Describable do
         expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
       end
 
-      it "does not touch an existing relatedItem if there is no collection relationship" do
-        relationships_xml=<<-XML
+      it 'does not touch an existing relatedItem if there is no collection relationship' do
+        relationships_xml = <<-XML
         <?xml version="1.0"?>
         <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
           <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
@@ -318,7 +318,7 @@ describe Dor::Describable do
             </rdf:Description>
         </rdf:RDF>
         XML
-        relationships=Nokogiri::XML(relationships_xml)
+        relationships = Nokogiri::XML(relationships_xml)
         allow(@item).to receive(:public_relationships).and_return(relationships)
         @item.add_collection_reference(@xml)
         expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@xml)
@@ -331,7 +331,7 @@ describe Dor::Describable do
     end
   end
 
-  describe "#generate_public_desc_md" do
+  describe '#generate_public_desc_md' do
 
     let(:rights_xml) { <<-XML
       <rightsMetadata>
@@ -369,7 +369,7 @@ describe Dor::Describable do
     before(:each) do
       Dor::Config.push! { stacks.document_cache_host 'purl.stanford.edu' }
 
-      relationships_xml=<<-XML
+      relationships_xml = <<-XML
       <?xml version="1.0"?>
       <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
       <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
@@ -382,7 +382,7 @@ describe Dor::Describable do
       itm.datastreams['rightsMetadata'].content = rights_xml
       allow(itm).to receive(:public_relationships).and_return(Nokogiri::XML(relationships_xml))
 
-      c_mods=Nokogiri::XML(read_fixture('ex1_mods.xml'))
+      c_mods = Nokogiri::XML(read_fixture('ex1_mods.xml'))
       collection.datastreams['descMetadata'].content = c_mods.to_s
 
       allow(Dor::Item).to receive(:find) do |pid|
@@ -394,9 +394,9 @@ describe Dor::Describable do
       Dor::Config.pop!
     end
 
-    it "adds collections and generates accessConditions" do
+    it 'adds collections and generates accessConditions' do
       mods_xml = read_fixture('ex2_related_mods.xml')
-      mods=Nokogiri::XML(mods_xml)
+      mods = Nokogiri::XML(mods_xml)
       mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']').each do |node|
         node.parent.remove
       end
@@ -413,16 +413,16 @@ describe Dor::Describable do
       expect(collection_title.first.content).to eq 'complete works of Henry George'
       expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
       %w(useAndReproduction copyright license).each{ |term|
-        expect(doc.xpath('//mods:accessCondition[@type="' + term +'"]').size).to eq 1
+        expect(doc.xpath('//mods:accessCondition[@type="' + term + '"]').size).to eq 1
       }
       expect(doc.xpath('//mods:accessCondition[@type="useAndReproduction"]').text).to match(/yada/)
       expect(doc.xpath('//mods:accessCondition[@type="copyright"]'         ).text).to match(/Property rights reside with/)
       expect(doc.xpath('//mods:accessCondition[@type="license"]'           ).text).to match(/This work is licensed under/)
     end
 
-    it "handles mods as the default namespace" do
+    it 'handles mods as the default namespace' do
       mods_xml = read_fixture('mods_default_ns.xml')
-      mods=Nokogiri::XML(mods_xml)
+      mods = Nokogiri::XML(mods_xml)
       mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
         node.parent.remove
       end
@@ -438,7 +438,7 @@ describe Dor::Describable do
       expect(collection_title.first.content).to eq 'complete works of Henry George'
       expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
       %w(useAndReproduction copyright license).each{ |term|
-        expect(doc.xpath('//xmlns:accessCondition[@type="' + term +'"]').size).to eq 1
+        expect(doc.xpath('//xmlns:accessCondition[@type="' + term + '"]').size).to eq 1
       }
       expect(doc.xpath('//xmlns:accessCondition[@type="useAndReproduction"]').text).to match(/yada/)
       expect(doc.xpath('//xmlns:accessCondition[@type="copyright"]'         ).text).to match(/Property rights reside with/)
@@ -451,7 +451,7 @@ describe Dor::Describable do
       @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
     end
     it 'should get a titleInfo/title' do
-      @item.descMetadata.content=<<-XML
+      @item.descMetadata.content = <<-XML
       <?xml version="1.0"?>
       <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
       <titleInfo>
@@ -463,7 +463,7 @@ describe Dor::Describable do
     end
 
     it 'should include a subtitle if there is one' do
-      @item.descMetadata.content=<<-XML
+      @item.descMetadata.content = <<-XML
       <?xml version="1.0"?>
       <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
       <titleInfo>
@@ -476,7 +476,7 @@ describe Dor::Describable do
     end
   end
 
-  it "throws an exception if the generated dc has only a root element with no children" do
+  it 'throws an exception if the generated dc has only a root element with no children' do
     mods = <<-EOXML
     <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -492,11 +492,11 @@ describe Dor::Describable do
 
   describe 'update_title' do
     it 'should update the title' do
-      found=false
+      found = false
       @obj.update_title('new title')
       @obj.descMetadata.ng_xml.search('//mods:mods/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
         expect(node.content).to eq('new title')
-        found=true
+        found = true
       end
       expect(found).to be_truthy
     end
@@ -511,7 +511,7 @@ describe Dor::Describable do
   describe 'add_identifier' do
     it 'should add an identifier' do
       @obj.add_identifier('type', 'new attribute')
-      res=@obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]','mods' => 'http://www.loc.gov/mods/v3')
+      res = @obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]', 'mods' => 'http://www.loc.gov/mods/v3')
       expect(res.length).to be > 0
       res.each do |node|
         expect(node.content).to eq('new attribute')
@@ -521,13 +521,13 @@ describe Dor::Describable do
   describe 'delete_identifier' do
     it 'should delete an identifier' do
       @obj.add_identifier('type', 'new attribute')
-      res=@obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]','mods' => 'http://www.loc.gov/mods/v3')
+      res = @obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]', 'mods' => 'http://www.loc.gov/mods/v3')
       expect(res.length).to be > 0
       res.each do |node|
         expect(node.content).to eq('new attribute')
       end
       expect(@obj.delete_identifier('type', 'new attribute')).to be_truthy
-      res=@obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]','mods' => 'http://www.loc.gov/mods/v3')
+      res = @obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]', 'mods' => 'http://www.loc.gov/mods/v3')
       expect(res.length).to eq 0
     end
     it 'should return false if there was nothing to delete' do
@@ -565,45 +565,45 @@ describe Dor::Describable do
     end
   end
 
-  describe "stanford_mods accessor to DS" do
-    it "should fetch Stanford::Mods object" do
+  describe 'stanford_mods accessor to DS' do
+    it 'should fetch Stanford::Mods object' do
       expect(@obj.methods).to include(:stanford_mods)
-      sm=nil
-      expect{sm=@obj.stanford_mods}.not_to raise_error
+      sm = nil
+      expect{sm = @obj.stanford_mods}.not_to raise_error
       expect(sm).to be_kind_of(Stanford::Mods::Record)
-      expect(sm.format_main).to eq(["Book"])
-      expect(sm.pub_date_sort).to eq("1911")
+      expect(sm.format_main).to eq(['Book'])
+      expect(sm.pub_date_sort).to eq('1911')
     end
-    it "should allow override argument(s)" do
-      sm=nil
+    it 'should allow override argument(s)' do
+      sm = nil
       nk = Nokogiri::XML('<mods><genre>ape</genre></mods>')
-      expect{sm=@obj.stanford_mods(nk, false)}.not_to raise_error
+      expect{sm = @obj.stanford_mods(nk, false)}.not_to raise_error
       expect(sm).to be_kind_of(Stanford::Mods::Record)
-      expect(sm.genre.text).to eq("ape")
+      expect(sm.genre.text).to eq('ape')
       expect(sm.pub_date_sort).to be_nil
     end
   end
 
-  describe "to_solr" do
+  describe 'to_solr' do
     before :each do
       allow(@obj).to receive(:milestones).and_return({})
       @doc = @obj.to_solr()
       expect(@doc).not_to be_nil
     end
-    it "should include values from stanford_mods" do
+    it 'should include values from stanford_mods' do
       # require 'pp'; pp doc
       expect(@doc).to match a_hash_including(
-        "sw_language_ssim"            => ["English"],
-        "sw_language_tesim"           => ["English"],
-        "sw_format_ssim"              => ["Book"],
-        "sw_format_tesim"             => ["Book"],
-        "sw_subject_temporal_ssim"    => ["1800-1900"],
-        "sw_subject_temporal_tesim"   => ["1800-1900"],
-        "sw_pub_date_sort_ssi"        => '1911',
-        "sw_pub_date_facet_ssi"       => '1911'
+        'sw_language_ssim'            => ['English'],
+        'sw_language_tesim'           => ['English'],
+        'sw_format_ssim'              => ['Book'],
+        'sw_format_tesim'             => ['Book'],
+        'sw_subject_temporal_ssim'    => ['1800-1900'],
+        'sw_subject_temporal_tesim'   => ['1800-1900'],
+        'sw_pub_date_sort_ssi'        => '1911',
+        'sw_pub_date_facet_ssi'       => '1911'
       )
     end
-    it "should not include empty values" do
+    it 'should not include empty values' do
       @doc.keys.sort_by{|k| k.to_s}.each { |k|
         expect(@doc).to include(k)
         expect(@doc).to match a_hash_excluding({k => nil})
@@ -612,32 +612,32 @@ describe Dor::Describable do
     end
   end
 
-  describe "to_solr: more mods stuff" do
+  describe 'to_solr: more mods stuff' do
     before :each do
       allow(@obj).to receive(:milestones).and_return({})
       @obj.datastreams['descMetadata'].content = read_fixture('bs646cd8717_mods.xml')
       @doc = @obj.to_solr()
       expect(@doc).not_to be_nil
     end
-    it "searchworks date-fu: temporal periods and pub_dates" do
+    it 'searchworks date-fu: temporal periods and pub_dates' do
       expect(@doc).to match a_hash_including(
-        "sw_subject_temporal_ssim"  => a_collection_containing_exactly("18th century","17th century"),
-        "sw_subject_temporal_tesim" => a_collection_containing_exactly("18th century","17th century"),
-        "sw_pub_date_sort_ssi"      => "1600",
-        "sw_pub_date_facet_ssi"     => "1600"
+        'sw_subject_temporal_ssim'  => a_collection_containing_exactly('18th century', '17th century'),
+        'sw_subject_temporal_tesim' => a_collection_containing_exactly('18th century', '17th century'),
+        'sw_pub_date_sort_ssi'      => '1600',
+        'sw_pub_date_facet_ssi'     => '1600'
       )
     end
-    it "subject geographic fields" do
+    it 'subject geographic fields' do
       expect(@doc).to match a_hash_including(
-        "sw_subject_geographic_ssim"  => %w(Europe Europe),
-        "sw_subject_geographic_tesim" => %w(Europe Europe)
+        'sw_subject_geographic_ssim'  => %w(Europe Europe),
+        'sw_subject_geographic_tesim' => %w(Europe Europe)
       )
     end
-    it "genre fields" do
-      genre_list = ["Aquatint.", "Mezzotint engraving.", "Engravings.", "Etchings.", "Lithographs."]
+    it 'genre fields' do
+      genre_list = ['Aquatint.', 'Mezzotint engraving.', 'Engravings.', 'Etchings.', 'Lithographs.']
       expect(@doc).to match a_hash_including(
-        "sw_genre_ssim"               => genre_list,
-        "sw_genre_tesim"              => genre_list
+        'sw_genre_ssim'               => genre_list,
+        'sw_genre_tesim'              => genre_list
       )
     end
   end

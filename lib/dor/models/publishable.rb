@@ -11,10 +11,10 @@ module Dor
     include Rightsable
 
     def public_relationships
-      include_elements = ['fedora:isMemberOf','fedora:isMemberOfCollection']
+      include_elements = ['fedora:isMemberOf', 'fedora:isMemberOfCollection']
       rels_doc = Nokogiri::XML(datastreams['RELS-EXT'].content)
       rels_doc.xpath('/rdf:RDF/rdf:Description/*', { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' }).each do |rel|
-        unless include_elements.include?([rel.namespace.prefix,rel.name].join(':'))
+        unless include_elements.include?([rel.namespace.prefix, rel.name].join(':'))
           rel.next_sibling.remove if rel.next_sibling.content.strip.empty?
           rel.remove
         end
@@ -26,12 +26,12 @@ module Dor
     #@return [xml] The public xml for the item
     #
     def public_xml
-      pub = Nokogiri::XML("<publicObject/>").root
+      pub = Nokogiri::XML('<publicObject/>').root
       pub['id'] = pid
       pub['published'] = Time.now.xmlschema
-      release_xml=Nokogiri(generate_release_xml).xpath('//release')
+      release_xml = Nokogiri(generate_release_xml).xpath('//release')
 
-      im=datastreams['identityMetadata'].ng_xml.clone
+      im = datastreams['identityMetadata'].ng_xml.clone
       im.search('//release').each {|node| node.remove} # remove any <release> tags from public xml which have full history
       im.root.add_child(release_xml)
 
@@ -74,7 +74,7 @@ module Dor
     end
     #call the dor services app to have it publish the metadata
     def publish_metadata_remotely
-      dor_services = RestClient::Resource.new(Config.dor_services.url+"/v1/objects/#{pid}/publish")
+      dor_services = RestClient::Resource.new(Config.dor_services.url + "/v1/objects/#{pid}/publish")
       dor_services.post ''
       dor_services.url
     end

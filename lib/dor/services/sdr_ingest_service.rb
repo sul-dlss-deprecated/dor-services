@@ -6,9 +6,9 @@ module Dor
     # @param [Dor::Item] dor_item The representation of the digital object
     # @param [String] agreement_id  depreciated, included for backward compatability with common-accessoning
     # @return [void] Create the moab manifests, export data to a BagIt bag, kick off the SDR ingest workflow
-    def self.transfer(dor_item, agreement_id=nil)
+    def self.transfer(dor_item, agreement_id = nil)
       druid = dor_item.pid
-      workspace = DruidTools::Druid.new(druid,Dor::Config.sdr.local_workspace_root)
+      workspace = DruidTools::Druid.new(druid, Dor::Config.sdr.local_workspace_root)
       signature_catalog = get_signature_catalog(druid)
       new_version_id = signature_catalog.version_id + 1
       metadata_dir = extract_datastreams(dor_item, workspace)
@@ -20,14 +20,14 @@ module Dor
         content_dir = nil
       else
         new_file_list = content_addtions.path_list
-        content_dir = workspace.find_filelist_parent('content',new_file_list)
+        content_dir = workspace.find_filelist_parent('content', new_file_list)
       end
       content_group = version_inventory.group('content')
       unless content_group.nil? || content_group.files.empty?
         signature_catalog.normalize_group_signatures(content_group, content_dir)
       end
       # export the bag (in tar format)
-      bag_dir = Pathname(Dor::Config.sdr.local_export_home).join(druid.sub('druid:',''))
+      bag_dir = Pathname(Dor::Config.sdr.local_export_home).join(druid.sub('druid:', ''))
       bagger = Moab::Bagger.new(version_inventory, signature_catalog, bag_dir)
       bagger.reset_bag
       bagger.create_bag_inventory(:depositor)
@@ -38,7 +38,7 @@ module Dor
       # Now bootstrap SDR workflow. but do not create the workflows datastream
       dor_item.initialize_workflow('sdrIngestWF', false)
     rescue Exception => e
-      raise LyberCore::Exceptions::ItemError.new(druid, "Export failure", e)
+      raise LyberCore::Exceptions::ItemError.new(druid, 'Export failure', e)
     end
 
     # @param [String] druid The object identifier
@@ -57,7 +57,7 @@ module Dor
     # @return [Pathname] Pull all the datastreams specified in the configuration file
     #   into the workspace's metadata directory, overwriting existing file if present
     def self.extract_datastreams(dor_item, workspace)
-      metadata_dir = Pathname.new(workspace.path('metadata',create=true))
+      metadata_dir = Pathname.new(workspace.path('metadata', create = true))
       Config.sdr.datastreams.to_hash.each_pair do |ds_name, required|
         ds_name = ds_name.to_s
         metadata_file = metadata_dir.join("#{ds_name}.xml")
@@ -86,7 +86,7 @@ module Dor
     # @param [Pathname] metadata_dir the location of the metadata directory in the workspace
     # @param [Integer] expected the version identifer expected to be used in the versionMetadata
     def self.verify_version_metadata(metadata_dir, expected)
-      vmfile = metadata_dir.join("versionMetadata.xml")
+      vmfile = metadata_dir.join('versionMetadata.xml')
       verify_version_id(vmfile, expected, vmfile_version_id(vmfile))
       true
     end
@@ -104,7 +104,7 @@ module Dor
     def self.vmfile_version_id(pathname)
       verify_pathname(pathname)
       doc = Nokogiri::XML(File.open(pathname.to_s))
-      nodeset = doc.xpath("/versionMetadata/version")
+      nodeset = doc.xpath('/versionMetadata/version')
       version_id = nodeset.last['versionId']
       version_id.nil? ? nil : version_id.to_i
     end
@@ -127,9 +127,9 @@ module Dor
     def self.get_content_inventory(metadata_dir, druid, version_id)
       content_metadata = get_content_metadata(metadata_dir)
       if content_metadata
-        Stanford::ContentInventory.new.inventory_from_cm(content_metadata, druid, subset='preserve', version_id)
+        Stanford::ContentInventory.new.inventory_from_cm(content_metadata, druid, subset = 'preserve', version_id)
       else
-        FileInventory.new(:type=>"version",:digital_object_id=>druid, :version_id=>version_id)
+        FileInventory.new(:type => 'version', :digital_object_id => druid, :version_id => version_id)
       end
     end
 
@@ -143,7 +143,7 @@ module Dor
     # @param [Pathname] metadata_dir The location of the the object's metadata files
     # @return [Moab::FileGroup] Traverse the metadata directory and generate a metadata group
     def self.get_metadata_file_group(metadata_dir)
-      file_group = FileGroup.new(:group_id=>'metadata').group_from_directory(metadata_dir)
+      file_group = FileGroup.new(:group_id => 'metadata').group_from_directory(metadata_dir)
       file_group
     end
 
@@ -158,7 +158,7 @@ module Dor
       verify_pathname(bag_dir.join('tagmanifest-sha256.txt'))
       verify_pathname(bag_dir.join('versionAdditions.xml'))
       verify_pathname(bag_dir.join('versionInventory.xml'))
-      verify_pathname(bag_dir.join('data','metadata','versionMetadata.xml'))
+      verify_pathname(bag_dir.join('data', 'metadata', 'versionMetadata.xml'))
       true
     end
 

@@ -9,12 +9,12 @@ module Dor
     define_callbacks :initialize
     define_callbacks :configure
 
-    def initialize *args
+    def initialize(*args)
       super *args
       run_callbacks(:initialize) { }
     end
 
-    def configure *args
+    def configure(*args)
       result = self
       temp_v = $-v
       $-v = nil
@@ -31,7 +31,7 @@ module Dor
       result
     end
 
-    def autoconfigure(url, cert_file=Config.ssl.cert_file, key_file=Config.ssl.key_file, key_pass=Config.ssl.key_pass)
+    def autoconfigure(url, cert_file = Config.ssl.cert_file, key_file = Config.ssl.key_file, key_pass = Config.ssl.key_pass)
       client = make_rest_client(url, cert_file, key_file, key_pass)
       config = Confstruct::Configuration.symbolize_hash JSON.parse(client.get :accept => 'application/json')
       configure(config)
@@ -41,14 +41,14 @@ module Dor
       dup
     end
 
-    def make_rest_client(url, cert=Config.ssl.cert_file, key=Config.ssl.key_file, pass=Config.ssl.key_pass)
+    def make_rest_client(url, cert = Config.ssl.cert_file, key = Config.ssl.key_file, pass = Config.ssl.key_pass)
       params = {}
       params[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(cert)) if cert
       params[:ssl_client_key]  = OpenSSL::PKey::RSA.new(File.read(key), pass) if key
       RestClient::Resource.new(url, params)
     end
 
-    def make_solr_connection(add_opts={})
+    def make_solr_connection(add_opts = {})
       opts = Config.solrizer.opts.merge(add_opts).merge(
         :url => Config.solrizer.url
       )
@@ -109,7 +109,7 @@ module Dor
           if config.ssl.cert_file.present?
             conn.use_ssl = true
             conn.cert = OpenSSL::X509::Certificate.new(File.read(config.ssl.cert_file))
-            conn.key = OpenSSL::PKey::RSA.new(File.read(config.ssl.key_file),config.ssl.key_pass) if config.ssl.key_file.present?
+            conn.key = OpenSSL::PKey::RSA.new(File.read(config.ssl.key_file), config.ssl.key_pass) if config.ssl.key_file.present?
             conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
           end
         end
@@ -120,13 +120,13 @@ module Dor
 
     # Act like an ActiveFedora.configurator
 
-    def init *args; end
+    def init(*args); end
 
     def fedora_config
       fedora_uri = URI.parse(fedora.url)
       connection_opts = { :url => fedora.safeurl, :user => fedora_uri.user, :password => fedora_uri.password }
       connection_opts[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(ssl.cert_file)) if ssl.cert_file.present?
-      connection_opts[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(ssl.key_file),ssl.key_pass) if ssl.key_file.present?
+      connection_opts[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(ssl.key_file), ssl.key_pass) if ssl.key_file.present?
       connection_opts
     end
 
@@ -135,7 +135,7 @@ module Dor
     end
 
     def predicate_config
-      YAML.load(File.read(File.expand_path('../../../config/predicate_mappings.yml',__FILE__)))
+      YAML.load(File.read(File.expand_path('../../../config/predicate_mappings.yml', __FILE__)))
     end
   end
 

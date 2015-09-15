@@ -3,9 +3,9 @@ require 'iiif/presentation'
 module Dor
   module Presentable
 
-    DC_NS = {"dc"=>"http://purl.org/dc/elements/1.1/", "oai_dc"=>"http://www.openarchives.org/OAI/2.0/oai_dc/"}
+    DC_NS = {'dc' => 'http://purl.org/dc/elements/1.1/', 'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/'}
 
-    def iiif_presentation_manifest_needed? pub_obj_doc
+    def iiif_presentation_manifest_needed?(pub_obj_doc)
       if pub_obj_doc.at_xpath('/publicObject/contentMetadata[contains(@type,"image") or contains(@type,"map")]/resource[@type="image"]')
         return true
       elsif pub_obj_doc.at_xpath('/publicObject/contentMetadata[@type="book"]/resource[@type="page"]')
@@ -16,14 +16,14 @@ module Dor
     end
 
     # Bypass this method if there are no image resources in contentMetadata
-    def build_iiif_manifest pub_obj_doc
+    def build_iiif_manifest(pub_obj_doc)
       id = pid.split(':').last
 
       lbl_node = pub_obj_doc.at_xpath '//oai_dc:dc/dc:title', DC_NS
       if lbl_node.nil?
         lbl_node = pub_obj_doc.at_xpath('/publicObject/identityMetadata/objectLabel')
       end
-      raise "Unable to build IIIF Presentation manifest:  No identityMetadata/objectLabel or dc:title" if lbl_node.nil?
+      raise 'Unable to build IIIF Presentation manifest:  No identityMetadata/objectLabel or dc:title' if lbl_node.nil?
       lbl = lbl_node.text
 
       purl_base_uri = "https://#{Dor::Config.stacks.document_cache_host}/#{id}"
@@ -33,11 +33,11 @@ module Dor
         'label' => lbl,
         'attribution' => 'Provided by the Stanford University Libraries',
         'logo' => {
-          '@id' => "https://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette/full/400,/0/default.jpg",
+          '@id' => 'https://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette/full/400,/0/default.jpg',
           'service' => {
-            '@context' => "http://iiif.io/api/image/2/context.json",
-            '@id' => "https://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette",
-            'profile' => "http://iiif.io/api/image/2/level1.json"
+            '@context' => 'http://iiif.io/api/image/2/context.json',
+            '@id' => 'https://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette',
+            'profile' => 'http://iiif.io/api/image/2/level1.json'
             }
           },
         'seeAlso' => {
@@ -54,7 +54,7 @@ module Dor
 
       # Set viewingHint to paged if this is a book
       if pub_obj_doc.at_xpath('/publicObject/contentMetadata[@type="book"]')
-        manifest.viewingHint = "paged"
+        manifest.viewingHint = 'paged'
       end
 
       metadata = []
@@ -92,7 +92,7 @@ module Dor
         if label_node
           canv.label = label_node.text
         else
-          canv.label = "image"
+          canv.label = 'image'
         end
         canv.height = height
         canv.width = width
@@ -131,7 +131,7 @@ module Dor
       manifest.to_json(:pretty => true)
     end
 
-    def add_metadata label, xpath, metadata, pub_obj_doc
+    def add_metadata(label, xpath, metadata, pub_obj_doc)
       nodes = pub_obj_doc.xpath xpath, DC_NS
       nodes.each do |node|
         h = {

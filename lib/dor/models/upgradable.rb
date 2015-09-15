@@ -25,7 +25,7 @@ module Dor
 
     mattr_accessor :__upgrade_callbacks
     @@__upgrade_callbacks = []
-    def self.add_upgrade_callback c, v, d, &b
+    def self.add_upgrade_callback(c, v, d, &b)
       @@__upgrade_callbacks << Callback.new(c, Gem::Version.new(v), d, b)
     end
 
@@ -46,11 +46,11 @@ module Dor
 
     def self.included(base)
       base.instance_eval do
-        def self.on_upgrade version, desc, &block
+        def self.on_upgrade(version, desc, &block)
           Dor::Upgradable.add_upgrade_callback self, version, desc, &block
         end
 
-        Dir[File.join(Dor.root,'dor','migrations',base.name.split(/::/).last.underscore,'*.rb')].each do |migration|
+        Dir[File.join(Dor.root, 'dor', 'migrations', base.name.split(/::/).last.underscore, '*.rb')].each do |migration|
           require migration
         end
       end

@@ -4,8 +4,8 @@ describe Dor::Editable do
   before(:each) { stub_config   }
   after(:each)  { unstub_config }
   before :each do
-    @item = instantiate_fixture("druid_zt570tx3016", Dor::AdminPolicyObject)
-    @empty_item = instantiate_fixture("pw570tx3016", Dor::AdminPolicyObject)
+    @item = instantiate_fixture('druid_zt570tx3016', Dor::AdminPolicyObject)
+    @empty_item = instantiate_fixture('pw570tx3016', Dor::AdminPolicyObject)
   end
 
   let(:mock_agreement) {
@@ -20,17 +20,17 @@ describe Dor::Editable do
   describe 'add_roleplayer' do
     it 'should add a role' do
       @item.add_roleplayer('dor-apo-manager', 'dlss:some-staff')
-      expect(@item.roles).to eq({"dor-apo-manager"=>["workgroup:dlss:developers", "workgroup:dlss:pmag-staff", "workgroup:dlss:smpl-staff", "workgroup:dlss:dpg-staff", "workgroup:dlss:argo-access-spec", "sunetid:lmcrae", "workgroup:dlss:some-staff"]})
+      expect(@item.roles).to eq({'dor-apo-manager' => ['workgroup:dlss:developers', 'workgroup:dlss:pmag-staff', 'workgroup:dlss:smpl-staff', 'workgroup:dlss:dpg-staff', 'workgroup:dlss:argo-access-spec', 'sunetid:lmcrae', 'workgroup:dlss:some-staff']})
     end
 
     it 'should create a new role' do
       @item.add_roleplayer('dor-apo-viewer', 'dlss:some-staff')
-      {"dor-apo-manager" => ["workgroup:dlss:developers", "workgroup:dlss:pmag-staff", "workgroup:dlss:smpl-staff", "workgroup:dlss:dpg-staff", "workgroup:dlss:argo-access-spec", "sunetid:lmcrae"],"dor-apo-viewer" => ["workgroup:dlss:some-staff"]}
+      {'dor-apo-manager' => ['workgroup:dlss:developers', 'workgroup:dlss:pmag-staff', 'workgroup:dlss:smpl-staff', 'workgroup:dlss:dpg-staff', 'workgroup:dlss:argo-access-spec', 'sunetid:lmcrae'], 'dor-apo-viewer' => ['workgroup:dlss:some-staff']}
     end
 
     it 'should work on an empty datastream' do
       @empty_item.add_roleplayer('dor-apo-manager', 'dlss:some-staff')
-      expect(@empty_item.roles).to eq({"dor-apo-manager" => ["workgroup:dlss:some-staff"]})
+      expect(@empty_item.roles).to eq({'dor-apo-manager' => ['workgroup:dlss:some-staff']})
     end
   end
 
@@ -45,7 +45,7 @@ describe Dor::Editable do
   describe 'add_default_collection' do
     it 'should set the collection values' do
       @item.add_default_collection 'druid:fz306fj8335'
-      expect(@item.default_collections).to eq ['druid:fz306fj8334','druid:fz306fj8335']
+      expect(@item.default_collections).to eq ['druid:fz306fj8334', 'druid:fz306fj8335']
     end
     it 'should work for empty datastreams' do
       @empty_item.add_default_collection 'druid:fz306fj8335'
@@ -65,7 +65,7 @@ describe Dor::Editable do
   end
   describe 'roles' do
     it 'should create a roles hash' do
-      expect(@item.roles).to eq({'dor-apo-manager'=>["workgroup:dlss:developers", "workgroup:dlss:pmag-staff", "workgroup:dlss:smpl-staff", "workgroup:dlss:dpg-staff", "workgroup:dlss:argo-access-spec", "sunetid:lmcrae"]})
+      expect(@item.roles).to eq({'dor-apo-manager' => ['workgroup:dlss:developers', 'workgroup:dlss:pmag-staff', 'workgroup:dlss:smpl-staff', 'workgroup:dlss:dpg-staff', 'workgroup:dlss:argo-access-spec', 'sunetid:lmcrae']})
     end
     it 'should not fail on an item with an empty datastream' do
       expect(@empty_item.roles).to eq({})
@@ -96,7 +96,7 @@ describe Dor::Editable do
     end
   end
   describe 'copyright_statement =' do
-    pending "Test not implemented"
+    pending 'Test not implemented'
   end
   describe 'metadata_source' do
     it 'should get the metadata source' do
@@ -142,16 +142,16 @@ describe Dor::Editable do
       expect(@empty_item.use_statement).to eq('this is my use statement')
       expect(@empty_item.creative_commons_license_human).to eq 'greetings'
       expect(@empty_item.creative_commons_license).to eq 'hi'
-      expect(@empty_item.defaultObjectRights.ng_xml.search("//use").length).to eq(1)
+      expect(@empty_item.defaultObjectRights.ng_xml.search('//use').length).to eq(1)
     end
   end
   describe 'creative_commons_license_human=' do
     it 'should set the human readable cc license' do
-      @item.creative_commons_license_human='greetings'
+      @item.creative_commons_license_human = 'greetings'
       expect(@item.creative_commons_license_human).to eq('greetings')
     end
     it 'should work on an empty ds' do
-      @empty_item.creative_commons_license_human='greetings'
+      @empty_item.creative_commons_license_human = 'greetings'
       expect(@empty_item.creative_commons_license_human).to eq('greetings')
     end
   end
@@ -190,7 +190,7 @@ describe Dor::Editable do
     end
     it 'should set read rights to none for dark' do
       @item.default_rights = 'Dark'
-      xml=@item.datastreams['defaultObjectRights'].ng_xml
+      xml = @item.datastreams['defaultObjectRights'].ng_xml
       expect(xml.search('//rightsMetadata/access[@type=\'read\']/machine/none').length).to eq(1)
     end
   end
@@ -245,14 +245,14 @@ describe Dor::Editable do
   end
   describe 'agreement=' do
     it 'should assign' do
-      pending "this test is probably checking AF internals"
-      agr=double()
+      pending 'this test is probably checking AF internals'
+      agr = double()
       allow(agr).to receive(:pid).and_return('druid:dd327qr3670')
       allow(@item).to receive(:agreement_object).and_return([agr])
-      rels_ext_ds=@item.datastreams['RELS-EXT']
+      rels_ext_ds = @item.datastreams['RELS-EXT']
       expect(ActiveFedora::Base).to receive(:find_one).with('druid:new_agreement', true).and_return(mock_agreement)
       @item.agreement = 'druid:new_agreement'
-      xml=Nokogiri::XML(rels_ext_ds.to_rels_ext.to_s)
+      xml = Nokogiri::XML(rels_ext_ds.to_rels_ext.to_s)
       expect(xml).to be_equivalent_to <<-XML
       <?xml version="1.0" encoding="UTF-8"?>
       <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:hydra="http://projecthydra.org/ns/relations#">
@@ -290,12 +290,12 @@ describe Dor::Editable do
       allow(@item).to receive(:agreement).and_return('druid:agreement')
       allow(@item).to receive(:agreement_object).and_return(true)
       solr_doc = @item.to_solr
-      expect(solr_doc).to match a_hash_including("default_rights_ssim" => ['World'])
-      expect(solr_doc).to match a_hash_including("agreement_ssim"      => ['druid:agreement'])
+      expect(solr_doc).to match a_hash_including('default_rights_ssim' => ['World'])
+      expect(solr_doc).to match a_hash_including('agreement_ssim'      => ['druid:agreement'])
       # expect(solr_doc).to match a_hash_including("registration_default_collection_sim" => ["druid:fz306fj8334"])
-      expect(solr_doc).to match a_hash_including("registration_workflow_id_ssim" => ['digitizationWF'])
-      expect(solr_doc).to match a_hash_including("use_statement_ssim"  => ["Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu."])
-      expect(solr_doc).to match a_hash_including("copyright_ssim"      => ["Additional copyright info"])
+      expect(solr_doc).to match a_hash_including('registration_workflow_id_ssim' => ['digitizationWF'])
+      expect(solr_doc).to match a_hash_including('use_statement_ssim'  => ['Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu.'])
+      expect(solr_doc).to match a_hash_including('copyright_ssim'      => ['Additional copyright info'])
     end
   end
 end

@@ -1,7 +1,7 @@
 class Nokogiri::XML::Text
 
   def normalize
-    content =~ /\S/ ? content.gsub(/\s+/,' ').strip : content
+    content =~ /\S/ ? content.gsub(/\s+/, ' ').strip : content
   end
 
   def normalize!

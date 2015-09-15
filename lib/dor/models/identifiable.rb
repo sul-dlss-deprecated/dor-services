@@ -6,21 +6,21 @@ module Dor
     include Upgradable
 
     included do
-      has_metadata :name => "DC", :type => SimpleDublinCoreDs, :label => 'Dublin Core Record for self object'
-      has_metadata :name => "identityMetadata", :type => Dor::IdentityMetadataDS, :label => 'Identity Metadata'
+      has_metadata :name => 'DC', :type => SimpleDublinCoreDs, :label => 'Dublin Core Record for self object'
+      has_metadata :name => 'identityMetadata', :type => Dor::IdentityMetadataDS, :label => 'Identity Metadata'
     end
 
     module ClassMethods
       attr_reader :object_type
-      def has_object_type str
+      def has_object_type(str)
         @object_type = str
         Dor.registered_classes[str] = self
       end
     end
 
-    def initialize attrs={}
+    def initialize(attrs = {})
       if Dor::Config.suri.mint_ids && !attrs[:pid]
-        attrs = attrs.merge!({:pid=>Dor::SuriService.mint_id, :new_object => true})
+        attrs = attrs.merge!({:pid => Dor::SuriService.mint_id, :new_object => true})
       end
       super
     end
@@ -32,13 +32,13 @@ module Dor
 
     # helper method to get just the content type tag
     def content_type_tag
-      content_tag=tags.select {|tag| tag.include?('Process : Content Type')}
-      content_tag.size == 1 ? content_tag[0].split(':').last.strip : ""
+      content_tag = tags.select {|tag| tag.include?('Process : Content Type')}
+      content_tag.size == 1 ? content_tag[0].split(':').last.strip : ''
     end
 
     # Syntactic sugar for identifying applied DOR Concerns
     # e.g., obj.is_identifiable? is the same as obj.is_a?(Dor::Identifiable)
-    def method_missing sym, *args
+    def method_missing(sym, *args)
       if sym.to_s =~ /^is_(.+)\?$/
         begin
           klass = Dor.const_get $1.capitalize.to_sym
@@ -53,10 +53,10 @@ module Dor
 
     ## Module-level variables, shared between ALL mixin includers (and ALL *their* includers/extenders)!
     ## used for caching found values
-    @@collection_hash={}
-    @@apo_hash={}
+    @@collection_hash = {}
+    @@apo_hash = {}
 
-    def to_solr(solr_doc=Hash.new, *args)
+    def to_solr(solr_doc = {}, *args)
       assert_content_model
       super(solr_doc, *args)
 
@@ -71,10 +71,10 @@ module Dor
       rels_doc = Nokogiri::XML(datastreams['RELS-EXT'].content)
       apos = rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy', 'hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
       collections = rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-      solrize_related_obj_titles(solr_doc, apos, @@apo_hash, "apo_title")
-      solrize_related_obj_titles(solr_doc, collections, @@collection_hash, "collection_title")
+      solrize_related_obj_titles(solr_doc, apos, @@apo_hash, 'apo_title')
+      solrize_related_obj_titles(solr_doc, collections, @@collection_hash, 'collection_title')
 
-      solr_doc["metadata_source_ssi"] = identity_metadata_source
+      solr_doc['metadata_source_ssi'] = identity_metadata_source
       solr_doc
     end
 
@@ -94,23 +94,23 @@ module Dor
       identityMetadata.sourceId = source_id
     end
 
-    def add_other_Id(type,val)
-      if identityMetadata.otherId(type).length>0
-        raise 'There is an existing entry for '+type+', consider using update_other_Id().'
+    def add_other_Id(type, val)
+      if identityMetadata.otherId(type).length > 0
+        raise 'There is an existing entry for ' + type + ', consider using update_other_Id().'
       end
-      identityMetadata.add_otherId(type+':'+val)
+      identityMetadata.add_otherId(type + ':' + val)
     end
 
-    def update_other_Id(type, new_val, val=nil)
-      identityMetadata.ng_xml.search('//otherId[@name=\''+type+'\']')
-        .select{ |node| val.nil? || node.content == val }
+    def update_other_Id(type, new_val, val = nil)
+      identityMetadata.ng_xml.search('//otherId[@name=\'' + type + '\']')
+        .select { |node| val.nil? || node.content == val }
         .each  { |node| node.content = new_val }
         .any?
     end
 
-    def remove_other_Id(type, val=nil)
-      identityMetadata.ng_xml.search('//otherId[@name=\''+type+'\']')
-        .select{ |node| val.nil? || node.content == val }
+    def remove_other_Id(type, val = nil)
+      identityMetadata.ng_xml.search('//otherId[@name=\'' + type + '\']')
+        .select { |node| val.nil? || node.content == val }
         .each(&:remove)
         .any?
     end
@@ -118,7 +118,7 @@ module Dor
     # turns a tag string into an array with one element per tag part.
     # split on ":", disregard leading and trailing whitespace on tokens.
     def split_tag_to_arr(tag_str)
-      tag_str.split(":").map {|str| str.strip}
+      tag_str.split(':').map {|str| str.strip}
     end
 
     # turn a tag array back into a tag string with a standard format
@@ -175,7 +175,7 @@ module Dor
     def remove_tag(tag)
       normtag = normalize_tag(tag)
       identityMetadata.ng_xml.search('//tag')
-        .select{ |node| normalize_tag(node.content) == normtag }
+        .select { |node| normalize_tag(node.content) == normtag }
         .each(&:remove)
         .any?
     end
@@ -194,15 +194,15 @@ module Dor
     def update_tag(old_tag, new_tag)
       normtag = normalize_tag(old_tag)
       identityMetadata.ng_xml.search('//tag')
-        .select{ |node| normalize_tag(node.content) == normtag }
+        .select { |node| normalize_tag(node.content) == normtag }
         .each  { |node| node.content = normalize_tag(new_tag)  }
         .any?
     end
 
     def get_related_obj_display_title(related_obj, default_title)
       if related_obj
-        if related_obj.datastreams["DC"] && related_obj.datastreams["DC"].title
-          return related_obj.datastreams["DC"].title
+        if related_obj.datastreams['DC'] && related_obj.datastreams['DC'].title
+          return related_obj.datastreams['DC'].title
         else
           return related_obj.label
         end

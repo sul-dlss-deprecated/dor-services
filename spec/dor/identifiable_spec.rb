@@ -17,19 +17,19 @@ describe Dor::Identifiable do
     item
   end
 
-  describe "Removing Display Types" do
-    it "returns false when no displayTypes are present to be removed" do
+  describe 'Removing Display Types' do
+    it 'returns false when no displayTypes are present to be removed' do
       expect(item.remove_displayTypes).to be_falsey
     end
 
-    it "returns true when displayTypes are present and removed" do
+    it 'returns true when displayTypes are present and removed' do
       item.identityMetadata.add_value(:displayType, 'foo', {}) #Add in a displayType so we have one to remove
       expect(item.remove_displayTypes).to be_truthy
     end
 
   end
 
-  it "should have an identityMetadata datastream" do
+  it 'should have an identityMetadata datastream' do
     expect(item.datastreams['identityMetadata']).to be_a(Dor::IdentityMetadataDS)
   end
   describe 'set_source_id' do
@@ -48,54 +48,54 @@ describe Dor::Identifiable do
 
   describe 'add_other_Id' do
     it 'should add an other_id record' do
-      item.add_other_Id('mdtoolkit','someid123')
+      item.add_other_Id('mdtoolkit', 'someid123')
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someid123')
     end
     it 'should raise an exception if a record of that type already exists' do
-      item.add_other_Id('mdtoolkit','someid123')
+      item.add_other_Id('mdtoolkit', 'someid123')
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someid123')
-      expect{item.add_other_Id('mdtoolkit','someid123')}.to raise_error(RuntimeError)
+      expect{item.add_other_Id('mdtoolkit', 'someid123')}.to raise_error(RuntimeError)
     end
   end
 
   describe 'update_other_Id' do
     it 'should update an existing id and return true to indicate that it found something to update' do
-      item.add_other_Id('mdtoolkit','someid123')
+      item.add_other_Id('mdtoolkit', 'someid123')
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someid123')
       #return value should be true when it finds something to update
-      expect(item.update_other_Id('mdtoolkit','someotherid234','someid123')).to be_truthy
+      expect(item.update_other_Id('mdtoolkit', 'someotherid234', 'someid123')).to be_truthy
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someotherid234')
     end
     it 'should return false if there was no existing record to update' do
-      expect(item.update_other_Id('mdtoolkit','someotherid234')).to be_falsey
+      expect(item.update_other_Id('mdtoolkit', 'someotherid234')).to be_falsey
     end
   end
 
   describe 'remove_other_Id' do
     it 'should remove an existing otherid when the tag and value match' do
-      item.add_other_Id('mdtoolkit','someid123')
+      item.add_other_Id('mdtoolkit', 'someid123')
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someid123')
-      expect(item.remove_other_Id('mdtoolkit','someid123')).to be_truthy
+      expect(item.remove_other_Id('mdtoolkit', 'someid123')).to be_truthy
       expect(item.identityMetadata.otherId('mdtoolkit').length).to eq(0)
     end
     it 'should return false if there was nothing to delete' do
-      expect(item.remove_other_Id('mdtoolkit','someid123')).to be_falsey
+      expect(item.remove_other_Id('mdtoolkit', 'someid123')).to be_falsey
       expect(item.identityMetadata).not_to be_changed
     end
     it 'should affect identity_metadata_source computation' do
-      item.remove_other_Id('catkey','129483625')
-      item.remove_other_Id('barcode','36105049267078')
-      item.add_other_Id('mdtoolkit','someid123')
+      item.remove_other_Id('catkey', '129483625')
+      item.remove_other_Id('barcode', '36105049267078')
+      item.add_other_Id('mdtoolkit', 'someid123')
       expect(item.identity_metadata_source).to eq 'Metadata Toolkit'
-      item.add_other_Id('catkey','129483625')
-      item.remove_other_Id('mdtoolkit','someid123')
+      item.add_other_Id('catkey', '129483625')
+      item.remove_other_Id('mdtoolkit', 'someid123')
       expect(item.identity_metadata_source).to eq 'Symphony'
-      item.remove_other_Id('catkey','129483625')
-      item.add_other_Id('barcode','36105049267078')
+      item.remove_other_Id('catkey', '129483625')
+      item.add_other_Id('barcode', '36105049267078')
       expect(item.identity_metadata_source).to eq 'Symphony'
-      item.remove_other_Id('barcode','36105049267078')
+      item.remove_other_Id('barcode', '36105049267078')
       expect(item.identity_metadata_source).to eq 'DOR'
-      item.remove_other_Id('foo','bar')
+      item.remove_other_Id('foo', 'bar')
       expect(item.identity_metadata_source).to eq 'DOR'
     end
   end
@@ -120,13 +120,13 @@ describe Dor::Identifiable do
     it 'should update a tag' do
       item.add_tag('sometag:someval')
       expect(item.identityMetadata.tags().include?('sometag : someval')).to be_truthy
-      expect(item.update_tag('sometag :someval','new :tag')).to be_truthy
+      expect(item.update_tag('sometag :someval', 'new :tag')).to be_truthy
       expect(item.identityMetadata.tags().include?('sometag : someval')).to be_falsey
       expect(item.identityMetadata.tags().include?('new : tag')).to be_truthy
       expect(item.identityMetadata).to be_changed
     end
     it 'should return false if there is no matching tag to update' do
-      expect(item.update_tag('sometag:someval','new:tag')).to be_falsey
+      expect(item.update_tag('sometag:someval', 'new:tag')).to be_falsey
       expect(item.identityMetadata).not_to be_changed
     end
   end
@@ -193,29 +193,29 @@ describe Dor::Identifiable do
   end
   describe 'get_related_obj_display_title' do
     it 'should return the dc:title if it is available' do
-      mock_apo_title = "apo title"
+      mock_apo_title = 'apo title'
       mock_apo_obj = double(Dor::AdminPolicyObject)
       mock_dc_datastream = double(Dor::SimpleDublinCoreDs)
 
       allow(mock_dc_datastream).to receive(:title).and_return(mock_apo_title)
-      allow(mock_apo_obj).to receive(:datastreams).and_return({"DC" => mock_dc_datastream})
+      allow(mock_apo_obj).to receive(:datastreams).and_return({'DC' => mock_dc_datastream})
 
-      mock_default_title = "druid:zy098xw7654"
+      mock_default_title = 'druid:zy098xw7654'
       expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_apo_title)
     end
     it 'should return the fedora label if the dc:title is not available' do
-      mock_apo_label = "object label"
+      mock_apo_label = 'object label'
       mock_apo_obj = double(Dor::AdminPolicyObject)
 
       allow(mock_apo_obj).to receive(:label).and_return(mock_apo_label)
       allow(mock_apo_obj).to receive(:datastreams).and_return({})
 
-      mock_default_title = "druid:zy098xw7654"
+      mock_default_title = 'druid:zy098xw7654'
       expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_apo_label)
     end
     it 'should return the default if the related object is nil' do
       mock_apo_obj = nil
-      mock_default_title = "druid:zy098xw7654"
+      mock_default_title = 'druid:zy098xw7654'
       expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_default_title)
     end
   end

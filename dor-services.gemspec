@@ -4,16 +4,16 @@ $LOAD_PATH.unshift lib unless $LOAD_PATH.include?(lib)
 require 'dor/version'
 
 Gem::Specification.new do |s|
-  s.name        = "dor-services"
+  s.name        = 'dor-services'
   s.version     = Dor::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Michael Klein","Willy Mene","Chris Fitzpatrick","Richard Anderson","Renzo Sanchez-Silva"]
-  s.email       = ["mbklein@stanford.edu"]
-  s.summary     = "Ruby implmentation of DOR services used by the SULAIR Digital Library"
-  s.description = "Contains classes to register objects and initialize workflows"
+  s.authors     = ['Michael Klein', 'Willy Mene', 'Chris Fitzpatrick', 'Richard Anderson', 'Renzo Sanchez-Silva']
+  s.email       = ['mbklein@stanford.edu']
+  s.summary     = 'Ruby implmentation of DOR services used by the SULAIR Digital Library'
+  s.description = 'Contains classes to register objects and initialize workflows'
   s.licenses    = ['ALv2', 'Stanford University']
 
-  s.required_rubygems_version = ">= 1.3.6"
+  s.required_rubygems_version = '>= 1.3.6'
 
   # Runtime dependencies
   s.add_dependency 'active-fedora', '~> 6.0'
@@ -60,7 +60,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '~> 3.1'
   s.add_development_dependency 'yard', '~> 0.8.7'
 
-  s.files        = Dir.glob("lib/**/*") + Dir.glob("config/**/*") + Dir.glob('bin/*')
+  s.files        = Dir.glob('lib/**/*') + Dir.glob('config/**/*') + Dir.glob('bin/*')
   s.bindir       = 'bin'
   s.require_path = 'lib'
 end

@@ -14,7 +14,7 @@ module Dor
       stacks_druid = DruidTools::StacksDruid.new id, stacks_object_pathname
       stacks_object_pathname = Pathname(stacks_druid.path)
       # determine the location of the object's content files in the workspace area
-      workspace_druid = DruidTools::Druid.new(id,Config.stacks.local_workspace_root)
+      workspace_druid = DruidTools::Druid.new(id, Config.stacks.local_workspace_root)
       workspace_content_pathname = workspace_content_dir(shelve_diff, workspace_druid)
       # delete, rename, or copy files to the stacks area
       DigitalStacksService.remove_from_stacks(stacks_object_pathname, shelve_diff)
@@ -27,7 +27,7 @@ module Dor
     def get_shelve_diff
       inventory_diff_xml = get_content_diff(:shelve)
       inventory_diff = Moab::FileInventoryDifference.parse(inventory_diff_xml)
-      shelve_diff = inventory_diff.group_difference("content")
+      shelve_diff = inventory_diff.group_difference('content')
       shelve_diff
     end
 
@@ -37,7 +37,7 @@ module Dor
     # @return [Pathname] The location of the object's content files in the workspace area
     def workspace_content_dir(content_diff, workspace_druid)
       deltas = content_diff.file_deltas
-      filelist = deltas[:modified] + deltas[:added] + deltas[:copyadded].collect{|old,new| new}
+      filelist = deltas[:modified] + deltas[:added] + deltas[:copyadded].collect {|old, new| new}
       return nil if filelist.empty?
       content_pathname = Pathname(workspace_druid.find_filelist_parent('content', filelist))
       content_pathname
@@ -50,8 +50,8 @@ module Dor
       contentMetadataDS = datastreams['contentMetadata']
       unless contentMetadataDS.nil? || contentMetadataDS.stacks.length == 0
         stacks_location = contentMetadataDS.stacks[0]
-        return stacks_location if stacks_location.start_with? "/"  #Absolute stacks path
-        raise "stacks attribute for item: "+id+ " contentMetadata should start with /. The current value is "+stacks_location
+        return stacks_location if stacks_location.start_with? '/'  #Absolute stacks path
+        raise 'stacks attribute for item: ' + id + ' contentMetadata should start with /. The current value is ' + stacks_location
       end
       Config.stacks.local_stacks_root #Default stacks
 

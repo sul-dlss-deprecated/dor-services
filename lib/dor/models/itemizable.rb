@@ -6,7 +6,7 @@ module Dor
     extend ActiveSupport::Concern
 
     included do
-      has_metadata :name => "contentMetadata", :type => Dor::ContentMetadataDS, :label => 'Content Metadata', :control_group => 'M'
+      has_metadata :name => 'contentMetadata', :type => Dor::ContentMetadataDS, :label => 'Content Metadata', :control_group => 'M'
     end
 
     DIFF_FILENAME = 'cm_inv_diff'
@@ -42,7 +42,7 @@ module Dor
       sdr_client = Dor::Config.sdr.rest_client
       current_content = datastreams['contentMetadata'].content
       if current_content.nil?
-        raise Dor::Exception, "Missing contentMetadata datastream"
+        raise Dor::Exception, 'Missing contentMetadata datastream'
       end
       query_string = { :subset => subset.to_s }
       query_string[:version] = version.to_s unless version.nil?

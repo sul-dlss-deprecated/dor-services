@@ -29,21 +29,21 @@ require 'vcr'
 module Dor::SpecHelpers
 
   def stub_config
-    @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__),"fixtures")
+    @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__), 'fixtures')
     Dor::Config.push! do
       suri.mint_ids false
       gsearch do
-        url      "http://solr.edu/gsearch"
-        rest_url "http://fedora.edu/gsearch/rest"
+        url      'http://solr.edu/gsearch'
+        rest_url 'http://fedora.edu/gsearch/rest'
       end
-      solrizer.url "http://solr.edu/solrizer"
-      fedora.url   "http://fedora.edu/fedora"
-      stacks.document_cache_host       "purl-test.stanford.edu"
-      stacks.local_workspace_root      File.join(fixture_dir, "workspace")
-      stacks.local_stacks_root         File.join(fixture_dir, "stacks")
-      stacks.local_document_cache_root File.join(fixture_dir, "purl")
-      sdr.local_workspace_root         File.join(fixture_dir, "workspace")
-      sdr.local_export_home            File.join(fixture_dir, "export")
+      solrizer.url 'http://solr.edu/solrizer'
+      fedora.url   'http://fedora.edu/fedora'
+      stacks.document_cache_host       'purl-test.stanford.edu'
+      stacks.local_workspace_root      File.join(fixture_dir, 'workspace')
+      stacks.local_stacks_root         File.join(fixture_dir, 'stacks')
+      stacks.local_document_cache_root File.join(fixture_dir, 'purl')
+      sdr.local_workspace_root         File.join(fixture_dir, 'workspace')
+      sdr.local_export_home            File.join(fixture_dir, 'export')
     end
     allow(ActiveFedora).to receive(:fedora).and_return(double('frepo').as_null_object)
   end
@@ -52,15 +52,15 @@ module Dor::SpecHelpers
     Dor::Config.pop!
   end
 
-  def instantiate_fixture druid, klass = ActiveFedora::Base
-    mask = File.join(@fixture_dir,"*_#{druid.sub(/:/,'_')}.xml")
+  def instantiate_fixture(druid, klass = ActiveFedora::Base)
+    mask = File.join(@fixture_dir, "*_#{druid.sub(/:/, '_')}.xml")
     fname = Dir[mask].first
     return nil if fname.nil?
     item_from_foxml(File.read(fname), klass)
   end
 
-  def read_fixture fname
-    File.read(File.join(@fixture_dir,fname))
+  def read_fixture(fname)
+    File.read(File.join(@fixture_dir, fname))
   end
 
 end
@@ -81,12 +81,12 @@ end
 def catch_stdio
   old_handles = [$stdout.dup, $stderr.dup]
   begin
-    $stdout.reopen(File.new('/dev/null','w'))
-    $stderr.reopen(File.new('/dev/null','w'))
+    $stdout.reopen(File.new('/dev/null', 'w'))
+    $stderr.reopen(File.new('/dev/null', 'w'))
     yield
   ensure
-    $stdout.reopen(IO.new(old_handles[0].fileno,'w'))
-    $stderr.reopen(IO.new(old_handles[1].fileno,'w'))
+    $stdout.reopen(IO.new(old_handles[0].fileno, 'w'))
+    $stderr.reopen(IO.new(old_handles[1].fileno, 'w'))
   end
 end
 

@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Dor::RoleMetadataDS do
 
-  context "#to_solr" do
+  context '#to_solr' do
 
-    it "creates solr docs from its content" do
+    it 'creates solr docs from its content' do
       xml = <<-XML
       <roleMetadata>
         <role type="dor-apo-manager">
@@ -21,7 +21,7 @@ describe Dor::RoleMetadataDS do
       expect(doc['apo_register_permissions_tesim']).to include('workgroup:dlss:dor-admin')
     end
 
-    it "does not index apo_register_permissions from hydrus roles" do
+    it 'does not index apo_register_permissions from hydrus roles' do
       xml = <<-XML
       <roleMetadata>
         <role type="hydrus-user">

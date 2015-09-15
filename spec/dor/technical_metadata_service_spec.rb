@@ -6,12 +6,12 @@ describe Dor::TechnicalMetadataService do
 
   before(:all) do
     @object_ids = %w(dd116zh0343 du000ps9999 jq937jp0017)
-    @druid_tool = Hash.new
+    @druid_tool = {}
   end
 
   before(:each) do
-    @fixtures = fixtures = Pathname(File.dirname(__FILE__)).join("../fixtures")
-    wsfixtures = fixtures.join("workspace").to_s
+    @fixtures = fixtures = Pathname(File.dirname(__FILE__)).join('../fixtures')
+    wsfixtures = fixtures.join('workspace').to_s
     Dor::Config.push! do
       sdr.local_workspace_root wsfixtures
     end
@@ -19,25 +19,25 @@ describe Dor::TechnicalMetadataService do
     @sdr_repo = @fixtures.join('sdr_repo')
     @workspace_pathname = Pathname(wsfixtures)
 
-    @inventory_differences = Hash.new
-    @deltas      = Hash.new
-    @new_files   = Hash.new
-    @repo_techmd = Hash.new
-    @new_file_techmd = Hash.new
-    @expected_techmd = Hash.new
+    @inventory_differences = {}
+    @deltas      = {}
+    @new_files   = {}
+    @repo_techmd = {}
+    @new_file_techmd = {}
+    @expected_techmd = {}
 
     @object_ids.each do |id|
       druid = "druid:#{id}"
-      @druid_tool[id] = DruidTools::Druid.new(druid,@workspace_pathname.to_s)
-      repo_content_pathname = @fixtures.join('sdr_repo',id,'v0001', 'data','content')
+      @druid_tool[id] = DruidTools::Druid.new(druid, @workspace_pathname.to_s)
+      repo_content_pathname = @fixtures.join('sdr_repo', id, 'v0001', 'data', 'content')
       work_content_pathname = Pathname(@druid_tool[id].content_dir)
-      repo_content_inventory = Moab::FileGroup.new(:group_id=>'content').group_from_directory(repo_content_pathname)
+      repo_content_inventory = Moab::FileGroup.new(:group_id => 'content').group_from_directory(repo_content_pathname)
       work_content_inventory = Moab::FileGroup.new.group_from_directory(work_content_pathname)
       @inventory_differences[id] = Moab::FileGroupDifference.new()
       @inventory_differences[id].compare_file_groups(repo_content_inventory, work_content_inventory)
       @deltas[id] = @inventory_differences[id].file_deltas
       @new_files[id] = Dor::TechnicalMetadataService.get_new_files(@deltas[id])
-      @repo_techmd[id] = @fixtures.join('sdr_repo',id,'v0001', 'data','metadata', 'technicalMetadata.xml').read
+      @repo_techmd[id] = @fixtures.join('sdr_repo', id, 'v0001', 'data', 'metadata', 'technicalMetadata.xml').read
       @new_file_techmd[id] = Dor::TechnicalMetadataService.get_new_technical_metadata(druid, @new_files[id])
       @expected_techmd[id] = Pathname(@druid_tool[id].metadata_dir).join('technicalMetadata.xml').read
     end
@@ -56,7 +56,7 @@ describe Dor::TechnicalMetadataService do
     end
   end
 
-  specify "Dor::TechnicalMetadataService.add_update_technical_metadata" do
+  specify 'Dor::TechnicalMetadataService.add_update_technical_metadata' do
     @object_ids.each do |id|
       dor_item = double(Dor::Item)
       allow(dor_item).to receive(:pid).and_return("druid:#{id}")
@@ -64,8 +64,8 @@ describe Dor::TechnicalMetadataService do
       expect(Dor::TechnicalMetadataService).to receive(:get_file_deltas).with(@inventory_differences[id]).and_return(@deltas[id])
       expect(Dor::TechnicalMetadataService).to receive(:get_old_technical_metadata).with(dor_item).and_return(@repo_techmd[id])
       expect(Dor::TechnicalMetadataService).to receive(:get_new_technical_metadata).with(dor_item.pid, an_instance_of(Array)).and_return(@new_file_techmd[id])
-      mock_datastream = double("datastream")
-      ds_hash = {"technicalMetadata" => mock_datastream}
+      mock_datastream = double('datastream')
+      ds_hash = {'technicalMetadata' => mock_datastream}
       allow(dor_item).to receive(:datastreams).and_return(ds_hash)
       unless @inventory_differences[id].difference_count == 0
         expect(mock_datastream).to receive(:dsLabel=).with('Technical Metadata')
@@ -76,13 +76,13 @@ describe Dor::TechnicalMetadataService do
     end
   end
 
-  specify "Dor::TechnicalMetadataService.get_content_group_diff(dor_item)" do
+  specify 'Dor::TechnicalMetadataService.get_content_group_diff(dor_item)' do
     @object_ids.each do |id|
       group_diff = @inventory_differences[id]
       inventory_diff = Moab::FileInventoryDifference.new(
           :digital_object_id => "druid:#{id}",
-          :basis => "old_content_metadata",
-          :other => "new_content_metadata",
+          :basis => 'old_content_metadata',
+          :other => 'new_content_metadata',
           :report_datetime => Time.now.to_s
       )
       inventory_diff.group_differences << group_diff
@@ -93,30 +93,30 @@ describe Dor::TechnicalMetadataService do
     end
   end
 
-  specify "Dor::TechnicalMetadataService.get_file_deltas(content_group_diff)" do
+  specify 'Dor::TechnicalMetadataService.get_file_deltas(content_group_diff)' do
     @object_ids.each do |id|
       group_diff = @inventory_differences[id]
       inventory_diff = Moab::FileInventoryDifference.new(
           :digital_object_id => "druid:#{id}",
-          :basis => "old_content_metadata",
-          :other => "new_content_metadata"
+          :basis => 'old_content_metadata',
+          :other => 'new_content_metadata'
       )
       deltas = Dor::TechnicalMetadataService.get_file_deltas(group_diff)
       expect(deltas).to eq(@deltas[id])
     end
   end
 
-  specify "Dor::TechnicalMetadataService.get_new_files" do
+  specify 'Dor::TechnicalMetadataService.get_new_files' do
     new_files = Dor::TechnicalMetadataService.get_new_files(@deltas['jq937jp0017'])
-    expect(new_files).to eq(["page-2.jpg", "page-1.jpg"])
+    expect(new_files).to eq(['page-2.jpg', 'page-1.jpg'])
   end
 
-  specify "Dor::TechnicalMetadataService.get_old_technical_metadata(dor_item)" do
+  specify 'Dor::TechnicalMetadataService.get_old_technical_metadata(dor_item)' do
     druid = 'druid:dd116zh0343'
     dor_item = double(Dor::Item)
     allow(dor_item).to receive(:pid).and_return(druid)
-    tech_md = "<technicalMetadata/>"
-    expect(Dor::TechnicalMetadataService).to receive(:get_sdr_technical_metadata).with(druid).and_return(tech_md,nil)
+    tech_md = '<technicalMetadata/>'
+    expect(Dor::TechnicalMetadataService).to receive(:get_sdr_technical_metadata).with(druid).and_return(tech_md, nil)
     old_techmd = Dor::TechnicalMetadataService.get_old_technical_metadata(dor_item)
     expect(old_techmd).to eq(tech_md)
     expect(Dor::TechnicalMetadataService).to receive(:get_dor_technical_metadata).with(dor_item).and_return(tech_md)
@@ -124,29 +124,29 @@ describe Dor::TechnicalMetadataService do
     expect(old_techmd).to eq(tech_md)
   end
 
-  specify "Dor::TechnicalMetadataService.get_sdr_technical_metadata" do
-    druid = "druid:du000ps9999"
-    allow(Dor::TechnicalMetadataService).to receive(:get_sdr_metadata).with(druid, "technicalMetadata").and_raise(RestClient::ResourceNotFound)
+  specify 'Dor::TechnicalMetadataService.get_sdr_technical_metadata' do
+    druid = 'druid:du000ps9999'
+    allow(Dor::TechnicalMetadataService).to receive(:get_sdr_metadata).with(druid, 'technicalMetadata').and_raise(RestClient::ResourceNotFound)
     sdr_techmd = Dor::TechnicalMetadataService.get_sdr_technical_metadata(druid)
     expect(sdr_techmd).to be_nil
 
-    allow(Dor::TechnicalMetadataService).to receive(:get_sdr_metadata).with(druid, "technicalMetadata").and_return('<technicalMetadata/>')
+    allow(Dor::TechnicalMetadataService).to receive(:get_sdr_metadata).with(druid, 'technicalMetadata').and_return('<technicalMetadata/>')
     sdr_techmd = Dor::TechnicalMetadataService.get_sdr_technical_metadata(druid)
     expect(sdr_techmd).to eq('<technicalMetadata/>')
 
-    allow(Dor::TechnicalMetadataService).to receive(:get_sdr_metadata).with(druid, "technicalMetadata").and_return('<jhove/>')
+    allow(Dor::TechnicalMetadataService).to receive(:get_sdr_metadata).with(druid, 'technicalMetadata').and_return('<jhove/>')
     jhove_service = double(JhoveService)
     allow(JhoveService).to receive(:new).and_return(jhove_service)
-    allow(jhove_service).to receive(:upgrade_technical_metadata).and_return("upgraded techmd")
+    allow(jhove_service).to receive(:upgrade_technical_metadata).and_return('upgraded techmd')
     sdr_techmd = Dor::TechnicalMetadataService.get_sdr_technical_metadata(druid)
-    expect(sdr_techmd).to eq("upgraded techmd")
+    expect(sdr_techmd).to eq('upgraded techmd')
   end
 
-  specify "Dor::TechnicalMetadataService.get_dor_technical_metadata" do
+  specify 'Dor::TechnicalMetadataService.get_dor_technical_metadata' do
     dor_item = double(Dor::Item)
     tech_ds  = double('techmd datastream')
     allow(tech_ds).to receive(:content).and_return('<technicalMetadata/>')
-    datastreams = {'technicalMetadata'=>tech_ds}
+    datastreams = {'technicalMetadata' => tech_ds}
     allow(dor_item).to receive(:datastreams).and_return(datastreams)
 
     allow(tech_ds).to receive(:new?).and_return(true)
@@ -160,19 +160,19 @@ describe Dor::TechnicalMetadataService do
     allow(tech_ds).to receive(:content).and_return('<jhove/>')
     jhove_service = double(JhoveService)
     allow(JhoveService).to receive(:new).and_return(jhove_service)
-    allow(jhove_service).to receive(:upgrade_technical_metadata).and_return("upgraded techmd")
+    allow(jhove_service).to receive(:upgrade_technical_metadata).and_return('upgraded techmd')
     dor_techmd = Dor::TechnicalMetadataService.get_dor_technical_metadata(dor_item)
-    expect(dor_techmd).to eq("upgraded techmd")
+    expect(dor_techmd).to eq('upgraded techmd')
   end
 
-  specify "Dor::TechnicalMetadataService.get_sdr_metadata" do
+  specify 'Dor::TechnicalMetadataService.get_sdr_metadata' do
     sdr_client = Dor::Config.sdr.rest_client
-    FakeWeb.register_uri(:get, "#{sdr_client.url}/objects/druid:ab123cd4567/metadata/technicalMetadata.xml", :body => "<technicalMetadata>")
-    response = Dor::TechnicalMetadataService.get_sdr_metadata("druid:ab123cd4567", "technicalMetadata")
-    expect(response).to eq("<technicalMetadata>")
+    FakeWeb.register_uri(:get, "#{sdr_client.url}/objects/druid:ab123cd4567/metadata/technicalMetadata.xml", :body => '<technicalMetadata>')
+    response = Dor::TechnicalMetadataService.get_sdr_metadata('druid:ab123cd4567', 'technicalMetadata')
+    expect(response).to eq('<technicalMetadata>')
   end
 
-  specify "Dor::TechnicalMetadataService.get_new_technical_metadata" do
+  specify 'Dor::TechnicalMetadataService.get_new_technical_metadata' do
     @object_ids.each do |id|
       new_techmd = Dor::TechnicalMetadataService.get_new_technical_metadata("druid:#{id}", @new_files[id])
       file_nodes = Nokogiri::XML(new_techmd).xpath('//file')
@@ -187,7 +187,7 @@ describe Dor::TechnicalMetadataService do
     end
   end
 
-  specify "Dor::TechnicalMetadataService.write_fileset" do
+  specify 'Dor::TechnicalMetadataService.write_fileset' do
     @object_ids.each do |id|
       temp_dir = @druid_tool[id].temp_dir
       new_files = @new_files[id]
@@ -195,13 +195,13 @@ describe Dor::TechnicalMetadataService do
       if new_files.size > 0
         expect(Pathname(filename).read).to eq(new_files.join("\n") + "\n")
       else
-        expect(Pathname(filename).read).to eq("")
+        expect(Pathname(filename).read).to eq('')
       end
     end
 
   end
 
-  specify "Dor::TechnicalMetadataService.merge_file_nodes" do
+  specify 'Dor::TechnicalMetadataService.merge_file_nodes' do
     @object_ids.each do |id|
       old_techmd = @repo_techmd[id]
       new_techmd = @new_file_techmd[id]
@@ -211,43 +211,43 @@ describe Dor::TechnicalMetadataService do
       case id
         when 'dd116zh0343'
           expect(new_nodes.keys.sort). to eq([
-              "folder1PuSu/story3m.txt",
-              "folder1PuSu/story5a.txt",
-              "folder2PdSa/story8m.txt",
-              "folder2PdSa/storyAa.txt",
-              "folder3PaSd/storyDm.txt",
-              "folder3PaSd/storyFa.txt"
+              'folder1PuSu/story3m.txt',
+              'folder1PuSu/story5a.txt',
+              'folder2PdSa/story8m.txt',
+              'folder2PdSa/storyAa.txt',
+              'folder3PaSd/storyDm.txt',
+              'folder3PaSd/storyFa.txt'
           ])
           expect(merged_nodes.keys.sort).to eq([
-              "folder1PuSu/story1u.txt",
-              "folder1PuSu/story2rr.txt",
-              "folder1PuSu/story3m.txt",
-              "folder1PuSu/story5a.txt",
-              "folder2PdSa/story6u.txt",
-              "folder2PdSa/story7rr.txt",
-              "folder2PdSa/story8m.txt",
-              "folder2PdSa/storyAa.txt",
-              "folder3PaSd/storyBu.txt",
-              "folder3PaSd/storyCrr.txt",
-              "folder3PaSd/storyDm.txt",
-              "folder3PaSd/storyFa.txt"
+              'folder1PuSu/story1u.txt',
+              'folder1PuSu/story2rr.txt',
+              'folder1PuSu/story3m.txt',
+              'folder1PuSu/story5a.txt',
+              'folder2PdSa/story6u.txt',
+              'folder2PdSa/story7rr.txt',
+              'folder2PdSa/story8m.txt',
+              'folder2PdSa/storyAa.txt',
+              'folder3PaSd/storyBu.txt',
+              'folder3PaSd/storyCrr.txt',
+              'folder3PaSd/storyDm.txt',
+              'folder3PaSd/storyFa.txt'
           ])
         when 'du000ps9999'
           expect(new_nodes.keys.sort). to eq([])
-          expect(merged_nodes.keys.sort).to eq(["a1.txt", "a4.txt", "a5.txt", "a6.txt", "b1.txt"])
+          expect(merged_nodes.keys.sort).to eq(['a1.txt', 'a4.txt', 'a5.txt', 'a6.txt', 'b1.txt'])
         when 'jq937jp0017'
-          expect(new_nodes.keys.sort). to eq(["page-1.jpg", "page-2.jpg"])
-          expect(merged_nodes.keys.sort).to eq(["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"])
+          expect(new_nodes.keys.sort). to eq(['page-1.jpg', 'page-2.jpg'])
+          expect(merged_nodes.keys.sort).to eq(['page-1.jpg', 'page-2.jpg', 'page-3.jpg', 'page-4.jpg', 'title.jpg'])
       end
     end
   end
 
-  specify "Dor::TechnicalMetadataService.get_file_nodes" do
-    techmd = @repo_techmd["jq937jp0017"]
+  specify 'Dor::TechnicalMetadataService.get_file_nodes' do
+    techmd = @repo_techmd['jq937jp0017']
     nodes = Dor::TechnicalMetadataService.get_file_nodes(techmd)
     expect(nodes.size).to eq(6)
-    expect(nodes.keys.sort).to eq(["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"])
-    expect(nodes["page-1.jpg"]).to be_equivalent_to(<<-EOF
+    expect(nodes.keys.sort).to eq(['intro-1.jpg', 'intro-2.jpg', 'page-1.jpg', 'page-2.jpg', 'page-3.jpg', 'title.jpg'])
+    expect(nodes['page-1.jpg']).to be_equivalent_to(<<-EOF
     <file id="page-1.jpg">
       <jhove:reportingModule release="1.2" date="2007-02-13">JPEG-hul</jhove:reportingModule>
       <jhove:format>JPEG</jhove:format>
@@ -302,14 +302,14 @@ describe Dor::TechnicalMetadataService do
   )
   end
 
-  specify "Dor::TechnicalMetadataService.build_technical_metadata(druid,merged_nodes)" do
+  specify 'Dor::TechnicalMetadataService.build_technical_metadata(druid,merged_nodes)' do
     @object_ids.each do |id|
       old_techmd = @repo_techmd[id]
       new_techmd = @new_file_techmd[id]
       deltas = @deltas[id]
       merged_nodes = Dor::TechnicalMetadataService.merge_file_nodes(old_techmd, new_techmd, deltas)
-      final_techmd = Dor::TechnicalMetadataService.build_technical_metadata("druid:#{id}",merged_nodes)
-      expect(final_techmd.gsub(/datetime=["'].*?["']/,'')).to be_equivalent_to @expected_techmd[id].gsub(/datetime=["'].*?["']/,'')
+      final_techmd = Dor::TechnicalMetadataService.build_technical_metadata("druid:#{id}", merged_nodes)
+      expect(final_techmd.gsub(/datetime=["'].*?["']/, '')).to be_equivalent_to @expected_techmd[id].gsub(/datetime=["'].*?["']/, '')
     end
   end
 

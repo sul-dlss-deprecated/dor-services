@@ -35,11 +35,11 @@ module Dor
           :query => query
         }.merge(opts)
         result = client.post(query_params)
-        result.split(/\n/)[1..-1].collect { |pid| pid.chomp.sub(/^info:fedora\//,'') }
+        result.split(/\n/)[1..-1].collect { |pid| pid.chomp.sub(/^info:fedora\//, '') }
       end
 
       def iterate_over_pids(opts = {}, &block)
-        opts[:query] ||= "select $object from <#ri> where $object <info:fedora/fedora-system:def/model#label> $label"
+        opts[:query] ||= 'select $object from <#ri> where $object <info:fedora/fedora-system:def/model#label> $label'
         opts[:in_groups_of] ||= 100
         opts[:mode] ||= :single
         start = 0
@@ -58,7 +58,7 @@ module Dor
       def gsearch(params)
         client = Config.gsearch.client
         query_params = params.merge(:wt => 'json')
-        query_string = query_params.collect { |k,v|
+        query_string = query_params.collect { |k, v|
           if v.is_a?(Array)
             v.collect { |vv| "#{k}=#{URI.encode(vv.to_s)}" }.join('&')
           else
@@ -68,7 +68,7 @@ module Dor
         result = JSON.parse(client["select?#{query_string}"].get)
       end
 
-      def query query, args={}
+      def query(query, args = {})
         params = args.merge({ :q => query })
         params[:start] ||= 0
         resp = solr.find params

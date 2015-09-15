@@ -39,7 +39,7 @@ module Dor
 
       vmd_upd_info = opts[:vers_md_upd_info]
       return unless vmd_upd_info
-      datastreams['events'].add_event("open", vmd_upd_info[:opening_user_name], "Version #{vmd_ds.current_version_id} opened")
+      datastreams['events'].add_event('open', vmd_upd_info[:opening_user_name], "Version #{vmd_ds.current_version_id} opened")
       vmd_ds.update_current_version({:description => vmd_upd_info[:description], :significance => vmd_upd_info[:significance].to_sym})
       save
     end
@@ -57,7 +57,7 @@ module Dor
     # @option opts [Boolean] :start_accesion set to true if you want accessioning to start (default), false otherwise
     # @raise [Dor::Exception] if the object hasn't been opened for versioning, or if accessionWF has
     #   already been instantiated or the current version is missing a tag or description
-    def close_version(opts={})
+    def close_version(opts = {})
       unless opts.empty?
         datastreams['versionMetadata'].update_current_version opts
         datastreams['versionMetadata'].save
@@ -78,7 +78,7 @@ module Dor
 
     # @return [Boolean] true if the object is in a state that allows it to be modified. States that will allow modification are: has not been submitted for accessioning, has an open version or has sdr-ingest set to hold
     def allows_modification?
-      if Dor::WorkflowService.get_lifecycle('dor', pid, 'submitted') && !new_version_open? && Dor::WorkflowService.get_workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer')!='hold'
+      if Dor::WorkflowService.get_lifecycle('dor', pid, 'submitted') && !new_version_open? && Dor::WorkflowService.get_workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer') != 'hold'
         false
       else
         true

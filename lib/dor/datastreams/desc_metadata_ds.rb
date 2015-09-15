@@ -16,9 +16,9 @@ class DescMetadataDS < ActiveFedora::OmDatastream
       t.topic      :index_as => [:symbol, :stored_searchable]
       t.temporal   :index_as => [:stored_searchable]
     end
-    t.title_info(:path=>"titleInfo") {
-      t.main_title(:index_as=>[:symbol], :path=>"title", :label=>"title") {
-        t.main_title_lang(:path=>{:attribute=> "xml:lang"})
+    t.title_info(:path => 'titleInfo') {
+      t.main_title(:index_as => [:symbol], :path => 'title', :label => 'title') {
+        t.main_title_lang(:path => {:attribute => 'xml:lang'})
       }
     }
     t.coordinates :index_as => [:symbol]
@@ -30,8 +30,8 @@ class DescMetadataDS < ActiveFedora::OmDatastream
 
   def self.xml_template
     Nokogiri::XML::Builder.new do |xml|
-      xml.mods( 'xmlns' => 'http://www.loc.gov/mods/v3', 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',:version => '3.3', "xsi:schemaLocation" => 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd'){
-        xml.titleInfo{
+      xml.mods( 'xmlns' => 'http://www.loc.gov/mods/v3', 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance', :version => '3.3', 'xsi:schemaLocation' => 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd') {
+        xml.titleInfo {
           xml.title
         }
       }

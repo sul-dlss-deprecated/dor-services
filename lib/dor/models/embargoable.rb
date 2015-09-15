@@ -15,7 +15,7 @@ module Dor
     # Modifies rightsMetadata to remove embargoReleaseDate and updates/adds access from embargoMetadata/releaseAccess
     # @param [String] release_agent name of the person, application or thing that released embargo
     # @note The caller should save the object to fedora to commit the changes
-    def release_embargo(release_agent="unknown")
+    def release_embargo(release_agent = 'unknown')
       # Set status to released
       embargo_md = datastreams['embargoMetadata']
       embargo_md.status = 'released'
@@ -27,7 +27,7 @@ module Dor
       # Replace rights <access> nodes with those from embargoMetadta
       release_access = embargo_md.release_access_node
       release_access.xpath('//releaseAccess/access').each do |new_access|
-        access_sibling = rights_xml.at_xpath("//rightsMetadata/access[last()]")
+        access_sibling = rights_xml.at_xpath('//rightsMetadata/access[last()]')
         if access_sibling
           access_sibling.add_next_sibling(new_access.clone)
         else
@@ -36,10 +36,10 @@ module Dor
       end
 
       datastreams['rightsMetadata'].content_will_change!
-      datastreams['events'].add_event("embargo", release_agent, "Embargo released")
+      datastreams['events'].add_event('embargo', release_agent, 'Embargo released')
     end
 
-    def release_20_pct_vis_embargo(release_agent="unknown")
+    def release_20_pct_vis_embargo(release_agent = 'unknown')
       # Set status to released
       embargo_md = datastreams['embargoMetadata']
       embargo_md.twenty_pct_status = 'released'
@@ -49,7 +49,7 @@ module Dor
       rights_xml.xpath("//rightsMetadata/access[@type='read']").each { |n| n.remove }
 
       # Replace rights <access> nodes with 1 machine/world node
-      access_sibling = rights_xml.at_xpath("//rightsMetadata/access[last()]")
+      access_sibling = rights_xml.at_xpath('//rightsMetadata/access[last()]')
       if access_sibling
         access_sibling.add_next_sibling(world_doc.root.clone)
       else
@@ -57,7 +57,7 @@ module Dor
       end
 
       datastreams['rightsMetadata'].content_will_change!
-      datastreams['events'].add_event("embargo", release_agent, "20% Visibility Embargo released")
+      datastreams['events'].add_event('embargo', release_agent, '20% Visibility Embargo released')
     end
 
     def update_embargo(new_date)
@@ -67,18 +67,18 @@ module Dor
       if new_date.past?
         raise ArgumentError, 'You cannot set the embargo date to a past date.'
       end
-      updated=false
+      updated = false
       rightsMetadata.ng_xml.search('//embargoReleaseDate').each do |node|
-        node.content=new_date.beginning_of_day.utc.xmlschema
-        updated=true
+        node.content = new_date.beginning_of_day.utc.xmlschema
+        updated = true
       end
-      rightsMetadata.content=rightsMetadata.ng_xml.to_s
+      rightsMetadata.content = rightsMetadata.ng_xml.to_s
       rightsMetadata.save
       raise 'No release date in rights metadata, cannot proceed!' unless updated
       embargoMetadata.ng_xml.xpath('//releaseDate').each do |node|
-        node.content=new_date.beginning_of_day.utc.xmlschema
+        node.content = new_date.beginning_of_day.utc.xmlschema
       end
-      embargoMetadata.content=embargoMetadata.ng_xml.to_s
+      embargoMetadata.content = embargoMetadata.ng_xml.to_s
       embargoMetadata.save
     end
   end

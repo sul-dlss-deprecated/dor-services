@@ -4,13 +4,13 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
   before_create :ensure_non_versionable
 
   set_terminology do |t|
-    t.root(:path => "embargoMetadata")
+    t.root(:path => 'embargoMetadata')
     t.status
     t.embargo_status(:path => 'status', :index_as => [:symbol])
-    t.release_date(:path => "releaseDate", :index_as => [:dateable])
-    t.release_access(:path => "releaseAccess")
-    t.twenty_pct_status( :path => "twentyPctVisibilityStatus", :index_as => [:symbol])
-    t.twenty_pct_release_date(:path => "twentyPctVisibilityReleaseDate")
+    t.release_date(:path => 'releaseDate', :index_as => [:dateable])
+    t.release_access(:path => 'releaseAccess')
+    t.twenty_pct_status( :path => 'twentyPctVisibilityStatus', :index_as => [:symbol])
+    t.twenty_pct_release_date(:path => 'twentyPctVisibilityReleaseDate')
   end
 
   # Default EmbargoMetadataDS xml
@@ -27,7 +27,7 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
     builder.doc
   end
 
-  def to_solr solr_doc = {}, *args
+  def to_solr(solr_doc = {}, *args)
     super
     #::Solrizer.insert_field(solr_doc, field_name, value, *index_types)
     rd1  = release_date
@@ -38,7 +38,7 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
   end
 
   def ensure_non_versionable
-    self.versionable = "false"
+    self.versionable = 'false'
   end
 
   #################################################################################
@@ -56,9 +56,9 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
 
   # Sets the release date.  Converts the date to beginning-of-day, UTC to help with Solr indexing
   # @param [Time] rd A Time object represeting the release date.  By default, it is set to now
-  def release_date=(rd=Time.now)
+  def release_date=(rd = Time.now)
     update_values([:release_date] => rd.beginning_of_day.utc.xmlschema)
-    self.content=ng_xml.to_s
+    self.content = ng_xml.to_s
   end
 
   # Current releaseDate value
@@ -79,7 +79,7 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
 
   # Sets the 20% visibility release date.  Converts the date to beginning-of-day, UTC to help with Solr indexing
   # @param [Time] rd A Time object represeting the release date.  By default, it is set to now
-  def twenty_pct_release_date=(rd=Time.now)
+  def twenty_pct_release_date=(rd = Time.now)
     update_values([:twenty_pct_release_date] => rd.beginning_of_day.utc.xmlschema)
     content_will_change!
   end
@@ -100,7 +100,7 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
   # @param [Nokogiri::XML::Document] new_doc Document that will replace the existing releaseAccess node
   def release_access_node=(new_doc)
     if (new_doc.root.name != 'releaseAccess')
-      raise "Trying to replace releaseAccess with a non-releaseAccess document"
+      raise 'Trying to replace releaseAccess with a non-releaseAccess document'
     end
 
     term_value_delete(:select => '//embargoMetadata/releaseAccess')

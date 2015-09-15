@@ -4,9 +4,9 @@ module Dor
     include Rightsable
 
     included do
-      belongs_to :admin_policy_object, :property => :is_governed_by, :class_name => "Dor::AdminPolicyObject"
-      has_and_belongs_to_many :collections, :property => :is_member_of_collection, :class_name => "Dor::Collection"
-      has_and_belongs_to_many :sets, :property => :is_member_of, :class_name => "Dor::Collection"
+      belongs_to :admin_policy_object, :property => :is_governed_by, :class_name => 'Dor::AdminPolicyObject'
+      has_and_belongs_to_many :collections, :property => :is_member_of_collection, :class_name => 'Dor::Collection'
+      has_and_belongs_to_many :sets, :property => :is_member_of, :class_name => 'Dor::Collection'
     end
 
     def initiate_apo_workflow(name)
@@ -59,7 +59,7 @@ module Dor
     end
     #set the rights metadata datastream to the content of the APO's default object rights
     def reapplyAdminPolicyObjectDefaults
-      rightsMetadata.content=admin_policy_object.datastreams['defaultObjectRights'].content
+      rightsMetadata.content = admin_policy_object.datastreams['defaultObjectRights'].content
     end
     def rights
       return nil unless self.respond_to? :rightsMetadata
@@ -100,31 +100,31 @@ module Dor
     def groups_which_view_metadata
       ['dor-administrator', 'sdr-administrator', 'dor-apo-manager', 'dor-apo-depositor', 'dor-viewer', 'sdr-viewer']
     end
-    def intersect arr1, arr2
+    def intersect(arr1, arr2)
       (arr1 & arr2).length > 0
     end
-    def can_manage_item? roles
+    def can_manage_item?(roles)
       intersect roles, groups_which_manage_item
     end
-    def can_manage_desc_metadata? roles
+    def can_manage_desc_metadata?(roles)
       intersect roles, groups_which_manage_desc_metadata
     end
-    def can_manage_system_metadata? roles
+    def can_manage_system_metadata?(roles)
       intersect roles, groups_which_manage_system_metadata
     end
-    def can_manage_content? roles
+    def can_manage_content?(roles)
       intersect roles, groups_which_manage_content
     end
-    def can_manage_rights? roles
+    def can_manage_rights?(roles)
       intersect roles, groups_which_manage_rights
     end
-    def can_manage_embargo? roles
+    def can_manage_embargo?(roles)
       intersect roles, groups_which_manage_embargo
     end
-    def can_view_content? roles
+    def can_view_content?(roles)
       intersect roles, groups_which_view_content
     end
-    def can_view_metadata? roles
+    def can_view_metadata?(roles)
       intersect roles, groups_which_view_metadata
     end
   end

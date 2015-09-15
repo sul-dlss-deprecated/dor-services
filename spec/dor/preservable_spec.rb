@@ -16,15 +16,15 @@ describe Dor::Preservable do
   before(:each) { stub_config   }
   after(:each)  { unstub_config }
 
-  describe "provenanceMetadata" do
+  describe 'provenanceMetadata' do
 
-    it "builds the provenanceMetadata datastream" do
+    it 'builds the provenanceMetadata datastream' do
       expect(item.datastreams['provenanceMetadata'].ng_xml.to_s).to be_equivalent_to('<xml/>')
       item.build_provenanceMetadata_datastream('workflow_id', 'event_text')
       expect(item.datastreams['provenanceMetadata'].ng_xml.to_s).not_to be_equivalent_to('<xml/>')
     end
 
-    it "generates workflow provenance" do
+    it 'generates workflow provenance' do
       druid = 'druid:aa123bb4567'
       obj = PreservableItem.new
       allow(obj).to receive(:pid) { druid }
@@ -49,12 +49,12 @@ describe Dor::Preservable do
 
   end
 
-  it "builds the technicalMetadata datastream" do
+  it 'builds the technicalMetadata datastream' do
     expect(Dor::TechnicalMetadataService).to receive(:add_update_technical_metadata).with(item)
     item.build_technicalMetadata_datastream('technicalMetadata')
   end
 
-  it "exports object for sdr ingest" do
+  it 'exports object for sdr ingest' do
     expect(Dor::SdrIngestService).to receive(:transfer).with(item, nil)
     item.sdr_ingest_transfer(nil)
   end

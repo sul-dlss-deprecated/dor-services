@@ -19,10 +19,10 @@ describe Dor::Shelvable do
     Dor::Config.pop!
   end
 
-  describe ".shelve" do
-    it "should push file changes for shelve-able files into the stacks" do
+  describe '.shelve' do
+    it 'should push file changes for shelve-able files into the stacks' do
       # the object item
-      druid = "druid:ng782rw8378"
+      druid = 'druid:ng782rw8378'
       workitem = ShelvableItem.new(:pid => druid)
       # stub the get_shelve_diff method which is unit tested below
       mock_diff = double(Moab::FileGroupDifference)
@@ -30,7 +30,7 @@ describe Dor::Shelvable do
       # stub the workspace_content_dir method which is unit tested below
       mock_workspace_path = double(Pathname)
       expect(workitem).to receive(:workspace_content_dir).with(mock_diff, an_instance_of(DruidTools::Druid)).and_return(mock_workspace_path)
-      stacks_object_pathname = Pathname(DruidTools::StacksDruid.new(druid,@stacks_root).path)
+      stacks_object_pathname = Pathname(DruidTools::StacksDruid.new(druid, @stacks_root).path)
       # make sure the DigitalStacksService is getting the correct delete, rename, and shelve requests
       # (These methods are unit tested in digital_stacks_service_spec.rb)
       expect(Dor::DigitalStacksService).to receive(:remove_from_stacks).with(stacks_object_pathname, mock_diff)
@@ -40,13 +40,13 @@ describe Dor::Shelvable do
     end
   end
 
-  describe ".get_shelve_diff" do
-    it "should retrieve the differences between the current contentMetadata and the previously ingested version" do
+  describe '.get_shelve_diff' do
+    it 'should retrieve the differences between the current contentMetadata and the previously ingested version' do
       # The object item
-      druid = "druid:jq937jp0017"
+      druid = 'druid:jq937jp0017'
       workitem = ShelvableItem.new(:pid => druid)
       # read in a FileInventoryDifference manifest from the fixtures area
-      xml_pathname = Pathname('spec').join('fixtures', 'content_diff_reports','jq937jp0017-v1-v2.xml')
+      xml_pathname = Pathname('spec').join('fixtures', 'content_diff_reports', 'jq937jp0017-v1-v2.xml')
       expect(workitem).to receive(:get_content_diff).with(:shelve).and_return(xml_pathname.read)
       result = workitem.get_shelve_diff
       expect(result.to_xml).to be_equivalent_to(<<-EOF
@@ -86,21 +86,21 @@ describe Dor::Shelvable do
     end
   end
 
-  describe ".workspace_content_dir" do
+  describe '.workspace_content_dir' do
     it "should find the location of the object's content files in the workspace area" do
       # The object item
-      druid = "druid:ng782rw8378"
+      druid = 'druid:ng782rw8378'
       workitem = ShelvableItem.new(:pid => druid)
 
       # read in a FileInventoryDifference manifest from the fixtures area
       content_diff_reports = Pathname('spec').join('fixtures', 'content_diff_reports')
       inventory_diff_xml = content_diff_reports.join('ng782rw8378-v3-v4.xml')
       inventory_diff = Moab::FileInventoryDifference.parse(inventory_diff_xml.read)
-      content_diff = inventory_diff.group_difference("content")
+      content_diff = inventory_diff.group_difference('content')
 
       # create an empty workspace location for object content files
       workspace_druid = DruidTools::Druid.new(druid, Dor::Config.stacks.local_workspace_root)
-      content_dir = workspace_druid.path('content', create=true)
+      content_dir = workspace_druid.path('content', create = true)
       content_pathname = Pathname(content_dir)
 
       # the files in the manifest aren't in the workspace yet, so attempt to find the content dir will fail
@@ -109,7 +109,7 @@ describe Dor::Shelvable do
       # put put the content files in the content_pathname location .../ng/782/rw/8378/ng782rw8378/content
       deltas = content_diff.file_deltas
       filelist = deltas[:modified] + deltas[:added] + deltas[:copyadded].collect { |old, new| new }
-      expect(filelist).to eq(["SUB2_b2000_2.bvecs", "SUB2_b2000_2.nii.gz", "SUB2_b2000_1.bvals"])
+      expect(filelist).to eq(['SUB2_b2000_2.bvecs', 'SUB2_b2000_2.nii.gz', 'SUB2_b2000_1.bvals'])
       filelist.each { |file| FileUtils.touch(File.join(content_dir, file)) }
       found = workitem.workspace_content_dir(content_diff, workspace_druid)
       expect(found).to eq(content_pathname)
@@ -126,8 +126,8 @@ describe Dor::Shelvable do
     end
   end
 
-  describe ".get_stacks_location" do
-    item = ShelvableItem.new(:pid=>'druid:xy123xy1234')
+  describe '.get_stacks_location' do
+    item = ShelvableItem.new(:pid => 'druid:xy123xy1234')
 
     it 'should return the default stack' do
       item.contentMetadata.content = '<contentMetadata/>'
@@ -136,7 +136,7 @@ describe Dor::Shelvable do
 
     it 'should return the absolute stack' do
       item.contentMetadata.content = '<contentMetadata stacks="/specialstacks"/>'
-      expect(item.get_stacks_location).to eq "/specialstacks"
+      expect(item.get_stacks_location).to eq '/specialstacks'
     end
 
     it 'should return a relative stack' do

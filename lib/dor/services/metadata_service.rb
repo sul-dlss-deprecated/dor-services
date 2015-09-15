@@ -39,7 +39,7 @@ module Dor
       end
 
       def can_resolve?(identifier)
-        (prefix, identifier) = identifier.split(/:/,2)
+        (prefix, identifier) = identifier.split(/:/, 2)
         handlers.keys.include?(prefix.to_sym)
       end
 
@@ -50,14 +50,14 @@ module Dor
 
       def fetch(identifier)
         @@cache.fetch(identifier) do
-          (prefix, identifier) = identifier.split(/:/,2)
+          (prefix, identifier) = identifier.split(/:/, 2)
           handler = handler_for(prefix)
           handler.fetch(prefix, identifier)
         end
       end
 
       def label_for(identifier)
-        (prefix, identifier) = identifier.split(/:/,2)
+        (prefix, identifier) = identifier.split(/:/, 2)
         handler = handler_for(prefix)
         handler.label(handler.fetch(prefix, identifier))
       end
@@ -79,6 +79,6 @@ module Dor
 
 end
 
-Dir[File.join(File.dirname(__FILE__),'metadata_handlers','*.rb')].each { |handler_file|
+Dir[File.join(File.dirname(__FILE__), 'metadata_handlers', '*.rb')].each { |handler_file|
   load handler_file
 }

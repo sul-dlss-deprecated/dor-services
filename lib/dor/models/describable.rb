@@ -3,13 +3,13 @@ module Dor
     extend ActiveSupport::Concern
 
     DESC_MD_FORMATS = {
-      "http://www.tei-c.org/ns/1.0" => 'tei',
-      "http://www.loc.gov/mods/v3"  => 'mods'
+      'http://www.tei-c.org/ns/1.0' => 'tei',
+      'http://www.loc.gov/mods/v3'  => 'mods'
     }
     class CrosswalkError < Exception; end
 
     included do
-      has_metadata :name => "descMetadata", :type => Dor::DescMetadataDS, :label => 'Descriptive Metadata', :control_group => 'M'
+      has_metadata :name => 'descMetadata', :type => Dor::DescMetadataDS, :label => 'Descriptive Metadata', :control_group => 'M'
     end
 
     require 'stanford-mods/searchworks'
@@ -17,7 +17,7 @@ module Dor
     # intended for read-access, "as SearchWorks would see it", mostly for to_solr()
     # @param [Nokogiri::XML::Document] content Nokogiri descMetadata document (overriding internal data)
     # @param [boolean] ns_aware namespace awareness toggle for from_nk_node()
-    def stanford_mods(content=nil, ns_aware=true)
+    def stanford_mods(content = nil, ns_aware = true)
       m = Stanford::Mods::Record.new
       desc = content.nil? ? descMetadata.ng_xml : content
       m.from_nk_node(desc.root, ns_aware)
@@ -79,26 +79,26 @@ module Dor
       rights.xpath('//use/human[@type="useAndReproduction"]').each do |use|
         txt = use.text.strip
         next if txt.empty?
-        doc.root.element_children.last.add_next_sibling doc.create_element("accessCondition", txt, :type => 'useAndReproduction')
+        doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', txt, :type => 'useAndReproduction')
       end
       rights.xpath('//copyright/human[@type="copyright"]').each do |cr|
         txt = cr.text.strip
         next if txt.empty?
-        doc.root.element_children.last.add_next_sibling doc.create_element("accessCondition", txt, :type => 'copyright')
+        doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', txt, :type => 'copyright')
       end
       rights.xpath("//use/machine[#{ci_compare('type', 'creativecommons')}]").each do |lic_type|
         next if lic_type.text =~ /none/i
         lic_text = rights.at_xpath("//use/human[#{ci_compare('type', 'creativecommons')}]").text.strip
         next if lic_text.empty?
         new_text = "CC #{lic_type.text}: #{lic_text}"
-        doc.root.element_children.last.add_next_sibling doc.create_element("accessCondition", new_text, :type => 'license')
+        doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', new_text, :type => 'license')
       end
       rights.xpath("//use/machine[#{ci_compare('type', 'opendatacommons')}]").each do |lic_type|
         next if lic_type.text =~ /none/i
         lic_text = rights.at_xpath("//use/human[#{ci_compare('type', 'opendatacommons')}]").text.strip
         next if lic_text.empty?
         new_text = "ODC #{lic_type.text}: #{lic_text}"
-        doc.root.element_children.last.add_next_sibling doc.create_element("accessCondition", new_text, :type => 'license')
+        doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', new_text, :type => 'license')
       end
     end
 
@@ -107,7 +107,7 @@ module Dor
     # @note this method modifies the passed in doc
     def add_collection_reference(doc)
       return unless methods.include? :public_relationships
-      collections=public_relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection',
+      collections = public_relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection',
                                        'fedora' => 'info:fedora/fedora-system:def/relations-external#',
                                        'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' )
       return if collections.empty?
@@ -118,21 +118,21 @@ module Dor
       end
 
       collections.each do |collection_node|
-        druid=collection_node['rdf:resource']
-        druid=druid.gsub('info:fedora/','')
-        collection_obj=Dor::Item.find(druid)
+        druid = collection_node['rdf:resource']
+        druid = druid.gsub('info:fedora/', '')
+        collection_obj = Dor::Item.find(druid)
         collection_title = Dor::Describable.get_collection_title(collection_obj)
-        related_item_node=Nokogiri::XML::Node.new('relatedItem',doc)
-        related_item_node['type']='host'
-        title_info_node = Nokogiri::XML::Node.new('titleInfo',doc)
-        title_node      = Nokogiri::XML::Node.new('title',doc)
-        title_node.content=collection_title
+        related_item_node = Nokogiri::XML::Node.new('relatedItem', doc)
+        related_item_node['type'] = 'host'
+        title_info_node = Nokogiri::XML::Node.new('titleInfo', doc)
+        title_node      = Nokogiri::XML::Node.new('title', doc)
+        title_node.content = collection_title
 
-        id_node=Nokogiri::XML::Node.new('identifier',doc)
+        id_node = Nokogiri::XML::Node.new('identifier', doc)
         id_node['type'] = 'uri'
         id_node.content = "http://#{Dor::Config.stacks.document_cache_host}/#{druid.split(':').last}"
 
-        type_node=Nokogiri::XML::Node.new('typeOfResource',doc)
+        type_node = Nokogiri::XML::Node.new('typeOfResource', doc)
         type_node['collection'] = 'yes'
         doc.root.add_child(related_item_node)
         related_item_node.add_child(title_info_node)
@@ -154,7 +154,7 @@ module Dor
       DESC_MD_FORMATS[metadata_namespace]
     end
 
-    def to_solr(solr_doc=Hash.new, *args)
+    def to_solr(solr_doc = {}, *args)
       super solr_doc, *args
       mods_sources = {
         'sw_language_ssim'           => :sw_language_facet,
@@ -175,21 +175,21 @@ module Dor
         solr_doc[key] ||= []     # initialize multivalue targts if necessary
       }
 
-      solr_doc["metadata_format_ssim"] << metadata_format
+      solr_doc['metadata_format_ssim'] << metadata_format
       begin
         dc_doc = generate_dublin_core
         dc_doc.xpath('/oai_dc:dc/*').each do |node|
           add_solr_value(solr_doc, "public_dc_#{node.name}", node.text, :string, [:stored_searchable])
         end
-        creator=''
+        creator = ''
         dc_doc.xpath('//dc:creator').each do |node|
-          creator=node.text
+          creator = node.text
         end
-        title=''
+        title = ''
         dc_doc.xpath('//dc:title').each do |node|
-          title=node.text
+          title = node.text
         end
-        creator_title=creator+title
+        creator_title = creator + title
         add_solr_value(solr_doc, 'creator_title', creator_title , :string, [:stored_sortable])
       rescue CrosswalkError => e
         ActiveFedora.logger.warn "Cannot index #{pid}.descMetadata: #{e.message}"
@@ -208,7 +208,7 @@ module Dor
       # some fields get explicit "(none)" placeholder values, mostly for faceting
       %w[sw_language_tesim sw_genre_tesim sw_format_tesim].each { |key| solr_doc[key] = ['(none)'] if solr_doc[key].empty? }
       # otherwise remove empties
-      keys.each{ |key| solr_doc.delete(key) if solr_doc[key].nil? || solr_doc[key].empty?}
+      keys.each { |key| solr_doc.delete(key) if solr_doc[key].nil? || solr_doc[key].empty?}
       solr_doc
     end
 
@@ -216,17 +216,17 @@ module Dor
       raise 'Descriptive metadata has no title to update!' unless update_simple_field('mods:mods/mods:titleInfo/mods:title', new_title)
     end
     def add_identifier(type, value)
-      ds_xml=descMetadata.ng_xml
-      ds_xml.search('//mods:mods','mods' => 'http://www.loc.gov/mods/v3').each do |node|
-        new_node=Nokogiri::XML::Node.new('identifier',ds_xml) #this ends up being mods:identifier without having to specify the namespace
-        new_node['type']=type
-        new_node.content=value
+      ds_xml = descMetadata.ng_xml
+      ds_xml.search('//mods:mods', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
+        new_node = Nokogiri::XML::Node.new('identifier', ds_xml) #this ends up being mods:identifier without having to specify the namespace
+        new_node['type'] = type
+        new_node.content = value
         node.add_child(new_node)
       end
     end
-    def delete_identifier(type,value=nil)
-      ds_xml=descMetadata.ng_xml
-      ds_xml.search('//mods:identifier','mods' => 'http://www.loc.gov/mods/v3').each do |node|
+    def delete_identifier(type, value = nil)
+      ds_xml = descMetadata.ng_xml
+      ds_xml.search('//mods:identifier', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
         if node.content == value || value.nil?
           node.remove
           return true
@@ -235,29 +235,29 @@ module Dor
       false
     end
 
-    def set_desc_metadata_using_label(force=false)
-      ds=descMetadata
+    def set_desc_metadata_using_label(force = false)
+      ds = descMetadata
       unless force || ds.new?
-        raise 'Cannot proceed, there is already content in the descriptive metadata datastream: '+ds.content.to_s
+        raise 'Cannot proceed, there is already content in the descriptive metadata datastream: ' + ds.content.to_s
       end
-      label=self.label
+      label = self.label
       builder = Nokogiri::XML::Builder.new { |xml|
-        xml.mods( 'xmlns' => 'http://www.loc.gov/mods/v3', 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',:version => '3.3', "xsi:schemaLocation" => 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd'){
-          xml.titleInfo{
+        xml.mods( 'xmlns' => 'http://www.loc.gov/mods/v3', 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance', :version => '3.3', 'xsi:schemaLocation' => 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd') {
+          xml.titleInfo {
             xml.title label
           }
         }
       }
-      descMetadata.content=builder.to_xml
+      descMetadata.content = builder.to_xml
     end
 
     def self.get_collection_title(obj)
-      xml=obj.descMetadata.ng_xml
-      title=''
-      title_node = xml.at_xpath('//mods:mods/mods:titleInfo/mods:title','mods' => 'http://www.loc.gov/mods/v3')
+      xml = obj.descMetadata.ng_xml
+      title = ''
+      title_node = xml.at_xpath('//mods:mods/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3')
       if title_node
         title = title_node.content
-        subtitle=xml.at_xpath('//mods:mods/mods:titleInfo/mods:subTitle','mods' => 'http://www.loc.gov/mods/v3')
+        subtitle = xml.at_xpath('//mods:mods/mods:titleInfo/mods:subTitle', 'mods' => 'http://www.loc.gov/mods/v3')
         title += " (#{subtitle.content})" if subtitle
       end
       title
@@ -265,10 +265,10 @@ module Dor
 
     private
     #generic updater useful for updating things like title or subtitle which can only have a single occurance and must be present
-    def update_simple_field(field,new_val)
-      ds_xml=descMetadata.ng_xml
-      ds_xml.search('//'+field,'mods' => 'http://www.loc.gov/mods/v3').each do |node|
-        node.content=new_val
+    def update_simple_field(field, new_val)
+      ds_xml = descMetadata.ng_xml
+      ds_xml.search('//' + field, 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
+        node.content = new_val
         return true
       end
       false

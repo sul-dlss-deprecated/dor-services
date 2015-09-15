@@ -29,7 +29,7 @@ module Dor
     # @param [String] base The base directory to delete from
     # @param [Integer] last_version The last version that the data should be removed until version 1
     # @return [void] remove all the object's reset data files from the workspace area equal to less than the last_version
-    def self.cleanup_reset_workspace_content(druid,last_version, base)
+    def self.cleanup_reset_workspace_content(druid, last_version, base)
       base_druid = DruidTools::Druid.new(druid, base)
       base_druid_tree = base_druid.pathname.to_s
       #if it is truncated tree /aa/111/aaa/1111/content,

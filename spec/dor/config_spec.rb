@@ -6,7 +6,7 @@ describe Dor::Configuration do
     @config = Dor::Configuration.new(YAML.load(File.read(File.expand_path('../../../config/config_defaults.yml', __FILE__))))
   end
 
-  it "should issue a deprecation warning if SSL options are passed to the fedora block" do
+  it 'should issue a deprecation warning if SSL options are passed to the fedora block' do
     expect(ActiveSupport::Deprecation).to receive(:warn).with(/fedora.cert_file/, instance_of(Array))
     expect(ActiveSupport::Deprecation).to receive(:warn).with(/fedora.key_file/, instance_of(Array))
     @config.configure do
@@ -17,7 +17,7 @@ describe Dor::Configuration do
     end
   end
 
-  it "should move SSL options from the fedora block to the ssl block" do
+  it 'should move SSL options from the fedora block to the ssl block' do
     ActiveSupport::Deprecation.silence do
       @config.configure do
         fedora do
@@ -30,7 +30,7 @@ describe Dor::Configuration do
     expect(@config.fedora).not_to include(:cert_file)
   end
 
-  it "configures the Dor::WorkflowService when Dor::Config.configure is called" do
+  it 'configures the Dor::WorkflowService when Dor::Config.configure is called' do
     @config.configure do
       workflow.url 'http://mynewurl.edu/workflow'
     end

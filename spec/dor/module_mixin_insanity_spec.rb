@@ -4,7 +4,7 @@ require 'active_support/core_ext/module/attribute_accessors'
 module A
   extend ::ActiveSupport::Concern
   # included do puts "INCLUDING A" end
-  def foobar(val='')
+  def foobar(val = '')
     (begin super(val) rescue val end) + 'A'
   end
 end
@@ -13,7 +13,7 @@ module B
   extend ::ActiveSupport::Concern
   include A
   # included do puts "INCLUDING B" end
-  def foobar(val='')
+  def foobar(val = '')
     super + 'B'
   end
 end
@@ -31,18 +31,18 @@ end
 class TypeBA
   include B   # already implies A
   include A
-  def foobar(val='')
+  def foobar(val = '')
     super + 'X'
   end
 end
 class TypeC < TypeBA
   include A   # already included by parent
-  def foobar(val='')
+  def foobar(val = '')
     super + 'Y'
   end
 end
 
-describe "Module Mixin" do
+describe 'Module Mixin' do
   before(:each) do
     @a = TypeA.new
     @b = TypeB.new
@@ -50,7 +50,7 @@ describe "Module Mixin" do
     @ba = TypeBA.new
     @c  = TypeC.new
   end
-  it "handles duplicate includes" do
+  it 'handles duplicate includes' do
     expect( @a.foobar     ).to eq 'A'
     expect( @a.foobar('Q')).to eq 'QA'
     expect( @b.foobar     ).to eq 'AB'

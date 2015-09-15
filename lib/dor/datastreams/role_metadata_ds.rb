@@ -28,19 +28,19 @@ class RoleMetadataDS < ActiveFedora::OmDatastream
 
   def self.xml_template
     Nokogiri::XML::Builder.new do |xml|
-      xml.roleMetadata{
+      xml.roleMetadata {
       }
     end.doc
   end
 
-  def to_solr(solr_doc=Hash.new, *args)
+  def to_solr(solr_doc = {}, *args)
     find_by_xpath('/roleMetadata/role/*').each do |actor|
       role_type = actor.parent['type']
       val = [actor.at_xpath('identifier/@type'), actor.at_xpath('identifier/text()')].join ':'
       add_solr_value(solr_doc, "apo_role_#{actor.name}_#{role_type}", val, :string, [:symbol])
       add_solr_value(solr_doc, "apo_role_#{role_type}", val, :string, [:symbol])
-      if ['dor-apo-manager','dor-apo-depositor'].include? role_type
-        add_solr_value(solr_doc, "apo_register_permissions", val, :string, [:symbol, :stored_searchable])
+      if ['dor-apo-manager', 'dor-apo-depositor'].include? role_type
+        add_solr_value(solr_doc, 'apo_register_permissions', val, :string, [:symbol, :stored_searchable])
       end
     end
     solr_doc
