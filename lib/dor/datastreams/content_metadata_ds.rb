@@ -35,10 +35,40 @@ module Dor
 
     def public_xml
       result = ng_xml.clone
-      result.xpath('/contentMetadata/resource[not(file[(@deliver="yes" or @publish="yes")])]'   ).each { |n| n.remove }
+      result.xpath('/contentMetadata/resource[not(file[(@deliver="yes" or @publish="yes")]|externalFile)]'   ).each { |n| n.remove }
       result.xpath('/contentMetadata/resource/file[not(@deliver="yes" or @publish="yes")]'      ).each { |n| n.remove }
       result.xpath('/contentMetadata/resource/file').xpath('@preserve|@shelve|@publish|@deliver').each { |n| n.remove }
       result.xpath('/contentMetadata/resource/file/checksum'                                    ).each { |n| n.remove }
+      
+      # support for dereferencing links via externalFile element(s) - see JUMBO-19
+      result.xpath('/contentMetadata/resource/externalFile').each do |externalFile|
+        # enforce pre-conditions that resourceId, objectId, fileId are required
+        src_resource_id = externalFile['resourceId']
+        src_druid = externalFile['objectId']
+        src_file_id = externalFile['fileId']
+        fail if src_resource_id.nil? || src_file_id.nil? || src_druid.nil?
+
+        # grab source item
+        item = Dor::Item.find(src_druid)
+        src_item_id = item.pid.split(':').last # strip druid:
+
+        # locate and extract the resourceId/fileId elements
+        doc = item.datastreams['contentMetadata'].ng_xml
+        src_resource = doc.at_xpath("//resource[@id=\"#{externalFile['resourceId']}\"]")
+        src_file = src_resource.at_xpath("file[@id=\"#{externalFile['fileId']}\"]")
+        src_image_data = src_file.at_xpath('imageData')
+        
+        # use title if label is not present
+        src_label = src_resource.at_xpath('label')
+        if src_label.nil?
+          src_label = doc.create_element('label')
+          src_label.content = item.datastreams['DC'].title.first unless item.datastreams['DC'].title.nil?
+        end
+        
+        # add the extracted label and imageData
+        externalFile.add_previous_sibling(src_label)
+        externalFile << src_image_data unless src_image_data.nil?
+      end
       result
     end
     def add_file(file, resource_name)
