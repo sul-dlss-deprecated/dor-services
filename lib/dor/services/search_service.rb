@@ -27,12 +27,12 @@ module Dor
         client = Config.fedora.client['risearch']
         client.options[:timeout] = opts.delete(:timeout)
         query_params = {
-          :type => 'tuples',
-          :lang => 'itql',
+          :type   => 'tuples',
+          :lang   => 'itql',
           :format => 'CSV',
-          :limit => '1000',
+          :limit  => '1000',
           :stream => 'on',
-          :query => query
+          :query  => query
         }.merge(opts)
         result = client.post(query_params)
         result.split(/\n/)[1..-1].collect { |pid| pid.chomp.sub(/^info:fedora\//, '') }
@@ -65,23 +65,20 @@ module Dor
             "#{k}=#{URI.encode(v.to_s)}"
           end
         }.join('&')
-        result = JSON.parse(client["select?#{query_string}"].get)
+        JSON.parse(client["select?#{query_string}"].get)
       end
 
       def query(query, args = {})
         params = args.merge({ :q => query })
         params[:start] ||= 0
         resp = solr.find params
-        if block_given?
-          cont = true
-          while cont && resp.docs.length > 0
-            cont = yield(resp)
-            params[:rows] ||= resp.docs.length
-            params[:start] += params[:rows]
-            resp = solr.find params
-          end
-        else
-          return resp
+        return resp unless block_given?
+        cont = true
+        while cont && resp.docs.length > 0
+          cont = yield(resp)
+          params[:rows] ||= resp.docs.length
+          params[:start] += params[:rows]
+          resp = solr.find params
         end
       end
 
@@ -93,7 +90,7 @@ module Dor
         end
         q = %{#{Solrizer.solr_name 'identifier', :stored_searchable}:"#{id}"}
         result = []
-        resp = query(q, :fl => 'id', :rows => 1000) do |resp|
+        query(q, :fl => 'id', :rows => 1000) do |resp|
           result += resp.docs.collect { |doc| doc['id'] }
           true
         end

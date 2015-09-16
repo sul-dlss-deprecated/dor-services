@@ -57,7 +57,7 @@ module Dor
     # @return [Pathname] Pull all the datastreams specified in the configuration file
     #   into the workspace's metadata directory, overwriting existing file if present
     def self.extract_datastreams(dor_item, workspace)
-      metadata_dir = Pathname.new(workspace.path('metadata', create = true))
+      metadata_dir = Pathname.new(workspace.path('metadata', true))
       Config.sdr.datastreams.to_hash.each_pair do |ds_name, required|
         ds_name = ds_name.to_s
         metadata_file = metadata_dir.join("#{ds_name}.xml")
@@ -127,7 +127,7 @@ module Dor
     def self.get_content_inventory(metadata_dir, druid, version_id)
       content_metadata = get_content_metadata(metadata_dir)
       if content_metadata
-        Stanford::ContentInventory.new.inventory_from_cm(content_metadata, druid, subset = 'preserve', version_id)
+        Stanford::ContentInventory.new.inventory_from_cm(content_metadata, druid, 'preserve', version_id)
       else
         FileInventory.new(:type => 'version', :digital_object_id => druid, :version_id => version_id)
       end

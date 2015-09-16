@@ -51,15 +51,13 @@ module Dor
     def self.get_content_group_diff(dor_item)
       inventory_diff_xml = dor_item.get_content_diff('all')
       inventory_diff = Moab::FileInventoryDifference.parse(inventory_diff_xml)
-      content_group_diff = inventory_diff.group_difference('content')
-      content_group_diff
+      inventory_diff.group_difference('content')
     end
 
     # @param [FileGroupDifference] content_group_diff
     # @return [Hash<Symbol,Array>] Sets of filenames grouped by change type for use in performing file or metadata operations
     def self.get_file_deltas(content_group_diff)
-      deltas = content_group_diff.file_deltas
-      deltas
+      content_group_diff.file_deltas
     end
 
     # @param [Hash<Symbol,Array>] deltas Sets of filenames grouped by change type for use in performing file or metadata operations
@@ -82,16 +80,12 @@ module Dor
     def self.get_sdr_technical_metadata(druid)
       begin
         sdr_techmd = get_sdr_metadata(druid, 'technicalMetadata')
-      rescue RestClient::ResourceNotFound => e
+      rescue RestClient::ResourceNotFound
         return nil
       end
-      if sdr_techmd =~ /<technicalMetadata/
-        return sdr_techmd
-      elsif sdr_techmd =~ /<jhove/
-        return ::JhoveService.new.upgrade_technical_metadata(sdr_techmd)
-      else
-        return nil
-      end
+      return sdr_techmd if sdr_techmd =~ /<technicalMetadata/
+      return ::JhoveService.new.upgrade_technical_metadata(sdr_techmd) if sdr_techmd =~ /<jhove/
+      nil
     end
 
     # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
@@ -99,18 +93,11 @@ module Dor
     #   The data is updated to the latest format.
     def self.get_dor_technical_metadata(dor_item)
       ds = 'technicalMetadata'
-      if dor_item.datastreams.keys.include?(ds) && !dor_item.datastreams[ds].new?
-        dor_techmd = dor_item.datastreams[ds].content
-      else
-        return nil
-      end
-      if dor_techmd =~ /<technicalMetadata/
-        return dor_techmd
-      elsif dor_techmd =~ /<jhove/
-        return ::JhoveService.new.upgrade_technical_metadata(dor_techmd)
-      else
-        return nil
-      end
+      return nil unless dor_item.datastreams.keys.include?(ds) && !dor_item.datastreams[ds].new?
+      dor_techmd = dor_item.datastreams[ds].content
+      return dor_techmd if dor_techmd =~ /<technicalMetadata/
+      return ::JhoveService.new.upgrade_technical_metadata(dor_techmd) if dor_techmd =~ /<jhove/
+      nil
     end
 
     # @param [String] druid The identifier of the digital object being processed by the technical metadata robot
@@ -119,8 +106,7 @@ module Dor
     def self.get_sdr_metadata(druid, dsname)
       sdr_client = Dor::Config.sdr.rest_client
       url = "objects/#{druid}/metadata/#{dsname}.xml"
-      response = sdr_client[url].get
-      response
+      sdr_client[url].get
     end
 
     # @param [DruidTools::Druid] druid A wrapper class for the druid identifier.  Used to generate paths
@@ -179,7 +165,7 @@ module Dor
     end
 
     # @param [String] technical_metadata A technicalMetadata datastream contents
-    # @return [Hash<String,Nokogiri::XML::Node>] The set of nodes from a technicalMetadata datastream , indexed by filename
+    # @return [Hash<String,Nokogiri::XML::Node>] The set of nodes from a technicalMetadata datastream, indexed by filename
     def self.get_file_nodes(technical_metadata)
       file_hash = {}
       return file_hash if technical_metadata.nil?
@@ -216,8 +202,7 @@ module Dor
       EOF
       doc = techmd_root
       merged_nodes.keys.sort.each {|path| doc << merged_nodes[path] }
-      doc << '</technicalMetadata>'
-      doc
+      doc + '</technicalMetadata>'
     end
 
   end

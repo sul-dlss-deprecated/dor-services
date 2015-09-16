@@ -15,11 +15,11 @@ module Dor
       solr_doc
     end
 
-    #Adds a person or group to a role in the APO role metadata datastream
+    # Adds a person or group to a role in the APO role metadata datastream
     #
-    #@param role   [String] the role the group or person will be filed under, ex. dor-apo-manager
-    #@param entity [String] the name of the person or group, ex dlss:developers or sunetid:someone
-    #@param type   [Symbol] :workgroup for a group or :person for a person
+    # @param role   [String] the role the group or person will be filed under, ex. dor-apo-manager
+    # @param entity [String] the name of the person or group, ex dlss:developers or sunetid:someone
+    # @param type   [Symbol] :workgroup for a group or :person for a person
     def add_roleplayer(role, entity, type = :workgroup)
       xml = roleMetadata.ng_xml
       group = type == :workgroup ? 'group' : 'person'
@@ -123,7 +123,7 @@ module Dor
       defaultObjectRights.creative_commons_human.first
     end
     def creative_commons_license=(val)
-      (machine, human) = val
+      # (machine, human) = val
       if creative_commons_license.nil?
         defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, :creative_commons)
       end
@@ -167,7 +167,6 @@ module Dor
           node.add_child(machine_node)
           machine_node.add_child(world_node)
         elsif rights == 'stanford'
-          world_node = Nokogiri::XML::Node.new(rights, rights_xml)
           node.add_child(machine_node)
           group_node = Nokogiri::XML::Node.new('group', rights_xml)
           group_node.content = 'Stanford'
@@ -203,23 +202,13 @@ module Dor
       end
       administrativeMetadata.update_values({[:metadata_source] => format})
     end
-    #List of default workflows, used to provide choices at registration
-    #@return [Array] and array of pids, ex ['druid:ab123cd4567']
+    # List of default workflows, used to provide choices at registration
+    # @return [Array] and array of pids, ex ['druid:ab123cd4567']
     def default_workflows
-      xml = administrativeMetadata.ng_xml
-      nodes = administrativeMetadata.term_values(:registration, :workflow_id)
-      if nodes.length > 0
-        wfs = []
-        nodes.each do |node|
-          wfs << node
-        end
-        wfs
-      else
-        []
-      end
+      administrativeMetadata.term_values(:registration, :workflow_id)
     end
-    #set a single default workflow
-    #@param wf [String] the name of the workflow, ex. 'digitizationWF'
+    # set a single default workflow
+    # @param wf [String] the name of the workflow, ex. 'digitizationWF'
     def default_workflow=(wf)
       xml = administrativeMetadata.ng_xml
       nodes = xml.search('//registration/workflow')

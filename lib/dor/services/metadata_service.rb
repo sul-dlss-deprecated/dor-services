@@ -39,7 +39,7 @@ module Dor
       end
 
       def can_resolve?(identifier)
-        (prefix, identifier) = identifier.split(/:/, 2)
+        (prefix, _identifier) = identifier.split(/:/, 2)
         handlers.keys.include?(prefix.to_sym)
       end
 

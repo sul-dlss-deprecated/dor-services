@@ -27,15 +27,15 @@ module Dor
 
     #milestones from accessioning and the order they happen in
     STEPS = {
-      'registered' => 1,
-      'submitted' => 2,
-      'described' => 3,
-      'published' => 4,
-      'deposited' => 5,
+      'registered'  => 1,
+      'submitted'   => 2,
+      'described'   => 3,
+      'published'   => 4,
+      'deposited'   => 5,
       'accessioned' => 6,
-      'indexed' => 7,
-      'shelved' => 8,
-      'opened' => 1
+      'indexed'     => 7,
+      'shelved'     => 8,
+      'opened'      => 1
     }
 
     # This is a work-around for some strange logic in ActiveFedora that
@@ -85,7 +85,7 @@ module Dor
       elsif force || empty_datastream?(ds)
         meth = "build_#{datastream}_datastream".to_sym
         if respond_to?(meth)
-          content = send(meth, ds)
+          send(meth, ds)
           ds.save unless ds.digital_object.new?
         end
       end
@@ -223,14 +223,12 @@ module Dor
     #handles formating utc date/time to human readable
     # XXX: bad form to hardcode TZ here.  Code smell abounds.
     def format_date(datetime)
-
         d = datetime.is_a?(Time) ? datetime :
             DateTime.parse(datetime).in_time_zone(ActiveSupport::TimeZone.new('Pacific Time (US & Canada)'))
         I18n.l(d).strftime('%Y-%m-%d %I:%M%p')
       rescue
         d = datetime.is_a?(Time) ? datetime : Time.parse(datetime.to_s)
         d.strftime('%Y-%m-%d %I:%M%p')
-
     end
   end
 

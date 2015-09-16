@@ -17,13 +17,13 @@ module Dor
         item_class = Dor.registered_classes[object_type]
         raise Dor::ParameterError, "Unknown item type: '#{object_type}'" if item_class.nil?
 
-        content_model = params[:content_model]
+        # content_model = params[:content_model]
         admin_policy  = params[:admin_policy]
         label         = params[:label]
         source_id     = params[:source_id] || {}
         other_ids     = params[:other_ids] || {}
         tags          = params[:tags] || []
-        parent        = params[:parent]
+        # parent        = params[:parent]
         collection    = params[:collection]
         pid = nil
         if params[:pid]
@@ -158,7 +158,7 @@ module Dor
         dor_obj = register_object(dor_params)
         pid = dor_obj.pid
         location = URI.parse(Dor::Config.fedora.safeurl.sub(/\/*$/, '/')).merge("objects/#{pid}").to_s
-        reg_response = dor_params.dup.merge({ :location => location, :pid => pid })
+        dor_params.dup.merge({ :location => location, :pid => pid })
       end
 
       private

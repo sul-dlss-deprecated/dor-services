@@ -2,44 +2,41 @@ module Dor
   module Contentable
     extend ActiveSupport::Concern
 
-    #add a file to a resource, not to be confused with add a resource to an object
+    # add a file to a resource, not to be confused with add a resource to an object
     def add_file(file, resource, file_name, mime_type = nil, publish = 'no', shelve = 'no', preserve = 'no')
-      contentMD = datastreams['contentMetadata']
-      xml = contentMD.ng_xml
-      #make sure the resource exists
-      if xml.search('//resource[@id=\'' + resource + '\']').length == 0
-        raise 'resource doesnt exist.'
-      end
+      xml = datastreams['contentMetadata'].ng_xml
+      # make sure the resource exists
+      raise 'resource doesnt exist.' if xml.search('//resource[@id=\'' + resource + '\']').length == 0
       sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, :auth_methods => ['publickey'])
       druid_tools = DruidTools::Druid.new(pid, Config.content.content_base_dir)
       location = druid_tools.path(file_name)
       oldlocation = location.gsub('/' + pid.gsub('druid:', ''), '')
-      md5 = Digest::MD5.file(file.path).hexdigest
+      md5  = Digest::MD5.file(file.path).hexdigest
       sha1 = Digest::SHA1.file(file.path).hexdigest
       size = File.size?(file.path)
       #update contentmd
       file_hash = {:name => file_name, :md5 => md5, :publish => publish, :shelve => shelve, :preserve => preserve, :size => size.to_s, :sha1 => sha1, :mime_type => mime_type}
       begin
-        request = sftp.stat!(location.gsub(file_name, ''))
+        sftp.stat!(location.gsub(file_name, ''))
         begin
-          request = sftp.stat!(location)
+          sftp.stat!(location)
           raise 'The file ' + file_name + ' already exists!'
         rescue Net::SFTP::StatusException
           sftp.upload!(file.path, location)
           contentMetadata.add_file file_hash, resource
         end
       rescue Net::SFTP::StatusException
-        #the directory layout doesnt match the new style, so use the old style.
+        # directory layout doesn't match the new style, so use the old style.
         begin
-          request = sftp.stat!(oldlocation)
+          sftp.stat!(oldlocation)
           raise 'The file ' + file_name + ' already exists!'
         rescue Net::SFTP::StatusException
-          #the file doesnt already exist, which is good. Add it
+          # file doesn't already exist, which is good. Add it
           sftp.upload!(file.path, oldlocation)
           contentMetadata.add_file file_hash, resource
         end
       end
-      #can only arrive at this point if a non status exception occurred.
+      # can only arrive at this point if a non status exception occurred.
     end
 
     def replace_file(file, file_name)
@@ -48,14 +45,13 @@ module Dor
       druid_tools = DruidTools::Druid.new(pid, Config.content.content_base_dir)
       location = druid_tools.path(file_name)
       oldlocation = location.gsub('/' + pid.gsub('druid:', ''), '')
-
-      md5 = Digest::MD5.file(file.path).hexdigest
+      md5  = Digest::MD5.file(file.path).hexdigest
       sha1 = Digest::SHA1.file(file.path).hexdigest
       size = File.size?(file.path)
       #update contentmd
       file_hash = {:name => file_name, :md5 => md5, :size => size.to_s, :sha1 => sha1}
       begin
-        request = sftp.stat!(location)
+        sftp.stat!(location)
         sftp.upload!(file.path, location)
         #this doesnt allow renaming files
         item.contentMetadata.update_file(file_hash, file_name)
@@ -66,13 +62,10 @@ module Dor
     end
 
     def get_preserved_file(file, version)
-      preservation_server = Config.content.sdr_server + '/sdr/objects/' + pid + '/content/'
-      file = URI.encode(file)
-      add = preservation_server + file + '?version=' + version
-      uri = URI(add)
+      uri = URI(Config.content.sdr_server + "/sdr/objects/#{pid}/content/" + URI.encode(file) + "?version=#{version}")
       req = Net::HTTP::Get.new(uri.request_uri)
       req.basic_auth Config.content.sdr_user, Config.content.sdr_pass
-      res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https') {|http|
+      Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https') {|http|
         http.request(req)
       }
     end
@@ -87,6 +80,7 @@ module Dor
       rescue
         data = sftp.download!(oldlocation)
       end
+      data
     end
     def remove_file(filename)
       druid_tools = DruidTools::Druid.new(pid, Config.content.content_base_dir)
@@ -94,11 +88,11 @@ module Dor
       oldlocation = location.gsub('/' + pid.gsub('druid:', ''), '')
       sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, :auth_methods => ['publickey'])
       begin
-        data = sftp.remove!(location)
+        sftp.remove!(location)
       rescue
         #if the file doesnt exist, that is ok, not all files will be present in the workspace
         begin
-          data = sftp.remove!(oldlocation)
+          sftp.remove!(oldlocation)
         rescue Net::SFTP::StatusException
         end
       end
@@ -110,23 +104,24 @@ module Dor
       oldlocation = location.gsub('/' + pid.gsub('druid:', ''), '')
       sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, :auth_methods => ['publickey'])
       begin
-        data = sftp.rename!(location, location.gsub(old_name, new_name))
+        sftp.rename!(location, location.gsub(old_name, new_name))
       rescue
-        data = sftp.rename!(oldlocation, oldlocation.gsub(old_name, new_name))
+        sftp.rename!(oldlocation, oldlocation.gsub(old_name, new_name))
       end
       contentMetadata.rename_file(old_name, new_name)
     end
+
+    # @param [String] resource_name ID of the resource elememnt
     def remove_resource(resource_name)
       #run delete for all of the files in the resource
-      xml = contentMetadata.ng_xml
-      files = xml.search('//resource[@id=\'' + resource_name + '\']/file').each do |file|
+      contentMetadata.ng_xml.search('//resource[@id=\'' + resource_name + '\']/file').each do |file|
         remove_file(file['id'])
       end
       #remove the resource record from the metadata and renumber the resource sequence
       contentMetadata.remove_resource resource_name
     end
 
-    #list files in the workspace
+    # list files in the workspace
     def list_files
       filename = 'none'
       files = []
@@ -150,7 +145,8 @@ module Dor
       files
     end
 
-    # determine whether the file in question is present in the object's workspace.
+    # @param [String] filename
+    # @return [Boolean] whether the file in question is present in the object's workspace
     def is_file_in_workspace?(filename)
       druid_obj = DruidTools::Druid.new(pid, Dor::Config.stacks.local_workspace_root)
       !druid_obj.find_content(filename).nil?

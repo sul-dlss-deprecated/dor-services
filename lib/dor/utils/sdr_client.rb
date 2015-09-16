@@ -13,7 +13,7 @@ module Sdr
           doc = Nokogiri::XML xml
           raise if doc.root.name != 'currentVersion'
           return Integer(doc.text)
-        rescue => e
+        rescue
           raise "Unable to parse XML from SDR current_version API call: #{xml}"
         end
       end

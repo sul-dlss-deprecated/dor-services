@@ -258,16 +258,13 @@ describe 'deprecated Dor::DigitalStacksService' do
   end
 
   describe '.transfer_to_document_store' do
-
     it 'copies the given metadata to the document cache in the Digital Stacks' do
       dr = DruidTools::PurlDruid.new 'druid:aa123bb4567', purl_root
-      item_root = dr.path(nil, true)
       Dor::DigitalStacksService.transfer_to_document_store('druid:aa123bb4567', '<xml/>', 'someMd')
       file_path = dr.find_content('someMd')
       expect(file_path).to match(/4567\/someMd$/)
       expect(IO.read(file_path)).to eq('<xml/>')
     end
-
   end
 
   describe '.prune_stacks_dir' do
@@ -275,7 +272,6 @@ describe 'deprecated Dor::DigitalStacksService' do
       dr = DruidTools::StacksDruid.new 'druid:aa123bb4567', stacks_root
       item_root = dr.path(nil, true)
       File.open(File.join(item_root, 'somefile'), 'w') {|f| f.write 'junk'}
-
       Dor::DigitalStacksService.prune_stacks_dir 'druid:aa123bb4567'
       item_pathname = Pathname item_root
       expect(File).to_not exist(item_pathname)

@@ -111,7 +111,6 @@ describe Dor::Contentable do
       xml = @item.contentMetadata.ng_xml
       file_node = xml.search('//file[@id=\'gw177fc7976_00_0001.tif\']')
       expect(file_node.length).to eq(1)
-      file_node = file_node.first
       checksums = xml.search('//file[@id=\'gw177fc7976_00_0001.tif\']/checksum')
       expect(checksums.length).to eq(2)
       checksums.each do |checksum|
@@ -129,37 +128,36 @@ describe Dor::Contentable do
   describe 'get_file' do
     it 'should fetch the file' do
       data_file = File.new(File.dirname(__FILE__) + '/../fixtures/ab123cd4567_descMetadata.xml')
-      allow(@sftp).to receive(:download!).and_return(data_file.read)
+      expect(@sftp).to receive(:download!).and_return(data_file.read)
       data = @item.get_file('ab123cd4567_descMetadata.xml')
-      md5 = expect(Digest::MD5.hexdigest(data)).to eq('2578947e09ac580f8ac4a11052b7e45c')
+      expect(Digest::MD5.hexdigest(data)).to eq('2578947e09ac580f8ac4a11052b7e45c')
     end
   end
   describe 'rename_file' do
     it 'should attempt to rename the file in the workspace and update the metadata' do
-      allow(@sftp).to receive(:rename!)
+      expect(@sftp).to receive(:rename!)
       @item.rename_file('gw177fc7976_05_0001.jp2', 'test.jp2')
     end
   end
   describe 'remove_file' do
     it 'should use sftp to remove the file and update the metadata' do
-      allow(@sftp).to receive(:remove!)
+      expect(@sftp).to receive(:remove!)
       @item.remove_file('gw177fc7976_05_0001.jp2')
     end
   end
   describe 'is_file_in_workspace?' do
+    before :each do
+      @mock_filename = 'fake_file'
+      @mock_druid_obj = double(DruidTools::Druid)
+      expect(DruidTools::Druid).to receive(:new).and_return(@mock_druid_obj)
+    end
     it 'should return true if the file is in the workspace for the object' do
-      mock_filename = 'fake_file'
-      mock_druid_obj = double(DruidTools::Druid)
-      allow(mock_druid_obj).to receive(:find_content).with(mock_filename).and_return('this is not nil')
-      allow(DruidTools::Druid).to receive(:new).and_return(mock_druid_obj)
-      expect(@item.is_file_in_workspace?(mock_filename)).to be_truthy
+      expect(@mock_druid_obj).to receive(:find_content).with(@mock_filename).and_return('this is not nil')
+      expect(@item.is_file_in_workspace?(@mock_filename)).to be_truthy
     end
     it 'should return false if the file is not in the workspace for the object' do
-      mock_filename = 'fake_file'
-      mock_druid_obj = double(DruidTools::Druid)
-      allow(mock_druid_obj).to receive(:find_content).with(mock_filename).and_return(nil)
-      allow(DruidTools::Druid).to receive(:new).and_return(mock_druid_obj)
-      expect(@item.is_file_in_workspace?(mock_filename)).to be_falsey
+      expect(@mock_druid_obj).to receive(:find_content).with(@mock_filename).and_return(nil)
+      expect(@item.is_file_in_workspace?(@mock_filename)).to be_falsey
     end
   end
 

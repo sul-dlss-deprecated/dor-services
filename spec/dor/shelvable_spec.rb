@@ -100,7 +100,7 @@ describe Dor::Shelvable do
 
       # create an empty workspace location for object content files
       workspace_druid = DruidTools::Druid.new(druid, Dor::Config.stacks.local_workspace_root)
-      content_dir = workspace_druid.path('content', create = true)
+      content_dir = workspace_druid.path('content', true)
       content_pathname = Pathname(content_dir)
 
       # the files in the manifest aren't in the workspace yet, so attempt to find the content dir will fail
@@ -115,12 +115,12 @@ describe Dor::Shelvable do
       expect(found).to eq(content_pathname)
 
       # move the content files up a directory to .../ng/782/rw/8378/ng782rw8378
-      found.children.each{|file| FileUtils.mv(file.to_s, file.parent.parent.to_s) }
+      found.children.each { |file| FileUtils.mv(file.to_s, file.parent.parent.to_s) }
       found = workitem.workspace_content_dir(content_diff, workspace_druid)
       expect(found).to eq(content_pathname.parent)
 
       # move the content files up a directory to .../ng/782/rw/8378
-      found.children.each{|file| FileUtils.mv(file.to_s, file.parent.parent.to_s) }
+      found.children.each { |file| FileUtils.mv(file.to_s, file.parent.parent.to_s) }
       found = workitem.workspace_content_dir(content_diff, workspace_druid)
       expect(found).to eq(content_pathname.parent.parent)
     end

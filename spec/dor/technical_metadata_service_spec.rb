@@ -96,13 +96,7 @@ describe Dor::TechnicalMetadataService do
   specify 'Dor::TechnicalMetadataService.get_file_deltas(content_group_diff)' do
     @object_ids.each do |id|
       group_diff = @inventory_differences[id]
-      inventory_diff = Moab::FileInventoryDifference.new(
-          :digital_object_id => "druid:#{id}",
-          :basis => 'old_content_metadata',
-          :other => 'new_content_metadata'
-      )
-      deltas = Dor::TechnicalMetadataService.get_file_deltas(group_diff)
-      expect(deltas).to eq(@deltas[id])
+      expect(Dor::TechnicalMetadataService.get_file_deltas(group_diff)).to eq(@deltas[id])
     end
   end
 
