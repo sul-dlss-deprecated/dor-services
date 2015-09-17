@@ -1,4 +1,5 @@
 language: ruby
+# caches gems between builds
 cache: bundler
 sudo: false
 notifications:
