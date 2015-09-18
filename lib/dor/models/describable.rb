@@ -56,6 +56,8 @@ module Dor
       doc = self.descMetadata.ng_xml.dup(1)
       add_collection_reference(doc)
       add_access_conditions(doc)
+      doc.xpath('//comment()').remove
+
       new_doc = Nokogiri::XML(doc.to_xml) { |x| x.noblanks }
       new_doc.encoding = 'UTF-8'
       new_doc.to_xml

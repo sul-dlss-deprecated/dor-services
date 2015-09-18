@@ -15,21 +15,21 @@ describe Dor::Describable do
 
   before :each do
     @item = instantiate_fixture('druid:ab123cd4567', DescribableItem)
-    @obj= instantiate_fixture('druid:ab123cd4567', DescribableItem)
+    @obj = instantiate_fixture('druid:ab123cd4567', DescribableItem)
     @obj.datastreams['descMetadata'].content = read_fixture('ex1_mods.xml')
-    @simple=instantiate_fixture('druid:ab123cd4567', SimpleItem)
+    @simple = instantiate_fixture('druid:ab123cd4567', SimpleItem)
   end
 
   it 'should add a creator_title field' do
-    doc={}
+    doc = {}
     expected_dc = read_fixture('ex1_dc.xml')
-    @found=0
+    @found = 0
     @simple.stub(:generate_dublin_core).and_return(Nokogiri::XML(expected_dc))
     #this is hacky but effective
     @simple.stub(:add_solr_value) do |doc,val, field, otherstuff|
       if val == 'creator_title'
         field.should == 'George, Henry, 1839-1897The complete works of Henry George'
-        @found=1
+        @found = 1
       end
     end
     @simple.to_solr(doc)
@@ -439,15 +439,18 @@ describe Dor::Describable do
       xml = itm.generate_public_desc_md
       doc = Nokogiri::XML(xml)
       expect(doc.encoding).to eq('UTF-8')
-      collections=doc.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
-      collections.length.should == 1
-      collection_title=doc.search('//mods:relatedItem/mods:titleInfo/mods:title')
-      collection_title.length.should ==1
-      collection_title.first.content.should == 'complete works of Henry George'
-      collection_uri = doc.search('//mods:relatedItem/mods:identifier[@type="uri"]')
-      expect(collection_uri.length).to eq(1)
-      expect(collection_uri.first.content).to eq "http://purl.stanford.edu/zb871zd0767"
-      expect(doc.xpath('//mods:accessCondition[@type="useAndReproduction"]').size).to eq(1)
+      expect(doc.xpath('//comment()').size).to eq 0
+      collections      = doc.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
+      collection_title = doc.search('//mods:relatedItem/mods:titleInfo/mods:title')
+      collection_uri   = doc.search('//mods:relatedItem/mods:identifier[@type="uri"]')
+      expect(collections.length     ).to eq 1
+      expect(collection_title.length).to eq 1
+      expect(collection_uri.length  ).to eq 1
+      expect(collection_title.first.content).to eq 'complete works of Henry George'
+      expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
+      %w(useAndReproduction copyright license).each { |term|
+        expect(doc.xpath('//mods:accessCondition[@type="' + term + '"]').size).to eq 1
+      }
       expect(doc.xpath('//mods:accessCondition[@type="useAndReproduction"]').text).to match(/yada/)
       expect(doc.xpath('//mods:accessCondition[@type="copyright"]').size).to eq(1)
       expect(doc.xpath('//mods:accessCondition[@type="copyright"]').text).to match(/Property rights reside with/)

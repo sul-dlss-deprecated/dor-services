@@ -69,18 +69,18 @@ describe Dor::Contentable do
   end
   describe 'add_file' do
     it 'should generate the md5, find the size, attempt to sftp, and call the metadata update' do
-      @item.add_file(@file,'0001','ab123cd4567_descMetadata.xml')
-      xml=@item.contentMetadata.ng_xml
-      file_node=xml.search('//file[@id=\'ab123cd4567_descMetadata.xml\']')
-      file_node.length.should ==1
-      file_node.first()['size'].should == '2472'
-      checksums=xml.search('//file[@id=\'ab123cd4567_descMetadata.xml\']/checksum')
-      checksums.length.should ==2
+      @item.add_file(@file, '0001', 'ab123cd4567_descMetadata.xml')
+      xml = @item.contentMetadata.ng_xml
+      file_node = xml.search('//file[@id=\'ab123cd4567_descMetadata.xml\']')
+      expect(file_node.length).to eq(1)
+      expect(file_node.first()['size']).to eq('2502')
+      checksums = xml.search('//file[@id=\'ab123cd4567_descMetadata.xml\']/checksum')
+      expect(checksums.length).to eq(2)
       checksums.each do |checksum|
-        if checksum['type']=='md5'
-          checksum.content.should == '2578947e09ac580f8ac4a11052b7e45c'
+        if checksum['type'] == 'md5'
+          expect(checksum.content).to eq('55251c7b93b3fbab83354f28e267f42f')
         else
-          checksum.content.should == '2a2d074945f7bd2c8bcd373b0ca5d1d38837003b'
+          expect(checksum.content).to eq('5337616261fce62ed594df2d6dbc79ffbe136fb5')
         end
       end
     end
@@ -96,18 +96,18 @@ describe Dor::Contentable do
           raise(Net::SFTP::StatusException.new @resp, 'sup')
         end
       end
-      @item.add_file(@file,'0001','ab123cd4567_descMetadata.xml')
-      xml=@item.contentMetadata.ng_xml
-      file_node=xml.search('//file[@id=\'ab123cd4567_descMetadata.xml\']')
-      file_node.length.should ==1
-      file_node.first()['size'].should == '2472'
-      checksums=xml.search('//file[@id=\'ab123cd4567_descMetadata.xml\']/checksum')
-      checksums.length.should ==2
+      @item.add_file(@file, '0001', 'ab123cd4567_descMetadata.xml')
+      xml = @item.contentMetadata.ng_xml
+      file_node = xml.search('//file[@id=\'ab123cd4567_descMetadata.xml\']')
+      expect(file_node.length).to eq(1)
+      expect(file_node.first()['size']).to eq('2502')
+      checksums = xml.search('//file[@id=\'ab123cd4567_descMetadata.xml\']/checksum')
+      expect(checksums.length).to eq(2)
       checksums.each do |checksum|
-        if checksum['type']=='md5'
-          checksum.content.should == '2578947e09ac580f8ac4a11052b7e45c'
+        if checksum['type'] == 'md5'
+          expect(checksum.content).to eq('55251c7b93b3fbab83354f28e267f42f')
         else
-          checksum.content.should == '2a2d074945f7bd2c8bcd373b0ca5d1d38837003b'
+          expect(checksum.content).to eq('5337616261fce62ed594df2d6dbc79ffbe136fb5')
         end
       end
     end
@@ -123,10 +123,10 @@ describe Dor::Contentable do
       checksums=xml.search('//file[@id=\'gw177fc7976_00_0001.tif\']/checksum')
       checksums.length.should ==2
       checksums.each do |checksum|
-        if checksum['type']=='md5'
-          checksum.content.should == '2578947e09ac580f8ac4a11052b7e45c'
+        if checksum['type'] == 'md5'
+          expect(checksum.content).to eq('55251c7b93b3fbab83354f28e267f42f')
         else
-          checksum.content.should == '2a2d074945f7bd2c8bcd373b0ca5d1d38837003b'
+          expect(checksum.content).to eq('5337616261fce62ed594df2d6dbc79ffbe136fb5')
         end
       end
     end
@@ -136,10 +136,10 @@ describe Dor::Contentable do
   end
   describe 'get_file' do
     it 'should fetch the file' do
-      data_file=File.new(File.dirname(__FILE__) + '/../fixtures/ab123cd4567_descMetadata.xml')
-      @sftp.stub(:download!).and_return(data_file.read)
-      data=@item.get_file('ab123cd4567_descMetadata.xml')
-      md5=Digest::MD5.hexdigest(data).should == '2578947e09ac580f8ac4a11052b7e45c'
+      data_file = File.new(File.dirname(__FILE__) + '/../fixtures/ab123cd4567_descMetadata.xml')
+      expect(@sftp).to receive(:download!).and_return(data_file.read)
+      data = @item.get_file('ab123cd4567_descMetadata.xml')
+      expect(Digest::MD5.hexdigest(data)).to eq('55251c7b93b3fbab83354f28e267f42f')
     end
   end
   describe 'rename_file' do
