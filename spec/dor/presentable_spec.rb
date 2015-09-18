@@ -115,6 +115,7 @@ describe Dor::Presentable do
       <contentMetadata objectId="bp778zp8790" type="image">
         <resource id="bp778zp8790_1" sequence="1" type="image">
           <label>Image 1</label>
+          <file id="bp778zp8790_00_0001.pdf" mimetype="application/pdf" size="1234"/>
           <file id="bp778zp8790_00_0001.jp2" mimetype="image/jp2" size="132906">
             <imageData width="790" height="790"/>
           </file>
