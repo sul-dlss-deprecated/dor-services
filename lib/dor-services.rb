@@ -27,10 +27,11 @@ module Dor
 
     # Get objectType information from solr and load the correct class the first time,
     # saving the overhead of using ActiveFedora::Base#adapt_to. It falls back to
-    # Dor.load_instance() if the item is not in the index, or is improperly
-    # indexed.
+    # Dor.load_instance() if the item is not in the index, or is improperly indexed.
     # @param [String] pid The object's PID
+    # @return [Object] the ActiveFedora-modeled object
     def find(pid, opts = {})
+      opts[:rows] = 1 # we know we are going to just pay attention to the .first doc anyway
       find_all(%{id:"#{pid}"}, opts).first || load_instance(pid)
     end
 
@@ -78,20 +79,20 @@ module Dor
   require 'druid-tools'
 
   # datastreams
-  autoload :AdministrativeMetadataDS,    'dor/datastreams/administrative_metadata_ds'
-  autoload :ContentMetadataDS,           'dor/datastreams/content_metadata_ds'
-  autoload :DescMetadataDS,              'dor/datastreams/desc_metadata_ds'
-  autoload :EmbargoMetadataDS,           'dor/datastreams/embargo_metadata_ds'
-  autoload :EventsDS,                    'dor/datastreams/events_ds'
-  autoload :GeoMetadataDS,               'dor/datastreams/geo_metadata_ds'
-  autoload :IdentityMetadataDS,          'dor/datastreams/identity_metadata_ds'
-  autoload :RightsMetadataDS,            'dor/datastreams/rights_metadata_ds'
-  autoload :RoleMetadataDS,              'dor/datastreams/role_metadata_ds'
-  autoload :WorkflowDefinitionDs,        'dor/datastreams/workflow_definition_ds'
-  autoload :WorkflowDs,                  'dor/datastreams/workflow_ds'
-  autoload :VersionMetadataDS,           'dor/datastreams/version_metadata_ds'
-  autoload :DefaultObjectRightsDS,       'dor/datastreams/default_object_rights_ds'
-  autoload :SimpleDublinCoreDs,          'dor/datastreams/simple_dublin_core_ds'
+  autoload :AdministrativeMetadataDS, 'dor/datastreams/administrative_metadata_ds'
+  autoload :ContentMetadataDS,        'dor/datastreams/content_metadata_ds'
+  autoload :DescMetadataDS,           'dor/datastreams/desc_metadata_ds'
+  autoload :EmbargoMetadataDS,        'dor/datastreams/embargo_metadata_ds'
+  autoload :EventsDS,                 'dor/datastreams/events_ds'
+  autoload :GeoMetadataDS,            'dor/datastreams/geo_metadata_ds'
+  autoload :IdentityMetadataDS,       'dor/datastreams/identity_metadata_ds'
+  autoload :RightsMetadataDS,         'dor/datastreams/rights_metadata_ds'
+  autoload :RoleMetadataDS,           'dor/datastreams/role_metadata_ds'
+  autoload :WorkflowDefinitionDs,     'dor/datastreams/workflow_definition_ds'
+  autoload :WorkflowDs,               'dor/datastreams/workflow_ds'
+  autoload :VersionMetadataDS,        'dor/datastreams/version_metadata_ds'
+  autoload :DefaultObjectRightsDS,    'dor/datastreams/default_object_rights_ds'
+  autoload :SimpleDublinCoreDs,       'dor/datastreams/simple_dublin_core_ds'
 
   # DOR Concerns
   autoload :Identifiable, 'dor/models/identifiable'
@@ -112,14 +113,14 @@ module Dor
   autoload :Discoverable, 'dor/models/discoverable'
   autoload :Geoable,      'dor/models/geoable'
   autoload :Presentable,  'dor/models/presentable'
-  autoload :Releaseable,   'dor/models/releaseable'
+  autoload :Releaseable,  'dor/models/releaseable'
   autoload :Rightsable,   'dor/models/rightsable'
 
   # ActiveFedora Classes
-  autoload :Abstract,   'dor/models/item'
-  autoload :Item,       'dor/models/item'
-  autoload :Set,        'dor/models/set'
-  autoload :Collection, 'dor/models/collection'
+  autoload :Abstract,          'dor/models/item'
+  autoload :Item,              'dor/models/item'
+  autoload :Set,               'dor/models/set'
+  autoload :Collection,        'dor/models/collection'
   autoload :AdminPolicyObject, 'dor/models/admin_policy_object'
   autoload :WorkflowObject,    'dor/models/workflow_object'
 
