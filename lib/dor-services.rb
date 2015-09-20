@@ -35,6 +35,8 @@ module Dor
       find_all(%{id:"#{pid}"}, opts).first || load_instance(pid)
     end
 
+    # TODO: return enumerable and lazy load_instance
+    # TODO: restrict fieldlist (fl) for non-:lightweight queries
     def find_all(query, opts = {})
       ensure_models_loaded!
       resp = SearchService.query query, opts
