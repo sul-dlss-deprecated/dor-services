@@ -62,9 +62,10 @@ module Dor
     alias_method :generate_intial_workflow, :generate_initial_workflow
 
     # Searches DOR for the workflow definition object.  It then caches the workflow repository and xml
-    # @param [String] naem the name of the workflow
-    def self.find_and_cache_workflow_xml_and_repo name
-      wobj = self.find_by_name(name)
+    # @param [String] name the name of the workflow
+    def self.find_and_cache_workflow_xml_and_repo(name)
+      wobj = find_by_name(name)
+      raise "Failed to find workflow via find_by_name('#{name}')" if wobj.nil?
       wf_xml = wobj.generate_initial_workflow
       @@repo_cache[name] = wobj.definition.repo
       @@xml_cache[name] = wf_xml
