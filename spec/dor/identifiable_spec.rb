@@ -184,8 +184,8 @@ describe Dor::Identifiable do
 
       doc = item.to_solr
 
-      expect(doc[Solrizer.solr_name('apo_title', :symbol)].first).to eq(mock_apo_druid)
-      expect(doc[Solrizer.solr_name('apo_title', :stored_searchable)].first).to eq(mock_apo_druid)
+      expect(doc[Solrizer.solr_name('nonhydrus_apo_title', :symbol)].first).to eq(mock_apo_druid)
+      expect(doc[Solrizer.solr_name('nonhydrus_apo_title', :stored_searchable)].first).to eq(mock_apo_druid)
     end
     it 'should index metadata source' do
       expect(item.to_solr).to match a_hash_including('metadata_source_ssi' => 'Symphony')

@@ -55,8 +55,6 @@ module Dor
     ## used for caching found values
     @@collection_hash = {}
     @@apo_hash = {}
-    @@hydrus_collection_hash = {}
-    @@hydrus_apo_hash = {}
 
     def to_solr(solr_doc = {}, *args)
       assert_content_model
@@ -73,8 +71,8 @@ module Dor
       rels_doc = Nokogiri::XML(datastreams['RELS-EXT'].content)
       apos = rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy', 'hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
       collections = rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-      solrize_related_obj_titles(solr_doc, apos, @@apo_hash, @@hydrus_apo_hash, 'apo_title', 'hydrus_apo_title')
-      solrize_related_obj_titles(solr_doc, collections, @@collection_hash, @@hydrus_collection_hash, 'collection_title', 'hydrus_collection_title')
+      solrize_related_obj_titles(solr_doc, apos, @@apo_hash, 'nonhydrus_apo_title', 'hydrus_apo_title')
+      solrize_related_obj_titles(solr_doc, collections, @@collection_hash, 'nonhydrus_collection_title', 'hydrus_collection_title')
 
       solr_doc['metadata_source_ssi'] = identity_metadata_source
       solr_doc
@@ -214,27 +212,26 @@ module Dor
     end
 
     private
-    def solrize_related_obj_titles(solr_doc, relationships, title_hash, hydrus_title_hash, field_name, hydrus_field_name)
+    def solrize_related_obj_titles(solr_doc, relationships, title_hash, nonhydrus_field_name, hydrus_field_name)
+    #TODO: if you wanted to get a little fancier, you could also solrize a 2 level hierarchy and display using hierarchial facets, like
+    # ["SOURCE", "SOURCE : TITLE"] (e.g. ["Hydrus", "Hydrus : Special Collections"], see (exploded) tags in IdentityMetadataDS#to_solr).
       title_type = :symbol  # we'll get an _ssim because of the type
       title_attrs = [:stored_searchable]  # we'll also get a _tesim from this attr
       relationships.each do |rel_node|
         rel_druid = rel_node['rdf:resource']
         next unless rel_druid   # TODO: warning here would also be useful
         rel_druid = rel_druid.gsub('info:fedora/', '')
-        if title_hash.key?(rel_druid) || hydrus_title_hash.key?(rel_druid)
-          add_solr_value(solr_doc, field_name, title_hash[rel_druid], title_type, title_attrs) if title_hash.key? rel_druid
-          add_solr_value(solr_doc, hydrus_field_name, hydrus_title_hash[rel_druid], title_type, title_attrs) if hydrus_title_hash.key? rel_druid
-        else
+
+        unless title_hash.key?(rel_druid)
           related_obj = Dor.find(rel_druid)
           related_obj_title = get_related_obj_display_title(related_obj, rel_druid)
-          if related_obj && related_obj.tags.include?('Project : Hydrus')
-            add_solr_value(solr_doc, hydrus_field_name, related_obj_title, title_type, title_attrs)
-            hydrus_title_hash[rel_druid] = related_obj_title
-          else
-            add_solr_value(solr_doc, field_name, related_obj_title, title_type, title_attrs)
-            title_hash[rel_druid] = related_obj_title
-          end
+          is_from_hydrus = (related_obj && related_obj.tags.include?('Project : Hydrus'))
+          title_hash[rel_druid] = {'related_obj_title' => related_obj_title, 'is_from_hydrus' => is_from_hydrus}
         end
+
+        field_name = title_hash[rel_druid]['is_from_hydrus'] ? hydrus_field_name : nonhydrus_field_name
+        add_solr_value(solr_doc, field_name, title_hash[rel_druid]['related_obj_title'], title_type, title_attrs)
+
       end
     end
   end
