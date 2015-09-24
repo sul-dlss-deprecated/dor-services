@@ -222,6 +222,7 @@ module Dor
         next unless rel_druid   # TODO: warning here would also be useful
         rel_druid = rel_druid.gsub('info:fedora/', '')
 
+        # populate cache if necessary
         unless title_hash.key?(rel_druid)
           related_obj = Dor.find(rel_druid)
           related_obj_title = get_related_obj_display_title(related_obj, rel_druid)
@@ -229,9 +230,9 @@ module Dor
           title_hash[rel_druid] = {'related_obj_title' => related_obj_title, 'is_from_hydrus' => is_from_hydrus}
         end
 
+        # cache should definitely be populated, so just use that to write solr field
         field_name = title_hash[rel_druid]['is_from_hydrus'] ? hydrus_field_name : nonhydrus_field_name
         add_solr_value(solr_doc, field_name, title_hash[rel_druid]['related_obj_title'], title_type, title_attrs)
-
       end
     end
   end
