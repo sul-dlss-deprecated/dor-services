@@ -49,30 +49,31 @@ module Dor
     end
 
     def empty_datastream?(datastream)
-      if datastream.new?
-        true
-      elsif datastream.class.respond_to?(:xml_template)
+      return true if datastream.new?
+      if datastream.class.respond_to?(:xml_template)
         datastream.content.to_s.empty? || EquivalentXml.equivalent?(datastream.content, datastream.class.xml_template)
       else
         datastream.content.to_s.empty?
       end
     end
 
-    # Takes the name of a datastream, as a string.
     # Tries to find a file for the datastream.
-    # Returns the path to it or nil.
+    # @param [String] datastream name of a datastream
+    # @return [String, nil] path to datastream or nil
     def find_metadata_file(datastream)
       druid = DruidTools::Druid.new(pid, Dor::Config.stacks.local_workspace_root)
       druid.find_metadata("#{datastream}.xml")
     end
 
-    # Takes the name of a datastream, as a string (fooMetadata).
     # Builds that datastream using the content of a file if such a file
     # exists and is newer than the object's current datastream; otherwise,
     # builds the datastream by calling build_fooMetadata_datastream.
+    # @param [String] datastream name of a datastream (e.g. "fooMetadata")
+    # @param [Boolean] force overwrite existing datastream
+    # @param [Boolean] is_required
+    # @return [SomeDatastream]
     def build_datastream(datastream, force = false, is_required = false)
-      # See if the datastream exists as a file and if the file's
-      # timestamp is newer than the datastream's timestamp.
+      # See if datastream exists as a file and if the file's timestamp is newer than datastream's timestamp.
       ds       = datastreams[datastream]
       filename = find_metadata_file(datastream)
       use_file = filename && (ds.createDate.nil? || File.mtime(filename) >= ds.createDate)
@@ -90,9 +91,7 @@ module Dor
         end
       end
       # Check for success.
-      if is_required && empty_datastream?(ds)
-        raise "Required datastream #{datastream} could not be populated!"
-      end
+      raise "Required datastream #{datastream} could not be populated!" if is_required && empty_datastream?(ds)
       ds
     end
 
