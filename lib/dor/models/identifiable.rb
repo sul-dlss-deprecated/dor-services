@@ -71,8 +71,8 @@ module Dor
       rels_doc = Nokogiri::XML(datastreams['RELS-EXT'].content)
       apos = rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy', 'hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
       collections = rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-      solrize_related_obj_titles(solr_doc, apos, @@apo_hash, 'nonhydrus_apo_title', 'hydrus_apo_title')
-      solrize_related_obj_titles(solr_doc, collections, @@collection_hash, 'nonhydrus_collection_title', 'hydrus_collection_title')
+      solrize_related_obj_titles(solr_doc, apos, @@apo_hash, 'apo_title', 'nonhydrus_apo_title', 'hydrus_apo_title')
+      solrize_related_obj_titles(solr_doc, collections, @@collection_hash, 'collection_title', 'nonhydrus_collection_title', 'hydrus_collection_title')
 
       solr_doc['metadata_source_ssi'] = identity_metadata_source
       solr_doc
@@ -212,7 +212,7 @@ module Dor
     end
 
     private
-    def solrize_related_obj_titles(solr_doc, relationships, title_hash, nonhydrus_field_name, hydrus_field_name)
+    def solrize_related_obj_titles(solr_doc, relationships, title_hash, union_field_name, nonhydrus_field_name, hydrus_field_name)
     #TODO: if you wanted to get a little fancier, you could also solrize a 2 level hierarchy and display using hierarchial facets, like
     # ["SOURCE", "SOURCE : TITLE"] (e.g. ["Hydrus", "Hydrus : Special Collections"], see (exploded) tags in IdentityMetadataDS#to_solr).
       title_type = :symbol  # we'll get an _ssim because of the type
@@ -231,8 +231,12 @@ module Dor
         end
 
         # cache should definitely be populated, so just use that to write solr field
-        field_name = title_hash[rel_druid]['is_from_hydrus'] ? hydrus_field_name : nonhydrus_field_name
-        add_solr_value(solr_doc, field_name, title_hash[rel_druid]['related_obj_title'], title_type, title_attrs)
+        if title_hash[rel_druid]['is_from_hydrus']
+          add_solr_value(solr_doc, hydrus_field_name, title_hash[rel_druid]['related_obj_title'], title_type, title_attrs)
+        else
+          add_solr_value(solr_doc, nonhydrus_field_name, title_hash[rel_druid]['related_obj_title'], title_type, title_attrs)
+        end
+        add_solr_value(solr_doc, union_field_name, title_hash[rel_druid]['related_obj_title'], title_type, title_attrs)
       end
     end
   end
