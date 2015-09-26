@@ -35,7 +35,7 @@ module Dor
       'accessioned' => 6,
       'indexed'     => 7,
       'shelved'     => 8,
-      'opened'      => 1
+      'opened'      => 9
     }
 
     # This is a work-around for some strange logic in ActiveFedora that
