@@ -81,19 +81,30 @@ module Dor
       count = 0
       pub_obj_doc.xpath('/publicObject/contentMetadata/resource[@type="image" or @type="page"]').each do |res_node|
         count += 1
-        img_file_name = res_node.at_xpath('file/@id').text.split('.').first
-        height = res_node.at_xpath('file/imageData/@height').text.to_i
-        width = res_node.at_xpath('file/imageData/@width').text.to_i
-        stacks_uri = "#{Dor::Config.stacks.url}/image/iiif/#{id}%2F#{img_file_name}"
+        label_text = 'image'
+        
+        # if we have an external file for JP2000, build stack URLs to external resource images
+        if res_node.at_xpath('externalFile[@mimetype="image/jp2"]')
+          src_file_id = res_node.at_xpath('externalFile/@fileId').text.to_s
+          src_item_id = res_node.at_xpath('externalFile/@objectId').text.to_s.split(':').last # child item
+          src_image_data = res_node.at_xpath('externalFile/imageData')
+        else
+          src_file_id = res_node.at_xpath('file/@id').text
+          src_item_id = id
+          src_image_data = res_node.at_xpath('file/imageData')
+        end
+        label_node = res_node.at_xpath('label')
+        label_text = label_node.text unless label_node.nil?
+        
+        img_file_name = src_file_id.split('.').first
+        stacks_uri = "#{Dor::Config.stacks.url}/image/iiif/#{src_item_id}%2F#{img_file_name}"
+
+        height = src_image_data['height'].to_i
+        width = src_image_data['width'].to_i
 
         canv = IIIF::Presentation::Canvas.new
         canv['@id'] = "#{purl_base_uri}/canvas/canvas-#{count}"
-        label_node = res_node.at_xpath('label')
-        if label_node
-          canv.label = label_node.text
-        else
-          canv.label = 'image'
-        end
+        canv.label = label_text
         canv.height = height
         canv.width = width
 
@@ -115,8 +126,9 @@ module Dor
 
         # Use the first image to create a thumbnail on the manifest
         if count == 1
+          thumb_sz = 400
           thumb = IIIF::Presentation::Resource.new
-          thumb['@id'] = "#{stacks_uri}/full/400,/0/default.jpg"
+          thumb['@id'] = "#{stacks_uri}/full/#{thumb_sz},/0/default.jpg"
           thumb.service = svc
           manifest.thumbnail = thumb
         end
