@@ -225,5 +225,10 @@ module Dor
       rightsMetadata.content = '<rightsMetadata/>'
       add_tag "Decommissioned : #{tag}"
     end
+    
+    # <fedora:isConstituentOf rdf:resource="info:fedora/druid:hj097bm8879" />
+    def add_constituent(druid)
+      add_relationship :is_constituent_of, ActiveFedora::Base.find(druid)      
+    end
   end
 end
