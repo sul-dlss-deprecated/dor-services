@@ -404,6 +404,7 @@ describe Dor::Describable do
 
       doc = Nokogiri::XML(itm.generate_public_desc_md)
       expect(doc.encoding).to eq('UTF-8')
+      expect(doc.xpath('//comment()').size).to eq 0
       collections      = doc.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
       collection_title = doc.search('//mods:relatedItem/mods:titleInfo/mods:title')
       collection_uri   = doc.search('//mods:relatedItem/mods:identifier[@type="uri"]')
