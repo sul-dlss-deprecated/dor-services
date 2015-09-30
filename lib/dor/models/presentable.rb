@@ -82,9 +82,9 @@ module Dor
       count = 0
       pub_obj_doc.xpath('/publicObject/contentMetadata/resource[@type="image" or @type="page"]').each do |res_node|
         count += 1
-        img_file_name = res_node.at_xpath('file/@id').text.split('.').first
-        height = res_node.at_xpath('file/imageData/@height').text.to_i
-        width = res_node.at_xpath('file/imageData/@width').text.to_i
+        img_file_name = res_node.at_xpath('file[@mimetype="image/jp2"]/@id').text.split('.').first
+        height = res_node.at_xpath('file[@mimetype="image/jp2"]/imageData/@height').text.to_i
+        width = res_node.at_xpath('file[@mimetype="image/jp2"]/imageData/@width').text.to_i
         stacks_uri = "#{Dor::Config.stacks.url}/image/iiif/#{id}%2F#{img_file_name}"
 
         canv = IIIF::Presentation::Canvas.new
