@@ -39,6 +39,7 @@ module Dor
       pub = Nokogiri::XML("<publicObject/>").root
       pub['id'] = pid
       pub['published'] = Time.now.xmlschema
+      pub['publishVersion'] = 'dor-services/' + Dor::VERSION
       release_xml=Nokogiri(self.generate_release_xml).xpath('//release')
 
       im=self.datastreams['identityMetadata'].ng_xml.clone

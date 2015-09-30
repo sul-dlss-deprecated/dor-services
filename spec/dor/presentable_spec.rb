@@ -13,7 +13,7 @@ describe Dor::Presentable do
 
   let(:pub_xml) { <<-XML
     <?xml version="1.0" encoding="UTF-8"?>
-    <publicObject id="druid:bp778zp8790" published="2014-11-11T14:21:01-08:00">
+    <publicObject id="druid:bp778zp8790" published="2014-11-11T14:21:01-08:00" publishVersion="dor-services/#{Dor::VERSION}">
       <identityMetadata>
         <sourceId source="sul">M2002_3_06</sourceId>
         <objectId>druid:bp778zp8790</objectId>
@@ -174,6 +174,10 @@ describe Dor::Presentable do
           {
             "label": "Date",
             "value": "21-23"
+          },
+          {
+            "label": "PublishVersion",
+            "value": "dor-services/#{Dor::VERSION}"
           }
       ],
       JSON
@@ -375,6 +379,10 @@ describe Dor::Presentable do
           {
             "label": "Date",
             "value": "21-23"
+          },
+          {
+            "label": "PublishVersion",
+            "value": "dor-services/#{Dor::VERSION}"
           }
       ],
       JSON
