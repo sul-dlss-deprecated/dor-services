@@ -288,12 +288,12 @@ describe Dor::Describable do
         expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@xml)
         collections      = @xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
         collection_title = @xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
-        collection_uri   = @xml.search('//mods:relatedItem/mods:identifier[@type="uri"]')
+        collection_url   = @xml.search('//mods:relatedItem/mods:location/mods:url')
         expect(collections.length     ).to eq 1
         expect(collection_title.length).to eq 1
-        expect(collection_uri.length  ).to eq 1
+        expect(collection_url.length  ).to eq 1
         expect(collection_title.first.content).to eq 'complete works of Henry George'
-        expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
+        expect(collection_url.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
       end
 
       it 'replaces an existing relatedItem if there is a parent collection with title' do
@@ -301,12 +301,12 @@ describe Dor::Describable do
         expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@xml)
         collections      = @xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
         collection_title = @xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
-        collection_uri   = @xml.search('//mods:relatedItem/mods:identifier[@type="uri"]')
+        collection_url   = @xml.search('//mods:relatedItem/mods:location/mods:url')
         expect(collections.length     ).to eq 1
         expect(collection_title.length).to eq 1
-        expect(collection_uri.length  ).to eq 1
+        expect(collection_url.length  ).to eq 1
         expect(collection_title.first.content).to eq 'complete works of Henry George'
-        expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
+        expect(collection_url.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
       end
 
       it 'does not touch an existing relatedItem if there is no collection relationship' do
@@ -407,12 +407,12 @@ describe Dor::Describable do
       expect(doc.xpath('//comment()').size).to eq 0
       collections      = doc.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
       collection_title = doc.search('//mods:relatedItem/mods:titleInfo/mods:title')
-      collection_uri   = doc.search('//mods:relatedItem/mods:identifier[@type="uri"]')
+      collection_url   = doc.search('//mods:relatedItem/mods:location/mods:url')
       expect(collections.length     ).to eq 1
       expect(collection_title.length).to eq 1
-      expect(collection_uri.length  ).to eq 1
+      expect(collection_url.length  ).to eq 1
       expect(collection_title.first.content).to eq 'complete works of Henry George'
-      expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
+      expect(collection_url.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
       %w(useAndReproduction copyright license).each{ |term|
         expect(doc.xpath('//mods:accessCondition[@type="' + term + '"]').size).to eq 1
       }
@@ -432,12 +432,12 @@ describe Dor::Describable do
       doc = Nokogiri::XML(itm.generate_public_desc_md)
       collections      = doc.search('//xmlns:relatedItem/xmlns:typeOfResource[@collection=\'yes\']')
       collection_title = doc.search('//xmlns:relatedItem/xmlns:titleInfo/xmlns:title')
-      collection_uri   = doc.search('//xmlns:relatedItem/xmlns:identifier[@type="uri"]')
+      collection_url   = doc.search('//xmlns:relatedItem/xmlns:location/xmlns:url')
       expect(collections.length     ).to eq 1
       expect(collection_title.length).to eq 1
-      expect(collection_uri.length  ).to eq 1
+      expect(collection_url.length  ).to eq 1
       expect(collection_title.first.content).to eq 'complete works of Henry George'
-      expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
+      expect(collection_url.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
       %w(useAndReproduction copyright license).each{ |term|
         expect(doc.xpath('//xmlns:accessCondition[@type="' + term + '"]').size).to eq 1
       }
