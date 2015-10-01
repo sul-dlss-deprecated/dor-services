@@ -67,10 +67,76 @@ module Dor
       save
     end
 
-    def add_resource(files,resource_name, position,type = "file")
-      xml = ng_xml
+    #
+    # Generates the XML tree for externalFile references. For example,
+    #
+    #     <externalFile objectId="druid:mn123pq4567" resourceId="Image01" fileId="image_01.jp2000" mimetype="image/jp2" />
+    #
+    # @param [String] objectId the linked druid
+    # @param [String] resourceId the linked druid's resource identifier
+    # @param [String] fileId the linked druid's resource's file identifier
+    # @param [String] mimetype the file's MIME type
+    #
+    # @return [Nokogiri::XML::Element]
+    #
+    def generate_external_file_node(objectId, resourceId, fileId, mimetype)
+      externalFile = ng_xml.create_element 'externalFile'
+      externalFile[:objectId] = objectId
+      externalFile[:resourceId] = resourceId
+      externalFile[:fileId] = fileId
+      externalFile[:mimetype] = mimetype
+      externalFile
+    end
+    
+    #
+    # Generates the XML tree for virtual resource relationship reference. For example,
+    #
+    #     <relationship type="alsoAvailableAs" objectId="druid:mn123pq4567" />
+    #
+    # @param [String] objectId the linked druid
+    #
+    # @return [Nokogiri::XML::Element]
+    #
+    def generate_also_available_as_node(objectId)
+      relationship = ng_xml.create_element 'relationship'
+      relationship[:type] = 'alsoAvailableAs'
+      relationship[:objectId] = objectId
+      relationship
+    end
+
+    #
+    # Copies the child's resource into the parent (self) as a virtual resource.
+    # Assumes the resource isn't a duplicate of an existing virtual or real resource.
+    # 
+    # @param [String] child_druid druid
+    # @param [Nokogiri::XML::Element] child_resource
+    #
+    # @return [Nokogiri::XML::Element] the new resource that was added to the contentMetadata
+    #
+    def add_virtual_resource(child_druid, child_resource)
+      # create a virtual resource element with attributes linked to the child and omit label
+      sequence_max = self.ng_xml.search('//resource').map{ |node| node[:sequence].to_i }.max
+      resource = Nokogiri::XML::Element.new('resource', self.ng_xml)
+      resource[:sequence] = sequence_max + 1
+      resource[:id] = "#{self.pid.gsub(/^druid:/, '')}_#{resource[:sequence]}"
+      resource[:type] = child_resource[:type]
+            
+      # iterate over all the published files and link to them
+      child_resource.search('file[@publish=\'yes\']').each do |file|
+        resource << generate_external_file_node(child_druid, child_resource[:id], file[:id], file[:mimetype])
+      end
+      resource << generate_also_available_as_node(child_druid)
+      
+      # save the virtual resource as a sibling and return
+      self.ng_xml.root << resource
+      resource
+    end
+
+    def add_resource(files,resource_name, position,type="file") 
+      xml=ng_xml
       raise "resource #{resource_name} already exists" if xml.search('//resource[@id=\'' + resource_name + '\']').length > 0
-      max = -1
+
+      max=-1
       xml.search('//resource').each do |node|
         max = node['sequence'].to_i if node['sequence'].to_i > max
       end
@@ -83,6 +149,7 @@ module Dor
         end
         max -= 1
       end
+
       node = Nokogiri::XML::Node.new('resource',xml)
       node['sequence'] = position.to_s
       node['id'] = resource_name

@@ -196,4 +196,24 @@ describe Dor::Contentable do
       expect(obj.identityMetadata.tags).to include('Decommissioned : test')
     end
   end
+
+  describe '#add_constituent' do
+    let(:obj) { Dor::Item.new }
+    
+    let(:child_obj) do
+      node = SpecNode.new
+      allow(node).to receive(:rels_ext).and_return(double('rels_ext', :content_will_change! => true, :content=>''))
+      node.pid = 'druid:aa111bb2222'
+      node
+    end
+    
+    before(:each) do
+      allow(ActiveFedora::Base).to receive(:find) { child_obj }
+    end
+    
+    it 'adds an isConstituentOf relationship from the object to the parent druid' do
+      obj.add_constituent('druid:aa111bb2222')
+      expect(obj.relationships(:is_constituent_of)).to eq(['info:fedora/druid:aa111bb2222'])
+    end
+  end
 end
