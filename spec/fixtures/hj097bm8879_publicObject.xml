@@ -1,0 +1,110 @@
+<publicObject id="druid:hj097bm8879" published="2015-09-09T13:33:17-07:00">
+<identityMetadata>
+<sourceId source="Rumsey">2542</sourceId>
+<objectId>druid:hj097bm8879</objectId>
+<objectCreator>DOR</objectCreator>
+<objectLabel>Rumsey Atlas 2542</objectLabel>
+<objectType>item</objectType>
+<otherId name="catkey">10449093</otherId>
+<otherId name="uuid">3526ef90-1f4b-11e5-b0dc-0050569b3c3c</otherId>
+<tag>Project : Rumsey : AtlasProto</tag>
+<tag>Remediated By : 4.21.0</tag>
+<release to="Searchworks">true</release>
+</identityMetadata>
+<contentMetadata objectId="hj097bm8879" type="map">
+  <resource id="hj097bm8879_1" sequence="1" type="image">
+    <label>Cover: Carey's American atlas.</label>
+    <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478" resourceId="cg767mn6478_1" mimetype="image/jp2">
+      <imageData width="6475" height="4747"/>
+    </externalFile>
+    <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+  </resource>
+  <resource id="hj097bm8879_2" sequence="2" thumb="yes" type="image">
+    <label>Title Page: Carey's American atlas.</label>
+    <externalFile fileId="2542B.jp2" objectId="druid:jw923xn5254" resourceId="jw923xn5254_1" mimetype="image/jp2">
+      <imageData width="3139" height="4675"/>
+    </externalFile>
+    <relationship objectId="druid:jw923xn5254" type="alsoAvailableAs"/>
+  </resource>
+</contentMetadata>
+<rightsMetadata>
+<copyright>
+<human type="copyright">
+Property rights reside with the repository, Copyright © Stanford University. Images may be reproduced or transmitted, but not for commercial use. For commercial use or commercial republication, contact rumseymapcenter@stanford.edu This work is licensed under a Creative Commons License. By downloading any images from this site, you agree to the terms of that license.
+</human>
+</copyright>
+<access type="discover">
+<machine>
+<world/>
+</machine>
+</access>
+<access type="read">
+<machine>
+<world/>
+</machine>
+</access>
+<use>
+<human type="useAndReproduction">
+To obtain permission to publish or reproduce commercially, please contact the Digital &amp; Rare Map Librarian, David Rumsey Map Center at rumseymapcenter@stanford.edu.
+</human>
+</use>
+<use>
+<machine type="creativeCommons">by-nc-sa</machine>
+<human type="creativeCommons">
+Attribution Non-Commercial Share Alike 3.0 Unported
+</human>
+</use>
+</rightsMetadata>
+<rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="info:fedora/druid:hj097bm8879">
+<fedora:isMemberOf rdf:resource="info:fedora/druid:xh235dd9059"/>
+<fedora:isMemberOfCollection rdf:resource="info:fedora/druid:xh235dd9059"/>
+</rdf:Description>
+</rdf:RDF>
+<oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+<dc:title>
+Carey's American Atlas: Containing Twenty Maps And One Chart ... Philadelphia: Engraved For, And Published By, Mathew Carey, No. 118, Market Street. M.DCC.XCV. [Price, Plain, Five Dollars-Coloured, Six Dollars.]
+</dc:title>
+<dc:contributor>Carey, Mathew.</dc:contributor>
+<dc:contributor>Barker, W.</dc:contributor>
+<dc:contributor>Doolittle, Amos.</dc:contributor>
+<dc:contributor>Harris, Caleb &amp; Harding.</dc:contributor>
+<dc:contributor>Harrison, Junr.</dc:contributor>
+<dc:contributor>Lewis, Samuel.</dc:contributor>
+<dc:contributor>Scott, J.T.</dc:contributor>
+<dc:contributor>Smith, Genl. D.</dc:contributor>
+<dc:contributor>Smither, T.</dc:contributor>
+<dc:contributor>Vallance.</dc:contributor>
+<dc:type>map</dc:type>
+<dc:type>cartographic image</dc:type>
+<dc:type>Atlases.</dc:type>
+<dc:date>1795</dc:date>
+<dc:date>1795.</dc:date>
+<dc:publisher>Mathew Carey,</dc:publisher>
+<dc:language>eng</dc:language>
+<dc:format>1 atlas : 21 maps ; 37 x 24 cm</dc:format>
+<dc:format>cartographic material</dc:format>
+<dc:description>
+First atlas of America printed in America. First edition. These maps were also published in Carey's American edition of Guthrie's Geography (1795) and most of the maps say "engraved for Carey's American edition of Guthrie's Geography improved." The maps were again used for the 1796 edition of Carey's General Atlas, unchanged except for the Tennessee map, which is titled "Tennassee State" instead of "Tennassee Government" which is the title in both the American Atlas and the Guthrie Atlas -see Wheat and Brun, and has several counties delineated in the eastern part of the state which do not show in the 1795 edition of the map. NMM 480 (American Atlas) has "Tennassee State" indicating that Carey was not consistent. This atlas was the model for John Reid's American Atlas of 1796. This copy's maps have very strong impressions. Rebound quarter leather, marbled paper covered boards.
+</dc:description>
+<dc:description>National Atlas.</dc:description>
+<dc:description>References: P1172; Walsh p33; NMM 480; Howes C135.</dc:description>
+<dc:description type="local" displayLabel="Local note">Pub list no.: 2542.000.</dc:description>
+<dc:subject>Maps</dc:subject>
+<dc:coverage>Western Hemisphere</dc:coverage>
+<dc:coverage>North America</dc:coverage>
+<dc:coverage>South America</dc:coverage>
+<dc:coverage>United States</dc:coverage>
+<dc:coverage>Canada</dc:coverage>
+<dc:subject>G1100 1795 .C3 F</dc:subject>
+<dc:identifier>
+http://www.davidrumsey.com/luna/servlet/view/search?QuickSearchA=QuickSearchA&amp;q=2542.000&amp;sort=pub_list_no_initialsort%2Cpub_date%2Cpub_list_no%2Cseries_no&amp;search=Search
+</dc:identifier>
+<dc:relation type="collection">
+David Rumsey Map Collection at Stanford University Libraries
+</dc:relation>
+</oai_dc:dc>
+<releaseData>
+<release to="Searchworks">true</release>
+</releaseData>
+</publicObject>
