@@ -58,13 +58,10 @@ module Dor
         src_file = src_resource.at_xpath("file[@id=\"#{externalFile['fileId']}\"]")
         src_image_data = src_file.at_xpath('imageData')
 
-        # use title if label is not present
-        src_label = src_resource.at_xpath('label')
-        if src_label.nil?
-          src_label = doc.create_element('label')
-          src_label.content = src_item.datastreams['DC'].title.first unless src_item.datastreams['DC'].title.nil?
-        end
-
+        # always use title regardless of whether a child label is present
+        src_label = doc.create_element('label')
+        src_label.content = src_item.datastreams['DC'].title.first
+    
         # add the extracted label and imageData
         externalFile.add_previous_sibling(src_label)
         externalFile << src_image_data unless src_image_data.nil?

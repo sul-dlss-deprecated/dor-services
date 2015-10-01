@@ -243,7 +243,7 @@ describe Dor::Publishable do
         correctContentMetadata = <<-EOXML
         <contentMetadata objectId="hj097bm8879" type="map">
          <resource id="hj097bm8879_1" sequence="1" type="image">
-           <label>Image 1</label>
+           <label>Cover: Carey's American atlas.</label>
            <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478" resourceId="cg767mn6478_1" mimetype="image/jp2">
              <imageData width="6475" height="4747"/>
            </externalFile>
