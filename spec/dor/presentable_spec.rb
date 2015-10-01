@@ -4,6 +4,10 @@ class PresentableItem < ActiveFedora::Base
   include Dor::Presentable
 end
 
+class ItemizableItem < ActiveFedora::Base
+  include Dor::Itemizable
+end
+
 # Differences between objects will happen betweeen the incoming contentMetadata and DC, that's why they are set as variables in the
 # pub_xml template
 # Same for the canvas template
@@ -505,6 +509,26 @@ describe Dor::Presentable do
         item = PresentableItem.new(:pid => druid)
         pub_doc = Nokogiri::XML pub_xml
         expect(item.iiif_presentation_manifest_needed? pub_doc).to be true
+      end
+    end
+  end
+
+  context 'virtual objects' do
+    let(:druid) {'druid:hj097bm8879'}
+    
+    describe '#build_iiif_manifest' do
+      it 'transforms publicObject xml to a IIIF 2.0 Presentation manifest' do
+        @fixture_dir = File.join(File.dirname(__FILE__), '..', 'fixtures')
+        Dor::Config.push! do
+          stacks.document_cache_host 'purl.stanford.edu'
+          stacks.url 'https://stacks.stanford.edu'
+        end
+        
+        item = PresentableItem.new(:pid => druid)
+        pub_doc = Nokogiri::XML read_fixture("#{druid.split(':').last}_publicObject.xml")
+        
+        built_json = JSON.parse item.build_iiif_manifest(pub_doc)
+        expect(built_json).to eq(JSON.parse read_fixture("#{druid.split(':').last}_iiif_manifest.json"))
       end
     end
   end
