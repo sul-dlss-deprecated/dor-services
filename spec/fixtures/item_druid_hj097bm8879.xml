@@ -1,0 +1,1091 @@
+<foxml:digitalObject xmlns:foxml="info:fedora/fedora-system:def/foxml#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" VERSION="1.1" PID="druid:hj097bm8879" xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/definitions/1/0/foxml1-1.xsd">
+<foxml:objectProperties>
+<foxml:property NAME="info:fedora/fedora-system:def/model#state" VALUE="Active"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#label" VALUE="Rumsey Atlas 2542"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#ownerId" VALUE="argo.stanford.edu"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#createdDate" VALUE="2015-06-30T17:12:43.660Z"/>
+<foxml:property NAME="info:fedora/fedora-system:def/view#lastModifiedDate" VALUE="2015-09-16T18:01:24.425Z"/>
+</foxml:objectProperties>
+<foxml:datastream ID="AUDIT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+<foxml:datastreamVersion ID="AUDIT.0" LABEL="Audit Trail for this object" CREATED="2015-06-30T17:12:43.660Z" MIMETYPE="text/xml" FORMAT_URI="info:fedora/fedora-system:format/xml.fedora.audit">
+<foxml:xmlContent>
+<audit:auditTrail xmlns:audit="info:fedora/fedora-system:def/audit#">
+<audit:record ID="AUDREC1">
+<audit:process type="Fedora API-M"/>
+<audit:action>addDatastream</audit:action>
+<audit:componentID>RELS-EXT</audit:componentID>
+<audit:responsibility>argo.stanford.edu</audit:responsibility>
+<audit:date>2015-06-30T17:12:43.807Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC2">
+<audit:process type="Fedora API-M"/>
+<audit:action>addDatastream</audit:action>
+<audit:componentID>identityMetadata</audit:componentID>
+<audit:responsibility>argo.stanford.edu</audit:responsibility>
+<audit:date>2015-06-30T17:12:43.931Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC3">
+<audit:process type="Fedora API-M"/>
+<audit:action>addDatastream</audit:action>
+<audit:componentID>workflows</audit:componentID>
+<audit:responsibility>argo.stanford.edu</audit:responsibility>
+<audit:date>2015-06-30T17:12:44.114Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC4">
+<audit:process type="Fedora API-M"/>
+<audit:action>addDatastream</audit:action>
+<audit:componentID>descMetadata</audit:componentID>
+<audit:responsibility>argo.stanford.edu</audit:responsibility>
+<audit:date>2015-06-30T17:12:44.353Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC5">
+<audit:process type="Fedora API-M"/>
+<audit:action>addDatastream</audit:action>
+<audit:componentID>rightsMetadata</audit:componentID>
+<audit:responsibility>argo.stanford.edu</audit:responsibility>
+<audit:date>2015-06-30T17:12:44.505Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC6">
+<audit:process type="Fedora API-M"/>
+<audit:action>addDatastream</audit:action>
+<audit:componentID>versionMetadata</audit:componentID>
+<audit:responsibility>argo.stanford.edu</audit:responsibility>
+<audit:date>2015-06-30T17:12:44.695Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC7">
+<audit:process type="Fedora API-M"/>
+<audit:action>modifyDatastreamByValue</audit:action>
+<audit:componentID>identityMetadata</audit:componentID>
+<audit:responsibility>argo.stanford.edu</audit:responsibility>
+<audit:date>2015-06-30T17:46:27.596Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC8">
+<audit:process type="Fedora API-M"/>
+<audit:action>modifyDatastreamByValue</audit:action>
+<audit:componentID>identityMetadata</audit:componentID>
+<audit:responsibility>argo.stanford.edu</audit:responsibility>
+<audit:date>2015-06-30T17:46:45.385Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC9">
+<audit:process type="Fedora API-M"/>
+<audit:action>addDatastream</audit:action>
+<audit:componentID>contentMetadata</audit:componentID>
+<audit:responsibility>blalbrit</audit:responsibility>
+<audit:date>2015-07-01T04:45:26.594Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC10">
+<audit:process type="Fedora API-M"/>
+<audit:action>modifyDatastreamByValue</audit:action>
+<audit:componentID>contentMetadata</audit:componentID>
+<audit:responsibility>argo.stanford.edu</audit:responsibility>
+<audit:date>2015-07-02T20:59:32.535Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC11">
+<audit:process type="Fedora API-M"/>
+<audit:action>modifyDatastreamByValue</audit:action>
+<audit:componentID>contentMetadata</audit:componentID>
+<audit:responsibility>argo.stanford.edu</audit:responsibility>
+<audit:date>2015-07-09T21:26:50.770Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC12">
+<audit:process type="Fedora API-M"/>
+<audit:action>modifyDatastreamByValue</audit:action>
+<audit:componentID>identityMetadata</audit:componentID>
+<audit:responsibility>robots@sul-lyberservices-prod.stanford.edu</audit:responsibility>
+<audit:date>2015-07-10T22:10:44.989Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC13">
+<audit:process type="Fedora API-M"/>
+<audit:action>addDatastream</audit:action>
+<audit:componentID>events</audit:componentID>
+<audit:responsibility>robots@sul-lyberservices-prod.stanford.edu</audit:responsibility>
+<audit:date>2015-07-10T22:10:45.153Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC14">
+<audit:process type="Fedora API-M"/>
+<audit:action>addDatastream</audit:action>
+<audit:componentID>provenanceMetadata</audit:componentID>
+<audit:responsibility>robots@sul-lyberservices-prod.stanford.edu</audit:responsibility>
+<audit:date>2015-07-10T22:12:01.142Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC15">
+<audit:process type="Fedora API-M"/>
+<audit:action>modifyDatastreamByValue</audit:action>
+<audit:componentID>contentMetadata</audit:componentID>
+<audit:responsibility>argo.stanford.edu</audit:responsibility>
+<audit:date>2015-07-10T22:53:37.864Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC16">
+<audit:process type="Fedora API-M"/>
+<audit:action>modifyDatastreamByValue</audit:action>
+<audit:componentID>contentMetadata</audit:componentID>
+<audit:responsibility>argo.stanford.edu</audit:responsibility>
+<audit:date>2015-07-10T22:56:24.614Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC17">
+<audit:process type="Fedora API-M"/>
+<audit:action>modifyDatastreamByValue</audit:action>
+<audit:componentID>versionMetadata</audit:componentID>
+<audit:responsibility>preassembly@sul-lyberservices-prod.stanford.edu</audit:responsibility>
+<audit:date>2015-08-11T19:40:56.614Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC18">
+<audit:process type="Fedora API-M"/>
+<audit:action>modifyDatastreamByValue</audit:action>
+<audit:componentID>contentMetadata</audit:componentID>
+<audit:responsibility>argo.stanford.edu</audit:responsibility>
+<audit:date>2015-09-03T18:27:07.642Z</audit:date>
+<audit:justification/>
+</audit:record>
+<audit:record ID="AUDREC19">
+<audit:process type="Fedora API-M"/>
+<audit:action>modifyDatastreamByValue</audit:action>
+<audit:componentID>contentMetadata</audit:componentID>
+<audit:responsibility>argo.stanford.edu</audit:responsibility>
+<audit:date>2015-09-16T18:01:24.425Z</audit:date>
+<audit:justification/>
+</audit:record>
+</audit:auditTrail>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="DC" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="DC1.0" LABEL="Dublin Core Record for this object" CREATED="2015-06-30T17:12:43.660Z" MIMETYPE="text/xml" FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/" SIZE="387">
+<foxml:xmlContent>
+<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+<dc:title>Rumsey Atlas 2542</dc:title>
+<dc:identifier>druid:hj097bm8879</dc:identifier>
+</oai_dc:dc>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="RELS-EXT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="RELS-EXT.0" LABEL="Fedora Object-to-Object Relationship Metadata" CREATED="2015-06-30T17:12:43.807Z" MIMETYPE="application/rdf+xml" SIZE="721">
+<foxml:xmlContent>
+<rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="info:fedora/druid:hj097bm8879">
+<hydra:isGovernedBy rdf:resource="info:fedora/druid:sq161jk2248"/>
+<fedora-model:hasModel rdf:resource="info:fedora/afmodel:Dor_Item"/>
+<fedora:isMemberOf rdf:resource="info:fedora/druid:xh235dd9059"/>
+<fedora:isMemberOfCollection rdf:resource="info:fedora/druid:xh235dd9059"/>
+</rdf:Description>
+</rdf:RDF>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="identityMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="identityMetadata.0" LABEL="Identity Metadata" CREATED="2015-06-30T17:12:43.931Z" MIMETYPE="text/xml" SIZE="466">
+<foxml:xmlContent>
+<identityMetadata>
+<sourceId source="Rumsey">2542</sourceId>
+<objectId>druid:hj097bm8879</objectId>
+<objectCreator>DOR</objectCreator>
+<objectLabel>Rumsey Atlas 2542</objectLabel>
+<objectType>item</objectType>
+<otherId name="catkey">10449093</otherId>
+<otherId name="uuid">3526ef90-1f4b-11e5-b0dc-0050569b3c3c</otherId>
+<tag>Process : Content Type : Map</tag>
+<tag>Project : Rumsey</tag>
+<tag>Registered By : blalbrit</tag>
+</identityMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+<foxml:datastreamVersion ID="identityMetadata.1" LABEL="Identity Metadata" CREATED="2015-06-30T17:46:27.596Z" MIMETYPE="text/xml" SIZE="466">
+<foxml:xmlContent>
+<identityMetadata>
+<sourceId source="Rumsey">2542</sourceId>
+<objectId>druid:hj097bm8879</objectId>
+<objectCreator>DOR</objectCreator>
+<objectLabel>Rumsey Atlas 2542</objectLabel>
+<objectType>item</objectType>
+<otherId name="catkey">10449093</otherId>
+<otherId name="uuid">3526ef90-1f4b-11e5-b0dc-0050569b3c3c</otherId>
+<tag>Process : Content Type : Map</tag>
+<tag>Project : Rumsey</tag>
+<tag>Registered By : blalbrit</tag>
+</identityMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+<foxml:datastreamVersion ID="identityMetadata.2" LABEL="Identity Metadata" CREATED="2015-06-30T17:46:45.385Z" MIMETYPE="text/xml" SIZE="399">
+<foxml:xmlContent>
+<identityMetadata>
+<sourceId source="Rumsey">2542</sourceId>
+<objectId>druid:hj097bm8879</objectId>
+<objectCreator>DOR</objectCreator>
+<objectLabel>Rumsey Atlas 2542</objectLabel>
+<objectType>item</objectType>
+<otherId name="catkey">10449093</otherId>
+<otherId name="uuid">3526ef90-1f4b-11e5-b0dc-0050569b3c3c</otherId>
+<tag>Project : Rumsey : AtlasProto</tag>
+</identityMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+<foxml:datastreamVersion ID="identityMetadata.3" LABEL="Identity Metadata" CREATED="2015-07-10T22:10:44.989Z" MIMETYPE="text/xml" SIZE="435">
+<foxml:xmlContent>
+<identityMetadata>
+<sourceId source="Rumsey">2542</sourceId>
+<objectId>druid:hj097bm8879</objectId>
+<objectCreator>DOR</objectCreator>
+<objectLabel>Rumsey Atlas 2542</objectLabel>
+<objectType>item</objectType>
+<otherId name="catkey">10449093</otherId>
+<otherId name="uuid">3526ef90-1f4b-11e5-b0dc-0050569b3c3c</otherId>
+<tag>Project : Rumsey : AtlasProto</tag>
+<tag>Remediated By : 4.21.0</tag>
+</identityMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="workflows" STATE="A" CONTROL_GROUP="E" VERSIONABLE="true">
+<foxml:datastreamVersion ID="workflows.0" LABEL="Workflows" CREATED="2015-06-30T17:12:44.114Z" MIMETYPE="application/xml">
+<foxml:contentLocation TYPE="URL" REF="https://lyberservices-prod.stanford.edu/workflow/dor/objects/druid:hj097bm8879/workflows"/>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="descMetadata" STATE="A" CONTROL_GROUP="M" VERSIONABLE="true">
+<foxml:datastreamVersion ID="descMetadata.0" LABEL="Descriptive Metadata" CREATED="2015-06-30T17:12:44.353Z" MIMETYPE="text/xml" SIZE="5280">
+<foxml:contentLocation TYPE="INTERNAL_ID" REF="druid:hj097bm8879+descMetadata+descMetadata.0"/>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="rightsMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="rightsMetadata.0" LABEL="Rights Metadata" CREATED="2015-06-30T17:12:44.505Z" MIMETYPE="text/xml" SIZE="1047">
+<foxml:xmlContent>
+<rightsMetadata>
+<copyright>
+<human type="copyright">
+Property rights reside with the repository, Copyright © Stanford University. Images may be reproduced or transmitted, but not for commercial use. For commercial use or commercial republication, contact rumseymapcenter@stanford.edu This work is licensed under a Creative Commons License. By downloading any images from this site, you agree to the terms of that license.
+</human>
+</copyright>
+<access type="discover">
+<machine>
+<world/>
+</machine>
+</access>
+<access type="read">
+<machine>
+<world/>
+</machine>
+</access>
+<use>
+<human type="useAndReproduction">
+To obtain permission to publish or reproduce commercially, please contact the Digital & Rare Map Librarian, David Rumsey Map Center at rumseymapcenter@stanford.edu.
+</human>
+</use>
+<use>
+<machine type="creativeCommons">by-nc-sa</machine>
+<human type="creativeCommons">
+Attribution Non-Commercial Share Alike 3.0 Unported
+</human>
+</use>
+</rightsMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="contentMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="contentMetadata.0" LABEL="Content Metadata" CREATED="2015-07-01T04:45:26.594Z" MIMETYPE="text/xml" SIZE="4940">
+<foxml:xmlContent>
+<contentMetadata objectId="hj097bm8879" type="map">
+<resource id="hj097bm8879_1" sequence="1" type="image">
+<label>Image 1</label>
+<externalFile fileid="2542A.jp2" objectId="druid:cg767mn6478" resourceId="cg767mn6478_1"/>
+</resource>
+<resource id="hj097bm8879_2" sequence="2" type="image">
+<label>Image 2</label>
+<externalFile fileid="2542B.jp2" objectId="druid:jw923xn5254" resourceId="jw923xn5254_1"/>
+</resource>
+<resource id="hj097bm8879_3" sequence="3" type="image">
+<label>Image 3</label>
+<externalFile fileid="2542001.jp2" objectId="druid:wn461xh4882" resourceId="wn461xh4882_1"/>
+</resource>
+<resource id="hj097bm8879_4" sequence="4" type="image">
+<label>Image 4</label>
+<externalFile fileid="2542002.jp2" objectId="druid:fh193nf4583" resourceId="fh193nf4583_1"/>
+</resource>
+<resource id="hj097bm8879_5" sequence="5" type="image">
+<label>Image 5</label>
+<externalFile fileid="2542003.jp2" objectId="druid:zm141bz6672" resourceId="zm141bz6672_1"/>
+</resource>
+<resource id="hj097bm8879_6" sequence="6" type="image">
+<label>Image 6</label>
+<externalFile fileid="2542004.jp2" objectId="druid:ty335fg4673" resourceId="ty335fg4673_1"/>
+</resource>
+<resource id="hj097bm8879_7" sequence="7" type="image">
+<label>Image 7</label>
+<externalFile fileid="2542005.jp2" objectId="druid:cb783jw9314" resourceId="cb783jw9314_1"/>
+</resource>
+<resource id="hj097bm8879_8" sequence="8" type="image">
+<label>Image 8</label>
+<externalFile fileid="2542006.jp2" objectId="druid:yr145dc7638" resourceId="yr145dc7638_1"/>
+</resource>
+<resource id="hj097bm8879_9" sequence="9" type="image">
+<label>Image 9</label>
+<externalFile fileid="2542007.jp2" objectId="druid:qw237mm1478" resourceId="qw237mm1478_1"/>
+</resource>
+<resource id="hj097bm8879_10" sequence="10" type="image">
+<label>Image 10</label>
+<externalFile fileid="2542008.jp2" objectId="druid:bv599bt4452" resourceId="bv599bt4452_1"/>
+</resource>
+<resource id="hj097bm8879_11" sequence="11" type="image">
+<label>Image 11</label>
+<externalFile fileid="2542009.jp2" objectId="druid:nb435pz3288" resourceId="nb435pz3288_1"/>
+</resource>
+<resource id="hj097bm8879_12" sequence="12" type="image">
+<label>Image 12</label>
+<externalFile fileid="2542010.jp2" objectId="druid:sc006nj1332" resourceId="sc006nj1332_1"/>
+</resource>
+<resource id="hj097bm8879_13" sequence="13" type="image">
+<label>Image 13</label>
+<externalFile fileid="2542011.jp2" objectId="druid:mk475my0384" resourceId="mk475my0384_1"/>
+</resource>
+<resource id="hj097bm8879_14" sequence="14" type="image">
+<label>Image 14</label>
+<externalFile fileid="2542012.jp2" objectId="druid:wp257mm9313" resourceId="wp257mm9313_1"/>
+</resource>
+<resource id="hj097bm8879_15" sequence="15" type="image">
+<label>Image 15</label>
+<externalFile fileid="2542013.jp2" objectId="druid:pw121jd8972" resourceId="pw121jd8972_1"/>
+</resource>
+<resource id="hj097bm8879_16" sequence="16" type="image">
+<label>Image 16</label>
+<externalFile fileid="2542014.jp2" objectId="druid:dh865cc1881" resourceId="dh865cc1881_1"/>
+</resource>
+<resource id="hj097bm8879_17" sequence="17" type="image">
+<label>Image 17</label>
+<externalFile fileid="2542015.jp2" objectId="druid:xt213gh5830" resourceId="xt213gh5830_1"/>
+</resource>
+<resource id="hj097bm8879_18" sequence="18" type="image">
+<label>Image 18</label>
+<externalFile fileid="2542016.jp2" objectId="druid:xw455fd1110" resourceId="xw455fd1110_1"/>
+</resource>
+<resource id="hj097bm8879_19" sequence="19" type="image">
+<label>Image 19</label>
+<externalFile fileid="2542017.jp2" objectId="druid:pk237jz4413" resourceId="pk237jz4413_1"/>
+</resource>
+<resource id="hj097bm8879_20" sequence="20" type="image">
+<label>Image 20</label>
+<externalFile fileid="2542018.jp2" objectId="druid:jp652gk0604" resourceId="jp652gk0604_1"/>
+</resource>
+<resource id="hj097bm8879_21" sequence="21" type="image">
+<label>Image 21</label>
+<externalFile fileid="2542019.jp2" objectId="druid:cs003qk0166" resourceId="cs003qk0166_1"/>
+</resource>
+<resource id="hj097bm8879_22" sequence="22" type="image">
+<label>Image 22</label>
+<externalFile fileid="2542020.jp2" objectId="druid:th862dp3538" resourceId="th862dp3538_1"/>
+</resource>
+<resource id="hj097bm8879_23" sequence="23" type="image">
+<label>Image 23</label>
+<externalFile fileid="2542021.jp2" objectId="druid:wq036fq6080" resourceId="wq036fq6080_1"/>
+</resource>
+</contentMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+<foxml:datastreamVersion ID="contentMetadata.1" LABEL="Content Metadata" CREATED="2015-07-02T20:59:32.535Z" MIMETYPE="text/xml" SIZE="4952">
+<foxml:xmlContent>
+<contentMetadata objectId="hj097bm8879" type="map">
+<resource id="hj097bm8879_1" sequence="1" type="image">
+<label>Image 1</label>
+<externalFile fileid="2542A.jp2" objectId="druid:cg767mn6478" resourceId="cg767mn6478_1"/>
+</resource>
+<resource id="hj097bm8879_2" sequence="2" thumb="yes" type="image">
+<label>Image 2</label>
+<externalFile fileid="2542B.jp2" objectId="druid:jw923xn5254" resourceId="jw923xn5254_1"/>
+</resource>
+<resource id="hj097bm8879_3" sequence="3" type="image">
+<label>Image 3</label>
+<externalFile fileid="2542001.jp2" objectId="druid:wn461xh4882" resourceId="wn461xh4882_1"/>
+</resource>
+<resource id="hj097bm8879_4" sequence="4" type="image">
+<label>Image 4</label>
+<externalFile fileid="2542002.jp2" objectId="druid:fh193nf4583" resourceId="fh193nf4583_1"/>
+</resource>
+<resource id="hj097bm8879_5" sequence="5" type="image">
+<label>Image 5</label>
+<externalFile fileid="2542003.jp2" objectId="druid:zm141bz6672" resourceId="zm141bz6672_1"/>
+</resource>
+<resource id="hj097bm8879_6" sequence="6" type="image">
+<label>Image 6</label>
+<externalFile fileid="2542004.jp2" objectId="druid:ty335fg4673" resourceId="ty335fg4673_1"/>
+</resource>
+<resource id="hj097bm8879_7" sequence="7" type="image">
+<label>Image 7</label>
+<externalFile fileid="2542005.jp2" objectId="druid:cb783jw9314" resourceId="cb783jw9314_1"/>
+</resource>
+<resource id="hj097bm8879_8" sequence="8" type="image">
+<label>Image 8</label>
+<externalFile fileid="2542006.jp2" objectId="druid:yr145dc7638" resourceId="yr145dc7638_1"/>
+</resource>
+<resource id="hj097bm8879_9" sequence="9" type="image">
+<label>Image 9</label>
+<externalFile fileid="2542007.jp2" objectId="druid:qw237mm1478" resourceId="qw237mm1478_1"/>
+</resource>
+<resource id="hj097bm8879_10" sequence="10" type="image">
+<label>Image 10</label>
+<externalFile fileid="2542008.jp2" objectId="druid:bv599bt4452" resourceId="bv599bt4452_1"/>
+</resource>
+<resource id="hj097bm8879_11" sequence="11" type="image">
+<label>Image 11</label>
+<externalFile fileid="2542009.jp2" objectId="druid:nb435pz3288" resourceId="nb435pz3288_1"/>
+</resource>
+<resource id="hj097bm8879_12" sequence="12" type="image">
+<label>Image 12</label>
+<externalFile fileid="2542010.jp2" objectId="druid:sc006nj1332" resourceId="sc006nj1332_1"/>
+</resource>
+<resource id="hj097bm8879_13" sequence="13" type="image">
+<label>Image 13</label>
+<externalFile fileid="2542011.jp2" objectId="druid:mk475my0384" resourceId="mk475my0384_1"/>
+</resource>
+<resource id="hj097bm8879_14" sequence="14" type="image">
+<label>Image 14</label>
+<externalFile fileid="2542012.jp2" objectId="druid:wp257mm9313" resourceId="wp257mm9313_1"/>
+</resource>
+<resource id="hj097bm8879_15" sequence="15" type="image">
+<label>Image 15</label>
+<externalFile fileid="2542013.jp2" objectId="druid:pw121jd8972" resourceId="pw121jd8972_1"/>
+</resource>
+<resource id="hj097bm8879_16" sequence="16" type="image">
+<label>Image 16</label>
+<externalFile fileid="2542014.jp2" objectId="druid:dh865cc1881" resourceId="dh865cc1881_1"/>
+</resource>
+<resource id="hj097bm8879_17" sequence="17" type="image">
+<label>Image 17</label>
+<externalFile fileid="2542015.jp2" objectId="druid:xt213gh5830" resourceId="xt213gh5830_1"/>
+</resource>
+<resource id="hj097bm8879_18" sequence="18" type="image">
+<label>Image 18</label>
+<externalFile fileid="2542016.jp2" objectId="druid:xw455fd1110" resourceId="xw455fd1110_1"/>
+</resource>
+<resource id="hj097bm8879_19" sequence="19" type="image">
+<label>Image 19</label>
+<externalFile fileid="2542017.jp2" objectId="druid:pk237jz4413" resourceId="pk237jz4413_1"/>
+</resource>
+<resource id="hj097bm8879_20" sequence="20" type="image">
+<label>Image 20</label>
+<externalFile fileid="2542018.jp2" objectId="druid:jp652gk0604" resourceId="jp652gk0604_1"/>
+</resource>
+<resource id="hj097bm8879_21" sequence="21" type="image">
+<label>Image 21</label>
+<externalFile fileid="2542019.jp2" objectId="druid:cs003qk0166" resourceId="cs003qk0166_1"/>
+</resource>
+<resource id="hj097bm8879_22" sequence="22" type="image">
+<label>Image 22</label>
+<externalFile fileid="2542020.jp2" objectId="druid:th862dp3538" resourceId="th862dp3538_1"/>
+</resource>
+<resource id="hj097bm8879_23" sequence="23" type="image">
+<label>Image 23</label>
+<externalFile fileid="2542021.jp2" objectId="druid:wq036fq6080" resourceId="wq036fq6080_1"/>
+</resource>
+</contentMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+<foxml:datastreamVersion ID="contentMetadata.2" LABEL="Content Metadata" CREATED="2015-07-09T21:26:50.770Z" MIMETYPE="text/xml" SIZE="6930">
+<foxml:xmlContent>
+<contentMetadata objectId="hj097bm8879" type="map">
+<resource id="hj097bm8879_1" sequence="1" type="image">
+<label>Image 1</label>
+<externalFile fileid="2542A.jp2" objectId="druid:cg767mn6478" resourceId="cg767mn6478_1"/>
+<relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_2" sequence="2" thumb="yes" type="image">
+<label>Image 2</label>
+<externalFile fileid="2542B.jp2" objectId="druid:jw923xn5254" resourceId="jw923xn5254_1"/>
+<relationship objectId="druid:jw923xn5254" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_3" sequence="3" type="image">
+<label>Image 3</label>
+<externalFile fileid="2542001.jp2" objectId="druid:wn461xh4882" resourceId="wn461xh4882_1"/>
+<relationship objectId="druid:wn461xh4882" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_4" sequence="4" type="image">
+<label>Image 4</label>
+<externalFile fileid="2542002.jp2" objectId="druid:fh193nf4583" resourceId="fh193nf4583_1"/>
+<relationship objectId="druid:fh193nf4583" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_5" sequence="5" type="image">
+<label>Image 5</label>
+<externalFile fileid="2542003.jp2" objectId="druid:zm141bz6672" resourceId="zm141bz6672_1"/>
+<relationship objectId="druid:zm141bz6672" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_6" sequence="6" type="image">
+<label>Image 6</label>
+<externalFile fileid="2542004.jp2" objectId="druid:ty335fg4673" resourceId="ty335fg4673_1"/>
+<relationship objectId="druid:ty335fg4673" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_7" sequence="7" type="image">
+<label>Image 7</label>
+<externalFile fileid="2542005.jp2" objectId="druid:cb783jw9314" resourceId="cb783jw9314_1"/>
+<relationship objectId="druid:cb783jw9314" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_8" sequence="8" type="image">
+<label>Image 8</label>
+<externalFile fileid="2542006.jp2" objectId="druid:yr145dc7638" resourceId="yr145dc7638_1"/>
+<relationship objectId="druid:yr145dc7638" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_9" sequence="9" type="image">
+<label>Image 9</label>
+<externalFile fileid="2542007.jp2" objectId="druid:qw237mm1478" resourceId="qw237mm1478_1"/>
+<relationship objectId="druid:qw237mm1478" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_10" sequence="10" type="image">
+<label>Image 10</label>
+<externalFile fileid="2542008.jp2" objectId="druid:bv599bt4452" resourceId="bv599bt4452_1"/>
+<relationship objectId="druid:bv599bt4452" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_11" sequence="11" type="image">
+<label>Image 11</label>
+<externalFile fileid="2542009.jp2" objectId="druid:nb435pz3288" resourceId="nb435pz3288_1"/>
+<relationship objectId="druid:nb435pz3288" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_12" sequence="12" type="image">
+<label>Image 12</label>
+<externalFile fileid="2542010.jp2" objectId="druid:sc006nj1332" resourceId="sc006nj1332_1"/>
+<relationship objectId="druid:sc006nj1332" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_13" sequence="13" type="image">
+<label>Image 13</label>
+<externalFile fileid="2542011.jp2" objectId="druid:mk475my0384" resourceId="mk475my0384_1"/>
+<relationship objectId="druid:mk475my0384" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_14" sequence="14" type="image">
+<label>Image 14</label>
+<externalFile fileid="2542012.jp2" objectId="druid:wp257mm9313" resourceId="wp257mm9313_1"/>
+<relationship objectId="druid:wp257mm9313" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_15" sequence="15" type="image">
+<label>Image 15</label>
+<externalFile fileid="2542013.jp2" objectId="druid:pw121jd8972" resourceId="pw121jd8972_1"/>
+<relationship objectId="druid:pw121jd8972" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_16" sequence="16" type="image">
+<label>Image 16</label>
+<externalFile fileid="2542014.jp2" objectId="druid:dh865cc1881" resourceId="dh865cc1881_1"/>
+<relationship objectId="druid:dh865cc1881" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_17" sequence="17" type="image">
+<label>Image 17</label>
+<externalFile fileid="2542015.jp2" objectId="druid:xt213gh5830" resourceId="xt213gh5830_1"/>
+<relationship objectId="druid:xt213gh5830" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_18" sequence="18" type="image">
+<label>Image 18</label>
+<externalFile fileid="2542016.jp2" objectId="druid:xw455fd1110" resourceId="xw455fd1110_1"/>
+<relationship objectId="druid:xw455fd1110" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_19" sequence="19" type="image">
+<label>Image 19</label>
+<externalFile fileid="2542017.jp2" objectId="druid:pk237jz4413" resourceId="pk237jz4413_1"/>
+<relationship objectId="druid:pk237jz4413" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_20" sequence="20" type="image">
+<label>Image 20</label>
+<externalFile fileid="2542018.jp2" objectId="druid:jp652gk0604" resourceId="jp652gk0604_1"/>
+<relationship objectId="druid:jp652gk0604" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_21" sequence="21" type="image">
+<label>Image 21</label>
+<externalFile fileid="2542019.jp2" objectId="druid:cs003qk0166" resourceId="cs003qk0166_1"/>
+<relationship objectId="druid:cs003qk0166" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_22" sequence="22" type="image">
+<label>Image 22</label>
+<externalFile fileid="2542020.jp2" objectId="druid:th862dp3538" resourceId="th862dp3538_1"/>
+<relationship objectId="druid:th862dp3538" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_23" sequence="23" type="image">
+<label>Image 23</label>
+<externalFile fileid="2542021.jp2" objectId="druid:wq036fq6080" resourceId="wq036fq6080_1"/>
+<relationship objectId="druid:wq036fq6080" type="alsoAvailableAs"/>
+</resource>
+</contentMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+<foxml:datastreamVersion ID="contentMetadata.3" LABEL="Content Metadata" CREATED="2015-07-10T22:53:37.864Z" MIMETYPE="text/xml" SIZE="6944">
+<foxml:xmlContent>
+<contentMetadata objectId="hj097bm8879" type="map">
+<resource id="hj097bm8879_1" sequence="1" type="image">
+<label>Image 1</label>
+<externalFile fileid="2542A.jp2" objectId="druid:cg767mn6478" publish="yes" resourceId="cg767mn6478_1"/>
+<relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_2" sequence="2" thumb="yes" type="image">
+<label>Image 2</label>
+<externalFile fileid="2542B.jp2" objectId="druid:jw923xn5254" resourceId="jw923xn5254_1"/>
+<relationship objectId="druid:jw923xn5254" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_3" sequence="3" type="image">
+<label>Image 3</label>
+<externalFile fileid="2542001.jp2" objectId="druid:wn461xh4882" resourceId="wn461xh4882_1"/>
+<relationship objectId="druid:wn461xh4882" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_4" sequence="4" type="image">
+<label>Image 4</label>
+<externalFile fileid="2542002.jp2" objectId="druid:fh193nf4583" resourceId="fh193nf4583_1"/>
+<relationship objectId="druid:fh193nf4583" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_5" sequence="5" type="image">
+<label>Image 5</label>
+<externalFile fileid="2542003.jp2" objectId="druid:zm141bz6672" resourceId="zm141bz6672_1"/>
+<relationship objectId="druid:zm141bz6672" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_6" sequence="6" type="image">
+<label>Image 6</label>
+<externalFile fileid="2542004.jp2" objectId="druid:ty335fg4673" resourceId="ty335fg4673_1"/>
+<relationship objectId="druid:ty335fg4673" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_7" sequence="7" type="image">
+<label>Image 7</label>
+<externalFile fileid="2542005.jp2" objectId="druid:cb783jw9314" resourceId="cb783jw9314_1"/>
+<relationship objectId="druid:cb783jw9314" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_8" sequence="8" type="image">
+<label>Image 8</label>
+<externalFile fileid="2542006.jp2" objectId="druid:yr145dc7638" resourceId="yr145dc7638_1"/>
+<relationship objectId="druid:yr145dc7638" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_9" sequence="9" type="image">
+<label>Image 9</label>
+<externalFile fileid="2542007.jp2" objectId="druid:qw237mm1478" resourceId="qw237mm1478_1"/>
+<relationship objectId="druid:qw237mm1478" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_10" sequence="10" type="image">
+<label>Image 10</label>
+<externalFile fileid="2542008.jp2" objectId="druid:bv599bt4452" resourceId="bv599bt4452_1"/>
+<relationship objectId="druid:bv599bt4452" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_11" sequence="11" type="image">
+<label>Image 11</label>
+<externalFile fileid="2542009.jp2" objectId="druid:nb435pz3288" resourceId="nb435pz3288_1"/>
+<relationship objectId="druid:nb435pz3288" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_12" sequence="12" type="image">
+<label>Image 12</label>
+<externalFile fileid="2542010.jp2" objectId="druid:sc006nj1332" resourceId="sc006nj1332_1"/>
+<relationship objectId="druid:sc006nj1332" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_13" sequence="13" type="image">
+<label>Image 13</label>
+<externalFile fileid="2542011.jp2" objectId="druid:mk475my0384" resourceId="mk475my0384_1"/>
+<relationship objectId="druid:mk475my0384" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_14" sequence="14" type="image">
+<label>Image 14</label>
+<externalFile fileid="2542012.jp2" objectId="druid:wp257mm9313" resourceId="wp257mm9313_1"/>
+<relationship objectId="druid:wp257mm9313" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_15" sequence="15" type="image">
+<label>Image 15</label>
+<externalFile fileid="2542013.jp2" objectId="druid:pw121jd8972" resourceId="pw121jd8972_1"/>
+<relationship objectId="druid:pw121jd8972" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_16" sequence="16" type="image">
+<label>Image 16</label>
+<externalFile fileid="2542014.jp2" objectId="druid:dh865cc1881" resourceId="dh865cc1881_1"/>
+<relationship objectId="druid:dh865cc1881" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_17" sequence="17" type="image">
+<label>Image 17</label>
+<externalFile fileid="2542015.jp2" objectId="druid:xt213gh5830" resourceId="xt213gh5830_1"/>
+<relationship objectId="druid:xt213gh5830" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_18" sequence="18" type="image">
+<label>Image 18</label>
+<externalFile fileid="2542016.jp2" objectId="druid:xw455fd1110" resourceId="xw455fd1110_1"/>
+<relationship objectId="druid:xw455fd1110" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_19" sequence="19" type="image">
+<label>Image 19</label>
+<externalFile fileid="2542017.jp2" objectId="druid:pk237jz4413" resourceId="pk237jz4413_1"/>
+<relationship objectId="druid:pk237jz4413" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_20" sequence="20" type="image">
+<label>Image 20</label>
+<externalFile fileid="2542018.jp2" objectId="druid:jp652gk0604" resourceId="jp652gk0604_1"/>
+<relationship objectId="druid:jp652gk0604" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_21" sequence="21" type="image">
+<label>Image 21</label>
+<externalFile fileid="2542019.jp2" objectId="druid:cs003qk0166" resourceId="cs003qk0166_1"/>
+<relationship objectId="druid:cs003qk0166" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_22" sequence="22" type="image">
+<label>Image 22</label>
+<externalFile fileid="2542020.jp2" objectId="druid:th862dp3538" resourceId="th862dp3538_1"/>
+<relationship objectId="druid:th862dp3538" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_23" sequence="23" type="image">
+<label>Image 23</label>
+<externalFile fileid="2542021.jp2" objectId="druid:wq036fq6080" resourceId="wq036fq6080_1"/>
+<relationship objectId="druid:wq036fq6080" type="alsoAvailableAs"/>
+</resource>
+</contentMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+<foxml:datastreamVersion ID="contentMetadata.4" LABEL="Content Metadata" CREATED="2015-07-10T22:56:24.614Z" MIMETYPE="text/xml" SIZE="6930">
+<foxml:xmlContent>
+<contentMetadata objectId="hj097bm8879" type="map">
+<resource id="hj097bm8879_1" sequence="1" type="image">
+<label>Image 1</label>
+<externalFile fileid="2542A.jp2" objectId="druid:cg767mn6478" resourceId="cg767mn6478_1"/>
+<relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_2" sequence="2" thumb="yes" type="image">
+<label>Image 2</label>
+<externalFile fileid="2542B.jp2" objectId="druid:jw923xn5254" resourceId="jw923xn5254_1"/>
+<relationship objectId="druid:jw923xn5254" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_3" sequence="3" type="image">
+<label>Image 3</label>
+<externalFile fileid="2542001.jp2" objectId="druid:wn461xh4882" resourceId="wn461xh4882_1"/>
+<relationship objectId="druid:wn461xh4882" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_4" sequence="4" type="image">
+<label>Image 4</label>
+<externalFile fileid="2542002.jp2" objectId="druid:fh193nf4583" resourceId="fh193nf4583_1"/>
+<relationship objectId="druid:fh193nf4583" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_5" sequence="5" type="image">
+<label>Image 5</label>
+<externalFile fileid="2542003.jp2" objectId="druid:zm141bz6672" resourceId="zm141bz6672_1"/>
+<relationship objectId="druid:zm141bz6672" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_6" sequence="6" type="image">
+<label>Image 6</label>
+<externalFile fileid="2542004.jp2" objectId="druid:ty335fg4673" resourceId="ty335fg4673_1"/>
+<relationship objectId="druid:ty335fg4673" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_7" sequence="7" type="image">
+<label>Image 7</label>
+<externalFile fileid="2542005.jp2" objectId="druid:cb783jw9314" resourceId="cb783jw9314_1"/>
+<relationship objectId="druid:cb783jw9314" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_8" sequence="8" type="image">
+<label>Image 8</label>
+<externalFile fileid="2542006.jp2" objectId="druid:yr145dc7638" resourceId="yr145dc7638_1"/>
+<relationship objectId="druid:yr145dc7638" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_9" sequence="9" type="image">
+<label>Image 9</label>
+<externalFile fileid="2542007.jp2" objectId="druid:qw237mm1478" resourceId="qw237mm1478_1"/>
+<relationship objectId="druid:qw237mm1478" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_10" sequence="10" type="image">
+<label>Image 10</label>
+<externalFile fileid="2542008.jp2" objectId="druid:bv599bt4452" resourceId="bv599bt4452_1"/>
+<relationship objectId="druid:bv599bt4452" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_11" sequence="11" type="image">
+<label>Image 11</label>
+<externalFile fileid="2542009.jp2" objectId="druid:nb435pz3288" resourceId="nb435pz3288_1"/>
+<relationship objectId="druid:nb435pz3288" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_12" sequence="12" type="image">
+<label>Image 12</label>
+<externalFile fileid="2542010.jp2" objectId="druid:sc006nj1332" resourceId="sc006nj1332_1"/>
+<relationship objectId="druid:sc006nj1332" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_13" sequence="13" type="image">
+<label>Image 13</label>
+<externalFile fileid="2542011.jp2" objectId="druid:mk475my0384" resourceId="mk475my0384_1"/>
+<relationship objectId="druid:mk475my0384" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_14" sequence="14" type="image">
+<label>Image 14</label>
+<externalFile fileid="2542012.jp2" objectId="druid:wp257mm9313" resourceId="wp257mm9313_1"/>
+<relationship objectId="druid:wp257mm9313" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_15" sequence="15" type="image">
+<label>Image 15</label>
+<externalFile fileid="2542013.jp2" objectId="druid:pw121jd8972" resourceId="pw121jd8972_1"/>
+<relationship objectId="druid:pw121jd8972" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_16" sequence="16" type="image">
+<label>Image 16</label>
+<externalFile fileid="2542014.jp2" objectId="druid:dh865cc1881" resourceId="dh865cc1881_1"/>
+<relationship objectId="druid:dh865cc1881" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_17" sequence="17" type="image">
+<label>Image 17</label>
+<externalFile fileid="2542015.jp2" objectId="druid:xt213gh5830" resourceId="xt213gh5830_1"/>
+<relationship objectId="druid:xt213gh5830" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_18" sequence="18" type="image">
+<label>Image 18</label>
+<externalFile fileid="2542016.jp2" objectId="druid:xw455fd1110" resourceId="xw455fd1110_1"/>
+<relationship objectId="druid:xw455fd1110" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_19" sequence="19" type="image">
+<label>Image 19</label>
+<externalFile fileid="2542017.jp2" objectId="druid:pk237jz4413" resourceId="pk237jz4413_1"/>
+<relationship objectId="druid:pk237jz4413" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_20" sequence="20" type="image">
+<label>Image 20</label>
+<externalFile fileid="2542018.jp2" objectId="druid:jp652gk0604" resourceId="jp652gk0604_1"/>
+<relationship objectId="druid:jp652gk0604" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_21" sequence="21" type="image">
+<label>Image 21</label>
+<externalFile fileid="2542019.jp2" objectId="druid:cs003qk0166" resourceId="cs003qk0166_1"/>
+<relationship objectId="druid:cs003qk0166" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_22" sequence="22" type="image">
+<label>Image 22</label>
+<externalFile fileid="2542020.jp2" objectId="druid:th862dp3538" resourceId="th862dp3538_1"/>
+<relationship objectId="druid:th862dp3538" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_23" sequence="23" type="image">
+<label>Image 23</label>
+<externalFile fileid="2542021.jp2" objectId="druid:wq036fq6080" resourceId="wq036fq6080_1"/>
+<relationship objectId="druid:wq036fq6080" type="alsoAvailableAs"/>
+</resource>
+</contentMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+<foxml:datastreamVersion ID="contentMetadata.5" LABEL="Content Metadata" CREATED="2015-09-03T18:27:07.642Z" MIMETYPE="text/xml" SIZE="6295">
+<foxml:xmlContent>
+<contentMetadata objectId="hj097bm8879" type="map">
+<resource id="hj097bm8879_1" sequence="1" type="image">
+<externalFile fileid="2542A.jp2" objectId="druid:cg767mn6478" resourceId="cg767mn6478_1"/>
+<relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_2" sequence="2" thumb="yes" type="image">
+<externalFile fileid="2542B.jp2" objectId="druid:jw923xn5254" resourceId="jw923xn5254_1"/>
+<relationship objectId="druid:jw923xn5254" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_3" sequence="3" type="image">
+<externalFile fileid="2542001.jp2" objectId="druid:wn461xh4882" resourceId="wn461xh4882_1"/>
+<relationship objectId="druid:wn461xh4882" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_4" sequence="4" type="image">
+<externalFile fileid="2542002.jp2" objectId="druid:fh193nf4583" resourceId="fh193nf4583_1"/>
+<relationship objectId="druid:fh193nf4583" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_5" sequence="5" type="image">
+<externalFile fileid="2542003.jp2" objectId="druid:zm141bz6672" resourceId="zm141bz6672_1"/>
+<relationship objectId="druid:zm141bz6672" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_6" sequence="6" type="image">
+<externalFile fileid="2542004.jp2" objectId="druid:ty335fg4673" resourceId="ty335fg4673_1"/>
+<relationship objectId="druid:ty335fg4673" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_7" sequence="7" type="image">
+<externalFile fileid="2542005.jp2" objectId="druid:cb783jw9314" resourceId="cb783jw9314_1"/>
+<relationship objectId="druid:cb783jw9314" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_8" sequence="8" type="image">
+<externalFile fileid="2542006.jp2" objectId="druid:yr145dc7638" resourceId="yr145dc7638_1"/>
+<relationship objectId="druid:yr145dc7638" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_9" sequence="9" type="image">
+<externalFile fileid="2542007.jp2" objectId="druid:qw237mm1478" resourceId="qw237mm1478_1"/>
+<relationship objectId="druid:qw237mm1478" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_10" sequence="10" type="image">
+<externalFile fileid="2542008.jp2" objectId="druid:bv599bt4452" resourceId="bv599bt4452_1"/>
+<relationship objectId="druid:bv599bt4452" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_11" sequence="11" type="image">
+<externalFile fileid="2542009.jp2" objectId="druid:nb435pz3288" resourceId="nb435pz3288_1"/>
+<relationship objectId="druid:nb435pz3288" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_12" sequence="12" type="image">
+<externalFile fileid="2542010.jp2" objectId="druid:sc006nj1332" resourceId="sc006nj1332_1"/>
+<relationship objectId="druid:sc006nj1332" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_13" sequence="13" type="image">
+<externalFile fileid="2542011.jp2" objectId="druid:mk475my0384" resourceId="mk475my0384_1"/>
+<relationship objectId="druid:mk475my0384" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_14" sequence="14" type="image">
+<externalFile fileid="2542012.jp2" objectId="druid:wp257mm9313" resourceId="wp257mm9313_1"/>
+<relationship objectId="druid:wp257mm9313" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_15" sequence="15" type="image">
+<externalFile fileid="2542013.jp2" objectId="druid:pw121jd8972" resourceId="pw121jd8972_1"/>
+<relationship objectId="druid:pw121jd8972" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_16" sequence="16" type="image">
+<externalFile fileid="2542014.jp2" objectId="druid:dh865cc1881" resourceId="dh865cc1881_1"/>
+<relationship objectId="druid:dh865cc1881" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_17" sequence="17" type="image">
+<externalFile fileid="2542015.jp2" objectId="druid:xt213gh5830" resourceId="xt213gh5830_1"/>
+<relationship objectId="druid:xt213gh5830" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_18" sequence="18" type="image">
+<externalFile fileid="2542016.jp2" objectId="druid:xw455fd1110" resourceId="xw455fd1110_1"/>
+<relationship objectId="druid:xw455fd1110" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_19" sequence="19" type="image">
+<externalFile fileid="2542017.jp2" objectId="druid:pk237jz4413" resourceId="pk237jz4413_1"/>
+<relationship objectId="druid:pk237jz4413" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_20" sequence="20" type="image">
+<externalFile fileid="2542018.jp2" objectId="druid:jp652gk0604" resourceId="jp652gk0604_1"/>
+<relationship objectId="druid:jp652gk0604" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_21" sequence="21" type="image">
+<externalFile fileid="2542019.jp2" objectId="druid:cs003qk0166" resourceId="cs003qk0166_1"/>
+<relationship objectId="druid:cs003qk0166" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_22" sequence="22" type="image">
+<externalFile fileid="2542020.jp2" objectId="druid:th862dp3538" resourceId="th862dp3538_1"/>
+<relationship objectId="druid:th862dp3538" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_23" sequence="23" type="image">
+<externalFile fileid="2542021.jp2" objectId="druid:wq036fq6080" resourceId="wq036fq6080_1"/>
+<relationship objectId="druid:wq036fq6080" type="alsoAvailableAs"/>
+</resource>
+</contentMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+<foxml:datastreamVersion ID="contentMetadata.6" LABEL="Content Metadata" CREATED="2015-09-16T18:01:24.425Z" MIMETYPE="text/xml" SIZE="6295">
+<foxml:xmlContent>
+<contentMetadata objectId="hj097bm8879" type="map">
+<resource id="hj097bm8879_1" sequence="1" type="image">
+<externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478" resourceId="cg767mn6478_1"/>
+<relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_2" sequence="2" thumb="yes" type="image">
+<externalFile fileId="2542B.jp2" objectId="druid:jw923xn5254" resourceId="jw923xn5254_1"/>
+<relationship objectId="druid:jw923xn5254" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_3" sequence="3" type="image">
+<externalFile fileId="2542001.jp2" objectId="druid:wn461xh4882" resourceId="wn461xh4882_1"/>
+<relationship objectId="druid:wn461xh4882" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_4" sequence="4" type="image">
+<externalFile fileId="2542002.jp2" objectId="druid:fh193nf4583" resourceId="fh193nf4583_1"/>
+<relationship objectId="druid:fh193nf4583" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_5" sequence="5" type="image">
+<externalFile fileId="2542003.jp2" objectId="druid:zm141bz6672" resourceId="zm141bz6672_1"/>
+<relationship objectId="druid:zm141bz6672" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_6" sequence="6" type="image">
+<externalFile fileId="2542004.jp2" objectId="druid:ty335fg4673" resourceId="ty335fg4673_1"/>
+<relationship objectId="druid:ty335fg4673" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_7" sequence="7" type="image">
+<externalFile fileId="2542005.jp2" objectId="druid:cb783jw9314" resourceId="cb783jw9314_1"/>
+<relationship objectId="druid:cb783jw9314" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_8" sequence="8" type="image">
+<externalFile fileId="2542006.jp2" objectId="druid:yr145dc7638" resourceId="yr145dc7638_1"/>
+<relationship objectId="druid:yr145dc7638" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_9" sequence="9" type="image">
+<externalFile fileId="2542007.jp2" objectId="druid:qw237mm1478" resourceId="qw237mm1478_1"/>
+<relationship objectId="druid:qw237mm1478" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_10" sequence="10" type="image">
+<externalFile fileId="2542008.jp2" objectId="druid:bv599bt4452" resourceId="bv599bt4452_1"/>
+<relationship objectId="druid:bv599bt4452" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_11" sequence="11" type="image">
+<externalFile fileId="2542009.jp2" objectId="druid:nb435pz3288" resourceId="nb435pz3288_1"/>
+<relationship objectId="druid:nb435pz3288" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_12" sequence="12" type="image">
+<externalFile fileId="2542010.jp2" objectId="druid:sc006nj1332" resourceId="sc006nj1332_1"/>
+<relationship objectId="druid:sc006nj1332" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_13" sequence="13" type="image">
+<externalFile fileId="2542011.jp2" objectId="druid:mk475my0384" resourceId="mk475my0384_1"/>
+<relationship objectId="druid:mk475my0384" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_14" sequence="14" type="image">
+<externalFile fileId="2542012.jp2" objectId="druid:wp257mm9313" resourceId="wp257mm9313_1"/>
+<relationship objectId="druid:wp257mm9313" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_15" sequence="15" type="image">
+<externalFile fileId="2542013.jp2" objectId="druid:pw121jd8972" resourceId="pw121jd8972_1"/>
+<relationship objectId="druid:pw121jd8972" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_16" sequence="16" type="image">
+<externalFile fileId="2542014.jp2" objectId="druid:dh865cc1881" resourceId="dh865cc1881_1"/>
+<relationship objectId="druid:dh865cc1881" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_17" sequence="17" type="image">
+<externalFile fileId="2542015.jp2" objectId="druid:xt213gh5830" resourceId="xt213gh5830_1"/>
+<relationship objectId="druid:xt213gh5830" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_18" sequence="18" type="image">
+<externalFile fileId="2542016.jp2" objectId="druid:xw455fd1110" resourceId="xw455fd1110_1"/>
+<relationship objectId="druid:xw455fd1110" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_19" sequence="19" type="image">
+<externalFile fileId="2542017.jp2" objectId="druid:pk237jz4413" resourceId="pk237jz4413_1"/>
+<relationship objectId="druid:pk237jz4413" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_20" sequence="20" type="image">
+<externalFile fileId="2542018.jp2" objectId="druid:jp652gk0604" resourceId="jp652gk0604_1"/>
+<relationship objectId="druid:jp652gk0604" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_21" sequence="21" type="image">
+<externalFile fileId="2542019.jp2" objectId="druid:cs003qk0166" resourceId="cs003qk0166_1"/>
+<relationship objectId="druid:cs003qk0166" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_22" sequence="22" type="image">
+<externalFile fileId="2542020.jp2" objectId="druid:th862dp3538" resourceId="th862dp3538_1"/>
+<relationship objectId="druid:th862dp3538" type="alsoAvailableAs"/>
+</resource>
+<resource id="hj097bm8879_23" sequence="23" type="image">
+<externalFile fileId="2542021.jp2" objectId="druid:wq036fq6080" resourceId="wq036fq6080_1"/>
+<relationship objectId="druid:wq036fq6080" type="alsoAvailableAs"/>
+</resource>
+</contentMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="events" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+<foxml:datastreamVersion ID="events.0" LABEL="Events" CREATED="2015-07-10T22:10:45.153Z" MIMETYPE="text/xml" SIZE="146">
+<foxml:xmlContent>
+<events>
+<event type="remediation" when="2015-07-10T15:10:44-07:00" who="Dor::Identifiable 3.6.1">Record Remediation Version</event>
+</events>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="provenanceMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="provenanceMetadata.0" LABEL="Provenance Metadata" CREATED="2015-07-10T22:12:01.142Z" MIMETYPE="text/xml" SIZE="265">
+<foxml:xmlContent>
+<provenanceMetadata objectId="druid:hj097bm8879">
+<agent name="DOR">
+<what object="druid:hj097bm8879">
+<event when="2015-07-10T15:12:00-07:00" who="DOR-accessionWF">DOR Common Accessioning completed</event>
+</what>
+</agent>
+</provenanceMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="versionMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+<foxml:datastreamVersion ID="versionMetadata.1" LABEL="Version Metadata" CREATED="2015-08-11T19:40:56.614Z" MIMETYPE="text/xml" SIZE="201">
+<foxml:xmlContent>
+<versionMetadata objectId="druid:hj097bm8879">
+<version tag="1.0.0" versionId="1">
+<description>Initial Version</description>
+</version>
+<version versionId="2"/>
+</versionMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+</foxml:digitalObject>

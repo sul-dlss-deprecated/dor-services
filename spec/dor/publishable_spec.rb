@@ -6,6 +6,12 @@ class PublishableItem < ActiveFedora::Base
   include Dor::Releaseable
 end
 
+class DescribableItem < ActiveFedora::Base
+  include Dor::Identifiable
+  include Dor::Describable
+  include Dor::Processable
+end
+
 describe Dor::Publishable do
 
   before(:each) { stub_config   }
@@ -48,8 +54,9 @@ describe Dor::Publishable do
         <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
           <hydra:isGovernedBy rdf:resource="info:fedora/druid:789012"></hydra:isGovernedBy>
           <fedora-model:hasModel rdf:resource="info:fedora/hydra:commonMetadata"></fedora-model:hasModel>
-          <fedora:isMemberOf rdf:resource="info:fedora/druid:987654"></fedora:isMemberOf>
-          <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:987654"></fedora:isMemberOfCollection>
+          <fedora:isMemberOf rdf:resource="info:fedora/druid:xh235dd9059"></fedora:isMemberOf>
+          <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:xh235dd9059"></fedora:isMemberOfCollection>
+          <fedora:isConstituentOf rdf:resource="info:fedora/druid:hj097bm8879"></fedora:isConstituentOf>
         </rdf:Description>
       </rdf:RDF>
     EOXML
@@ -58,7 +65,8 @@ describe Dor::Publishable do
     @item.descMetadata.content    = @mods
     @item.rightsMetadata.content  = @rights
     @item.rels_ext.content        = @rels
-    allow(@item).to receive(:add_collection_reference).and_return(@mods)
+    allow(@item).to receive(:add_collection_reference).and_return(@mods) # calls Item.find and not needed in general tests
+    allow(@item).to receive(:add_constituent_relations).and_return(@mods) # calls Item.find not needed in general tests
     allow(OpenURI).to receive(:open_uri).with('https://purl-test.stanford.edu/ab123cd4567.xml').and_return('<xml/>')
   end
 
@@ -80,7 +88,7 @@ describe Dor::Publishable do
         @p_xml = Nokogiri::XML(@item.public_xml)
       end
       it 'does not include a releaseData element' do
-        expect(@p_xml.at_xpath('/publicObject/releaseData')).to be nil
+        expect(@p_xml.at_xpath('/publicObject/releaseData')).to be_nil
       end
     end
 
@@ -126,6 +134,7 @@ describe Dor::Publishable do
         expect(@p_xml.at_xpath('/publicObject/rdf:RDF', ns)).to be
         expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOf', ns)).to be
         expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOfCollection', ns)).to be
+        expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isConstituentOf', ns)).to be
         expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora-model:hasModel', ns)).not_to be
         expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/hydra:isGovernedBy', ns)).not_to be
       end
@@ -137,12 +146,37 @@ describe Dor::Publishable do
         expect(@item.datastreams['RELS-EXT'].content).to be_equivalent_to @rels
       end
 
+      it 'should expand isMemberOfCollection and isConstituentOf into correct MODS' do
+        allow(@item).to receive(:add_collection_reference).and_call_original
+        allow(@item).to receive(:add_constituent_relations).and_call_original
+        # load up collection and constituent parent items from fixture data
+        expect(Dor::Item).to receive(:find).with('druid:xh235dd9059').and_return(instantiate_fixture('druid:xh235dd9059', DescribableItem))
+        expect(Dor::Item).to receive(:find).with('druid:hj097bm8879').and_return(instantiate_fixture('druid:hj097bm8879', DescribableItem))
+
+        # test that we have 2 expansions
+        doc = Nokogiri::XML(@item.generate_public_desc_md)
+        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host"]', 'mods' => 'http://www.loc.gov/mods/v3').size).to eq(2)
+
+        # test the validity of the collection expansion
+        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and not(@displayLabel)]/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to eq('David Rumsey Map Collection at Stanford University Libraries')
+        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and not(@displayLabel)]/mods:location/mods:url', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to match(/^https?:\/\/purl.*\.stanford\.edu\/xh235dd9059$/)
+
+        # test the validity of the constituent expansion
+        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and @displayLabel="Appears in"]/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to eq('Rumsey Atlas 2542')
+        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and @displayLabel="Appears in"]/mods:location/mods:url', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to match(/^http:\/\/purl.*\.stanford\.edu\/hj097bm8879$/)
+      end
+
+      it 'includes releaseData element from release tags' do
+        releases = @p_xml.xpath('/publicObject/releaseData/release')
+        expect(releases.map(&:inner_text)).to eq ['true', 'true']
+        expect(releases.map{ |r| r["to"]}).to eq ['Searchworks', 'Some_special_place']
+      end
+
       it 'does include a releaseData element when there is content inside it' do
-        # Fake a tag with at least one child
         releaseData = '<releaseData><release>foo</release></releaseData>'
         allow(@item).to receive(:generate_release_xml).and_return(releaseData)
         p_xml = Nokogiri::XML(@item.public_xml)
-        expect(p_xml.at_xpath('/publicObject/releaseData')).to be
+        expect(p_xml.at_xpath('/publicObject/releaseData/release').inner_text).to eq 'foo'
       end
 
     end
