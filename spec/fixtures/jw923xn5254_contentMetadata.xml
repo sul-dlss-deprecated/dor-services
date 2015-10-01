@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<contentMetadata objectId="jw923xn5254" type="image">
+  <resource id="jw923xn5254_1" sequence="1" type="image">
+    <label>Image 1</label>
+    <file id="2542B.tif" preserve="yes" publish="no" shelve="no" mimetype="image/tiff" size="44028890">
+      <checksum type="md5">b5f6fcd6eb0ad02800aeb82cba6d0eed</checksum>
+      <checksum type="sha1">a90aea983620238d8e1384d9a5cb683c6acd6984</checksum>
+      <imageData width="3139" height="4675"/>
+    </file>
+    <file id="2542B.jp2" mimetype="image/jp2" size="2762668" preserve="no" publish="yes" shelve="yes">
+      <checksum type="md5">bccdbb2500bb139d6d622321bfd2aa57</checksum>
+      <checksum type="sha1">80454c111675ec7e2c425e909810c49a69ffef26</checksum>
+      <imageData width="3139" height="4675"/>
+    </file>
+  </resource>
+</contentMetadata>

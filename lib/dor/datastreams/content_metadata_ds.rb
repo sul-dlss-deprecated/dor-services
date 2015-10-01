@@ -35,10 +35,40 @@ module Dor
 
     def public_xml
       result = ng_xml.clone
-      result.xpath('/contentMetadata/resource[not(file[(@deliver="yes" or @publish="yes")])]'   ).each { |n| n.remove }
-      result.xpath('/contentMetadata/resource/file[not(@deliver="yes" or @publish="yes")]'      ).each { |n| n.remove }
-      result.xpath('/contentMetadata/resource/file').xpath('@preserve|@shelve|@publish|@deliver').each { |n| n.remove }
-      result.xpath('/contentMetadata/resource/file/checksum').each { |n| n.remove }
+      
+      # remove any resources or attributes that are not destined for the public XML
+      result.xpath('/contentMetadata/resource[not(file[(@deliver="yes" or @publish="yes")]|externalFile)]').each { |n| n.remove }
+      result.xpath('/contentMetadata/resource/file[not(@deliver="yes" or @publish="yes")]'                ).each { |n| n.remove }
+      result.xpath('/contentMetadata/resource/file').xpath('@preserve|@shelve|@publish|@deliver'          ).each { |n| n.remove }
+      result.xpath('/contentMetadata/resource/file/checksum'                                              ).each { |n| n.remove }
+      
+      # support for dereferencing links via externalFile element(s) to the source (child) item - see JUMBO-19
+      result.xpath('/contentMetadata/resource/externalFile').each do |externalFile|
+        # enforce pre-conditions that resourceId, objectId, fileId are required
+        src_resource_id = externalFile['resourceId']
+        src_druid = externalFile['objectId']
+        src_file_id = externalFile['fileId']
+        fail ArgumentError, "Malformed externalFile data: #{externalFile.inspect}" if src_resource_id.nil? || src_file_id.nil? || src_druid.nil?
+
+        # grab source item
+        src_item = Dor::Item.find(src_druid)
+        src_item_id = DruidTools::Druid.new(src_item.pid).id # strip druid: prefix
+
+        # locate and extract the resourceId/fileId elements
+        doc = src_item.datastreams['contentMetadata'].ng_xml
+        src_resource = doc.at_xpath("//resource[@id=\"#{externalFile['resourceId']}\"]")
+        src_file = src_resource.at_xpath("file[@id=\"#{externalFile['fileId']}\"]")
+        src_image_data = src_file.at_xpath('imageData')
+
+        # always use title regardless of whether a child label is present
+        src_label = doc.create_element('label')
+        src_label.content = src_item.datastreams['DC'].title.first
+    
+        # add the extracted label and imageData
+        externalFile.add_previous_sibling(src_label)
+        externalFile << src_image_data unless src_image_data.nil?
+      end
+
       result
     end
 
