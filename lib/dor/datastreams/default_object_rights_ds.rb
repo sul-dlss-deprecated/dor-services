@@ -13,12 +13,16 @@ module Dor
 
       t.creative_commons :path => '/use/machine', :type => 'creativeCommons'
       t.creative_commons_human :path => '/use/human[@type=\'creativeCommons\']'
+      t.open_data_commons :path => '/use/machine', :type => 'openDataCommons'
+      t.open_data_commons_human :path => '/use/human[@type=\'openDataCommons\']'
     end
 
     define_template :creative_commons do |xml|
       xml.use {
         xml.human(:type => 'creativeCommons')
         xml.machine(:type => 'creativeCommons')
+        xml.human(:type => 'openDataCommons')
+        xml.machine(:type => 'openDataCommons')
       }
     end
 

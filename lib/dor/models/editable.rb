@@ -58,6 +58,7 @@ module Dor
     def mods_title=(val)
       descMetadata.update_values({[:title_info, :main_title] => val})
     end
+
     #get all collections listed for this APO, used during registration
     #@return [Array] array of pids
     def default_collections
@@ -77,12 +78,12 @@ module Dor
       reg.add_child(node)
       administrativeMetadata.content = xml.to_s
     end
-
     def remove_default_collection(val)
       xml = administrativeMetadata.ng_xml
       xml.search('//administrativeMetadata/registration/collection[@id=\'' + val + '\']').remove
       administrativeMetadata.content = xml.to_s
     end
+
     #Get all roles defined in the role metadata, and the people or groups in those roles. Groups are prefixed with 'workgroup:'
     #@return [Hash] role => ['person','group'] ex. {"dor-apo-manager" => ["workgroup:dlss:developers", "sunetid:lmcrae"]
     def roles
@@ -95,6 +96,7 @@ module Dor
       end
       roles
     end
+
     def metadata_source
       administrativeMetadata.metadata_source.first
     end
@@ -104,18 +106,21 @@ module Dor
       end
       administrativeMetadata.update_values({[:descMetadata, :source] => val})
     end
+
     def use_statement
       defaultObjectRights.use_statement.first
     end
     def use_statement=(val)
       defaultObjectRights.update_values({[:use_statement] => val})
     end
+
     def copyright_statement
       defaultObjectRights.copyright.first
     end
     def copyright_statement=(val)
       defaultObjectRights.update_values({[:copyright] => val})
     end
+
     def creative_commons_license
       defaultObjectRights.creative_commons.first
     end
@@ -136,6 +141,28 @@ module Dor
       end
       defaultObjectRights.update_values({[:creative_commons_human] => val})
     end
+
+    def open_data_commons_license
+      defaultObjectRights.open_data_commons.first
+    end
+    def open_data_commons_license_human
+      defaultObjectRights.open_data_commons_human.first
+    end
+    def open_data_commons_license=(val)
+      # (machine, human) = val
+      if open_data_commons_license.nil?
+        defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, :open_data_commons)
+      end
+      defaultObjectRights.update_values({[:open_data_commons] => val})
+    end
+    def open_data_commons_license_human=(val)
+      if open_data_commons_license_human.nil?
+        # add the nodes
+        defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, :open_data_commons)
+      end
+      defaultObjectRights.update_values({[:open_data_commons_human] => val})
+    end
+
     # @return [String] A description of the rights defined in the default object rights datastream. Can be 'Stanford', 'World', 'Dark' or 'None'
     def default_rights
       xml = defaultObjectRights.ng_xml
@@ -192,6 +219,7 @@ module Dor
       end
       administrativeMetadata.update_values({[:metadata_format] => format})
     end
+
     def desc_metadata_source
       administrativeMetadata.metadata_source.first
     end
@@ -202,6 +230,7 @@ module Dor
       end
       administrativeMetadata.update_values({[:metadata_source] => format})
     end
+
     # List of default workflows, used to provide choices at registration
     # @return [Array] and array of pids, ex ['druid:ab123cd4567']
     def default_workflows
@@ -226,6 +255,7 @@ module Dor
         nodes.first.add_child(wf_node)
       end
     end
+
     def agreement
       agreement_object ? agreement_object.pid : ''
     end
@@ -233,5 +263,4 @@ module Dor
       self.agreement_object = Dor::Item.find val.to_s, :cast => true
     end
   end
-
 end
