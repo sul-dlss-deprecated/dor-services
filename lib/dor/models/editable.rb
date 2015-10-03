@@ -127,20 +127,6 @@ module Dor
     def creative_commons_license_human
       defaultObjectRights.creative_commons_human.first
     end
-    def creative_commons_license=(val)
-      # (machine, human) = val
-      if creative_commons_license.nil?
-        defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, :creative_commons)
-      end
-      defaultObjectRights.update_values({[:creative_commons] => val})
-    end
-    def creative_commons_license_human=(val)
-      if creative_commons_license_human.nil?
-        # add the nodes
-        defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, :creative_commons)
-      end
-      defaultObjectRights.update_values({[:creative_commons_human] => val})
-    end
 
     def open_data_commons_license
       defaultObjectRights.open_data_commons.first
@@ -148,19 +134,41 @@ module Dor
     def open_data_commons_license_human
       defaultObjectRights.open_data_commons_human.first
     end
-    def open_data_commons_license=(val)
-      # (machine, human) = val
-      if open_data_commons_license.nil?
-        defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, :open_data_commons)
+
+    def get_use_license_for_type(license_type)
+      case license_type
+        when :creative_commons
+          creative_commons_license
+        when :open_data_commons
+          open_data_commons_license
+        when :creative_commons_human
+          creative_commons_license_human
+        when :open_data_commons_human
+          open_data_commons_license_human
+        else
+          nil
       end
-      defaultObjectRights.update_values({[:open_data_commons] => val})
+    end
+
+    def set_use_license(license_type, val)
+      license = get_use_license_for_type(license_type)
+      if license.nil?
+        defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, license_type)
+      end
+      defaultObjectRights.update_values({[license_type] => val})
+    end
+
+    def creative_commons_license=(val)
+      set_use_license(:creative_commons, val)
+    end
+    def open_data_commons_license=(val)
+      set_use_license(:open_data_commons, val)
+    end
+    def creative_commons_license_human=(val)
+      set_use_license(:creative_commons_human, val)
     end
     def open_data_commons_license_human=(val)
-      if open_data_commons_license_human.nil?
-        # add the nodes
-        defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, :open_data_commons)
-      end
-      defaultObjectRights.update_values({[:open_data_commons_human] => val})
+      set_use_license(:open_data_commons_human, val)
     end
 
     # @return [String] A description of the rights defined in the default object rights datastream. Can be 'Stanford', 'World', 'Dark' or 'None'
