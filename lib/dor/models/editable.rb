@@ -11,7 +11,7 @@ module Dor
     # these two hashes map machine readable use license codes to their corresponding human readable content.
     #TODO: seems like Editable is not the most semantically appropriate place for these mappings.  though they're used by methods that live in Editable.
     #TODO: should probably key off URI to license, for more robustness/less ambiguity, but spec says use these keys, so using these keys for now.
-    CREATIVE_COMMONS_LICENSE_CODES = {
+    CREATIVE_COMMONS_USE_LICENSES = {
       'by' => 'Attribution 3.0 Unported',
       'by_sa' => 'Attribution Share Alike 3.0 Unported', # this is a typo, the spec says "by-sa", leaving as-is for legacy compatibility
       'by-nd' => 'Attribution No Derivatives 3.0 Unported',
@@ -20,7 +20,7 @@ module Dor
       'by-nc-nd' => 'Attribution Non-commercial, No Derivatives 3.0 Unported',
       'pdm' => 'Public Domain Mark 1.0'
     }
-    OPEN_DATA_COMMONS_LICENSE_CODES = {
+    OPEN_DATA_COMMONS_USE_LICENSES = {
       'pddl' => 'Open Data Commons Public Domain Dedication and License',
       'odc-by' => 'Open Data Commons Attribution License',
       'odc-odbl' => 'Open Data Commons Open Database License'
@@ -201,13 +201,13 @@ module Dor
       update_rights_metadata_use_node(:open_data_commons_human, val)
     end
 
-    def use_license=(license_code)
-      if CREATIVE_COMMONS_LICENSE_CODES.include? license_code
-        self.creative_commons_license = license_code
-        self.creative_commons_license_human = CREATIVE_COMMONS_LICENSE_CODES[license_code]
-      elsif OPEN_DATA_COMMONS_LICENSE_CODES.include? license_code
-        self.open_data_commons_license = license_code
-        self.open_data_commons_license_human = OPEN_DATA_COMMONS_LICENSE_CODES[license_code]
+    def use_license=(use_license_machine)
+      if CREATIVE_COMMONS_USE_LICENSES.include? use_license_machine
+        self.creative_commons_license = use_license_machine
+        self.creative_commons_license_human = CREATIVE_COMMONS_USE_LICENSES[use_license_machine]
+      elsif OPEN_DATA_COMMONS_USE_LICENSES.include? use_license_machine
+        self.open_data_commons_license = use_license_machine
+        self.open_data_commons_license_human = OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine]
       end
     end
 
