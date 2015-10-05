@@ -30,6 +30,11 @@ module Dor
       xml.use {
         xml.human(:type => 'creativeCommons')
         xml.machine(:type => 'creativeCommons')
+      }
+    end
+
+    define_template :open_data_commons do |xml|
+      xml.use {
         xml.human(:type => 'openDataCommons')
         xml.machine(:type => 'openDataCommons')
       }
@@ -48,6 +53,8 @@ module Dor
             xml.human(:type => 'useAndReproduction')
             xml.human(:type => 'creativeCommons')
             xml.machine(:type => 'creativeCommons')
+            xml.human(:type => 'openDataCommons')
+            xml.machine(:type => 'openDataCommons')
           }
           xml.copyright { xml.human }
         }
