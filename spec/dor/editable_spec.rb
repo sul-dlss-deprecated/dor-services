@@ -155,6 +155,23 @@ describe Dor::Editable do
       expect(@empty_item.creative_commons_license_human).to eq('greetings')
     end
   end
+  describe 'use_license=' do
+    it 'should set the machine and human readable CC licenses given the right license code' do
+      license_code = 'by-nc-nd'
+      @empty_item.use_license = license_code
+      expect(@empty_item.creative_commons_license_human).to eq(Dor::Editable::CREATIVE_COMMONS_LICENSE_CODES[license_code])
+    end
+    it 'should set the machine and human readable ODC licenses given the right license code' do
+      license_code = 'pddl'
+      @empty_item.use_license = license_code
+      expect(@empty_item.open_data_commons_license_human).to eq(Dor::Editable::OPEN_DATA_COMMONS_LICENSE_CODES[license_code])
+    end
+    it 'should set nothing if no valid license code is given' do
+      license_code = 'something-unexpected'
+      @empty_item.use_license = license_code
+      expect(@empty_item.creative_commons_license_human).to eq('')
+    end
+  end
   describe 'default object rights' do
     it 'should find the default object rights' do
       expect(@item.default_rights).to eq('World')
