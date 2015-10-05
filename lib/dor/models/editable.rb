@@ -153,6 +153,17 @@ module Dor
       defaultObjectRights.open_data_commons_human.first
     end
 
+    def use_license
+      return creative_commons_license unless ['', nil].include?(creative_commons_license)
+      return open_data_commons_license unless ['', nil].include?(open_data_commons_license)
+      return ''
+    end
+    def use_license_human
+      return creative_commons_license_human unless ['', nil].include?(creative_commons_license_human)
+      return open_data_commons_license_human unless ['', nil].include?(open_data_commons_license_human)
+      return ''
+    end
+
     def get_use_license_for_type(license_type)
       case license_type
         when :creative_commons

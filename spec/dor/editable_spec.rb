@@ -157,19 +157,28 @@ describe Dor::Editable do
   end
   describe 'use_license=' do
     it 'should set the machine and human readable CC licenses given the right license code' do
-      license_code = 'by-nc-nd'
-      @empty_item.use_license = license_code
-      expect(@empty_item.creative_commons_license_human).to eq(Dor::Editable::CREATIVE_COMMONS_LICENSE_CODES[license_code])
+      use_license_machine = 'by-nc-nd'
+      use_license_human = Dor::Editable::CREATIVE_COMMONS_LICENSE_CODES[use_license_machine]
+      @empty_item.use_license = use_license_machine
+      expect(@empty_item.use_license).to eq(use_license_machine)
+      expect(@empty_item.use_license_human).to eq(use_license_human)
+      expect(@empty_item.creative_commons_license_human).to eq(use_license_human)
+      expect(@empty_item.open_data_commons_license_human).to eq('')
     end
     it 'should set the machine and human readable ODC licenses given the right license code' do
-      license_code = 'pddl'
-      @empty_item.use_license = license_code
-      expect(@empty_item.open_data_commons_license_human).to eq(Dor::Editable::OPEN_DATA_COMMONS_LICENSE_CODES[license_code])
+      use_license_machine = 'pddl'
+      use_license_human = Dor::Editable::OPEN_DATA_COMMONS_LICENSE_CODES[use_license_machine]
+      @empty_item.use_license = use_license_machine
+      expect(@empty_item.use_license).to eq(use_license_machine)
+      expect(@empty_item.use_license_human).to eq(use_license_human)
+      expect(@empty_item.creative_commons_license_human).to eq('')
+      expect(@empty_item.open_data_commons_license_human).to eq(use_license_human)
     end
     it 'should set nothing if no valid license code is given' do
-      license_code = 'something-unexpected'
-      @empty_item.use_license = license_code
-      expect(@empty_item.creative_commons_license_human).to eq('')
+      use_license_machine = 'something-unexpected'
+      @empty_item.use_license = use_license_machine
+      expect(@empty_item.use_license).to eq('')
+      expect(@empty_item.use_license_human).to eq('')
     end
   end
   describe 'default object rights' do
