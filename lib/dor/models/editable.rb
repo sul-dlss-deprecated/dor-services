@@ -8,7 +8,9 @@ module Dor
       belongs_to :agreement_object, :property => :referencesAgreement, :class_name => 'Dor::Item'
     end
 
-    #TODO: seems like Editable is not the most semantically appropriate place for this.  though it's used by methods that live in Editable.
+    # these two hashes map machine readable use license codes to their corresponding human readable content.
+    #TODO: seems like Editable is not the most semantically appropriate place for these mappings.  though they're used by methods that live in Editable.
+    #TODO: should probably key off URI to license, for more robustness/less ambiguity, but spec says use these keys, so using these keys for now.
     CREATIVE_COMMONS_LICENSE_CODES = {
       'by' => 'Attribution 3.0 Unported',
       'by_sa' => 'Attribution Share Alike 3.0 Unported', # this is a typo, the spec says "by-sa", leaving as-is for legacy compatibility
