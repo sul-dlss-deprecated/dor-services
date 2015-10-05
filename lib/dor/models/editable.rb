@@ -8,6 +8,22 @@ module Dor
       belongs_to :agreement_object, :property => :referencesAgreement, :class_name => 'Dor::Item'
     end
 
+    #TODO: seems like Editable is not the most semantically appropriate place for this.  though it's used by methods that live in Editable.
+    CREATIVE_COMMONS_LICENSE_CODES = {
+      'by' => 'Attribution 3.0 Unported',
+      'by_sa' => 'Attribution Share Alike 3.0 Unported', # this is a typo, the spec says "by-sa", leaving as-is for legacy compatibility
+      'by-nd' => 'Attribution No Derivatives 3.0 Unported',
+      'by-nc' => 'Attribution Non-Commercial 3.0 Unported',
+      'by-nc-sa' => 'Attribution Non-Commercial Share Alike 3.0 Unported',
+      'by-nc-nd' => 'Attribution Non-commercial, No Derivatives 3.0 Unported',
+      'pdm' => 'Public Domain Mark 1.0'
+    }
+    OPEN_DATA_COMMONS_LICENSE_CODES = {
+      'pddl' => 'Open Data Commons Public Domain Dedication and License',
+      'odc-by' => 'Open Data Commons Attribution License',
+      'odc-odbl' => 'Open Data Commons Open Database License'
+    }
+
     def to_solr(solr_doc = {}, *args)
       super(solr_doc, *args)
       add_solr_value(solr_doc, 'default_rights', default_rights, :string, [:symbol])
@@ -150,7 +166,7 @@ module Dor
       end
     end
 
-    def set_use_license(license_type, val)
+    def update_rights_metadata_use_node(license_type, val)
       license = get_use_license_for_type(license_type)
       if license.nil?
         defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, license_type)
@@ -159,16 +175,27 @@ module Dor
     end
 
     def creative_commons_license=(val)
-      set_use_license(:creative_commons, val)
-    end
-    def open_data_commons_license=(val)
-      set_use_license(:open_data_commons, val)
+      update_rights_metadata_use_node(:creative_commons, val)
     end
     def creative_commons_license_human=(val)
-      set_use_license(:creative_commons_human, val)
+      update_rights_metadata_use_node(:creative_commons_human, val)
+    end
+
+    def open_data_commons_license=(val)
+      update_rights_metadata_use_node(:open_data_commons, val)
     end
     def open_data_commons_license_human=(val)
-      set_use_license(:open_data_commons_human, val)
+      update_rights_metadata_use_node(:open_data_commons_human, val)
+    end
+
+    def use_license=(license_code)
+      if CREATIVE_COMMONS_LICENSE_CODES.include? license_code
+        self.creative_commons_license = license_code
+        self.creative_commons_license_human = CREATIVE_COMMONS_LICENSE_CODES[license_code]
+      elsif OPEN_DATA_COMMONS_LICENSE_CODES.include? license_code
+        self.open_data_commons_license = license_code
+        self.open_data_commons_license_human = OPEN_DATA_COMMONS_LICENSE_CODES[license_code]
+      end
     end
 
     # @return [String] A description of the rights defined in the default object rights datastream. Can be 'Stanford', 'World', 'Dark' or 'None'
