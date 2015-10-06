@@ -208,6 +208,8 @@ module Dor
       elsif OPEN_DATA_COMMONS_USE_LICENSES.include? use_license_machine
         self.open_data_commons_license = use_license_machine
         self.open_data_commons_license_human = OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine]
+      else
+        raise "#{use_license_machine} is not a valid license code"
       end
     end
 

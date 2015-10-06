@@ -176,7 +176,7 @@ describe Dor::Editable do
     end
     it 'should set nothing if no valid license code is given' do
       use_license_machine = 'something-unexpected'
-      @empty_item.use_license = use_license_machine
+      expect { @empty_item.use_license = use_license_machine }.to raise_exception ("#{use_license_machine} is not a valid license code")
       expect(@empty_item.use_license).to eq('')
       expect(@empty_item.use_license_human).to eq('')
     end
