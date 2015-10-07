@@ -13,24 +13,36 @@ module Dor
     #TODO: should probably key off URI for everything, for more robustness/less ambiguity.  for now, just doing that on the recently added 
     #       CC Public Domain Mark and the Open Data Commons types.  will have to deal with legacy data when switching the others to URIs.
     CREATIVE_COMMONS_USE_LICENSES = {
-      'by' => 'Attribution 3.0 Unported',
-      'by_sa' => 'Attribution Share Alike 3.0 Unported', # this is a typo, the spec says "by-sa", leaving as-is for legacy compatibility
-      'by-nd' => 'Attribution No Derivatives 3.0 Unported',
-      'by-nc' => 'Attribution Non-Commercial 3.0 Unported',
-      'by-nc-sa' => 'Attribution Non-Commercial Share Alike 3.0 Unported',
-      'by-nc-nd' => 'Attribution Non-commercial, No Derivatives 3.0 Unported',
-      'http://creativecommons.org/publicdomain/mark/1.0/' => 'Public Domain Mark 1.0'
+      'by' =>       { :human_readable => 'Attribution 3.0 Unported',
+                      :uri => 'https://creativecommons.org/licenses/by/3.0/us/legalcode' },
+      # "by_sa" is a typo, the spec says "by-sa", leaving as-is for argo legacy compatibility
+      'by_sa' =>    { :human_readable => 'Attribution Share Alike 3.0 Unported',
+                      :uri => 'https://creativecommons.org/licenses/by-sa/3.0/us/legalcode' },
+      'by-nd' =>    { :human_readable => 'Attribution No Derivatives 3.0 Unported',
+                      :uri => 'https://creativecommons.org/licenses/by-nd/3.0/legalcode' },
+      'by-nc' =>    { :human_readable => 'Attribution Non-Commercial 3.0 Unported',
+                      :uri => 'https://creativecommons.org/licenses/by-nc/3.0/us/legalcode' },
+      'by-nc-sa' => { :human_readable => 'Attribution Non-Commercial Share Alike 3.0 Unported',
+                      :uri => 'https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode' },
+      'by-nc-nd' => { :human_readable => 'Attribution Non-commercial, No Derivatives 3.0 Unported',
+                      :uri => 'https://creativecommons.org/licenses/by-nc-nd/3.0/legalcode' },
+      'pdm' =>      { :human_readable => 'Public Domain Mark 1.0',
+                      :uri => 'https://creativecommons.org/publicdomain/mark/1.0/'}
     }
     OPEN_DATA_COMMONS_USE_LICENSES = {
-      'http://opendatacommons.org/licenses/pddl/1.0/' => 'Open Data Commons Public Domain Dedication and License 1.0',
-      'http://opendatacommons.org/licenses/by/1.0/' => 'Open Data Commons Attribution License 1.0',
-      'http://opendatacommons.org/licenses/odbl/1.0/' => 'Open Data Commons Open Database License 1.0'
+      'pddl' =>     { :human_readable => 'Open Data Commons Public Domain Dedication and License 1.0',
+                      :uri => 'http://opendatacommons.org/licenses/pddl/1.0/' },
+      'odc-by' =>   { :human_readable => 'Open Data Commons Attribution License 1.0',
+                      :uri => 'http://opendatacommons.org/licenses/by/1.0/' },
+      'odc-odbl' => { :human_readable => 'Open Data Commons Open Database License 1.0',
+                      :uri => 'http://opendatacommons.org/licenses/odbl/1.0/' }
     }
 
     def to_solr(solr_doc = {}, *args)
       super(solr_doc, *args)
       add_solr_value(solr_doc, 'default_rights', default_rights, :string, [:symbol])
       add_solr_value(solr_doc, 'agreement', agreement, :string, [:symbol]) if agreement_object
+      add_solr_value(solr_doc, 'use_license_machine', use_license, :string, [:stored_sortable])
       solr_doc
     end
 
@@ -205,10 +217,10 @@ module Dor
     def use_license=(use_license_machine)
       if CREATIVE_COMMONS_USE_LICENSES.include? use_license_machine
         self.creative_commons_license = use_license_machine
-        self.creative_commons_license_human = CREATIVE_COMMONS_USE_LICENSES[use_license_machine]
+        self.creative_commons_license_human = CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
       elsif OPEN_DATA_COMMONS_USE_LICENSES.include? use_license_machine
         self.open_data_commons_license = use_license_machine
-        self.open_data_commons_license_human = OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine]
+        self.open_data_commons_license_human = OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
       else
         raise "#{use_license_machine} is not a valid license code"
       end
