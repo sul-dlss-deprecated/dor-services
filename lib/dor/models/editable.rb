@@ -15,9 +15,11 @@ module Dor
     CREATIVE_COMMONS_USE_LICENSES = {
       'by' =>       { :human_readable => 'Attribution 3.0 Unported',
                       :uri => 'https://creativecommons.org/licenses/by/3.0/us/legalcode' },
-      # "by_sa" is a typo, the spec says "by-sa", leaving as-is for argo legacy compatibility
-      'by_sa' =>    { :human_readable => 'Attribution Share Alike 3.0 Unported',
+      'by-sa' =>    { :human_readable => 'Attribution Share Alike 3.0 Unported',
                       :uri => 'https://creativecommons.org/licenses/by-sa/3.0/us/legalcode' },
+      'by_sa' =>    { :human_readable => 'Attribution Share Alike 3.0 Unported',
+                      :uri => 'https://creativecommons.org/licenses/by-sa/3.0/us/legalcode',
+                      :deprecation_warning => 'license code "by_sa" was a typo in argo, prefer "by-sa"' },
       'by-nd' =>    { :human_readable => 'Attribution No Derivatives 3.0 Unported',
                       :uri => 'https://creativecommons.org/licenses/by-nd/3.0/legalcode' },
       'by-nc' =>    { :human_readable => 'Attribution Non-Commercial 3.0 Unported',
@@ -171,47 +173,41 @@ module Dor
       return open_data_commons_license unless ['', nil].include?(open_data_commons_license)
       return ''
     end
+    def use_license_uri
+      return defaultObjectRights.creative_commons.uri.first unless ['', nil].include?(defaultObjectRights.creative_commons.uri)
+      return defaultObjectRights.open_data_commons.uri.first unless ['', nil].include?(defaultObjectRights.open_data_commons.uri)
+      return ''
+    end
     def use_license_human
       return creative_commons_license_human unless ['', nil].include?(creative_commons_license_human)
       return open_data_commons_license_human unless ['', nil].include?(open_data_commons_license_human)
       return ''
     end
 
-    def get_use_license_for_type(license_type)
-      case license_type
-        when :creative_commons
-          creative_commons_license
-        when :open_data_commons
-          open_data_commons_license
-        when :creative_commons_human
-          creative_commons_license_human
-        when :open_data_commons_human
-          open_data_commons_license_human
-        else
-          nil
-      end
-    end
-
-    def update_rights_metadata_use_node(license_type, val)
-      license = get_use_license_for_type(license_type)
-      if license.nil?
+    def init_rights_metadata_use_node(license_type)
+      if defaultObjectRights.find_by_terms(license_type).length < 1
         defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, license_type)
       end
-      defaultObjectRights.update_values({[license_type] => val})
     end
 
-    def creative_commons_license=(val)
-      update_rights_metadata_use_node(:creative_commons, val)
+    def creative_commons_license=(use_license_machine)
+      init_rights_metadata_use_node(:creative_commons)
+      defaultObjectRights.creative_commons = use_license_machine
+      defaultObjectRights.creative_commons.uri = CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:uri]
     end
-    def creative_commons_license_human=(val)
-      update_rights_metadata_use_node(:creative_commons_human, val)
+    def creative_commons_license_human=(use_license_human)
+      init_rights_metadata_use_node(:creative_commons_human)
+      defaultObjectRights.creative_commons_human = use_license_human
     end
 
-    def open_data_commons_license=(val)
-      update_rights_metadata_use_node(:open_data_commons, val)
+    def open_data_commons_license=(use_license_machine)
+      init_rights_metadata_use_node(:open_data_commons)
+      defaultObjectRights.open_data_commons = use_license_machine
+      defaultObjectRights.open_data_commons.uri = OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine][:uri]
     end
-    def open_data_commons_license_human=(val)
-      update_rights_metadata_use_node(:open_data_commons_human, val)
+    def open_data_commons_license_human=(use_license_human)
+      init_rights_metadata_use_node(:open_data_commons_human)
+      defaultObjectRights.open_data_commons_human = use_license_human
     end
 
     def use_license=(use_license_machine)

@@ -131,17 +131,18 @@ describe Dor::Editable do
     end
   end
   describe 'creative_commons_license=' do
+    # these are less relevant now that we're moving to use_license= and away from setting individual use license components so directly
     it 'should work on an empty ds' do
-      @empty_item.creative_commons_license = ['hi']
-      expect(@empty_item.creative_commons_license).to eq('hi')
+      @empty_item.creative_commons_license = 'by-nc'
+      expect(@empty_item.creative_commons_license).to eq('by-nc')
     end
     it 'should not create multiple use nodes' do
-      @empty_item.creative_commons_license = 'hi'
+      @empty_item.creative_commons_license = 'pdm'
       @empty_item.creative_commons_license_human = 'greetings'
       @empty_item.use_statement = 'this is my use statement'
       expect(@empty_item.use_statement).to eq('this is my use statement')
       expect(@empty_item.creative_commons_license_human).to eq 'greetings'
-      expect(@empty_item.creative_commons_license).to eq 'hi'
+      expect(@empty_item.creative_commons_license).to eq 'pdm'
       expect(@empty_item.defaultObjectRights.ng_xml.search('//use').length).to eq(1)
     end
   end
@@ -158,9 +159,11 @@ describe Dor::Editable do
   describe 'use_license=' do
     it 'should set the machine and human readable CC licenses given the right license code' do
       use_license_machine = 'by-nc-nd'
+      use_license_uri = Dor::Editable::CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:uri]
       use_license_human = Dor::Editable::CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
       @empty_item.use_license = use_license_machine
       expect(@empty_item.use_license).to eq(use_license_machine)
+      expect(@empty_item.use_license_uri).to eq(use_license_uri)
       expect(@empty_item.use_license_human).to eq(use_license_human)
       expect(@empty_item.creative_commons_license_human).to eq(use_license_human)
       expect(@empty_item.open_data_commons_license_human).to eq('')
@@ -322,6 +325,7 @@ describe Dor::Editable do
       expect(solr_doc).to match a_hash_including('registration_workflow_id_ssim' => ['digitizationWF'])
       expect(solr_doc).to match a_hash_including('use_statement_ssim'  => ['Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu.'])
       expect(solr_doc).to match a_hash_including('copyright_ssim'      => ['Additional copyright info'])
+      expect(solr_doc).to match a_hash_including('use_license_machine_ssi' => 'by-nc-sa')
     end
   end
 end
