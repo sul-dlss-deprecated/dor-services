@@ -8,10 +8,16 @@ module Dor
       belongs_to :agreement_object, :property => :referencesAgreement, :class_name => 'Dor::Item'
     end
 
-    # these two hashes map machine readable use license codes to their corresponding human readable content.
-    #TODO: seems like Editable is not the most semantically appropriate place for these mappings.  though they're used by methods that live in Editable.
-    #TODO: should probably key off URI for everything, for more robustness/less ambiguity.  for now, just doing that on the recently added 
-    #       CC Public Domain Mark and the Open Data Commons types.  will have to deal with legacy data when switching the others to URIs.
+    # these hashes map short ("machine") license codes to their corresponding URIs and human readable titles. they 
+    # also allow for deprecated entries (via optional :deprecation_warning).  clients that use these maps are advised to 
+    # only display undeprecated entries, except where a deprecated entry is already in use by an object.  e.g., an APO
+    # that already specifies "by_sa" for its default license code could continue displaying that in a list of license options
+    # for editing, preferably with the deprecation warning.  but other deprecated entries would be omitted in such a
+    # selectbox.
+    #TODO: seems like Editable is not the most semantically appropriate place for these mappings?  though they're used
+    # by methods that live in Editable.
+    #TODO: need some way to do versioning.  for instance, what happens when a new version of an existing license comes 
+    # out, since it will presumably use the same license code, but a different title and URI?
     CREATIVE_COMMONS_USE_LICENSES = {
       'by' =>       { :human_readable => 'Attribution 3.0 Unported',
                       :uri => 'https://creativecommons.org/licenses/by/3.0/us/legalcode' },
