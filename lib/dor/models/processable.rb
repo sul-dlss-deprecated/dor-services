@@ -120,18 +120,27 @@ module Dor
         end
       end
 
-      status_code = 0
-      status_time = ''
-      #for each milestone in the current version, see if it comes after the current 'last' step, if so, make it the last and record the date/time
-      current_milestones.each do |m|
-        name = m[:milestone]
-        time = m[:at].utc.xmlschema
-        next unless STEPS.keys.include?(name) && STEPS[name] > status_code
-        status_code = STEPS[name]
-        status_time = time
-      end
+      # status_code = 0
+      # # status_time = ''
+      # status_time = nil
+      # #for each milestone in the current version, see if it comes after the current 'last' step, if so, make it the last and record the date/time
+      # current_milestones.each do |m|
+      #   m_name = m[:milestone]
+      #   m_time = m[:at].utc.xmlschema
+      #   # next unless STEPS.keys.include?(m_name) && STEPS[m_name] > status_code
+      #   next unless STEPS.keys.include?(m_name) && (!status_time || m_time > status_time)
+      #   status_code = STEPS[m_name]
+      #   status_time = m_time
+      # end
 
-      {:current_version => current_version, :status_code => status_code, :status_time => status_time}
+      # TODO: reimplementation of old logic with sort
+      latest_milestone = current_milestones.sort { |x,y| STEPS[x[:milestone]] <=> STEPS[y[:milestone]] }.last
+
+      # TODO: temp comment:  new logic, sorts on time instead of "precedence" of step type
+      # latest_milestone = current_milestones.sort { |x,y| x[:at].utc.xmlschema <=> y[:at].utc.xmlschema }.last
+
+      # {:current_version => current_version, :status_code => status_code, :status_time => status_time}
+      {:current_version => current_version, :status_code => latest_milestone[:milestone], :status_time => latest_milestone[:at].utc.xmlschema}
     end
 
     # @param [Boolean] include_time
