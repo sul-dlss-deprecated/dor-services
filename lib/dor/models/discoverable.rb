@@ -56,9 +56,7 @@ module Dor
           :sw_all_search_facet_facet => stanford_mods_record.text
       
         }
-        if doc_hash
-          solr_doc = solr_doc.merge(doc_hash)
-        end
+        solr_doc.merge!(doc_hash) if doc_hash
       end
       solr_doc
     end
