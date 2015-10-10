@@ -58,7 +58,8 @@ describe Dor::Publishable do
     @item.descMetadata.content = @mods
     @item.rightsMetadata.content = @rights
     @item.rels_ext.content = @rels
-    @item.stub(:add_collection_reference).and_return(@mods)
+    allow(@item).to receive(:add_collection_reference).and_return(@mods)
+    allow(OpenURI).to receive(:open_uri).with('http://purl-test.stanford.edu/ab123cd4567.xml').and_return('<xml/>')
   end
 
   it "has a rightsMetadata datastream" do
@@ -72,15 +73,55 @@ describe Dor::Publishable do
     @item.datastreams['rightsMetadata'].ng_xml.to_s.should be_equivalent_to(rights_md)
   end
 
-  describe "#public_xml" do
-    #@item.add_tags_from_purl.stub.and_return({})
+  describe '#public_xml' do
+    context 'produces xml with' do
+      before(:each) do
+        @now = Time.now
+        expect(Time).to receive(:now).and_return(@now).at_least(:once)
+        @p_xml = Nokogiri::XML(@item.public_xml)
+      end
 
-    context "produces xml with" do
-        before(:each) do
-          @now = Time.now
-          expect(Time).to receive(:now).and_return(@now).at_least(:once)
-          @p_xml = Nokogiri::XML(@item.public_xml)
-        end
+      it 'an encoding of UTF-8' do
+        expect(@p_xml.encoding).to match(/UTF-8/)
+      end
+      it 'an id attribute' do
+        expect(@p_xml.at_xpath('/publicObject/@id').value).to match(/^druid:ab123cd4567/)
+      end
+      it 'a published attribute' do
+        expect(@p_xml.at_xpath('/publicObject/@published').value).to eq(@now.xmlschema)
+      end
+      it 'a published version' do
+        expect(@p_xml.at_xpath('/publicObject/@publishVersion').value).to eq('dor-services/' + Dor::VERSION)
+      end
+      it 'identityMetadata' do
+        expect(@p_xml.at_xpath('/publicObject/identityMetadata')).to be
+      end
+      it 'contentMetadata' do
+        expect(@p_xml.at_xpath('/publicObject/contentMetadata')).to be
+      end
+      it 'rightsMetadata' do
+        expect(@p_xml.at_xpath('/publicObject/rightsMetadata')).to be
+      end
+      it 'generated dublin core' do
+        expect(@p_xml.at_xpath('/publicObject/oai_dc:dc', 'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/')).to be
+      end
+
+      it 'relationships' do
+        ns = { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'hydra' => 'http://projecthydra.org/ns/relations#',
+          'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'fedora-model' => 'info:fedora/fedora-system:def/model#' }
+        expect(@p_xml.at_xpath('/publicObject/rdf:RDF', ns)).to be
+        expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOf', ns)).to be
+        expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOfCollection', ns)).to be
+        expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora-model:hasModel', ns)).not_to be
+        expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/hydra:isGovernedBy', ns)).not_to be
+      end
+
+      it 'clones of the content of the other datastreams, keeping the originals in tact' do
+        expect(@item.datastreams['identityMetadata'].ng_xml.at_xpath('/identityMetadata')).to be
+        expect(@item.datastreams['contentMetadata'].ng_xml.at_xpath('/contentMetadata')).to be
+        expect(@item.datastreams['rightsMetadata'].ng_xml.at_xpath('/rightsMetadata')).to be
+        expect(@item.datastreams['RELS-EXT'].content).to be_equivalent_to @rels
+      end
 
        it "an encoding of UTF-8" do
          @p_xml.encoding.should =~ /UTF-8/
@@ -130,11 +171,11 @@ describe Dor::Publishable do
          @item.datastreams['rightsMetadata'].ng_xml.at_xpath("/rightsMetadata").should be
          @item.datastreams['RELS-EXT'].content.should be_equivalent_to @rels
        end
-       
+
        it "does not include a releaseData element when there are no release tags" do
          expect(@p_xml.at_xpath('/publicObject/releaseData')).to be nil
        end
-       
+
        it "does include a releaseData element when there is content inside it" do
          #Fake a tag with at least one children
          releaseData = "<releaseData><release>foo</release></releaseData>"
@@ -142,9 +183,8 @@ describe Dor::Publishable do
          p_xml = Nokogiri::XML(@item.public_xml)
          expect(p_xml.at_xpath('/publicObject/releaseData')).to be
        end
-       
-    end
 
+    end
 
     describe "#publish_metadata" do
 
@@ -188,8 +228,7 @@ describe Dor::Publishable do
           # create druid tree and content in purl root
           druid1 = DruidTools::Druid.new @item.pid, purl_root
           druid1.mkdir
-          File.open(File.join(druid1.path, 'tmpfile'), 'w') {|f| f.write "junk" }
-
+          File.open(File.join(druid1.path, 'tmpfile'), 'w') {|f| f.write 'junk' }
           @item.publish_metadata
           expect(File).to_not exist(druid1.path)
         end

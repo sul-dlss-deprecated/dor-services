@@ -32,9 +32,8 @@ module Dor
       rels_doc
     end
 
-    #Generate the public .xml for a PURL page.
-    #@return [xml] The public xml for the item
-    #
+    # Generate the public .xml for a PURL page.
+    # @return [xml] The public xml for the item
     def public_xml
       pub = Nokogiri::XML("<publicObject/>").root
       pub['id'] = pid
@@ -54,8 +53,9 @@ module Dor
       pub.add_child(rels.clone) unless rels.nil? # TODO: Should never be nil in practice; working around an ActiveFedora quirk for testing
       pub.add_child(self.generate_dublin_core.root.clone)
       @public_xml_doc = pub # save this for possible IIIF Presentation manifest
-      pub.add_child(Nokogiri(self.generate_release_xml).root.clone) unless release_xml.children.size == 0 #If there are no release_tags, this prevents an empty <releaseData/> from being added
-      #Note we cannot base this on if an individual object has release tags or not, because the collection may cause one to be generated for an item, so we need to calculate it and then look at the final result
+      pub.add_child(Nokogiri(generate_release_xml).root.clone) unless release_xml.children.size == 0 # If there are no release_tags, this prevents an empty <releaseData/> from being added
+      # Note we cannot base this on if an individual object has release tags or not, because the collection may cause one to be generated for an item,
+      # so we need to calculate it and then look at the final result.s
       new_pub = Nokogiri::XML(pub.to_xml) { |x| x.noblanks }
       new_pub.encoding = 'UTF-8'
       new_pub.to_xml
@@ -72,18 +72,15 @@ module Dor
         DigitalStacksService.transfer_to_document_store(pid, self.datastreams['contentMetadata'].to_xml, 'contentMetadata')
         DigitalStacksService.transfer_to_document_store(pid, self.datastreams['rightsMetadata'].to_xml, 'rightsMetadata')
         DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
-        if self.metadata_format == 'mods'
-          DigitalStacksService.transfer_to_document_store(pid, self.generate_public_desc_md, 'mods')
-        end
-        if iiif_presentation_manifest_needed? @public_xml_doc
-          DigitalStacksService.transfer_to_document_store(pid, build_iiif_manifest(@public_xml_doc), 'manifest')
-        end
+        DigitalStacksService.transfer_to_document_store(pid, generate_public_desc_md, 'mods') if metadata_format == 'mods'
+        DigitalStacksService.transfer_to_document_store(pid, build_iiif_manifest(@public_xml_doc), 'manifest') if iiif_presentation_manifest_needed? @public_xml_doc
       else
         # Clear out the document cache for this item
         DigitalStacksService.prune_purl_dir pid
       end
     end
-    #call the dor services app to have it publish the metadata
+
+    # Call dor services app to have it publish the metadata
     def publish_metadata_remotely
       dor_services = RestClient::Resource.new(Config.dor_services.url+"/v1/objects/#{pid}/publish")
       dor_services.post ''

@@ -36,12 +36,13 @@ describe 'Dor::Discoverable' do
       </abstract>
       <identifier type="local">rd-115</identifier>
     </mods>
-    
     '))
+    allow(OpenURI).to receive(:open_uri).with('http://purl-test.stanford.edu/cj765pw7168.xml').and_return('<xml/>')
   end
+
   describe 'to_solr' do
     it 'should build a doc hash using stanford-mods' do
-      doc_hash=@item.to_solr({})
+      doc_hash = @item.to_solr
       doc_hash[:sw_pub_date_facet].should == '1900'
       doc_hash[:sw_title_display_facet].should == "San Francisco, Cal."
       #doc_hash[:sw_author_sort_facet].should == "\uFFFF San Francisco Cal"
@@ -54,7 +55,7 @@ describe 'Dor::Discoverable' do
     it 'should not error if there is no descMD' do
       @item.descMetadata.stub(:ng_xml).and_return(Nokogiri::XML('<xml/>'))
       @item.descMetadata.stub(:new?).and_return(true)
-      @item.to_solr({}).keys.include?(:sw_pub_date_facet).should == false
+      expect(@item.to_solr.keys).not_to include(:sw_pub_date_facet)
     end
     it 'shouldnt error on minimal mods' do
       @item.descMetadata.stub(:ng_xml).and_return(Nokogiri::XML('
@@ -64,12 +65,12 @@ describe 'Dor::Discoverable' do
         </titleInfo>
       </mods>'))
       @item.to_solr({})[:sw_title_full_display_facet].should == 'San Francisco, Cal.'
-      
+
     end
     it 'should include translated format' do
       doc_hash=@item.to_solr({})
       doc_hash[:sw_format_facet].should == ['Image']
     end
-    
+
   end
 end

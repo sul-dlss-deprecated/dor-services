@@ -11,6 +11,7 @@ require 'equivalent-xml'
 require 'equivalent-xml/rspec_matchers'
 require 'fakeweb'
 require 'pry'
+require 'retries'
 require 'tmpdir'
 require 'nokogiri'
 
@@ -57,7 +58,10 @@ end
 
 RSpec.configure do |config|
   config.include Dor::SpecHelpers
+  config.logger.level = Logger::WARN  # if you want INFO and lesser messages, tweak here
 end
+
+Retries.sleep_enabled = false  # fail fast in tests
 
 def catch_stdio
   old_handles = [$stdout.dup, $stderr.dup]
