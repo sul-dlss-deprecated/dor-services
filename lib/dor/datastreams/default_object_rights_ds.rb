@@ -11,14 +11,27 @@ module Dor
         t.human
       end
 
-      t.creative_commons :path => '/use/machine', :type => 'creativeCommons'
+      t.creative_commons :path => '/use/machine', :type => 'creativeCommons' do
+        t.uri :path => '@uri'
+      end
       t.creative_commons_human :path => '/use/human[@type=\'creativeCommons\']'
+      t.open_data_commons :path => '/use/machine', :type => 'openDataCommons' do
+        t.uri :path => '@uri'
+      end
+      t.open_data_commons_human :path => '/use/human[@type=\'openDataCommons\']'
     end
 
     define_template :creative_commons do |xml|
       xml.use {
         xml.human(:type => 'creativeCommons')
-        xml.machine(:type => 'creativeCommons')
+        xml.machine(:type => 'creativeCommons', :uri =>'')
+      }
+    end
+
+    define_template :open_data_commons do |xml|
+      xml.use {
+        xml.human(:type => 'openDataCommons')
+        xml.machine(:type => 'openDataCommons', :uri =>'')
       }
     end
 
@@ -38,7 +51,9 @@ module Dor
           xml.use {
             xml.human(:type => 'useAndReproduction')
             xml.human(:type => 'creativeCommons')
-            xml.machine(:type => 'creativeCommons')
+            xml.machine(:type => 'creativeCommons', :uri =>'')
+            xml.human(:type => 'openDataCommons')
+            xml.machine(:type => 'openDataCommons', :uri =>'')
           }
           xml.copyright {
             xml.human

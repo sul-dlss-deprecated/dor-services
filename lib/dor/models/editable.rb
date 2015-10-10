@@ -8,10 +8,49 @@ module Dor
       belongs_to :agreement_object, :property => :referencesAgreement, :class_name => 'Dor::Item'
     end
 
+    # these hashes map short ("machine") license codes to their corresponding URIs and human readable titles. they 
+    # also allow for deprecated entries (via optional :deprecation_warning).  clients that use these maps are advised to 
+    # only display undeprecated entries, except where a deprecated entry is already in use by an object.  e.g., an APO
+    # that already specifies "by_sa" for its default license code could continue displaying that in a list of license options
+    # for editing, preferably with the deprecation warning.  but other deprecated entries would be omitted in such a
+    # selectbox.
+    #TODO: seems like Editable is not the most semantically appropriate place for these mappings?  though they're used
+    # by methods that live in Editable.
+    #TODO: need some way to do versioning.  for instance, what happens when a new version of an existing license comes 
+    # out, since it will presumably use the same license code, but a different title and URI?
+    CREATIVE_COMMONS_USE_LICENSES = {
+      'by' =>       { :human_readable => 'Attribution 3.0 Unported',
+                      :uri => 'https://creativecommons.org/licenses/by/3.0/us/legalcode' },
+      'by-sa' =>    { :human_readable => 'Attribution Share Alike 3.0 Unported',
+                      :uri => 'https://creativecommons.org/licenses/by-sa/3.0/us/legalcode' },
+      'by_sa' =>    { :human_readable => 'Attribution Share Alike 3.0 Unported',
+                      :uri => 'https://creativecommons.org/licenses/by-sa/3.0/us/legalcode',
+                      :deprecation_warning => 'license code "by_sa" was a typo in argo, prefer "by-sa"' },
+      'by-nd' =>    { :human_readable => 'Attribution No Derivatives 3.0 Unported',
+                      :uri => 'https://creativecommons.org/licenses/by-nd/3.0/legalcode' },
+      'by-nc' =>    { :human_readable => 'Attribution Non-Commercial 3.0 Unported',
+                      :uri => 'https://creativecommons.org/licenses/by-nc/3.0/us/legalcode' },
+      'by-nc-sa' => { :human_readable => 'Attribution Non-Commercial Share Alike 3.0 Unported',
+                      :uri => 'https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode' },
+      'by-nc-nd' => { :human_readable => 'Attribution Non-commercial, No Derivatives 3.0 Unported',
+                      :uri => 'https://creativecommons.org/licenses/by-nc-nd/3.0/legalcode' },
+      'pdm' =>      { :human_readable => 'Public Domain Mark 1.0',
+                      :uri => 'https://creativecommons.org/publicdomain/mark/1.0/'}
+    }
+    OPEN_DATA_COMMONS_USE_LICENSES = {
+      'pddl' =>     { :human_readable => 'Open Data Commons Public Domain Dedication and License 1.0',
+                      :uri => 'http://opendatacommons.org/licenses/pddl/1.0/' },
+      'odc-by' =>   { :human_readable => 'Open Data Commons Attribution License 1.0',
+                      :uri => 'http://opendatacommons.org/licenses/by/1.0/' },
+      'odc-odbl' => { :human_readable => 'Open Data Commons Open Database License 1.0',
+                      :uri => 'http://opendatacommons.org/licenses/odbl/1.0/' }
+    }
+
     def to_solr(solr_doc = {}, *args)
       super(solr_doc, *args)
       add_solr_value(solr_doc, 'default_rights', default_rights, :string, [:symbol])
       add_solr_value(solr_doc, 'agreement', agreement, :string, [:symbol]) if agreement_object
+      add_solr_value(solr_doc, 'use_license_machine', use_license, :string, [:stored_sortable])
       solr_doc
     end
 
@@ -58,6 +97,7 @@ module Dor
     def mods_title=(val)
       descMetadata.update_values({[:title_info, :main_title] => val})
     end
+
     #get all collections listed for this APO, used during registration
     #@return [Array] array of pids
     def default_collections
@@ -77,12 +117,12 @@ module Dor
       reg.add_child(node)
       administrativeMetadata.content = xml.to_s
     end
-
     def remove_default_collection(val)
       xml = administrativeMetadata.ng_xml
       xml.search('//administrativeMetadata/registration/collection[@id=\'' + val + '\']').remove
       administrativeMetadata.content = xml.to_s
     end
+
     #Get all roles defined in the role metadata, and the people or groups in those roles. Groups are prefixed with 'workgroup:'
     #@return [Hash] role => ['person','group'] ex. {"dor-apo-manager" => ["workgroup:dlss:developers", "sunetid:lmcrae"]
     def roles
@@ -95,6 +135,7 @@ module Dor
       end
       roles
     end
+
     def metadata_source
       administrativeMetadata.metadata_source.first
     end
@@ -104,38 +145,89 @@ module Dor
       end
       administrativeMetadata.update_values({[:descMetadata, :source] => val})
     end
+
     def use_statement
       defaultObjectRights.use_statement.first
     end
     def use_statement=(val)
       defaultObjectRights.update_values({[:use_statement] => val})
     end
+
     def copyright_statement
       defaultObjectRights.copyright.first
     end
     def copyright_statement=(val)
       defaultObjectRights.update_values({[:copyright] => val})
     end
+
     def creative_commons_license
       defaultObjectRights.creative_commons.first
     end
     def creative_commons_license_human
       defaultObjectRights.creative_commons_human.first
     end
-    def creative_commons_license=(val)
-      # (machine, human) = val
-      if creative_commons_license.nil?
-        defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, :creative_commons)
-      end
-      defaultObjectRights.update_values({[:creative_commons] => val})
+
+    def open_data_commons_license
+      defaultObjectRights.open_data_commons.first
     end
-    def creative_commons_license_human=(val)
-      if creative_commons_license_human.nil?
-        # add the nodes
-        defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, :creative_commons)
-      end
-      defaultObjectRights.update_values({[:creative_commons_human] => val})
+    def open_data_commons_license_human
+      defaultObjectRights.open_data_commons_human.first
     end
+
+    def use_license
+      return creative_commons_license unless ['', nil].include?(creative_commons_license)
+      return open_data_commons_license unless ['', nil].include?(open_data_commons_license)
+      return ''
+    end
+    def use_license_uri
+      return defaultObjectRights.creative_commons.uri.first unless ['', nil].include?(defaultObjectRights.creative_commons.uri)
+      return defaultObjectRights.open_data_commons.uri.first unless ['', nil].include?(defaultObjectRights.open_data_commons.uri)
+      return ''
+    end
+    def use_license_human
+      return creative_commons_license_human unless ['', nil].include?(creative_commons_license_human)
+      return open_data_commons_license_human unless ['', nil].include?(open_data_commons_license_human)
+      return ''
+    end
+
+    def init_rights_metadata_use_node(license_type)
+      if defaultObjectRights.find_by_terms(license_type).length < 1
+        defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, license_type)
+      end
+    end
+
+    def creative_commons_license=(use_license_machine)
+      init_rights_metadata_use_node(:creative_commons)
+      defaultObjectRights.creative_commons = use_license_machine
+      defaultObjectRights.creative_commons.uri = CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:uri]
+    end
+    def creative_commons_license_human=(use_license_human)
+      init_rights_metadata_use_node(:creative_commons_human)
+      defaultObjectRights.creative_commons_human = use_license_human
+    end
+
+    def open_data_commons_license=(use_license_machine)
+      init_rights_metadata_use_node(:open_data_commons)
+      defaultObjectRights.open_data_commons = use_license_machine
+      defaultObjectRights.open_data_commons.uri = OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine][:uri]
+    end
+    def open_data_commons_license_human=(use_license_human)
+      init_rights_metadata_use_node(:open_data_commons_human)
+      defaultObjectRights.open_data_commons_human = use_license_human
+    end
+
+    def use_license=(use_license_machine)
+      if CREATIVE_COMMONS_USE_LICENSES.include? use_license_machine
+        self.creative_commons_license = use_license_machine
+        self.creative_commons_license_human = CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
+      elsif OPEN_DATA_COMMONS_USE_LICENSES.include? use_license_machine
+        self.open_data_commons_license = use_license_machine
+        self.open_data_commons_license_human = OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
+      else
+        raise "#{use_license_machine} is not a valid license code"
+      end
+    end
+
     # @return [String] A description of the rights defined in the default object rights datastream. Can be 'Stanford', 'World', 'Dark' or 'None'
     def default_rights
       xml = defaultObjectRights.ng_xml
@@ -192,6 +284,7 @@ module Dor
       end
       administrativeMetadata.update_values({[:metadata_format] => format})
     end
+
     def desc_metadata_source
       administrativeMetadata.metadata_source.first
     end
@@ -202,6 +295,7 @@ module Dor
       end
       administrativeMetadata.update_values({[:metadata_source] => format})
     end
+
     # List of default workflows, used to provide choices at registration
     # @return [Array] and array of pids, ex ['druid:ab123cd4567']
     def default_workflows
@@ -226,6 +320,7 @@ module Dor
         nodes.first.add_child(wf_node)
       end
     end
+
     def agreement
       agreement_object ? agreement_object.pid : ''
     end
@@ -233,5 +328,4 @@ module Dor
       self.agreement_object = Dor::Item.find val.to_s, :cast => true
     end
   end
-
 end
