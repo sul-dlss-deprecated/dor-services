@@ -11,17 +11,15 @@ module Dor
     # @param release_tags [Hash, Array<Hash>] hash of a single release tag or an array of many such hashes
     # @raise [ArgumentError] Raised if the tags are improperly supplied
     def add_release_nodes_and_start_releaseWF(release_tags)
-      release_tags = [release_tags] unless release_tags.class == Array
+      release_tags = [release_tags] unless release_tags.is_a?(Array)
 
-      #Add in each tag
+      # Add in each tag
       release_tags.each do |r_tag|
         add_release_node(r_tag[:release], r_tag)
       end
 
-      #Save the item to dor so the robots work with the latest data
+      # Save item to dor so the robots work with the latest data
       save
-
-      #Intialize the release workflow
       initialize_workflow('releaseWF')
     end
 
@@ -34,7 +32,7 @@ module Dor
             xml.release(released_value['release'], :to => project)
           end
         }
-        end
+      end
       builder.to_xml
     end
 
@@ -42,41 +40,36 @@ module Dor
     # @return [Hash{String => Boolean}] all namespaces, keys are Project name Strings, values are Boolean
     def released_for
       released_hash = {}
-
-      #Get release tags on the item itself
+      # Get release tags on the item itself
       release_tags_on_this_item = release_nodes
 
-      #Get any self tags on this item
+      # Get any self tags on this item
       self_release_tags = get_self_release_tags(release_tags_on_this_item)
 
-      #Get the most recent self tag for all targets and save their result since most recent self always trumps any other non self tags
+      # Get the most recent self tag for all targets and save their result since most recent self always trumps any other non self tags
       latest_self_tags = get_newest_release_tag(self_release_tags)
       latest_self_tags.keys.each do |target|
         released_hash[target] =  clean_release_tag_for_purl(latest_self_tags[target])
       end
 
-      #With Self Tags Resolved We Now need to deal with tags on all sets this object is part of
+      # With Self Tags Resolved We Now need to deal with tags on all sets this object is part of
+      potential_applicable_release_tags = {}  # This will be where we store all tags that apply, regardless of their timestamp
 
-      potential_applicable_release_tags = {}  #This will be where we store all tags that apply, regardless of their timestamp
-
-      #Get all release tags on the item and strip out the what = self ones, we've already processed all the self tags on this item
+      # Get all release tags on the item and strip out the what = self ones, we've already processed all the self tags on this item
       potential_applicable_release_tags = get_tags_for_what_value(get_release_tags_for_item_and_all_governing_sets, 'collection')
+      administrative_tags = tags  # Get them once here and pass them down
 
-      administrative_tags = tags  #Get them once here and pass them down
-
-      #We now have the keys for all potential releases, we need to check the tags and the most recent time stamp with an explicit true or false wins, in a nil case, the lack of an explicit false tag we do nothing
-      (potential_applicable_release_tags.keys - released_hash.keys).each do |key|  #don't bother checking the ones already added to the release hash, they were added due to a self tag and that has won
+      # We now have the keys for all potential releases, we need to check the tags: the most recent timestamp with an explicit true or false wins.
+      # In a nil case, the lack of an explicit false tag we do nothing.
+      (potential_applicable_release_tags.keys - released_hash.keys).each do |key|  # don't bother checking if already added to the release hash, they were added due to a self tag so that has won
         latest_applicable_tag_for_key = latest_applicable_release_tag_in_array(potential_applicable_release_tags[key], administrative_tags)
-        unless latest_applicable_tag_for_key.nil? #We have a valid tag, record it
+        unless latest_applicable_tag_for_key.nil? # We have a valid tag, record it
           released_hash[key] = clean_release_tag_for_purl(latest_applicable_tag_for_key)
         end
-
       end
 
-      #See what the application is currently released for on Purl.  If something is released in purl but not listed here, it needs to be added as a false
-      released_hash = add_tags_from_purl(released_hash)
-
-      released_hash
+      # See what the application is currently released for on Purl.  If something is released in purl but not listed here, it needs to be added as a false
+      add_tags_from_purl(released_hash)
     end
 
     # Take a hash of tags as obtained via Dor::Item.release_tags and returns all self tags
@@ -91,7 +84,7 @@ module Dor
     def get_release_tags_for_item_and_all_governing_sets
       return_tags = release_nodes || {}
       collections.each do |collection|
-        return_tags = combine_two_release_tag_hashes(return_tags, Dor::Item.find(collection.id).get_release_tags_for_item_and_all_governing_sets) #this will function recurvisely so parents of parents are found
+        return_tags = combine_two_release_tag_hashes(return_tags, Dor::Item.find(collection.id).get_release_tags_for_item_and_all_governing_sets) # recurvise so parents of parents are found
       end
       return_tags
     end
@@ -115,7 +108,7 @@ module Dor
     def get_tags_for_what_value(tags, what_target)
       return_hash = {}
       tags.keys.each do |key|
-        self_tags =  tags[key].select {|tag| tag['what'] == what_target.downcase}
+        self_tags = tags[key].select {|tag| tag['what'] == what_target.downcase}
         return_hash[key] = self_tags if self_tags.size > 0
       end
       return_hash
@@ -125,24 +118,14 @@ module Dor
     # @param tags [Hash] a hash of tags obtained via Dor::Item.release_tags or matching format
     # @return [Hash] a hash of latest tags for each to value
     def get_newest_release_tag(tags)
-      return_hash = {}
-      tags.keys.each do |key|
-        latest_for_key = newest_release_tag_in_an_array(tags[key])
-        return_hash[key] = latest_for_key
-      end
-      return_hash
+      Hash[tags.map {|key, val| [key, newest_release_tag_in_an_array(val)]}]
     end
 
-    # Take a tag and return only the attributes  we want to put into purl
+    # Take a tag and return only the attributes we want to put into purl
     # @param tag [Hash] a tag
     # @return [Hash] a hash of the attributes we want for purl
     def clean_release_tag_for_purl(tag)
-      for_purl = ['release']
-      return_hash = {}
-      for_purl.each do |attr|
-        return_hash[attr] = tag[attr]
-      end
-      return_hash
+      {'release' => tag['release']}
     end
 
     # Takes an array of release tags and returns the most recent one
@@ -161,10 +144,9 @@ module Dor
     # @param admin_tags [Array] the administrative tags on an item, if not supplied it will attempt to retrieve them
     # @return [Boolean] true or false if it applies (not true or false if it is released, that is the release_tag data)
     def does_release_tag_apply(release_tag, admin_tags = false)
-      #Is the tag global or restricted
-      return true if release_tag['tag'].nil?  #there is no specific tag specificied, so that means this tag is global to all members of the collection, it applies, return true
-
-      admin_tags = tags unless admin_tags #We use false instead of [], since an item can have no admin_tags that which point we'd be passing down this variable as [] and would not an attempt to retrieve it
+      # Is the tag global or restricted
+      return true if release_tag['tag'].nil?  # no specific tag specificied means this tag is global to all members of the collection
+      admin_tags = tags unless admin_tags     # We use false instead of [], since an item can have no admin_tags at which point we'd be passing this var as [] and would not attempt to retrieve it
       admin_tags.include?(release_tag['tag'])
     end
 
@@ -174,14 +156,14 @@ module Dor
     # @return [Hash] the tag
     def latest_applicable_release_tag_in_array(release_tags, admin_tags)
       newest_tag = newest_release_tag_in_an_array(release_tags)
-      return newest_tag if does_release_tag_apply(newest_tag, admin_tags) #Return true if we have it
+      return newest_tag if does_release_tag_apply(newest_tag, admin_tags)
 
-      #The latest tag wasn't applicable, slice it off and try again
-      #This could be optimized by reordering on the timestamp and just running down it instead of constantly resorting, at least if we end up getting numerous release tags on an item
+      # The latest tag wasn't applicable, slice it off and try again
+      # This could be optimized by reordering on the timestamp and just running down it instead of constantly resorting, at least if we end up getting numerous release tags on an item
       release_tags.slice!(release_tags.index(newest_tag))
 
-      return latest_applicable_release_tag_in_array(release_tags, admin_tags) if release_tags.size > 0 #Try again after dropping the one that wasn't applicable
-      nil #We're out of tags, no applicable ones
+      return latest_applicable_release_tag_in_array(release_tags, admin_tags) if release_tags.size > 0 # Try again after dropping the inapplicable
+      nil # We're out of tags, no applicable ones
     end
 
     # Helper method to get the release tags as a nodeset
@@ -206,20 +188,19 @@ module Dor
     def release_tag_node_to_hash(rtag)
       to = 'to'
       release = 'release'
-      when_word = 'when' #TODO: Make to and when_word load from some config file instead of hardcoded here
+      when_word = 'when' # TODO: Make to and when_word load from some config file instead of hardcoded here
       attrs = rtag.attributes
       return_hash = { :to => attrs[to].value }
-      attrs.tap { |a| a.delete(to)}
+      attrs.tap { |a| a.delete(to) }
       attrs[release] = rtag.text.downcase == 'true' #save release as a boolean
       return_hash[:attrs] = attrs
 
-      #convert all the attrs beside :to to strings, they are currently Nokogiri::XML::Attr
+      # convert all the attrs beside :to to strings, they are currently Nokogiri::XML::Attr
       (return_hash[:attrs].keys - [to]).each do |a|
-        return_hash[:attrs][a] =  return_hash[:attrs][a].to_s if a != release
+        return_hash[:attrs][a] = return_hash[:attrs][a].to_s if a != release
       end
 
       return_hash[:attrs][when_word] = Time.parse(return_hash[:attrs][when_word]) #convert when to a datetime
-
       return_hash
     end
 
@@ -261,10 +242,9 @@ module Dor
       attrs[:displayType] = 'file' if attrs[:displayType].nil? #default to file is no display type is passed
       valid_release_attributes(release, attrs)
 
-      #Remove the old displayType and then add the one for this tag
+      # Remove the old displayType and then add the one for this tag
       remove_displayTypes
       identity_metadata_ds.add_value(:displayType, attrs[:displayType], {})
-
       identity_metadata_ds.add_value(:release, release.to_s, attrs)
     end
 
@@ -288,7 +268,7 @@ module Dor
       raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag
       raise ArgumentError, ':displayType must be passed in as a String' unless attrs[:displayType].class == String
 
-      validate_tag_format(attrs[:tag]) unless attrs[:tag].nil? #Will Raise exception if invalid tag
+      validate_tag_format(attrs[:tag]) unless attrs[:tag].nil? # Will Raise exception if invalid tag
       true
     end
 
@@ -302,7 +282,7 @@ module Dor
         if !return_hash[hashed_node[:to]].nil?
           return_hash[hashed_node[:to]] << hashed_node[:attrs]
         else
-           return_hash[hashed_node[:to]] = [hashed_node[:attrs]]
+          return_hash[hashed_node[:to]] = [hashed_node[:attrs]]
         end
       end
       return_hash
@@ -313,16 +293,19 @@ module Dor
     # @raise [OpenURI::HTTPError]
     # @return [Nokogiri::HTML::Document] parsed XML for the druid or an empty document if no purl is found
     def get_xml_from_purl
+      url = form_purl_url
       handler = Proc.new do |exception, attempt_number, total_delay|
-        #We assume a 404 means the document has never been published before and thus has no purl
-        #The strip is needed before the actual message is "404 "
-        return Nokogiri::HTML::Document.new if exception.message.strip == '404'
+        # We assume a 404 means the document has never been published before and thus has no purl
+        Dor.logger.warn "[Attempt #{attempt_number}] GET #{url} -- #{exception.class}: #{exception.message}; #{total_delay} seconds elapsed."
+        raise exception unless exception.is_a? OpenURI::HTTPError
+        return Nokogiri::HTML::Document.new if exception.message.strip == '404'    # strip is needed if the actual message is "404 "
       end
 
-      with_retries(:max_retries => 5, :base_sleep_seconds => 3, :max_sleep_seconds => 5, :rescue => OpenURI::HTTPError, :handler => handler) {
-         #If you change the method used for opening the webpage, you can change the :rescue param to handle the new method's errors
-         return Nokogiri::HTML(open(form_purl_url))
-       }
+      with_retries(:max_retries => 3, :base_sleep_seconds => 3, :max_sleep_seconds => 5, :handler => handler) do |attempt|
+        # If you change the method used for opening the webpage, you can change the :rescue param to handle the new method's errors
+        Dor.logger.info "[Attempt #{attempt}] GET #{url}"
+        return Nokogiri::HTML(OpenURI.open_uri(url))
+      end
     end
 
     # Since purl does not use the druid: prefix but much of dor does, use this function to strip the druid: if needed
@@ -334,10 +317,9 @@ module Dor
     end
 
     # Take the and create the entire purl url that will usable for the open method in open-uri, returns http
-    # @return [String], the full url
+    # @return [String] the full url
     def form_purl_url
-      prefix = 'http://'
-      prefix + Dor::Config.stacks.document_cache_host + "/#{remove_druid_prefix}.xml"
+      'http://' + Dor::Config.stacks.document_cache_host + "/#{remove_druid_prefix}.xml"
     end
 
     # Pull all release nodes from the public xml obtained via the purl query
@@ -345,12 +327,8 @@ module Dor
     # @return [Array] An array containing all the release tags
     def get_release_tags_from_purl_xml(doc)
       nodes = doc.xpath('//html/body/publicobject/releasedata').children
-      #We only want the nodes with a name that isn't text
-      return_array = []
-      nodes.each do |n|
-        return_array << n.attr('to') if !n.name.nil? && n.name.downcase != 'text'
-      end
-      return_array.uniq
+      # We only want the nodes with a name that isn't text
+      nodes.reject {|n| n.name.nil? || n.name.downcase == 'text'}.map {|n| n.attr('to')}.uniq
     end
 
     # Pull all release nodes from the public xml obtained via the purl query
@@ -362,7 +340,6 @@ module Dor
 
     # This function calls purl and gets a list of all release tags currently in purl.  It then compares to the list you have generated.
     # Any tag that is on purl, but not in the newly generated list is added to the new list with a value of false.
-    #
     # @param new_tags [Hash{String => Boolean}] all new tags in the form of !{"Project" => Boolean}
     # @return [Hash], a hash in the same form as new_tags, with all missing tags not in new_tags, but in current_tag_names, added in with a Boolean value of false
     def add_tags_from_purl(new_tags)
@@ -377,15 +354,14 @@ module Dor
     def to_solr(solr_doc = {}, *args)
       super(solr_doc, *args)
 
-      #TODO: sort of worried about the performance impact in bulk reindex
+      # TODO: sort of worried about the performance impact in bulk reindex
       # situations, since released_for recurses all parent collections.  jmartin 2015-07-14
       released_for().each { |key, val|
         add_solr_value(solr_doc, 'released_to', key, :symbol, []) if val
       }
 
-      #TODO: need to solrize whether item is released to purl?  does released_for
-      # return that?  logic is:  "True when there is a published lifecycle and Access
-      # Rights is anything but Dark"
+      # TODO: need to solrize whether item is released to purl?  does released_for return that?
+      # logic is: "True when there is a published lifecycle and Access Rights is anything but Dark"
 
       solr_doc
     end

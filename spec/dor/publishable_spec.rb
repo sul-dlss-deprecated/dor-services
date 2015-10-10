@@ -59,6 +59,7 @@ describe Dor::Publishable do
     @item.rightsMetadata.content = @rights
     @item.rels_ext.content = @rels
     allow(@item).to receive(:add_collection_reference).and_return(@mods)
+    allow(OpenURI).to receive(:open_uri).with('http://purl-test.stanford.edu/ab123cd4567.xml').and_return('<xml/>')
   end
 
   it 'has a rightsMetadata datastream' do
@@ -73,8 +74,6 @@ describe Dor::Publishable do
   end
 
   describe '#public_xml' do
-    #@item.add_tags_from_purl.stub.and_return({})
-
     context 'produces xml with' do
       before(:each) do
         @now = Time.now
@@ -85,31 +84,24 @@ describe Dor::Publishable do
       it 'an encoding of UTF-8' do
         expect(@p_xml.encoding).to match(/UTF-8/)
       end
-
       it 'an id attribute' do
         expect(@p_xml.at_xpath('/publicObject/@id').value).to match(/^druid:ab123cd4567/)
       end
-
       it 'a published attribute' do
         expect(@p_xml.at_xpath('/publicObject/@published').value).to eq(@now.xmlschema)
       end
-
       it 'a published version' do
         expect(@p_xml.at_xpath('/publicObject/@publishVersion').value).to eq('dor-services/' + Dor::VERSION)
       end
-
       it 'identityMetadata' do
         expect(@p_xml.at_xpath('/publicObject/identityMetadata')).to be
       end
-
       it 'contentMetadata' do
         expect(@p_xml.at_xpath('/publicObject/contentMetadata')).to be
       end
-
       it 'rightsMetadata' do
         expect(@p_xml.at_xpath('/publicObject/rightsMetadata')).to be
       end
-
       it 'generated dublin core' do
         expect(@p_xml.at_xpath('/publicObject/oai_dc:dc', 'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/')).to be
       end
@@ -187,7 +179,6 @@ describe Dor::Publishable do
           druid1 = DruidTools::Druid.new @item.pid, purl_root
           druid1.mkdir
           File.open(File.join(druid1.path, 'tmpfile'), 'w') {|f| f.write 'junk' }
-
           @item.publish_metadata
           expect(File).to_not exist(druid1.path)
         end

@@ -49,6 +49,9 @@ describe Dor::RightsMetadataDS do
   end
 
   describe 'to_solr' do
+    before :each do
+      allow(OpenURI).to receive(:open_uri).with('http://purl-test.stanford.edu/bb046xn0881.xml').and_return('<xml/>')
+    end
     it 'should have correct primary' do
       doc = @item.to_solr
       expect(doc).to match a_hash_including(

@@ -67,7 +67,7 @@ end
 
 RSpec.configure do |config|
   config.include Dor::SpecHelpers
-  config.logger.level = Logger::WARN  # INFO and lesser messages are not notable
+  config.logger.level = Logger::WARN  # if you want INFO and lesser messages, tweak here
 end
 
 VCR.configure do |c|
@@ -77,6 +77,8 @@ VCR.configure do |c|
   c.default_cassette_options = { :record => :new_episodes }
   c.configure_rspec_metadata!
 end
+
+Retries.sleep_enabled = false  # fail fast in tests
 
 def catch_stdio
   old_handles = [$stdout.dup, $stderr.dup]
