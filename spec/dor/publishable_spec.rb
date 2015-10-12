@@ -59,7 +59,7 @@ describe Dor::Publishable do
     @item.rightsMetadata.content = @rights
     @item.rels_ext.content = @rels
     allow(@item).to receive(:add_collection_reference).and_return(@mods)
-    allow(OpenURI).to receive(:open_uri).with('http://purl-test.stanford.edu/ab123cd4567.xml').and_return('<xml/>')
+    allow(OpenURI).to receive(:open_uri).with('https://purl-test.stanford.edu/ab123cd4567.xml').and_return('<xml/>')
   end
 
   it "has a rightsMetadata datastream" do

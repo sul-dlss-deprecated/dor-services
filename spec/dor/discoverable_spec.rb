@@ -37,7 +37,7 @@ describe 'Dor::Discoverable' do
       <identifier type="local">rd-115</identifier>
     </mods>
     '))
-    allow(OpenURI).to receive(:open_uri).with('http://purl-test.stanford.edu/cj765pw7168.xml').and_return('<xml/>')
+    allow(OpenURI).to receive(:open_uri).with('https://purl-test.stanford.edu/cj765pw7168.xml').and_return('<xml/>')
   end
 
   describe 'to_solr' do
