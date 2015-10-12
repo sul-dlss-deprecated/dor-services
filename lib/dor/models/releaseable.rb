@@ -331,7 +331,7 @@ module Dor
         # We assume a 404 means the document has never been published before and thus has no purl
         Dor.logger.warn "[Attempt #{attempt_number}] GET #{url} -- #{exception.class}: #{exception.message}; #{total_delay} seconds elapsed."
         raise exception unless exception.is_a? OpenURI::HTTPError
-        return Nokogiri::HTML::Document.new if exception.message.strip == '404'    # strip is needed if the actual message is "404 "
+        return Nokogiri::HTML::Document.new if exception.io.status[0] == '404'
       end
 
       with_retries(:max_retries => 3, :base_sleep_seconds => 3, :max_sleep_seconds => 5, :handler => handler) do |attempt|
@@ -350,10 +350,10 @@ module Dor
       return druid
     end
 
-    # Take the and create the entire purl url that will usable for the open method in open-uri, returns http
+    # Take the and create the entire purl url that will usable for the open method in open-uri, returns https
     # @return [String] the full url
     def form_purl_url
-      'http://' + Dor::Config.stacks.document_cache_host + "/#{remove_druid_prefix}.xml"
+      'https://' + Dor::Config.stacks.document_cache_host + "/#{remove_druid_prefix}.xml"
     end
 
     #Pull all release nodes from the public xml obtained via the purl query
