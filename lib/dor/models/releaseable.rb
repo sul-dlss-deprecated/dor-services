@@ -226,29 +226,6 @@ module Dor
       return_hash
     end
 
-    #Determine if the supplied tag is a valid release tag that meets all requirements
-    #
-    #@raises [RuntimeError]  Raises an error of the first fault in the release tag
-    #
-    #@return [Boolean] Returns true if no errors found
-    #
-    #@params attrs [hash] A hash of attributes for the tag, must contain: :when, a ISO 8601 timestamp; :who, to identify who or what added the tag; and :to, a string identifying the release target
-    def valid_release_attributes_and_tag(tag, attrs={})
-      raise ArgumentError, ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z') == nil
-      [:who, :to, :what].each do |check_attr|
-        raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
-      end
-
-      what_correct = false
-      ['self', 'collection'].each do |allowed_what_value|
-        what_correct = true if attrs[:what] == allowed_what_value
-      end
-      raise ArgumentError, ":what must be self or collection" if ! what_correct
-      raise ArgumentError, "the value set for this tag is not a boolean" if !!tag != tag
-      validate_tag_format(attrs[:tag]) if attrs[:tag] != nil #Will Raise exception if invalid tag
-      return true
-    end
-
     #Add a release node for the item
     #Will use the current time to add in the timestamp if you do not supply a timestamp, you can supply a timestap for correcting history, etc if desired
     #
