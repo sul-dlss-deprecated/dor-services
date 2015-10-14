@@ -32,7 +32,7 @@ http_interactions:
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
         http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:dc235vd9662"
         ><objLabel>Le Mans, 1955 ; Mille Miglia 1956</objLabel><objOwnerId>fedoraAdmin</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2012-05-03T20:38:34.666Z</objCreateDate><objLastModDate>2015-03-11T20:48:25.710Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Adc235vd9662/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Adc235vd9662/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
-    http_version: 
+    http_version:
   recorded_at: Wed, 11 Mar 2015 21:10:31 GMT
 - request:
     method: get
@@ -78,7 +78,7 @@ http_interactions:
         />    <datastream dsid="technicalMetadata" label="Technical Metadata" mimeType="text/xml"
         />    <datastream dsid="workflows" label="Workflow" mimeType="application/xml"
         /></objectDatastreams>
-    http_version: 
+    http_version:
   recorded_at: Wed, 11 Mar 2015 21:10:32 GMT
 - request:
     method: get
@@ -124,7 +124,7 @@ http_interactions:
         <dsChecksumType>DISABLED</dsChecksumType>
         <dsChecksum>none</dsChecksum>
         </datastreamProfile>
-    http_version: 
+    http_version:
   recorded_at: Wed, 11 Mar 2015 21:10:32 GMT
 - request:
     method: get
@@ -173,7 +173,7 @@ http_interactions:
             <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:wz243gf4151"></fedora:isMemberOfCollection>
           </rdf:Description>
         </rdf:RDF>
-    http_version: 
+    http_version:
   recorded_at: Wed, 11 Mar 2015 21:10:32 GMT
 - request:
     method: get
@@ -219,11 +219,11 @@ http_interactions:
         <dsChecksumType>DISABLED</dsChecksumType>
         <dsChecksum>none</dsChecksum>
         </datastreamProfile>
-    http_version: 
+    http_version:
   recorded_at: Wed, 11 Mar 2015 21:10:32 GMT
 - request:
     method: get
-    uri: http://purl-test.stanford.edu/dc235vd9662.xml
+    uri: https://purl-test.stanford.edu/dc235vd9662.xml
     body:
       encoding: US-ASCII
       string: ''
@@ -332,11 +332,11 @@ http_interactions:
             <release to="Mogami">true</release>
           </ReleaseDigest>
         </publicObject>
-    http_version: 
+    http_version:
   recorded_at: Wed, 11 Mar 2015 21:10:32 GMT
 - request:
     method: get
-    uri: http://purl-test.stanford.edu/dc235vd9662.xml
+    uri: https://purl-test.stanford.edu/dc235vd9662.xml
     body:
       encoding: US-ASCII
       string: ''
@@ -445,6 +445,6 @@ http_interactions:
             <release to="Mogami">true</release>
           </ReleaseDigest>
         </publicObject>
-    http_version: 
+    http_version:
   recorded_at: Wed, 11 Mar 2015 21:11:09 GMT
 recorded_with: VCR 2.9.3

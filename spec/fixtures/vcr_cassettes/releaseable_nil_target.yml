@@ -31,7 +31,7 @@ http_interactions:
         http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:bc566xq6031"
         ><objLabel>Minuta di lettera di Paolo Veratti di ringraziamento per la n...ondenza
         della Guardia Nazionale,</objLabel><objOwnerId>fedoraAdmin</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2012-09-04T21:59:07.690Z</objCreateDate><objLastModDate>2015-01-21T22:18:36.618Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Abc566xq6031/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Abc566xq6031/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:07 GMT
 - request:
     method: get
@@ -74,7 +74,7 @@ http_interactions:
         label="Events" mimeType="text/xml" />    <datastream dsid="versionMetadata"
         label="Version Metadata" mimeType="text/xml" />    <datastream dsid="provenanceMetadata"
         label="Provenance Metadata" mimeType="text/xml" /></objectDatastreams>
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:07 GMT
 - request:
     method: get
@@ -106,7 +106,7 @@ http_interactions:
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
         http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:bc566xq6031"
         dsID="RELS-EXT" ><dsLabel>Fedora Object-to-Object Relationship Metadata</dsLabel><dsVersionID>RELS-EXT.1</dsVersionID><dsCreateDate>2012-12-14T06:49:27.054Z</dsCreateDate><dsState>A</dsState><dsMIME>application/rdf+xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>721</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:bc566xq6031+RELS-EXT+RELS-EXT.1</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:07 GMT
 - request:
     method: get
@@ -144,7 +144,7 @@ http_interactions:
         \   <fedora:isMemberOf rdf:resource=\"info:fedora/druid:nx585yw5390\"></fedora:isMemberOf>\n
         \   <fedora:isMemberOfCollection rdf:resource=\"info:fedora/druid:nx585yw5390\"></fedora:isMemberOfCollection>\n
         \ </rdf:Description>\n</rdf:RDF>\n"
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:07 GMT
 - request:
     method: get
@@ -176,7 +176,7 @@ http_interactions:
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
         http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:bc566xq6031"
         dsID="workflows" ><dsLabel>Workflow</dsLabel><dsVersionID>workflows.2</dsVersionID><dsCreateDate>2013-01-13T05:53:39.401Z</dsCreateDate><dsState>A</dsState><dsMIME>application/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>E</dsControlGroup><dsSize>0</dsSize><dsVersionable>false</dsVersionable><dsInfoType></dsInfoType><dsLocation>https://lyberservices-prod.stanford.edu/workflow/dor/objects/druid:bc566xq6031/workflows</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:07 GMT
 - request:
     method: get
@@ -208,7 +208,7 @@ http_interactions:
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
         http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:bc566xq6031"
         dsID="identityMetadata" ><dsLabel>Identity Metadata</dsLabel><dsVersionID>identityMetadata.5</dsVersionID><dsCreateDate>2013-01-18T01:55:52.664Z</dsCreateDate><dsState>A</dsState><dsMIME>text/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>623</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:bc566xq6031+identityMetadata+identityMetadata.5</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:07 GMT
 - request:
     method: get
@@ -246,7 +246,7 @@ http_interactions:
         \ <otherId name=\"uuid\">bf69ab98-f6db-11e1-a9cf-0016034322e2</otherId>\n
         \ <tag>Project : Bassi Veratti</tag>\n  <tag>Registered By : mgolson</tag>\n
         \ <tag>Remediated By : 3.17.13</tag>\n</identityMetadata>\n"
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:08 GMT
 - request:
     method: get
@@ -575,7 +575,7 @@ http_interactions:
         ICAgICAgICAgZW5nCiAgICAgICAgICAgIAogICAgICAgICAnXSwnX3ZlcnNp
         b25fJz0+MTQ5MDk0ODM3Nzk2NDE4MzU1MiwndGltZXN0YW1wJz0+JzIwMTUt
         MDEtMjFUMjI6MjY6MTUuMTY5Wid9XX19Cg==
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:08 GMT
 - request:
     method: get
@@ -607,7 +607,7 @@ http_interactions:
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
         http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:nx585yw5390"
         ><objLabel>Bassi-Veratti Collection</objLabel><objOwnerId>DOR</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2011-07-05T17:12:18.779Z</objCreateDate><objLastModDate>2015-01-21T22:26:06.561Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Anx585yw5390/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Anx585yw5390/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:08 GMT
 - request:
     method: get
@@ -648,7 +648,7 @@ http_interactions:
         label="Embargo metadata" mimeType="text/xml" />    <datastream dsid="versionMetadata"
         label="Version Metadata" mimeType="text/xml" />    <datastream dsid="identityMetadata"
         label="Identity Metadata" mimeType="text/xml" /></objectDatastreams>
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:08 GMT
 - request:
     method: get
@@ -680,7 +680,7 @@ http_interactions:
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
         http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nx585yw5390"
         dsID="RELS-EXT" ><dsLabel>RDF Statements about this object</dsLabel><dsVersionID>RELS-EXT.1</dsVersionID><dsCreateDate>2015-01-21T22:16:20.450Z</dsCreateDate><dsState>A</dsState><dsMIME>application/rdf+xml</dsMIME><dsFormatURI>info:fedora/fedora-system:FedoraRELSExt-1.0</dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>458</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:nx585yw5390+RELS-EXT+RELS-EXT.1</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:08 GMT
 - request:
     method: get
@@ -715,7 +715,7 @@ http_interactions:
         \ <rdf:Description rdf:about=\"info:fedora/druid:nx585yw5390\">\n    <hydra:isGovernedBy
         rdf:resource=\"info:fedora/druid:wq307yk9043\"></hydra:isGovernedBy>\n    <fedora-model:hasModel
         rdf:resource=\"info:fedora/afmodel:Dor_Item\"></fedora-model:hasModel>\n  </rdf:Description>\n</rdf:RDF>\n"
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:08 GMT
 - request:
     method: get
@@ -747,7 +747,7 @@ http_interactions:
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
         http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nx585yw5390"
         dsID="workflows" ><dsLabel>Workflow</dsLabel><dsVersionID>workflows.0</dsVersionID><dsCreateDate>2012-06-05T23:51:36.220Z</dsCreateDate><dsState>A</dsState><dsMIME>application/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>E</dsControlGroup><dsSize>0</dsSize><dsVersionable>false</dsVersionable><dsInfoType></dsInfoType><dsLocation>https://lyberservices-prod.stanford.edu/workflow/dor/objects/druid:nx585yw5390/workflows</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:08 GMT
 - request:
     method: get
@@ -779,7 +779,7 @@ http_interactions:
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/access/
         http://www.fedora.info/definitions/1/0/objectProfile.xsd" pid="druid:nx585yw5390"
         ><objLabel>Bassi-Veratti Collection</objLabel><objOwnerId>DOR</objOwnerId><objModels><model>info:fedora/afmodel:Dor_Item</model><model>info:fedora/fedora-system:FedoraObject-3.0</model></objModels><objCreateDate>2011-07-05T17:12:18.779Z</objCreateDate><objLastModDate>2015-01-21T22:26:06.561Z</objLastModDate><objDissIndexViewURL>https://localhost:443/fedora/objects/druid%3Anx585yw5390/methods/fedora-system%3A3/viewMethodIndex</objDissIndexViewURL><objItemIndexViewURL>https://localhost:443/fedora/objects/druid%3Anx585yw5390/methods/fedora-system%3A3/viewItemIndex</objItemIndexViewURL><objState>A</objState></objectProfile>
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:08 GMT
 - request:
     method: get
@@ -820,7 +820,7 @@ http_interactions:
         label="Embargo metadata" mimeType="text/xml" />    <datastream dsid="versionMetadata"
         label="Version Metadata" mimeType="text/xml" />    <datastream dsid="identityMetadata"
         label="Identity Metadata" mimeType="text/xml" /></objectDatastreams>
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:08 GMT
 - request:
     method: get
@@ -852,7 +852,7 @@ http_interactions:
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
         http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nx585yw5390"
         dsID="RELS-EXT" ><dsLabel>RDF Statements about this object</dsLabel><dsVersionID>RELS-EXT.1</dsVersionID><dsCreateDate>2015-01-21T22:16:20.450Z</dsCreateDate><dsState>A</dsState><dsMIME>application/rdf+xml</dsMIME><dsFormatURI>info:fedora/fedora-system:FedoraRELSExt-1.0</dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>458</dsSize><dsVersionable>true</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:nx585yw5390+RELS-EXT+RELS-EXT.1</dsLocation><dsLocationType></dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:08 GMT
 - request:
     method: get
@@ -887,7 +887,7 @@ http_interactions:
         \ <rdf:Description rdf:about=\"info:fedora/druid:nx585yw5390\">\n    <hydra:isGovernedBy
         rdf:resource=\"info:fedora/druid:wq307yk9043\"></hydra:isGovernedBy>\n    <fedora-model:hasModel
         rdf:resource=\"info:fedora/afmodel:Dor_Item\"></fedora-model:hasModel>\n  </rdf:Description>\n</rdf:RDF>\n"
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:08 GMT
 - request:
     method: get
@@ -919,7 +919,7 @@ http_interactions:
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
         http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nx585yw5390"
         dsID="workflows" ><dsLabel>Workflow</dsLabel><dsVersionID>workflows.0</dsVersionID><dsCreateDate>2012-06-05T23:51:36.220Z</dsCreateDate><dsState>A</dsState><dsMIME>application/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>E</dsControlGroup><dsSize>0</dsSize><dsVersionable>false</dsVersionable><dsInfoType></dsInfoType><dsLocation>https://lyberservices-prod.stanford.edu/workflow/dor/objects/druid:nx585yw5390/workflows</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:09 GMT
 - request:
     method: get
@@ -951,7 +951,7 @@ http_interactions:
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.fedora.info/definitions/1/0/management/
         http://www.fedora.info/definitions/1/0/datastreamProfile.xsd" pid="druid:nx585yw5390"
         dsID="identityMetadata" ><dsLabel>Identity Metadata</dsLabel><dsVersionID>identityMetadata.4</dsVersionID><dsCreateDate>2015-01-21T22:26:06.561Z</dsCreateDate><dsState>A</dsState><dsMIME>text/xml</dsMIME><dsFormatURI></dsFormatURI><dsControlGroup>X</dsControlGroup><dsSize>790</dsSize><dsVersionable>false</dsVersionable><dsInfoType></dsInfoType><dsLocation>druid:nx585yw5390+identityMetadata+identityMetadata.4</dsLocation><dsLocationType>URL</dsLocationType><dsChecksumType>DISABLED</dsChecksumType><dsChecksum>none</dsChecksum></datastreamProfile>
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:09 GMT
 - request:
     method: get
@@ -991,11 +991,11 @@ http_interactions:
         \ <release to=\"Kurita\" what=\"collection\" when=\"2015-01-21T22:25:53Z\"
         who=\"carrickr\">false</release>\n  <release to=\"Kurita\" what=\"collection\"
         when=\"2015-01-21T22:26:03Z\" who=\"carrickr\">true</release>\n</identityMetadata>\n"
-    http_version: 
+    http_version:
   recorded_at: Wed, 21 Jan 2015 22:57:09 GMT
 - request:
     method: get
-    uri: http://purl-test.stanford.edu/bc566xq6031.xml
+    uri: https://purl-test.stanford.edu/bc566xq6031.xml
     body:
       encoding: US-ASCII
       string: ''
@@ -1065,11 +1065,11 @@ http_interactions:
         Stanford, California 94305\n      </div>\n    </div>\n  </div>\n</div>\n    <script
         src=\"/assets/jquery.js?body=1\"></script>\n<script src=\"/assets/jquery.truncator.js?body=1\"></script>\n<script
         src=\"/assets/application.js?body=1\"></script>\n\n    \n  </body>\n</html>\n"
-    http_version: 
+    http_version:
   recorded_at: Thu, 19 Mar 2015 19:36:59 GMT
 - request:
     method: get
-    uri: http://purl-test.stanford.edu/bc566xq6031.xml
+    uri: https://purl-test.stanford.edu/bc566xq6031.xml
     body:
       encoding: US-ASCII
       string: ''
@@ -1139,11 +1139,11 @@ http_interactions:
         Stanford, California 94305\n      </div>\n    </div>\n  </div>\n</div>\n    <script
         src=\"/assets/jquery.js?body=1\"></script>\n<script src=\"/assets/jquery.truncator.js?body=1\"></script>\n<script
         src=\"/assets/application.js?body=1\"></script>\n\n    \n  </body>\n</html>\n"
-    http_version: 
+    http_version:
   recorded_at: Thu, 19 Mar 2015 19:37:02 GMT
 - request:
     method: get
-    uri: http://purl-test.stanford.edu/bc566xq6031.xml
+    uri: https://purl-test.stanford.edu/bc566xq6031.xml
     body:
       encoding: US-ASCII
       string: ''
@@ -1213,6 +1213,6 @@ http_interactions:
         Stanford, California 94305\n      </div>\n    </div>\n  </div>\n</div>\n    <script
         src=\"/assets/jquery.js?body=1\"></script>\n<script src=\"/assets/jquery.truncator.js?body=1\"></script>\n<script
         src=\"/assets/application.js?body=1\"></script>\n\n    \n  </body>\n</html>\n"
-    http_version: 
+    http_version:
   recorded_at: Thu, 19 Mar 2015 19:37:05 GMT
 recorded_with: VCR 2.9.3
