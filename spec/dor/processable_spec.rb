@@ -149,7 +149,7 @@ describe Dor::Processable do
       #lifecycle_display should have the semicolon delimited version
       expect(solr_doc['lifecycle_ssim']).to include('published:2012-01-27T05:06:54Z;2')
       # published date should be the first published date
-      expect(solr_doc).to match a_hash_including('status_ssi' => 'v4 Opened')
+      expect(solr_doc).to match a_hash_including('status_ssi' => 'v4 In accessioning (described, published)')
       expect(solr_doc).to match a_hash_including('opened_dttsim' => including('2012-11-07T00:21:02Z'))
       expect(solr_doc['published_earliest_dttsi']).to eq('2012-01-27T05:06:54Z')
       expect(solr_doc['published_latest_dttsi'  ]).to eq('2012-11-07T00:59:39Z')
@@ -235,7 +235,7 @@ describe Dor::Processable do
       xml = Nokogiri::XML(xml)
       expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
       expect(@versionMD).to receive(:current_version_id).and_return('4')
-      expect(@item.status).to eq('v4 Opened')
+      expect(@item.status).to eq('v4 In accessioning (described, published)')
     end
     it 'should generate a status string' do
       expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(@gv054hp4128)
@@ -278,7 +278,7 @@ describe Dor::Processable do
 
     it 'should handle a v2 accessioned object' do
       expect(@versionMD).to receive(:current_version_id).and_return('2')
-      expect(@item.status).to eq('v2 Opened')
+      expect(@item.status).to eq('v2 Accessioned')
     end
     it 'should give a status of unknown if there are no lifecycles for the current version, indicating malfunction in workflow' do
       expect(@versionMD).to receive(:current_version_id).and_return('3')
@@ -286,7 +286,7 @@ describe Dor::Processable do
     end
     it 'should include a formatted date/time if one is requested' do
       expect(@versionMD).to receive(:current_version_id).and_return('2')
-      expect(@item.status(true)).to eq('v2 Opened 2013-08-15 06:59PM')
+      expect(@item.status(true)).to eq('v2 Accessioned 2013-10-01 07:11PM')
     end
   end
 
