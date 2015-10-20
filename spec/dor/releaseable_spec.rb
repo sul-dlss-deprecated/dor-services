@@ -348,7 +348,7 @@ describe 'Adding release nodes', :vcr do
     end
 
     it 'should return the full url for a druid' do
-      expect(@item.form_purl_url).to eq("http://#{Dor::Config.stacks.document_cache_host}/bb004bn8654.xml")
+      expect(@item.form_purl_url).to eq("https://#{Dor::Config.stacks.document_cache_host}/bb004bn8654.xml")
     end
 
     it 'should get the purl xml for a druid' do

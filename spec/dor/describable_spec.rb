@@ -293,7 +293,7 @@ describe Dor::Describable do
         expect(collection_title.length).to eq 1
         expect(collection_uri.length  ).to eq 1
         expect(collection_title.first.content).to eq 'complete works of Henry George'
-        expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
+        expect(collection_uri.first.content  ).to eq 'https://purl.stanford.edu/zb871zd0767'
       end
 
       it 'replaces an existing relatedItem if there is a parent collection with title' do
@@ -306,7 +306,7 @@ describe Dor::Describable do
         expect(collection_title.length).to eq 1
         expect(collection_uri.length  ).to eq 1
         expect(collection_title.first.content).to eq 'complete works of Henry George'
-        expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
+        expect(collection_uri.first.content  ).to eq 'https://purl.stanford.edu/zb871zd0767'
       end
 
       it 'does not touch an existing relatedItem if there is no collection relationship' do
@@ -412,7 +412,7 @@ describe Dor::Describable do
       expect(collection_title.length).to eq 1
       expect(collection_uri.length  ).to eq 1
       expect(collection_title.first.content).to eq 'complete works of Henry George'
-      expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
+      expect(collection_uri.first.content  ).to eq 'https://purl.stanford.edu/zb871zd0767'
       %w(useAndReproduction copyright license).each{ |term|
         expect(doc.xpath('//mods:accessCondition[@type="' + term + '"]').size).to eq 1
       }
@@ -437,7 +437,7 @@ describe Dor::Describable do
       expect(collection_title.length).to eq 1
       expect(collection_uri.length  ).to eq 1
       expect(collection_title.first.content).to eq 'complete works of Henry George'
-      expect(collection_uri.first.content  ).to eq 'http://purl.stanford.edu/zb871zd0767'
+      expect(collection_uri.first.content  ).to eq 'https://purl.stanford.edu/zb871zd0767'
       %w(useAndReproduction copyright license).each{ |term|
         expect(doc.xpath('//xmlns:accessCondition[@type="' + term + '"]').size).to eq 1
       }

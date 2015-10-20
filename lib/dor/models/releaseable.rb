@@ -319,7 +319,7 @@ module Dor
     # Take the and create the entire purl url that will usable for the open method in open-uri, returns http
     # @return [String] the full url
     def form_purl_url
-      'http://' + Dor::Config.stacks.document_cache_host + "/#{remove_druid_prefix}.xml"
+      'https://' + Dor::Config.stacks.document_cache_host + "/#{remove_druid_prefix}.xml"
     end
 
     # Pull all release nodes from the public xml obtained via the purl query

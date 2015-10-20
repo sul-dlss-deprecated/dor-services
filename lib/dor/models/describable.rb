@@ -132,7 +132,7 @@ module Dor
 
         id_node = Nokogiri::XML::Node.new('identifier', doc)
         id_node['type'] = 'uri'
-        id_node.content = "http://#{Dor::Config.stacks.document_cache_host}/#{druid.split(':').last}"
+        id_node.content = "https://#{Dor::Config.stacks.document_cache_host}/#{druid.split(':').last}"
 
         type_node = Nokogiri::XML::Node.new('typeOfResource', doc)
         type_node['collection'] = 'yes'
