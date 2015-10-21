@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://purl-test.stanford.edu/Hello.xml
+    uri: https://purl-test.stanford.edu/Hello.xml
     body:
       encoding: US-ASCII
       string: ''
@@ -76,7 +76,7 @@ http_interactions:
   recorded_at: Thu, 12 Mar 2015 22:01:54 GMT
 - request:
     method: get
-    uri: http://purl-test.stanford.edu/IAmABadDruid.xml
+    uri: https://purl-test.stanford.edu/IAmABadDruid.xml
     body:
       encoding: US-ASCII
       string: ''
