@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://purl-test.stanford.edu/dc235vd9662.xml
+    uri: https://purl-test.stanford.edu/dc235vd9662.xml
     body:
       encoding: US-ASCII
       string: ''
@@ -115,7 +115,7 @@ http_interactions:
   recorded_at: Tue, 10 Mar 2015 22:41:39 GMT
 - request:
     method: get
-    uri: http://purl-test.stanford.edu/bb004bn8654.xml
+    uri: https://purl-test.stanford.edu/bb004bn8654.xml
     body:
       encoding: US-ASCII
       string: ''

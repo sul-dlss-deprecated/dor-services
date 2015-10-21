@@ -223,7 +223,7 @@ http_interactions:
   recorded_at: Wed, 11 Mar 2015 21:10:32 GMT
 - request:
     method: get
-    uri: http://purl-test.stanford.edu/dc235vd9662.xml
+    uri: https://purl-test.stanford.edu/dc235vd9662.xml
     body:
       encoding: US-ASCII
       string: ''
@@ -336,7 +336,7 @@ http_interactions:
   recorded_at: Wed, 11 Mar 2015 21:10:32 GMT
 - request:
     method: get
-    uri: http://purl-test.stanford.edu/dc235vd9662.xml
+    uri: https://purl-test.stanford.edu/dc235vd9662.xml
     body:
       encoding: US-ASCII
       string: ''
@@ -449,7 +449,7 @@ http_interactions:
   recorded_at: Wed, 11 Mar 2015 21:11:09 GMT
 - request:
     method: get
-    uri: http://purl-test.stanford.edu/dc235vd9662.xml
+    uri: https://purl-test.stanford.edu/dc235vd9662.xml
     body:
       encoding: US-ASCII
       string: ''
