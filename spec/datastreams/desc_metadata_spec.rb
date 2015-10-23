@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Dor::DescMetadataDS do
   context 'Marshalling to/from a Fedora Datastream' do
     before(:each) do
-      @dsxml = <<-EOF
+      @dsdoc = Dor::DescMetadataDS.from_xml <<-EOF
         <mods xmlns="http://www.loc.gov/mods/v3"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3"
           xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
@@ -34,16 +34,43 @@ describe Dor::DescMetadataDS do
           <subject><topic>Topic2: The Interesting Part!</topic></subject>
         </mods>
       EOF
-
-      @dsdoc = Dor::DescMetadataDS.from_xml(@dsxml)
+      @partial = Dor::DescMetadataDS.from_xml <<-EOF
+        <mods xmlns="http://www.loc.gov/mods/v3"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3"
+          xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+          <titleInfo>
+            <title>Electronic Theses and Dissertations</title>
+          </titleInfo>
+          <name type="corporate">
+            <namePart>Stanford University Libraries, Stanford Digital Repository</namePart>
+            <role>
+              <roleTerm authority="marcrelator" type="text">creator</roleTerm>
+            </role>
+          </name>
+          <typeOfResource collection="yes"/>
+          <subject>
+            <geographic>First Place</geographic>
+            <geographic>Other Place, Nation;</geographic>
+            <temporal>1890-1910</temporal>
+            <temporal>20th century</temporal>
+            <topic>Topic1: Boring Part</topic>
+          </subject>
+          <subject><temporal>another</temporal></subject>
+          <genre>first</genre>
+          <genre>second</genre>
+          <subject><topic>Topic2: The Interesting Part!</topic></subject>
+        </mods>
+      EOF
     end
 
     it 'should get correct values from OM terminology' do
       expect(@dsdoc.term_values(:abstract)).to eq(['Abstract contents.'])
-      expect(@dsdoc.abstract              ).to eq(['Abstract contents.'])  # equivalent accessor
-      expect(@dsdoc.subject.geographic).to eq(['First Place', 'Other Place, Nation;'])
-      expect(@dsdoc.subject.temporal  ).to eq(['1890-1910', '20th century', 'another'])
-      expect(@dsdoc.subject.topic     ).to eq(['Topic1: Boring Part', 'Topic2: The Interesting Part!'])
+      expect(@dsdoc.abstract              ).to eq(['Abstract contents.']) # equivalent accessor
+      expect(@dsdoc.subject.geographic    ).to eq(['First Place', 'Other Place, Nation;'])
+      expect(@dsdoc.subject.temporal      ).to eq(['1890-1910', '20th century', 'another'])
+      expect(@dsdoc.subject.topic         ).to eq(['Topic1: Boring Part', 'Topic2: The Interesting Part!'])
+      expect(@dsdoc.title_info.main_title ).to eq(['Electronic Theses and Dissertations'])
+      expect(@dsdoc.language.languageTerm ).to eq(['eng'])
     end
 
     it 'should solrize correctly' do
@@ -57,6 +84,10 @@ describe Dor::DescMetadataDS do
       expect(doc).to match a_hash_including('subject_geographic_tesim' => ['First Place', 'Other Place, Nation;'])
       expect(doc).to match a_hash_including('abstract_tesim'           => ['Abstract contents.'])
     end
+    it 'writing elements via OM terms should produce correct XML' do
+      @partial.language.languageTerm = 'eng'
+      @partial.abstract = 'Abstract contents.'
+      expect(@partial.to_xml).to be_equivalent_to(@dsdoc.to_xml)
+    end
   end
-
 end
