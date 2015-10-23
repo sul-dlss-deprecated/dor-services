@@ -19,5 +19,6 @@ tmp.xml
 config/environments
 config/certs/*
 spec/certs/*
+spec/fixtures/assembly/.deletes
 spec/fixtures/workspace/.deletes
 workflow_service.log
