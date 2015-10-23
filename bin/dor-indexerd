@@ -43,12 +43,12 @@ log_dir=nil
 if ARGV[3]=='--log_dir'
 log_dir=ARGV[4]
 else
-	puts "Log dir not specified"
+  puts "Log dir not specified"
 end
 
 
 if log_dir.empty?
-	File.join(Dir.pwd,'log')
+  File.join(Dir.pwd,'log')
 end
 
 
@@ -70,4 +70,3 @@ version = '>=0'
 #app = Gem.bin_path('dor-services','dor-indexer',version)
 app = File.expand_path('../dor-indexer',__FILE__)
 Daemons.run(app,options)
-

@@ -18,7 +18,7 @@ module Dor
 
       # Add in each tag
       release_tags.each do |r_tag|
-        self.add_release_node(r_tag[:release],r_tag)
+        add_release_node(r_tag[:release],r_tag)
       end
 
       # Save item to dor so the robots work with the latest data
@@ -54,7 +54,7 @@ module Dor
       # Get the most recent self tag for all targets and save their result since most recent self always trumps any other non self tags
       latest_self_tags = get_newest_release_tag(self_release_tags)
       latest_self_tags.keys.each do |target|
-        released_hash[target] =  self.clean_release_tag_for_purl(latest_self_tags[target])
+        released_hash[target] =  clean_release_tag_for_purl(latest_self_tags[target])
       end
 
       # With Self Tags Resolved We Now need to deal with tags on all sets this object is part of
@@ -83,7 +83,7 @@ module Dor
     #
     #@return [Hash] a hash of self tags for each to value
     def get_self_release_tags(tags)
-      return get_tags_for_what_value(tags, 'self')
+      get_tags_for_what_value(tags, 'self')
     end
 
     #Take an item and get all of its release tags and all tags on collections it is a member of it
@@ -95,7 +95,7 @@ module Dor
       collections.each do |collection|
         return_tags = combine_two_release_tag_hashes(return_tags, Dor::Item.find(collection.id).get_release_tags_for_item_and_all_governing_sets) # recurvise so parents of parents are found
       end
-      return return_tags
+      return_tags
     end
 
     #Take two hashes of tags and combine them, will not overwrite but will enforce uniqueness of the tags
@@ -106,10 +106,10 @@ module Dor
     #@return [Hash] the combined hash with uniquiness enforced
     def combine_two_release_tag_hashes(hash_one, hash_two)
       hash_two.keys.each do |key|
-        hash_one[key] = hash_two[key] if hash_one[key] == nil
-        hash_one[key] = (hash_one[key] + hash_two[key]).uniq if hash_one[key] != nil
+        hash_one[key] = hash_two[key] if hash_one[key].nil?
+        hash_one[key] = (hash_one[key] + hash_two[key]).uniq unless hash_one[key].nil?
       end
-      return hash_one
+      hash_one
     end
 
     #Take a hash of tags and return all tags with the matching what target
@@ -124,7 +124,7 @@ module Dor
         self_tags = tags[key].select {|tag| tag['what'] == what_target.downcase}
         return_hash[key] = self_tags if self_tags.size > 0
       end
-      return return_hash
+      return_hash
     end
 
     #Take a hash of tags as obtained via Dor::Item.release_tags and returns the newest tag for each namespace
@@ -153,7 +153,7 @@ module Dor
       array_of_tags.each do |tag|
         latest_tag_in_array = tag if tag['when'] > latest_tag_in_array['when']
       end
-      return latest_tag_in_array
+      latest_tag_in_array
     end
 
     # Takes a tag and returns true or false if it applies to the specific item
@@ -189,17 +189,17 @@ module Dor
     #
     #@return [Nokogiri::XML::NodeSet] of all release tags and their attributes
     def release_tags
-      release_tags = self.identityMetadata.ng_xml.xpath('//release')
+      release_tags = identityMetadata.ng_xml.xpath('//release')
       return_hash = {}
       release_tags.each do |release_tag|
-        hashed_node = self.release_tag_node_to_hash(release_tag)
-        if return_hash[hashed_node[:to]] != nil
+        hashed_node = release_tag_node_to_hash(release_tag)
+        if !return_hash[hashed_node[:to]].nil?
           return_hash[hashed_node[:to]] << hashed_node[:attrs]
         else
            return_hash[hashed_node[:to]] = [hashed_node[:attrs]]
         end
       end
-      return return_hash
+      return_hash
     end
 
     #method to convert one release element into an array
@@ -239,8 +239,8 @@ module Dor
     #
     #@example
     #  item.add_tag(true,:release,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket', :displayType='filmstrip'})
-    def add_release_node(release, attrs={})
-      identity_metadata_ds = self.identityMetadata
+    def add_release_node(release, attrs = {})
+      identity_metadata_ds = identityMetadata
       attrs[:when] = Time.now.utc.iso8601 if attrs[:when].nil? #add the timestamp
       attrs[:displayType] = 'file' if attrs[:displayType].nil? #default to file is no display type is passed
       valid_release_attributes(release, attrs)
@@ -258,8 +258,8 @@ module Dor
     #@return [Boolean] Returns true if no errors found
     #
     #@params attrs [hash] A hash of attributes for the tag, must contain :when, a ISO 8601 timestamp and :who to identify who or what added the tag, :to,
-    def valid_release_attributes(tag, attrs={})
-      raise ArgumentError, ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z') == nil
+    def valid_release_attributes(tag, attrs = {})
+      raise ArgumentError, ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z').nil?
       [:who, :to, :what].each do |check_attr|
         raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
@@ -280,17 +280,17 @@ module Dor
     #
     #@return [Nokogiri::XML::NodeSet] of all release tags and their attributes
     def release_nodes
-      release_tags = self.identityMetadata.ng_xml.xpath('//release')
+      release_tags = identityMetadata.ng_xml.xpath('//release')
       return_hash = {}
       release_tags.each do |release_tag|
-        hashed_node = self.release_tag_node_to_hash(release_tag)
-        if return_hash[hashed_node[:to]] != nil
+        hashed_node = release_tag_node_to_hash(release_tag)
+        if !return_hash[hashed_node[:to]].nil?
           return_hash[hashed_node[:to]] << hashed_node[:attrs]
         else
           return_hash[hashed_node[:to]] = [hashed_node[:attrs]]
         end
       end
-      return return_hash
+      return_hash
     end
 
     #Get a list of all release nodes found in a purl document
@@ -323,8 +323,8 @@ module Dor
     #@return [String] the druid sans the druid: or if there was no druid: prefix, the entire string you passed
     def remove_druid_prefix
       druid_prefix = "druid:"
-      return self.id.split(druid_prefix)[1] if self.id.split(druid_prefix).size > 1
-      return druid
+      return id.split(druid_prefix)[1] if id.split(druid_prefix).size > 1
+      druid
     end
 
     # Take the and create the entire purl url that will usable for the open method in open-uri, returns https
@@ -348,8 +348,8 @@ module Dor
     #
     #@return [Array] An array containing all the release tags
     def get_release_tags_from_purl
-      xml = self.get_xml_from_purl
-      return self.get_release_tags_from_purl_xml(xml)
+      xml = get_xml_from_purl
+      get_release_tags_from_purl_xml(xml)
     end
 
     # This function calls purl and gets a list of all release tags currently in purl.  It then compares to the list you have generated.
@@ -362,7 +362,7 @@ module Dor
       missing_tags.each do |missing_tag|
         new_tags[missing_tag.capitalize] = {"release"=>false}
       end
-      return new_tags
+      new_tags
     end
 
     def to_solr(solr_doc = {}, *args)

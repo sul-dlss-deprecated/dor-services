@@ -10,30 +10,30 @@ module Dor
     end
 
     def initiate_apo_workflow(name)
-      self.initialize_workflow(name, !self.new_object?)
+      initialize_workflow(name, !self.new_object?)
     end
 
     # Returns the default lane_id from the item's APO.  Will return 'default' if the item does not have
     #   and APO, or if the APO does not have a default_lane
     # @return [String] the lane id
     def default_workflow_lane
-      return 'default' if self.admin_policy_object.nil?  # TODO log warning?
+      return 'default' if admin_policy_object.nil?  # TODO log warning?
 
       admin_md = admin_policy_object.datastreams['administrativeMetadata']
       return 'default' unless admin_md.respond_to? :default_workflow_lane
       lane = admin_md.default_workflow_lane
-      return 'default' if lane.nil? or lane.strip == ''
+      return 'default' if lane.nil? || lane.strip == ''
       lane
     end
 
     def reset_to_apo_default()
-      rights_metadata_ds = self.rightsMetadata
+      rights_metadata_ds = rightsMetadata
       rights_metadata_ds.content = admin_policy_object.rightsMetadata.ng_xml
     end
 
     def set_read_rights(rights)
-      return if not ['world','stanford','none', 'dark'].include? rights
-      rights_metadata_ds = self.rightsMetadata
+      return unless ['world','stanford','none', 'dark'].include? rights
+      rights_metadata_ds = rightsMetadata
       rights_xml=rights_metadata_ds.ng_xml
       if(rights_xml.search('//rightsMetadata/access[@type=\'read\']').length==0)
         raise ('The rights metadata stream doesnt contain an entry for machine read permissions. Consider populating it from the APO before trying to change it.')
@@ -64,7 +64,7 @@ module Dor
           node.add_child(machine_node)
           machine_node.add_child(group_node)
         end
-        if rights=='none' or rights == 'dark'
+        if rights=='none' || rights == 'dark'
           none_node=Nokogiri::XML::Node.new('none',rights_xml)
           node.add_child(machine_node)
           machine_node.add_child(none_node)
@@ -79,8 +79,8 @@ module Dor
         when Dor::Collection
           collection_or_druid
       end
-      self.collections << collection
-      self.sets << collection
+      collections << collection
+      sets << collection
     end
 
     def remove_collection(collection_or_druid)
@@ -92,8 +92,8 @@ module Dor
           collection_or_druid
       end
 
-      self.collections.delete(collection)
-      self.sets.delete(collection)
+      collections.delete(collection)
+      sets.delete(collection)
     end
     #set the rights metadata datastream to the content of the APO's default object rights
     def reapplyAdminPolicyObjectDefaults
@@ -101,7 +101,7 @@ module Dor
     end
     def rights
         return nil unless self.respond_to? :rightsMetadata
-        xml=self.rightsMetadata.ng_xml
+        xml=rightsMetadata.ng_xml
         return nil if xml.search('//rightsMetadata').length != 1
         if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
           'Stanford'
@@ -142,7 +142,7 @@ module Dor
       ['dor-administrator', 'sdr-administrator', 'dor-apo-manager', 'dor-apo-depositor', 'dor-viewer', 'sdr-viewer']
     end
     def intersect arr1, arr2
-      return (arr1 & arr2).length > 0
+      (arr1 & arr2).length > 0
     end
     def can_manage_item? roles
       intersect roles, groups_which_manage_item

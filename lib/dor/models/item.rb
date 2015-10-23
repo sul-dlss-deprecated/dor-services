@@ -1,7 +1,7 @@
 module Dor
   module BasicItem
     extend ActiveSupport::Concern
-    
+
     include Identifiable
     include Processable
     include Governable
@@ -17,7 +17,7 @@ module Dor
     include Geoable
     include Releaseable
   end
-  
+
   class Abstract < ::ActiveFedora::Base
     include Identifiable
   end

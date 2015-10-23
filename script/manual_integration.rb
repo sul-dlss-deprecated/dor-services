@@ -171,6 +171,3 @@ end
 # %w(fq996gt6655 pf986hr8937 xz522yc4008 zf307yb9756)
 # pids = %w(fq996gt6655 pf986hr8937 xz522yc4008 zf307yb9756)
 # mit = MergeIntegrationTest.new pids, '/home/lyberadmin/wmene/frda2'
-
-
-

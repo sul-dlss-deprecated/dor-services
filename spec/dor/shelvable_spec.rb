@@ -125,25 +125,25 @@ describe Dor::Shelvable do
       expect(found).to eq(content_pathname.parent.parent)
     end
   end
-  
+
   describe ".get_stacks_location" do
     item = ShelvableItem.new(:pid=>'druid:xy123xy1234')
-    
+
     it 'should return the default stack' do
       item.contentMetadata.content = '<contentMetadata/>'
       item.get_stacks_location.should eq @stacks_root
     end
-    
+
     it 'should return the absolute stack' do
       item.contentMetadata.content = '<contentMetadata stacks="/specialstacks"/>'
       item.get_stacks_location.should eq "/specialstacks"
-      
+
     end
-     
+
     it 'should return a relative stack' do
-      item.contentMetadata.content = '<contentMetadata stacks="specialstacks"/>'      
+      item.contentMetadata.content = '<contentMetadata stacks="specialstacks"/>'
       expect { item.get_stacks_location }.to raise_error
-    end  
+    end
 
   end
 

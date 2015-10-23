@@ -69,7 +69,7 @@ describe Dor::ContentMetadataDS do
       xml=@item.contentMetadata.ng_xml
       checksums=xml.search('//file[@id=\'new_file.jp2\']//checksum')
       checksums.length.should == 2
-      checksums.each do | checksum|
+      checksums.each do |checksum|
         if checksum['type'] == 'md5'
           checksum.content.should == '123456'
         else
@@ -199,29 +199,29 @@ describe Dor::ContentMetadataDS do
       end
     end
     describe 'to_solr' do
-    	it 'should generate a shelved file count' do
-    		doc=@item.contentMetadata.to_solr
-    		doc['shelved_content_file_count_display'].first.should == '1'
-    	end
-    	it 'should generate a resource count' do
-    		doc=@item.contentMetadata.to_solr
-    		doc['resource_count_display'].first.should == '1'
-    	end
-    	it 'should generate a file count' do
-    		doc=@item.contentMetadata.to_solr
-    		doc['content_file_count_display'].first.should == '2'
-    	end
-    	it 'should generate a field called image_resource_count' do
-    		doc=@item.contentMetadata.to_solr
-    		doc['image_resource_count_display'].first.should == '1'
-    	end
-    	it 'should generate a field called first_shelved_image' do
-  	    doc=@item.contentMetadata.to_solr
-  	    doc['first_shelved_image_display'].first.should == 'gw177fc7976_05_0001.jp2'
-  	  end
+      it 'should generate a shelved file count' do
+        doc=@item.contentMetadata.to_solr
+        doc['shelved_content_file_count_display'].first.should == '1'
+      end
+      it 'should generate a resource count' do
+        doc=@item.contentMetadata.to_solr
+        doc['resource_count_display'].first.should == '1'
+      end
+      it 'should generate a file count' do
+        doc=@item.contentMetadata.to_solr
+        doc['content_file_count_display'].first.should == '2'
+      end
+      it 'should generate a field called image_resource_count' do
+        doc=@item.contentMetadata.to_solr
+        doc['image_resource_count_display'].first.should == '1'
+      end
+      it 'should generate a field called first_shelved_image' do
+        doc=@item.contentMetadata.to_solr
+        doc['first_shelved_image_display'].first.should == 'gw177fc7976_05_0001.jp2'
+      end
       it 'should generate a field call preserved_size_display' do
-  	    doc=@item.contentMetadata.to_solr
-  	    doc['preserved_size_t'].first.should == '86774303'
+        doc=@item.contentMetadata.to_solr
+        doc['preserved_size_t'].first.should == '86774303'
       end
     end
   describe 'set_content_type' do
@@ -237,4 +237,3 @@ describe Dor::ContentMetadataDS do
     end
     end
 end
-

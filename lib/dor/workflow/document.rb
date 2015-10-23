@@ -39,20 +39,20 @@ module Workflow
 
     def definition
       @definition ||= begin
-        if @@definitions.has_key? self.workflowId.first
-          @@definitions[self.workflowId.first]
+        if @@definitions.has_key? workflowId.first
+          @@definitions[workflowId.first]
         else
-        wfo = Dor::WorkflowObject.find_by_name(self.workflowId.first)
+        wfo = Dor::WorkflowObject.find_by_name(workflowId.first)
         wf_def=wfo ? wfo.definition : nil
-        @@definitions[self.workflowId.first] = wf_def
+        @@definitions[workflowId.first] = wf_def
         wf_def
         end
       end
     end
 
-    def graph(parent=nil, dir=nil)
-      wf_definition = self.definition
-      result = wf_definition ? Workflow::Graph.from_processes(wf_definition.repo, wf_definition.name, self.processes, parent) : nil
+    def graph(parent = nil, dir = nil)
+      wf_definition = definition
+      result = wf_definition ? Workflow::Graph.from_processes(wf_definition.repo, wf_definition.name, processes, parent) : nil
       unless result.nil?
         result['rankdir'] = dir || 'TB'
       end
@@ -60,7 +60,7 @@ module Workflow
     end
 
     def [](value)
-      self.processes.find { |p| p.name == value }
+      processes.find { |p| p.name == value }
     end
 
     def processes
@@ -69,15 +69,15 @@ module Workflow
         return []
       end
       @processes ||=
-      if self.definition
-        self.definition.processes.collect do |process|
+      if definition
+        definition.processes.collect do |process|
           node = ng_xml.at("/workflow/process[@name = '#{process.name}']")
           process.update!(node,self) unless node.nil?
           process
         end
       else
-        self.find_by_terms(:workflow, :process).collect do |x|
-          pnode = Dor::Workflow::Process.new(self.repository, self.workflowId, {})
+        find_by_terms(:workflow, :process).collect do |x|
+          pnode = Dor::Workflow::Process.new(repository, workflowId, {})
           pnode.update!(x,self)
           pnode
         end.sort_by(&:datetime)
@@ -85,12 +85,12 @@ module Workflow
     end
 
     def workflow_should_show_completed? processes
-      return processes.all?{|p| ['skipped', 'completed', '', nil].include?(p.status)}
+      processes.all?{|p| ['skipped', 'completed', '', nil].include?(p.status)}
     end
 
-    def to_solr(solr_doc=Hash.new, *args)
-      wf_name = self.workflowId.first
-      repo = self.repository.first
+    def to_solr(solr_doc = Hash.new, *args)
+      wf_name = workflowId.first
+      repo = repository.first
       add_solr_value(solr_doc, 'wf', wf_name, :string, [:facetable])
       add_solr_value(solr_doc, 'wf_wps', wf_name, :string, [:facetable])
       add_solr_value(solr_doc, 'wf_wsp', wf_name, :string, [:facetable])
@@ -101,7 +101,7 @@ module Workflow
       processes.each do |process|
         if process.status.present?
           #add a record of the robot having operated on this item, so we can track robot activity
-          if process.date_time and process.status and (process.status == 'completed' || process.status == 'error')
+          if process.date_time && process.status && (process.status == 'completed' || process.status == 'error')
             add_solr_value(solr_doc, "wf_#{wf_name}_#{process.name}", process.date_time+'Z', :date)
           end
           add_solr_value(solr_doc, 'wf_error', "#{wf_name}:#{process.name}:#{process.error_message}", :string, [:facetable,:displayable]) if process.error_message #index the error message without the druid so we hopefully get some overlap
@@ -131,7 +131,7 @@ module Workflow
     end
 
     def inspect
-      "#<#{self.class.name}:#{self.object_id}>"
+      "#<#{self.class.name}:#{object_id}>"
     end
   end
 end

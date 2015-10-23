@@ -70,7 +70,7 @@ module Dor
           }
         }
       end
-      return builder.doc
+      builder.doc
     end
 
     def ensure_non_versionable
@@ -167,7 +167,7 @@ module Dor
     end
 
     def tag_for_version(versionId)
-      nodes=self.ng_xml.search('//version[@versionId=\''+versionId+'\']')
+      nodes=ng_xml.search('//version[@versionId=\''+versionId+'\']')
       if nodes.length == 1
         nodes.first['tag'].to_s
       else
@@ -177,8 +177,8 @@ module Dor
 
     # @return [String] The description for the specified version, or empty string if there is no description
     def description_for_version(versionId)
-      nodes=self.ng_xml.search('//version[@versionId=\''+versionId+'\']')
-      if nodes.length == 1 and  nodes.first.at_xpath('description')
+      nodes=ng_xml.search('//version[@versionId=\''+versionId+'\']')
+      if nodes.length == 1 &&  nodes.first.at_xpath('description')
         nodes.first.at_xpath('description').content.to_s
       else
         ''

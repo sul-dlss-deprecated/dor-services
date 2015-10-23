@@ -16,10 +16,10 @@ describe Dor::IdentityMetadataDS do
           <tag>Project : McLaughlin Maps</tag>
         </identityMetadata>
       EOF
-      
+
       @dsdoc = Dor::IdentityMetadataDS.from_xml(@dsxml)
     end
-    
+
     it "creates itself from xml" do
       @dsdoc.term_values(:objectId).should == ['druid:bb110sm8219']
       @dsdoc.term_values(:objectType).should == ['item']
@@ -34,7 +34,7 @@ describe Dor::IdentityMetadataDS do
       @dsdoc.otherId('bogus').should == []
       @dsdoc.sourceId.should == 'sulair:bb110sm8219'
     end
-    
+
     it "should be able to read ID fields as attributes" do
       @dsdoc.objectId.should == "druid:bb110sm8219"
       @dsdoc.otherId.should == ["mdtoolkit:bb110sm8219","uuid:b382ee92-da77-11e0-9036-0016034322e4"]
@@ -43,7 +43,7 @@ describe Dor::IdentityMetadataDS do
       @dsdoc.otherId('bogus').should == []
       @dsdoc.sourceId.should == 'sulair:bb110sm8219'
     end
-    
+
     it "should be able to set the sourceID" do
       resultxml = <<-EOF
         <identityMetadata>
@@ -58,17 +58,17 @@ describe Dor::IdentityMetadataDS do
           <tag>Project : McLaughlin Maps</tag>
         </identityMetadata>
       EOF
-      
+
       @dsdoc.sourceId = 'test:ab110cd8219'
       @dsdoc.sourceId.should == 'test:ab110cd8219'
       @dsdoc.to_xml.should be_equivalent_to resultxml
     end
-    
+
     it "creates a simple default with #new" do
       new_doc = Dor::IdentityMetadataDS.new nil, 'identityMetadata'
       new_doc.to_xml.should be_equivalent_to '<identityMetadata/>'
     end
-    
+
     it "should properly add elements" do
       resultxml = <<-EOF
         <identityMetadata>

@@ -5,7 +5,7 @@ describe Dor::GeoMetadataDS do
 
   before :each do
     stub_config
-    @doc = {}
+    @doc  = {}
     @mods = {}
     @test_keys = %w{co2_pipe oil_gas_fields}
     @test_keys.each do |k|
@@ -13,12 +13,12 @@ describe Dor::GeoMetadataDS do
       @mods[k] = Nokogiri::XML(read_fixture "geoMetadata_#{k}_mods.xml")
     end
     @template = Nokogiri::XML(read_fixture "geoMetadata_template.xml")
-    @doc['co2_pipe'].geometryType = 'LineString'
+    @doc['co2_pipe'      ].geometryType = 'LineString'
     @doc['oil_gas_fields'].geometryType = 'Point'
-    @doc['co2_pipe'].zipName = 'data.zip'
+    @doc['co2_pipe'      ].zipName = 'data.zip'
     @doc['oil_gas_fields'].zipName = 'data.zip'
-    @doc['co2_pipe'].purl = 'http://purl.stanford.edu/ww217dj0457'
-    @doc['oil_gas_fields'].purl =  'http://purl.stanford.edu/cs838pw3418'
+    @doc['co2_pipe'      ].purl = 'http://purl.stanford.edu/ww217dj0457'
+    @doc['oil_gas_fields'].purl = 'http://purl.stanford.edu/cs838pw3418'
   end
 
   context 'Terminology' do
@@ -31,7 +31,7 @@ describe Dor::GeoMetadataDS do
         }[k]]
       end
     end
-    
+
     it 'file_id' do
       @test_keys.each do |k|
         @doc[k].term_values(:file_id).should == [{
@@ -97,35 +97,35 @@ describe Dor::GeoMetadataDS do
   end
 
   context '# to_solr_spatial' do
-      it "keys" do
-        KEYS = %w{
-          dc_coverage_t
-          dc_creator_t
-          dc_date_i
-          dc_description_t
-          dc_format_s
-          dc_language_s
-          dc_title_t
-          druid
-          file_id_s
-          geo_bbox
-          geo_data_type_s
-          geo_format_s
-          geo_geometry_type_s
-          geo_layername_s
-          geo_ne_pt
-          geo_proj
-          geo_pt
-          geo_sw_pt
-          id
-          text}.sort
-        @test_keys.each do |k|
-          @doc[k].to_solr_spatial.keys.sort.should == KEYS
-        end
+    it 'keys' do
+      KEYS = %w{
+        dc_coverage_t
+        dc_creator_t
+        dc_date_i
+        dc_description_t
+        dc_format_s
+        dc_language_s
+        dc_title_t
+        druid
+        file_id_s
+        geo_bbox
+        geo_data_type_s
+        geo_format_s
+        geo_geometry_type_s
+        geo_layername_s
+        geo_ne_pt
+        geo_proj
+        geo_pt
+        geo_sw_pt
+        id
+        text}.sort
+      @test_keys.each do |k|
+        @doc[k].to_solr_spatial.keys.sort.should == KEYS
       end
-  
+    end
+
     it 'data' do
-      @doc['co2_pipe'].to_solr_spatial.should == {"id"=>["http://purl.stanford.edu/ww217dj0457"], "druid"=>["ww217dj0457"], "file_id_s"=>["FA6ED959-7DED-4722-B1FB-A85FB79725BA"], "geo_layername_s" => ["CO2_PIPE"], "geo_bbox"=>["POLYGON((-109.758319 29.423028, -109.758319 48.999336, -88.990844 48.999336, -88.990844 29.423028, -109.758319 29.423028))"], "geo_data_type_s"=>["vector"], "geo_geometry_type_s" => ["Polygon"], "geo_format_s"=>["Shapefile"], "geo_ne_pt"=>["POINT(-88.990844 48.999336)"], "geo_pt"=>["POINT(-99.3745815 39.211182)"], "geo_sw_pt"=>["POINT(-109.758319 29.423028)"], "dc_coverage_t"=>["x.min=-109.758319 x.max=-88.990844 y.min=29.423028 y.max=48.999336"], "dc_creator_t"=>["Hart Energy Publishing"], "dc_date_i"=>["2012"], "dc_description_t"=>["Dataset represents locations of existing and proposed CO2 pipelines. Includes all interstate pipelines and major intrastate pipelines.; Locating Carbon Dioxide (CO2) pipelines in the United States."], "dc_format_s"=>["application/x-esri-shapefile"], "dc_language_s"=>["eng"], "dc_title_t"=>["Carbon Dioxide (CO2) Pipelines in the United States, 2011"], "text"=>["Carbon Dioxide (CO2) Pipelines in the United States, 2011; Dataset represents locations of existing and proposed CO2 pipelines. Includes all interstate pipelines and major intrastate pipelines.; Locating Carbon Dioxide (CO2) pipelines in the United States."], 'geo_proj' => ['4269']}
+      @doc['co2_pipe'].to_solr_spatial.should       == {"id"=>["http://purl.stanford.edu/ww217dj0457"], "druid"=>["ww217dj0457"], "file_id_s"=>["FA6ED959-7DED-4722-B1FB-A85FB79725BA"], "geo_layername_s" => ["CO2_PIPE"], "geo_bbox"=>["POLYGON((-109.758319 29.423028, -109.758319 48.999336, -88.990844 48.999336, -88.990844 29.423028, -109.758319 29.423028))"], "geo_data_type_s"=>["vector"], "geo_geometry_type_s" => ["Polygon"], "geo_format_s"=>["Shapefile"], "geo_ne_pt"=>["POINT(-88.990844 48.999336)"], "geo_pt"=>["POINT(-99.3745815 39.211182)"], "geo_sw_pt"=>["POINT(-109.758319 29.423028)"], "dc_coverage_t"=>["x.min=-109.758319 x.max=-88.990844 y.min=29.423028 y.max=48.999336"], "dc_creator_t"=>["Hart Energy Publishing"], "dc_date_i"=>["2012"], "dc_description_t"=>["Dataset represents locations of existing and proposed CO2 pipelines. Includes all interstate pipelines and major intrastate pipelines.; Locating Carbon Dioxide (CO2) pipelines in the United States."], "dc_format_s"=>["application/x-esri-shapefile"], "dc_language_s"=>["eng"], "dc_title_t"=>["Carbon Dioxide (CO2) Pipelines in the United States, 2011"], "text"=>["Carbon Dioxide (CO2) Pipelines in the United States, 2011; Dataset represents locations of existing and proposed CO2 pipelines. Includes all interstate pipelines and major intrastate pipelines.; Locating Carbon Dioxide (CO2) pipelines in the United States."], 'geo_proj' => ['4269']}
       @doc['oil_gas_fields'].to_solr_spatial.should == {"id"=>["http://purl.stanford.edu/cs838pw3418"], "druid"=>["cs838pw3418"], "file_id_s"=>["BBF1AEBF-51A8-46CD-8913-95B63390A2D0"], "geo_layername_s" => ["OIL_GAS_FIELDS"], "geo_bbox"=>["POLYGON((-151.479444 26.071745, -151.479444 69.4325, -78.085007 69.4325, -78.085007 26.071745, -151.479444 26.071745))"], "geo_geometry_type_s" => ["Polygon"], "geo_data_type_s"=>["vector"], "geo_format_s"=>["Shapefile"], "geo_ne_pt"=>["POINT(-78.085007 69.4325)"], "geo_pt"=>["POINT(-114.78222550000001 47.7521225)"], "geo_sw_pt"=>["POINT(-151.479444 26.071745)"], "dc_coverage_t"=>["x.min=-151.479444 x.max=-78.085007 y.min=26.071745 y.max=69.4325"], "dc_creator_t"=>["Hart Energy Publishing"], "dc_date_i"=>["2011"], "dc_description_t"=>["Shows the locations and extents of oil and gas fields in the United States; Locating and analysing United States oil and gas field data for use in geographic information systems."], "dc_format_s"=>["application/x-esri-shapefile"], "dc_language_s"=>["eng"], "dc_title_t"=>["Oil and Gas Fields in the United States, 2011"], "text"=>["Oil and Gas Fields in the United States, 2011; Shows the locations and extents of oil and gas fields in the United States; Locating and analysing United States oil and gas field data for use in geographic information systems."],  'geo_proj' => ['4269']}
     end
 
@@ -243,21 +243,21 @@ describe Dor::GeoMetadataDS do
         '120.2 -- 18.316667/0 -- 0' =>
 "E 120°12ʹ--E 18°19ʹ/N 0°--N 0°",
         '120.2 -- 18.316667/0 -- 0.0001' =>
-"E 120°12ʹ--E 18°19ʹ/N 0°--N 0°" 
+"E 120°12ʹ--E 18°19ʹ/N 0°--N 0°"
       }
       r.each do |k,v|
         Dor::GeoMetadataDS.to_coordinates_ddmmss(k).should == v
       end
     end
-    
-    it "#to_mods" do
+
+    it '#to_mods' do
       @test_keys.each do |k|
         # File.open("tmp.xml", "w") {|f| f << @doc[k].to_mods.to_xml}
         @doc[k].to_mods.to_xml.should be_equivalent_to(@mods[k].to_xml)
       end
     end
-    
-    it "#to_dc" do
+
+    it '#to_dc' do
       @test_keys.each do |k|
         File.open("tmp.xml", "w") {|f| f << @doc[k].to_dublin_core.to_xml}
       end

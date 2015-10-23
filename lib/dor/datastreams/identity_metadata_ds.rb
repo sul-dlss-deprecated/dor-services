@@ -1,7 +1,7 @@
 module Dor
-class IdentityMetadataDS < ActiveFedora::OmDatastream 
+class IdentityMetadataDS < ActiveFedora::OmDatastream
   include SolrDocHelper
-  
+
   set_terminology do |t|
     t.root(:path=>"identityMetadata")
     t.objectId :index_as => [:searchable]
@@ -18,36 +18,36 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
     t.objectCreator :index_as => [:searchable, :facetable]
     t.adminPolicy :index_as => [:not_searchable]
   end
-  
+
   define_template :value do |builder,name,value,attrs|
     builder.send(name.to_sym, value, attrs)
   end
-  
+
   def self.xml_template
     Nokogiri::XML('<identityMetadata/>')
   end #self.xml_template
-  
-  def add_value(name, value, attrs={})
+
+  def add_value(name, value, attrs = {})
     add_child_node(ng_xml.root, :value, name, value, attrs)
   end
-  
+
   def objectId
-    self.find_by_terms(:objectId).text
+    find_by_terms(:objectId).text
   end
-  
+
   def sourceId
-    node = self.find_by_terms(:sourceId).first
+    node = find_by_terms(:sourceId).first
     node ? [node['source'],node.text].join(':') : nil
   end
-  
+
   def sourceId=(value)
-    node = self.find_by_terms(:sourceId).first
+    node = find_by_terms(:sourceId).first
     unless value.present?
       node.remove unless node.nil?
       nil
     else
       (source,val) = value.split(/:/,2)
-      unless source.present? and value.present?
+      unless source.present? && value.present?
         raise ArgumentError, "Source ID must follow the format namespace:value"
       end
       node = ng_xml.root.add_child('<sourceId/>').first if node.nil?
@@ -58,13 +58,13 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
   end
   def tags()
       result=[]
-      self.ng_xml.search('//tag').each do |node|
+      ng_xml.search('//tag').each do |node|
         result << node.content
       end
       result
   end
   def otherId(type = nil)
-    result = self.find_by_terms(:otherId).to_a
+    result = find_by_terms(:otherId).to_a
     if type.nil?
       result.collect { |n| [n['name'],n.text].join(':') }
     else
@@ -79,8 +79,8 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
     node.content = val
     node
   end
-  
-  def to_solr(solr_doc=Hash.new, *args)
+
+  def to_solr(solr_doc = Hash.new, *args)
     super(solr_doc, *args)
     if digital_object.respond_to?(:profile)
       digital_object.profile.each_pair do |property,value|
@@ -99,8 +99,8 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
       add_solr_value(solr_doc, "identifier", qid, :string, [:searchable])
       add_solr_value(solr_doc, "#{name}_id", id, :string, [:searchable])
     }
-        
-    self.find_by_terms(:tag).each { |tag|
+
+    find_by_terms(:tag).each { |tag|
       (top,rest) = tag.text.split(/:/,2)
       unless rest.nil?
         add_solr_value(solr_doc, "#{top.downcase.strip.gsub(/\s/,'_')}_tag", rest.strip, :string, [:searchable, :facetable])

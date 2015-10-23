@@ -3,13 +3,13 @@ require 'moab_stanford'
 
 describe Dor::TechnicalMetadataService do
 
-  before(:each) do    
+  before(:each) do
     @fixtures=fixtures=Pathname(File.dirname(__FILE__)).join("../fixtures")
     Dor::Config.push! do
       sdr.local_workspace_root fixtures.join("workspace").to_s
     end
   end
-  
+
   before(:each) do
     @fixtures=fixtures=Pathname(File.dirname(__FILE__)).join("../fixtures")
     @sdr_repo = @fixtures.join('sdr_repo')
@@ -131,7 +131,7 @@ describe Dor::TechnicalMetadataService do
     Dor::TechnicalMetadataService.stub(:get_sdr_metadata).with(druid, "technicalMetadata").
         and_raise(RestClient::ResourceNotFound)
     sdr_techmd = Dor::TechnicalMetadataService.get_sdr_technical_metadata(druid)
-    sdr_techmd.should == nil
+    sdr_techmd.should be_nil
 
     Dor::TechnicalMetadataService.stub(:get_sdr_metadata).with(druid, "technicalMetadata").
         and_return('<technicalMetadata/>')
@@ -156,7 +156,7 @@ describe Dor::TechnicalMetadataService do
 
     tech_ds.stub(:new?).and_return(true)
     dor_techmd = Dor::TechnicalMetadataService.get_dor_technical_metadata(dor_item)
-    dor_techmd.should == nil
+    dor_techmd.should be_nil
 
     tech_ds.stub(:new?).and_return(false)
     dor_techmd = Dor::TechnicalMetadataService.get_dor_technical_metadata(dor_item)

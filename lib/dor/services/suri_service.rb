@@ -6,7 +6,7 @@ module Dor
     # If Dor::Config.suri.mint_ids is set to true, then this method
     # returns Config.suri.id_namespace:id_from_suri
     # Throws an exception if there were any problems
-    def self.mint_id quantity=nil
+    def self.mint_id quantity = nil
       want_array = quantity.is_a?(Numeric)
       quantity = 1 if quantity.nil?
       ids = []
@@ -20,13 +20,13 @@ module Dor
         resp = Nokogiri::XML(repo.next_pid :numPIDs => quantity)
         ids = resp.xpath('/pidList/pid').collect { |node| node.text }
       end
-      return want_array ? ids : ids.first
+      want_array ? ids : ids.first
 
 #    rescue Exception => e
 #      Rails.logger.error("Unable to mint id from suri: #{e.to_s}")
 #      raise e
     end
-  
-    
+
+
   end
 end

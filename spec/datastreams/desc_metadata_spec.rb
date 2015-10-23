@@ -23,14 +23,14 @@ describe Dor::DescMetadataDS do
           </language>
         </mods>
       EOF
-      
+
       @dsdoc = Dor::DescMetadataDS.from_xml(@dsxml)
     end
-    
+
     it "should get correct values from OM terminology" do
       @dsdoc.term_values(:abstract).should == ['Abstract contents.']
     end
 
   end
-    
+
 end

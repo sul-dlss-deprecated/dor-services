@@ -63,7 +63,7 @@ module Dor
     # @option opts [Boolean] :start_accesion set to true if you want accessioning to start (default), false otherwise
     # @raise [Dor::Exception] if the object hasn't been opened for versioning, or if accessionWF has
     #   already been instantiated or the current version is missing a tag or description
-    def close_version(opts={})
+    def close_version(opts = {})
       unless(opts.empty?)
         datastreams['versionMetadata'].update_current_version opts
         datastreams['versionMetadata'].save
@@ -84,7 +84,7 @@ module Dor
 
     # @return [Boolean] true if the object is in a state that allows it to be modified. States that will allow modification are: has not been submitted for accessioning, has an open version or has sdr-ingest set to hold
     def allows_modification?
-      if Dor::WorkflowService.get_lifecycle('dor', pid, 'submitted' ) and not new_version_open? and not Dor::WorkflowService.get_workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer')=='hold'
+      if Dor::WorkflowService.get_lifecycle('dor', pid, 'submitted' ) && !new_version_open? && Dor::WorkflowService.get_workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer') != 'hold'
         false
       else
         true

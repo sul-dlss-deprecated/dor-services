@@ -27,7 +27,7 @@ RSpec::Core::RakeTask.new(:functional) do |spec|
 end
 
 RSpec::Core::RakeTask.new(:unit) do |spec|
-#  spec.libs << 'lib' << 'spec'  
+#  spec.libs << 'lib' << 'spec'
   spec.pattern = 'test/**/*.rb'
   #spec.rcov = true
 end
@@ -41,4 +41,3 @@ task :clean do
 end
 
 task :default => [:rcov, :doc]
-

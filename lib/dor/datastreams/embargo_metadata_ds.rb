@@ -24,13 +24,13 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
         xml.twentyPctVisibilityReleaseDate
       }
     end
-    return builder.doc
+    builder.doc
   end
 
   def to_solr solr_doc = {}, *args
     super
-    add_solr_value(solr_doc, 'embargo_release_date', self.release_date.utc.strftime('%FT%TZ') , :date, [:searchable]) rescue nil
-    add_solr_value(solr_doc, 'twenty_pct_visibility_release_date', self.twenty_pct_release_date.utc.strftime('%FT%TZ') , :date, [:searchable]) rescue nil
+    add_solr_value(solr_doc, 'embargo_release_date', release_date.utc.strftime('%FT%TZ') , :date, [:searchable]) rescue nil
+    add_solr_value(solr_doc, 'twenty_pct_visibility_release_date', twenty_pct_release_date.utc.strftime('%FT%TZ') , :date, [:searchable]) rescue nil
 
     solr_doc
   end
@@ -54,9 +54,9 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
 
   # Sets the release date.  Converts the date to beginning-of-day, UTC to help with Solr indexing
   # @param [Time] rd A Time object represeting the release date.  By default, it is set to now
-  def release_date=(rd=Time.now)
-		update_values([:release_date] => rd.beginning_of_day.utc.xmlschema)
-    self.content=self.ng_xml.to_s
+  def release_date=(rd = Time.now)
+    update_values([:release_date] => rd.beginning_of_day.utc.xmlschema)
+    self.content=ng_xml.to_s
   end
 
   # Current releaseDate value
@@ -76,7 +76,7 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
 
   # Sets the 20% visibility release date.  Converts the date to beginning-of-day, UTC to help with Solr indexing
   # @param [Time] rd A Time object represeting the release date.  By default, it is set to now
-  def twenty_pct_release_date=(rd=Time.now)
+  def twenty_pct_release_date=(rd = Time.now)
     update_values([:twenty_pct_release_date] => rd.beginning_of_day.utc.xmlschema)
     content_will_change!
   end

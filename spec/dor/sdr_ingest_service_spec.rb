@@ -231,7 +231,7 @@ describe Dor::SdrIngestService do
     # if no content metadata
     metadata_dir = @fixtures.join('workspace/ab/123/cd/4567/ab123cd4567')
     content_metadata = Dor::SdrIngestService.get_content_metadata(metadata_dir)
-    content_metadata.should == nil
+    content_metadata.should be_nil
   end
 
   specify "SdrIngestService.get_metadata_file_group" do

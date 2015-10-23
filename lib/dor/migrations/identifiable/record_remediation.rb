@@ -10,7 +10,7 @@ Dor::Identifiable.on_upgrade '3.6.1', 'Record Remediation Version' do |obj|
   else
     add_tag = true
   end
-  
+
   if add_tag
     obj.identityMetadata.add_value :tag, "Remediated By : #{Dor::VERSION}"
   end

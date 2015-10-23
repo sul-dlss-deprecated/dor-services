@@ -27,7 +27,7 @@ module Dor
       unless @primary.allows_modification?
         raise Dor::Exception.new "Primary object is not editable: #{@primary.pid}"
       end
-      if ( non_editable = (@secondary_objs.detect {|obj| ! obj.allows_modification? } ))
+      if ( non_editable = (@secondary_objs.detect {|obj| !obj.allows_modification? } ))
         raise Dor::Exception.new "Secondary object is not editable: #{non_editable.pid}"
       end
     end

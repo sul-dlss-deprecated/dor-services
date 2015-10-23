@@ -277,19 +277,19 @@ end
   describe 'add_collection' do
 it 'should add a collection' do
       @item.add_collection('druid:oo201oo0002')
-			rels_ext_ds=@item.datastreams['RELS-EXT']
-			@item.collection_ids.should include('druid:oo201oo0002')
+      rels_ext_ds=@item.datastreams['RELS-EXT']
+      @item.collection_ids.should include('druid:oo201oo0002')
     end
     end
 
-	describe 'remove_collection' do
-		it 'should delete a collection' do
-			@item.add_collection('druid:oo201oo0002')
-			rels_ext_ds=@item.datastreams['RELS-EXT']
+  describe 'remove_collection' do
+    it 'should delete a collection' do
+      @item.add_collection('druid:oo201oo0002')
+      rels_ext_ds=@item.datastreams['RELS-EXT']
       @item.collection_ids.should include('druid:oo201oo0002')
-			@item.remove_collection('druid:oo201oo0002')
-		end
-	end
+      @item.remove_collection('druid:oo201oo0002')
+    end
+  end
 
   describe "initiate_apo_workflow" do
     it "calls Processable.initialize_workflow without creating a datastream when the object is new" do

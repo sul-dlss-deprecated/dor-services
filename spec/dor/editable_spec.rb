@@ -8,12 +8,12 @@ describe Dor::Editable do
     @empty_item = instantiate_fixture("pw570tx3016", Dor::AdminPolicyObject)
   end
 
-    let(:mock_agreement) {
-      agr = Dor::Item.new
-      agr.stub(:new? => false, :new_record? => false, :pid => 'druid:new_agreement')
-      agr.stub(:save)
-      agr
-    }
+  let(:mock_agreement) {
+    agr = Dor::Item.new
+    agr.stub(:new? => false, :new_record? => false, :pid => 'druid:new_agreement')
+    agr.stub(:save)
+    agr
+  }
 
   describe 'add_roleplayer' do
     it 'should add a role' do
@@ -100,7 +100,7 @@ describe Dor::Editable do
       @item.metadata_source.should == 'MDToolkit'
     end
     it 'should get nil for an empty datastream' do
-      @empty_item.metadata_source.should == nil
+      @empty_item.metadata_source.should be_nil
     end
   end
   describe 'metadata_source=' do
@@ -142,11 +142,11 @@ describe Dor::Editable do
   end
   describe 'creative_commons_license_human=' do
     it 'should set the human readable cc license' do
-      @item.creative_commons_license_human='greetings'
+      @item.creative_commons_license_human = 'greetings'
       @item.creative_commons_license_human.should == 'greetings'
     end
     it 'should work on an empty ds' do
-      @empty_item.creative_commons_license_human='greetings'
+      @empty_item.creative_commons_license_human = 'greetings'
       @empty_item.creative_commons_license_human.should == 'greetings'
     end
   end
@@ -173,7 +173,7 @@ describe Dor::Editable do
       @item.desc_metadata_format.should == 'MODS'
     end
     it 'shouldnt fail on an item with an empty datastream' do
-      @empty_item.desc_metadata_format.should == nil
+      @empty_item.desc_metadata_format.should be_nil
     end
     it 'should set dark correctly' do
       @item.default_rights = 'dark'
@@ -245,7 +245,7 @@ describe Dor::Editable do
       @item.stub(:agreement_object).and_return([agr])
       rels_ext_ds=@item.datastreams['RELS-EXT']
       ActiveFedora::Base.should_receive(:find_one).with('druid:new_agreement', true).and_return(mock_agreement)
-      
+
       @item.agreement = 'druid:new_agreement'
       xml=Nokogiri::XML(rels_ext_ds.to_rels_ext.to_s)
       xml.should be_equivalent_to <<-XML
@@ -291,7 +291,7 @@ describe Dor::Editable do
       solr_doc["registration_workflow_id_facet"].should == ['digitizationWF']
       solr_doc["rightsMetadata_use_statement_facet"].should == ["Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu."]
       solr_doc["copyright_facet"].should == ["Additional copyright info"]
-      
+
     end
   end
 end

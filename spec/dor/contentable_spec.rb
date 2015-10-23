@@ -10,7 +10,7 @@ class SpecNode
   include ActiveFedora::SemanticNode
 
   attr_accessor :pid
-  def initialize (params={})
+  def initialize(params = {})
     self.pid = params[:pid]
   end
   def internal_uri
@@ -57,11 +57,7 @@ describe Dor::Contentable do
     @resp.stub(:message).and_return('sup')
     @sftp.stub(:stat!) do |arg|
       #raise an exception when checking whether the file exists, but no exception when checking whether the folder it belongs in exists
-      if not arg=~ /desc/
-        #do nothing
-      else
-        raise(Net::SFTP::StatusException.new @resp, 'sup')
-      end
+      raise(Net::SFTP::StatusException.new @resp, 'sup') if arg=~ /desc/
     end
     @sftp.stub(:upload!).and_return(true)
     Net::SFTP.stub(:start).and_return(@sftp) #mock sftp obj
@@ -90,11 +86,7 @@ describe Dor::Contentable do
 
     it 'should work ok if the object was set up using the old directory structure' do
       @sftp.stub(:stat!) do |arg|
-        if not arg=~ /desc/ and not arg=~/ab123/
-          #do nothing
-        else
-          raise(Net::SFTP::StatusException.new @resp, 'sup')
-        end
+        raise(Net::SFTP::StatusException.new @resp, 'sup') if arg =~ /desc/ || arg =~ /ab123/
       end
       @item.add_file(@file, '0001', 'ab123cd4567_descMetadata.xml')
       xml = @item.contentMetadata.ng_xml

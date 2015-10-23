@@ -73,7 +73,7 @@ module Dor
         result = JSON.parse(client["select?#{query_string}"].get)
       end
 
-      def query query, args={}
+      def query query, args = {}
         params = args.merge({ :q => query })
         params[:start] ||= 0
         resp = solr.find params

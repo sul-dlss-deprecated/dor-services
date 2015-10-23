@@ -24,7 +24,7 @@ task :bump_version, [:level] do |t, args|
   version = version.join('.')
   file_content.sub!(/^(\s*VERSION = )['"](.+)['"]/,"#{declaration}'#{version}'")
   File.open(version_file,'w') { |f| f.write(file_content) }
-  
+
   readme_file = File.expand_path('../../../README.rdoc',__FILE__)
   file_content = File.read(readme_file)
   lines = file_content.lines.to_a

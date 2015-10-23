@@ -4,22 +4,22 @@ describe Dor::EmbargoMetadataDS do
   context "Marshalling to and from a Fedora Datastream" do
     let(:dsxml) { <<-EOF
           <embargoMetadata>
-          	<status>embargoed</status>
-          	<releaseDate>2011-10-12T15:47:52-07:00</releaseDate>
-          	<twentyPctVisibilityStatus>released</twentyPctVisibilityStatus>
-          	<twentyPctVisibilityReleaseDate>2016-10-12T15:47:52-07:00</twentyPctVisibilityReleaseDate>
-          	<releaseAccess>
-          		<access type="discover">
-          			<machine>
-          				<world />
-          			</machine>
-          		</access>
-          		<access type="read">
-          			<machine>
-          				<world />
-          			</machine>
-          		</access>
-          	</releaseAccess>
+            <status>embargoed</status>
+            <releaseDate>2011-10-12T15:47:52-07:00</releaseDate>
+            <twentyPctVisibilityStatus>released</twentyPctVisibilityStatus>
+            <twentyPctVisibilityReleaseDate>2016-10-12T15:47:52-07:00</twentyPctVisibilityReleaseDate>
+            <releaseAccess>
+              <access type="discover">
+                <machine>
+                  <world />
+                </machine>
+              </access>
+              <access type="read">
+                <machine>
+                  <world />
+                </machine>
+              </access>
+            </releaseAccess>
           </embargoMetadata>
     EOF
     }
@@ -36,10 +36,10 @@ describe Dor::EmbargoMetadataDS do
     it "creates a simple default with #new" do
       emb_xml = <<-EOF
       <embargoMetadata>
-      	<status/>
-      	<releaseDate/>
-      	<releaseAccess/>
-      	<twentyPctVisibilityStatus/>
+        <status/>
+        <releaseDate/>
+        <releaseAccess/>
+        <twentyPctVisibilityStatus/>
         <twentyPctVisibilityReleaseDate/>
       </embargoMetadata>
       EOF
@@ -109,17 +109,17 @@ describe Dor::EmbargoMetadataDS do
       # delete old releaseAcess element and replace with this one
       embargo_xml = <<-EOXML
       <releaseAccess>
-    		<access type="discover">
-    			<machine>
-    				<world />
-    			</machine>
-    		</access>
-    		<access type="read">
-    			<machine>
-    				<world/>
-    			</machine>
-    		</access>
-    	</embargoAccess>
+        <access type="discover">
+          <machine>
+            <world />
+          </machine>
+        </access>
+        <access type="read">
+          <machine>
+            <world/>
+          </machine>
+        </access>
+      </embargoAccess>
       EOXML
 
       ds.release_access_node = Nokogiri::XML(embargo_xml)

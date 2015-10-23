@@ -97,7 +97,7 @@ describe Dor::CleanupResetService do
      expect(File.exists?(base_workspace_druid_path.to_s+"_v1")).to eq false
      expect(File.exists?(base_assembly_druid_dir)).to eq false
    end
-        
+
  end
 
  #cleanup_reset_workspace_content
@@ -118,15 +118,15 @@ context "cleanup_reset_workspace_content" do
     Dor::CleanupResetService.cleanup_reset_workspace_content(druid, last_version, @workspace_root_pathname.to_s)
     expect(File.exists?(base_druid_dir+"_v1")).to eq false
   end
-  
+
   it "should remove the reset directory and keep the open version" do
     druid_id = "cc111cj1111"
     druid = "druid:#{druid_id}"
     create_druid_dir(druid_id,2, @workspace_root_pathname.to_s)
     create_druid_dir(druid_id,3, @workspace_root_pathname.to_s)
-    
+
     base_druid_dir = DruidTools::Druid.new(druid, @workspace_root_pathname.to_s).pathname.to_s
-    
+
     last_version = 2
     expect(File.exists?(base_druid_dir+"_v2")).to eq true
     expect(File.exists?(base_druid_dir+"_v3")).to eq true
@@ -140,7 +140,7 @@ context "cleanup_reset_workspace_content" do
     create_druid_dir(druid_id,1, @workspace_root_pathname.to_s)
 
     base_druid_dir = DruidTools::Druid.new(druid, @workspace_root_pathname.to_s).pathname.to_s
-    
+
     last_version = 1
     expect(File.exists?(base_druid_dir+"_v1")).to eq true
     Dor::CleanupResetService.cleanup_reset_workspace_content(druid, last_version, @workspace_root_pathname.to_s)
@@ -152,12 +152,12 @@ context "cleanup_reset_workspace_content" do
     druid_1 = "druid:#{druid_id1}"
     create_druid_dir(druid_id1,1, @workspace_root_pathname.to_s)
     base_druid_dir_1 = DruidTools::Druid.new(druid_1, @workspace_root_pathname.to_s).pathname.to_s
-    
+
     druid_id2 = "cc111ck1112"
     druid_2 = "druid:#{druid_id2}"
     create_druid_dir(druid_id2,nil, @workspace_root_pathname.to_s)
     base_druid_dir_2 = DruidTools::Druid.new(druid_2, @workspace_root_pathname.to_s).pathname.to_s
-    
+
     last_version = 1
     expect(File.exists?(base_druid_dir_1+"_v1")).to eq true
     expect(File.exists?(base_druid_dir_2)).to eq true
@@ -169,31 +169,31 @@ context "cleanup_reset_workspace_content" do
   end
 
 end
- 
+
   # workspace_dir_list
   ## cc111cf1111 - 1 version
   ## cc111cg1111 - 2 version (v2 and v3)
   ## cc111ch1111 - 1 version (v1) and 1 opened version (v2)
- 
+
  context "get_reset_dirctories_list" do
    before(:each) do
      @druid_1v = "cc111cf1111"
      @druid_2v = "cc111cg1111"
      @druid_1_1v = "cc111ch1111"
-     
+
      create_druid_dir(@druid_1v, 1, @workspace_root_pathname.to_s)
      create_druid_dir(@druid_2v, 2, @workspace_root_pathname.to_s)
      create_druid_dir(@druid_2v, 3, @workspace_root_pathname.to_s)
      create_druid_dir(@druid_1_1v, 1, @workspace_root_pathname.to_s)
      create_druid_dir(@druid_1_1v, 2, @workspace_root_pathname.to_s)
    end
-   
+
   it "should get one reset directory from workspace" do
     druid = "druid:#{@druid_1v}"
     base_druid_tree = DruidTools::Druid.new(druid, @workspace_root_pathname.to_s)
     last_version = 1
     dir_list = Dor::CleanupResetService.get_reset_dir_list(last_version, base_druid_tree.path)
-    
+
      expect_dir_path = "#{base_druid_tree.path}_v1"
      expect(dir_list.length).to eq 1
      expect(dir_list[0]).to eq expect_dir_path
@@ -245,7 +245,7 @@ end
      expect(File.exists?(base_bag_dir+".tar")).to eq false
    end
  end
- 
+
  context "get_reset_bag_dir_list" do
    before(:each) do
      @druid_1v = "cc111ca1111"
@@ -362,7 +362,7 @@ end
     bag_pathname.join('content').mkpath
     bag_pathname.join('temp').mkpath
  end
- 
+
   def create_druid_dir(druid_id, version,base_dir)
     druid = "druid:#{druid_id}"
     base_druid_tree = DruidTools::Druid.new(druid, base_dir )

@@ -30,11 +30,11 @@ module Dor
     # Dor.load_instance() if the item is not in the index, or is improperly
     # indexed.
     # @param [String] pid The object's PID
-    def find pid, opts={}
-      self.find_all(%{id:"#{pid}"}, opts).first || self.load_instance(pid)
+    def find pid, opts = {}
+      find_all(%{id:"#{pid}"}, opts).first || load_instance(pid)
     end
 
-    def find_all query, opts={}
+    def find_all query, opts = {}
       ensure_models_loaded!
       af_version = Gem::Version.new(ActiveFedora::VERSION)
       if opts[:lightweight] and af_version < Gem::Version.new('4.0.0.rc9')

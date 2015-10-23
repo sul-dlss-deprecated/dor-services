@@ -42,11 +42,11 @@ module Dor
       # This is a work-around for some strange logic in ActiveFedora that
       # don't allow self.workflows.new? to work if we load the object using
       # .load_instance_from_solr.
-      return if self.respond_to? :inner_object and self.inner_object.is_a? ActiveFedora::SolrDigitalObject
+      return if self.respond_to?(:inner_object) && inner_object.is_a?(ActiveFedora::SolrDigitalObject)
 
-      if self.workflows.new?
+      if workflows.new?
         workflows.mimeType = 'application/xml'
-        workflows.dsLocation = File.join(Dor::Config.workflow.url,"dor/objects/#{self.pid}/workflows")
+        workflows.dsLocation = File.join(Dor::Config.workflow.url,"dor/objects/#{pid}/workflows")
       end
     end
 
@@ -54,7 +54,7 @@ module Dor
       if datastream.new?
         true
       elsif datastream.class.respond_to?(:xml_template)
-        datastream.content.to_s.empty? or EquivalentXml.equivalent?(datastream.content, datastream.class.xml_template)
+        datastream.content.to_s.empty? || EquivalentXml.equivalent?(datastream.content, datastream.class.xml_template)
       else
         datastream.content.to_s.empty?
       end
@@ -65,7 +65,7 @@ module Dor
     # Returns the path to it or nil.
     def find_metadata_file(datastream)
       druid = DruidTools::Druid.new(pid, Dor::Config.stacks.local_workspace_root)
-      return druid.find_metadata("#{datastream}.xml")
+      druid.find_metadata("#{datastream}.xml")
     end
 
     # Takes the name of a datastream, as a string (fooMetadata).
@@ -84,10 +84,10 @@ module Dor
         ds.content = content
         ds.ng_xml = Nokogiri::XML(content) if ds.respond_to?(:ng_xml)
         ds.save unless ds.digital_object.new?
-      elsif force or empty_datastream?(ds)
+      elsif force || empty_datastream?(ds)
         meth = "build_#{datastream}_datastream".to_sym
         if respond_to?(meth)
-          content = self.send(meth, ds)
+          content = send(meth, ds)
           ds.save unless ds.digital_object.new?
         end
       end
@@ -95,7 +95,7 @@ module Dor
       if is_required && empty_datastream?(ds)
         raise "Required datastream #{datastream} could not be populated!"
       end
-      return ds
+      ds
     end
 
     def cleanup()
@@ -103,13 +103,13 @@ module Dor
     end
 
     def milestones
-      Dor::WorkflowService.get_milestones('dor',self.pid)
+      Dor::WorkflowService.get_milestones('dor',pid)
     end
 
     def status_info()
       current_version = '1'
       begin
-        current_version = self.versionMetadata.current_version_id
+        current_version = versionMetadata.current_version_id
       rescue
       end
 
@@ -117,8 +117,8 @@ module Dor
       #only get steps that are part of accessioning and part of the current version. That can mean they were archived with the current version
       #number, or they might be active (no version number).
       milestones.each do |m|
-        if STEPS.keys.include?(m[:milestone]) and (m[:version].nil? or m[:version] == current_version)
-          current_milestones << m unless m[:milestone] == 'registered' and current_version.to_i > 1
+        if STEPS.keys.include?(m[:milestone]) && (m[:version].nil? || m[:version] == current_version)
+          current_milestones << m unless m[:milestone] == 'registered' && current_version.to_i > 1
         end
       end
 
@@ -136,25 +136,25 @@ module Dor
         end
       end
 
-      return {:current_version => current_version, :status_code => status_code, :status_time => status_time}
+      {:current_version => current_version, :status_code => status_code, :status_time => status_time}
     end
 
-    def status(include_time=false)
+    def status(include_time = false)
       status_info_hash = status_info
       current_version, status_code, status_time = status_info_hash[:current_version], status_info_hash[:status_code], status_info_hash[:status_time]
 
       #use the translation table to get the appropriate verbage for the latest step
       result = "v#{current_version} #{STATUS_CODE_DISP_TXT[status_code]}"
       result += " #{format_date(status_time)}" if include_time
-      return result
+      result
     end
 
-    def to_solr(solr_doc=Hash.new, *args)
+    def to_solr(solr_doc = Hash.new, *args)
       super(solr_doc, *args)
       sortable_milestones = {}
       current_version='1'
       begin
-        current_version = self.versionMetadata.current_version_id
+        current_version = versionMetadata.current_version_id
       rescue
       end
       current_version_num=current_version.to_i
@@ -162,12 +162,12 @@ module Dor
       if self.respond_to?('versionMetadata')
         #add an entry with version id, tag and description for each version
         while current_version_num > 0
-          add_solr_value(solr_doc, 'versions', current_version_num.to_s + ';' + self.versionMetadata.tag_for_version(current_version_num.to_s) + ';' + self.versionMetadata.description_for_version(current_version_num.to_s), :string, [:displayable])
+          add_solr_value(solr_doc, 'versions', current_version_num.to_s + ';' + versionMetadata.tag_for_version(current_version_num.to_s) + ';' + versionMetadata.description_for_version(current_version_num.to_s), :string, [:displayable])
           current_version_num -= 1
         end
       end
 
-      self.milestones.each do |milestone|
+      milestones.each do |milestone|
         timestamp = milestone[:at].utc.xmlschema
         sortable_milestones[milestone[:milestone]] ||= []
         sortable_milestones[milestone[:milestone]] << timestamp
@@ -201,7 +201,7 @@ module Dor
         add_solr_value(solr_doc, "version_opened", DateTime.parse(opened_date).beginning_of_day.utc.xmlschema.split('T').first, :string, [ :searchable, :facetable])
       end
       add_solr_value(solr_doc, "current_version", current_version.to_s, :string, [ :displayable , :facetable])
-      add_solr_value(solr_doc, "last_modified_day", self.modified_date.to_s.split('T').first, :string, [ :facetable ])
+      add_solr_value(solr_doc, "last_modified_day", modified_date.to_s.split('T').first, :string, [ :facetable ])
       add_solr_value(solr_doc, "rights", rights, :string, [:facetable]) if self.respond_to? :rights
       solr_doc
     end
@@ -212,12 +212,12 @@ module Dor
     # @param [String] name of the workflow to be initialized
     # @param [Boolean] create_ds create a 'workflows' datastream in Fedora for the object
     # @param [Integer] priority the workflow's priority level
-    def initialize_workflow(name, create_ds=true, priority=0)
+    def initialize_workflow(name, create_ds = true, priority = 0)
       priority = workflows.current_priority if priority == 0
       opts = { :create_ds => create_ds }
       opts[:priority] = priority if(priority > 0)
       opts[:lane_id] = default_workflow_lane
-      Dor::WorkflowService.create_workflow(Dor::WorkflowObject.initial_repo(name), self.pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
+      Dor::WorkflowService.create_workflow(Dor::WorkflowObject.initial_repo(name), pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
     end
 
 
@@ -237,4 +237,3 @@ module Dor
 
 
 end
-

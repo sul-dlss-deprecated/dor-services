@@ -23,8 +23,8 @@ module Workflow
         'batch_limit' => node['batch-limit'] ? node['batch-limit'].to_i : nil,
         'error_limit' => node['error-limit'] ? node['error-limit'].to_i : nil,
         'prerequisite' => node.xpath('prereq').collect { |p|
-          repo = (p['repository'].nil? or p['repository'] == @repo) ? nil : p['repository']
-          wf = (p['workflow'].nil? or p['workflow'] == @workflow) ? nil : p['workflow']
+          repo = (p['repository'].nil? || p['repository'] == @repo) ? nil : p['repository']
+          wf = (p['workflow'].nil? || p['workflow'] == @workflow) ? nil : p['workflow']
           [repo,wf,p.text.to_s].compact.join(':')
         },
         'priority' => node['priority'] ? node['priority'].to_i : 0
@@ -43,22 +43,22 @@ module Workflow
     def note          ; @attrs['note']          ; end
     def version       ; @attrs['version']       ; end
     def priority      ; @attrs['priority']      ; end
-    def completed?    ; self.status == 'completed' ; end
-    def error?        ; self.status == 'error'     ; end
-    def waiting?      ; self.status == 'waiting'   ; end
-    def date_time     ;@attrs['datetime']       ; end 
+    def completed?    ; status == 'completed' ; end
+    def error?        ; status == 'error'     ; end
+    def waiting?      ; status == 'waiting'   ; end
+    def date_time     ;@attrs['datetime']       ; end
 
     def archived?
       return true if(@attrs['archived'] =~ /true$/i)
-      return false
+      false
     end
 
     def ready?
-      self.waiting? and (not self.prerequisite.nil?) and self.prerequisite.all? { |pr| (prq = self.owner[pr]) && prq.completed? }
+      self.waiting? && (!prerequisite.nil?) && prerequisite.all? { |pr| (prq = owner[pr]) && prq.completed? }
     end
 
     def blocked?
-      self.waiting? and (not self.prerequisite.nil?) and self.prerequisite.any? { |pr| (prq = self.owner[pr]) && (prq.error? or prq.blocked?) }
+      self.waiting? && (!prerequisite.nil?) && prerequisite.any? { |pr| (prq = owner[pr]) && (prq.error? || prq.blocked?) }
     end
 
     def state
@@ -83,7 +83,7 @@ module Workflow
       @attrs['elapsed'].nil? ? nil : @attrs['elapsed'].to_f
     end
 
-    def update!(info, new_owner=nil)
+    def update!(info, new_owner = nil)
       @owner = new_owner unless new_owner.nil?
       if info.is_a? Nokogiri::XML::Node
         info = Hash[info.attributes.collect { |k,v| [k,v.value] }]
@@ -92,7 +92,7 @@ module Workflow
     end
 
     def to_hash
-      @attrs.reject { |k,v| v.nil? or v == 0 or (v.respond_to?(:empty?) and v.empty?) }
+      @attrs.reject { |k,v| v.nil? || v == 0 || (v.respond_to?(:empty?) && v.empty?) }
     end
   end
 end

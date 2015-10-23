@@ -25,7 +25,7 @@ module Dor
     # retrieve the differences between the current contentMetadata and the previously ingested version
     # (filtering to select only the files that should be shelved to stacks)
     def get_shelve_diff
-      inventory_diff_xml = self.get_content_diff(:shelve)
+      inventory_diff_xml = get_content_diff(:shelve)
       inventory_diff = Moab::FileInventoryDifference.parse(inventory_diff_xml)
       shelve_diff = inventory_diff.group_difference("content")
       shelve_diff
@@ -35,30 +35,30 @@ module Dor
     # @param [Moab::FileGroupDifference] content_diff The differences between the current contentMetadata and the previously ingested version
     # @param [DruidTools::Druid] workspace_druid the location of the object's files in the workspace area
     # @return [Pathname] The location of the object's content files in the workspace area
-    def workspace_content_dir (content_diff, workspace_druid)
+    def workspace_content_dir(content_diff, workspace_druid)
       deltas = content_diff.file_deltas
       filelist = deltas[:modified] + deltas[:added] + deltas[:copyadded].collect{|old,new| new}
       return nil if filelist.empty?
       content_pathname = Pathname(workspace_druid.find_filelist_parent('content', filelist))
       content_pathname
     end
-    
-    
-    # get the stack location based on the contentMetadata stacks attribute 
+
+
+    # get the stack location based on the contentMetadata stacks attribute
     # or using the default value from the config file if it doesn't exist
     def get_stacks_location
-      
-      contentMetadataDS = self.datastreams['contentMetadata']
-      unless contentMetadataDS.nil? or contentMetadataDS.stacks.length == 0
-        stacks_location = contentMetadataDS.stacks[0]        
+
+      contentMetadataDS = datastreams['contentMetadata']
+      unless contentMetadataDS.nil? || contentMetadataDS.stacks.length == 0
+        stacks_location = contentMetadataDS.stacks[0]
         if stacks_location.start_with?"/"  #Absolute stacks path
           return stacks_location
-        else        
-          raise "stacks attribute for item: "+self.id+ " contentMetadata should start with /. The current value is "+stacks_location
+        else
+          raise "stacks attribute for item: "+id+ " contentMetadata should start with /. The current value is "+stacks_location
         end
-      end      
-      return Config.stacks.local_stacks_root #Default stacks
-       
+      end
+      Config.stacks.local_stacks_root #Default stacks
+
     end
   end
 end

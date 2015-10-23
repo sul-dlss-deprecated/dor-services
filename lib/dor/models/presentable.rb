@@ -17,7 +17,7 @@ module Dor
 
     # Bypass this method if there are no image resources in contentMetadata
     def build_iiif_manifest pub_obj_doc
-      id = self.pid.split(':').last
+      id = pid.split(':').last
 
       lbl_node = pub_obj_doc.at_xpath '//oai_dc:dc/dc:title', DC_NS
       if lbl_node.nil?
@@ -32,13 +32,13 @@ module Dor
         '@id'   => "#{purl_base_uri}/iiif/manifest.json",
         'label' => lbl,
         'attribution' => 'Provided by the Stanford University Libraries',
-        'logo' => { 
-          '@id' => "https://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette/full/400,/0/default.jpg", 
-          'service' => { 
-            '@context' => "http://iiif.io/api/image/2/context.json", 
-            '@id' => "https://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette", 
-            'profile' => "http://iiif.io/api/image/2/level1.json" 
-            } 
+        'logo' => {
+          '@id' => "https://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette/full/400,/0/default.jpg",
+          'service' => {
+            '@context' => "http://iiif.io/api/image/2/context.json",
+            '@id' => "https://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette",
+            'profile' => "http://iiif.io/api/image/2/level1.json"
+            }
           },
         'seeAlso' => {
           '@id' => "#{purl_base_uri}.mods",

@@ -6,7 +6,7 @@ module Dor
     # @param [Dor::Item] dor_item The representation of the digital object
     # @param [String] agreement_id  depreciated, included for backward compatability with common-accessoning
     # @return [void] Create the moab manifests, export data to a BagIt bag, kick off the SDR ingest workflow
-    def self.transfer(dor_item, agreement_id=nil)
+    def self.transfer(dor_item, agreement_id = nil)
       druid = dor_item.pid
       workspace = DruidTools::Druid.new(druid,Dor::Config.sdr.local_workspace_root)
       signature_catalog = get_signature_catalog(druid)
@@ -16,14 +16,14 @@ module Dor
       version_inventory = get_version_inventory(metadata_dir, druid, new_version_id)
       version_addtions = signature_catalog.version_additions(version_inventory)
       content_addtions = version_addtions.group('content')
-      if content_addtions.nil? or content_addtions.files.empty?
+      if content_addtions.nil? || content_addtions.files.empty?
         content_dir = nil
       else
         new_file_list = content_addtions.path_list
         content_dir = workspace.find_filelist_parent('content',new_file_list)
       end
       content_group = version_inventory.group('content')
-      unless content_group.nil? or content_group.files.empty?
+      unless content_group.nil? || content_group.files.empty?
         signature_catalog.normalize_group_signatures(content_group, content_dir)
       end
       # export the bag (in tar format)
@@ -61,7 +61,7 @@ module Dor
       Config.sdr.datastreams.to_hash.each_pair do |ds_name, required|
         ds_name = ds_name.to_s
         metadata_file = metadata_dir.join("#{ds_name}.xml")
-        metadata_string = self.get_datastream_content(dor_item, ds_name, required)
+        metadata_string = get_datastream_content(dor_item, ds_name, required)
         metadata_file.open('w') { |f| f << metadata_string } if metadata_string
       end
       metadata_dir
@@ -74,7 +74,7 @@ module Dor
     #   If not found, return nil unless it is a required datastream in which case raise exception
     def self.get_datastream_content(dor_item, ds_name, required)
       ds = (ds_name == 'relationshipMetadata' ? 'RELS-EXT' : ds_name)
-      if dor_item.datastreams.keys.include?(ds) and not dor_item.datastreams[ds].new?
+      if dor_item.datastreams.keys.include?(ds) && !dor_item.datastreams[ds].new?
         return dor_item.datastreams[ds].content
       elsif (required == 'optional')
         return nil

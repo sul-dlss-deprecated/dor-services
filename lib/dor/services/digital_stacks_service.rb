@@ -14,7 +14,7 @@ module Dor
         subset.files.each do |moab_file| # {Moab::FileInstanceDifference}
           moab_signature = moab_file.signatures.first # {Moab::FileSignature}
           file_pathname = stacks_object_pathname.join(moab_file.basis_path)
-          self.delete_file(file_pathname, moab_signature)
+          delete_file(file_pathname, moab_signature)
         end
       end
     end
@@ -24,14 +24,14 @@ module Dor
     # @param [Moab::FileSignature] moab_signature The fixity values of the file
     # @return [Boolean] true if file deleted, false otherwise
     def self.delete_file(file_pathname, moab_signature)
-      if file_pathname.exist? and (file_pathname.size == moab_signature.size)
+      if file_pathname.exist? && (file_pathname.size == moab_signature.size)
         file_signature = Moab::FileSignature.new.signature_from_file(file_pathname)
         if (file_signature == moab_signature)
           file_pathname.delete
           return true
         end
       end
-      return false
+      false
     end
 
     # Rename files from stacks that have change type 'renamed' using an intermediate temp filename.
@@ -46,7 +46,7 @@ module Dor
         moab_signature = moab_file.signatures.first # {Moab::FileSignature}
         original_pathname = stacks_object_pathname.join(moab_file.basis_path)
         temp_pathname = stacks_object_pathname.join(moab_signature.checksums.values.last)
-        self.rename_file(original_pathname, temp_pathname, moab_signature)
+        rename_file(original_pathname, temp_pathname, moab_signature)
       end
 
       # 2nd Pass - rename files from checksum-based name to new name
@@ -54,7 +54,7 @@ module Dor
         moab_signature = moab_file.signatures.first # {Moab::FileSignature}
         temp_pathname = stacks_object_pathname.join(moab_signature.checksums.values.last)
         new_pathname = stacks_object_pathname.join(moab_file.other_path)
-        self.rename_file(temp_pathname, new_pathname, moab_signature)
+        rename_file(temp_pathname, new_pathname, moab_signature)
       end
 
     end
@@ -65,7 +65,7 @@ module Dor
     # @param [Moab::FileSignature] moab_signature The fixity values of the file
     # @return [Boolean] true if file renamed, false otherwise
     def self.rename_file(old_pathname, new_pathname, moab_signature)
-      if old_pathname.exist? and (old_pathname.size == moab_signature.size)
+      if old_pathname.exist? && (old_pathname.size == moab_signature.size)
         file_signature = Moab::FileSignature.new.signature_from_file(old_pathname)
         if (file_signature == moab_signature)
           new_pathname.parent.mkpath
@@ -73,7 +73,7 @@ module Dor
           return true
         end
       end
-      return false
+      false
     end
 
     # Add files to stacks that have change type 'added', 'copyadded' or 'modified'.
@@ -82,14 +82,14 @@ module Dor
     # @param [Moab::FileGroupDifference] content_diff the content file version differences report
     def self.shelve_to_stacks(workspace_content_pathname, stacks_object_pathname, content_diff)
       return false if workspace_content_pathname.nil?
-      [:added, :copyadded, :modified,].each do |change_type|
+      [:added, :copyadded, :modified].each do |change_type|
         subset = content_diff.subset(change_type) # {Moab::FileGroupDifferenceSubset
         subset.files.each do |moab_file| # {Moab::FileInstanceDifference}
           moab_signature = moab_file.signatures.last # {Moab::FileSignature}
           filename = (change_type == :modified) ? moab_file.basis_path : moab_file.other_path
           workspace_pathname = workspace_content_pathname.join(filename)
           stacks_pathname = stacks_object_pathname.join(filename)
-          self.copy_file(workspace_pathname, stacks_pathname, moab_signature)
+          copy_file(workspace_pathname, stacks_pathname, moab_signature)
         end
       end
       true
@@ -110,7 +110,7 @@ module Dor
         FileUtils.cp workspace_pathname.to_s, stacks_pathname.to_s
         return true
       end
-      return false
+      false
     end
 
     ### depricated ???

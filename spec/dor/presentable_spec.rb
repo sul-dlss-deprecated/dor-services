@@ -69,13 +69,13 @@ describe Dor::Presentable do
       "@type": "sc:Manifest",
       "label": "Roman Imperial denarius",
       "attribution": "(c) 2009 by Jasper Wilcox. All rights reserved.",
-      "logo": { 
-        "@id": "https://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette/full/400,/0/default.jpg", 
-        "service": { 
-          "@context": "http://iiif.io/api/image/2/context.json", 
-          "@id": "https://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette", 
-          "profile": "http://iiif.io/api/image/2/level1.json" 
-        } 
+      "logo": {
+        "@id": "https://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette/full/400,/0/default.jpg",
+        "service": {
+          "@context": "http://iiif.io/api/image/2/context.json",
+          "@id": "https://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette",
+          "profile": "http://iiif.io/api/image/2/level1.json"
+        }
       },
       "seeAlso": {
         "@id": "https://purl-dev.stanford.edu/bp778zp8790.mods",

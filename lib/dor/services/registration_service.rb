@@ -1,23 +1,23 @@
 require 'uuidtools'
 
 module Dor
-  
+
   class RegistrationService
-    
+
     class << self
       def register_object(params = {})
         Dor.ensure_models_loaded!
         [:object_type, :label].each do |required_param|
-          raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{self.name}.register_object" unless params[required_param]
+          raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{name}.register_object" unless params[required_param]
         end
         metadata_source=params[:metadata_source]
-        if params[:label].length<1 and (metadata_source=='label' || metadata_source=='none')
-          raise Dor::ParameterError, "label cannot be empty to call #{self.name}.register_object"
+        if params[:label].length<1 && (metadata_source=='label' || metadata_source=='none')
+          raise Dor::ParameterError, "label cannot be empty to call #{name}.register_object"
         end
-        object_type = params[:object_type]        
+        object_type = params[:object_type]
         item_class = Dor.registered_classes[object_type]
         raise Dor::ParameterError, "Unknown item type: '#{object_type}'" if item_class.nil?
-        
+
         content_model = params[:content_model]
         admin_policy = params[:admin_policy]
         label = params[:label]
@@ -37,12 +37,12 @@ module Dor
         else
           pid = Dor::SuriService.mint_id
         end
-        
+
         rights=nil
         if params[:rights]
           rights=params[:rights]
-          if not ['world','stanford','dark','default','none'].include? rights
-            raise Dor::ParameterError,"Unknown rights setting" + rights + "when calling #{self.name}.register_object"
+          unless ['world','stanford','dark','default','none'].include? rights
+            raise Dor::ParameterError,"Unknown rights setting" + rights + "when calling #{name}.register_object"
           end
         end
 
@@ -54,17 +54,17 @@ module Dor
           end
         end
 
-        if (other_ids.has_key?(:uuid) or other_ids.has_key?('uuid')) == false
+        if (other_ids.has_key?(:uuid) || other_ids.has_key?('uuid')) == false
           other_ids[:uuid] = UUIDTools::UUID.timestamp_create.to_s
         end
         short_label=label
         if label.length>254
           short_label=label[0,254]
         end
-        
+
         apo_object = Dor.find(admin_policy, :lightweight => true)
         adm_xml = apo_object.administrativeMetadata.ng_xml
-        
+
         new_item = item_class.new(:pid => pid)
         new_item.label = short_label
         idmd = new_item.identityMetadata
@@ -76,7 +76,7 @@ module Dor
         other_ids.each_pair { |name,value| idmd.add_otherId("#{name}:#{value}") }
         tags.each { |tag| idmd.add_value(:tag, tag) }
         new_item.admin_policy_object = apo_object
-        
+
         adm_xml.xpath('/administrativeMetadata/relationships/*').each do |rel|
           short_predicate = ActiveFedora::RelsExtDatastream.short_predicate rel.namespace.href+rel.name
           if short_predicate.nil?
@@ -89,7 +89,7 @@ module Dor
         if collection
           new_item.add_collection(collection)
         end
-        if(rights and ['item','collection'].include? object_type  )
+        if(rights && ['item','collection'].include?(object_type)  )
           rights_xml=apo_object.defaultObjectRights.ng_xml
           new_item.datastreams['rightsMetadata'].content=rights_xml.to_s
           new_item.set_read_rights(rights)
@@ -104,13 +104,13 @@ module Dor
               }
             }
           }
-      
+
       ds.content=builder.to_xml
-         
+
       end
-        
+
         workflow_priority = params[:workflow_priority] ? params[:workflow_priority].to_i : 0
-        
+
         Array(params[:seed_datastream]).each { |datastream_name| new_item.build_datastream(datastream_name) }
         Array(params[:initiate_workflow]).each { |workflow_id| new_item.initialize_workflow(workflow_id, !new_item.new_object?, workflow_priority)}
 
@@ -121,9 +121,9 @@ module Dor
         rescue StandardError => e
           Dor.logger.warn "Dor::RegistrationService.register_object failed to update solr index for #{new_item.pid}: #<#{e.class.name}: #{e.message}>"
         end
-        return(new_item)
+        (new_item)
       end
-      
+
       def create_from_request(params)
         other_ids = Array(params[:other_id]).collect do |id|
           if id =~ /^symphony:(.+)$/
@@ -132,14 +132,14 @@ module Dor
             id
           end
         end
-    
+
         if params[:label] == ':auto'
           params.delete(:label)
           params.delete('label')
           metadata_id = Dor::MetadataService.resolvable(other_ids).first
           params[:label] = Dor::MetadataService.label_for(metadata_id)
         end
-          
+
         dor_params = {
           :pid                => params[:pid],
           :admin_policy       => params[:admin_policy],
@@ -158,13 +158,13 @@ module Dor
           :workflow_priority  => params[:workflow_priority]
         }
         dor_params.delete_if { |k,v| v.nil? }
-    
-        dor_obj = self.register_object(dor_params)
+
+        dor_obj = register_object(dor_params)
         pid = dor_obj.pid
         location = URI.parse(Dor::Config.fedora.safeurl.sub(/\/*$/,'/')).merge("objects/#{pid}").to_s
         reg_response = dor_params.dup.merge({ :location => location, :pid => pid })
       end
-      
+
       private
       def ids_to_hash(ids)
         if ids.nil?
@@ -174,7 +174,7 @@ module Dor
         end
       end
     end
-    
+
   end
 
 end

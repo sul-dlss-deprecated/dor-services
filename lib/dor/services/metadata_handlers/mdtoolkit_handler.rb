@@ -26,7 +26,7 @@ handler = Class.new do
     end
     case xml.root.name
     when 'msDesc' then xml.xpath('/msDesc/msIdentifier/collection').text
-    when 'mods'   then 
+    when 'mods'   then
       xml.root.add_namespace_definition('mods','http://www.loc.gov/mods/v3')
       xml.xpath('/mods:mods/mods:titleInfo[1]').xpath('mods:title|mods:nonSort').collect { |n| n.text }.join(' ').strip
     end
