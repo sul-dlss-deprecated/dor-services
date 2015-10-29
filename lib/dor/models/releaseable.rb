@@ -36,8 +36,9 @@ module Dor
     end
 
     # Determine which projects an item is released for
-    # @return [Hash] all namespaces in the form of {"Project" => Boolean}
-    def released_for
+    # @param [Boolean] skip_live_purl set true to skip requesting from purl backend
+    # @return [Hash{String => Boolean}] all namespaces, keys are Project name Strings, values are Boolean
+    def released_for(skip_live_purl = false)
       released_hash = {}
       # Get release tags on the item itself
       release_tags_on_this_item = release_nodes
@@ -62,13 +63,14 @@ module Dor
       # In a nil case, the lack of an explicit false tag we do nothing.
       (potential_applicable_release_tags.keys - released_hash.keys).each do |key|  # don't bother checking if already added to the release hash, they were added due to a self tag so that has won
         latest_applicable_tag_for_key = latest_applicable_release_tag_in_array(potential_applicable_release_tags[key], administrative_tags)
-        unless latest_applicable_tag_for_key.nil? # We have a valid tag, record it
-          released_hash[key] = clean_release_tag_for_purl(latest_applicable_tag_for_key)
-        end
+        next if latest_applicable_tag_for_key.nil? # We have a valid tag, record it
+        released_hash[key] = clean_release_tag_for_purl(latest_applicable_tag_for_key)
       end
 
       # See what the application is currently released for on Purl.  If something is released in purl but not listed here, it needs to be added as a false
-      add_tags_from_purl(released_hash)
+      add_tags_from_purl(released_hash) unless skip_live_purl
+
+      released_hash
     end
 
     #Take a hash of tags as obtained via Dor::Item.release_tags and returns all self tags
@@ -342,7 +344,7 @@ module Dor
 
       # TODO: sort of worried about the performance impact in bulk reindex
       # situations, since released_for recurses all parent collections.  jmartin 2015-07-14
-      released_for().each { |key, val|
+      released_for(true).each { |key, val|
         add_solr_value(solr_doc, 'released_to', key, :symbol, []) if val
       }
 
