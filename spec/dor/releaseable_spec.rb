@@ -10,16 +10,16 @@ describe Dor::Releaseable, :vcr do
   before :each do
     Dor::Config.push! do
       solrizer.url 'http://127.0.0.1:8080/solr/argo_test'
-      fedora.url 'https://sul-dor-test.stanford.edu/fedora'
+      fedora.url   'https://sul-dor-test.stanford.edu/fedora'
       stacks.document_cache_host 'purl-test.stanford.edu'
     end
 
     VCR.use_cassette('fetch_bryar_transam') do
       @bryar_trans_am_druid = 'druid:bb004bn8654'
-      @bryar_trans_am = Dor::Item.find(@bryar_trans_am_druid)
-      @bryar_trans_am_admin_tags = @bryar_trans_am.tags
+      @bryar_trans_am       = Dor::Item.find(@bryar_trans_am_druid)
+      @bryar_trans_am_admin_tags   = @bryar_trans_am.tags
       @bryar_trans_am_release_tags = @bryar_trans_am.release_nodes
-      @array_of_times = [Time.parse('2015-01-06 23:33:47Z').iso8601, Time.parse('2015-01-07 23:33:47Z').iso8601, Time.parse('2015-01-08 23:33:47Z').iso8601, Time.parse('2015-01-09 23:33:47Z').iso8601]
+      @array_of_times = [Time.parse('2015-01-06 23:33:47Z'), Time.parse('2015-01-07 23:33:47Z'), Time.parse('2015-01-08 23:33:47Z'), Time.parse('2015-01-09 23:33:47Z')].map(&:iso8601)
     end
 
   end
@@ -187,7 +187,7 @@ describe Dor::Releaseable, :vcr do
           true_or_false = %w(true false)
           xml_obj = Nokogiri(release_xml)
           xml_obj.xpath('//release').each do |release_node|
-            expect(release_node.name).to eq('release')  #Well, duh
+            expect(release_node.name).to eq('release') # Well, duh
             expect(release_node.attributes.keys).to eq(['to'])
             expect(release_node.attributes['to'].value.class).to eq(String)
             expect(true_or_false.include? release_node.children.text).to be_truthy
@@ -200,19 +200,17 @@ end
 
 describe 'Adding release nodes', :vcr do
   before :all do
-
     Dor::Config.push! do
       cert_dir = File.expand_path('../../certs', __FILE__)
       ssl do
         #If rerecording or adding new cassettes, point these to real files
         cert_file File.join(cert_dir, 'robots-dor-test.crt')
-        key_file File.join(cert_dir, 'robots-dor-test.key')
-        key_pass ''
+        key_file  File.join(cert_dir, 'robots-dor-test.key')
+        key_pass  ''
       end
       solrizer.url 'http://127.0.0.1:8080/solr/argo_test'
-      fedora.url 'https://sul-dor-test.stanford.edu/fedora'
+      fedora.url   'https://sul-dor-test.stanford.edu/fedora'
       stacks.document_cache_host 'purl-test.stanford.edu'
-
     end
 
     VCR.use_cassette('releaseable_sample_obj') do
@@ -226,22 +224,19 @@ describe 'Adding release nodes', :vcr do
     Dor::Config.pop!
   end
 
-  describe 'testing to make sure displayType tag invoked by the add_release_node function' do
-
+  describe 'add_release_node' do
     it 'removes all current displayTypes' do
       expect(@item).to receive(:remove_displayTypes).once
       @item.add_release_node(true, {:what => 'self', :who => 'carrickr', :to => 'FRDA'})
     end
-
     it 'adds a displayType of file when adding a releaseNode with no type is set' do
-      iM = @item.identityMetadata #Grab an identityMetadata so we can do expects and allows on it
+      iM = @item.identityMetadata # Grab an identityMetadata so we can do expects and allows on it
       expect(iM).to receive(:add_value).once.with(:displayType, 'file', {})
       expect(iM).to receive(:add_value).once.with(:release, any_args)
       @item.add_release_node(true, {:what => 'self', :who => 'carrickr', :to => 'FRDA'})
     end
-
     it 'uses the supplied displayType of file when adding a releaseNode' do
-      iM = @item.identityMetadata #Grab an identityMetadata so we can do expects and allows on it
+      iM = @item.identityMetadata # Grab an identityMetadata so we can do expects and allows on it
       expect(iM).to receive(:add_value).once.with(:displayType, 'filmstrip', {})
       expect(iM).to receive(:add_value).once.with(:release, any_args)
       @item.add_release_node(true, {:what => 'self', :who => 'carrickr', :to => 'FRDA', :displayType => 'filmstrip'})
@@ -254,76 +249,66 @@ describe 'Adding release nodes', :vcr do
       expect(@item).to receive(:initialize_workflow).with('releaseWF') #Make sure releaseWF is called
       expect(@item).to receive(:add_release_node).once
       expect(@item.add_release_nodes_and_start_releaseWF({:release => true, :what => 'self', :who => 'carrickr', :to => 'FRDA'})).to eq(nil) #Should run and return void
-
     end
-
     it 'should release an item with multiple release tags supplied' do
       allow(@item).to receive(:save).and_return(true) #stud out the true in that it we lack a connection to solr
       expect(@item).to receive(:initialize_workflow).with('releaseWF') #Make sure releaseWF is called
       expect(@item).to receive(:add_release_node).twice
       tags = [{:release => true, :what => 'self', :who => 'carrickr', :to => 'FRDA'}, {:release => true, :what => 'self', :who => 'carrickr', :to => 'Revs'}]
       expect(@item.add_release_nodes_and_start_releaseWF(tags)).to eq(nil) #Should run and return void
-
-    end
-
-  end
-
-  it 'should raise an error when no :who, :to,  or :what is supplied' do
-      expect{@item.valid_release_attributes(true, {:when => '2015-01-05T23:23:45Z', :who => nil, :to => 'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
-      expect{@item.valid_release_attributes(false, {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => nil, :what => 'collection', :tag => 'Project:Fitch:Batch2', :displayType => 'file'})}.to raise_error(ArgumentError)
-      expect{@item.valid_release_attributes(true, {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => nil, :tag => 'Project:Fitch:Batch2', :displayType => 'file'})}.to raise_error(ArgumentError)
-  end
-
-  it 'should raise an error when :who, :to, :what are supplied but are not strings' do
-    expect{@item.valid_release_attributes(true, {:when => '2015-01-05T23:23:45Z', :who => 1, :to => 'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
-    expect{@item.valid_release_attributes(true, {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => true, :what => 'collection', :tag => 'Project:Fitch:Batch2', :displayType => 'file'})}.to raise_error(ArgumentError)
-    expect{@item.valid_release_attributes(false, {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => %w(i am an array), :tag => 'Project:Fitch:Batch2', :displayType => 'file'})}.to raise_error(ArgumentError)
-  end
-
-  it 'should not raise an error when :what is self or collection' do
-    expect(@item.valid_release_attributes(true, {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2', :displayType => 'file'})).to be true
-    expect(@item.valid_release_attributes(false, {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => 'collection', :tag => 'Project:Fitch:Batch2', :displayType => 'file'})).to be true
-  end
-
-  it 'should raise an error when :what is a string but is not self or collection' do
-    expect{@item.valid_release_attributes(true, {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => 'foo', :tag => 'Project:Fitch:Batch2', :displayType => 'file'})}.to raise_error(ArgumentError)
-  end
-
-  it 'raises an argument error when :displayType is not provided as a string' do
-    expect{@item.valid_release_attributes(true, {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2', :displayType => ['file']})}.to raise_error(ArgumentError)
-  end
-
-  it 'should add a tag when all attributes are properly provided' do
-    VCR.use_cassette('simple_release_tag_add_success_test') do
-       expect(@item.add_release_node(true, {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2', :displayType => 'file'})).to be_a_kind_of(Nokogiri::XML::Element)
     end
   end
 
-  it 'should fail to add a release node when there is an attribute error' do
-    VCR.use_cassette('simple_release_tag_add_failure_test') do
-       expect{@item.add_release_node(true, {:who => nil, :to => 'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
-       expect{@item.add_release_node(false, {:who => 'carrickr', :to => 'Revs', :what => 'self', :tag => 'Project'})}.to raise_error(ArgumentError)
-       expect{@item.add_release_node(1, {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
+  describe 'valid_release_attributes' do
+    before :each do
+      @args = {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => 'collection', :tag => 'Project:Fitch:Batch2', :displayType => 'file'}
+    end
+    it 'should raise an error when :who, :to, :what are missing or are not strings' do
+      expect{@item.valid_release_attributes(true,  @args.merge(:who  => nil ))}.to raise_error(ArgumentError)
+      expect{@item.valid_release_attributes(false, @args.merge(:to   => nil ))}.to raise_error(ArgumentError)
+      expect{@item.valid_release_attributes(true,  @args.merge(:what => nil ))}.to raise_error(ArgumentError)
+      expect{@item.valid_release_attributes(true,  @args.merge(:who  => 1   ))}.to raise_error(ArgumentError)
+      expect{@item.valid_release_attributes(true,  @args.merge(:to   => true))}.to raise_error(ArgumentError)
+      expect{@item.valid_release_attributes(false, @args.merge(:what => %w(i am an array)))}.to raise_error(ArgumentError)
+    end
+    it 'should not raise an error when :what is self or collection' do
+      expect(@item.valid_release_attributes(false, @args)).to be true
+      expect(@item.valid_release_attributes(true,  @args.merge(:what => 'self'))).to be true
+    end
+    it 'raises an argument error when :what is a string, but is not self or collection' do
+      expect{@item.valid_release_attributes(true, @args.merge(:what => 'foo'))}.to raise_error(ArgumentError)
+    end
+    it 'raises an argument error when :displayType is not a string' do
+      expect{@item.valid_release_attributes(true, @args.merge(:displayType => ['file']))}.to raise_error(ArgumentError)
+    end
+    it 'should add a tag when all attributes are properly provided' do
+      VCR.use_cassette('simple_release_tag_add_success_test') do
+         expect(@item.add_release_node(true, @args.merge(:what => 'self'))).to be_a_kind_of(Nokogiri::XML::Element)
+      end
+    end
+      it 'should fail to add a release node when there is an attribute error' do
+      VCR.use_cassette('simple_release_tag_add_failure_test') do
+         expect{@item.add_release_node(true,  {:who => nil, :to => 'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
+         expect{@item.add_release_node(false, @args.merge(:tag => 'Project'))}.to raise_error(ArgumentError)
+         expect{@item.add_release_node(1, @args)}.to raise_error(ArgumentError)
+      end
+    end
+    it 'should return true when valid_release_attributes is called with valid attributes and no tag attribute' do
+      @args.delete :tag
+      expect(@item.valid_release_attributes(true, @args)).to be true
+    end
+    it 'should return true when valid_release_attributes is called with valid attributes and tag attribute' do
+      expect(@item.valid_release_attributes(true, @args)).to be true
+    end
+    it 'should raise an error when valid_release_attributes is called with valid attributes but an invalid tag attribute' do
+      expect{@item.valid_release_attributes(true, @args.merge(:tag => 'Batch2'))}.to raise_error(ArgumentError)
+    end
+    it 'should raise an error when valid_release_attributes is called with a tag content that is not a boolean' do
+      expect{@item.valid_release_attributes(1, @args)}.to raise_error(ArgumentError)
     end
   end
 
-  it 'should return true when valid_release_attributes is called with valid attributes and no tag attribute' do
-    expect(@item.valid_release_attributes(true, {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => 'self', :displayType => 'file'})).to be true
-  end
-
-  it 'should return true when valid_release_attributes is called with valid attributes and tag attribute' do
-    expect(@item.valid_release_attributes(true, {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2', :displayType => 'file'})).to be true
-  end
-
-  it 'should raise a Runtime Error when valid_release_attributes is called with valid attributes but an invalid tag attribute' do
-    expect{@item.valid_release_attributes(true, {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => 'self', :tag => 'Batch2'})}.to raise_error(ArgumentError)
-  end
-
-  it 'should raise a Runtime Error when valid_release_attributes is called with a tag content that is not a boolean' do
-    expect{@item.valid_release_attributes(1, {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
-  end
-
-  it "should return no release nodes for an item that doesn't have any" do
+  it 'should return no release nodes for an item that does n0t have any' do
     VCR.use_cassette('releaseable_no_release_tags') do
       no_release_nodes_item = Dor::Item.find('druid:qv648vd4392')
       expect(no_release_nodes_item.release_nodes).to eq({})
@@ -380,12 +365,12 @@ describe 'Adding release nodes', :vcr do
       VCR.use_cassette('fetch_le_mans_purl') do
         item = Dor::Item.find(@le_mans_druid)
         x = item.get_xml_from_purl
-        generated_tags = {} #pretend no tags were found in the most recent dor object, so all tags in the purl should return false
-        tags_currently_in_purl = item.get_release_tags_from_purl_xml(x) #These are the tags currently in purl
-        final_result_tags = item.add_tags_from_purl(generated_tags) #Final result of dor and purl tags
-        expect(final_result_tags.keys).to match(tags_currently_in_purl) #all tags currently in purl should be reflected
+        generated_tags = {} # pretend no tags were found in the most recent dor object, so all tags in the purl should return false
+        tags_currently_in_purl = item.get_release_tags_from_purl_xml(x)  # These are the tags currently in purl
+        final_result_tags = item.add_tags_from_purl(generated_tags)      # Final result of dor and purl tags
+        expect(final_result_tags.keys).to match(tags_currently_in_purl)  # all tags currently in purl should be reflected
         final_result_tags.keys.each do |tag|
-          expect(final_result_tags[tag]).to match ({'release' => false}) #all tags should be false for their releas
+          expect(final_result_tags[tag]).to match ({'release' => false}) # all tags should be false for their releas
         end
       end
     end
@@ -394,12 +379,12 @@ describe 'Adding release nodes', :vcr do
       VCR.use_cassette('fetch_le_mans_purl') do
         item = Dor::Item.find(@le_mans_druid)
         x = item.get_xml_from_purl
-        generated_tags = {'Kurita' => {'release' => true}} #only kurita has returned as true
-        tags_currently_in_purl = item.get_release_tags_from_purl_xml(x) #These are the tags currently in purl
-        final_result_tags = item.add_tags_from_purl(generated_tags) #Final result of dor and purl tags
-        expect(final_result_tags.keys).to match(tags_currently_in_purl) #all tags currently in purl should be reflected
+        generated_tags = {'Kurita' => {'release' => true}}              # only kurita has returned as true
+        tags_currently_in_purl = item.get_release_tags_from_purl_xml(x) # These are the tags currently in purl
+        final_result_tags = item.add_tags_from_purl(generated_tags)     # Final result of dor and purl tags
+        expect(final_result_tags.keys).to match(tags_currently_in_purl) # all tags currently in purl should be reflected
         final_result_tags.keys.each do |tag|
-          expect(final_result_tags[tag]).to match ({'release' => false}) if tag != 'Kurita' #Kurita should still be true
+          expect(final_result_tags[tag]).to match ({'release' => false}) if tag != 'Kurita' # Kurita should still be true
         end
         expect(final_result_tags['Kurita']).to match ({'release' => true})
       end
@@ -418,9 +403,7 @@ describe 'to_solr' do
 
   it 'should solrize release tags' do
     allow(@rlsbl_item).to receive(:released_for).and_return({'Project' => true, 'test_target' => true, 'test_nontarget' => false})
-
-    solr_doc = @rlsbl_item.to_solr({})
-
+    solr_doc = @rlsbl_item.to_solr
     released_to_field_name = Solrizer.solr_name('released_to', :symbol)
     expect(solr_doc).to match a_hash_including({released_to_field_name => %w(Project test_target)})
   end
