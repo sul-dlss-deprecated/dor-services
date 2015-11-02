@@ -19,9 +19,8 @@ describe Dor::Releaseable, :vcr do
       @bryar_trans_am       = Dor::Item.find(@bryar_trans_am_druid)
       @bryar_trans_am_admin_tags   = @bryar_trans_am.tags
       @bryar_trans_am_release_tags = @bryar_trans_am.release_nodes
-      @array_of_times = [Time.parse('2015-01-06 23:33:47Z'), Time.parse('2015-01-07 23:33:47Z'), Time.parse('2015-01-08 23:33:47Z'), Time.parse('2015-01-09 23:33:47Z')].map(&:iso8601)
+      @array_of_times = ['2015-01-06 23:33:47Z', '2015-01-07 23:33:47Z', '2015-01-08 23:33:47Z', '2015-01-09 23:33:47Z'].map{ |x| Time.parse(x).iso8601 }
     end
-
   end
 
   after :each do
@@ -183,13 +182,13 @@ describe Dor::Releaseable, :vcr do
         VCR.use_cassette('releaseable_release_xml') do
           item = Dor::Item.find('druid:dc235vd9662')
           release_xml = item.generate_release_xml
-          expect(release_xml.class).to eq(String)
+          expect(release_xml).to be_a(String)
           true_or_false = %w(true false)
           xml_obj = Nokogiri(release_xml)
           xml_obj.xpath('//release').each do |release_node|
             expect(release_node.name).to eq('release') # Well, duh
             expect(release_node.attributes.keys).to eq(['to'])
-            expect(release_node.attributes['to'].value.class).to eq(String)
+            expect(release_node.attributes['to'].value).to be_a(String)
             expect(true_or_false.include? release_node.children.text).to be_truthy
           end
         end
@@ -286,7 +285,7 @@ describe 'Adding release nodes', :vcr do
          expect(@item.add_release_node(true, @args.merge(:what => 'self'))).to be_a_kind_of(Nokogiri::XML::Element)
       end
     end
-      it 'should fail to add a release node when there is an attribute error' do
+    it 'should fail to add a release node when there is an attribute error' do
       VCR.use_cassette('simple_release_tag_add_failure_test') do
          expect{@item.add_release_node(true,  {:who => nil, :to => 'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
          expect{@item.add_release_node(false, @args.merge(:tag => 'Project'))}.to raise_error(ArgumentError)
@@ -339,16 +338,16 @@ describe 'Adding release nodes', :vcr do
     it 'should get the purl xml for a druid' do
       VCR.use_cassette('fetch_purl_test_xml') do
         x = @item.get_xml_from_purl
-        expect(x.class).to eq(Nokogiri::HTML::Document)
+        expect(x).to be_a(Nokogiri::HTML::Document)
         expect(x.at_xpath('//html/body/publicobject').attr('id')).to eq(@item.id)
       end
     end
 
     it 'should not raise an error for a 404 when attempted to obtain a purl' do
       VCR.use_cassette('purl_404') do
-        #expect(Time).to receive(:now).and_return(@now).at_least(:once)
+        expect(Dor.logger).to receive(:warn).once
         expect(@item).to receive(:id).and_return('druid:IAmABadDruid').at_least(:once)
-        expect(@item.get_xml_from_purl.class).to eq(Nokogiri::HTML::Document)
+        expect(@item.get_xml_from_purl).to be_a(Nokogiri::HTML::Document)
       end
     end
 
