@@ -26,6 +26,8 @@ module Dor
         $-v = temp_v
       end
       params = { :dor_services_url => result.dor_services.url }
+
+      params[:logger] = Logger.new(result.workflow.logfile) if result.workflow.logfile
       params[:timeout] = result.workflow.timeout if result.workflow.timeout
       Dor::WorkflowService.configure result.workflow.url, params
       result

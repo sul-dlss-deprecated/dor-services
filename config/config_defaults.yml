@@ -61,5 +61,6 @@
 :workflow:
   :url:
   :timeout: 60
+  :logfile: workflow_service.log
 :dor_services:
   :url:
