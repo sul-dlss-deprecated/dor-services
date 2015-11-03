@@ -46,22 +46,12 @@ describe Dor::Embargoable do
     EOXML
   }
 
-  before :all do
-    @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__), '../fixtures')
-    Dor::Config.push! do
-      suri.mint_ids false
-      gsearch.url 'http://solr.edu/gsearch'
-      solrizer.url 'http://solr.edu/solrizer'
-      fedora.url 'http://fedora.edu'
-      stacks.local_workspace_root File.join(fixture_dir, 'workspace')
-    end
-
-    # ActiveFedora::SolrService.register(Dor::Config.gsearch.url)
-    # Fedora::Repository.register(Dor::Config.fedora.url)
+  before :each do
+    stub_config
   end
 
-  after :all do
-    Dor::Config.pop!
+  after :each do
+    unstub_config
   end
 
   before(:each) do
