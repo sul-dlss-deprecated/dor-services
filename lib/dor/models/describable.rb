@@ -121,16 +121,21 @@ module Dor
         title_node = Nokogiri::XML::Node.new('title', doc)
         title_node.content = collection_title
 
-        id_node = Nokogiri::XML::Node.new('identifier', doc)
-        id_node['type'] = 'uri'
-        id_node.content = "http://#{Dor::Config.stacks.document_cache_host}/#{druid.split(':').last}"
+        # e.g., 
+        #   <location>
+        #     <url>http://purl.stanford.edu/rh056sr3313</url>
+        #   </location>
+        loc_node = doc.create_element('location')
+        url_node = doc.create_element('url')
+        url_node.content = "http://#{Dor::Config.stacks.document_cache_host}/#{druid.split(':').last}"
+        loc_node << url_node
 
         type_node = Nokogiri::XML::Node.new('typeOfResource', doc)
         type_node['collection'] = 'yes'
         doc.root.add_child(related_item_node)
         related_item_node.add_child(title_info_node)
         title_info_node.add_child(title_node)
-        related_item_node.add_child(id_node)
+        related_item_node.add_child(loc_node)
         related_item_node.add_child(type_node)
       end
     end
