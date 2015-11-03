@@ -55,9 +55,9 @@ describe Dor::Publishable do
     EOXML
 
     @item.contentMetadata.content = '<contentMetadata/>'
-    @item.descMetadata.content = @mods
-    @item.rightsMetadata.content = @rights
-    @item.rels_ext.content = @rels
+    @item.descMetadata.content    = @mods
+    @item.rightsMetadata.content  = @rights
+    @item.rels_ext.content        = @rels
     allow(@item).to receive(:add_collection_reference).and_return(@mods)
     allow(OpenURI).to receive(:open_uri).with('https://purl-test.stanford.edu/ab123cd4567.xml').and_return('<xml/>')
   end
@@ -74,6 +74,16 @@ describe Dor::Publishable do
   end
 
   describe '#public_xml' do
+    context 'there are no release tags' do
+      before :each do
+        expect(@item).to receive(:released_for).and_return({})
+        @p_xml = Nokogiri::XML(@item.public_xml)
+      end
+      it 'does not include a releaseData element' do
+        expect(@p_xml.at_xpath('/publicObject/releaseData')).to be nil
+      end
+    end
+
     context 'produces xml with' do
       before(:each) do
         @now = Time.now
@@ -107,8 +117,12 @@ describe Dor::Publishable do
       end
 
       it 'relationships' do
-        ns = { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'hydra' => 'http://projecthydra.org/ns/relations#',
-          'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'fedora-model' => 'info:fedora/fedora-system:def/model#' }
+        ns = {
+          'rdf'          => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+          'hydra'        => 'http://projecthydra.org/ns/relations#',
+          'fedora'       => 'info:fedora/fedora-system:def/relations-external#',
+          'fedora-model' => 'info:fedora/fedora-system:def/model#'
+        }
         expect(@p_xml.at_xpath('/publicObject/rdf:RDF', ns)).to be
         expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOf', ns)).to be
         expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOfCollection', ns)).to be
@@ -123,12 +137,8 @@ describe Dor::Publishable do
         expect(@item.datastreams['RELS-EXT'].content).to be_equivalent_to @rels
       end
 
-      it 'does not include a releaseData element when there are no release tags' do
-        expect(@p_xml.at_xpath('/publicObject/releaseData')).to be nil
-      end
-
       it 'does include a releaseData element when there is content inside it' do
-        # Fake a tag with at least one children
+        # Fake a tag with at least one child
         releaseData = '<releaseData><release>foo</release></releaseData>'
         allow(@item).to receive(:generate_release_xml).and_return(releaseData)
         p_xml = Nokogiri::XML(@item.public_xml)

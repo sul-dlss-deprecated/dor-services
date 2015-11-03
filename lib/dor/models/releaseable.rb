@@ -36,41 +36,34 @@ module Dor
       builder.to_xml
     end
 
-    # Determine which projects an item is released for
+    # Determine projects in which an item is released
     # @param [Boolean] skip_live_purl set true to skip requesting from purl backend
     # @return [Hash{String => Boolean}] all namespaces, keys are Project name Strings, values are Boolean
     def released_for(skip_live_purl = false)
       released_hash = {}
-      # Get release tags on the item itself
-      release_tags_on_this_item = release_nodes
 
-      # Get any self tags on this item
-      self_release_tags = get_self_release_tags(release_tags_on_this_item)
-
-      # Get the most recent self tag for all targets and save their result since most recent self always trumps any other non self tags
-      latest_self_tags = get_newest_release_tag(self_release_tags)
-      latest_self_tags.keys.each do |target|
-        released_hash[target] =  clean_release_tag_for_purl(latest_self_tags[target])
+      # Get the most recent self tag for all targets and retain their result since most recent self always trumps any other non self tags
+      latest_self_tags = get_newest_release_tag get_self_release_tags(release_nodes)
+      latest_self_tags.each do |key, payload|
+        released_hash[key] = {'release' => payload['release']}
       end
 
-      # With Self Tags Resolved We Now need to deal with tags on all sets this object is part of
-      potential_applicable_release_tags = {}  # This will be where we store all tags that apply, regardless of their timestamp
-
-      # Get all release tags on the item and strip out the what = self ones, we've already processed all the self tags on this item
+      # With Self Tags resolved we now need to deal with tags on all sets this object is part of.
+      # Get all release tags on the item and strip out the what = self ones, we've already processed all the self tags on this item.
+      # This will be where we store all tags that apply, regardless of their timestamp:
       potential_applicable_release_tags = get_tags_for_what_value(get_release_tags_for_item_and_all_governing_sets, 'collection')
-      administrative_tags = tags  # Get them once here and pass them down
+      administrative_tags = tags  # Get admin tags once here and pass them down
 
       # We now have the keys for all potential releases, we need to check the tags: the most recent timestamp with an explicit true or false wins.
       # In a nil case, the lack of an explicit false tag we do nothing.
       (potential_applicable_release_tags.keys - released_hash.keys).each do |key|  # don't bother checking if already added to the release hash, they were added due to a self tag so that has won
-        latest_applicable_tag_for_key = latest_applicable_release_tag_in_array(potential_applicable_release_tags[key], administrative_tags)
-        next if latest_applicable_tag_for_key.nil? # We have a valid tag, record it
-        released_hash[key] = clean_release_tag_for_purl(latest_applicable_tag_for_key)
+        latest_tag = latest_applicable_release_tag_in_array(potential_applicable_release_tags[key], administrative_tags)
+        next if latest_tag.nil? # Otherwise, we have a valid tag, record it
+        released_hash[key] = {'release' => latest_tag['release']}
       end
 
-      # See what the application is currently released for on Purl.  If something is released in purl but not listed here, it needs to be added as a false
+      # See what the application is currently released for on Purl.  If released in purl but not listed here, it needs to be added as a false
       add_tags_from_purl(released_hash) unless skip_live_purl
-
       released_hash
     end
 
@@ -123,13 +116,6 @@ module Dor
       Hash[tags.map {|key, val| [key, newest_release_tag_in_an_array(val)]}]
     end
 
-    # Take a tag and return only the attributes we want to put into purl
-    # @param tag [Hash] a tag
-    # @return [Hash] a hash of the attributes we want for purl
-    def clean_release_tag_for_purl(tag)
-      {'release' => tag['release']}
-    end
-
     # Takes an array of release tags and returns the most recent one
     # @param array_of_tags [Array] an array of hashes, each hash a release tag
     # @return [Hash] the most recent tag
@@ -155,7 +141,7 @@ module Dor
     # Takes an array of release tags and returns the most recent one that applies to this item
     # @param release_tags [Array] an array of release tags in hashed form
     # @param admin_tags [Array] the administrative tags on an on item
-    # @return [Hash] the tag
+    # @return [Hash] the tag, or nil if none applicable
     def latest_applicable_release_tag_in_array(release_tags, admin_tags)
       newest_tag = newest_release_tag_in_an_array(release_tags)
       return newest_tag if does_release_tag_apply(newest_tag, admin_tags)
@@ -336,14 +322,13 @@ module Dor
     # Pull all release nodes from the public xml obtained via the purl query
     # @return [Array] An array containing all the release tags
     def get_release_tags_from_purl
-      xml = get_xml_from_purl
-      get_release_tags_from_purl_xml(xml)
+      get_release_tags_from_purl_xml(get_xml_from_purl)
     end
 
     # This function calls purl and gets a list of all release tags currently in purl.  It then compares to the list you have generated.
     # Any tag that is on purl, but not in the newly generated list is added to the new list with a value of false.
     # @param new_tags [Hash{String => Boolean}] all new tags in the form of !{"Project" => Boolean}
-    # @return [Hash], a hash in the same form as new_tags, with all missing tags not in new_tags, but in current_tag_names, added in with a Boolean value of false
+    # @return [Hash] same form as new_tags, with all missing tags not in new_tags, but in current_tag_names, added in with a Boolean value of false
     def add_tags_from_purl(new_tags)
       tags_currently_in_purl = get_release_tags_from_purl
       missing_tags = tags_currently_in_purl.map(&:downcase) - new_tags.keys.map(&:downcase)
