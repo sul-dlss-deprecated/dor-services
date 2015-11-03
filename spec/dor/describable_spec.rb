@@ -288,7 +288,7 @@ describe Dor::Describable do
         expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@xml)
         collections      = @xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
         collection_title = @xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
-        collection_uri   = @xml.search('//mods:relatedItem/mods:identifier[@type="uri"]')
+        collection_uri   = @xml.search('//mods:relatedItem/mods:location/mods:url')
         expect(collections.length     ).to eq 1
         expect(collection_title.length).to eq 1
         expect(collection_uri.length  ).to eq 1
@@ -301,7 +301,7 @@ describe Dor::Describable do
         expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@xml)
         collections      = @xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
         collection_title = @xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
-        collection_uri   = @xml.search('//mods:relatedItem/mods:identifier[@type="uri"]')
+        collection_uri   = @xml.search('//mods:relatedItem/mods:location/mods:url')
         expect(collections.length     ).to eq 1
         expect(collection_title.length).to eq 1
         expect(collection_uri.length  ).to eq 1
@@ -407,7 +407,7 @@ describe Dor::Describable do
       expect(doc.xpath('//comment()').size).to eq 0
       collections      = doc.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
       collection_title = doc.search('//mods:relatedItem/mods:titleInfo/mods:title')
-      collection_uri   = doc.search('//mods:relatedItem/mods:identifier[@type="uri"]')
+      collection_uri   = doc.search('//mods:relatedItem/mods:location/mods:url')
       expect(collections.length     ).to eq 1
       expect(collection_title.length).to eq 1
       expect(collection_uri.length  ).to eq 1
@@ -432,7 +432,7 @@ describe Dor::Describable do
       doc = Nokogiri::XML(itm.generate_public_desc_md)
       collections      = doc.search('//xmlns:relatedItem/xmlns:typeOfResource[@collection=\'yes\']')
       collection_title = doc.search('//xmlns:relatedItem/xmlns:titleInfo/xmlns:title')
-      collection_uri   = doc.search('//xmlns:relatedItem/xmlns:identifier[@type="uri"]')
+      collection_uri   = doc.search('//xmlns:relatedItem/xmlns:location/xmlns:url')
       expect(collections.length     ).to eq 1
       expect(collection_title.length).to eq 1
       expect(collection_uri.length  ).to eq 1
