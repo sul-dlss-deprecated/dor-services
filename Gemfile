@@ -7,7 +7,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'simplecov',  :platform => [:ruby_19, :ruby_20, :ruby_21, :ruby_22]
+  gem 'simplecov'
 end
 
 group :test do
