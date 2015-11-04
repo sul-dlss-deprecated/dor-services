@@ -8,10 +8,7 @@ describe Dor::TechnicalMetadataService do
     Dor::Config.push! do
       sdr.local_workspace_root fixtures.join("workspace").to_s
     end
-  end
 
-  before(:each) do
-    @fixtures=fixtures=Pathname(File.dirname(__FILE__)).join("../fixtures")
     @sdr_repo = @fixtures.join('sdr_repo')
     @workspace_pathname = Pathname(fixtures.join("workspace").to_s)
 
@@ -39,7 +36,6 @@ describe Dor::TechnicalMetadataService do
       @new_file_techmd[id] = Dor::TechnicalMetadataService.get_new_technical_metadata(druid, @new_files[id])
       @expected_techmd[id] = Pathname(@druid_tool[id].metadata_dir).join('technicalMetadata.xml').read
     end
-
   end
 
 
