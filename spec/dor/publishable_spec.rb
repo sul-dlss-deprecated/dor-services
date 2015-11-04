@@ -53,9 +53,9 @@ describe Dor::Publishable do
     EOXML
 
     @item.contentMetadata.content = '<contentMetadata/>'
-    @item.descMetadata.content = @mods
+    @item.descMetadata.content   = @mods
     @item.rightsMetadata.content = @rights
-    @item.rels_ext.content = @rels
+    @item.rels_ext.content       = @rels
     allow(@item).to receive(:add_collection_reference).and_return(@mods)
     allow(OpenURI).to receive(:open_uri).with('https://purl-test.stanford.edu/ab123cd4567.xml').and_return('<xml/>')
   end
@@ -119,55 +119,6 @@ describe Dor::Publishable do
         expect(@item.datastreams['contentMetadata'].ng_xml.at_xpath('/contentMetadata')).to be
         expect(@item.datastreams['rightsMetadata'].ng_xml.at_xpath('/rightsMetadata')).to be
         expect(@item.datastreams['RELS-EXT'].content).to be_equivalent_to @rels
-      end
-
-      it 'an encoding of UTF-8' do
-        @p_xml.encoding.should =~ /UTF-8/
-      end
-
-      it 'an id attribute' do
-        @p_xml.at_xpath('/publicObject/@id').value.should =~ /^druid:ab123cd4567/
-      end
-
-      it 'a published attribute' do
-        @p_xml.at_xpath('/publicObject/@published').value.should == @now.xmlschema
-      end
-
-      it 'a published version' do
-        expect(@p_xml.at_xpath('/publicObject/@publishVersion').value).to eq('dor-services/' + Dor::VERSION)
-      end
-
-      it 'identityMetadata' do
-        @p_xml.at_xpath('/publicObject/identityMetadata').should be
-      end
-
-      it 'contentMetadata' do
-        @p_xml.at_xpath('/publicObject/contentMetadata').should be
-      end
-
-      it 'rightsMetadata' do
-        @p_xml.at_xpath('/publicObject/rightsMetadata').should be
-      end
-
-      it 'generated dublin core' do
-        @p_xml.at_xpath('/publicObject/oai_dc:dc', 'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/').should be
-      end
-
-      it 'relationships' do
-        ns = { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'hydra' => 'http://projecthydra.org/ns/relations#',
-               'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'fedora-model' => 'info:fedora/fedora-system:def/model#' }
-        @p_xml.at_xpath('/publicObject/rdf:RDF', ns).should be
-        @p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOf', ns).should be
-        @p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOfCollection', ns).should be
-        @p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora-model:hasModel', ns).should_not be
-        @p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/hydra:isGovernedBy', ns).should_not be
-      end
-
-      it 'clones of the content of the other datastreams, keeping the originals in tact' do
-        @item.datastreams['identityMetadata'].ng_xml.at_xpath('/identityMetadata').should be
-        @item.datastreams['contentMetadata'].ng_xml.at_xpath('/contentMetadata').should be
-        @item.datastreams['rightsMetadata'].ng_xml.at_xpath('/rightsMetadata').should be
-        @item.datastreams['RELS-EXT'].content.should be_equivalent_to @rels
       end
 
       it 'does not include a releaseData element when there are no release tags' do
@@ -266,7 +217,6 @@ describe Dor::Publishable do
   describe 'publish remotely' do
     before(:each) do
       Dor::Config.push! { |config| config.dor_services.url 'https://lyberservices-test.stanford.edu/dor' }
-
       RestClient::Resource.any_instance.stub(:post)
     end
     it 'should hit the correct url' do
