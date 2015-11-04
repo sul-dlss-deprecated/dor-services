@@ -26,8 +26,13 @@ module Dor
         $-v = temp_v
       end
       params = { :dor_services_url => result.dor_services.url }
+ 
+      if(result.workflow.logfile && result.workflow.shift_age)
+        params[:logger] = Logger.new(result.workflow.logfile, result.workflow.shift_age)
+      elsif(result.workflow.logfile)
+        params[:logger] = Logger.new(result.workflow.logfile)
+      end
       params[:timeout] = result.workflow.timeout if result.workflow.timeout
-    # params[:logger]  = Logger.new('logs/workflow_service.log', 'weekly') # if you want to control the logger, insert it here.
       Dor::WorkflowService.configure result.workflow.url, params
       result
     end
