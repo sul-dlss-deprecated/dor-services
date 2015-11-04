@@ -358,7 +358,7 @@ describe "Adding release nodes", :vcr do
 
     it 'should not raise an error for a 404 when attempted to obtain a purl' do
       VCR.use_cassette('purl_404') do
-        #expect(Time).to receive(:now).and_return(@now).at_least(:once)
+        expect(Dor.logger).to receive(:warn).once
         expect(@item).to receive(:id).and_return("druid:IAmABadDruid").at_least(:once)
         expect(@item.get_xml_from_purl.class).to eq(Nokogiri::HTML::Document)
       end
