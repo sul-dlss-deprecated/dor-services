@@ -20,20 +20,20 @@ module Dor
     # out, since it will presumably use the same license code, but a different title and URI?
     CREATIVE_COMMONS_USE_LICENSES = {
       'by' =>       { :human_readable => 'Attribution 3.0 Unported',
-                      :uri => 'https://creativecommons.org/licenses/by/3.0/us/legalcode' },
+                      :uri => 'https://creativecommons.org/licenses/by/3.0/' },
       'by-sa' =>    { :human_readable => 'Attribution Share Alike 3.0 Unported',
-                      :uri => 'https://creativecommons.org/licenses/by-sa/3.0/us/legalcode' },
+                      :uri => 'https://creativecommons.org/licenses/by-sa/3.0/' },
       'by_sa' =>    { :human_readable => 'Attribution Share Alike 3.0 Unported',
-                      :uri => 'https://creativecommons.org/licenses/by-sa/3.0/us/legalcode',
+                      :uri => 'https://creativecommons.org/licenses/by-sa/3.0/',
                       :deprecation_warning => 'license code "by_sa" was a typo in argo, prefer "by-sa"' },
       'by-nd' =>    { :human_readable => 'Attribution No Derivatives 3.0 Unported',
-                      :uri => 'https://creativecommons.org/licenses/by-nd/3.0/legalcode' },
+                      :uri => 'https://creativecommons.org/licenses/by-nd/3.0/' },
       'by-nc' =>    { :human_readable => 'Attribution Non-Commercial 3.0 Unported',
-                      :uri => 'https://creativecommons.org/licenses/by-nc/3.0/us/legalcode' },
+                      :uri => 'https://creativecommons.org/licenses/by-nc/3.0/' },
       'by-nc-sa' => { :human_readable => 'Attribution Non-Commercial Share Alike 3.0 Unported',
-                      :uri => 'https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode' },
-      'by-nc-nd' => { :human_readable => 'Attribution Non-commercial, No Derivatives 3.0 Unported',
-                      :uri => 'https://creativecommons.org/licenses/by-nc-nd/3.0/legalcode' },
+                      :uri => 'https://creativecommons.org/licenses/by-nc-sa/3.0/' },
+      'by-nc-nd' => { :human_readable => 'Attribution Non-Commercial, No Derivatives 3.0 Unported',
+                      :uri => 'https://creativecommons.org/licenses/by-nc-nd/3.0/' },
       'pdm' =>      { :human_readable => 'Public Domain Mark 1.0',
                       :uri => 'https://creativecommons.org/publicdomain/mark/1.0/'}
     }
