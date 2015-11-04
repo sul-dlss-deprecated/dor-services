@@ -6,13 +6,9 @@ module Dor
     extend ActiveSupport::Concern
     include Itemizable
 
-    #Add release tags to an item and initialize the item release workflow
-    #
-    #@params release_tags [Hash or Array] Either a hash of a single release tag.  Each tag should be in the form of {:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket', :release=>true/false}
-    #
-    #@raise [ArgumentError] Raised if the tags are improperly supplied
-    #
-    #
+    # Add release tags to an item and initialize the item release workflow
+    # @param release_tags [Hash or Array] Either a hash of a single release tag.  Each tag should be in the form of {:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket', :release=>true/false}
+    # @raise [ArgumentError] Raised if the tags are improperly supplied
     def add_release_nodes_and_start_releaseWF(release_tags)
       release_tags = [release_tags] unless release_tags.is_a?(Array)
 
@@ -26,9 +22,8 @@ module Dor
       initialize_workflow('releaseWF')
     end
 
-    #Generate XML structure for inclusion to Purl
-    #
-    #@return [String] The XML release node as a string, with ReleaseDigest as the root document
+    # Generate XML structure for inclusion to Purl
+    # @return [String] The XML release node as a string, with ReleaseDigest as the root document
     def generate_release_xml
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.releaseData {
@@ -40,9 +35,8 @@ module Dor
       builder.to_xml
     end
 
-    #Determine which projects an item is released for
-    #
-    #@return [Hash] all namespaces in the form of {"Project" => Boolean}
+    # Determine which projects an item is released for
+    # @return [Hash] all namespaces in the form of {"Project" => Boolean}
     def released_for
       released_hash = {}
       # Get release tags on the item itself
@@ -127,11 +121,9 @@ module Dor
       return_hash
     end
 
-    #Take a hash of tags as obtained via Dor::Item.release_tags and returns the newest tag for each namespace
-    #
-    #@params tags [Hash] a hash of tags obtained via Dor::Item.release_tags or matching format
-    #
-    #@return [Hash] a hash of latest tags for each to value
+    # Take a hash of tags as obtained via Dor::Item.release_tags and returns the newest tag for each namespace
+    # @param tags [Hash] a hash of tags obtained via Dor::Item.release_tags or matching format
+    # @return [Hash] a hash of latest tags for each to value
     def get_newest_release_tag(tags)
       Hash[tags.map {|key, val| [key, newest_release_tag_in_an_array(val)]}]
     end
@@ -143,11 +135,9 @@ module Dor
       {'release' => tag['release']}
     end
 
-    #Takes an array of release tags and returns the most recent one
-    #
-    #@params tags [Array] an array of hashes, with the hashes being release tags
-    #
-    #@return [Hash] the most recent tag
+    # Takes an array of release tags and returns the most recent one
+    # @param tags [Array] an array of hashes, with the hashes being release tags
+    # @return [Hash] the most recent tag
     def newest_release_tag_in_an_array(array_of_tags)
       latest_tag_in_array = array_of_tags[0] || {}
       array_of_tags.each do |tag|
@@ -202,11 +192,9 @@ module Dor
       return_hash
     end
 
-    #method to convert one release element into an array
-    #
-    #@param rtag [Nokogiri::XML::Element] the release tag element
-    #
-    #return [Hash] in the form of {:to => String :attrs = Hash}
+    # Method to convert one release element into an array
+    # @param rtag [Nokogiri::XML::Element] the release tag element
+    # @return [Hash] in the form of {:to => String :attrs = Hash}
     def release_tag_node_to_hash(rtag)
       to = 'to'
       release = 'release'
@@ -226,18 +214,14 @@ module Dor
       return_hash
     end
 
-    #Add a release node for the item
-    #Will use the current time to add in the timestamp if you do not supply a timestamp, you can supply a timestap for correcting history, etc if desired
-    #
-    #@return [Nokogiri::XML::Element] the tag added if successful
-    #
-    #@raise [ArgumentError] Raised if attributes are improperly supplied
-    #
-    #@params tag [Boolean] True or false for the release node
-    #@params attrs [hash]  A hash of any attributes to be placed onto the tag
-    #Timestamp will be calculated by the function, if no displayType is passed in, it will default to file
-    #
-    #@example
+    # Add a release node for the item
+    # Will use the current time to add in the timestamp if you do not supply a timestamp, you can supply a timestap for correcting history, etc if desired
+    # @param tag [Boolean] True or false for the release node
+    # @param attrs [hash]  A hash of any attributes to be placed onto the tag
+    # Timestamp will be calculated by the function, if no displayType is passed in, it will default to file
+    # @return [Nokogiri::XML::Element] the tag added if successful
+    # @raise [ArgumentError] Raised if attributes are improperly supplied
+    # @example
     #  item.add_tag(true,:release,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket', :displayType='filmstrip'})
     def add_release_node(release, attrs = {})
       identity_metadata_ds = identityMetadata
@@ -251,13 +235,10 @@ module Dor
       identity_metadata_ds.add_value(:release, release.to_s, attrs)
     end
 
-    #Determine if the supplied tag is a valid release node that meets all requirements
-    #
-    #@raises [ArgumentError]  Raises an error of the first fault in the release tag
-    #
-    #@return [Boolean] Returns true if no errors found
-    #
-    #@params attrs [hash] A hash of attributes for the tag, must contain :when, a ISO 8601 timestamp and :who to identify who or what added the tag, :to,
+    # Determine if the supplied tag is a valid release node that meets all requirements
+    # @raises [ArgumentError]  Raises an error of the first fault in the release tag
+    # @return [Boolean] Returns true if no errors found
+    # @param attrs [hash] A hash of attributes for the tag, must contain :when, a ISO 8601 timestamp and :who to identify who or what added the tag, :to,
     def valid_release_attributes(tag, attrs = {})
       raise ArgumentError, ":when is not iso8601" if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z').nil?
       [:who, :to, :what].each do |check_attr|
@@ -276,9 +257,8 @@ module Dor
       true
     end
 
-    #helper method to get the release nodes as a nodeset
-    #
-    #@return [Nokogiri::XML::NodeSet] of all release tags and their attributes
+    # Helper method to get the release nodes as a nodeset
+    # @return [Nokogiri::XML::NodeSet] of all release tags and their attributes
     def release_nodes
       release_tags = identityMetadata.ng_xml.xpath('//release')
       return_hash = {}
@@ -293,15 +273,10 @@ module Dor
       return_hash
     end
 
-    #Get a list of all release nodes found in a purl document
-    #
-    #@params druid [String]
-    #
-    #@raises [OpenURI::HTTPError]
-    #
-    #Fetches purl xml for a druid
-    #
-    #@return [Nokogiri::HTML::Document] the parsed xml for the druid or an empty document if no purl is found
+    # Get a list of all release nodes found in a purl document, fetches purl xml for a druid
+    # @param druid [String]
+    # @raises [OpenURI::HTTPError]
+    # @return [Nokogiri::HTML::Document] the parsed xml for the druid or an empty document if no purl is found
     def get_xml_from_purl
       url = form_purl_url
       handler = Proc.new do |exception, attempt_number, total_delay|
@@ -333,20 +308,17 @@ module Dor
       'https://' + Dor::Config.stacks.document_cache_host + "/#{remove_druid_prefix}.xml"
     end
 
-    #Pull all release nodes from the public xml obtained via the purl query
-    #
-    #@params druid [Nokogiri::HTML::Document] The druid of the object you want
-    #
-    #@return [Array] An array containing all the release tags
+    # Pull all release nodes from the public xml obtained via the purl query
+    # @param druid [Nokogiri::HTML::Document] The druid of the object you want
+    # @return [Array] An array containing all the release tags
     def get_release_tags_from_purl_xml(doc)
       nodes = doc.xpath('//html/body/publicobject/releasedata').children
       # We only want the nodes with a name that isn't text
       nodes.reject {|n| n.name.nil? || n.name.downcase == 'text'}.map {|n| n.attr('to')}.uniq
     end
 
-    #Pull all release nodes from the public xml obtained via the purl query
-    #
-    #@return [Array] An array containing all the release tags
+    # Pull all release nodes from the public xml obtained via the purl query
+    # @return [Array] An array containing all the release tags
     def get_release_tags_from_purl
       xml = get_xml_from_purl
       get_release_tags_from_purl_xml(xml)
