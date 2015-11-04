@@ -1,0 +1,145 @@
+{
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "https://purl.stanford.edu/hj097bm8879/iiif/manifest.json",
+    "@type": "sc:Manifest",
+    "attribution": "\nProperty rights reside with the repository, Copyright © Stanford University. Images may be reproduced or transmitted, but not for commercial use. For commercial use or commercial republication, contact rumseymapcenter@stanford.edu This work is licensed under a Creative Commons License. By downloading any images from this site, you agree to the terms of that license.\n",
+    "description": "\nFirst atlas of America printed in America. First edition. These maps were also published in Carey's American edition of Guthrie's Geography (1795) and most of the maps say \"engraved for Carey's American edition of Guthrie's Geography improved.\" The maps were again used for the 1796 edition of Carey's General Atlas, unchanged except for the Tennessee map, which is titled \"Tennassee State\" instead of \"Tennassee Government\" which is the title in both the American Atlas and the Guthrie Atlas -see Wheat and Brun, and has several counties delineated in the eastern part of the state which do not show in the 1795 edition of the map. NMM 480 (American Atlas) has \"Tennassee State\" indicating that Carey was not consistent. This atlas was the model for John Reid's American Atlas of 1796. This copy's maps have very strong impressions. Rebound quarter leather, marbled paper covered boards.\n",
+    "label": "\nCarey's American Atlas: Containing Twenty Maps And One Chart ... Philadelphia: Engraved For, And Published By, Mathew Carey, No. 118, Market Street. M.DCC.XCV. [Price, Plain, Five Dollars-Coloured, Six Dollars.]\n",
+    "logo": {
+        "@id": "https://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette/full/400,/0/default.jpg",
+        "service": {
+            "@context": "http://iiif.io/api/image/2/context.json",
+            "@id": "https://stacks.stanford.edu/image/iiif/wy534zh7137%2FSULAIR_rosette",
+            "profile": "http://iiif.io/api/image/2/level1.json"
+        }
+    },
+    "metadata": [
+        {
+            "label": "Contributor",
+            "value": "Carey, Mathew."
+        },
+        {
+            "label": "Contributor",
+            "value": "Barker, W."
+        },
+        {
+            "label": "Contributor",
+            "value": "Doolittle, Amos."
+        },
+        {
+            "label": "Contributor",
+            "value": "Harris, Caleb  Harding."
+        },
+        {
+            "label": "Contributor",
+            "value": "Harrison, Junr."
+        },
+        {
+            "label": "Contributor",
+            "value": "Lewis, Samuel."
+        },
+        {
+            "label": "Contributor",
+            "value": "Scott, J.T."
+        },
+        {
+            "label": "Contributor",
+            "value": "Smith, Genl. D."
+        },
+        {
+            "label": "Contributor",
+            "value": "Smither, T."
+        },
+        {
+            "label": "Contributor",
+            "value": "Vallance."
+        },
+        {
+            "label": "Publisher",
+            "value": "Mathew Carey,"
+        },
+        {
+            "label": "Date",
+            "value": "1795"
+        },
+        {
+            "label": "Date",
+            "value": "1795."
+        }
+    ],
+    "seeAlso": {
+        "@id": "https://purl.stanford.edu/hj097bm8879.mods",
+        "format": "application/mods+xml"
+    },
+    "sequences": [
+        {
+            "@id": "https://purl.stanford.edu/hj097bm8879/sequence-1",
+            "@type": "sc:Sequence",
+            "canvases": [
+                {
+                    "@id": "https://purl.stanford.edu/hj097bm8879/canvas/canvas-1",
+                    "@type": "sc:Canvas",
+                    "height": 4747,
+                    "images": [
+                        {
+                            "@id": "https://purl.stanford.edu/hj097bm8879/imageanno/anno-1",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "on": "https://purl.stanford.edu/hj097bm8879/canvas/canvas-1",
+                            "resource": {
+                                "@id": "https://stacks.stanford.edu/image/iiif/cg767mn6478%2F2542A/full/full/0/default.jpg",
+                                "@type": "dcterms:Image",
+                                "format": "image/jpeg",
+                                "height": 4747,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "https://stacks.stanford.edu/image/iiif/cg767mn6478%2F2542A",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                },
+                                "width": 6475
+                            }
+                        }
+                    ],
+                    "label": "Cover: Carey's American atlas.",
+                    "width": 6475
+                },
+                {
+                    "@id": "https://purl.stanford.edu/hj097bm8879/canvas/canvas-2",
+                    "@type": "sc:Canvas",
+                    "height": 4675,
+                    "images": [
+                        {
+                            "@id": "https://purl.stanford.edu/hj097bm8879/imageanno/anno-2",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "on": "https://purl.stanford.edu/hj097bm8879/canvas/canvas-2",
+                            "resource": {
+                                "@id": "https://stacks.stanford.edu/image/iiif/jw923xn5254%2F2542B/full/full/0/default.jpg",
+                                "@type": "dcterms:Image",
+                                "format": "image/jpeg",
+                                "height": 4675,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "https://stacks.stanford.edu/image/iiif/jw923xn5254%2F2542B",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                },
+                                "width": 3139
+                            }
+                        }
+                    ],
+                    "label": "Title Page: Carey's American atlas.",
+                    "width": 3139
+                }
+            ],
+            "label": "Current order"
+        }
+    ],
+    "thumbnail": {
+        "@id": "https://stacks.stanford.edu/image/iiif/cg767mn6478%2F2542A/full/400,/0/default.jpg",
+        "service": {
+            "@context": "http://iiif.io/api/image/2/context.json",
+            "@id": "https://stacks.stanford.edu/image/iiif/cg767mn6478%2F2542A",
+            "profile": "http://iiif.io/api/image/2/level1.json"
+        }
+    }
+}

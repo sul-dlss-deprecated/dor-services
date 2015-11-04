@@ -6,6 +6,10 @@ class PublishableItem < ActiveFedora::Base
   include Dor::Releaseable
 end
 
+class ItemizableItem < ActiveFedora::Base
+  include Dor::Itemizable
+end
+
 describe Dor::Publishable do
   before(:each) { stub_config   }
   after(:each)  { unstub_config }
@@ -184,6 +188,57 @@ describe Dor::Publishable do
           @item.publish_metadata
           expect(File).to_not exist(druid1.path)
         end
+      end
+      
+      it 'handles externalFile references' do
+        correctContentMetadata = <<-EOXML
+        <contentMetadata objectId="hj097bm8879" type="map">
+         <resource id="hj097bm8879_1" sequence="1" type="image">
+           <label>Cover: Carey's American atlas.</label>
+           <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478" resourceId="cg767mn6478_1" mimetype="image/jp2">
+             <imageData width="6475" height="4747"/>
+           </externalFile>
+           <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+         </resource>
+         <resource id="hj097bm8879_2" sequence="2" thumb="yes" type="image">
+           <label>Title Page: Carey's American atlas.</label>
+           <externalFile fileId="2542B.jp2" objectId="druid:jw923xn5254" resourceId="jw923xn5254_1" mimetype="image/jp2">
+             <imageData width="3139" height="4675"/>
+           </externalFile>
+           <relationship objectId="druid:jw923xn5254" type="alsoAvailableAs"/>
+         </resource>
+        </contentMetadata>        
+        EOXML
+               
+        @item.contentMetadata.content = <<-EOXML
+        <contentMetadata objectId="hj097bm8879" type="map">
+          <resource id="hj097bm8879_1" sequence="1" type="image">
+            <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478" resourceId="cg767mn6478_1" mimetype="image/jp2"/>
+            <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+          </resource>
+          <resource id="hj097bm8879_2" sequence="2" thumb="yes" type="image">
+            <externalFile fileId="2542B.jp2" objectId="druid:jw923xn5254" resourceId="jw923xn5254_1" mimetype="image/jp2"/>
+            <relationship objectId="druid:jw923xn5254" type="alsoAvailableAs"/>
+          </resource>
+        </contentMetadata>        
+        EOXML
+        
+        # load stubs
+        %w(cg767mn6478 jw923xn5254).each do |child_druid|
+          ci = ItemizableItem.new(:pid => "druid:#{child_druid}")
+
+          dsid = 'contentMetadata'
+          ds = Dor::ContentMetadataDS.from_xml read_fixture("#{ci.pid.split(':').last}_#{dsid}.xml")
+          ci.datastreams[dsid] = ds
+
+          dsid = 'DC'
+          ci.datastreams['DC'] = ::SimpleDublinCoreDs.from_xml read_fixture("#{ci.pid.split(':').last}_#{dsid}.xml")
+          ci.label = ci.datastreams['DC'].title
+          allow(Dor::Item).to receive(:find).with(ci.pid).and_return(ci)
+        end
+        
+        p_xml = Nokogiri::XML(@item.public_xml)
+        expect(p_xml.at_xpath('/publicObject/contentMetadata').to_xml).to be_equivalent_to(correctContentMetadata)
       end
 
       context 'copies to the document cache' do
