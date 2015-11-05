@@ -10,7 +10,7 @@ describe Dor::Releaseable, :vcr do
   before :each do
     Dor::Config.push! do
       solrizer.url 'http://127.0.0.1:8080/solr/argo_test'
-      fedora.url   'https://sul-dor-test.stanford.edu/fedora'
+      fedora.url   'https://sul-dor-test.stanford.edu/fedora' # attempts to match the VCR-recorded requests, should not actually reach remotely!
       stacks.document_cache_host 'purl-test.stanford.edu'
     end
 
@@ -69,12 +69,6 @@ describe Dor::Releaseable, :vcr do
       expect(@bryar_trans_am.does_release_tag_apply(@dummy_tags[0])).to be_falsey
     end
 
-    it 'should only return the request attribute(s) for purl' do
-      dummy_tag = @dummy_tags[0]
-      dummy_tag['release'] = false
-      expect(@bryar_trans_am.clean_release_tag_for_purl(dummy_tag)).to eq({'release' => false})
-    end
-
     it 'should return the latest tag for each key/target in a hash' do
       dummy_hash = {'Revs' =>  @dummy_tags, 'FRDA' =>  @dummy_tags}
       expect(@bryar_trans_am.get_newest_release_tag(dummy_hash)).to eq({'Revs' => @dummy_tags[1], 'FRDA' => @dummy_tags[1]})
@@ -98,7 +92,9 @@ describe Dor::Releaseable, :vcr do
 
   end
 
-  # Warning:  Exercise care when rerecording these cassette, as these items are set up to have specific tags on them at the time of recording, other folks messing around in the dev environment might add or remove release tags that cause failures on these tests
+  # Warning:  Exercise care when rerecording these cassette, as these items are set up to have specific tags on them at the time of recording.
+  # Other folks messing around in the dev environment might add or remove release tags that cause failures on these tests.
+  # TODO: rework all VCR recs into conventional fixtures or re-record them for AF6.
   # If these tests fail, check not just the logic, but also the specific tags
   describe 'handling tags on objects and determining release status' do
 
@@ -167,18 +163,8 @@ describe Dor::Releaseable, :vcr do
         end
       end
 
-      # If an item has no release tags on it for a target it should just return nil when queried with regard to that target
-      it 'should return nil if no tags exist on an item with regard to that target' do
-        skip 'VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6'
-        VCR.use_cassette('releaseable_nil_target') do
-          item = Dor::Item.find('druid:bc566xq6031')
-          expect(item.released_for['Runner II']).to be_nil
-        end
-      end
-
       it 'should return release xml for an item as string of elements wrapped in a ReleaseDigestRoot' do
         skip 'VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6'
-
         VCR.use_cassette('releaseable_release_xml') do
           item = Dor::Item.find('druid:dc235vd9662')
           release_xml = item.generate_release_xml

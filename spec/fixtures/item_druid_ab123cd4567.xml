@@ -35,6 +35,12 @@
           <otherId name="uuid">7f3da130-7b02-11de-8a39-0800200c9a66</otherId>
           <tag>Google Books : Phase 1</tag>
           <tag>Google Books : Scan source STANFORD</tag>
+          <tag>Project : Beautiful Books</tag>
+          <tag>Registered By : blalbrit</tag>
+          <tag>DPG : Beautiful Books : Octavo : newpri</tag>
+          <tag>Remediated By : 4.15.4</tag>
+          <release displayType="image" release="true" to="Searchworks" what="self" when="2015-07-27T21:44:26Z" who="lauraw15">true</release>
+          <release displayType="image" release="true" to="Some_special_place" what="self" when="2015-08-31T23:59:59" who="atz">true</release>
         </identityMetadata>
       </foxml:xmlContent>
     </foxml:datastreamVersion>
