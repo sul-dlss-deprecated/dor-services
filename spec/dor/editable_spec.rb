@@ -165,7 +165,9 @@ describe Dor::Editable do
       expect(@empty_item.use_license).to eq(use_license_machine)
       expect(@empty_item.use_license_uri).to eq(use_license_uri)
       expect(@empty_item.use_license_human).to eq(use_license_human)
+      expect(@empty_item.creative_commons_license).to eq(use_license_machine)
       expect(@empty_item.creative_commons_license_human).to eq(use_license_human)
+      expect(@empty_item.open_data_commons_license).to eq('')
       expect(@empty_item.open_data_commons_license_human).to eq('')
     end
     it 'should set the machine and human readable ODC licenses given the right license code' do
@@ -174,7 +176,9 @@ describe Dor::Editable do
       @empty_item.use_license = use_license_machine
       expect(@empty_item.use_license).to eq(use_license_machine)
       expect(@empty_item.use_license_human).to eq(use_license_human)
+      expect(@empty_item.creative_commons_license).to eq('')
       expect(@empty_item.creative_commons_license_human).to eq('')
+      expect(@empty_item.open_data_commons_license).to eq(use_license_machine)
       expect(@empty_item.open_data_commons_license_human).to eq(use_license_human)
     end
     it 'should throw an exception if no valid license code is given' do
