@@ -225,7 +225,7 @@ module Dor
     def add_identifier(type, value)
       ds_xml = descMetadata.ng_xml
       ds_xml.search('//mods:mods', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
-        new_node = Nokogiri::XML::Node.new('identifier', ds_xml) #this ends up being mods:identifier without having to specify the namespace
+        new_node = Nokogiri::XML::Node.new('identifier', ds_xml) # this ends up being mods:identifier without having to specify the namespace
         new_node['type'] = type
         new_node.content = value
         node.add_child(new_node)
@@ -271,7 +271,7 @@ module Dor
     end
 
     private
-    #generic updater useful for updating things like title or subtitle which can only have a single occurance and must be present
+    # generic updater useful for updating things like title or subtitle which can only have a single occurance and must be present
     def update_simple_field(field, new_val)
       ds_xml = descMetadata.ng_xml
       ds_xml.search('//' + field, 'mods' => 'http://www.loc.gov/mods/v3').each do |node|

@@ -18,8 +18,8 @@ module Dor
       druid_obj = Dor::Item.find(druid)
       last_version = druid_obj.current_version.to_i
 
-      #if the current version is still open, avoid this versioned directory
-      if Dor::WorkflowService.get_lifecycle('dor', druid, 'accessioned').nil? then
+      # if the current version is still open, avoid this versioned directory
+      if Dor::WorkflowService.get_lifecycle('dor', druid, 'accessioned').nil?
         last_version -= 1
       end
       last_version
@@ -32,8 +32,8 @@ module Dor
     def self.cleanup_reset_workspace_content(druid, last_version, base)
       base_druid = DruidTools::Druid.new(druid, base)
       base_druid_tree = base_druid.pathname.to_s
-      #if it is truncated tree /aa/111/aaa/1111/content,
-      #we should follow the regular cleanup technique
+      # if it is truncated tree /aa/111/aaa/1111/content,
+      # we should follow the regular cleanup technique
 
       reset_directories = get_reset_dir_list(last_version, base_druid_tree)
       reset_directories.each do |path|

@@ -23,7 +23,7 @@ describe Dor::Identifiable do
     end
 
     it 'returns true when displayTypes are present and removed' do
-      item.identityMetadata.add_value(:displayType, 'foo', {}) #Add in a displayType so we have one to remove
+      item.identityMetadata.add_value(:displayType, 'foo', {}) # Add in a displayType so we have one to remove
       expect(item.remove_displayTypes).to be_truthy
     end
 
@@ -62,7 +62,7 @@ describe Dor::Identifiable do
     it 'should update an existing id and return true to indicate that it found something to update' do
       item.add_other_Id('mdtoolkit', 'someid123')
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someid123')
-      #return value should be true when it finds something to update
+      # return value should be true when it finds something to update
       expect(item.update_other_Id('mdtoolkit', 'someotherid234', 'someid123')).to be_truthy
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someotherid234')
     end

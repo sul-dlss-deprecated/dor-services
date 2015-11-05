@@ -132,8 +132,8 @@ describe Dor::SdrIngestService do
     resource = Dor::Config.sdr.rest_client["objects/#{druid}/manifest/signatureCatalog.xml"]
     FakeWeb.register_uri(:get, resource.url, :body => '<signatureCatalog objectId="druid:zz000zz0000" versionId="0" catalogDatetime="" fileCount="0" byteCount="0" blockCount="0"/>')
     catalog = Dor::SdrIngestService.get_signature_catalog(druid)
-  # p catalog
-  # p catalog.to_xml
+    # p catalog
+    # p catalog.to_xml
     expect(catalog.to_xml).to match(/<signatureCatalog/)
     expect(catalog.version_id).to eq 0
   end
@@ -148,7 +148,7 @@ describe Dor::SdrIngestService do
     allow(metadata_file).to receive(:exist?).and_return(false)
     expect(metadata_dir).to receive(:join).at_least(5).times.and_return(metadata_file)
     expect(metadata_file).to receive(:open).at_least(5).times
-    #Dor::SdrIngestService.stub(:get_datastream_content).and_return('<metadata/>')
+    # Dor::SdrIngestService.stub(:get_datastream_content).and_return('<metadata/>')
     metadata_string = '<metadata/>'
     expect(Dor::SdrIngestService).to receive(:get_datastream_content).with(dor_item, 'contentMetadata', 'required').once.and_return(metadata_string)
     expect(Dor::SdrIngestService).to receive(:get_datastream_content).with(dor_item, 'descMetadata', 'required').once.and_return(metadata_string)

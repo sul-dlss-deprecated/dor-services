@@ -57,7 +57,7 @@ module Dor
       collections.delete(collection)
       sets.delete(collection)
     end
-    #set the rights metadata datastream to the content of the APO's default object rights
+    # set the rights metadata datastream to the content of the APO's default object rights
     def reapplyAdminPolicyObjectDefaults
       rightsMetadata.content = admin_policy_object.datastreams['defaultObjectRights'].content
     end

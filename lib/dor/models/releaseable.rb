@@ -194,7 +194,7 @@ module Dor
       attrs = rtag.attributes
       return_hash = { :to => attrs[to].value }
       attrs.tap { |a| a.delete(to) }
-      attrs[release] = rtag.text.downcase == 'true' #save release as a boolean
+      attrs[release] = rtag.text.downcase == 'true' # save release as a boolean
       return_hash[:attrs] = attrs
 
       # convert all the attrs beside :to to strings, they are currently Nokogiri::XML::Attr
@@ -202,7 +202,7 @@ module Dor
         return_hash[:attrs][a] = return_hash[:attrs][a].to_s if a != release
       end
 
-      return_hash[:attrs][when_word] = Time.parse(return_hash[:attrs][when_word]) #convert when to a datetime
+      return_hash[:attrs][when_word] = Time.parse(return_hash[:attrs][when_word]) # convert when to a datetime
       return_hash
     end
 
@@ -223,7 +223,7 @@ module Dor
       end
       raise ArgumentError, ':what must be self or collection' unless what_correct
       raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag
-      validate_tag_format(attrs[:tag]) unless attrs[:tag].nil? #Will Raise exception if invalid tag
+      validate_tag_format(attrs[:tag]) unless attrs[:tag].nil? # Will Raise exception if invalid tag
       true
     end
 
@@ -240,8 +240,8 @@ module Dor
     #  item.add_tag(true,:release,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket', :displayType='filmstrip'})
     def add_release_node(release, attrs = {})
       identity_metadata_ds = identityMetadata
-      attrs[:when] = Time.now.utc.iso8601 if attrs[:when].nil? #add the timestamp
-      attrs[:displayType] = 'file' if attrs[:displayType].nil? #default to file is no display type is passed
+      attrs[:when] = Time.now.utc.iso8601 if attrs[:when].nil? # add the timestamp
+      attrs[:displayType] = 'file' if attrs[:displayType].nil? # default to file is no display type is passed
       valid_release_attributes(release, attrs)
 
       # Remove the old displayType and then add the one for this tag

@@ -146,7 +146,7 @@ describe Dor::Processable do
       #     allow(@item.descMetadata).to receive(:to_solr).and_return({})
       expect(Dor.logger).to receive(:warn)
       solr_doc = @item.to_solr
-      #lifecycle_display should have the semicolon delimited version
+      # lifecycle_display should have the semicolon delimited version
       expect(solr_doc['lifecycle_ssim']).to include('published:2012-01-27T05:06:54Z;2')
       # published date should be the first published date
       expect(solr_doc).to match a_hash_including('status_ssi' => 'v4 In accessioning (described, published)')

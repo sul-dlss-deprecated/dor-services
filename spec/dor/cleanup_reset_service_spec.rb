@@ -79,7 +79,7 @@ describe Dor::CleanupResetService do
 
   end
 
-  #cleanup_reset_workspace_content
+  # cleanup_reset_workspace_content
   ## cc111ci1111 - 1 version
   ## cc111cj1111 - 1 opened and 1 versioned
   ## cz111cz1111 - 1 version with root ancestor

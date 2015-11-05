@@ -98,8 +98,8 @@ describe Dor::Releaseable, :vcr do
 
   end
 
-  #Warning:  Exercise care when rerecording these cassette, as these items are set up to have specific tags on them at the time of recording, other folks messing around in the dev environment might add or remove release tags that cause failures on these tests
-  #If these tests fail, check not just the logic, but also the specific tags
+  # Warning:  Exercise care when rerecording these cassette, as these items are set up to have specific tags on them at the time of recording, other folks messing around in the dev environment might add or remove release tags that cause failures on these tests
+  # If these tests fail, check not just the logic, but also the specific tags
   describe 'handling tags on objects and determining release status' do
 
       it 'should use only the most recent self tag to determine if an item is released, with no release tags on the collection' do
@@ -110,7 +110,7 @@ describe Dor::Releaseable, :vcr do
         end
       end
 
-      #This test takes an object with a self tag that is older and opposite the tag on this object's collection and ensures the self tag still is the one that is used to decide release status
+      # This test takes an object with a self tag that is older and opposite the tag on this object's collection and ensures the self tag still is the one that is used to decide release status
       it 'should use the self tag over the collection tag to determine if an item is released, even if the collection tag is newer' do
         skip 'VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6'
         VCR.use_cassette('releaseable_self_over_collection') do
@@ -119,7 +119,7 @@ describe Dor::Releaseable, :vcr do
         end
       end
 
-      #This test looks at an item whose only tags are on the collection and ensures the most recent one wins
+      # This test looks at an item whose only tags are on the collection and ensures the most recent one wins
       it 'should use only most the recent collection tag if no self tags are present' do
         skip 'VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6'
         VCR.use_cassette('releaseable_most_recent_collection_tag_wins') do
@@ -129,7 +129,7 @@ describe Dor::Releaseable, :vcr do
         end
       end
 
-      #A collection whose only tag is to release a what=collection should also release the collection object itself
+      # A collection whose only tag is to release a what=collection should also release the collection object itself
       it 'a tag with what=collection should release the collection item, assuming it is not blocked by a self tag' do
         skip 'VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6'
         VCR.use_cassette('releaseable_collection_tag_releases_collection_object') do
@@ -138,8 +138,8 @@ describe Dor::Releaseable, :vcr do
         end
       end
 
-      #Here we have an object governed by both the Marcus Chambers, druid:wz243gf4151, Collection and the Revs Collection, druid:nt028fd5773
-      #When determining if an item is released, it should look at both collections and pick the most recent timestamp
+      # Here we have an object governed by both the Marcus Chambers, druid:wz243gf4151, Collection and the Revs Collection, druid:nt028fd5773
+      # When determining if an item is released, it should look at both collections and pick the most recent timestamp
       it 'should look all collections and sets that an item is a member of' do
         skip 'VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6'
         VCR.use_cassette('releaseable_multiple_collections') do
@@ -152,7 +152,7 @@ describe Dor::Releaseable, :vcr do
         end
       end
 
-      #If an items release is controlled with the tag= attr, meaning that only items with that administrative tag are released, that should be respected
+      # If an items release is controlled with the tag= attr, meaning that only items with that administrative tag are released, that should be respected
       it 'should respect the tag= attr and apply it when releasing' do
         skip 'VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6'
         VCR.use_cassette('releaseable_respect_admin_tagging') do
@@ -167,7 +167,7 @@ describe Dor::Releaseable, :vcr do
         end
       end
 
-      #If an item has no release tags on it for a target it should just return nil when queried with regard to that target
+      # If an item has no release tags on it for a target it should just return nil when queried with regard to that target
       it 'should return nil if no tags exist on an item with regard to that target' do
         skip 'VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6'
         VCR.use_cassette('releaseable_nil_target') do
@@ -202,7 +202,7 @@ describe 'Adding release nodes', :vcr do
     Dor::Config.push! do
       cert_dir = File.expand_path('../../certs', __FILE__)
       ssl do
-        #If rerecording or adding new cassettes, point these to real files
+        # If rerecording or adding new cassettes, point these to real files
         cert_file File.join(cert_dir, 'robots-dor-test.crt')
         key_file  File.join(cert_dir, 'robots-dor-test.key')
         key_pass  ''
@@ -244,17 +244,17 @@ describe 'Adding release nodes', :vcr do
 
   describe 'Adding tags and workflows' do
     it 'should release an item with one release tag supplied' do
-      allow(@item).to receive(:save).and_return(true) #stud out the true in that it we lack a connection to solr
-      expect(@item).to receive(:initialize_workflow).with('releaseWF') #Make sure releaseWF is called
+      allow(@item).to receive(:save).and_return(true) # stud out the true in that it we lack a connection to solr
+      expect(@item).to receive(:initialize_workflow).with('releaseWF') # Make sure releaseWF is called
       expect(@item).to receive(:add_release_node).once
-      expect(@item.add_release_nodes_and_start_releaseWF({:release => true, :what => 'self', :who => 'carrickr', :to => 'FRDA'})).to eq(nil) #Should run and return void
+      expect(@item.add_release_nodes_and_start_releaseWF({:release => true, :what => 'self', :who => 'carrickr', :to => 'FRDA'})).to eq(nil) # Should run and return void
     end
     it 'should release an item with multiple release tags supplied' do
-      allow(@item).to receive(:save).and_return(true) #stud out the true in that it we lack a connection to solr
-      expect(@item).to receive(:initialize_workflow).with('releaseWF') #Make sure releaseWF is called
+      allow(@item).to receive(:save).and_return(true) # stud out the true in that it we lack a connection to solr
+      expect(@item).to receive(:initialize_workflow).with('releaseWF') # Make sure releaseWF is called
       expect(@item).to receive(:add_release_node).twice
       tags = [{:release => true, :what => 'self', :who => 'carrickr', :to => 'FRDA'}, {:release => true, :what => 'self', :who => 'carrickr', :to => 'Revs'}]
-      expect(@item.add_release_nodes_and_start_releaseWF(tags)).to eq(nil) #Should run and return void
+      expect(@item.add_release_nodes_and_start_releaseWF(tags)).to eq(nil) # Should run and return void
     end
   end
 
@@ -351,7 +351,7 @@ describe 'Adding release nodes', :vcr do
       end
     end
 
-    #TODO:  These two are pending because first we need to create and object in purl with a release data section, then we can record a purl fetch for them
+    # TODO:  These two are pending because first we need to create and object in purl with a release data section, then we can record a purl fetch for them
     xit 'should get a list of release tags in druid for a druid' do
       VCR.use_cassette('fetch_le_mans_purl') do
         item = Dor::Item.find(@le_mans_druid)

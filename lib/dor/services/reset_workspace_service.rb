@@ -11,7 +11,7 @@ module Dor
 
       if File.exists?(druid_tree_path)
         FileUtils.mv(druid_tree_path, "#{druid_tree_path}_v#{version}")
-      end #Else is a truncated tree where we shouldn't do anything
+      end # Else is a truncated tree where we shouldn't do anything
 
     end
 

@@ -102,7 +102,7 @@ describe Dor::Governable do
       XML
     end
     it 'should set rights to <none/>' do
-      #this should work because the find call inside set_read_rights is stubbed to return @obj, so the modifications happen to that, not a fresh instance
+      # this should work because the find call inside set_read_rights is stubbed to return @obj, so the modifications happen to that, not a fresh instance
       @item.set_read_rights('none')
       expect(@item.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to <<-XML
       <?xml version="1.0"?>
@@ -199,7 +199,7 @@ describe Dor::Governable do
       </use>
     </rightsMetadata>
       XML
-      #this should work because the find call inside set_read_rights is stubbed to return @obj, so the modifications happen to that, not a fresh instance
+      # this should work because the find call inside set_read_rights is stubbed to return @obj, so the modifications happen to that, not a fresh instance
       @item.set_read_rights('none')
       expect(@item.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to <<-XML
     <?xml version="1.0"?>

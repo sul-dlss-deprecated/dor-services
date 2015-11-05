@@ -9,7 +9,7 @@ module Dor
       t.stacks      :path => '/contentMetadata/@stacks', :index_as => [:not_searchable]
       t.resource(:index_as => [:not_searchable]) do
         t.id_       :path => { :attribute => 'id' }
-        t.sequence  :path => { :attribute => 'sequence' } #, :data_type => :integer
+        t.sequence  :path => { :attribute => 'sequence' } # , :data_type => :integer
         t.type_     :path => { :attribute => 'type' }, :index_as => [:displayable]
         t.attribute(:path => 'attr', :index_as => [:not_searchable]) do
           t.name    :path => { :attribute => 'name' }, :index_as => [:not_searchable]
@@ -18,10 +18,10 @@ module Dor
           t.id_      :path => { :attribute => 'id' }
           t.mimeType :path => { :attribute => 'mimeType' }, :index_as => [:displayable]
           t.dataType :path => { :attribute => 'dataType' }, :index_as => [:displayable]
-          t.size     :path => { :attribute => 'size'     }, :index_as => [:displayable] #, :data_type => :long
-          t.shelve   :path => { :attribute => 'shelve'   }, :index_as => [:not_searchable] #, :data_type => :boolean
-          t.publish  :path => { :attribute => 'publish'  }, :index_as => [:not_searchable] #, :data_type => :boolean
-          t.preserve :path => { :attribute => 'preserve' }, :index_as => [:not_searchable] #, :data_type => :boolean
+          t.size     :path => { :attribute => 'size'     }, :index_as => [:displayable] # , :data_type => :long
+          t.shelve   :path => { :attribute => 'shelve'   }, :index_as => [:not_searchable] # , :data_type => :boolean
+          t.publish  :path => { :attribute => 'publish'  }, :index_as => [:not_searchable] # , :data_type => :boolean
+          t.preserve :path => { :attribute => 'preserve' }, :index_as => [:not_searchable] # , :data_type => :boolean
           t.checksum do
             t.type_ :path => { :attribute => 'type' }
           end
@@ -74,7 +74,7 @@ module Dor
       node = nil
 
       max = xml.search('//resource').map { |node| node['sequence'].to_i }.max
-      #renumber all of the resources that will come after the newly added one
+      # renumber all of the resources that will come after the newly added one
       while max > position
         node = xml.search('//resource[@sequence=\'' + position + '\']')
         node.first[sequence] = max + 1 if node.length > 0
@@ -195,9 +195,9 @@ module Dor
       solr_doc
     end
 
-    #@param old_name [String] unique id attribute of the file element
-    #@param new_name [String] new unique id value being assigned
-    #@return [Nokogiri::XML::Element] the file node
+    # @param old_name [String] unique id attribute of the file element
+    # @param new_name [String] new unique id value being assigned
+    # @return [Nokogiri::XML::Element] the file node
     def rename_file(old_name, new_name)
       xml = ng_xml
       file_node = xml.search('//file[@id=\'' + old_name + '\']').first
@@ -206,15 +206,15 @@ module Dor
       save
     end
 
-    #Updates old label OR creates a new one if necessary
-    #@param resource_name [String] unique id attribute of the resource
-    #@param new_label [String] label value being assigned
-    #@return [Nokogiri::XML::Element] the resource node
+    # Updates old label OR creates a new one if necessary
+    # @param resource_name [String] unique id attribute of the resource
+    # @param new_label [String] label value being assigned
+    # @return [Nokogiri::XML::Element] the resource node
     def update_resource_label(resource_name, new_label)
       node = singular_node('//resource[@id=\'' + resource_name + '\']')
       labels = node.xpath('./label')
       if (labels.length == 0)
-        #create a label
+        # create a label
         label_node = Nokogiri::XML::Node.new('label', ng_xml)
         label_node.content = new_label
         node.add_child(label_node)
@@ -224,23 +224,23 @@ module Dor
       node
     end
 
-    #@param resource_name [String] unique id attribute of the resource
-    #@param new_type [String] type value being assigned
+    # @param resource_name [String] unique id attribute of the resource
+    # @param new_type [String] type value being assigned
     def update_resource_type(resource_name, new_type)
       singular_node('//resource[@id=\'' + resource_name + '\']')['type'] = new_type
     end
 
-    #You just *had* to have ordered lists in XML, didn't you?
-    #Re-enumerate the sequence numbers affected
-    #@param resource_name [String] unique id attribute of the resource
-    #@param new_position [Integer, String] new sequence number of the resource, or a string that looks like one
-    #@return [Nokogiri::XML::Element] the resource node
+    # You just *had* to have ordered lists in XML, didn't you?
+    # Re-enumerate the sequence numbers affected
+    # @param resource_name [String] unique id attribute of the resource
+    # @param new_position [Integer, String] new sequence number of the resource, or a string that looks like one
+    # @return [Nokogiri::XML::Element] the resource node
     def move_resource(resource_name, new_position)
       node = singular_node('//resource[@id=\'' + resource_name + '\']')
       position = node['sequence'].to_i
       new_position = new_position.to_i              # tolerate strings as a Legacy behavior
       return node if position == new_position
-      #otherwise, is the resource being moved earlier in the sequence or later?
+      # otherwise, is the resource being moved earlier in the sequence or later?
       up = new_position > position
       others = new_position..(up ? position - 1 : position + 1)  # a range
       others.each do |i|
@@ -251,9 +251,9 @@ module Dor
       node
     end
 
-    #Set the content type and the resource types for all resources
-    #@param new_type [String] the new content type, ex book
-    #@param new_resource_type [String] the new type for all resources, ex book
+    # Set the content type and the resource types for all resources
+    # @param new_type [String] the new content type, ex book
+    # @param new_resource_type [String] the new type for all resources, ex book
     def set_content_type(old_type, old_resource_type, new_type, new_resource_type)
       xml = ng_xml
       xml.search('/contentMetadata[@type=\'' + old_type + '\']').each do |node|
@@ -267,8 +267,8 @@ module Dor
 
     # Only use this when you want the behavior of raising an exception if anything besides exactly one matching node
     # is found.  Otherwise just use .xpath, .at_xpath or .search.
-    #@param xpath [String] accessor invocation for Nokogiri xpath
-    #@return [Nokogiri::XML::Element] the matched element
+    # @param xpath [String] accessor invocation for Nokogiri xpath
+    # @return [Nokogiri::XML::Element] the matched element
     def singular_node(xpath)
       node = ng_xml.search(xpath)
       len  = node.length

@@ -11,7 +11,7 @@ module Workflow
       t.process {
         t.name_(:path => {:attribute => 'name'})
         t.status(:path => {:attribute => 'status'})
-        t.timestamp(:path => {:attribute => 'datetime'}) #, :data_type => :date)
+        t.timestamp(:path => {:attribute => 'datetime'}) # , :data_type => :date)
         t.elapsed(:path => {:attribute => 'elapsed'})
         t.lifecycle(:path => {:attribute => 'lifecycle'})
         t.attempts(:path => {:attribute => 'attempts'}, :index_as => [:not_searchable])
@@ -22,7 +22,7 @@ module Workflow
     def initialize(node)
       self.ng_xml = Nokogiri::XML(node)
     end
-    #is this an incomplete workflow with steps that have a priority > 0
+    # is this an incomplete workflow with steps that have a priority > 0
     def expedited?
       processes.any? { |proc| !proc.completed? && proc.priority.to_i > 0 }
     end
@@ -62,7 +62,7 @@ module Workflow
     end
 
     def processes
-      #if the workflow service didnt return any processes, dont return any processes from the reified wf
+      # if the workflow service didnt return any processes, dont return any processes from the reified wf
       return [] if ng_xml.search('/workflow/process').length == 0
       @processes ||=
       if definition
@@ -93,16 +93,16 @@ module Workflow
       add_solr_value(solr_doc, 'wf_wps', wf_name, wf_solr_type, wf_solr_attrs)
       add_solr_value(solr_doc, 'wf_wsp', wf_name, wf_solr_type, wf_solr_attrs)
       status = processes.empty? ? 'empty' : (workflow_should_show_completed?(processes) ? 'completed' : 'active')
-      errors = processes.select(&:error?).count
+      errors = processes.count(&:error?)
       add_solr_value(solr_doc, 'workflow_status', [wf_name, status, errors, repo].join('|'), wf_solr_type, wf_solr_attrs)
 
       processes.each do |process|
         next unless process.status.present?
-        #add a record of the robot having operated on this item, so we can track robot activity
+        # add a record of the robot having operated on this item, so we can track robot activity
         if process.date_time && process.status && (process.status == 'completed' || process.status == 'error')
           solr_doc["wf_#{wf_name}_#{process.name}_dttsi"] = "#{process.date_time}Z"
         end
-        add_solr_value(solr_doc, 'wf_error', "#{wf_name}:#{process.name}:#{process.error_message}", wf_solr_type, wf_solr_attrs) if process.error_message #index the error message without the druid so we hopefully get some overlap
+        add_solr_value(solr_doc, 'wf_error', "#{wf_name}:#{process.name}:#{process.error_message}", wf_solr_type, wf_solr_attrs) if process.error_message # index the error message without the druid so we hopefully get some overlap
         add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}", wf_solr_type, wf_solr_attrs)
         add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}:#{process.name}", wf_solr_type, wf_solr_attrs)
         add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)

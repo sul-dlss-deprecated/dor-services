@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Dor::Workflow::Document do
 
   before(:each) do
-    #stub the wf definition. The workflow document updates the processes in the definition with the values from the xml.
+    # stub the wf definition. The workflow document updates the processes in the definition with the values from the xml.
     @wf_definition = double(Dor::WorkflowObject)
     wf_definition_procs = []
     wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name' => 'hello', 'lifecycle' => 'lc', 'status' => 'stat', 'sequence' => '1'})
@@ -21,7 +21,7 @@ describe Dor::Workflow::Document do
       <workflow objectId="druid:mf777zb0743" id="sdrIngestWF"/>
       eos
 
-      #xml=Nokogiri::XML(xml)
+      # xml=Nokogiri::XML(xml)
       d = Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
       expect(d.processes.length).to eq(0)

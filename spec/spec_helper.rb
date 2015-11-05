@@ -6,14 +6,14 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'bundler/setup'
 require 'rspec'
 require 'awesome_print'
-#require 'rspec/autorun'
-#require 'rspec/mocks'
+# require 'rspec/autorun'
+# require 'rspec/mocks'
 
 require 'solrizer'
 require 'om'
 
 require 'dor-services'
-#require 'ruby-debug'
+# require 'ruby-debug'
 require 'foxml_helper'
 require 'equivalent-xml/rspec_matchers'
 require 'fakeweb'

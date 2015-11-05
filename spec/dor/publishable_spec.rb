@@ -128,7 +128,7 @@ describe Dor::Publishable do
       end
 
       it 'does include a releaseData element when there is content inside it' do
-        #Fake a tag with at least one children
+        # Fake a tag with at least one children
         releaseData = '<releaseData><release>foo</release></releaseData>'
         allow(@item).to receive(:generate_release_xml).and_return(releaseData)
         p_xml = Nokogiri::XML(@item.public_xml)

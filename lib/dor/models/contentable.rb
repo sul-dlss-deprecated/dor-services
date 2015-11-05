@@ -14,7 +14,7 @@ module Dor
       md5  = Digest::MD5.file(file.path).hexdigest
       sha1 = Digest::SHA1.file(file.path).hexdigest
       size = File.size?(file.path)
-      #update contentmd
+      # update contentmd
       file_hash = {:name => file_name, :md5 => md5, :publish => publish, :shelve => shelve, :preserve => preserve, :size => size.to_s, :sha1 => sha1, :mime_type => mime_type}
       begin
         sftp.stat!(location.gsub(file_name, ''))
@@ -48,12 +48,12 @@ module Dor
       md5  = Digest::MD5.file(file.path).hexdigest
       sha1 = Digest::SHA1.file(file.path).hexdigest
       size = File.size?(file.path)
-      #update contentmd
+      # update contentmd
       file_hash = {:name => file_name, :md5 => md5, :size => size.to_s, :sha1 => sha1}
       begin
         sftp.stat!(location)
         sftp.upload!(file.path, location)
-        #this doesnt allow renaming files
+        # this doesnt allow renaming files
         item.contentMetadata.update_file(file_hash, file_name)
       rescue
         sftp.upload!(file.path, oldlocation)
@@ -90,7 +90,7 @@ module Dor
       begin
         sftp.remove!(location)
       rescue
-        #if the file doesnt exist, that is ok, not all files will be present in the workspace
+        # if the file doesnt exist, that is ok, not all files will be present in the workspace
         begin
           sftp.remove!(oldlocation)
         rescue Net::SFTP::StatusException
@@ -113,11 +113,11 @@ module Dor
 
     # @param [String] resource_name ID of the resource elememnt
     def remove_resource(resource_name)
-      #run delete for all of the files in the resource
+      # run delete for all of the files in the resource
       contentMetadata.ng_xml.search('//resource[@id=\'' + resource_name + '\']/file').each do |file|
         remove_file(file['id'])
       end
-      #remove the resource record from the metadata and renumber the resource sequence
+      # remove the resource record from the metadata and renumber the resource sequence
       contentMetadata.remove_resource resource_name
     end
 

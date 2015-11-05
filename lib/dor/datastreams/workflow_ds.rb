@@ -10,7 +10,7 @@ module Dor
         t.process {
           t.name_(    :path => {:attribute => 'name'     }, :index_as => [:displayable, :not_searchable] )
           t.status(   :path => {:attribute => 'status'   }, :index_as => [:displayable, :not_searchable] )
-          t.timestamp(:path => {:attribute => 'datetime' }, :index_as => [:displayable, :not_searchable] ) #, :data_type => :date)
+          t.timestamp(:path => {:attribute => 'datetime' }, :index_as => [:displayable, :not_searchable] ) # , :data_type => :date)
           t.elapsed(  :path => {:attribute => 'elapsed'  }, :index_as => [:displayable, :not_searchable] )
           t.lifecycle(:path => {:attribute => 'lifecycle'}, :index_as => [:displayable, :not_searchable] )
           t.attempts( :path => {:attribute => 'attempts' }, :index_as => [:displayable, :not_searchable] )

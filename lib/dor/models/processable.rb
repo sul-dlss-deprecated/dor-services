@@ -11,9 +11,9 @@ module Dor
       after_initialize :set_workflows_datastream_location
     end
 
-    #verbiage we want to use to describe an item when it has completed a particular step
+    # verbiage we want to use to describe an item when it has completed a particular step
     STATUS_CODE_DISP_TXT = {
-      0 => 'Unknown Status', #if there are no milestones for the current version, someone likely messed up the versioning process.
+      0 => 'Unknown Status', # if there are no milestones for the current version, someone likely messed up the versioning process.
       1 => 'Registered',
       2 => 'In accessioning',
       3 => 'In accessioning (described)',
@@ -25,7 +25,7 @@ module Dor
       9 => 'Opened'
     }
 
-    #milestones from accessioning and the order they happen in
+    # milestones from accessioning and the order they happen in
     STEPS = {
       'registered'  => 1,
       'submitted'   => 2,
@@ -112,8 +112,8 @@ module Dor
       end
 
       current_milestones = []
-      #only get steps that are part of accessioning and part of the current version. That can mean they were archived with the current version
-      #number, or they might be active (no version number).
+      # only get steps that are part of accessioning and part of the current version. That can mean they were archived with the current version
+      # number, or they might be active (no version number).
       milestones.each do |m|
         if STEPS.keys.include?(m[:milestone]) && (m[:version].nil? || m[:version] == current_version)
           current_milestones << m unless m[:milestone] == 'registered' && current_version.to_i > 1
@@ -122,7 +122,7 @@ module Dor
 
       status_code = 0
       status_time = nil
-      #for each milestone in the current version, see if it comes after the current 'last' step, if so, make it the last and record the date/time
+      # for each milestone in the current version, see if it comes after the current 'last' step, if so, make it the last and record the date/time
       current_milestones.each do |m|
         m_name = m[:milestone]
         m_time = m[:at].utc.xmlschema
@@ -140,7 +140,7 @@ module Dor
       status_info_hash = status_info()
       current_version, status_code, status_time = status_info_hash[:current_version], status_info_hash[:status_code], status_info_hash[:status_time]
 
-      #use the translation table to get the appropriate verbage for the latest step
+      # use the translation table to get the appropriate verbage for the latest step
       result = "v#{current_version} #{STATUS_CODE_DISP_TXT[status_code]}"
       result += " #{format_date(status_time)}" if include_time
       result
@@ -164,7 +164,7 @@ module Dor
       current_version_num = current_version.to_i
 
       if self.respond_to?('versionMetadata')
-        #add an entry with version id, tag and description for each version
+        # add an entry with version id, tag and description for each version
         while current_version_num > 0
           add_solr_value(solr_doc, 'versions', current_version_num.to_s + ';' + versionMetadata.tag_for_version(current_version_num.to_s) + ';' + versionMetadata.description_for_version(current_version_num.to_s), :string, [:displayable])
           current_version_num -= 1
@@ -183,12 +183,12 @@ module Dor
 
       sortable_milestones.each do |milestone, unordered_dates|
         dates = unordered_dates.sort
-        #create the published_dttsi and published_day fields and the like
+        # create the published_dttsi and published_day fields and the like
         dates.each do |date|
           solr_doc["#{milestone}_dttsim"] ||= []
           solr_doc["#{milestone}_dttsim"] << date unless solr_doc["#{milestone}_dttsim"].include?(date)
         end
-        #fields for OAI havester to sort on: _dttsi is trie date +stored +indexed (single valued, i.e. sortable)
+        # fields for OAI havester to sort on: _dttsi is trie date +stored +indexed (single valued, i.e. sortable)
         solr_doc["#{milestone}_earliest_dttsi"] = dates.first
         solr_doc["#{milestone}_latest_dttsi"  ] = dates.last
       end
@@ -219,7 +219,7 @@ module Dor
     end
 
     private
-    #handles formating utc date/time to human readable
+    # handles formating utc date/time to human readable
     # XXX: bad form to hardcode TZ here.  Code smell abounds.
     def format_date(datetime)
         d = datetime.is_a?(Time) ? datetime :

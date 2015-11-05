@@ -125,7 +125,7 @@ describe Dor::VersionMetadataDS do
     end
 
     it 'does not do anything if there is only 1 version' do
-      ds.update_current_version :description => 'now minor update', :significance => :minor #should be ignored
+      ds.update_current_version :description => 'now minor update', :significance => :minor # should be ignored
       expect(ds.to_xml).to be_equivalent_to( <<-XML
       <versionMetadata objectId="druid:ab123cd4567">
       <version versionId="1" tag="1.0.0">

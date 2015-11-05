@@ -11,7 +11,7 @@ module Dor
       quantity = 1 if quantity.nil?
       ids = []
       if Config.suri.mint_ids
-        #Post with no body
+        # Post with no body
         resource = RestClient::Resource.new("#{Config.suri.url}/suri2/namespaces/#{Config.suri.id_namespace}",
                                   :user => Config.suri.user, :password => Config.suri.pass)
         ids = resource["identifiers?quantity=#{quantity}"].post('').chomp.split(/\n/).collect { |id| "#{Config.suri.id_namespace}:#{id.strip}" }
@@ -22,9 +22,9 @@ module Dor
       end
       want_array ? ids : ids.first
 
-    # rescue Exception => e
-    #   Rails.logger.error("Unable to mint id from suri: #{e.to_s}")
-    #   raise e
+      # rescue Exception => e
+      #   Rails.logger.error("Unable to mint id from suri: #{e.to_s}")
+      #   raise e
     end
 
   end

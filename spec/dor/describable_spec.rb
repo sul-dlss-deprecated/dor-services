@@ -26,7 +26,7 @@ describe Dor::Describable do
     expected_dc = read_fixture('ex1_dc.xml')
     found = 0
     allow(@simple).to receive(:generate_dublin_core).and_return(Nokogiri::XML(expected_dc))
-    #this is hacky but effective
+    # this is hacky but effective
     allow(@simple).to receive(:add_solr_value) do |doc, field, value, otherstuff|
       if field == 'creator_title'
         expect(value).to eq('George, Henry, 1839-1897The complete works of Henry George')
@@ -549,7 +549,7 @@ describe Dor::Describable do
       XML
     end
     it 'should throw an exception if there is content in the descriptive metadata stream' do
-      #@obj.stub(:descMetadata).and_return(ActiveFedora::OmDatastream.new)
+      # @obj.stub(:descMetadata).and_return(ActiveFedora::OmDatastream.new)
       allow(@obj.descMetadata).to receive(:new?).and_return(false)
       expect{@obj.set_desc_metadata_using_label()}.to raise_error(StandardError)
     end

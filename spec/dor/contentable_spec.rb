@@ -50,17 +50,17 @@ describe Dor::Contentable do
     </contentMetadata>'
     allow(Dor::Item).to receive(:find).and_return(@item)
     file_path = File.dirname(__FILE__) + '/../fixtures/ab123cd4567_descMetadata.xml'
-    #allow_any_instance_of(DruidTools::Druid).to receive(:path).and_return("#{file_path}/ab123cd4567/ab123cd4567_descMetadata.xml")
+    # allow_any_instance_of(DruidTools::Druid).to receive(:path).and_return("#{file_path}/ab123cd4567/ab123cd4567_descMetadata.xml")
     @sftp = double(Net::SFTP)
     @resp = double(Net::SFTP::Response)
     allow(@resp).to receive(:code).and_return(123)
     allow(@resp).to receive(:message).and_return('sup')
     allow(@sftp).to receive(:stat!) do |arg|
-      #raise an exception when checking whether the file exists, but no exception when checking whether the folder it belongs in exists
+      # raise an exception when checking whether the file exists, but no exception when checking whether the folder it belongs in exists
       raise(Net::SFTP::StatusException.new @resp, 'sup') if arg =~ /desc/
     end
     allow(@sftp).to receive(:upload!).and_return(true)
-    allow(Net::SFTP).to receive(:start).and_return(@sftp) #mock sftp obj
+    allow(Net::SFTP).to receive(:start).and_return(@sftp) # mock sftp obj
     @file = File.new(File.expand_path(file_path))
   end
   describe 'add_file' do

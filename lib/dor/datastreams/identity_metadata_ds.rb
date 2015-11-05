@@ -124,5 +124,5 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
 
     solr_doc
   end
-end #class
+end # class
 end

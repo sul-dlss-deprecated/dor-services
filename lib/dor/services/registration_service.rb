@@ -86,7 +86,7 @@ module Dor
           new_item.datastreams['rightsMetadata'].content = rights_xml.to_s
           new_item.set_read_rights(rights) unless rights == 'default'    # already defaulted to default!
         end
-        #create basic mods from the label
+        # create basic mods from the label
         if (metadata_source == 'label')
           ds = new_item.build_datastream('descMetadata')
           builder = Nokogiri::XML::Builder.new { |xml|

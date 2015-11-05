@@ -24,14 +24,14 @@ module Dor
     define_template :creative_commons do |xml|
       xml.use {
         xml.human(:type => 'creativeCommons')
-        xml.machine(:type => 'creativeCommons', :uri =>'')
+        xml.machine(:type => 'creativeCommons', :uri => '')
       }
     end
 
     define_template :open_data_commons do |xml|
       xml.use {
         xml.human(:type => 'openDataCommons')
-        xml.machine(:type => 'openDataCommons', :uri =>'')
+        xml.machine(:type => 'openDataCommons', :uri => '')
       }
     end
 
@@ -51,9 +51,9 @@ module Dor
           xml.use {
             xml.human(:type => 'useAndReproduction')
             xml.human(:type => 'creativeCommons')
-            xml.machine(:type => 'creativeCommons', :uri =>'')
+            xml.machine(:type => 'creativeCommons', :uri => '')
             xml.human(:type => 'openDataCommons')
-            xml.machine(:type => 'openDataCommons', :uri =>'')
+            xml.machine(:type => 'openDataCommons', :uri => '')
           }
           xml.copyright {
             xml.human

@@ -27,9 +27,9 @@ module Dor
       end
       params = { :dor_services_url => result.dor_services.url }
 
-      if(result.workflow.logfile && result.workflow.shift_age)
+      if (result.workflow.logfile && result.workflow.shift_age)
         params[:logger] = Logger.new(result.workflow.logfile, result.workflow.shift_age)
-      elsif(result.workflow.logfile)
+      elsif (result.workflow.logfile)
         params[:logger] = Logger.new(result.workflow.logfile)
       end
       params[:timeout] = result.workflow.timeout if result.workflow.timeout
