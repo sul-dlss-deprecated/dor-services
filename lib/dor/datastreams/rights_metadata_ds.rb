@@ -20,11 +20,11 @@ module Dor
         t.human
       end
 
-      t.creative_commons :path => '/use/machine', :type => 'creativeCommons' do
+      t.creative_commons :path => '/use/machine[@type=\'creativeCommons\']', :type => 'creativeCommons' do
         t.uri :path => '@uri'
       end
       t.creative_commons_human :path => '/use/human[@type=\'creativeCommons\']'
-      t.open_data_commons :path => '/use/machine', :type => 'openDataCommons' do
+      t.open_data_commons :path => '/use/machine[@type=\'openDataCommons\']', :type => 'openDataCommons' do
         t.uri :path => '@uri'
       end
       t.open_data_commons_human :path => '/use/human[@type=\'openDataCommons\']'
