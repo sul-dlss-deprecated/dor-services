@@ -187,6 +187,16 @@ describe Dor::Editable do
       expect(@empty_item.use_license).to eq('')
       expect(@empty_item.use_license_human).to eq('')
     end
+    it 'should be able to remove the use license' do
+      @empty_item.use_license = :none
+      expect(@empty_item.use_license).to eq('')
+      expect(@empty_item.use_license_uri).to be_nil
+      expect(@empty_item.use_license_human).to eq('')
+      expect(@empty_item.creative_commons_license).to be_nil
+      expect(@empty_item.creative_commons_license_human).to be_nil
+      expect(@empty_item.open_data_commons_license).to be_nil
+      expect(@empty_item.open_data_commons_license_human).to be_nil
+    end
   end
   describe 'default object rights' do
     it 'should find the default object rights' do
