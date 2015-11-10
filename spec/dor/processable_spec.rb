@@ -27,13 +27,23 @@ describe Dor::Processable do
     @item.contentMetadata.content = '<contentMetadata/>'
   end
 
-  it 'has a workflows datastream' do
+  it 'has a workflows datastream and workflows shortcut method' do
     expect(@item.datastreams['workflows']).to be_a(Dor::WorkflowDs)
+    expect(@item.workflows).to eq(@item.datastreams['workflows'])
   end
 
   it 'should load its content directly from the workflow service' do
-    expect(Dor::WorkflowService).to receive(:get_workflow_xml).with('dor', 'druid:ab123cd4567', nil)
-    @item.datastreams['workflows'].content
+    expect(Dor::WorkflowService).to receive(:get_workflow_xml).with('dor', 'druid:ab123cd4567', nil).once { '<workflows/>' }
+    expect(@item.workflows.content).to eq('<workflows/>')
+  end
+
+  it 'should be able to invalidate the cache of its content' do
+    expect(Dor::WorkflowService).to receive(:get_workflow_xml).with('dor', 'druid:ab123cd4567', nil).once { '<workflows/>' }
+    expect(@item.workflows.content).to eq('<workflows/>')
+    expect(@item.workflows.content).to eq('<workflows/>') # should be cached copy
+    expect(Dor::WorkflowService).to receive(:get_workflow_xml).with('dor', 'druid:ab123cd4567', nil).once { '<workflows>with some data</workflows>' }
+    # pass refresh flag and should be refreshed copy   
+    expect(@item.workflows.content(true)).to eq('<workflows>with some data</workflows>') 
   end
 
   context 'build_datastream()' do
@@ -290,7 +300,7 @@ describe Dor::Processable do
     end
   end
 
-  describe '#initialize_workflow' do
+  describe '#create_workflow' do
     it "sets the lane_id option from the object's APO" do
       apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
       item = instantiate_fixture('druid:ab123cd4567', ProcessableWithApoItem)
@@ -298,7 +308,7 @@ describe Dor::Processable do
       expect(Dor::WorkflowObject).to receive(:initial_workflow).and_return('<xml/>')
       expect(Dor::WorkflowObject).to receive(:initial_repo).and_return('dor')
       expect(Dor::WorkflowService).to receive(:create_workflow).with('dor', 'druid:ab123cd4567', 'accessionWF', '<xml/>', {:create_ds => true, :lane_id => 'fast'})
-      item.initialize_workflow('accessionWF')
+      item.create_workflow('accessionWF')
     end
   end
 
