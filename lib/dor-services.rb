@@ -117,7 +117,6 @@ module Dor
   autoload :Editable, 'dor/models/editable'
   autoload :Discoverable, 'dor/models/discoverable'
   autoload :Geoable,      'dor/models/geoable'
-  autoload :Presentable,  'dor/models/presentable'
   autoload :Releaseable,   'dor/models/releaseable'
   autoload :Rightsable,   'dor/models/rightsable'
 
