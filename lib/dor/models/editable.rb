@@ -215,8 +215,16 @@ module Dor
       defaultObjectRights.open_data_commons_human = use_license_human
     end
 
+    # @param [String|Symbol] use_license_machine The machine code for the desired Use License
+    # If set to `:none` then Use License is removed
     def use_license=(use_license_machine)
-      if CREATIVE_COMMONS_USE_LICENSES.include? use_license_machine
+      if use_license_machine == :none
+        # delete use license by directly removing the XML used to define the use license
+        defaultObjectRights.creative_commons = nil
+        defaultObjectRights.creative_commons_human = nil
+        defaultObjectRights.open_data_commons = nil
+        defaultObjectRights.open_data_commons_human = nil
+      elsif CREATIVE_COMMONS_USE_LICENSES.include? use_license_machine
         self.creative_commons_license = use_license_machine
         self.creative_commons_license_human = CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
       elsif OPEN_DATA_COMMONS_USE_LICENSES.include? use_license_machine
