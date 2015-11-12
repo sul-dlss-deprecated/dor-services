@@ -7,7 +7,6 @@ module Dor
     include Governable
     include Describable
     include Itemizable
-    include Presentable
     include Rightsable
 
     def public_relationships
@@ -63,7 +62,6 @@ module Dor
         DigitalStacksService.transfer_to_document_store(pid, datastreams['rightsMetadata'].to_xml, 'rightsMetadata')
         DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
         DigitalStacksService.transfer_to_document_store(pid, generate_public_desc_md, 'mods') if metadata_format == 'mods'
-        DigitalStacksService.transfer_to_document_store(pid, build_iiif_manifest(@public_xml_doc), 'manifest') if iiif_presentation_manifest_needed? @public_xml_doc
       else
         # Clear out the document cache for this item
         DigitalStacksService.prune_purl_dir pid
