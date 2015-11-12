@@ -53,6 +53,7 @@ module Dor
       doc = descMetadata.ng_xml.dup(1)
       add_collection_reference(doc)
       add_access_conditions(doc)
+      add_constituent_relations(doc)
       doc.xpath('//comment()').remove
       new_doc = Nokogiri::XML(doc.to_xml) { |x| x.noblanks }
       new_doc.encoding = 'UTF-8'
@@ -139,6 +140,41 @@ module Dor
         related_item_node.add_child(type_node)
       end
     end
+    
+    # expand constituent relations into relatedItem references -- see JUMBO-18
+    # @param [Nokogiri::XML] doc public MODS XML being built
+    def add_constituent_relations(doc)
+	    self.public_relationships.search('//rdf:RDF/rdf:Description/fedora:isConstituentOf',
+	                                     'fedora' => 'info:fedora/fedora-system:def/relations-external#',
+	                                     'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' ).each do |parent|
+        # fetch the parent object to get title
+        druid = parent['rdf:resource'].gsub(/^info:fedora\//, '')
+        parent_item = Dor::Item.find(druid)
+
+        # create the MODS relation
+        relatedItem = doc.create_element 'relatedItem'
+        relatedItem['type'] = 'host'
+        relatedItem['displayLabel'] = 'Appears in'
+        
+        # load the title from the parent's DC.title
+        titleInfo = doc.create_element 'titleInfo'
+        title = doc.create_element 'title'
+        title.content = parent_item.datastreams['DC'].title.first
+        titleInfo << title
+        relatedItem << titleInfo
+        
+        # point to the PURL for the parent
+        location = doc.create_element 'location'
+        url = doc.create_element 'url'
+        url.content = "http://#{Dor::Config.stacks.document_cache_host}/#{druid.split(':').last}"
+        location << url
+        relatedItem << location
+        
+        # finish up by adding relation to public MODS
+        doc.root << relatedItem
+      end
+    end
+    
     def metadata_namespace
       desc_md = datastreams['descMetadata'].ng_xml
       return nil if desc_md.nil? || desc_md.root.nil? || desc_md.root.namespace.nil?
