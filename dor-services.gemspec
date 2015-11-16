@@ -46,6 +46,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'dor-rights-auth', '~> 1.0', '>= 1.0.1'
   s.add_dependency 'lyber-utils', '~> 0.1.2'
   s.add_dependency 'moab-versioning', '~> 1.4.4' # 1.3.2 fails, 1.4.3 fails
+  s.add_dependency 'modsulator', '~> 0.0.6'
   s.add_dependency 'stanford-mods', '~> 1.1'
 
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'

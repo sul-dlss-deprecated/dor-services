@@ -150,14 +150,14 @@ module Dor
       defaultObjectRights.use_statement.first
     end
     def use_statement=(val)
-      defaultObjectRights.update_values({[:use_statement] => val})
+      defaultObjectRights.update_term!(:use_statement, val.nil? ? '' : val)
     end
 
     def copyright_statement
       defaultObjectRights.copyright.first
     end
     def copyright_statement=(val)
-      defaultObjectRights.update_values({[:copyright] => val})
+      defaultObjectRights.update_term!(:copyright, val.nil? ? '' : val)
     end
 
     def creative_commons_license
@@ -190,40 +190,35 @@ module Dor
       ''
     end
 
-    def init_rights_metadata_use_node(license_type)
-      return unless defaultObjectRights.find_by_terms(license_type).length < 1
-      defaultObjectRights.add_child_node(defaultObjectRights.ng_xml.root, license_type)
-    end
-
     def creative_commons_license=(use_license_machine)
-      init_rights_metadata_use_node(:creative_commons)
+      defaultObjectRights.initialize_term!(:creative_commons)
       defaultObjectRights.creative_commons = use_license_machine
       defaultObjectRights.creative_commons.uri = CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:uri]
     end
     def creative_commons_license_human=(use_license_human)
-      init_rights_metadata_use_node(:creative_commons_human)
+      defaultObjectRights.initialize_term!(:creative_commons_human)
       defaultObjectRights.creative_commons_human = use_license_human
     end
 
     def open_data_commons_license=(use_license_machine)
-      init_rights_metadata_use_node(:open_data_commons)
+      defaultObjectRights.initialize_term!(:open_data_commons)
       defaultObjectRights.open_data_commons = use_license_machine
       defaultObjectRights.open_data_commons.uri = OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine][:uri]
     end
     def open_data_commons_license_human=(use_license_human)
-      init_rights_metadata_use_node(:open_data_commons_human)
+      defaultObjectRights.initialize_term!(:open_data_commons_human)
       defaultObjectRights.open_data_commons_human = use_license_human
     end
 
     # @param [String|Symbol] use_license_machine The machine code for the desired Use License
     # If set to `:none` then Use License is removed
     def use_license=(use_license_machine)
-      if use_license_machine == :none
+      if use_license_machine.blank? || use_license_machine == :none
         # delete use license by directly removing the XML used to define the use license
-        defaultObjectRights.creative_commons = nil
-        defaultObjectRights.creative_commons_human = nil
-        defaultObjectRights.open_data_commons = nil
-        defaultObjectRights.open_data_commons_human = nil
+        defaultObjectRights.update_term!(:creative_commons, ' ')
+        defaultObjectRights.update_term!(:creative_commons_human, ' ')
+        defaultObjectRights.update_term!(:open_data_commons, ' ')
+        defaultObjectRights.update_term!(:open_data_commons_human, ' ')
       elsif CREATIVE_COMMONS_USE_LICENSES.include? use_license_machine
         self.creative_commons_license = use_license_machine
         self.creative_commons_license_human = CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
@@ -231,7 +226,7 @@ module Dor
         self.open_data_commons_license = use_license_machine
         self.open_data_commons_license_human = OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
       else
-        raise "#{use_license_machine} is not a valid license code"
+        fail ArgumentError, "'#{use_license_machine}' is not a valid license code"
       end
     end
 
@@ -311,6 +306,7 @@ module Dor
     # set a single default workflow
     # @param wf [String] the name of the workflow, ex. 'digitizationWF'
     def default_workflow=(wf)
+      fail ArgumentError, "Must have a valid workflow for default" if wf.blank?
       xml = administrativeMetadata.ng_xml
       nodes = xml.search('//registration/workflow')
       if nodes.first
@@ -332,6 +328,7 @@ module Dor
       agreement_object ? agreement_object.pid : ''
     end
     def agreement=(val)
+      fail ArgumentError, "agreement must have a valid druid" if val.blank?
       self.agreement_object = Dor::Item.find val.to_s, :cast => true
     end
   end
