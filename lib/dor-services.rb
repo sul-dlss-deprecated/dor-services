@@ -1,5 +1,6 @@
 require 'active_fedora'
 require 'active_support/core_ext/module/attribute_accessors'
+require 'modsulator'
 
 module Dor
   @@registered_classes = {}

@@ -81,9 +81,20 @@ describe Dor::Editable do
   end
 
   describe 'use_statement=' do
-    it 'should work' do
+    it 'should assign use statement' do
       @item.use_statement = 'hi'
       expect(@item.use_statement).to eq('hi')
+    end
+    it 'should assign null use statements' do
+      ['  ', nil].each do |v|
+        @item.use_statement = v
+        expect(@item.use_statement).to be_nil
+        expect(@item.defaultObjectRights.ng_xml.at_xpath('/rightsMetadata/use/human[@type="useAndReproduction"]')).to be_nil
+      end
+    end
+    it 'should fail if trying to set use statement after it is null' do
+      @item.use_statement = nil
+      expect { @item.use_statement = 'force fail' }.not_to raise_error
     end
   end
 
@@ -96,7 +107,28 @@ describe Dor::Editable do
     end
   end
   describe 'copyright_statement =' do
-    pending 'Test not implemented'
+    it 'should assign copyright' do
+      @item.copyright_statement = 'hi'
+      expect(@item.copyright_statement).to eq('hi')
+      doc = Nokogiri::XML(@item.defaultObjectRights.content)
+      expect(doc.at_xpath('/rightsMetadata/copyright/human[@type="copyright"]').text).to eq('hi')
+    end
+    it 'should assign null copyright' do
+      @item.copyright_statement = nil
+      expect(@item.copyright_statement).to be_nil
+      doc = Nokogiri::XML(@item.defaultObjectRights.content)
+      expect(doc.at_xpath('/rightsMetadata/copyright')).to be_nil
+      expect(doc.at_xpath('/rightsMetadata/copyright/human[@type="copyright"]')).to be_nil
+    end
+    it 'should assign blank copyright' do
+      @item.copyright_statement = ' '
+      expect(@item.copyright_statement).to be_nil
+    end
+    it 'should error if assigning copyright after removing one' do
+      @item.copyright_statement = nil
+      @item.copyright_statement = nil # call twice to ensure repeatability
+      expect { @item.copyright_statement = 'will fail' }.not_to raise_error
+    end
   end
   describe 'metadata_source' do
     it 'should get the metadata source' do
@@ -182,20 +214,21 @@ describe Dor::Editable do
       expect(@empty_item.open_data_commons_license_human).to eq(use_license_human)
     end
     it 'should throw an exception if no valid license code is given' do
-      use_license_machine = 'something-unexpected'
-      expect { @empty_item.use_license = use_license_machine }.to raise_exception ("#{use_license_machine} is not a valid license code")
+      expect { @empty_item.use_license = 'something-unexpected' }.to raise_exception (ArgumentError)
       expect(@empty_item.use_license).to eq('')
       expect(@empty_item.use_license_human).to eq('')
     end
     it 'should be able to remove the use license' do
-      @empty_item.use_license = :none
-      expect(@empty_item.use_license).to eq('')
-      expect(@empty_item.use_license_uri).to be_nil
-      expect(@empty_item.use_license_human).to eq('')
-      expect(@empty_item.creative_commons_license).to be_nil
-      expect(@empty_item.creative_commons_license_human).to be_nil
-      expect(@empty_item.open_data_commons_license).to be_nil
-      expect(@empty_item.open_data_commons_license_human).to be_nil
+      [:none, '  ', nil].each do |v|
+        @item.use_license = v
+        expect(@item.use_license).to eq('')
+        expect(@item.use_license_uri).to be_nil
+        expect(@item.use_license_human).to eq('')
+        expect(@item.creative_commons_license).to be_nil
+        expect(@item.creative_commons_license_human).to be_nil
+        expect(@item.open_data_commons_license).to be_nil
+        expect(@item.open_data_commons_license_human).to be_nil
+      end
     end
   end
   describe 'default object rights' do
@@ -268,6 +301,14 @@ describe Dor::Editable do
   describe 'default workflows' do
     it 'should find the default workflows' do
       expect(@item.default_workflows).to eq(['digitizationWF'])
+    end
+    it 'should be able to set default workflows' do
+      @item.default_workflow = 'accessionWF'
+      expect(@item.default_workflows).to eq(['accessionWF'])
+    end
+    it 'should NOT be able to set a null default workflows' do
+      expect { @item.default_workflow = '' }.to raise_error(ArgumentError)
+      expect(@item.default_workflows).to eq(['digitizationWF']) # the original default workflow
     end
   end
   describe 'copyright_statement=' do
