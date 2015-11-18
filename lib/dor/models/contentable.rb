@@ -222,5 +222,13 @@ module Dor
       rightsMetadata.content = '<rightsMetadata/>'
       add_tag "Decommissioned : #{tag}"
     end
+    
+    # Adds a RELS-EXT constituent relationship to the given druid
+    # @param [String] druid the parent druid of the constituent relationship
+    # e.g., 
+    #     <fedora:isConstituentOf rdf:resource="info:fedora/druid:hj097bm8879" />
+    def add_constituent(druid)
+      add_relationship :is_constituent_of, ActiveFedora::Base.find(druid)      
+    end
   end
 end
