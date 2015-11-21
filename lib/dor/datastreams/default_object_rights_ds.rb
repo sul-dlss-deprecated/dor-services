@@ -93,33 +93,39 @@ module Dor
       end
       normalize!
     end
+
+    def content
+      ng_xml.human
+    end
     
     # Purge the XML of any empty or duplicate elements -- keeps <rightsMetadata> clean
     def normalize!
-      if copyright.blank?
-        ng_xml_will_change!
-        ng_xml.xpath('/rightsMetadata/copyright').each { |node| node.remove } # remove empty parent
-      end
-
-      if use_statement.blank? || use_statement.first.blank?
-        ng_xml_will_change!
-        ng_xml.xpath('/rightsMetadata/use/human[@type=\'useAndReproduction\']').each { |node| node.remove }
-      end
-      
-      if ng_xml.xpath('/rightsMetadata/use').length > 1
+      ng_xml_will_change!
+      doc = ng_xml
+      if doc.xpath('/rightsMetadata/use').length > 1
         # <use> node needs consolidation
-        nodeset = ng_xml.xpath('/rightsMetadata/use')
+        nodeset = doc.xpath('/rightsMetadata/use')
         nodeset[1..-1].each do |node|
           node.children.each do |child|
             nodeset[0] << child # copy over to first <use> element
           end
           node.remove
         end
-        fail unless ng_xml.xpath('/rightsMetadata/use').length == 1
+        fail unless doc.xpath('/rightsMetadata/use').length == 1
       end
 
-      ::Normalizer.new.normalize_document(ng_xml.root)
-      content = ng_xml.to_xml(indent: 2)
+      # Call out to the general purpose XML normalization service
+      ::Normalizer.new.tap do |norm|
+        norm.remove_empty_attributes(doc.root)
+        # cleanup ordering is important here
+        doc.xpath('//machine/text()').each { |node| node.content = node.content.strip }
+        doc.xpath('//human').tap { |nodeset| norm.clean_linefeeds(nodeset) }
+        doc.xpath('//human').each { |node| norm.trim_text(node) }
+        doc.xpath('//human').each { |node| norm.remove_empty_nodes(node) }
+        doc.xpath('/rightsMetadata/copyright').each { |node| norm.remove_empty_nodes(node) }
+        doc.xpath('/rightsMetadata/use').each { |node| norm.remove_empty_nodes(node) }        
+      end
+      content = doc.human
     end
   end
 end
