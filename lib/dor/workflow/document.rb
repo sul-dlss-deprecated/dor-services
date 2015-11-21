@@ -1,5 +1,8 @@
 module Dor
 module Workflow
+  # This class models the data housed in the Workflow Service remote backend table (each row a Process)
+  # This version is based on XML instantiation.
+  # @see Dor::Workflow::Process
   class Document
     include SolrDocHelper
     include ::OM::XML::Document
@@ -9,19 +12,22 @@ module Workflow
       t.repository(:path => {:attribute => 'repository'})
       t.workflowId(:path => {:attribute => 'id'})
       t.process {
-        t.name_(:path => {:attribute => 'name'})
-        t.status(:path => {:attribute => 'status'})
-        t.timestamp(:path => {:attribute => 'datetime'}) # , :data_type => :date)
-        t.elapsed(:path => {:attribute => 'elapsed'})
+        t.name_(    :path => {:attribute => 'name'     })
+        t.status(   :path => {:attribute => 'status'   })
+        t.timestamp(:path => {:attribute => 'datetime' }) # , :data_type => :date)
+        t.elapsed(  :path => {:attribute => 'elapsed'  })
         t.lifecycle(:path => {:attribute => 'lifecycle'})
-        t.attempts(:path => {:attribute => 'attempts'}, :index_as => [:not_searchable])
-        t.version(:path => {:attribute => 'version'})
+        t.attempts( :path => {:attribute => 'attempts' }, :index_as => [:not_searchable])
+        t.version(  :path => {:attribute => 'version'  })
       }
     end
+
     @@definitions = {}
+
     def initialize(node)
       self.ng_xml = Nokogiri::XML(node)
     end
+
     # is this an incomplete workflow with steps that have a priority > 0
     def expedited?
       processes.any? { |proc| !proc.completed? && proc.priority.to_i > 0 }
@@ -29,7 +35,7 @@ module Workflow
 
     # @return [Integer] value of the first > 0 priority.  Defaults to 0
     def priority
-      processes.map {|proc| proc.priority.to_i }.detect(0) {|p| p > 0}
+      processes.map { |proc| proc.priority.to_i }.detect(0) { |p| p > 0 }
     end
 
     # @return [Boolean] if any process node does not have version, returns true, false otherwise (all processes have version)
@@ -43,9 +49,7 @@ module Workflow
           @@definitions[workflowId.first]
         else
           wfo = Dor::WorkflowObject.find_by_name(workflowId.first)
-          wf_def = wfo ? wfo.definition : nil
-          @@definitions[workflowId.first] = wf_def
-          wf_def
+          @@definitions[workflowId.first] = (wfo ? wfo.definition : nil)
         end
       end
     end
@@ -66,13 +70,13 @@ module Workflow
       return [] if ng_xml.search('/workflow/process').length == 0
       @processes ||=
       if definition
-        definition.processes.collect do |process|
+        definition.processes.map do |process|
           node = ng_xml.at("/workflow/process[@name = '#{process.name}']")
           process.update!(node, self) unless node.nil?
           process
         end
       else
-        find_by_terms(:workflow, :process).collect do |x|
+        find_by_terms(:workflow, :process).map do |x|
           pnode = Dor::Workflow::Process.new(repository, workflowId, {})
           pnode.update!(x, self)
           pnode
@@ -85,6 +89,7 @@ module Workflow
     end
 
     def to_solr(solr_doc = {}, *args)
+      # no superclass, no super!
       wf_name = workflowId.first
       repo = repository.first
       wf_solr_type = :string
@@ -118,11 +123,10 @@ module Workflow
         add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)
       end
 
-      solr_doc[Solrizer.solr_name('wf_wps', :symbol)].uniq! if solr_doc[Solrizer.solr_name('wf_wps', :symbol)]
-      solr_doc[Solrizer.solr_name('wf_wsp', :symbol)].uniq! if solr_doc[Solrizer.solr_name('wf_wsp', :symbol)]
-      solr_doc[Solrizer.solr_name('wf_swp', :symbol)].uniq! if solr_doc[Solrizer.solr_name('wf_swp', :symbol)]
+      %w(wf_wps wf_wsp wf_swp).map{ |name| Solrizer.solr_name(name, :symbol) }.each do |name|
+        solr_doc[name].uniq! if solr_doc[name]
+      end
       solr_doc['workflow_status'].uniq! if solr_doc['workflow_status']
-
       solr_doc
     end
 

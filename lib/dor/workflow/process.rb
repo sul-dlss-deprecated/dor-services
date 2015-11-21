@@ -16,16 +16,16 @@ module Workflow
     def init_from_node(node)
       @attrs = {
         'name'         => node['name'],
-        'sequence'     => node['sequence'] ? node['sequence'].to_i : nil,
+        'sequence'     => node['sequence'   ] ? node['sequence'].to_i : nil,
         'status'       => node['status'],    # TODO: see how this affects argo
         'lifecycle'    => node['lifecycle'],
         'label'        => node.at_xpath('label/text()').to_s,
         'batch_limit'  => node['batch-limit'] ? node['batch-limit'].to_i : nil,
         'error_limit'  => node['error-limit'] ? node['error-limit'].to_i : nil,
-        'priority'     => node['priority'] ? node['priority'].to_i : 0,
-        'prerequisite' => node.xpath('prereq').collect { |p|
+        'priority'     => node['priority'   ] ? node['priority'   ].to_i : 0,
+        'prerequisite' => node.xpath('prereq').map { |p|
           repo = (p['repository'].nil? || p['repository'] == @repo    ) ? nil : p['repository']
-          wf   = (p['workflow'].nil? || p['workflow'] == @workflow) ? nil : p['workflow']
+          wf   = (p['workflow'  ].nil? || p['workflow'  ] == @workflow) ? nil : p['workflow'  ]
           [repo, wf, p.text.to_s].compact.join(':')
         }
       }
@@ -53,11 +53,11 @@ module Workflow
     end
 
     def ready?
-      self.waiting? && (!prerequisite.nil?) && prerequisite.all? { |pr| (prq = owner[pr]) && prq.completed? }
+      waiting? && (!prerequisite.nil?) && prerequisite.all? { |pr| (prq = owner[pr]) && prq.completed? }
     end
 
     def blocked?
-      self.waiting? && (!prerequisite.nil?) && prerequisite.any? { |pr| (prq = owner[pr]) && (prq.error? || prq.blocked?) }
+      waiting? && (!prerequisite.nil?) && prerequisite.any? { |pr| (prq = owner[pr]) && (prq.error? || prq.blocked?) }
     end
 
     def state
@@ -85,7 +85,7 @@ module Workflow
     def update!(info, new_owner = nil)
       @owner = new_owner unless new_owner.nil?
       if info.is_a? Nokogiri::XML::Node
-        info = Hash[info.attributes.collect { |k, v| [k, v.value] }]
+        info = Hash[info.attributes.map { |k, v| [k, v.value] }]
       end
       @attrs.merge! info
     end

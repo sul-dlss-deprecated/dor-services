@@ -1,6 +1,7 @@
 require 'dor/datastreams/workflow_definition_ds'
 
 module Dor
+  # This is the Worfklow DEFINITION class (the one that gets the WorkflowDefinitionDs).
   class WorkflowObject < ::ActiveFedora::Base
     include Identifiable
     include SolrDocHelper
@@ -48,8 +49,7 @@ module Dor
       super solr_doc, *args
       client = Dor::WorkflowService.workflow_resource
       xml = client["workflow_archive?repository=#{definition.repo}&workflow=#{definition.name}&count-only=true"].get
-      count = Nokogiri::XML(xml).at_xpath('/objects/@count').value
-      solr_doc["#{definition.name}_archived_isi"] = count
+      solr_doc["#{definition.name}_archived_isi"] = Nokogiri::XML(xml).at_xpath('/objects/@count').value
       solr_doc
     end
 
