@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'net-sftp', '~> 2.1.2'
   s.add_dependency 'net-ssh',  '~> 2.6.5' # 2.6.5 is pegged by our 12/2014 version of net-stfp
   s.add_dependency 'nokogiri', '~> 1.6.0'
+  s.add_dependency 'nokogiri-pretty', '~> 0.1.0'
   s.add_dependency 'om', '~> 3.0'
   s.add_dependency 'progressbar', '~> 0.21.0'
   s.add_dependency 'rdf', '~> 1.1.7' # 1.0.10 breaks
@@ -46,7 +47,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'dor-rights-auth', '~> 1.0', '>= 1.0.1'
   s.add_dependency 'lyber-utils', '~> 0.1.2'
   s.add_dependency 'moab-versioning', '~> 1.4.4' # 1.3.2 fails, 1.4.3 fails
-  s.add_dependency 'modsulator', '~> 0.0.6'
+  s.add_dependency 'modsulator', '~> 0.0.7'
   s.add_dependency 'stanford-mods', '~> 1.1'
 
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'

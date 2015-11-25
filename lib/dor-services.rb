@@ -1,6 +1,7 @@
 require 'active_fedora'
 require 'active_support/core_ext/module/attribute_accessors'
 require 'modsulator'
+require 'nokogiri-pretty'
 
 module Dor
   @@registered_classes = {}
