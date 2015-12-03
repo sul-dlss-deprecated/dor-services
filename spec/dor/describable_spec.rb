@@ -43,7 +43,7 @@ describe Dor::Describable do
 
   it 'should know its metadata format' do
     allow(@item).to receive(:find_metadata_file).and_return(nil)
-    FakeWeb.register_uri(:get, "#{Dor::Config.metadata.catalog.url}/?barcode=36105049267078", :body => read_fixture('ab123cd4567_descMetadata.xml'))
+    stub_request(:get, "#{Dor::Config.metadata.catalog.url}/?barcode=36105049267078").to_return(:body => read_fixture('ab123cd4567_descMetadata.xml'))
     @item.build_datastream('descMetadata')
     expect(@item.metadata_format).to eq('mods')
   end

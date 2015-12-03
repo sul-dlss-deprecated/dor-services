@@ -130,7 +130,7 @@ describe Dor::SdrIngestService do
   specify 'get_signature_catalog' do
     druid = 'druid:zz000zz0000'
     resource = Dor::Config.sdr.rest_client["objects/#{druid}/manifest/signatureCatalog.xml"]
-    FakeWeb.register_uri(:get, resource.url, :body => '<signatureCatalog objectId="druid:zz000zz0000" versionId="0" catalogDatetime="" fileCount="0" byteCount="0" blockCount="0"/>')
+    stub_request(:get, resource.url).to_return(:body => '<signatureCatalog objectId="druid:zz000zz0000" versionId="0" catalogDatetime="" fileCount="0" byteCount="0" blockCount="0"/>')
     catalog = Dor::SdrIngestService.get_signature_catalog(druid)
     # p catalog
     # p catalog.to_xml

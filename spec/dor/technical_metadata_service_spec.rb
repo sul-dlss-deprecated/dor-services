@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'moab_stanford'
-require 'fakeweb'
 
 describe Dor::TechnicalMetadataService do
 
@@ -160,10 +159,9 @@ describe Dor::TechnicalMetadataService do
   end
 
   specify 'Dor::TechnicalMetadataService.get_sdr_metadata' do
-    sdr_client = Dor::Config.sdr.rest_client
-    FakeWeb.register_uri(:get, "#{sdr_client.url}/objects/druid:ab123cd4567/metadata/technicalMetadata.xml", :body => '<technicalMetadata>')
+    stub_request(:get, "#{Dor::Config.sdr.url}/objects/druid:ab123cd4567/metadata/technicalMetadata.xml").to_return(:body => '<technicalMetadata/>')
     response = Dor::TechnicalMetadataService.get_sdr_metadata('druid:ab123cd4567', 'technicalMetadata')
-    expect(response).to eq('<technicalMetadata>')
+    expect(response).to eq('<technicalMetadata/>')
   end
 
   specify 'Dor::TechnicalMetadataService.get_new_technical_metadata' do

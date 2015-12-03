@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'net/http'
 
 describe Dor::RegistrationService do
 
@@ -279,7 +278,7 @@ describe Dor::RegistrationService do
 
     it 'should raise an exception if the label is longer than 255 chars' do
       allow(Dor::SearchService).to receive(:query_by_id).and_return([])
-      expect(Dor.logger).to receive(:warn)
+      expect(Dor.logger).to receive(:warn).twice()
       @params[:label] = 'a' * 256
       obj = Dor::RegistrationService.register_object(@params)
       expect(obj.label).to eq('a' * 254)
@@ -291,7 +290,7 @@ describe Dor::RegistrationService do
     it 'should set the workflow priority if one was passed in' do
       expect_any_instance_of(Dor::Item).to receive(:initialize_workflow).with('digitizationWF', false, 50)
       allow(Dor::SearchService).to receive(:query_by_id).and_return([nil])
-      expect(Dor.logger).to receive(:warn).with(/failed to update solr index for druid:ab123cd4567/)
+      expect(Dor.logger).to receive(:warn).twice
       @params[:workflow_priority] = 50
       @params[:initiate_workflow] = 'digitizationWF'
       Dor::RegistrationService.register_object(@params)

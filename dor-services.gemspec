@@ -41,7 +41,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'retries'
 
   # Stanford dependencies
-  s.add_dependency 'dor-workflow-service', '~> 1.7', '>= 1.7.1'
+  s.add_dependency 'dor-workflow-service', '~> 1.8', '>= 1.8.0'
   s.add_dependency 'druid-tools', '~> 0.4', '>= 0.4.1'
   s.add_dependency 'dor-rights-auth', '~> 1.0', '>= 1.0.1'
   s.add_dependency 'lyber-utils', '~> 0.1.2'
@@ -52,7 +52,6 @@ Gem::Specification.new do |s|
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects
   s.add_development_dependency 'awesome_print'
-  s.add_development_dependency 'fakeweb', '~> 1.3.0'
   s.add_development_dependency 'haml', '~> 4.0.4'
   s.add_development_dependency 'jhove-service', '~> 1.0.1'
   s.add_development_dependency 'pry'
