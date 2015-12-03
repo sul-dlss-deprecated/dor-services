@@ -289,6 +289,7 @@ describe Dor::RegistrationService do
       expect_any_instance_of(Dor::Item).to receive(:initialize_workflow).with('digitizationWF',false,50)
       allow(Dor::SearchService).to receive(:query_by_id).and_return([nil])
       expect(Dor.logger).to receive(:warn).with(/failed to update solr index for druid:ab123cd4567/)
+      expect(Dor.logger).to receive(:warn).with(/Cannot index druid:ab123cd4567/)
       @params[:workflow_priority] = 50
       @params[:initiate_workflow] = 'digitizationWF'
       Dor::RegistrationService.register_object(@params)
