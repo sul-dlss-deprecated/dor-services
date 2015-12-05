@@ -4,6 +4,47 @@ module Dor
   class RegistrationService
 
     class << self
+
+      # @TODO: Why isn't all this logic in, for example, Dor::Item.create? or Dor::Base.create? or Dor::Creatable.create?
+      # @TODO: these duplicate checks could be combined into 1 query
+
+      # @param [String] pid an ID to check, if desired.  If not passed (or nil), a new ID is minted
+      # @return [String] a pid you can use immidately, either freshly minted or your checked value
+      # @raise [Dor::DuplicateIdError]
+      def unduplicated_pid(pid = nil)
+        return Dor::SuriService.mint_id unless pid
+        existing_pid = SearchService.query_by_id(pid).first
+        unless existing_pid.nil?
+          raise Dor::DuplicateIdError.new(existing_pid), "An object with the PID #{pid} has already been registered."
+        end
+        pid
+      end
+
+      # @param [String] source_id_string a fully qualified source:val or empty string
+      # @return [String] the same qualified source:id for immediate use
+      # @raise [Dor::DuplicateIdError]
+      def check_source_id(source_id_string)
+        return '' if source_id_string == ''
+        unless SearchService.query_by_id("#{source_id_string}").first.nil?
+          raise Dor::DuplicateIdError.new(source_id_string), "An object with the source ID '#{source_id_string}' has already been registered."
+        end
+        source_id_string
+      end
+
+      # @param [Hash{Symbol => various}] params
+      # @option params [String] :object_type required
+      # @option params [String] :label required
+      # @option params [String] :admin_policy required
+      # @option params [String] :metadata_source
+      # @option params [String] :rights
+      # @option params [String] :collection
+      # @option params [Hash{String => String}] :source_id Primary ID from another system, max one key/value pair!
+      # @option params [Hash] :other_ids including :uuid if known
+      # @option params [String] :pid Fully qualified PID if you don't want one generated for you
+      # @option params [Integer] :workflow_priority]
+      # @option params [Array<String>] :seed_datastream datastream_names
+      # @option params [Array<String>] :initiate_workflow workflow_ids
+      # @option params [Array] :tags
       def register_object(params = {})
         Dor.ensure_models_loaded!
         [:object_type, :label].each do |required_param|
@@ -18,23 +59,18 @@ module Dor
         raise Dor::ParameterError, "Unknown item type: '#{object_type}'" if item_class.nil?
 
         # content_model = params[:content_model]
-        admin_policy  = params[:admin_policy]
+        # parent        = params[:parent]
         label         = params[:label]
         source_id     = params[:source_id] || {}
         other_ids     = params[:other_ids] || {}
         tags          = params[:tags] || []
-        # parent        = params[:parent]
         collection    = params[:collection]
-        pid = nil
-        if params[:pid]
-          pid = params[:pid]
-          existing_pid = SearchService.query_by_id(pid).first
-          unless existing_pid.nil?
-            raise Dor::DuplicateIdError.new(existing_pid), "An object with the PID #{pid} has already been registered."
-          end
-        else
-          pid = Dor::SuriService.mint_id
-        end
+
+        # Check for sourceId conflict *before* potentially minting PID
+        source_id_string = check_source_id [source_id.keys.first, source_id[source_id.keys.first]].compact.join(':')
+        pid = unduplicated_pid(params[:pid])
+
+        raise ArgumentError, ":source_id Hash can contain at most 1 pair: recieved #{source_id.size}" if source_id.size > 1
 
         rights = nil
         if params[:rights]
@@ -44,23 +80,12 @@ module Dor
           end
         end
 
-        source_id_string = [source_id.keys.first, source_id[source_id.keys.first]].compact.join(':')
-        unless source_id.empty?
-          existing_pid = SearchService.query_by_id("#{source_id_string}").first
-          unless existing_pid.nil?
-            raise Dor::DuplicateIdError.new(existing_pid), "An object with the source ID '#{source_id_string}' has already been registered."
-          end
-        end
-
         if (other_ids.key?(:uuid) || other_ids.key?('uuid')) == false
           other_ids[:uuid] = UUIDTools::UUID.timestamp_create.to_s
         end
-        short_label = label.length > 254 ? label[0, 254] : label
-        apo_object = Dor.find(admin_policy, :lightweight => true)
-        adm_xml = apo_object.administrativeMetadata.ng_xml
-
+        apo_object = Dor.find(params[:admin_policy])
         new_item = item_class.new(:pid => pid)
-        new_item.label = short_label
+        new_item.label = label.length > 254 ? label[0, 254] : label
         idmd = new_item.identityMetadata
         idmd.sourceId = source_id_string
         idmd.add_value(:objectId, pid)
@@ -71,7 +96,7 @@ module Dor
         tags.each { |tag| idmd.add_value(:tag, tag) }
         new_item.admin_policy_object = apo_object
 
-        adm_xml.xpath('/administrativeMetadata/relationships/*').each do |rel|
+        apo_object.administrativeMetadata.ng_xml.xpath('/administrativeMetadata/relationships/*').each do |rel|
           short_predicate = ActiveFedora::RelsExtDatastream.short_predicate rel.namespace.href + rel.name
           if short_predicate.nil?
             ix = 0
@@ -87,7 +112,7 @@ module Dor
           new_item.set_read_rights(rights) unless rights == 'default'    # already defaulted to default!
         end
         # create basic mods from the label
-        if (metadata_source == 'label')
+        if metadata_source == 'label'
           ds = new_item.build_datastream('descMetadata')
           builder = Nokogiri::XML::Builder.new { |xml|
             xml.mods( 'xmlns' => 'http://www.loc.gov/mods/v3', 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance', :version => '3.3', 'xsi:schemaLocation' => 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd') {
@@ -106,8 +131,7 @@ module Dor
 
         new_item.assert_content_model
 
-        new_item.class.ancestors.select { |x| x.respond_to? :to_class_uri }.each do |parent_class|
-          next if parent_class == ActiveFedora::Base
+        new_item.class.ancestors.select { |x| x.respond_to?(:to_class_uri) && x != ActiveFedora::Base }.each do |parent_class|
           new_item.add_relationship(:has_model, parent_class.to_class_uri)
         end
 
@@ -117,11 +141,13 @@ module Dor
         rescue StandardError => e
           Dor.logger.warn "Dor::RegistrationService.register_object failed to update solr index for #{new_item.pid}: #<#{e.class.name}: #{e.message}>"
         end
-        (new_item)
+        new_item
       end
 
+      # @param [Hash] params
+      # @see register_object similar but different
       def create_from_request(params)
-        other_ids = Array(params[:other_id]).collect do |id|
+        other_ids = Array(params[:other_id]).map do |id|
           if id =~ /^symphony:(.+)$/
             "#{$1.length < 14 ? 'catkey' : 'barcode'}:#{$1}"
           else
@@ -164,7 +190,7 @@ module Dor
       private
       def ids_to_hash(ids)
         return nil if ids.nil?
-        Hash[Array(ids).collect { |id| id.split(/:/) }]
+        Hash[Array(ids).map { |id| id.split(/:/) }]
       end
     end
   end

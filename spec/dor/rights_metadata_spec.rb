@@ -53,6 +53,7 @@ describe Dor::RightsMetadataDS do
       allow(OpenURI).to receive(:open_uri).with('https://purl-test.stanford.edu/bb046xn0881.xml').and_return('<xml/>')
     end
     it 'should have correct primary' do
+      expect(Dor.logger).to receive(:warn).with(/Cannot index druid:bb046xn0881\.descMetadata/)
       doc = @item.to_solr
       expect(doc).to match a_hash_including(
         'rights_primary_ssi'  => 'stanford',
