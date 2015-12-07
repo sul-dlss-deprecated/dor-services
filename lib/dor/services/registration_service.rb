@@ -136,11 +136,6 @@ module Dor
         end
 
         new_item.save
-        begin
-          new_item.update_index if ::ENABLE_SOLR_UPDATES
-        rescue StandardError => e
-          Dor.logger.warn "Dor::RegistrationService.register_object failed to update solr index for #{new_item.pid}: #<#{e.class.name}: #{e.message}>"
-        end
         new_item
       end
 

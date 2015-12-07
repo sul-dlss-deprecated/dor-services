@@ -19,8 +19,9 @@ describe Dor::RegistrationService do
       allow(Dor::SearchService).to receive(:query_by_id).and_return([])
       allow(ActiveFedora::Base).to receive(:connection_for_pid).and_return(@mock_repo)
       allow(Dor::SearchService).to receive(:solr).and_return(@mock_solr)
-      allow_any_instance_of(Dor::Item).to receive(:save).and_return(true)
+      # allow_any_instance_of(Dor::Item).to receive(:save).and_return(true)
       allow_any_instance_of(Dor::Collection).to receive(:save).and_return(true)
+      allow_any_instance_of(Dor::Item).to receive(:create).and_return(true)
 
       @params = {
         :object_type   => 'item',
@@ -90,9 +91,47 @@ describe Dor::RegistrationService do
       XML
     }
 
-    it 'should raise an exception if a required parameter is missing' do
-      @params.delete(:object_type)
-      expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::ParameterError)
+    context 'exception should be raised for' do
+      it 'registering a duplicate PID' do
+        @params[:pid] = @pid
+        expect(Dor::SearchService).to receive(:query_by_id).with('druid:ab123cd4567').and_return([@pid])
+        expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::DuplicateIdError)
+      end
+      it 'registering a duplicate source ID' do
+        expect(Dor::SearchService).to receive(:query_by_id).with('barcode:9191919191').and_return([@pid])
+        expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::DuplicateIdError)
+      end
+      it 'missing a required parameter' do
+        @params.delete(:object_type)
+        expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::ParameterError)
+      end
+      it 'indexing failure' do
+        allow_any_instance_of(Dor::Item).to receive(:update_index).and_raise('503 Service Unavailable')
+        expect{ Dor::RegistrationService.register_object(@params) }.to raise_error(RuntimeError)
+      end
+      context 'empty label' do
+        before :each do
+          @params[:label] = ''
+        end
+        it 'and metadata_source is label or none' do
+          @params[:metadata_source] = 'label'
+          expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::ParameterError)
+          @params[:metadata_source] = 'none'
+          expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::ParameterError)
+        end
+        it 'except if metadata_source is mdtoolkit (just a warning)' do
+          @params[:metadata_source] = 'mdtoolkit'
+          expect_any_instance_of(Dor::Item).to receive(:update_index).and_return(true)
+          Dor::RegistrationService.register_object(@params)
+        end
+      end
+    end
+
+    describe ENABLE_SOLR_UPDATES do
+      it 'starts true... inexplicably' do
+        # We don't set this.  But somebody in our dependencies does, affecting our basic model behvaior.  Fun.
+        expect(::ENABLE_SOLR_UPDATES).to be_truthy
+      end
     end
 
     RSpec.shared_examples 'common registration' do
@@ -104,44 +143,14 @@ describe Dor::RegistrationService do
       end
     end
 
-    describe 'if indexing fails' do
-      before :each do
-        allow_any_instance_of(Dor::Item).to receive(:update_index).and_raise('503 Service Unavailable')
-        expect(Dor.logger).to receive(:warn).with(/failed to update solr index for druid:ab123cd4567/)
-        @obj = Dor::RegistrationService.register_object(@params)
-      end
-      it_behaves_like 'common registration'
-      it 'should still produce rels_ext' do
-        expect(@obj.rels_ext.to_rels_ext).to be_equivalent_to <<-XML
-          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#"
-            xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#">
-            <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
-              <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
-              <fedora-model:hasModel rdf:resource="info:fedora/afmodel:Dor_Item"/>
-              <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
-              <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:zb871zd0767"/>
-            </rdf:Description>
-          </rdf:RDF>
-        XML
-      end
-    end
-
-    describe ENABLE_SOLR_UPDATES do
-      it 'starts true... inexplicably' do
-        # We don't set this.  But somebody in our dependencies does, affecting our basic model behvaior.  Fun.
-        expect(::ENABLE_SOLR_UPDATES).to be_truthy
-      end
-    end
-
     describe 'update_index' do
       before :each do
-        allow_any_instance_of(Dor::Item).to receive(:save).and_call_original  # undo stubbing
         allow_any_instance_of(Dor::Item).to receive(:create).and_return(true) # restub half of save, see ActiveFedora::Persistence
         @item = Dor::Item.new(:pid => @pid)
         expect(Dor::Item).to receive(:new).with(:pid => @pid).and_return(@item)
       end
       it 'gets called only once for the item' do
-        expect(@item).to receive(:update_index).exactly(:once)
+        expect(@item).to receive(:update_index).exactly(:once) # Avoid multiple writes to Solr!
         @obj = Dor::RegistrationService.register_object(@params)
       end
       it 'is not called at all when ENABLE_SOLR_UPDATES=false' do
@@ -152,9 +161,10 @@ describe Dor::RegistrationService do
       end
     end
 
-    describe 'should set rightsMetadata based on the APO default but replace read rights even if it is a collection' do
+    describe 'should set rightsMetadata based on the APO default (but replace read rights) even if it is a collection' do
       before :each do
-        expect_any_instance_of(Dor::Collection).to receive(:update_index).and_return(true)
+        @coll = Dor::Collection.new(:pid => @pid)
+        expect(Dor::Collection).to receive(:new).with(:pid => @pid).and_return(@coll)
         @params[:rights] = 'stanford'
         @params[:object_type] = 'collection'
         @obj = Dor::RegistrationService.register_object(@params)
@@ -170,7 +180,27 @@ describe Dor::RegistrationService do
         expect_any_instance_of(Dor::Item).to receive(:update_index).and_return(true)
       end
 
-      describe 'should register a collection' do
+      describe 'object registration' do
+        before :each do
+          @obj = Dor::RegistrationService.register_object(@params)
+        end
+        it_behaves_like 'common registration'
+        it 'produces correct rels_ext' do
+          expect(@obj.rels_ext.to_rels_ext).to be_equivalent_to <<-XML
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#"
+              xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#">
+              <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
+                <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
+                <fedora-model:hasModel rdf:resource="info:fedora/afmodel:Dor_Item"/>
+                <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
+                <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:zb871zd0767"/>
+              </rdf:Description>
+            </rdf:RDF>
+          XML
+        end
+      end
+
+      describe 'collection registration' do
         before :each do
           @params[:collection] = 'druid:something'
           expect(Dor::Collection).to receive(:find).with('druid:something').and_return(mock_collection)
@@ -256,48 +286,20 @@ describe Dor::RegistrationService do
           XML
         end
       end
-    end # context
 
-    context 'empty label' do
-      before :each do
-        @params[:label] = ''
+      it 'truncates label if >= 255 chars' do
+        # expect(Dor.logger).to receive(:warn).at_least(:once)
+        @params[:label] = 'a' * 256
+        obj = Dor::RegistrationService.register_object(@params)
+        expect(obj.label).to eq('a' * 254)
       end
-      it 'should raise an exception if metadata_source is label or none' do
-        @params[:metadata_source] = 'label'
-        expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::ParameterError)
-        @params[:metadata_source] = 'none'
-        expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::ParameterError)
-      end
-      it 'should not raise an exception if metadata_source is mdtoolkit' do
-        @params[:metadata_source] = 'mdtoolkit'
-        allow(Dor.logger).to receive(:warn)
+      it 'sets workflow priority when passed in' do
+        expect_any_instance_of(Dor::Item).to receive(:initialize_workflow).with('digitizationWF', false, 50)
+        @params[:workflow_priority] = 50
+        @params[:initiate_workflow] = 'digitizationWF'
         Dor::RegistrationService.register_object(@params)
       end
-    end
+    end # context common cases
 
-    it 'should raise an exception if registering a duplicate PID' do
-      @params[:pid] = @pid
-      expect(Dor::SearchService).to receive(:query_by_id).with('druid:ab123cd4567').and_return([@pid])
-      expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::DuplicateIdError)
-    end
-    it 'should raise an exception if registering a duplicate source ID' do
-      expect(Dor::SearchService).to receive(:query_by_id).with('barcode:9191919191').and_return([@pid])
-      expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::DuplicateIdError)
-    end
-
-    it 'should raise an exception if the label is longer than 255 chars' do
-      expect(Dor.logger).to receive(:warn).at_least(:once)
-      @params[:label] = 'a' * 256
-      obj = Dor::RegistrationService.register_object(@params)
-      expect(obj.label).to eq('a' * 254)
-    end
-    it 'should set the workflow priority if one was passed in' do
-      expect_any_instance_of(Dor::Item).to receive(:initialize_workflow).with('digitizationWF', false, 50)
-      expect(Dor.logger).to receive(:warn).with(/failed to update solr index for druid:ab123cd4567/)
-      expect(Dor.logger).to receive(:warn).with(/Cannot index druid:ab123cd4567/)
-      @params[:workflow_priority] = 50
-      @params[:initiate_workflow] = 'digitizationWF'
-      Dor::RegistrationService.register_object(@params)
-    end
   end
 end
