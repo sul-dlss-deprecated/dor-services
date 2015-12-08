@@ -4,7 +4,6 @@ gemspec :path => '../'
 gem 'activesupport', '~> 4.1'
 
 group :development, :test do
-  gem 'simplecov'
   gem 'vcr'
   gem 'webmock'
 end

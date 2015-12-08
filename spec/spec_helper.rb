@@ -1,17 +1,10 @@
-require 'simplecov'
-SimpleCov.start
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
-require 'bundler/setup'
+require 'coveralls'
+Coveralls.wear!
+
 require 'rspec'
-require 'awesome_print'
-# require 'rspec/autorun'
-# require 'rspec/mocks'
-
-require 'solrizer'
-require 'om'
-
 require 'dor-services'
 # require 'ruby-debug'
 require 'foxml_helper'
@@ -80,26 +73,3 @@ VCR.configure do |c|
 end
 
 Retries.sleep_enabled = false  # fail fast in tests
-
-def catch_stdio
-  old_handles = [$stdout.dup, $stderr.dup]
-  begin
-    $stdout.reopen(File.new('/dev/null', 'w'))
-    $stderr.reopen(File.new('/dev/null', 'w'))
-    yield
-  ensure
-    $stdout.reopen(IO.new(old_handles[0].fileno, 'w'))
-    $stderr.reopen(IO.new(old_handles[1].fileno, 'w'))
-  end
-end
-
-module Kernel
-  # Suppresses warnings within a given block.
-  def with_warnings_suppressed
-    saved_verbosity = $-v
-    $-v = nil
-    yield
-  ensure
-    $-v = saved_verbosity
-  end
-end

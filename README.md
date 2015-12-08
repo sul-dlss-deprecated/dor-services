@@ -1,4 +1,4 @@
-[<img src="https://travis-ci.org/sul-dlss/dor-services.png"/>](http://travis-ci.org/sul-dlss/dor-services)
+[<img src="https://travis-ci.org/sul-dlss/dor-services.png"/>](http://travis-ci.org/sul-dlss/dor-services) | [![Coverage Status](https://coveralls.io/repos/sul-dlss/dor-services/badge.svg?branch=develop&service=github)](https://coveralls.io/github/sul-dlss/dor-services?branch=develop)
 
 # dor-services
 
@@ -37,10 +37,6 @@ end
 Values can also be configured individually:
 
     Dor::Config.suri.mint_ids(true)
-
-## Development and release process
-
-See the [consul page](https://consul.stanford.edu/display/dlssdev/How+to+release+and+use+a+DLSS+gem+to+the+gemserver)
 
 ## Console
 
