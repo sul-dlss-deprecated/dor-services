@@ -17,7 +17,7 @@ module Workflow
       @attrs = {
         'name'         => node['name'],
         'sequence'     => node['sequence'] ? node['sequence'].to_i : nil,
-        'status'       => node['status'],    # TODO: see how this affects argo
+        'status'       => node['status'], # TODO: see how this affects argo
         'lifecycle'    => node['lifecycle'],
         'label'        => node.at_xpath('label/text()').to_s,
         'batch_limit'  => node['batch-limit'] ? node['batch-limit'].to_i : nil,

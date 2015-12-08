@@ -8,7 +8,7 @@ end
 
 describe Dor::Contentable do
 
-  let(:primary_pid)   { 'druid:ab123cd0001' }
+  let(:primary_pid) { 'druid:ab123cd0001' }
   let(:src1_pid) { 'druid:ab123cd0002' }
   let(:src2_pid) { 'druid:ab123cd0003' }
 
@@ -77,7 +77,7 @@ describe Dor::Contentable do
       expect(merged_cm.xpath('//resource').size).to eq(3)
       expect(merged_cm.xpath("//resource[@sequence = '2']").size).to eq(1)
       expect(merged_cm.xpath("//resource[@sequence = '3']").size).to eq(1)
-      expect(merged_cm.at_xpath("//resource[@sequence = '2']/@id").value).to  eq('image_2')
+      expect(merged_cm.at_xpath("//resource[@sequence = '2']/@id").value).to eq('image_2')
       expect(merged_cm.at_xpath("//resource[@sequence = '2']/file/@id").value).to eq('image_b_2.jp2')
       expect(merged_cm.at_xpath("//resource[@sequence = '2']/attr[@name = 'mergedFromPid']").text).to eq(src1_pid)
       expect(merged_cm.at_xpath("//resource[@sequence = '2']/attr[@name = 'mergedFromResource']").text).to eq('ab123cd0002_1')
@@ -200,7 +200,7 @@ describe Dor::Contentable do
       expect(merged_cm.xpath('//resource').size).to eq(3)
       expect(merged_cm.xpath("//resource[@sequence = '2']").size).to eq(1)
       expect(merged_cm.xpath("//resource[@sequence = '3']").size).to eq(1)
-      expect(merged_cm.at_xpath("//resource[@sequence = '2']/@id").value).to  eq('image_2')
+      expect(merged_cm.at_xpath("//resource[@sequence = '2']/@id").value).to eq('image_2')
       expect(merged_cm.at_xpath("//resource[@sequence = '2']/file/@id").value).to eq('image_b_2.jp2')
       expect(merged_cm.at_xpath("//resource[@sequence = '2']/attr[@name = 'mergedFromPid']").text).to eq(src1_pid)
       expect(merged_cm.at_xpath("//resource[@sequence = '2']/attr[@name = 'mergedFromResource']").text).to eq('ab123cd0002_1')

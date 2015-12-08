@@ -52,11 +52,11 @@ module Dor
       # Get all release tags on the item and strip out the what = self ones, we've already processed all the self tags on this item.
       # This will be where we store all tags that apply, regardless of their timestamp:
       potential_applicable_release_tags = get_tags_for_what_value(get_release_tags_for_item_and_all_governing_sets, 'collection')
-      administrative_tags = tags  # Get admin tags once here and pass them down
+      administrative_tags = tags # Get admin tags once here and pass them down
 
       # We now have the keys for all potential releases, we need to check the tags: the most recent timestamp with an explicit true or false wins.
       # In a nil case, the lack of an explicit false tag we do nothing.
-      (potential_applicable_release_tags.keys - released_hash.keys).each do |key|  # don't bother checking if already added to the release hash, they were added due to a self tag so that has won
+      (potential_applicable_release_tags.keys - released_hash.keys).each do |key| # don't bother checking if already added to the release hash, they were added due to a self tag so that has won
         latest_tag = latest_applicable_release_tag_in_array(potential_applicable_release_tags[key], administrative_tags)
         next if latest_tag.nil? # Otherwise, we have a valid tag, record it
         released_hash[key] = {'release' => latest_tag['release']}
@@ -208,7 +208,7 @@ module Dor
         what_correct = true if attrs[:what] == allowed_what_value
       end
       raise ArgumentError, ':what must be self or collection' unless what_correct
-      raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag
+      raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag # rubocop:disable Style/DoubleNegation
       validate_tag_format(attrs[:tag]) unless attrs[:tag].nil? # Will Raise exception if invalid tag
       true
     end
@@ -253,7 +253,7 @@ module Dor
         what_correct = true if attrs[:what] == allowed_what_value
       end
       raise ArgumentError, ':what must be self or collection' unless what_correct
-      raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag
+      raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag # rubocop:disable Style/DoubleNegation
       raise ArgumentError, ':displayType must be passed in as a String' unless attrs[:displayType].class == String
 
       validate_tag_format(attrs[:tag]) unless attrs[:tag].nil? # Will Raise exception if invalid tag
@@ -286,7 +286,7 @@ module Dor
         # We assume a 404 means the document has never been published before and thus has no purl
         Dor.logger.warn "[Attempt #{attempt_number}] GET #{url} -- #{exception.class}: #{exception.message}; #{total_delay} seconds elapsed."
         raise exception unless exception.is_a? OpenURI::HTTPError
-        return Nokogiri::HTML::Document.new if exception.message.strip == '404'    # strip is needed if the actual message is "404 "
+        return Nokogiri::HTML::Document.new if exception.message.strip == '404' # strip is needed if the actual message is "404 "
       end
 
       with_retries(:max_retries => 3, :base_sleep_seconds => 3, :max_sleep_seconds => 5, :handler => handler) do |attempt|

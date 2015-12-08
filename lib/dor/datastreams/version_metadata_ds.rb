@@ -141,7 +141,7 @@ module Dor
           # get rid of the current tag
           tags = find_by_terms(:version, :tag)
           sorted_tags = tags.map {|t| VersionTag.parse(t.value)}.sort
-          current_tag = sorted_tags[sorted_tags.length - 2]           # Get the second greatest tag since we are dropping the current, greatest
+          current_tag = sorted_tags[sorted_tags.length - 2] # Get the second greatest tag since we are dropping the current, greatest
           current[:tag] = current_tag.increment(opts[:significance]).to_s
         end
 

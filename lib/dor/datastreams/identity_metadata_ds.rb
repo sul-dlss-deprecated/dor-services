@@ -42,7 +42,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
 
   def sourceId=(value)
     node = find_by_terms(:sourceId).first
-    unless value.present?   # so setting it to '' is the same as removal: worth documenting maybe?
+    unless value.present? # so setting it to '' is the same as removal: worth documenting maybe?
       node.remove unless node.nil?
       return nil
     end

@@ -11,7 +11,7 @@ module Dor
   class << self
 
     def configure(*args, &block)
-      Dor::Config.configure *args, &block
+      Dor::Config.configure(*args, &block)
     end
 
     # Load an object and inspect its identityMetadata to figure out what class

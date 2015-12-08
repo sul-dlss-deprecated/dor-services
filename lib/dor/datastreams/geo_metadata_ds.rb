@@ -40,7 +40,7 @@ module Dor
     #     or nil if not provided
     def feature_catalogue
       root = ng_xml.xpath('/rdf:RDF/rdf:Description/gfc:FC_FeatureCatalogue', XMLNS)
-      return nil if root.nil? || root.empty?  # Feature catalog is optional
+      return nil if root.nil? || root.empty? # Feature catalog is optional
       Nokogiri::XML(root.first.to_xml)
     end
 

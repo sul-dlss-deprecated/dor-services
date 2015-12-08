@@ -14,7 +14,7 @@ module Dor
     def initialize(primary_druid, secondary_pids, tag, logger = nil)
       @primary = Dor::Item.find primary_druid
       @secondary_pids = secondary_pids
-      @secondary_objs = secondary_pids.map {|pid|  Dor::Item.find pid }
+      @secondary_objs = secondary_pids.map {|pid| Dor::Item.find pid }
       if logger.nil?
         @logger = Logger.new(STDERR)
       else

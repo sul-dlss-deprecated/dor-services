@@ -12,7 +12,7 @@ module Dor
         t.sequence  :path => { :attribute => 'sequence' } # , :data_type => :integer
         t.type_     :path => { :attribute => 'type' }, :index_as => [:displayable]
         t.attribute(:path => 'attr', :index_as => [:not_searchable]) do
-          t.name    :path => { :attribute => 'name' }, :index_as => [:not_searchable]
+          t.name :path => { :attribute => 'name' }, :index_as => [:not_searchable]
         end
         t.file(:index_as => [:not_searchable]) do
           t.id_      :path => { :attribute => 'id' }
@@ -41,6 +41,7 @@ module Dor
       result.xpath('/contentMetadata/resource/file/checksum'                                    ).each { |n| n.remove }
       result
     end
+
     def add_file(file, resource_name)
       xml = ng_xml
       resource_nodes = xml.search('//resource[@id=\'' + resource_name + '\']')
@@ -114,10 +115,10 @@ module Dor
     #
     def add_virtual_resource(child_druid, child_resource)
       # create a virtual resource element with attributes linked to the child and omit label
-      sequence_max = self.ng_xml.search('//resource').map{ |node| node[:sequence].to_i }.max
-      resource = Nokogiri::XML::Element.new('resource', self.ng_xml)
+      sequence_max = ng_xml.search('//resource').map { |node| node[:sequence].to_i }.max
+      resource = Nokogiri::XML::Element.new('resource', ng_xml)
       resource[:sequence] = sequence_max + 1
-      resource[:id] = "#{self.pid.gsub(/^druid:/, '')}_#{resource[:sequence]}"
+      resource[:id] = "#{pid.gsub(/^druid:/, '')}_#{resource[:sequence]}"
       resource[:type] = child_resource[:type]
 
       # iterate over all the published files and link to them
@@ -127,7 +128,7 @@ module Dor
       resource << generate_also_available_as_node(child_druid)
 
       # save the virtual resource as a sibling and return
-      self.ng_xml.root << resource
+      ng_xml.root << resource
       resource
     end
 
@@ -188,6 +189,7 @@ module Dor
       self.content = xml.to_s
       save
     end
+
     def update_attributes(file_name, publish, shelve, preserve)
       xml = ng_xml
       file_node = xml.search('//file[@id=\'' + file_name + '\']').first
@@ -197,6 +199,7 @@ module Dor
       self.content = xml.to_s
       save
     end
+
     def update_file(file, old_file_id)
       xml = ng_xml
       file_node = xml.search('//file[@id=\'' + old_file_id + '\']').first
@@ -246,7 +249,7 @@ module Dor
       solr_doc['content_file_count_itsi'        ] = counts['content_file']
       solr_doc['shelved_content_file_count_itsi'] = counts['shelved_file']
       solr_doc['resource_count_itsi'            ] = counts['resource']
-      solr_doc['preserved_size_dbtsi'           ] = preserved_size        # double (trie) to support very large sizes
+      solr_doc['preserved_size_dbtsi'           ] = preserved_size # double (trie) to support very large sizes
       solr_doc['resource_types_ssim'            ] = resource_type_counts.keys if resource_type_counts.size > 0
       resource_type_counts.each do |key, count|
         solr_doc["#{key}_resource_count_itsi"] = count
@@ -299,16 +302,16 @@ module Dor
     def move_resource(resource_name, new_position)
       node = singular_node('//resource[@id=\'' + resource_name + '\']')
       position = node['sequence'].to_i
-      new_position = new_position.to_i              # tolerate strings as a Legacy behavior
+      new_position = new_position.to_i # tolerate strings as a Legacy behavior
       return node if position == new_position
       # otherwise, is the resource being moved earlier in the sequence or later?
       up = new_position > position
-      others = new_position..(up ? position - 1 : position + 1)  # a range
+      others = new_position..(up ? position - 1 : position + 1) # a range
       others.each do |i|
         item = ng_xml.at_xpath('/resource[@sequence=\'' + i.to_s + '\']')
-        item['sequence'] = (up ? i - 1 : i + 1).to_s    # if you're going up, everything else comes down and vice versa
+        item['sequence'] = (up ? i - 1 : i + 1).to_s # if you're going up, everything else comes down and vice versa
       end
-      node['sequence'] = new_position.to_s          # set the node we already had last, so we don't hit it twice!
+      node['sequence'] = new_position.to_s # set the node we already had last, so we don't hit it twice!
       node
     end
 

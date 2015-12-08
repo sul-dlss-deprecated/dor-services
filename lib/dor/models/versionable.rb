@@ -67,7 +67,7 @@ module Dor
       raise Dor::Exception, 'Trying to close version on an object not opened for versioning' unless new_version_open?
       raise Dor::Exception, 'accessionWF already created for versioned object' if Dor::WorkflowService.get_active_lifecycle('dor', pid, 'submitted')
 
-      Dor::WorkflowService.close_version 'dor', pid, opts.fetch(:start_accession, true)  # Default to creating accessionWF when calling close_version
+      Dor::WorkflowService.close_version 'dor', pid, opts.fetch(:start_accession, true) # Default to creating accessionWF when calling close_version
     end
 
     # @return [Boolean] true if 'opened' lifecycle is active, false otherwise

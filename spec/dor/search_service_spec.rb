@@ -35,7 +35,7 @@ describe Dor::SearchService do
 
     it 'should execute a proper resource index search' do
       query = 'select $object from <#ri> where $object <info:fedora/fedora-system:def/model#label> $label'
-      encoded = 'select%20%24object%20from%20%3C%23ri%3E%20where%20%24object%20%3Cinfo%3Afedora%2Ffedora-system%3Adef%2Fmodel%23label%3E%20%24label'
+      # encoded = 'select%20%24object%20from%20%3C%23ri%3E%20where%20%24object%20%3Cinfo%3Afedora%2Ffedora-system%3Adef%2Fmodel%23label%3E%20%24label'
       resp = Dor::SearchService.risearch(query, :limit => 5)
       expect(resp).to eq(@druids[0])
       resp = Dor::SearchService.risearch(query, :limit => 5, :offset => 5)

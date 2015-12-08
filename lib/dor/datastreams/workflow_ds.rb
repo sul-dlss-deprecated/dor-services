@@ -11,7 +11,7 @@ module Dor
           t.name_(    :path => {:attribute => 'name'     }, :index_as => [:displayable, :not_searchable] )
           t.status(   :path => {:attribute => 'status'   }, :index_as => [:displayable, :not_searchable] )
           t.timestamp(:path => {:attribute => 'datetime' }, :index_as => [:displayable, :not_searchable] ) # , :data_type => :date)
-          t.elapsed(  :path => {:attribute => 'elapsed'  }, :index_as => [:displayable, :not_searchable] )
+          t.elapsed( :path => {:attribute => 'elapsed' }, :index_as => [:displayable, :not_searchable] )
           t.lifecycle(:path => {:attribute => 'lifecycle'}, :index_as => [:displayable, :not_searchable] )
           t.attempts( :path => {:attribute => 'attempts' }, :index_as => [:displayable, :not_searchable] )
         }
@@ -25,7 +25,7 @@ module Dor
       Workflow::Document.new(xml.to_s)
     end
 
-    alias :[] :get_workflow
+    alias_method :[], :get_workflow
 
     def ensure_xml_loaded
       ng_xml
@@ -71,7 +71,7 @@ module Dor
     #
     # @return [Integer] value of the priority.  Defaults to 0 if none of the workflows are expedited
     def current_priority
-      cp = workflows.detect &:expedited?
+      cp = workflows.detect(&:expedited?)
       return 0 if cp.nil?
       cp.priority.to_i
     end

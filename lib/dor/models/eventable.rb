@@ -6,7 +6,7 @@ module Dor
     end
 
     def add_event(*args)
-      datastreams['events'].add_event *args
+      datastreams['events'].add_event(*args)
     end
   end
 end

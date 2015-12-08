@@ -82,6 +82,7 @@ module Dor
       end
       data
     end
+
     def remove_file(filename)
       druid_tools = DruidTools::Druid.new(pid, Config.content.content_base_dir)
       location = druid_tools.path(filename)
@@ -98,6 +99,7 @@ module Dor
       end
       contentMetadata.remove_file filename
     end
+
     def rename_file(old_name, new_name)
       druid_tools = DruidTools::Druid.new(pid, Config.content.content_base_dir)
       location = druid_tools.path(old_name)
@@ -201,11 +203,8 @@ module Dor
     end
 
     def new_secondary_file_name(old_name, sequence_num)
-      if old_name =~ /^(.*)\.(.*)$/
-        return "#{$1}_#{sequence_num}.#{$2}"
-      else
-        return "#{old_name}_#{sequence_num}"
-      end
+      return "#{$1}_#{sequence_num}.#{$2}" if old_name =~ /^(.*)\.(.*)$/
+      "#{old_name}_#{sequence_num}"
     end
 
     # Clears RELS-EXT relationships, sets the isGovernedBy relationship to the SDR Graveyard APO
@@ -225,13 +224,13 @@ module Dor
       rightsMetadata.content = '<rightsMetadata/>'
       add_tag "Decommissioned : #{tag}"
     end
-    
+
     # Adds a RELS-EXT constituent relationship to the given druid
     # @param [String] druid the parent druid of the constituent relationship
-    # e.g., 
+    # e.g.,
     #     <fedora:isConstituentOf rdf:resource="info:fedora/druid:hj097bm8879" />
     def add_constituent(druid)
-      add_relationship :is_constituent_of, ActiveFedora::Base.find(druid)      
+      add_relationship :is_constituent_of, ActiveFedora::Base.find(druid)
     end
   end
 end

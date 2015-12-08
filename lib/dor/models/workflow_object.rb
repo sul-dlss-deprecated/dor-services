@@ -41,7 +41,7 @@ module Dor
     end
 
     def graph(*args)
-      definition.graph *args
+      definition.graph(*args)
     end
 
     def to_solr(solr_doc = {}, *args)

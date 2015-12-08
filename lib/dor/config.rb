@@ -10,7 +10,7 @@ module Dor
     define_callbacks :configure
 
     def initialize(*args)
-      super *args
+      super(*args)
       run_callbacks(:initialize) { }
     end
 

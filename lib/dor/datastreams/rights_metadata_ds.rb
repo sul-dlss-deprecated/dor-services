@@ -51,7 +51,7 @@ module Dor
             xml.machine { xml.none }
           }
           xml.access(:type => 'read') {
-            xml.machine { xml.none }   # dark default
+            xml.machine { xml.none } # dark default
           }
           xml.use {
             xml.human(:type => 'useAndReproduction')
@@ -101,7 +101,7 @@ module Dor
           group_node = Nokogiri::XML::Node.new('group', rights_xml)
           group_node.content = 'Stanford'
           machine_node.add_child(group_node)
-        else  # we know it is none or dark by the argument filter (first line)
+        else # we know it is none or dark by the argument filter (first line)
           machine_node.add_child Nokogiri::XML::Node.new('none', rights_xml)
         end
       end

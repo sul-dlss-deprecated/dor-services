@@ -9,19 +9,20 @@ module Workflow
       t.repository(:path => {:attribute => 'repository'})
       t.workflowId(:path => {:attribute => 'id'})
       t.process {
-        t.name_(:path => {:attribute => 'name'})
-        t.status(:path => {:attribute => 'status'})
+        t.name_(    :path => {:attribute => 'name'})
+        t.status(   :path => {:attribute => 'status'})
         t.timestamp(:path => {:attribute => 'datetime'}) # , :data_type => :date)
-        t.elapsed(:path => {:attribute => 'elapsed'})
+        t.elapsed(  :path => {:attribute => 'elapsed'})
         t.lifecycle(:path => {:attribute => 'lifecycle'})
-        t.attempts(:path => {:attribute => 'attempts'}, :index_as => [:not_searchable])
-        t.version(:path => {:attribute => 'version'})
+        t.attempts( :path => {:attribute => 'attempts'}, :index_as => [:not_searchable])
+        t.version(  :path => {:attribute => 'version'})
       }
     end
     @@definitions = {}
     def initialize(node)
       self.ng_xml = Nokogiri::XML(node)
     end
+
     # is this an incomplete workflow with steps that have a priority > 0
     def expedited?
       processes.any? { |proc| !proc.completed? && proc.priority.to_i > 0 }
