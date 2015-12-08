@@ -25,8 +25,8 @@ describe Dor::CleanupService do
     @druid = 'druid:aa123bb4567'
     @workspace_root_pathname = Pathname(Dor::Config.cleanup.local_workspace_root)
     @workitem_pathname       = Pathname(DruidTools::Druid.new(@druid, @workspace_root_pathname.to_s).path)
-    @workitem_pathname.rmtree if @workitem_pathname.exist?
     @export_pathname         = Pathname(Dor::Config.cleanup.local_export_home)
+    @workitem_pathname.rmtree if @workitem_pathname.exist?
     @export_pathname.rmtree   if @export_pathname.exist?
     @bag_pathname     = @export_pathname.join(@druid.split(':').last)
     @tarfile_pathname = @export_pathname.join(@bag_pathname + '.tar')

@@ -8,7 +8,7 @@ def check_config_and_boot
   config_dir = File.expand_path(File.dirname(__FILE__) + '/../config')
 
   environment_file = config_dir + '/dev_console_env.rb'
-  unless File.exists? environment_file
+  unless File.exist? environment_file
     puts "Unable to start console. #{environment_file} missing"
     exit
   end

@@ -49,7 +49,7 @@ module Dor
       reset_directories = []
       (1..last_version).each do |i|
         reset_path = "#{base_druid_tree}_v#{i}"
-        reset_directories.append(reset_path) if File.exists?(reset_path)
+        reset_directories.append(reset_path) if File.exist?(reset_path)
       end
       reset_directories
     end
@@ -78,7 +78,7 @@ module Dor
       reset_bags = []
       (1..last_version).each do |i|
         reset_path = "#{base_bag_directory}_v#{i}"
-        reset_bags.append(reset_path) if File.exists?(reset_path)
+        reset_bags.append(reset_path) if File.exist?(reset_path)
       end
       reset_bags
     end
@@ -90,7 +90,7 @@ module Dor
       reset_bags = []
       (1..last_version).each do |i|
         reset_path = "#{base_bag_directory}_v#{i}.tar"
-        reset_bags.append(reset_path) if File.exists?(reset_path)
+        reset_bags.append(reset_path) if File.exist?(reset_path)
       end
       reset_bags
     end

@@ -15,9 +15,7 @@ describe Dor::Upgradable do
       end
 
       class Baz < Bar
-        def datastreams
-          {}
-        end
+        def datastreams; {}; end
         def pid; 'baz'; end
       end
 
@@ -41,7 +39,7 @@ describe Dor::Upgradable do
           true
         end
 
-        UpgradableTest::Bar.on_upgrade '1.0.1', 'NEVER RUN'  do |obj|
+        UpgradableTest::Bar.on_upgrade '1.0.1', 'NEVER RUN' do |obj|
           false
         end
 
@@ -113,7 +111,7 @@ describe Dor::Upgradable do
 
   it 'should only save if upgrades were run' do
     UpgradableTest::Foo.on_upgrade '1.0.2', 'This should never run' do
-      if false
+      if false # rubocop:disable Lint/LiteralInCondition
         obj.signal('This will never run')
         true
       else

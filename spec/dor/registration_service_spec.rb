@@ -18,7 +18,7 @@ describe Dor::RegistrationService do
       end
       @mock_solr = double(RSolr::Connection).as_null_object
       allow(Dor::SearchService).to receive(:solr).and_return(@mock_solr)
-      @apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
+      @apo = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
       allow(@apo).to receive(:new_record?).and_return false
 
       allow_any_instance_of(Dor::Item).to receive(:save).and_return(true)

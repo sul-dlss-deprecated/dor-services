@@ -39,7 +39,7 @@ module Dor::SpecHelpers
       sdr.local_workspace_root         File.join(fixture_dir, 'workspace')
       sdr.local_export_home            File.join(fixture_dir, 'export')
     end
-    allow(ActiveFedora).to receive(:fedora).and_return(double('frepo').as_null_object)  # must be used in per-request context: :each not :all
+    allow(ActiveFedora).to receive(:fedora).and_return(double('frepo').as_null_object) # must be used in per-request context: :each not :all
   end
 
   def unstub_config
@@ -61,7 +61,7 @@ end
 
 RSpec.configure do |config|
   config.include Dor::SpecHelpers
-  config.logger.level = Logger::WARN  # if you want INFO and lesser messages, tweak here
+  config.logger.level = Logger::WARN # if you want INFO and lesser messages, tweak here
 end
 
 VCR.configure do |c|
@@ -72,4 +72,4 @@ VCR.configure do |c|
   c.configure_rspec_metadata!
 end
 
-Retries.sleep_enabled = false  # fail fast in tests
+Retries.sleep_enabled = false # fail fast in tests

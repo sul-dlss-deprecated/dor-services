@@ -1,5 +1,14 @@
 inherit_from: .rubocop_todo.yml
 
+Style/EmptyLineBetweenDefs:
+  AllowAdjacentOneLineDefs: true
+  Exclude:
+    - 'lib/dor/models/editable.rb'
+    - 'lib/dor/models/governable.rb'
+
+Style/ExtraSpacing:
+  AllowForAlignment: true
+
 Style/FileName:
   Enabled: true
   Exclude:

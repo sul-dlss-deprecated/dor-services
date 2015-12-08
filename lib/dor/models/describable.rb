@@ -149,13 +149,13 @@ module Dor
         related_item_node.add_child(type_node)
       end
     end
-    
+
     # expand constituent relations into relatedItem references -- see JUMBO-18
     # @param [Nokogiri::XML] doc public MODS XML being built
     def add_constituent_relations(doc)
-	    self.public_relationships.search('//rdf:RDF/rdf:Description/fedora:isConstituentOf',
-	                                     'fedora' => 'info:fedora/fedora-system:def/relations-external#',
-	                                     'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' ).each do |parent|
+        public_relationships.search('//rdf:RDF/rdf:Description/fedora:isConstituentOf',
+                                         'fedora' => 'info:fedora/fedora-system:def/relations-external#',
+                                         'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' ).each do |parent|
         # fetch the parent object to get title
         druid = parent['rdf:resource'].gsub(/^info:fedora\//, '')
         parent_item = Dor::Item.find(druid)
@@ -164,33 +164,30 @@ module Dor
         relatedItem = doc.create_element 'relatedItem'
         relatedItem['type'] = 'host'
         relatedItem['displayLabel'] = 'Appears in'
-        
+
         # load the title from the parent's DC.title
         titleInfo = doc.create_element 'titleInfo'
         title = doc.create_element 'title'
         title.content = parent_item.datastreams['DC'].title.first
         titleInfo << title
         relatedItem << titleInfo
-        
+
         # point to the PURL for the parent
         location = doc.create_element 'location'
         url = doc.create_element 'url'
         url.content = "http://#{Dor::Config.stacks.document_cache_host}/#{druid.split(':').last}"
         location << url
         relatedItem << location
-        
+
         # finish up by adding relation to public MODS
         doc.root << relatedItem
       end
     end
-    
+
     def metadata_namespace
       desc_md = datastreams['descMetadata'].ng_xml
-      if desc_md.nil? || desc_md.root.nil? || desc_md.root.namespace.nil?
-        return nil
-      else
-        return desc_md.root.namespace.href
-      end
+      return nil if desc_md.nil? || desc_md.root.nil? || desc_md.root.namespace.nil?
+      desc_md.root.namespace.href
     end
 
     def metadata_format
@@ -215,7 +212,7 @@ module Dor
       }
       keys = mods_sources.keys.concat(%w[ metadata_format_ssim ])
       keys.each { |key|
-        solr_doc[key] ||= []     # initialize multivalue targts if necessary
+        solr_doc[key] ||= [] # initialize multivalue targts if necessary
       }
 
       solr_doc['metadata_format_ssim'] << metadata_format
@@ -242,7 +239,7 @@ module Dor
         mods = stanford_mods
         mods_sources.each_pair do |solr_key, meth|
           vals = meth.is_a?(Array) ? mods.send(meth.shift, *meth) : mods.send(meth)
-          solr_doc[solr_key].push *vals unless vals.nil? || vals.empty?
+          solr_doc[solr_key].push(*vals) unless vals.nil? || vals.empty?
           # asterisk to avoid multi-dimensional array: push values, not the array
         end
         solr_doc['sw_pub_date_sort_ssi' ] = mods.pub_date_sort  # e.g. '0800'
@@ -258,6 +255,7 @@ module Dor
     def update_title(new_title)
       raise 'Descriptive metadata has no title to update!' unless update_simple_field('mods:mods/mods:titleInfo/mods:title', new_title)
     end
+
     def add_identifier(type, value)
       ds_xml = descMetadata.ng_xml
       ds_xml.search('//mods:mods', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
@@ -267,13 +265,12 @@ module Dor
         node.add_child(new_node)
       end
     end
+
     def delete_identifier(type, value = nil)
-      ds_xml = descMetadata.ng_xml
-      ds_xml.search('//mods:identifier', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
-        if node.content == value || value.nil?
-          node.remove
-          return true
-        end
+      descMetadata.ng_xml.search('//mods:identifier', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
+        next unless node.content == value || value.nil?
+        node.remove
+        return true
       end
       false
     end

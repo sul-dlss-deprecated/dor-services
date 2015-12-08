@@ -32,7 +32,7 @@ describe Dor::RightsMetadataDS do
       @rm = @item.datastreams['rightsMetadata']
     end
     it 'has accessors from defined terminology' do
-      expect(@rm.copyright  ).to eq ['Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.']
+      expect(@rm.copyright ).to eq ['Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.']
       ## use.human differs from use_statement: the former hits two elements (one unpopulated), the latter only one
       expect(@rm.use.human    ).to eq ['Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.', '']
       expect(@rm.use_statement).to eq ['Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.']
@@ -60,7 +60,7 @@ describe Dor::RightsMetadataDS do
         'title_tesim'         => ['Indianapolis 500'],
         'rights_characteristics_ssim' => ['world_discover', 'has_group_rights', 'has_rule', 'group|stanford', 'world|no-download', 'profile:group1|world1']
       )
-      expect(doc).not_to include('rights_errors_ssim')  # don't include empties
+      expect(doc).not_to include('rights_errors_ssim') # don't include empties
     end
   end
 end

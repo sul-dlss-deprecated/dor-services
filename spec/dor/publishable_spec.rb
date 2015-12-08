@@ -169,7 +169,7 @@ describe Dor::Publishable do
       it 'includes releaseData element from release tags' do
         releases = @p_xml.xpath('/publicObject/releaseData/release')
         expect(releases.map(&:inner_text)).to eq ['true', 'true']
-        expect(releases.map{ |r| r["to"]}).to eq ['Searchworks', 'Some_special_place']
+        expect(releases.map{ |r| r['to']}).to eq ['Searchworks', 'Some_special_place']
       end
 
       it 'does include a releaseData element when there is content inside it' do

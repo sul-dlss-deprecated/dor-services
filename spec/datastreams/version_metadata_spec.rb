@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Dor::VersionMetadataDS do
-  let(:dsxml)  { <<-XML
+  let(:dsxml) { <<-XML
     <versionMetadata objectId="druid:ab123cd4567">
     <version versionId="1" tag="1.0.0">
     <description>Initial version</description>
@@ -198,7 +198,7 @@ describe Dor::VersionMetadataDS do
 
   describe 'sync_then_increment_version' do
 
-    let(:five_versions_xml) {  <<-XML
+    let(:five_versions_xml) { <<-XML
       <versionMetadata objectId="druid:ab123cd4567">
         <version versionId="1" tag="1.0.0">
           <description>Initial Version</description>

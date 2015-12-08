@@ -104,7 +104,7 @@ module Dor
     def update_other_Id(type, new_val, val = nil)
       identityMetadata.ng_xml.search('//otherId[@name=\'' + type + '\']')
         .select { |node| val.nil? || node.content == val }
-        .each  { |node| node.content = new_val }
+        .each { |node| node.content = new_val }
         .any?
     end
 
@@ -195,7 +195,7 @@ module Dor
       normtag = normalize_tag(old_tag)
       identityMetadata.ng_xml.search('//tag')
         .select { |node| normalize_tag(node.content) == normtag }
-        .each  { |node| node.content = normalize_tag(new_tag)  }
+        .each { |node| node.content = normalize_tag(new_tag) }
         .any?
     end
 
@@ -215,11 +215,11 @@ module Dor
     def solrize_related_obj_titles(solr_doc, relationships, title_hash, union_field_name, nonhydrus_field_name, hydrus_field_name)
       # TODO: if you wanted to get a little fancier, you could also solrize a 2 level hierarchy and display using hierarchial facets, like
       # ["SOURCE", "SOURCE : TITLE"] (e.g. ["Hydrus", "Hydrus : Special Collections"], see (exploded) tags in IdentityMetadataDS#to_solr).
-      title_type = :symbol  # we'll get an _ssim because of the type
-      title_attrs = [:stored_searchable]  # we'll also get a _tesim from this attr
+      title_type = :symbol # we'll get an _ssim because of the type
+      title_attrs = [:stored_searchable] # we'll also get a _tesim from this attr
       relationships.each do |rel_node|
         rel_druid = rel_node['rdf:resource']
-        next unless rel_druid   # TODO: warning here would also be useful
+        next unless rel_druid # TODO: warning here would also be useful
         rel_druid = rel_druid.gsub('info:fedora/', '')
 
         # populate cache if necessary

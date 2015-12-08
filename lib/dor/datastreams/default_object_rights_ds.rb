@@ -34,7 +34,7 @@ module Dor
         xml.machine(:type => 'openDataCommons', :uri => '')
       }
     end
-    
+
     define_template :copyright do |xml|
       xml.copyright {
         xml.human
@@ -46,7 +46,7 @@ module Dor
         xml.human(type: 'useAndReproduction')
       }
     end
-    
+
     def self.xml_template
       Nokogiri::XML::Builder.new do |xml|
         xml.rightsMetadata {
@@ -97,7 +97,7 @@ module Dor
     def content
       ng_xml.human
     end
-    
+
     # Purge the XML of any empty or duplicate elements -- keeps <rightsMetadata> clean
     def normalize!
       ng_xml_will_change!
@@ -119,11 +119,14 @@ module Dor
         norm.remove_empty_attributes(doc.root)
         # cleanup ordering is important here
         doc.xpath('//machine/text()').each { |node| node.content = node.content.strip }
-        doc.xpath('//human').tap { |nodeset| norm.clean_linefeeds(nodeset) }
-        doc.xpath('//human').each { |node| norm.trim_text(node) }
-        doc.xpath('//human').each { |node| norm.remove_empty_nodes(node) }
+        doc.xpath('//human')
+          .tap { |nodeset| norm.clean_linefeeds(nodeset) }
+          .each do |node|
+            norm.trim_text(node)
+            norm.remove_empty_nodes(node)
+          end
         doc.xpath('/rightsMetadata/copyright').each { |node| norm.remove_empty_nodes(node) }
-        doc.xpath('/rightsMetadata/use').each { |node| norm.remove_empty_nodes(node) }        
+        doc.xpath('/rightsMetadata/use').each { |node| norm.remove_empty_nodes(node) }
       end
       content = doc.human
     end
