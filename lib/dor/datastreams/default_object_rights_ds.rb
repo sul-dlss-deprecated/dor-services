@@ -118,9 +118,12 @@ module Dor
         norm.remove_empty_attributes(doc.root)
         # cleanup ordering is important here
         doc.xpath('//machine/text()').each { |node| node.content = node.content.strip }
-        doc.xpath('//human').tap { |nodeset| norm.clean_linefeeds(nodeset) }
-        doc.xpath('//human').each { |node| norm.trim_text(node) }
-        doc.xpath('//human').each { |node| norm.remove_empty_nodes(node) }
+        doc.xpath('//human')
+          .tap { |nodeset| norm.clean_linefeeds(nodeset) }
+          .each do |node|
+            norm.trim_text(node)
+            norm.remove_empty_nodes(node)
+          end
         doc.xpath('/rightsMetadata/copyright').each { |node| norm.remove_empty_nodes(node) }
         doc.xpath('/rightsMetadata/use').each { |node| norm.remove_empty_nodes(node) }
       end
