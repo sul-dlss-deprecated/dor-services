@@ -44,7 +44,7 @@ describe Dor::RightsMetadataDS do
     end
     it 'has a Dor::RightsAuth dra_object' do
       expect(@rm.dra_object).to be_a(Dor::RightsAuth)
-      expect(@rm.dra_object.index_elements).to match a_hash_including(:primary => 'stanford', :errors => [])
+      expect(@rm.dra_object.index_elements).to match a_hash_including(:primary => 'world_qualified', :errors => [])
     end
   end
 
@@ -55,10 +55,12 @@ describe Dor::RightsMetadataDS do
     it 'should have correct primary' do
       doc = @item.to_solr
       expect(doc).to match a_hash_including(
-        'rights_primary_ssi'  => 'stanford',
+        'rights_primary_ssi'  => 'world_qualified',
         'metadata_source_ssi' => 'DOR',
         'title_tesim'         => ['Indianapolis 500'],
-        'rights_characteristics_ssim' => ['world_discover', 'has_group_rights', 'has_rule', 'group|stanford', 'world|no-download', 'profile:group1|world1']
+        'rights_characteristics_ssim' => include(
+          'world_discover', 'has_group_rights', 'has_rule', 'group|stanford', 'world_read', 'world|no-download', 'profile:group1|world1'
+        )
       )
       expect(doc).not_to include('rights_errors_ssim')  # don't include empties
     end
