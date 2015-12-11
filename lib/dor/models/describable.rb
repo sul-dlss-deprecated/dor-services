@@ -41,31 +41,27 @@ module Dor
 
     # Generates Dublin Core from the MODS in the descMetadata datastream using the LoC mods2dc stylesheet
     #    Should not be used for the Fedora DC datastream
-    # @raise [Exception] Raises an Exception if the generated DC is empty or has no children
+    # @raise [CrosswalkError] Raises an Exception if the generated DC is empty or has no children
+    # @return [Nokogiri::Doc] the DublinCore XML document object
     def generate_dublin_core
-      format = metadata_format
-      if format.nil?
-        raise CrosswalkError, "Unknown descMetadata namespace: #{metadata_namespace.inspect}"
-      end
-      xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/#{format}2dc.xslt")) )
+      raise CrosswalkError, "Unknown descMetadata namespace: #{metadata_namespace.inspect}" if metadata_format.nil?
+      xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/#{metadata_format}2dc.xslt")) )
       desc_md = descMetadata.ng_xml.dup(1)
       add_collection_reference(desc_md)
       dc_doc = xslt.transform(desc_md)
-      # Remove empty nodes
-      dc_doc.xpath('/oai_dc:dc/*[count(text()) = 0]').remove
-      if dc_doc.root.nil? || dc_doc.root.children.size == 0
-        raise CrosswalkError, "Dor::Item#generate_dublin_core produced incorrect xml:\n#{dc_doc.to_xml}"
-      end
+      dc_doc.xpath('/oai_dc:dc/*[count(text()) = 0]').remove # Remove empty nodes
+      raise CrosswalkError, "Dor::Item#generate_dublin_core produced incorrect xml (no root):\n#{dc_doc.to_xml}" if dc_doc.root.nil?
+      raise CrosswalkError, "Dor::Item#generate_dublin_core produced incorrect xml (no children):\n#{dc_doc.to_xml}" if dc_doc.root.children.size == 0
       dc_doc
     end
 
+    # @return [String] Public descriptive medatada XML
     def generate_public_desc_md
       doc = descMetadata.ng_xml.dup(1)
       add_collection_reference(doc)
       add_access_conditions(doc)
       add_constituent_relations(doc)
       doc.xpath('//comment()').remove
-
       new_doc = Nokogiri::XML(doc.to_xml) { |x| x.noblanks }
       new_doc.encoding = 'UTF-8'
       new_doc.to_xml
@@ -105,8 +101,10 @@ module Dor
       end
     end
 
-    # returns the desc metadata a relatedItem with information about the collection this object belongs to for use in published mods and mods to DC conversion
-    # @param [Nokogiri::XML::Document] doc A copy of the descriptiveMetadata of the object
+    # Adds to desc metadata a relatedItem with information about the collection this object belongs to.
+    # For use in published mods and mods-to-DC conversion.
+    # @param [Nokogiri::XML::Document] doc A copy of the descriptiveMetadata of the object, to be modified
+    # @return [Void]
     # @note this method modifies the passed in doc
     def add_collection_reference(doc)
       return unless methods.include? :public_relationships
@@ -149,9 +147,10 @@ module Dor
         related_item_node.add_child(type_node)
       end
     end
-    
+
     # expand constituent relations into relatedItem references -- see JUMBO-18
     # @param [Nokogiri::XML] doc public MODS XML being built
+    # @return [Void]
     def add_constituent_relations(doc)
 	    self.public_relationships.search('//rdf:RDF/rdf:Description/fedora:isConstituentOf',
 	                                     'fedora' => 'info:fedora/fedora-system:def/relations-external#',
@@ -164,33 +163,30 @@ module Dor
         relatedItem = doc.create_element 'relatedItem'
         relatedItem['type'] = 'host'
         relatedItem['displayLabel'] = 'Appears in'
-        
+
         # load the title from the parent's DC.title
         titleInfo = doc.create_element 'titleInfo'
         title = doc.create_element 'title'
         title.content = parent_item.datastreams['DC'].title.first
         titleInfo << title
         relatedItem << titleInfo
-        
+
         # point to the PURL for the parent
         location = doc.create_element 'location'
         url = doc.create_element 'url'
         url.content = "http://#{Dor::Config.stacks.document_cache_host}/#{druid.split(':').last}"
         location << url
         relatedItem << location
-        
+
         # finish up by adding relation to public MODS
         doc.root << relatedItem
       end
     end
-    
+
     def metadata_namespace
       desc_md = datastreams['descMetadata'].ng_xml
-      if desc_md.nil? || desc_md.root.nil? || desc_md.root.namespace.nil?
-        return nil
-      else
-        return desc_md.root.namespace.href
-      end
+      return nil if desc_md.nil? || desc_md.root.nil? || desc_md.root.namespace.nil?
+      desc_md.root.namespace.href
     end
 
     def metadata_format
@@ -278,10 +274,11 @@ module Dor
       false
     end
 
+    # @param [Boolean] force Overwrite existing XML
+    # @return [String] descMetadata.content XML
     def set_desc_metadata_using_label(force = false)
-      ds = descMetadata
-      unless force || ds.new?
-        raise 'Cannot proceed, there is already content in the descriptive metadata datastream: ' + ds.content.to_s
+      unless force || descMetadata.new?
+        raise 'Cannot proceed, there is already content in the descriptive metadata datastream: ' + descMetadata.content.to_s
       end
       label = self.label
       builder = Nokogiri::XML::Builder.new { |xml|
@@ -309,8 +306,7 @@ module Dor
     private
     # generic updater useful for updating things like title or subtitle which can only have a single occurance and must be present
     def update_simple_field(field, new_val)
-      ds_xml = descMetadata.ng_xml
-      ds_xml.search('//' + field, 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
+      descMetadata.ng_xml.search('//' + field, 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
         node.content = new_val
         return true
       end
