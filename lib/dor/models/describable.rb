@@ -254,6 +254,7 @@ module Dor
     def update_title(new_title)
       raise 'Descriptive metadata has no title to update!' unless update_simple_field('mods:mods/mods:titleInfo/mods:title', new_title)
     end
+
     def add_identifier(type, value)
       ds_xml = descMetadata.ng_xml
       ds_xml.search('//mods:mods', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
@@ -263,6 +264,7 @@ module Dor
         node.add_child(new_node)
       end
     end
+
     def delete_identifier(type, value = nil)
       ds_xml = descMetadata.ng_xml
       ds_xml.search('//mods:identifier', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
@@ -321,6 +323,5 @@ module Dor
             'abcdefghijklmnopqrstuvwxyz'
           ) = '#{value}' "
     end
-
   end
 end

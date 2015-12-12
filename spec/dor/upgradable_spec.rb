@@ -15,9 +15,7 @@ describe Dor::Upgradable do
       end
 
       class Baz < Bar
-        def datastreams
-          {}
-        end
+        def datastreams; {}; end
         def pid; 'baz'; end
       end
 

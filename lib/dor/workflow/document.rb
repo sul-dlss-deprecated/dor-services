@@ -18,10 +18,13 @@ module Workflow
         t.version(:path => {:attribute => 'version'})
       }
     end
+
     @@definitions = {}
+
     def initialize(node)
       self.ng_xml = Nokogiri::XML(node)
     end
+
     # is this an incomplete workflow with steps that have a priority > 0
     def expedited?
       processes.any? { |proc| !proc.completed? && proc.priority.to_i > 0 }

@@ -282,7 +282,7 @@ module Dor
     # @return [Nokogiri::HTML::Document] parsed XML for the druid or an empty document if no purl is found
     def get_xml_from_purl
       url = form_purl_url
-      handler = Proc.new do |exception, attempt_number, total_delay|
+      handler = proc do |exception, attempt_number, total_delay|
         # We assume a 404 means the document has never been published before and thus has no purl
         Dor.logger.warn "[Attempt #{attempt_number}] GET #{url} -- #{exception.class}: #{exception.message}; #{total_delay} seconds elapsed."
         raise exception unless exception.is_a? OpenURI::HTTPError

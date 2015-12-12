@@ -2,7 +2,6 @@ require 'json'
 require 'active_support/core_ext'
 
 module Dor
-
   class SearchService
 
     RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'"
@@ -119,5 +118,4 @@ module Dor
     end
 
   end
-
 end

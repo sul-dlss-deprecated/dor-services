@@ -88,6 +88,5 @@ module Dor
     # Following chart of processes on this consul page: https://consul.stanford.edu/display/chimera/Versioning+workflows
     alias_method :start_version,  :open_new_version
     alias_method :submit_version, :close_version
-
   end
 end

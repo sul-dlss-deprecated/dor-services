@@ -75,5 +75,4 @@ module Dor
       dor_services.url
     end
   end
-
 end

@@ -25,7 +25,7 @@ module Dor
       Workflow::Document.new(xml.to_s)
     end
 
-    alias :[] :get_workflow
+    alias_method :[], :get_workflow
 
     def ensure_xml_loaded
       ng_xml

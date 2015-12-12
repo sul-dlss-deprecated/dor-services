@@ -41,6 +41,7 @@ module Dor
       result.xpath('/contentMetadata/resource/file/checksum'                                    ).each { |n| n.remove }
       result
     end
+
     def add_file(file, resource_name)
       xml = ng_xml
       resource_nodes = xml.search('//resource[@id=\'' + resource_name + '\']')
@@ -188,6 +189,7 @@ module Dor
       self.content = xml.to_s
       save
     end
+
     def update_attributes(file_name, publish, shelve, preserve)
       xml = ng_xml
       file_node = xml.search('//file[@id=\'' + file_name + '\']').first
@@ -197,6 +199,7 @@ module Dor
       self.content = xml.to_s
       save
     end
+
     def update_file(file, old_file_id)
       xml = ng_xml
       file_node = xml.search('//file[@id=\'' + old_file_id + '\']').first
@@ -338,5 +341,4 @@ module Dor
       node.first
     end
   end
-
 end

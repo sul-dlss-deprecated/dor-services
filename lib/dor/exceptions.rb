@@ -1,5 +1,4 @@
 module Dor
-
   class Exception < ::StandardError; end
   class ParameterError < Exception; end
   class DuplicateIdError < Exception

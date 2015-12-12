@@ -1,7 +1,6 @@
 require 'cache'
 
 module Dor
-
   class MetadataError < Exception ; end
 
   #  class MetadataHandler
@@ -76,7 +75,6 @@ module Dor
     end
 
   end
-
 end
 
 Dir[File.join(File.dirname(__FILE__), 'metadata_handlers', '*.rb')].each { |handler_file|

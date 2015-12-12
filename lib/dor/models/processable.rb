@@ -236,5 +236,4 @@ module Dor
         d.strftime('%Y-%m-%d %I:%M%p')
     end
   end
-
 end

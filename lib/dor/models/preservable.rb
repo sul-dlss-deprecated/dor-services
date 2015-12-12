@@ -42,6 +42,5 @@ module Dor
       end
       builder.doc
     end
-
   end
 end

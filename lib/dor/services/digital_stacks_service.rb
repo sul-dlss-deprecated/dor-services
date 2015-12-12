@@ -2,7 +2,6 @@ require 'net/ssh'
 require 'net/sftp'
 
 module Dor
-
   class DigitalStacksService
 
     # Delete files from stacks that have change type 'deleted', 'copydeleted', or 'modified'
@@ -56,7 +55,6 @@ module Dor
         new_pathname = stacks_object_pathname.join(moab_file.other_path)
         rename_file(temp_pathname, new_pathname, moab_signature)
       end
-
     end
 
     # Rename a file, but only if it exists and has the expected signature
@@ -138,5 +136,4 @@ module Dor
       druid.prune!
     end
   end
-
 end

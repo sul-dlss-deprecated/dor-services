@@ -46,7 +46,6 @@ module Dor
     end
 
     def remove_collection(collection_or_druid)
-
       collection = case collection_or_druid
         when String
           Dor::Collection.find(collection_or_druid)

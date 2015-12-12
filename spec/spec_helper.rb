@@ -21,7 +21,6 @@ require 'vcr'
 # ::ENABLE_SOLR_UPDATES = true
 
 module Dor::SpecHelpers
-
   def stub_config
     @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__), 'fixtures')
     Dor::Config.push! do
@@ -56,7 +55,6 @@ module Dor::SpecHelpers
   def read_fixture(fname)
     File.read(File.join(@fixture_dir, fname))
   end
-
 end
 
 RSpec.configure do |config|

@@ -51,6 +51,5 @@ module Dor
       response = sdr_client[sdr_query].post(current_content, :content_type => 'application/xml')
       response
     end
-
   end
 end

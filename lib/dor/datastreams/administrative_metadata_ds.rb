@@ -116,5 +116,4 @@ class AdministrativeMetadataDS < ActiveFedora::OmDatastream
   end
 
 end
-
 end

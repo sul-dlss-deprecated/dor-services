@@ -26,7 +26,7 @@ namespace :doc do
 
   desc 'Remove generated documenation'
   task :clean do
-    rm_r doc_destination if File.exists?(doc_destination)
+    rm_r doc_destination if File.exist?(doc_destination)
   end
 
 end

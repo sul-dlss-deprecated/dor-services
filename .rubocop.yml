@@ -11,6 +11,12 @@ Style/SpaceBeforeBlockBraces:
   Exclude:
     - 'spec/**/*_spec.rb'
 
+Style/EmptyLineBetweenDefs:
+  AllowAdjacentOneLineDefs: true
+  Exclude:
+    - lib/dor/models/editable.rb
+    - lib/dor/models/governable.rb
+
 # Configuration parameters: AllowURI, URISchemes.
 Metrics/LineLength:
   Max: 200

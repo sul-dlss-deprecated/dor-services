@@ -1,5 +1,4 @@
 module Dor
-
   class VersionTag
     include Comparable
 

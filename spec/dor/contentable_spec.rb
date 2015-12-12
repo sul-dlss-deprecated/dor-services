@@ -12,6 +12,7 @@ class SpecNode
   def initialize(params = {})
     self.pid = params[:pid]
   end
+
   def internal_uri
     'info:fedora/' + pid.to_s
   end
