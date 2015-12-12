@@ -18,11 +18,6 @@ Lint/AmbiguousRegexpLiteral:
 Lint/AssignmentInCondition:
   Enabled: false
 
-# Offense count: 72
-# Cop supports --auto-correct.
-Lint/DeprecatedClassMethods:
-  Enabled: false
-
 # Offense count: 6
 Lint/HandleExceptions:
   Enabled: false
@@ -102,11 +97,6 @@ Metrics/PerceivedComplexity:
 Style/AccessorMethodName:
   Enabled: false
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/Alias:
-  Enabled: false
-
 # Offense count: 2
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedHashRocketStyle, EnforcedColonStyle, EnforcedLastArgumentHashStyle, SupportedLastArgumentHashStyles.
@@ -159,12 +149,6 @@ Style/Documentation:
 Style/DoubleNegation:
   Enabled: false
 
-# Offense count: 58
-# Cop supports --auto-correct.
-# Configuration parameters: AllowAdjacentOneLineDefs.
-Style/EmptyLineBetweenDefs:
-  Enabled: false
-
 # Offense count: 5
 # Cop supports --auto-correct.
 Style/EmptyLinesAroundAccessModifier:
@@ -180,23 +164,6 @@ Style/EmptyLinesAroundBlockBody:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Style/EmptyLinesAroundClassBody:
-  Enabled: false
-
-# Offense count: 7
-# Cop supports --auto-correct.
-Style/EmptyLinesAroundMethodBody:
-  Enabled: false
-
-# Offense count: 36
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/EmptyLinesAroundModuleBody:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/FirstParameterIndentation:
   Enabled: false
 
 # Offense count: 668
@@ -285,11 +252,6 @@ Style/PerlBackrefs:
 # Offense count: 2
 # Configuration parameters: NamePrefix, NamePrefixBlacklist.
 Style/PredicateName:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/Proc:
   Enabled: false
 
 # Offense count: 4

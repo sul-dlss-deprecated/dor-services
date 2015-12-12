@@ -1,7 +1,6 @@
 require 'pathname'
 
 module Dor
-
   # Remove all traces of the object's data files from the workspace and export areas
   class CleanupService
 
@@ -84,5 +83,4 @@ module Dor
       Dor::SearchService.solr.commit
     end
   end
-
 end

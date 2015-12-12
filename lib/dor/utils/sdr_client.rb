@@ -1,5 +1,4 @@
 module Sdr
-
   module Client
     class << self
 

@@ -46,7 +46,6 @@ module Dor
     # get the stack location based on the contentMetadata stacks attribute
     # or using the default value from the config file if it doesn't exist
     def get_stacks_location
-
       contentMetadataDS = datastreams['contentMetadata']
       unless contentMetadataDS.nil? || contentMetadataDS.stacks.length == 0
         stacks_location = contentMetadataDS.stacks[0]
@@ -54,7 +53,6 @@ module Dor
         raise 'stacks attribute for item: ' + id + ' contentMetadata should start with /. The current value is ' + stacks_location
       end
       Config.stacks.local_stacks_root # Default stacks
-
     end
   end
 end

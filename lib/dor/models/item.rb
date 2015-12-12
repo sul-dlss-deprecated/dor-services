@@ -11,7 +11,6 @@ module Dor
     include Contentable
     include Geoable
     include Releaseable
-
   end
 
   class Abstract < ::ActiveFedora::Base

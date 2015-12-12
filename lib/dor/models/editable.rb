@@ -1,5 +1,4 @@
 module Dor
-
   ## This is basically used just by APOs.  Arguably "editable" is the wrong name.
   module Editable
     extend ActiveSupport::Concern

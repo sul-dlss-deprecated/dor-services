@@ -1,5 +1,4 @@
 module Dor
-
   class MergeService
 
     def self.merge_into_primary(primary_druid, secondary_druids, tag, logger = nil)

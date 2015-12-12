@@ -20,6 +20,5 @@ module Dor
         }
       end.doc
     end
-
   end
 end

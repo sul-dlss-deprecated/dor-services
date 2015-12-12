@@ -4,7 +4,6 @@ require 'jhove_service'
 require 'dor-services'
 
 module Dor
-
   class TechnicalMetadataService
 
     # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
@@ -206,5 +205,4 @@ module Dor
     end
 
   end
-
 end

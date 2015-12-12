@@ -1,6 +1,5 @@
 module Dor
   module Upgradable
-
     # The Upgradable mixin is responsible for making sure all DOR objects,
     # concerns, and datastreams know how to upgrade themselves to the latest
     # Chimera/DOR content standards.
