@@ -27,7 +27,6 @@ describe Dor::ContentMetadataDS do
     </resource>
     </contentMetadata>'
     allow(Dor::Item).to receive(:find).and_return(@item)
-    # allow(Dor::Item).to receive(:save).and_return(true)
     @file = {
       :name     => 'new_file.jp2',
       :shelve   => 'no',
@@ -37,18 +36,53 @@ describe Dor::ContentMetadataDS do
     }
     @files = [@file]
     @cm = @item.contentMetadata
-    # expect(@cm).not_to receive(:save)
+    expect(@cm).not_to receive(:save) # IMPORTANT: if you want save (and reindex) to happen, you have to call it yourself!
   end
 
   describe 'add_resource' do
     it 'should add a resource with default type="file"' do
-      @cm.add_resource(@files, 'resource', 1)
+      ret = @cm.add_resource(@files, 'resource', 1)
+      expect(ret).to be_a(Nokogiri::XML::Node)
       nodes = @cm.ng_xml.search('//resource[@id=\'resource\']')
       expect(nodes.length).to eq(1)
       node = nodes.first
       expect(node['id'      ]).to eq('resource')
       expect(node['type'    ]).to eq('file')
       expect(node['sequence']).to eq('1')
+      resource = node.at_xpath('./file')
+      expect(resource.attr('id')  ).to eq(@file[:name])
+      expect(resource.attr('size')).to eq(@file[:size])
+      [:shelve, :publish, :preserve].each { |x| expect(resource.attr(x.to_s)).to eq(@file[x]) }
+    end
+
+    it 'should raise error if same ID resource is added twice' do
+      @cm.add_resource(@files, 'resource', 1)
+      expect{ @cm.add_resource(@files, 'resource', 1) }.to raise_error StandardError
+    end
+
+    it 'should add multiple resources' do
+      more_files = [
+        @file.merge(:name => 'new_file.tiff', :size => '23456', :preserve => 'yes'),
+        @file.merge(:name => 'new_file_thumb.gif', :size => '678901', :publish => 'yes')
+      ]
+      ret = @cm.add_resource(more_files, 'resource', 1)
+      expect(ret).to be_a(Nokogiri::XML::Node)
+      nodes = @cm.ng_xml.search('//resource[@id=\'resource\']')
+      expect(nodes.length).to eq(1)
+      node = nodes.first
+      expect(node['id'      ]).to eq('resource')
+      expect(node['type'    ]).to eq('file')
+      expect(node['sequence']).to eq('1')
+      resource = node.xpath('./file')
+      expect(resource.size).to eq(2)
+      expect(resource.first.attr('id')  ).to eq(more_files.first[:name])
+      expect(resource.first.attr('size')).to eq(more_files.first[:size])
+      expect(resource.last.attr('id')   ).to eq(more_files.last[:name] )
+      expect(resource.last.attr('size') ).to eq(more_files.last[:size] )
+      [:shelve, :publish, :preserve].each do |x|
+        expect(resource.first.attr(x.to_s)).to eq(more_files.first[x])
+        expect(resource.last.attr(x.to_s) ).to eq(more_files.last[x])
+      end
     end
 
     it 'should add a resource with a type="image"' do
@@ -56,8 +90,8 @@ describe Dor::ContentMetadataDS do
       nodes = @cm.ng_xml.search('//resource[@id=\'resource\']')
       expect(nodes.length).to eq(1)
       node = nodes.first
-      expect(node['id']      ).to eq('resource')
-      expect(node['type']    ).to eq('image')
+      expect(node['id'      ]).to eq('resource')
+      expect(node['type'    ]).to eq('image')
       expect(node['sequence']).to eq('1')
     end
 
@@ -72,6 +106,7 @@ describe Dor::ContentMetadataDS do
       end
     end
   end
+
   describe 'remove_resource' do
     it 'should remove the only resource' do
       @cm.remove_resource('0001')
@@ -105,6 +140,7 @@ describe Dor::ContentMetadataDS do
       expect(new_file['size'    ]).to eq('12345')
     end
   end
+
   describe 'update_file' do
     it 'should modify an existing file record' do
       @cm.update_file(@file, 'gw177fc7976_05_0001.jp2')
@@ -155,6 +191,7 @@ describe Dor::ContentMetadataDS do
       skip 'No expectation defined!'
     end
   end
+
   describe 'to_solr' do
     before :each do
       @doc = @cm.to_solr
@@ -167,7 +204,7 @@ describe Dor::ContentMetadataDS do
         'content_file_count_itsi'         => 3,
         'image_resource_count_itsi'       => 1,
         'first_shelved_image_ss'          => 'gw177fc7976_05_0001.jp2',
-        'preserved_size_dbtsi'             => 86774303
+        'preserved_size_dbtsi'            => 86774303
       }.each {|k, v| expect(@doc[k]).to eq(v) }
     end
   end
