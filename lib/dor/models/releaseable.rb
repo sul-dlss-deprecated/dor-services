@@ -208,7 +208,7 @@ module Dor
         what_correct = true if attrs[:what] == allowed_what_value
       end
       raise ArgumentError, ':what must be self or collection' unless what_correct
-      raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag
+      raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag # rubocop:disable Style/DoubleNegation
       validate_tag_format(attrs[:tag]) unless attrs[:tag].nil? # Will Raise exception if invalid tag
       true
     end
@@ -253,7 +253,7 @@ module Dor
         what_correct = true if attrs[:what] == allowed_what_value
       end
       raise ArgumentError, ':what must be self or collection' unless what_correct
-      raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag
+      raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag # rubocop:disable Style/DoubleNegation
       raise ArgumentError, ':displayType must be passed in as a String' unless attrs[:displayType].class == String
 
       validate_tag_format(attrs[:tag]) unless attrs[:tag].nil? # Will Raise exception if invalid tag

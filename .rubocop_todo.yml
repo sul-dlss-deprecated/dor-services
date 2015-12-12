@@ -230,11 +230,6 @@ Style/ClosingParenthesisIndentation:
 Style/Documentation:
   Enabled: false
 
-# Offense count: 2
-Style/DoubleNegation:
-  Exclude:
-    - 'lib/dor/models/releaseable.rb'
-
 # Offense count: 121
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
