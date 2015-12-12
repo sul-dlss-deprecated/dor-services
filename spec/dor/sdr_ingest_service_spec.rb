@@ -165,7 +165,7 @@ describe Dor::SdrIngestService do
     metadata_dir = double(Pathname)
     druid = 'druid:ab123cd4567'
     version_id = 2
-    version_inventory = Moab::FileInventory.new()
+    version_inventory = Moab::FileInventory.new
     version_inventory.groups << Moab::FileGroup.new(:group_id => 'content')
     metadata_group = Moab::FileGroup.new(:group_id => 'metadata')
     expect(Dor::SdrIngestService).to receive(:get_content_inventory).with(metadata_dir, druid, version_id).and_return(version_inventory)

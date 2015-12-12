@@ -129,7 +129,7 @@ module Dor
       roleMetadata.ng_xml.search('/roleMetadata/role').each do |role|
         roles[role['type']] = []
         role.search('identifier').each do |entity|
-          roles[role['type']] << entity['type'] + ':' + entity.text()
+          roles[role['type']] << entity['type'] + ':' + entity.text
         end
       end
       roles
@@ -305,7 +305,7 @@ module Dor
     # set a single default workflow
     # @param wf [String] the name of the workflow, ex. 'digitizationWF'
     def default_workflow=(wf)
-      fail ArgumentError, "Must have a valid workflow for default" if wf.blank?
+      fail ArgumentError, 'Must have a valid workflow for default' if wf.blank?
       xml = administrativeMetadata.ng_xml
       nodes = xml.search('//registration/workflow')
       if nodes.first
@@ -327,7 +327,7 @@ module Dor
       agreement_object ? agreement_object.pid : ''
     end
     def agreement=(val)
-      fail ArgumentError, "agreement must have a valid druid" if val.blank?
+      fail ArgumentError, 'agreement must have a valid druid' if val.blank?
       self.agreement_object = Dor::Item.find val.to_s, :cast => true
     end
   end

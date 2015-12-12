@@ -38,7 +38,7 @@ XML
     expect(subject.ng_xml.at_xpath('/rightsMetadata/access[@type="discover"]/machine/world')).to be_a(Nokogiri::XML::Node)
     expect(subject.ng_xml.at_xpath('/rightsMetadata/access[@type="read"]/machine/world')).to be_a(Nokogiri::XML::Node)
   end
-  
+
   it 'understands terms of an empty rightsMetadata' do
     subject.content = '<rightsMetadata/>'
     subject.normalize!
@@ -49,7 +49,7 @@ XML
     expect(subject.open_data_commons).to eq([])
     expect(subject.open_data_commons_human).to eq([])
   end
-  
+
   it 'normalizes use element XML' do
     expect(subject.ng_xml.xpath('/rightsMetadata/use').length).to eq(2)
     subject.normalize!

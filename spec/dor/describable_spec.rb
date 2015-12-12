@@ -282,7 +282,7 @@ describe Dor::Describable do
 
       it 'adds a relatedItem node for the collection if the item is a member of a collection' do
         @xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']').each do |node|
-          node.parent.remove()
+          node.parent.remove
         end
         @item.add_collection_reference(@xml)
         expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@xml)
@@ -538,7 +538,7 @@ describe Dor::Describable do
   describe 'set_desc_metadata_using_label' do
     it 'should create basic mods using the object label' do
       allow(@obj.datastreams['descMetadata']).to receive(:content).and_return ''
-      @obj.set_desc_metadata_using_label()
+      @obj.set_desc_metadata_using_label
       expect(@obj.datastreams['descMetadata'].ng_xml).to be_equivalent_to <<-XML
       <?xml version="1.0"?>
       <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
@@ -551,7 +551,7 @@ describe Dor::Describable do
     it 'should throw an exception if there is content in the descriptive metadata stream' do
       # @obj.stub(:descMetadata).and_return(ActiveFedora::OmDatastream.new)
       allow(@obj.descMetadata).to receive(:new?).and_return(false)
-      expect{@obj.set_desc_metadata_using_label()}.to raise_error(StandardError)
+      expect{@obj.set_desc_metadata_using_label}.to raise_error(StandardError)
     end
     it 'should run if there is content in the descriptive metadata stream and force is true' do
       @obj.set_desc_metadata_using_label(false)
@@ -588,7 +588,7 @@ describe Dor::Describable do
   describe 'to_solr' do
     before :each do
       allow(@obj).to receive(:milestones).and_return({})
-      @doc = @obj.to_solr()
+      @doc = @obj.to_solr
       expect(@doc).not_to be_nil
     end
     it 'should include values from stanford_mods' do
@@ -617,7 +617,7 @@ describe Dor::Describable do
     before :each do
       allow(@obj).to receive(:milestones).and_return({})
       @obj.datastreams['descMetadata'].content = read_fixture('bs646cd8717_mods.xml')
-      @doc = @obj.to_solr()
+      @doc = @obj.to_solr
       expect(@doc).not_to be_nil
     end
     it 'searchworks date-fu: temporal periods and pub_dates' do

@@ -34,7 +34,7 @@ module Dor
     # @return [Object] the ActiveFedora-modeled object
     def find(pid, opts = {})
       opts[:rows] = 1 # we know we are going to just pay attention to the .first doc anyway
-      find_all(%{id:"#{pid}"}, opts).first || load_instance(pid)
+      find_all(%(id:"#{pid}"), opts).first || load_instance(pid)
     end
 
     # TODO: return enumerable and lazy load_instance

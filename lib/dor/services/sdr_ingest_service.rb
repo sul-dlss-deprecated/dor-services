@@ -76,7 +76,7 @@ module Dor
       ds = (ds_name == 'relationshipMetadata' ? 'RELS-EXT' : ds_name)
       if dor_item.datastreams.keys.include?(ds) && !dor_item.datastreams[ds].new?
         return dor_item.datastreams[ds].content
-      elsif (required == 'optional')
+      elsif required == 'optional'
         return nil
       else
         raise "required datastream #{ds_name} not found in DOR"
@@ -95,7 +95,7 @@ module Dor
     # @param [Integer] expected The version number that should be in the file
     # @param [Integer] found The version number that is actually in the file
     def self.verify_version_id(pathname, expected, found)
-      raise "Version mismatch in #{pathname}, expected #{expected}, found #{found}" unless (expected == found)
+      raise "Version mismatch in #{pathname}, expected #{expected}, found #{found}" unless expected == found
       true
     end
 

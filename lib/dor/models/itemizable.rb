@@ -10,7 +10,7 @@ module Dor
     end
 
     DIFF_FILENAME = 'cm_inv_diff'
-    DIFF_QUERY = DIFF_FILENAME.gsub('_', '-')
+    DIFF_QUERY = DIFF_FILENAME.tr('_', '-')
 
     # Deletes all cm_inv_diff files in the workspace for the Item
     def clear_diff_cache
@@ -31,7 +31,7 @@ module Dor
       if Dor::Config.stacks.local_workspace_root.nil?
         raise Dor::ParameterError, 'Missing Dor::Config.stacks.local_workspace_root'
       end
-      unless %w{all shelve preserve publish}.include?(subset.to_s)
+      unless %w(all shelve preserve publish).include?(subset.to_s)
         raise Dor::ParameterError, "Invalid subset value: #{subset}"
       end
 

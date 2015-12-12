@@ -21,36 +21,36 @@ describe 'Dor::SimpleDublinCoreDs' do
     end
 
     context 'sort fields' do
-    it 'should only produce single valued fields' do
-      @xml = '<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/">
-        <dc:title>title</dc:title>
-        <dc:title>title2</dc:title>
-        <dc:creator>creator</dc:creator>
-        <dc:creator>creator2</dc:creator>
-        <dc:identifier>identifier</dc:identifier>
-      </oai_dc:dc>'
+      it 'should only produce single valued fields' do
+        @xml = '<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+          <dc:title>title</dc:title>
+          <dc:title>title2</dc:title>
+          <dc:creator>creator</dc:creator>
+          <dc:creator>creator2</dc:creator>
+          <dc:identifier>identifier</dc:identifier>
+        </oai_dc:dc>'
 
-      dublin = Dor::SimpleDublinCoreDs.from_xml(@xml)
-      expect(dublin.to_solr[Solrizer.solr_name('dc_title', :stored_sortable)]).to be_a_kind_of(String)
-      expect(dublin.to_solr[Solrizer.solr_name('dc_title', :stored_sortable)]).to eq 'title'
-      expect(dublin.to_solr[Solrizer.solr_name('dc_creator', :stored_sortable)]).to be_a_kind_of(String)
-      expect(dublin.to_solr[Solrizer.solr_name('dc_creator', :stored_sortable)]).to eq 'creator'
-    end
+        dublin = Dor::SimpleDublinCoreDs.from_xml(@xml)
+        expect(dublin.to_solr[Solrizer.solr_name('dc_title', :stored_sortable)]).to be_a_kind_of(String)
+        expect(dublin.to_solr[Solrizer.solr_name('dc_title', :stored_sortable)]).to eq 'title'
+        expect(dublin.to_solr[Solrizer.solr_name('dc_creator', :stored_sortable)]).to be_a_kind_of(String)
+        expect(dublin.to_solr[Solrizer.solr_name('dc_creator', :stored_sortable)]).to eq 'creator'
+      end
 
-    it 'should create sort fields for each type of identifier' do
-      @xml = '<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/">
-        <dc:identifier>druid:identifier</dc:identifier>
-        <dc:identifier>druid:identifier2</dc:identifier>
-        <dc:identifier>uuid:identifier2</dc:identifier>
-        <dc:identifier>uuid:identifierxyz</dc:identifier>
-      </oai_dc:dc>'
+      it 'should create sort fields for each type of identifier' do
+        @xml = '<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+          <dc:identifier>druid:identifier</dc:identifier>
+          <dc:identifier>druid:identifier2</dc:identifier>
+          <dc:identifier>uuid:identifier2</dc:identifier>
+          <dc:identifier>uuid:identifierxyz</dc:identifier>
+        </oai_dc:dc>'
 
-      dublin = Dor::SimpleDublinCoreDs.from_xml(@xml)
-      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_druid', :stored_sortable)]).to be_a_kind_of(String)
-      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_druid', :stored_sortable)]).to eq 'identifier'
-      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_uuid', :stored_sortable)]).to be_a_kind_of(String)
-      expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_uuid', :stored_sortable)]).to eq 'identifier2'
-    end
+        dublin = Dor::SimpleDublinCoreDs.from_xml(@xml)
+        expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_druid', :stored_sortable)]).to be_a_kind_of(String)
+        expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_druid', :stored_sortable)]).to eq 'identifier'
+        expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_uuid', :stored_sortable)]).to be_a_kind_of(String)
+        expect(dublin.to_solr[Solrizer.solr_name('dc_identifier_uuid', :stored_sortable)]).to eq 'identifier2'
+      end
     end
   end
 end

@@ -183,6 +183,7 @@ module Dor
       end
 
       private
+
       def ids_to_hash(ids)
         return nil if ids.nil?
         Hash[Array(ids).map { |id| id.split(/:/) }]

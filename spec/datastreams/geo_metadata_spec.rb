@@ -8,7 +8,7 @@ describe Dor::GeoMetadataDS do
   before :each do
     stub_config
     @doc = {}
-    @test_keys = %w{co2_pipe oil_gas_fields}
+    @test_keys = %w(co2_pipe oil_gas_fields)
     @test_keys.each do |k|
       @doc[k] = Dor::GeoMetadataDS.from_xml(read_fixture "geoMetadata_#{k}.xml")
     end

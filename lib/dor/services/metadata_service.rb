@@ -68,6 +68,7 @@ module Dor
       end
 
       private
+
       def handlers
         @handlers ||= {}
       end

@@ -63,7 +63,7 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
   end
 
   def configuration=(hash)
-    self.ng_xml = Nokogiri::XML(%{<workflow-def id="#{hash['name']}" repository="#{hash['repository']}"/>})
+    self.ng_xml = Nokogiri::XML(%(<workflow-def id="#{hash['name']}" repository="#{hash['repository']}"/>))
     i = 0
     hash.each_pair do |k, v|
       add_process(v.merge({:name => k, :sequence => i += 1})) if v.is_a?(Hash)

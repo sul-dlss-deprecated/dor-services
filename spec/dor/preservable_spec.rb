@@ -38,10 +38,10 @@ describe Dor::Preservable do
       agent = wp_xml.xpath('/provenanceMetadata/agent').first
       expect(agent.name).to eql('agent')
       expect(agent[:name]).to eql('DOR')
-      what = agent.first_element_child()
+      what = agent.first_element_child
       expect(what.name).to eql('what')
       expect(what[:object]).to eql(druid)
-      event = what.first_element_child()
+      event = what.first_element_child
       expect(event.name).to eql('event')
       expect(event[:who]).to eql("DOR-#{workflow_id}")
       expect(event.content).to eql(event_text)

@@ -26,11 +26,11 @@ describe Dor::SearchService do
   context '.risearch' do
     before :each do
       @druids = [['druid:rk464yc0651', 'druid:xx122nh4588', 'druid:mj151qw9093', 'druid:mn144df7801', 'druid:rx565mb6270'], ['druid:tx361mw6047', 'druid:cm977wg2520', 'druid:tk695fn1971', 'druid:jk486qb3656', 'druid:cd252xn6059'], []]
-      @responses = @druids.collect { |group| { :body => %{"object"\n} + group.collect { |d| "info:fedora/#{d}" }.join("\n") } }
-      stub_request(:post, 'http://fedora.edu/fedora/risearch').
-        to_return(:body => @responses[0][:body]).then.
-        to_return(:body => @responses[1][:body]).then.
-        to_return(:body => @responses[2][:body])
+      @responses = @druids.collect { |group| { :body => %("object"\n) + group.collect { |d| "info:fedora/#{d}" }.join("\n") } }
+      stub_request(:post, 'http://fedora.edu/fedora/risearch')
+        .to_return(:body => @responses[0][:body]).then
+        .to_return(:body => @responses[1][:body]).then
+        .to_return(:body => @responses[2][:body])
     end
 
     it 'should execute a proper resource index search' do
@@ -59,9 +59,9 @@ describe Dor::SearchService do
   context '.query' do
     before :each do
       ruby_responses = [
-        %{{'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'0','q'=>'#{Solrizer.solr_name('dor_id', :stored_searchable)}:"barcode:9191919191"','wt'=>'ruby','rows'=>'14'}},'response'=>{'numFound'=>14,'start'=>0,'docs'=>[{'id'=>'druid:ab123cd4567'},{'id'=>'druid:pq873fk5453'},{'id'=>'druid:qd999th4309'},{'id'=>'druid:zq003hm6082'},{'id'=>'druid:qr731mn8989'},{'id'=>'druid:vs117gg5172'},{'id'=>'druid:br354rp8638'},{'id'=>'druid:bw800dd6481'},{'id'=>'druid:mb617xf5467'},{'id'=>'druid:wq764nz3597'},{'id'=>'druid:hb776qq7561'},{'id'=>'druid:tj809bn3855'},{'id'=>'druid:yn121yc8869'},{'id'=>'druid:yw068nb3128'}]}}},
-        %{{'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'14','q'=>'#{Solrizer.solr_name('dor_id', :stored_searchable)}:"barcode:9191919191"','wt'=>'ruby','rows'=>'14'}},'response'=>{'numFound'=>11,'start'=>14,'docs'=>[{'id'=>'druid:pr800pd9407'},{'id'=>'druid:hd475xb8847'},{'id'=>'druid:rr637mh2957'},{'id'=>'druid:kz965vx0963'},{'id'=>'druid:th985vs8378'},{'id'=>'druid:sm255pn4484'},{'id'=>'druid:sy394vn4752'},{'id'=>'druid:qs376gx5152'},{'id'=>'druid:dv587vy1434'},{'id'=>'druid:db089gk0831'},{'id'=>'druid:ss837xm7768'}]}}},
-        %{{'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'28','q'=>'#{Solrizer.solr_name('dor_id', :stored_searchable)}:"barcode:9191919191"','wt'=>'ruby','rows'=>'14'}},'response'=>{'numFound'=>0,'docs'=>[]}}}
+        %({'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'0','q'=>'#{Solrizer.solr_name('dor_id', :stored_searchable)}:"barcode:9191919191"','wt'=>'ruby','rows'=>'14'}},'response'=>{'numFound'=>14,'start'=>0,'docs'=>[{'id'=>'druid:ab123cd4567'},{'id'=>'druid:pq873fk5453'},{'id'=>'druid:qd999th4309'},{'id'=>'druid:zq003hm6082'},{'id'=>'druid:qr731mn8989'},{'id'=>'druid:vs117gg5172'},{'id'=>'druid:br354rp8638'},{'id'=>'druid:bw800dd6481'},{'id'=>'druid:mb617xf5467'},{'id'=>'druid:wq764nz3597'},{'id'=>'druid:hb776qq7561'},{'id'=>'druid:tj809bn3855'},{'id'=>'druid:yn121yc8869'},{'id'=>'druid:yw068nb3128'}]}}),
+        %({'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'14','q'=>'#{Solrizer.solr_name('dor_id', :stored_searchable)}:"barcode:9191919191"','wt'=>'ruby','rows'=>'14'}},'response'=>{'numFound'=>11,'start'=>14,'docs'=>[{'id'=>'druid:pr800pd9407'},{'id'=>'druid:hd475xb8847'},{'id'=>'druid:rr637mh2957'},{'id'=>'druid:kz965vx0963'},{'id'=>'druid:th985vs8378'},{'id'=>'druid:sm255pn4484'},{'id'=>'druid:sy394vn4752'},{'id'=>'druid:qs376gx5152'},{'id'=>'druid:dv587vy1434'},{'id'=>'druid:db089gk0831'},{'id'=>'druid:ss837xm7768'}]}}),
+        %({'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'28','q'=>'#{Solrizer.solr_name('dor_id', :stored_searchable)}:"barcode:9191919191"','wt'=>'ruby','rows'=>'14'}},'response'=>{'numFound'=>0,'docs'=>[]}})
       ]
       stub_request(:get, "http://solr.edu/solrizer/select?fl=id&q=#{Solrizer.solr_name('dor_id', :stored_searchable)}%3A%22barcode%3A9191919191%22&rows=14&start=0&wt=ruby").to_return(:body => ruby_responses[0])
       stub_request(:get, "http://solr.edu/solrizer/select?fl=id&q=#{Solrizer.solr_name('dor_id', :stored_searchable)}%3A%22barcode%3A9191919191%22&rows=14&start=14&wt=ruby").to_return(:body => ruby_responses[1])
@@ -88,8 +88,8 @@ describe Dor::SearchService do
 
     it 'should look up an object based on any of its IDs' do
       ruby_responses = [
-        %{{'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'0','q'=>'dor_id_t:"barcode:9191919191"','wt'=>'ruby','rows'=>'1000'}},'response'=>{'numFound'=>25,'start'=>0,'docs'=>[{'id'=>'#{@pid}'},{'id'=>'druid:pq873fk5453'},{'id'=>'druid:qd999th4309'},{'id'=>'druid:zq003hm6082'},{'id'=>'druid:qr731mn8989'},{'id'=>'druid:vs117gg5172'},{'id'=>'druid:br354rp8638'},{'id'=>'druid:bw800dd6481'},{'id'=>'druid:mb617xf5467'},{'id'=>'druid:wq764nz3597'},{'id'=>'druid:hb776qq7561'},{'id'=>'druid:tj809bn3855'},{'id'=>'druid:yn121yc8869'},{'id'=>'druid:yw068nb3128'},{'id'=>'druid:pr800pd9407'},{'id'=>'druid:hd475xb8847'},{'id'=>'druid:rr637mh2957'},{'id'=>'druid:kz965vx0963'},{'id'=>'druid:th985vs8378'},{'id'=>'druid:sm255pn4484'},{'id'=>'druid:sy394vn4752'},{'id'=>'druid:qs376gx5152'},{'id'=>'druid:dv587vy1434'},{'id'=>'druid:db089gk0831'},{'id'=>'druid:ss837xm7768'}]}}},
-        %{{'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'25','q'=>'dor_id_t:"barcode:9191919191"','wt'=>'ruby','rows'=>'1000'}},'response'=>{'numFound'=>25,'start'=>25,'docs'=>[]}}}
+        %({'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'0','q'=>'dor_id_t:"barcode:9191919191"','wt'=>'ruby','rows'=>'1000'}},'response'=>{'numFound'=>25,'start'=>0,'docs'=>[{'id'=>'#{@pid}'},{'id'=>'druid:pq873fk5453'},{'id'=>'druid:qd999th4309'},{'id'=>'druid:zq003hm6082'},{'id'=>'druid:qr731mn8989'},{'id'=>'druid:vs117gg5172'},{'id'=>'druid:br354rp8638'},{'id'=>'druid:bw800dd6481'},{'id'=>'druid:mb617xf5467'},{'id'=>'druid:wq764nz3597'},{'id'=>'druid:hb776qq7561'},{'id'=>'druid:tj809bn3855'},{'id'=>'druid:yn121yc8869'},{'id'=>'druid:yw068nb3128'},{'id'=>'druid:pr800pd9407'},{'id'=>'druid:hd475xb8847'},{'id'=>'druid:rr637mh2957'},{'id'=>'druid:kz965vx0963'},{'id'=>'druid:th985vs8378'},{'id'=>'druid:sm255pn4484'},{'id'=>'druid:sy394vn4752'},{'id'=>'druid:qs376gx5152'},{'id'=>'druid:dv587vy1434'},{'id'=>'druid:db089gk0831'},{'id'=>'druid:ss837xm7768'}]}}),
+        %({'responseHeader'=>{'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'25','q'=>'dor_id_t:"barcode:9191919191"','wt'=>'ruby','rows'=>'1000'}},'response'=>{'numFound'=>25,'start'=>25,'docs'=>[]}})
       ]
       id = 'barcode:9191919191'
       stub_request(:get, "http://solr.edu/solrizer/select?fl=id&q=#{Solrizer.solr_name('identifier', :stored_searchable)}%3A%22barcode%3A9191919191%22&rows=1000&start=0&wt=ruby").to_return(:body => ruby_responses[0])
