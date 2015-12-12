@@ -82,7 +82,7 @@ module Dor
     def set_read_rights(rights)
       raise(ArgumentError, "Argument '#{rights}' is not a recognized value") unless %w(world stanford none dark).include? rights
       rights_xml = ng_xml
-      if (rights_xml.search('//rightsMetadata/access[@type=\'read\']').length == 0)
+      if rights_xml.search('//rightsMetadata/access[@type=\'read\']').length == 0
         raise('The rights metadata stream doesnt contain an entry for machine read permissions. Consider populating it from the APO before trying to change it.')
       end
       label = rights == 'dark' ? 'none' : 'world'
@@ -116,7 +116,7 @@ module Dor
       solr_doc['rights_errors_ssim'] = dra.index_elements[:errors] if dra.index_elements[:errors].size > 0
       solr_doc['rights_characteristics_ssim'] = dra.index_elements[:terms] if dra.index_elements[:terms].size > 0
       # suppress empties
-      %w[use_statement_ssim copyright_ssim].each do |key|
+      %w(use_statement_ssim copyright_ssim).each do |key|
         solr_doc[key] = solr_doc[key].reject { |val| val.nil? || val == '' }.flatten unless solr_doc[key].nil?
       end
       solr_doc

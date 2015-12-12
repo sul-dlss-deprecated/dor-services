@@ -34,7 +34,7 @@ module Dor
         xml.machine(:type => 'openDataCommons', :uri => '')
       }
     end
-    
+
     define_template :copyright do |xml|
       xml.copyright {
         xml.human
@@ -46,7 +46,7 @@ module Dor
         xml.human(type: 'useAndReproduction')
       }
     end
-    
+
     def self.xml_template
       Nokogiri::XML::Builder.new do |xml|
         xml.rightsMetadata {
@@ -76,10 +76,9 @@ module Dor
 
     # Ensures that the template is present for the given term
     def initialize_term!(term)
-      if find_by_terms(term).length < 1
-        ng_xml_will_change!
-        add_child_node(ng_xml.root, term)
-      end
+      return unless find_by_terms(term).length < 1
+      ng_xml_will_change!
+      add_child_node(ng_xml.root, term)
     end
 
     # Assigns the defaultObjectRights object's term with the given value. Supports setting value to nil
@@ -97,7 +96,7 @@ module Dor
     def content
       ng_xml.human
     end
-    
+
     # Purge the XML of any empty or duplicate elements -- keeps <rightsMetadata> clean
     def normalize!
       ng_xml_will_change!
@@ -123,9 +122,9 @@ module Dor
         doc.xpath('//human').each { |node| norm.trim_text(node) }
         doc.xpath('//human').each { |node| norm.remove_empty_nodes(node) }
         doc.xpath('/rightsMetadata/copyright').each { |node| norm.remove_empty_nodes(node) }
-        doc.xpath('/rightsMetadata/use').each { |node| norm.remove_empty_nodes(node) }        
+        doc.xpath('/rightsMetadata/use').each { |node| norm.remove_empty_nodes(node) }
       end
-      content = doc.human
+      self.content = doc.human
     end
   end
 end

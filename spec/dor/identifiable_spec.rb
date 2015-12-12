@@ -106,12 +106,12 @@ describe Dor::Identifiable do
   describe 'add_tag' do
     it 'should add a new tag' do
       item.add_tag('sometag:someval')
-      expect(item.identityMetadata.tags().include?('sometag : someval')).to be_truthy
+      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_truthy
       expect(item.identityMetadata).to be_changed
     end
     it 'should raise an exception if there is an existing tag like it' do
       item.add_tag('sometag:someval')
-      expect(item.identityMetadata.tags().include?('sometag : someval')).to be_truthy
+      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_truthy
       expect {item.add_tag('sometag: someval')}.to raise_error(RuntimeError)
     end
   end
@@ -119,10 +119,10 @@ describe Dor::Identifiable do
   describe 'update_tag' do
     it 'should update a tag' do
       item.add_tag('sometag:someval')
-      expect(item.identityMetadata.tags().include?('sometag : someval')).to be_truthy
+      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_truthy
       expect(item.update_tag('sometag :someval', 'new :tag')).to be_truthy
-      expect(item.identityMetadata.tags().include?('sometag : someval')).to be_falsey
-      expect(item.identityMetadata.tags().include?('new : tag')).to be_truthy
+      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_falsey
+      expect(item.identityMetadata.tags.include?('new : tag')).to be_truthy
       expect(item.identityMetadata).to be_changed
     end
     it 'should return false if there is no matching tag to update' do
@@ -134,9 +134,9 @@ describe Dor::Identifiable do
   describe 'remove_tag' do
     it 'should delete a tag' do
       item.add_tag('sometag:someval')
-      expect(item.identityMetadata.tags().include?('sometag : someval')).to be_truthy
+      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_truthy
       expect(item.remove_tag('sometag:someval')).to be_truthy
-      expect(item.identityMetadata.tags().include?('sometag : someval')).to be_falsey
+      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_falsey
       expect(item.identityMetadata).to be_changed
     end
   end
@@ -171,13 +171,13 @@ describe Dor::Identifiable do
   describe 'to_solr' do
     it 'should generate collection and apo title fields' do
       mock_apo_druid = 'druid:fg890hi1234'
-      mock_rels_ext_xml = %{<rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      mock_rels_ext_xml = %(<rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
             xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:hydra="http://projecthydra.org/ns/relations#">
             <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
               <fedora-model:hasModel rdf:resource="info:fedora/testObject"/>
               <hydra:isGovernedBy rdf:resource="info:fedora/#{mock_apo_druid}"/>
             </rdf:Description>
-          </rdf:RDF>}
+          </rdf:RDF>)
 
       allow(item.datastreams['RELS-EXT']).to receive(:content).and_return(mock_rels_ext_xml)
       allow(Dor).to receive(:find).with(mock_apo_druid).and_return(nil)

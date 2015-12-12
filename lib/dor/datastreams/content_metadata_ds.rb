@@ -115,10 +115,10 @@ module Dor
     #
     def add_virtual_resource(child_druid, child_resource)
       # create a virtual resource element with attributes linked to the child and omit label
-      sequence_max = self.ng_xml.search('//resource').map{ |node| node[:sequence].to_i }.max
-      resource = Nokogiri::XML::Element.new('resource', self.ng_xml)
+      sequence_max = ng_xml.search('//resource').map { |node| node[:sequence].to_i }.max
+      resource = Nokogiri::XML::Element.new('resource', ng_xml)
       resource[:sequence] = sequence_max + 1
-      resource[:id] = "#{self.pid.gsub(/^druid:/, '')}_#{resource[:sequence]}"
+      resource[:id] = "#{pid.gsub(/^druid:/, '')}_#{resource[:sequence]}"
       resource[:type] = child_resource[:type]
 
       # iterate over all the published files and link to them
@@ -128,7 +128,7 @@ module Dor
       resource << generate_also_available_as_node(child_druid)
 
       # save the virtual resource as a sibling and return
-      self.ng_xml.root << resource
+      ng_xml.root << resource
       resource
     end
 
@@ -148,7 +148,7 @@ module Dor
       node['type'] = type
       files.each do |file|
         file_node = Nokogiri::XML::Node.new('file', xml)
-        %w[shelve publish preserve].each {|x| file_node[x] = file[x.to_sym] ? file[x.to_sym] : '' }
+        %w(shelve publish preserve).each {|x| file_node[x] = file[x.to_sym] ? file[x.to_sym] : '' }
         file_node['id'] = file[:name]
         node.add_child(file_node)
 
@@ -277,7 +277,7 @@ module Dor
     def update_resource_label(resource_name, new_label)
       node = singular_node('//resource[@id=\'' + resource_name + '\']')
       labels = node.xpath('./label')
-      if (labels.length == 0)
+      if labels.length == 0
         # create a label
         label_node = Nokogiri::XML::Node.new('label', ng_xml)
         label_node.content = new_label

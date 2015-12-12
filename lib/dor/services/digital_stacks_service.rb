@@ -25,7 +25,7 @@ module Dor
     def self.delete_file(file_pathname, moab_signature)
       if file_pathname.exist? && (file_pathname.size == moab_signature.size)
         file_signature = Moab::FileSignature.new.signature_from_file(file_pathname)
-        if (file_signature == moab_signature)
+        if file_signature == moab_signature
           file_pathname.delete
           return true
         end
@@ -65,7 +65,7 @@ module Dor
     def self.rename_file(old_pathname, new_pathname, moab_signature)
       if old_pathname.exist? && (old_pathname.size == moab_signature.size)
         file_signature = Moab::FileSignature.new.signature_from_file(old_pathname)
-        if (file_signature == moab_signature)
+        if file_signature == moab_signature
           new_pathname.parent.mkpath
           old_pathname.rename(new_pathname)
           return true

@@ -191,7 +191,7 @@ describe Dor::Editable do
   describe 'use_license=' do
     it 'should set the machine and human readable CC licenses given the right license code' do
       use_license_machine = 'by-nc-nd'
-      use_license_uri = Dor::Editable::CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:uri]
+      use_license_uri   = Dor::Editable::CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:uri]
       use_license_human = Dor::Editable::CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
       @empty_item.use_license = use_license_machine
       expect(@empty_item.use_license).to eq(use_license_machine)
@@ -204,7 +204,7 @@ describe Dor::Editable do
     end
     it 'should set the machine and human readable ODC licenses given the right license code' do
       use_license_machine = 'odc-by'
-      use_license_human = Dor::Editable::OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
+      use_license_human   = Dor::Editable::OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
       @empty_item.use_license = use_license_machine
       expect(@empty_item.use_license).to eq(use_license_machine)
       expect(@empty_item.use_license_human).to eq(use_license_human)
@@ -214,7 +214,7 @@ describe Dor::Editable do
       expect(@empty_item.open_data_commons_license_human).to eq(use_license_human)
     end
     it 'should throw an exception if no valid license code is given' do
-      expect { @empty_item.use_license = 'something-unexpected' }.to raise_exception (ArgumentError)
+      expect { @empty_item.use_license = 'something-unexpected' }.to raise_exception(ArgumentError)
       expect(@empty_item.use_license).to eq('')
       expect(@empty_item.use_license_human).to eq('')
     end
@@ -330,7 +330,7 @@ describe Dor::Editable do
   describe 'agreement=' do
     it 'should assign' do
       pending 'this test is probably checking AF internals'
-      agr = double()
+      agr = double
       allow(agr).to receive(:pid).and_return('druid:dd327qr3670')
       allow(@item).to receive(:agreement_object).and_return([agr])
       rels_ext_ds = @item.datastreams['RELS-EXT']

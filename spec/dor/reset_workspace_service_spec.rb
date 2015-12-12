@@ -4,29 +4,29 @@ describe Dor::ResetWorkspaceService do
   before(:each) { stub_config }
 
   before(:each) do
-     @workspace_root    = Dor::Config.stacks.local_workspace_root
-     @worspace_pathname = Pathname(@workspace_root)
-     @export_root       = Dor::Config.sdr.local_export_home
-     @export_pathname   = Pathname(@export_root)
+    @workspace_root    = Dor::Config.stacks.local_workspace_root
+    @worspace_pathname = Pathname(@workspace_root)
+    @export_root       = Dor::Config.sdr.local_export_home
+    @export_pathname   = Pathname(@export_root)
   end
 
   describe 'reset_workspace_druid_tree' do
 
     before(:each) do
-       @druid = 'druid:am111am1111'
-       @druid_tree_path = "#{@workspace_root}/am/111/am/1111/am111am1111"
+      @druid = 'druid:am111am1111'
+      @druid_tree_path = "#{@workspace_root}/am/111/am/1111/am111am1111"
 
-       @archived_druid = 'druid:vr111vr1111'
-       @archived_druid_tree_path = "#{@workspace_root}/vr/111/vr/1111/vr111vr1111"
+      @archived_druid = 'druid:vr111vr1111'
+      @archived_druid_tree_path = "#{@workspace_root}/vr/111/vr/1111/vr111vr1111"
 
-       # To make sure the directory name is as expected am111am1111
-       FileUtils.mv(@druid_tree_path + '_v2', @druid_tree_path) if File.exist?(@druid_tree_path + '_v2')
+      # To make sure the directory name is as expected am111am1111
+      FileUtils.mv(@druid_tree_path + '_v2', @druid_tree_path) if File.exist?(@druid_tree_path + '_v2')
     end
 
     it 'should rename the directory tree with the directory not empty' do
-       Dor::ResetWorkspaceService.reset_workspace_druid_tree(@druid, '2', @workspace_root)
-       expect(File.exist?("#{@druid_tree_path}_v2")).to be_truthy
-       expect(File.exist?(@druid_tree_path)).to be_falsey
+      Dor::ResetWorkspaceService.reset_workspace_druid_tree(@druid, '2', @workspace_root)
+      expect(File.exist?("#{@druid_tree_path}_v2")).to be_truthy
+      expect(File.exist?(@druid_tree_path)).to be_falsey
     end
 
     it 'should do nothing with truncated druid' do

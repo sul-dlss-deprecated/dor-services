@@ -23,7 +23,7 @@ describe Dor::Geoable do
   end
 
   it 'expected methods' do
-    %w{build_geoMetadata_datastream fetch_geoMetadata_datastream}.each do |k|
+    %w(build_geoMetadata_datastream fetch_geoMetadata_datastream).each do |k|
       expect(@item.public_methods).to include(k.to_sym)
     end
   end

@@ -167,9 +167,9 @@ module Dor
     # Add an administrative tag to an item, you will need to seperately save the item to write it to fedora
     # @param tag [string] The tag you wish to add
     def add_tag(tag)
-        identity_metadata_ds = identityMetadata
-        normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags)
-        identity_metadata_ds.add_value(:tag, normalized_tag)
+      identity_metadata_ds = identityMetadata
+      normalized_tag = validate_and_normalize_tag(tag, identity_metadata_ds.tags)
+      identity_metadata_ds.add_value(:tag, normalized_tag)
     end
 
     def remove_tag(tag)
@@ -212,6 +212,7 @@ module Dor
     end
 
     private
+
     def solrize_related_obj_titles(solr_doc, relationships, title_hash, union_field_name, nonhydrus_field_name, hydrus_field_name)
       # TODO: if you wanted to get a little fancier, you could also solrize a 2 level hierarchy and display using hierarchial facets, like
       # ["SOURCE", "SOURCE : TITLE"] (e.g. ["Hydrus", "Hydrus : Special Collections"], see (exploded) tags in IdentityMetadataDS#to_solr).

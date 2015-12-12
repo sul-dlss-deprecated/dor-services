@@ -137,7 +137,7 @@ module Dor
     # @param [Boolean] include_time
     # @return [String] single composed status from status_info
     def status(include_time = false)
-      status_info_hash = status_info()
+      status_info_hash = status_info
       current_version, status_code, status_time = status_info_hash[:current_version], status_info_hash[:status_code], status_info_hash[:status_time]
 
       # use the translation table to get the appropriate verbage for the latest step
@@ -197,7 +197,7 @@ module Dor
       solr_doc['modified_latest_dttsi'] = modified_date.to_datetime.utc.strftime('%FT%TZ')
       add_solr_value(solr_doc, 'rights', rights, :string, [:symbol]) if self.respond_to? :rights
 
-      status_info_hash = status_info()
+      status_info_hash = status_info
       status_code = status_info_hash[:status_code]
       add_solr_value(solr_doc, 'processing_status_text', simplified_status_code_disp_txt(status_code), :string, [:stored_sortable])
       solr_doc['processing_status_code_isi'] = status_code # no _isi in Solrizer's default descriptors
@@ -225,15 +225,16 @@ module Dor
     end
 
     private
+
     # handles formating utc date/time to human readable
     # XXX: bad form to hardcode TZ here.  Code smell abounds.
     def format_date(datetime)
-        d = datetime.is_a?(Time) ? datetime :
-            DateTime.parse(datetime).in_time_zone(ActiveSupport::TimeZone.new('Pacific Time (US & Canada)'))
-        I18n.l(d).strftime('%Y-%m-%d %I:%M%p')
-      rescue
-        d = datetime.is_a?(Time) ? datetime : Time.parse(datetime.to_s)
-        d.strftime('%Y-%m-%d %I:%M%p')
+      d = datetime.is_a?(Time) ? datetime :
+        DateTime.parse(datetime).in_time_zone(ActiveSupport::TimeZone.new('Pacific Time (US & Canada)'))
+      I18n.l(d).strftime('%Y-%m-%d %I:%M%p')
+    rescue
+      d = datetime.is_a?(Time) ? datetime : Time.parse(datetime.to_s)
+      d.strftime('%Y-%m-%d %I:%M%p')
     end
   end
 end

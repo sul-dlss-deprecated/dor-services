@@ -59,15 +59,15 @@ class AdministrativeMetadataDS < ActiveFedora::OmDatastream
   end
 
   define_template :metadata_format do |xml|
-     xml.descMetadata {
-       xml.format
-     }
+    xml.descMetadata {
+      xml.format
+    }
   end
 
   define_template :metadata_source do |xml|
     xml.administrativeMetadata {
       xml.descMetadata {
-       xml.source
+        xml.source
       }
     }
   end

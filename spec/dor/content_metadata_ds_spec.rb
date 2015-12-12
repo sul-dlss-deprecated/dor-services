@@ -82,7 +82,7 @@ describe Dor::ContentMetadataDS do
       @cm.remove_resource('resource')
       resources = @cm.ng_xml.search('//resource')
       expect(resources.length).to eq(1)
-      expect(resources.first()['sequence']).to eq('1')
+      expect(resources.first['sequence']).to eq('1')
     end
   end
   describe 'remove_file' do

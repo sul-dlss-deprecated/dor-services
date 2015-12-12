@@ -42,8 +42,8 @@ describe Dor::Processable do
     expect(@item.workflows.content).to eq('<workflows/>')
     expect(@item.workflows.content).to eq('<workflows/>') # should be cached copy
     expect(Dor::WorkflowService).to receive(:get_workflow_xml).with('dor', 'druid:ab123cd4567', nil).once { '<workflows>with some data</workflows>' }
-    # pass refresh flag and should be refreshed copy   
-    expect(@item.workflows.content(true)).to eq('<workflows>with some data</workflows>') 
+    # pass refresh flag and should be refreshed copy
+    expect(@item.workflows.content(true)).to eq('<workflows>with some data</workflows>')
   end
 
   context 'build_datastream()' do

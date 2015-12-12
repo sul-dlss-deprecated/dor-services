@@ -10,7 +10,7 @@ module Dor
     include Rightsable
 
     def public_relationships
-      include_elements = ['fedora:isMemberOf','fedora:isMemberOfCollection','fedora:isConstituentOf']
+      include_elements = ['fedora:isMemberOf', 'fedora:isMemberOfCollection', 'fedora:isConstituentOf']
       rels_doc = Nokogiri::XML(datastreams['RELS-EXT'].content)
       rels_doc.xpath('/rdf:RDF/rdf:Description/*', { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' }).each do |rel|
         unless include_elements.include?([rel.namespace.prefix, rel.name].join(':'))

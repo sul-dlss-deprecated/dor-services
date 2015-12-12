@@ -152,9 +152,9 @@ module Dor
     # @param [Nokogiri::XML] doc public MODS XML being built
     # @return [Void]
     def add_constituent_relations(doc)
-	    self.public_relationships.search('//rdf:RDF/rdf:Description/fedora:isConstituentOf',
-	                                     'fedora' => 'info:fedora/fedora-system:def/relations-external#',
-	                                     'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' ).each do |parent|
+      public_relationships.search('//rdf:RDF/rdf:Description/fedora:isConstituentOf',
+                                       'fedora' => 'info:fedora/fedora-system:def/relations-external#',
+                                       'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' ).each do |parent|
         # fetch the parent object to get title
         druid = parent['rdf:resource'].gsub(/^info:fedora\//, '')
         parent_item = Dor::Item.find(druid)
@@ -209,7 +209,7 @@ module Dor
         'mods_typeOfResource_ssim'    => [:term_values, :typeOfResource],
         'mods_typeOfResource_tesim'   => [:term_values, :typeOfResource]
       }
-      keys = mods_sources.keys.concat(%w[ metadata_format_ssim ])
+      keys = mods_sources.keys.concat(%w( metadata_format_ssim ))
       keys.each { |key|
         solr_doc[key] ||= []     # initialize multivalue targts if necessary
       }
@@ -245,7 +245,7 @@ module Dor
         solr_doc['sw_pub_date_facet_ssi'] = mods.pub_date_facet # e.g. '9th century'
       end
       # some fields get explicit "(none)" placeholder values, mostly for faceting
-      %w[sw_language_tesim sw_genre_tesim sw_format_tesim].each { |key| solr_doc[key] = ['(none)'] if solr_doc[key].empty? }
+      %w(sw_language_tesim sw_genre_tesim sw_format_tesim).each { |key| solr_doc[key] = ['(none)'] if solr_doc[key].empty? }
       # otherwise remove empties
       keys.each { |key| solr_doc.delete(key) if solr_doc[key].nil? || solr_doc[key].empty?}
       solr_doc
@@ -306,6 +306,7 @@ module Dor
     end
 
     private
+
     # generic updater useful for updating things like title or subtitle which can only have a single occurance and must be present
     def update_simple_field(field, new_val)
       descMetadata.ng_xml.search('//' + field, 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
@@ -317,11 +318,11 @@ module Dor
 
     # Builds case-insensitive xpath translate function call that will match the attribute to a value
     def ci_compare(attribute, value)
-        "translate(
-            @#{attribute},
-            'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-            'abcdefghijklmnopqrstuvwxyz'
-          ) = '#{value}' "
+      "translate(
+        @#{attribute},
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+        'abcdefghijklmnopqrstuvwxyz'
+       ) = '#{value}' "
     end
   end
 end
