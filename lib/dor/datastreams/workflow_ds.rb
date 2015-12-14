@@ -1,7 +1,6 @@
 module Dor
   # TODO: class docs
   class WorkflowDs < ActiveFedora::OmDatastream
-    include SolrDocHelper
 
     set_terminology do |t|
       t.root(:path => 'workflows')
@@ -26,11 +25,6 @@ module Dor
     end
 
     alias_method :[], :get_workflow
-
-    def ensure_xml_loaded
-      ng_xml
-      self.xml_loaded = true
-    end
 
     def ng_xml
       @ng_xml ||= Nokogiri::XML::Document.parse(content)

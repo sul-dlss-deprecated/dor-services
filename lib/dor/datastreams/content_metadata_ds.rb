@@ -1,7 +1,6 @@
 module Dor
   class ContentMetadataDS < ActiveFedora::OmDatastream
     include Upgradable
-    include SolrDocHelper
 
     set_terminology do |t|
       t.root        :path => 'contentMetadata',          :index_as => [:not_searchable]
@@ -228,13 +227,13 @@ module Dor
       self.content = ng_xml.to_s
     end
 
-    # @param [String] file_name ID of the file
+    # @param [String] file_name ID of the file element
     def remove_file(file_name)
       ng_xml.search('//file[@id=\'' + file_name + '\']').each(&:remove)
       self.content = ng_xml.to_s
     end
 
-    # @param [String] file_name ID of the file
+    # @param [String] file_name ID of the file element
     # @param [String] publish
     # @param [String] shelve
     # @param [String] preserve
