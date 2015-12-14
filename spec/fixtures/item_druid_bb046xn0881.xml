@@ -470,10 +470,8 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
   </access>
   <use>
     <human type="useAndReproduction">Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.</human>
-  </use>
-  <use>
-    <human type="creativeCommons"></human>
-    <machine type="creativeCommons"></machine>
+    <human type="creativeCommons">Attribution Non-Commercial 3.0 Unported</human>
+    <machine type="creativeCommons">by-nc</machine>
   </use>
 </rightsMetadata>
 </foxml:xmlContent>
@@ -497,6 +495,8 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
   </access>
   <use>
     <human type="useAndReproduction">Users must contact The Revs Institute for Automotive Research for re-use and reproduction information.</human>
+    <human type="creativeCommons">Attribution Non-Commercial 3.0 Unported</human>
+    <machine type="creativeCommons">by-nc</machine>
   </use>
 </rightsMetadata>
 </foxml:xmlContent>

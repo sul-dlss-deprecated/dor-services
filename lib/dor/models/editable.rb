@@ -49,7 +49,7 @@ module Dor
       super(solr_doc, *args)
       add_solr_value(solr_doc, 'default_rights', default_rights, :string, [:symbol])
       add_solr_value(solr_doc, 'agreement', agreement, :string, [:symbol]) if agreement_object
-      add_solr_value(solr_doc, 'use_license_machine', use_license, :string, [:stored_sortable])
+      add_solr_value(solr_doc, 'default_use_license_machine', use_license, :string, [:stored_sortable])
       solr_doc
     end
 

@@ -30,20 +30,6 @@ module Dor
       t.open_data_commons_human :path => '/use/human[@type=\'openDataCommons\']'
     end
 
-    define_template :creative_commons do |xml|
-      xml.use {
-        xml.human(:type => 'creativeCommons')
-        xml.machine(:type => 'creativeCommons', :uri => '')
-      }
-    end
-
-    define_template :open_data_commons do |xml|
-      xml.use {
-        xml.human(:type => 'openDataCommons')
-        xml.machine(:type => 'openDataCommons', :uri => '')
-      }
-    end
-
     def self.xml_template
       Nokogiri::XML::Builder.new do |xml|
         xml.rightsMetadata {
@@ -119,7 +105,15 @@ module Dor
       %w(use_statement_ssim copyright_ssim).each do |key|
         solr_doc[key] = solr_doc[key].reject { |val| val.nil? || val == '' }.flatten unless solr_doc[key].nil?
       end
+      add_solr_value(solr_doc, 'use_license_machine', use_license, :string, [:stored_sortable])
+      
       solr_doc
+    end
+
+    def use_license
+      return creative_commons unless ['', nil].include?(creative_commons)
+      return open_data_commons unless ['', nil].include?(open_data_commons)
+      ''
     end
 
   end # class
