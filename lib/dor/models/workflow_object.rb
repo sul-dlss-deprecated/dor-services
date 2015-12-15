@@ -3,7 +3,6 @@ require 'dor/datastreams/workflow_definition_ds'
 module Dor
   class WorkflowObject < ::ActiveFedora::Base
     include Identifiable
-    include SolrDocHelper
     include Governable
     @@xml_cache  = {}
     @@repo_cache = {}
