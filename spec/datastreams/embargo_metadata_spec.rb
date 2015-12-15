@@ -2,6 +2,10 @@ require 'spec_helper'
 require 'nokogiri'
 
 describe Dor::EmbargoMetadataDS do
+  before :each do
+    @ds = Dor::EmbargoMetadataDS.new nil, 'embargoMetadata'
+  end
+
   context 'Marshalling to and from a Fedora Datastream' do
     let(:dsxml) { <<-EOF
           <embargoMetadata>
@@ -31,7 +35,7 @@ describe Dor::EmbargoMetadataDS do
       expect(ds.term_values(:release_date)).to eq(['2011-10-12T15:47:52-07:00'])
       expect(ds.term_values(:twenty_pct_status)).to eq(['released'])
       expect(ds.term_values(:twenty_pct_release_date)).to eq(['2016-10-12T15:47:52-07:00'])
-      expect(ds.find_by_terms(:release_access).class).to eq(Nokogiri::XML::NodeSet)
+      expect(ds.find_by_terms(:release_access)).to be_a(Nokogiri::XML::NodeSet)
     end
 
     it 'creates a simple default with #new' do
@@ -44,9 +48,7 @@ describe Dor::EmbargoMetadataDS do
         <twentyPctVisibilityReleaseDate/>
       </embargoMetadata>
       EOF
-
-      ds = Dor::EmbargoMetadataDS.new nil, 'embargoMetadata'
-      expect(ds.to_xml).to be_equivalent_to(emb_xml)
+      expect(@ds.to_xml).to be_equivalent_to(emb_xml)
     end
 
     it 'should solrize correctly' do
@@ -60,53 +62,47 @@ describe Dor::EmbargoMetadataDS do
   end
 
   describe '#status' do
-
-    ds = Dor::EmbargoMetadataDS.new nil, 'embargoMetadata'
-    ds.status = 'released'
-
+    before do
+      @ds.status = 'released'
+    end
     it '= sets status' do
-      expect(ds.term_values(:status)).to eq(['released'])
+      expect(@ds.term_values(:status)).to eq(['released'])
     end
-
     it '= marks the datastream as changed' do
-      expect(ds).to be_changed
+      expect(@ds).to be_changed
     end
-
     it 'gets the current value of status' do
-      expect(ds.status).to eq('released')
+      expect(@ds.status).to eq('released')
     end
   end
 
   describe '#release_date' do
-
-    ds = Dor::EmbargoMetadataDS.new nil, 'embargoMetadata'
-    t = Time.now - 10
-    ds.release_date = t
-
+    before do
+      @t = Time.now.utc - 10
+      @ds.release_date = @t
+    end
     it '= sets releaseDate from a Time object as the start of day, UTC' do
-      rd = Time.parse(ds.term_values(:release_date).first)
-      expect(rd).to eq(t.beginning_of_day.utc)
+      rd = Time.parse(@ds.term_values(:release_date).first)
+      expect(rd).to eq(@t.beginning_of_day.utc)
     end
-
     it '= marks the datastram as changed' do
-      expect(ds).to be_changed
+      expect(@ds).to be_changed
     end
-
     it 'gets the current value of releaseDate as a Time object' do
-      rd = ds.release_date
-      expect(rd.class).to eq(Time)
-      expect(rd).to be < Time.now
+      rd = @ds.release_date
+      expect(rd).to be_a(Time)
+      expect(rd).to be < Time.now.utc
     end
   end
 
   describe 'releaseAccess manipulation' do
-
-    ds = Dor::EmbargoMetadataDS.new nil, 'embargoMetadata'
-    nd = ds.release_access_node
-
     it '#release_access_node returns a Nokogiri::XML::Element' do
-      expect(nd.class).to eq(Nokogiri::XML::Element)
-      expect(nd.name).to eq('releaseAccess')
+      expect(@ds.release_access_node).to be_a(Nokogiri::XML::Element)
+      expect(@ds.release_access_node.name).to eq('releaseAccess')
+    end
+
+    it 'release_access_node= refuses to set bogus value' do
+      expect { @ds.release_access_node = Nokogiri::XML('<incorrect/>') }.to raise_error(RuntimeError)
     end
 
     it '#release_access_node= sets the embargoAccess node from a Nokogiri::XML::Node' do
@@ -125,20 +121,10 @@ describe Dor::EmbargoMetadataDS do
         </access>
       </embargoAccess>
       EOXML
-
-      ds.release_access_node = Nokogiri::XML(embargo_xml)
-      embargo = ds.find_by_terms(:release_access)
+      @ds.release_access_node = Nokogiri::XML(embargo_xml)
+      embargo = @ds.find_by_terms(:release_access)
       expect(embargo.at_xpath("//releaseAccess/access[@type='read']/machine/world")).to be
-      expect(ds).to be_changed
+      expect(@ds).to be_changed
     end
-
-    it 'rejects Documents that do not have a root node of releaseAccess' do
-      embargo_xml = '<incorrect/>'
-      expect { ds.release_access_node = Nokogiri::XML(embargo_xml) }.to raise_error(RuntimeError)
-    end
-  end
-
-  describe 'Solr indexing' do
-    pending
   end
 end
