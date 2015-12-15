@@ -94,7 +94,7 @@ describe Dor::Publishable do
 
     context 'produces xml with' do
       before(:each) do
-        @now = Time.now
+        @now = Time.now.utc
         expect(Time).to receive(:now).and_return(@now).at_least(:once)
         @p_xml = Nokogiri::XML(@item.public_xml)
       end

@@ -82,7 +82,7 @@ describe Dor::TechnicalMetadataService do
         :digital_object_id => "druid:#{id}",
         :basis => 'old_content_metadata',
         :other => 'new_content_metadata',
-        :report_datetime => Time.now.to_s
+        :report_datetime => Time.now.utc.to_s
       )
       inventory_diff.group_differences << group_diff
       dor_item = double(Dor::Item)

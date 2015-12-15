@@ -9,7 +9,7 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
     t.embargo_status(:path => 'status', :index_as => [:symbol])
     t.release_date(:path => 'releaseDate', :index_as => [:dateable])
     t.release_access(:path => 'releaseAccess')
-    t.twenty_pct_status( :path => 'twentyPctVisibilityStatus', :index_as => [:symbol])
+    t.twenty_pct_status(:path => 'twentyPctVisibilityStatus', :index_as => [:symbol])
     t.twenty_pct_release_date(:path => 'twentyPctVisibilityReleaseDate')
   end
 
@@ -56,7 +56,7 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
 
   # Sets the release date.  Converts the date to beginning-of-day, UTC to help with Solr indexing
   # @param [Time] rd A Time object represeting the release date.  By default, it is set to now
-  def release_date=(rd = Time.now)
+  def release_date=(rd = Time.now.utc)
     update_values([:release_date] => rd.beginning_of_day.utc.xmlschema)
     self.content = ng_xml.to_s
   end
@@ -79,7 +79,7 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
 
   # Sets the 20% visibility release date.  Converts the date to beginning-of-day, UTC to help with Solr indexing
   # @param [Time] rd A Time object represeting the release date.  By default, it is set to now
-  def twenty_pct_release_date=(rd = Time.now)
+  def twenty_pct_release_date=(rd = Time.now.utc)
     update_values([:twenty_pct_release_date] => rd.beginning_of_day.utc.xmlschema)
     content_will_change!
   end
