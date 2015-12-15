@@ -26,12 +26,12 @@ module Dor
     def public_xml
       pub = Nokogiri::XML('<publicObject/>').root
       pub['id'] = pid
-      pub['published'] = Time.now.xmlschema
+      pub['published'] = Time.now.utc.xmlschema
       pub['publishVersion'] = 'dor-services/' + Dor::VERSION
       release_xml = Nokogiri(generate_release_xml).xpath('//release')
 
       im = datastreams['identityMetadata'].ng_xml.clone
-      im.search('//release').each {|node| node.remove} # remove any <release> tags from public xml which have full history
+      im.search('//release').each(&:remove) # remove any <release> tags from public xml which have full history
       im.root.add_child(release_xml)
 
       pub.add_child(im.root) # add in modified identityMetadata datastream
@@ -57,9 +57,9 @@ module Dor
       if rights.at_xpath("//rightsMetadata/access[@type='discover']/machine/world")
         dc_xml = generate_dublin_core.to_xml {|config| config.no_declaration}
         DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'dc')
-        DigitalStacksService.transfer_to_document_store(pid, datastreams['identityMetadata'].to_xml, 'identityMetadata')
-        DigitalStacksService.transfer_to_document_store(pid, datastreams['contentMetadata'].to_xml, 'contentMetadata')
-        DigitalStacksService.transfer_to_document_store(pid, datastreams['rightsMetadata'].to_xml, 'rightsMetadata')
+        %w(identityMetadata contentMetadata rightsMetadata).each do |stream|
+          DigitalStacksService.transfer_to_document_store(pid, datastreams[stream].to_xml, stream)
+        end
         DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
         DigitalStacksService.transfer_to_document_store(pid, generate_public_desc_md, 'mods') if metadata_format == 'mods'
       else

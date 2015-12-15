@@ -49,7 +49,6 @@ describe Dor::Embargoable do
   before :each do
     stub_config
   end
-
   after :each do
     unstub_config
   end
@@ -64,7 +63,7 @@ describe Dor::Embargoable do
       @embargo_item = EmbargoedItem.new
       @eds = @embargo_item.datastreams['embargoMetadata']
       @eds.status = 'embargoed'
-      @eds.release_date = Time.now - 100000
+      @eds.release_date = Time.now.utc - 100000
       @eds.release_access_node = Nokogiri::XML(release_access) {|config| config.default_xml.noblanks}
 
       @embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config| config.default_xml.noblanks}
@@ -84,7 +83,6 @@ describe Dor::Embargoable do
 
       it 'replaces/adds access nodes with nodes from embargoMetadata/releaseAccess' do
         rights = @embargo_item.datastreams['rightsMetadata'].ng_xml
-
         expect(rights.xpath("//rightsMetadata/access[@type='read']").size).to eq(2)
         expect(rights.xpath("//rightsMetadata/access[@type='discover']").size).to eq(1)
         expect(rights.xpath("//rightsMetadata/access[@type='read']/machine/world").size).to eq(1)
@@ -111,12 +109,12 @@ describe Dor::Embargoable do
   end
 
   describe '#release_20_pct_vis_embargo' do
-    let(:embargo_item) {EmbargoedItem.new}
+    let(:embargo_item) { EmbargoedItem.new }
     let(:eds) { embargo_item.datastreams['embargoMetadata'] }
 
     before(:each) do
       eds.status = 'embargoed'
-      eds.release_date = Time.now - 100000
+      eds.release_date = Time.now.utc - 100000
       eds.release_access_node = Nokogiri::XML(release_access) {|config| config.default_xml.noblanks}
       embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config| config.default_xml.noblanks}
       embargo_item.release_20_pct_vis_embargo('application:embargo-release')
@@ -127,10 +125,8 @@ describe Dor::Embargoable do
     end
 
     context 'rightsMetadata modifications' do
-
       it 'replaces stanford group read access to world read access' do
         rights = embargo_item.datastreams['rightsMetadata'].ng_xml
-
         expect(rights.xpath("//rightsMetadata/access[@type='read']"              ).size).to eq 1
         expect(rights.xpath("//rightsMetadata/access[@type='discover']"          ).size).to eq 1
         expect(rights.xpath("//rightsMetadata/access[@type='read']/machine/world").size).to eq 1
@@ -155,7 +151,7 @@ describe Dor::Embargoable do
       @embargo_item = EmbargoedItem.new
       @eds = @embargo_item.datastreams['embargoMetadata']
       @eds.status = 'embargoed'
-      @eds.release_date = Time.now - 100000
+      @eds.release_date = Time.now.utc - 100000
       @eds.release_access_node = Nokogiri::XML(release_access) {|config| config.default_xml.noblanks}
 
       allow_any_instance_of(ActiveFedora::OmDatastream).to receive(:save).and_return(true)
@@ -164,13 +160,13 @@ describe Dor::Embargoable do
 
     it 'should update the embargo date' do
       old_embargo_date = @embargo_item.embargoMetadata.release_date
-      @embargo_item.update_embargo(Time.now + 1.month)
+      @embargo_item.update_embargo(Time.now.utc + 1.month)
       expect(@embargo_item.embargoMetadata.release_date).not_to eq old_embargo_date
     end
 
     it 'should raise an error if the item isnt embargoed' do
       @embargo_item.release_embargo('application:embargo-release')
-      expect{@embargo_item.update_embargo(Time.now + 1.month)}.to raise_error(StandardError)
+      expect{@embargo_item.update_embargo(Time.now.utc + 1.month)}.to raise_error(StandardError)
     end
 
     it 'should raise an exception if the new date is in the past' do
