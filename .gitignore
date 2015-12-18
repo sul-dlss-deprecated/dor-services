@@ -13,6 +13,7 @@ config/dev_console_env.rb
 config/environments
 coverage
 coverage.data
+workflow_service.log*
 pkg
 rdoc
 spec/certs/*
