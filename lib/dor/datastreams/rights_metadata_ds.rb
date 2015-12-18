@@ -106,7 +106,7 @@ module Dor
         solr_doc[key] = solr_doc[key].reject { |val| val.nil? || val == '' }.flatten unless solr_doc[key].nil?
       end
       add_solr_value(solr_doc, 'use_license_machine', use_license, :string, [:stored_sortable])
-      
+
       solr_doc
     end
 
