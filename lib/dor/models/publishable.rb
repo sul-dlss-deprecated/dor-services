@@ -7,6 +7,7 @@ module Dor
     include Governable
     include Describable
     include Itemizable
+    include Permissable
     include Rightsable
 
     def public_relationships
