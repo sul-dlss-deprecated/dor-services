@@ -1,8 +1,17 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
+require 'simplecov'
 require 'coveralls'
-Coveralls.wear!
+SimpleCov.profiles.define 'dor' do
+  add_filter 'gemfiles'
+  add_filter 'spec'
+end
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+  SimpleCov::Formatter::HTMLFormatter,
+  Coveralls::SimpleCov::Formatter
+])
+SimpleCov.start 'dor'
 
 require 'rspec'
 require 'dor-services'
