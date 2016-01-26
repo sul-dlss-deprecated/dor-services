@@ -21,28 +21,50 @@ describe Dor::Identifiable do
     it 'returns false when no displayTypes are present to be removed' do
       expect(item.remove_displayTypes).to be_falsey
     end
-
     it 'returns true when displayTypes are present and removed' do
       item.identityMetadata.add_value(:displayType, 'foo', {}) # Add in a displayType so we have one to remove
       expect(item.remove_displayTypes).to be_truthy
     end
-
   end
 
   it 'should have an identityMetadata datastream' do
     expect(item.datastreams['identityMetadata']).to be_a(Dor::IdentityMetadataDS)
   end
-  describe 'set_source_id' do
-    it 'should set the source_id if one doesnt exist' do
-      expect(item.identityMetadata.sourceId).to eq('google:STANFORD_342837261527')
-      item.set_source_id('fake:sourceid')
+
+  it 'source_id fetches from IdentityMetadata' do
+    expect(item.source_id).to eq('google:STANFORD_342837261527')
+    expect(item.source_id).to eq(item.identityMetadata.sourceId)
+  end
+
+  describe 'source_id= (AKA set_source_id)' do
+    it 'raises on unsalvageable values' do
+      expect{item.source_id=('Too:Many:Colons')}.to raise_error ArgumentError
+      expect{item.source_id=('Still::TooMany')}.to raise_error ArgumentError
+      expect{item.source_id=('NotEnoughColons')}.to raise_error ArgumentError
+      expect{item.source_id=(':EmptyFirstPart')}.to raise_error ArgumentError
+      expect{item.source_id=('WhitespaceSecondPart:   ')}.to raise_error ArgumentError
+    end
+    it 'should set the source_id' do
+      item.source_id = 'fake:sourceid'
       expect(item.identityMetadata.sourceId).to eq('fake:sourceid')
     end
     it 'should replace the source_id if one exists' do
-      item.set_source_id('fake:sourceid')
+      item.source_id = 'fake:sourceid'
       expect(item.identityMetadata.sourceId).to eq('fake:sourceid')
-      item.set_source_id('new:sourceid2')
+      item.source_id = 'new:sourceid2'
       expect(item.identityMetadata.sourceId).to eq('new:sourceid2')
+    end
+    it 'should do normalization via identityMetadata.sourceID=' do
+      item.source_id = ' SourceX :  Value Y  '
+      expect(item.source_id).to eq('SourceX:Value Y')
+    end
+    it 'should delete the sourceId node on nil or empty-string' do
+      item.source_id = nil
+      expect(item.source_id).to be_nil
+      item.source_id = 'fake:sourceid'
+      expect(item.source_id).to eq('fake:sourceid')
+      item.source_id = ''
+      expect(item.source_id).to be_nil
     end
   end
 

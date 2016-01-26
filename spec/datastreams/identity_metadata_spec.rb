@@ -44,7 +44,7 @@ describe Dor::IdentityMetadataDS do
       expect(@dsdoc.sourceId).to eq('sulair:bb110sm8219')
     end
 
-    it 'should be able to set the sourceID' do
+    it 'should be able to set the (stripped) sourceID' do
       resultxml = <<-EOF
         <identityMetadata>
           <objectCreator>DOR</objectCreator>
@@ -58,18 +58,48 @@ describe Dor::IdentityMetadataDS do
           <tag>Project : McLaughlin Maps</tag>
         </identityMetadata>
       EOF
-
-      @dsdoc.sourceId = 'test:ab110cd8219'
+      @dsdoc.sourceId = ' test:  ab110cd8219  '
       expect(@dsdoc.sourceId).to eq('test:ab110cd8219')
       expect(@dsdoc.to_xml).to be_equivalent_to resultxml
     end
 
+    describe 'removes source ID node' do
+      let(:resultxml) {<<-EOF
+          <identityMetadata>
+            <objectCreator>DOR</objectCreator>
+            <objectId>druid:bb110sm8219</objectId>
+            <objectLabel>AMERICQVE | SEPTENTRIONALE</objectLabel>
+            <objectType>item</objectType>
+            <otherId name="mdtoolkit">bb110sm8219</otherId>
+            <otherId name="uuid">b382ee92-da77-11e0-9036-0016034322e4</otherId>
+            <tag>MDForm : mclaughlin</tag>
+            <tag>Project : McLaughlin Maps</tag>
+          </identityMetadata>
+        EOF
+      }
+      it 'on nil' do
+        @dsdoc.sourceId = nil
+        expect(@dsdoc.sourceId).to be_nil
+        expect(@dsdoc.to_xml).to be_equivalent_to resultxml
+      end
+      it 'on empty string' do
+        @dsdoc.sourceId = ''
+        expect(@dsdoc.sourceId).to be_nil
+        expect(@dsdoc.to_xml).to be_equivalent_to resultxml
+      end
+    end
+
     it 'should raise on malformed sourceIDs' do
-      expect{@dsdoc.sourceId = 'ab110cd8219'      }.to raise_exception(ArgumentError)
-      expect{@dsdoc.sourceId = 'qqqq:'            }.to raise_exception(ArgumentError)
-      expect{@dsdoc.sourceId = ':qqqq'            }.to raise_exception(ArgumentError)
-      pending 'Design intention needs to be clarified'
-      expect{@dsdoc.sourceId = 'test::ab110cd8219'}.to raise_exception(ArgumentError)
+      expect{@dsdoc.sourceId = 'NotEnoughColons'}.to raise_exception(ArgumentError)
+      expect{@dsdoc.sourceId = ':EmptyFirstPart'}.to raise_exception(ArgumentError)
+      expect{@dsdoc.sourceId = 'WhitespaceSecondPart:  '}.to raise_exception(ArgumentError)
+      expect{@dsdoc.sourceId = 'WhitespaceSecondPart:  '}.to raise_exception(ArgumentError)
+    end
+
+    it 'should raise on a value containing too many colons' do
+      # This may need to be loosened in the future to accommodate colon-having values from as-yet-unknown sources
+      expect{@dsdoc.sourceId = 'Too:Many:Parts'}.to raise_exception(ArgumentError)
+      expect{@dsdoc.sourceId = 'Too::ManyColons'}.to raise_exception(ArgumentError)
     end
 
     it 'creates a simple default with #new' do

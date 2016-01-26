@@ -90,9 +90,20 @@ module Dor
       end
     end
 
-    def set_source_id(source_id)
+    # Convenience method
+    def source_id
+      identityMetadata.sourceId
+    end
+
+    # Convenience method
+    # @param  [String] source_id the new source identifier
+    # @return [String] same value, as per Ruby assignment convention
+    # @raise  [ArgumentError] see IdentityMetadataDS for logic
+    def source_id=(source_id)
       identityMetadata.sourceId = source_id
     end
+    alias_method :set_source_id, :source_id=
+    deprecate set_source_id: 'Use source_id= instead'
 
     def add_other_Id(type, val)
       if identityMetadata.otherId(type).length > 0
@@ -144,7 +155,6 @@ module Dor
       if dupe_existing_tag
         raise "An existing tag (#{dupe_existing_tag}) is the same, consider using update_tag?"
       end
-
       normalized_tag
     end
 
@@ -153,11 +163,9 @@ module Dor
     # @return [Array] the tag split into an array via ':'
     def validate_tag_format(tag_str)
       tag_arr = split_tag_to_arr(tag_str)
-
       if tag_arr.length < 2
         raise ArgumentError, "Invalid tag structure: tag '#{tag_str}' must have at least 2 elements"
       end
-
       if tag_arr.detect {|str| str.empty?}
         raise ArgumentError, "Invalid tag structure: tag '#{tag_str}' contains empty elements"
       end

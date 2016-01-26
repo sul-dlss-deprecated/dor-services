@@ -40,18 +40,22 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
     node ? [node['source'], node.text].join(':') : nil
   end
 
+  # @param  [String, Nil] New value, or nil/empty string to delete sourceId node
+  # @return [String, Nil] The same value, as per Ruby convention for assignment operators
+  # @note The actual values assigned will have leading/trailing whitespace stripped.
   def sourceId=(value)
     node = find_by_terms(:sourceId).first
-    unless value.present?   # so setting it to '' is the same as removal: worth documenting maybe?
+    unless value.present? # so setting it to '' is the same as removal: worth documenting maybe?
       node.remove unless node.nil?
       return nil
     end
-    (source, val) = value.split(/:/, 2)
-    raise ArgumentError, "Source ID must follow the format namespace:value, not '#{value}'" unless source.present? && val.present?
+    parts = value.split(':').map(&:strip)
+    # parts = value.split(/:/, 2).map(&:strip) # if we needed to allow colons in values or bunched colon separators
+    raise ArgumentError, "Source ID must follow the format 'namespace:value', not '#{value}'" unless
+      parts.length == 2 && parts[0].present? && parts[1].present?
     node ||= ng_xml.root.add_child('<sourceId/>').first
-    node['source'] = source
-    node.content = val
-    node
+    node['source'] = parts[0]
+    node.content = parts[1]
   end
 
   def tags
