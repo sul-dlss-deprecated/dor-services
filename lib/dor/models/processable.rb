@@ -103,7 +103,7 @@ module Dor
       Dor::WorkflowService.get_milestones('dor', pid)
     end
 
-    # @return [Hash] including :current_version, :status_code and :status_time
+    # @return [Hash{Symbol => Object}] including :current_version, :status_code and :status_time
     def status_info
       current_version = '1'
       begin
@@ -146,9 +146,8 @@ module Dor
       result
     end
 
-    # return the text translation of the status code, minus any trailing parenthetical explanation
-    # e.g. 'In accessioning (described)' and 'In accessioning (described, published)' both come back
-    # as 'In accessioning'
+    # @return [String] text translation of the status code, minus any trailing parenthetical explanation
+    # e.g. 'In accessioning (described)' and 'In accessioning (described, published)' both return 'In accessioning'
     def simplified_status_code_disp_txt(status_code)
       STATUS_CODE_DISP_TXT[status_code].gsub(/\(.*\)$/, '').strip
     end
