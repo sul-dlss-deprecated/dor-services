@@ -81,9 +81,10 @@ describe Dor::EmbargoMetadataDS do
       @t = Time.now.utc - 10
       @ds.release_date = @t
     end
-    it '= sets releaseDate from a Time object as the start of day, UTC' do
+    it '= sets releaseDate from a Time object' do
+      # does NOT do beginning_of_day truncation, leave that for indexing
       rd = Time.parse(@ds.term_values(:release_date).first)
-      expect(rd).to eq(@t.beginning_of_day.utc)
+      expect(rd.strftime('%FT%T%z')).to eq(@t.strftime('%FT%T%z')) # not strictly equal since "now" has millesecond granularity
     end
     it '= marks the datastram as changed' do
       expect(@ds).to be_changed

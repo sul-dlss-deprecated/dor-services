@@ -54,10 +54,10 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
     term_values(:status).first
   end
 
-  # Sets the release date.  Converts the date to beginning-of-day, UTC to help with Solr indexing
-  # @param [Time] rd A Time object represeting the release date.  By default, it is set to now
+  # Sets the release date.  Does NOT convert to beginning-of-day.
+  # @param [Time] rd the release date object
   def release_date=(rd = Time.now.utc)
-    update_values([:release_date] => rd.beginning_of_day.utc.xmlschema)
+    update_values([:release_date] => rd.utc.xmlschema)
     self.content = ng_xml.to_s
   end
 
