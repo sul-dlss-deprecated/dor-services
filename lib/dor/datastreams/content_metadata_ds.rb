@@ -48,7 +48,7 @@ module Dor
         src_resource_id = externalFile['resourceId']
         src_druid = externalFile['objectId']
         src_file_id = externalFile['fileId']
-        fail ArgumentError, "Malformed externalFile data: #{externalFile.inspect}" if src_resource_id.nil? || src_file_id.nil? || src_druid.nil?
+        fail ArgumentError, "Malformed externalFile data: #{externalFile.inspect}" if [src_resource_id, src_file_id, src_druid].map(&:blank?).any?
 
         # grab source item
         src_item = Dor::Item.find(src_druid)
@@ -56,8 +56,8 @@ module Dor
 
         # locate and extract the resourceId/fileId elements
         doc = src_item.datastreams['contentMetadata'].ng_xml
-        src_resource = doc.at_xpath("//resource[@id=\"#{externalFile['resourceId']}\"]")
-        src_file = src_resource.at_xpath("file[@id=\"#{externalFile['fileId']}\"]")
+        src_resource = doc.at_xpath("//resource[@id=\"#{src_resource_id}\"]")
+        src_file = src_resource.at_xpath("file[@id=\"#{src_file_id}\"]")
         src_image_data = src_file.at_xpath('imageData')
 
         # always use title regardless of whether a child label is present
