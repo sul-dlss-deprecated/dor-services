@@ -250,18 +250,20 @@ describe Dor::Publishable do
         expect(Nokogiri::XML(@item.public_xml).at_xpath('/publicObject/contentMetadata').to_xml).to be_equivalent_to(correctPublicContentMetadata)
       end
 
-      it 'handles bad externalFile references' do
-        @item.contentMetadata.content = <<-EOXML
-        <contentMetadata objectId="hj097bm8879" type="map">
-          <resource id="hj097bm8879_1" sequence="1" type="image">
-            <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478"/>
-            <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
-          </resource>
-        </contentMetadata>        
-        EOXML
-        
-        # generate publicObject XML and verify that the content metadata portion is invalid
-        expect { Nokogiri::XML(@item.public_xml) }.to raise_error(ArgumentError)
+      context 'handles errors for externalFile references' do
+        it 'is missing resourceId and mimetype attributes' do
+          @item.contentMetadata.content = <<-EOXML
+          <contentMetadata objectId="hj097bm8879" type="map">
+            <resource id="hj097bm8879_1" sequence="1" type="image">
+              <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478"/>
+              <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+            </resource>
+          </contentMetadata>        
+          EOXML
+
+          # generate publicObject XML and verify that the content metadata portion is invalid
+          expect { Nokogiri::XML(@item.public_xml) }.to raise_error(ArgumentError)
+        end
       end
 
       context 'copies to the document cache' do
