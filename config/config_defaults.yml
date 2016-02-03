@@ -65,3 +65,7 @@
   :shift_age: weekly
 :dor_services:
   :url:
+:indexing_svc:
+  :log: 'log/indexing_svc.log'
+  :log_date_format_str: '%Y-%m-%d %H:%M:%S.%L'
+  :log_rotation_interval: 'daily'
