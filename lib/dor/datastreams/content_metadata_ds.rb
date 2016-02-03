@@ -52,7 +52,6 @@ module Dor
 
         # grab source item
         src_item = Dor::Item.find(src_druid)
-        src_item_id = DruidTools::Druid.new(src_item.pid).id # strip druid: prefix
 
         # locate and extract the resourceId/fileId elements
         doc = src_item.datastreams['contentMetadata'].ng_xml
