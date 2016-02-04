@@ -7,7 +7,6 @@ describe Dor::IndexingService do
 
   describe '#generate_index_logger' do
     before :each do
-      @mock_entry_id = 'unique_request_id'
       @mock_log_msg = 'something noteworthy'
     end
 
@@ -15,17 +14,30 @@ describe Dor::IndexingService do
       File.delete Dor::Config.indexing_svc.log if File.exist? Dor::Config.indexing_svc.log
     end
 
-    it 'should call entry_id_block and include the result in the logging statement' do
-      is_entry_id_block_executed = false
+    it 'should call entry_id_block for each logging event, and include the result in the logging statement' do
+      mock_req_id_ctr = 0
       test_index_logger = Dor::IndexingService.generate_index_logger do
-        is_entry_id_block_executed = true
-        @mock_entry_id
+        # this entry_id_block returns next value from a counter each time its called
+        mock_req_id_ctr += 1 # ruby has no [post-]increment operator
       end
-      test_index_logger.info @mock_log_msg
 
-      last_log_line = open(Dor::Config.indexing_svc.log).read.split("\n")[-1]
-      expect(last_log_line).to match(/\[#{@mock_entry_id}\] \[.*\] #{@mock_log_msg}$/)
-      expect(is_entry_id_block_executed).to eq(true)
+      # log some test messages
+      mock_log_messages = ['msg 1', 'msg 2', 'msg 3']
+      mock_log_messages.each do |msg|
+        test_index_logger.info msg
+      end
+
+      # parse the log and make sure the log lines match the expected format,
+      # with the expected messages, and the extra identifier (the counter
+      # values).
+      # the first log line is just a statement about when it was created, e.g.
+      # "# Logfile created on ...".  we just care about the subsequent lines.
+      log_lines = open(Dor::Config.indexing_svc.log).read.split("\n")[1..-1]
+      log_lines.each_with_index do |log_line, idx|
+        entry_id = idx + 1 # first entry_id is 1 since increment happened before return in entry_id_block
+        expect(log_line).to match(/\[#{entry_id}\] \[.*\] #{mock_log_messages[idx]}$/)
+      end
+      expect(mock_req_id_ctr).to eq(mock_log_messages.length)
     end
 
     it 'should log the default entry_id if entry_id_block is nil' do
@@ -54,10 +66,10 @@ describe Dor::IndexingService do
 
   describe '#default_index_logger' do
     it 'should call generate_index_logger, and memoize the result' do
-      mock_index_logger = double(Logger)
-      expect(Dor::IndexingService).to receive(:generate_index_logger).once.and_return(mock_index_logger)
-      expect(Dor::IndexingService.default_index_logger).to eq(mock_index_logger)
-      expect(Dor::IndexingService.default_index_logger).to eq(mock_index_logger)
+      mock_default_logger = double(Logger)
+      expect(Dor::IndexingService).to receive(:generate_index_logger).once.and_return(mock_default_logger)
+      expect(Dor::IndexingService.default_index_logger).to eq(mock_default_logger)
+      expect(Dor::IndexingService.default_index_logger).to eq(mock_default_logger)
     end
   end
 
@@ -145,7 +157,7 @@ describe Dor::IndexingService do
     it "should log the right thing if there's an unexpected Exception that's not StandardError, then re-raise the exception, even when should_raise_errors is false" do
       stack_overflow_ex = SystemStackError.new "didn't see that one coming... maybe you shouldn't have self-referential collections?"
       expect(Dor).to receive(:load_instance).with(@mock_pid).and_raise(stack_overflow_ex)
-      #TODO: file a bug for this expectation not working.  it seemed to work when this code was in argo, but doesn't now that it's been ported to dor-services.
+      # TODO: fix this expectation and the code it's testing, as per https://github.com/sul-dlss/dor-services/issues/156
       # expect(@mock_default_logger).to receive(:error).with(start_with("failed to update index for #{@mock_pid}, unexpected Exception, see main app log: ["))
       expect { Dor::IndexingService.reindex_pid(@mock_pid, nil, false) }.to raise_error(stack_overflow_ex)
     end

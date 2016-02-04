@@ -14,10 +14,11 @@ module Dor
       index_logger
     end
 
-    # get a memoized index logger instance
-    @@default_index_logger = nil
+    # memoize the loggers we create in a hash, init with a nil default logger
+    @@loggers = { default: nil }
+
     def self.default_index_logger
-      @@default_index_logger ||= generate_index_logger
+      @@loggers[:default] ||= generate_index_logger
     end
 
     # takes a Dor object and indexes it to solr.  doesn't commit automatically.
@@ -29,6 +30,13 @@ module Dor
 
     # retrieves a single Dor object by pid, indexes the object to solr, does some logging
     # (will use a defualt logger if one is not provided).  doesn't commit automatically.
+    #
+    # WARNING/TODO:  the tests indicate that the "rescue Exception" block at the end will
+    # get skipped, and the thrown exception (e.g. SystemStackError) will not be logged.  since
+    # that's the only consequence, and the exception bubbles up as we would want anyway, it
+    # doesn't seem worth blocking refactoring.  see https://github.com/sul-dlss/dor-services/issues/156
+    # extra logging in this case would be nice, but centralized indexing that's otherwise
+    # fully functional is nicer.
     def self.reindex_pid(pid, index_logger = nil, should_raise_errors = true)
       index_logger ||= default_index_logger
       obj = Dor.load_instance pid
