@@ -1,0 +1,15 @@
+<contentMetadata objectId="cg767mn6478" type="image">
+  <resource id="cg767mn6478_1" sequence="1" type="image">
+    <label>Image 1</label>
+    <file id="2542A.tif" preserve="yes" publish="no" shelve="no" mimetype="image/tiff" size="92217124">
+      <checksum type="md5">5b79c8570b7ef582735f912aa24ce5f2</checksum>
+      <checksum type="sha1">1f09f8796bfa67db97557f3de48a96c87b286d32</checksum>
+      <imageData width="6475" height="4747"/>
+    </file>
+    <file id="2542A.jp2" mimetype="image/jp2" size="5789764" preserve="no" publish="yes" shelve="yes">
+      <checksum type="md5">cd5ca5c4666cfd5ce0e9dc8c83461d7a</checksum>
+      <checksum type="sha1">39feed6ee1b734cab2d6a446e909a9fc7ac6fd01</checksum>
+      <imageData width="6475" height="4747"/>
+    </file>
+  </resource>
+</contentMetadata>
