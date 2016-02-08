@@ -12,6 +12,10 @@ class DescribableItem < ActiveFedora::Base
   include Dor::Processable
 end
 
+class ItemizableItem < ActiveFedora::Base
+  include Dor::Itemizable
+end
+
 describe Dor::Publishable do
 
   before(:each) { stub_config   }
@@ -225,6 +229,89 @@ describe Dor::Publishable do
           File.open(File.join(druid1.path, 'tmpfile'), 'w') {|f| f.write 'junk' }
           @item.publish_metadata
           expect(File).to_not exist(druid1.path)
+        end
+      end
+      
+      it 'handles externalFile references' do
+        correctPublicContentMetadata = Nokogiri::XML(read_fixture('hj097bm8879_publicObject.xml')).at_xpath('/publicObject/contentMetadata').to_xml               
+        @item.contentMetadata.content = read_fixture('hj097bm8879_contentMetadata.xml')
+        
+        # setup stubs for child items
+        %w(cg767mn6478 jw923xn5254).each do |druid|
+          child_item = ItemizableItem.new(:pid => "druid:#{druid}")
+
+          # load child content metadata fixture
+          dsid = 'contentMetadata'
+          child_item.datastreams[dsid] = Dor::ContentMetadataDS.from_xml read_fixture("#{druid}_#{dsid}.xml")
+
+          # load child DC metadata fixture and set label
+          dsid = 'DC'
+          child_item.datastreams[dsid] = Dor::SimpleDublinCoreDs.from_xml read_fixture("#{druid}_#{dsid}.xml")
+          child_item.label = child_item.datastreams[dsid].title
+
+          # stub out retrieval for child item
+          allow(Dor::Item).to receive(:find).with(child_item.pid).and_return(child_item)
+        end
+        
+        # generate publicObject XML and verify that the content metadata portion is correct
+        expect(Nokogiri::XML(@item.public_xml).at_xpath('/publicObject/contentMetadata').to_xml).to be_equivalent_to(correctPublicContentMetadata)
+      end
+
+      context 'handles errors for externalFile references' do
+        it 'is missing resourceId and mimetype attributes' do
+          @item.contentMetadata.content = <<-EOXML
+          <contentMetadata objectId="hj097bm8879" type="map">
+            <resource id="hj097bm8879_1" sequence="1" type="image">
+              <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478"/>
+              <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+            </resource>
+          </contentMetadata>        
+          EOXML
+
+          # generate publicObject XML and verify that the content metadata portion is invalid
+          expect { Nokogiri::XML(@item.public_xml) }.to raise_error(ArgumentError)
+        end
+
+        it 'has blank resourceId attribute' do
+          @item.contentMetadata.content = <<-EOXML
+          <contentMetadata objectId="hj097bm8879" type="map">
+            <resource id="hj097bm8879_1" sequence="1" type="image">
+              <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478" resourceId=" " mimetype="image/jp2"/>
+              <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+            </resource>
+          </contentMetadata>        
+          EOXML
+
+          # generate publicObject XML and verify that the content metadata portion is invalid
+          expect { Nokogiri::XML(@item.public_xml) }.to raise_error(ArgumentError)
+        end
+
+        it 'has blank fileId attribute' do
+          @item.contentMetadata.content = <<-EOXML
+          <contentMetadata objectId="hj097bm8879" type="map">
+            <resource id="hj097bm8879_1" sequence="1" type="image">
+              <externalFile fileId=" " objectId="druid:cg767mn6478" resourceId="cg767mn6478_1" mimetype="image/jp2"/>
+              <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+            </resource>
+          </contentMetadata>        
+          EOXML
+
+          # generate publicObject XML and verify that the content metadata portion is invalid
+          expect { Nokogiri::XML(@item.public_xml) }.to raise_error(ArgumentError)
+        end
+
+        it 'has blank objectId attribute' do
+          @item.contentMetadata.content = <<-EOXML
+          <contentMetadata objectId="hj097bm8879" type="map">
+            <resource id="hj097bm8879_1" sequence="1" type="image">
+              <externalFile fileId="2542A.jp2" objectId=" " resourceId="cg767mn6478_1" mimetype="image/jp2"/>
+              <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+            </resource>
+          </contentMetadata>        
+          EOXML
+
+          # generate publicObject XML and verify that the content metadata portion is invalid
+          expect { Nokogiri::XML(@item.public_xml) }.to raise_error(ArgumentError)
         end
       end
 
