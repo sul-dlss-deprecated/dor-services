@@ -132,6 +132,7 @@ module Dor
 
   # Services
   autoload :SearchService, 'dor/services/search_service'
+  autoload :IndexingService, 'dor/services/indexing_service'
   autoload :MetadataService, 'dor/services/metadata_service'
   autoload :RegistrationService, 'dor/services/registration_service'
   autoload :SuriService, 'dor/services/suri_service'
@@ -139,7 +140,6 @@ module Dor
   autoload :DigitalStacksService, 'dor/services/digital_stacks_service'
   autoload :SdrIngestService, 'dor/services/sdr_ingest_service'
   autoload :CleanupService, 'dor/services/cleanup_service'
-  autoload :IndexingService, 'dor/services/indexing_service'
   autoload :ProvenanceMetadataService, 'dor/services/provenance_metadata_service'
   autoload :TechnicalMetadataService, 'dor/services/technical_metadata_service'
   autoload :MergeService, 'dor/services/merge_service'
