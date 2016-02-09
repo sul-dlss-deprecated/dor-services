@@ -132,6 +132,7 @@ module Dor
 
   # Services
   autoload :SearchService, 'dor/services/search_service'
+  autoload :IndexingService, 'dor/services/indexing_service'
   autoload :MetadataService, 'dor/services/metadata_service'
   autoload :RegistrationService, 'dor/services/registration_service'
   autoload :SuriService, 'dor/services/suri_service'
