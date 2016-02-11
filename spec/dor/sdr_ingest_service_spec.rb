@@ -209,7 +209,7 @@ describe Dor::SdrIngestService do
   specify 'get_metadata_file_group' do
     metadata_dir = double(Pathname)
     file_group = double(Moab::FileGroup)
-    expect(FileGroup).to receive(:new).with({:group_id => 'metadata'}).and_return(file_group)
+    expect(Moab::FileGroup).to receive(:new).with({:group_id => 'metadata'}).and_return(file_group)
     expect(file_group).to receive(:group_from_directory).with(metadata_dir)
     Dor::SdrIngestService.get_metadata_file_group(metadata_dir)
   end

@@ -1,4 +1,4 @@
-require 'moab_stanford'
+require 'moab/stanford'
 
 module Dor
   class SdrIngestService
@@ -129,7 +129,7 @@ module Dor
       if content_metadata
         Stanford::ContentInventory.new.inventory_from_cm(content_metadata, druid, 'preserve', version_id)
       else
-        FileInventory.new(:type => 'version', :digital_object_id => druid, :version_id => version_id)
+        Moab::FileInventory.new(:type => 'version', :digital_object_id => druid, :version_id => version_id)
       end
     end
 
@@ -143,7 +143,7 @@ module Dor
     # @param [Pathname] metadata_dir The location of the the object's metadata files
     # @return [Moab::FileGroup] Traverse the metadata directory and generate a metadata group
     def self.get_metadata_file_group(metadata_dir)
-      file_group = FileGroup.new(:group_id => 'metadata').group_from_directory(metadata_dir)
+      file_group = Moab::FileGroup.new(:group_id => 'metadata').group_from_directory(metadata_dir)
       file_group
     end
 

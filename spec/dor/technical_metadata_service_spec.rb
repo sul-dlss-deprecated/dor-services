@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'moab_stanford'
+require 'moab/stanford'
 
 describe Dor::TechnicalMetadataService do
 
