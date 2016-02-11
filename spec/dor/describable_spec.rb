@@ -573,7 +573,7 @@ describe Dor::Describable do
       expect{sm = @obj.stanford_mods}.not_to raise_error
       expect(sm).to be_kind_of(Stanford::Mods::Record)
       expect(sm.format_main).to eq(['Book'])
-      expect(sm.pub_date_sort).to eq('1911')
+      expect(sm.pub_year_sort_str).to eq('1911')
     end
     it 'should allow override argument(s)' do
       sm = nil
@@ -581,7 +581,7 @@ describe Dor::Describable do
       expect{sm = @obj.stanford_mods(nk, false)}.not_to raise_error
       expect(sm).to be_kind_of(Stanford::Mods::Record)
       expect(sm.genre.text).to eq('ape')
-      expect(sm.pub_date_sort).to be_nil
+      expect(sm.pub_year_sort_str).to be_nil
     end
   end
 
@@ -601,6 +601,7 @@ describe Dor::Describable do
         'sw_subject_temporal_ssim'    => ['1800-1900'],
         'sw_subject_temporal_tesim'   => ['1800-1900'],
         'sw_pub_date_sort_ssi'        => '1911',
+        'sw_pub_date_sort_isi'        => 1911,
         'sw_pub_date_facet_ssi'       => '1911'
       )
     end
@@ -625,6 +626,7 @@ describe Dor::Describable do
         'sw_subject_temporal_ssim'  => a_collection_containing_exactly('18th century', '17th century'),
         'sw_subject_temporal_tesim' => a_collection_containing_exactly('18th century', '17th century'),
         'sw_pub_date_sort_ssi'      => '1600',
+        'sw_pub_date_sort_isi'      => 1600,
         'sw_pub_date_facet_ssi'     => '1600'
       )
     end
