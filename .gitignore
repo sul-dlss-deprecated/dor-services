@@ -2,7 +2,6 @@
 .DS_Store
 .bundle
 .idea
-.rspec
 .ruby-gemset
 .ruby-version
 .rvmrc
