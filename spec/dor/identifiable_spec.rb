@@ -8,6 +8,18 @@ describe Dor::Identifiable do
   before(:each) { stub_config }
   after(:each)  { unstub_config }
 
+  before(:all) do
+    @mock_rel_druid = 'druid:does_not_exist'
+    @mock_rels_ext_xml = %(<rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+            xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:hydra="http://projecthydra.org/ns/relations#">
+            <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
+              <fedora-model:hasModel rdf:resource="info:fedora/testObject"/>
+              <hydra:isGovernedBy rdf:resource="info:fedora/#{@mock_rel_druid}"/>
+              <fedora:isMemberOfCollection rdf:resource="info:fedora/#{@mock_rel_druid}"/>
+            </rdf:Description>
+          </rdf:RDF>)
+  end
+
   let(:item) do
     item = instantiate_fixture('druid:ab123cd4567', IdentifiableItem)
     allow(item).to receive(:new?).and_return(false)
@@ -192,29 +204,30 @@ describe Dor::Identifiable do
 
   describe 'to_solr' do
     it 'should generate collection and apo title fields' do
-      mock_apo_druid = 'druid:fg890hi1234'
-      mock_rels_ext_xml = %(<rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-            xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:hydra="http://projecthydra.org/ns/relations#">
-            <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
-              <fedora-model:hasModel rdf:resource="info:fedora/testObject"/>
-              <hydra:isGovernedBy rdf:resource="info:fedora/#{mock_apo_druid}"/>
-            </rdf:Description>
-          </rdf:RDF>)
-
-      allow(item.datastreams['RELS-EXT']).to receive(:content).and_return(mock_rels_ext_xml)
-      allow(Dor).to receive(:find).with(mock_apo_druid).and_return(nil)
-
+      allow(item.datastreams['RELS-EXT']).to receive(:content).and_return(@mock_rels_ext_xml)
+      allow(Dor).to receive(:find).with(@mock_rel_druid).and_raise(ActiveFedora::ObjectNotFoundError)
       doc = item.to_solr
 
       ['apo_title', 'nonhydrus_apo_title'].each do |field_name|
-        expect(doc[Solrizer.solr_name(field_name, :symbol)].first).to eq(mock_apo_druid)
-        expect(doc[Solrizer.solr_name(field_name, :stored_searchable)].first).to eq(mock_apo_druid)
+        expect(doc[Solrizer.solr_name(field_name, :symbol)].first).to eq(@mock_rel_druid)
+        expect(doc[Solrizer.solr_name(field_name, :stored_searchable)].first).to eq(@mock_rel_druid)
       end
     end
     it 'should index metadata source' do
       expect(item.to_solr).to match a_hash_including('metadata_source_ssi' => 'Symphony')
     end
+    it 'should generate set collection and apo fields to the druid if the collection or apo does not exist' do
+      allow(item.datastreams['RELS-EXT']).to receive(:content).and_return(@mock_rels_ext_xml)
+      allow(Dor).to receive(:find).with(@mock_rel_druid).and_raise(ActiveFedora::ObjectNotFoundError)
+      doc = item.to_solr
+
+      ['apo_title', 'collection_title'].each do |field_name|
+        expect(doc[Solrizer.solr_name(field_name, :symbol)].first).to eq(@mock_rel_druid)
+        expect(doc[Solrizer.solr_name(field_name, :stored_searchable)].first).to eq(@mock_rel_druid)
+      end
+    end
   end
+
   describe 'get_related_obj_display_title' do
     it 'should return the dc:title if it is available' do
       mock_apo_title = 'apo title'
