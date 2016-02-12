@@ -45,7 +45,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'druid-tools', '~> 0.4', '>= 0.4.1'
   s.add_dependency 'dor-rights-auth', '~> 1.0', '>= 1.0.2'
   s.add_dependency 'lyber-utils', '~> 0.1.2'
-  s.add_dependency 'moab-versioning', '~> 1.4.4' # 1.3.2 fails, 1.4.3 fails
+  s.add_dependency 'moab-versioning', '~> 2.0'
   s.add_dependency 'modsulator', '~> 0.0.7'
   s.add_dependency 'stanford-mods', '= 1.3.3' # 1.3.4 fails on pub_date_sort, 1.4.0 fails
 

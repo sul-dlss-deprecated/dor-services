@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'moab_stanford'
+require 'moab/stanford'
 require 'jhove_service'
 require 'dor-services'
 
