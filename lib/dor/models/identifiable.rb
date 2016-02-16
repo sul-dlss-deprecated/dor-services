@@ -233,10 +233,15 @@ module Dor
 
         # populate cache if necessary
         unless title_hash.key?(rel_druid)
-          related_obj = Dor.find(rel_druid)
-          related_obj_title = get_related_obj_display_title(related_obj, rel_druid)
-          is_from_hydrus = (related_obj && related_obj.tags.include?('Project : Hydrus'))
-          title_hash[rel_druid] = {'related_obj_title' => related_obj_title, 'is_from_hydrus' => is_from_hydrus}
+          begin
+            related_obj = Dor.find(rel_druid)
+            related_obj_title = get_related_obj_display_title(related_obj, rel_druid)
+            is_from_hydrus = (related_obj && related_obj.tags.include?('Project : Hydrus'))
+            title_hash[rel_druid] = {'related_obj_title' => related_obj_title, 'is_from_hydrus' => is_from_hydrus}
+          rescue ActiveFedora::ObjectNotFoundError
+            # This may happen if the given APO or Collection does not exist (bad data)
+            title_hash[rel_druid] = {'related_obj_title' => rel_druid, 'is_from_hydrus' => false}
+          end
         end
 
         # cache should definitely be populated, so just use that to write solr field
