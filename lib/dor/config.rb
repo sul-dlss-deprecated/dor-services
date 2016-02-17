@@ -75,8 +75,11 @@ module Dor
             end
           }
         },
+        :dor_services => {
+          :rest_client => Confstruct.deferred { |c| config.make_rest_client c.url, c.cert_file, c.key_file, c.key_pass }
+        },
         :sdr => {
-          :rest_client => Confstruct.deferred { |c| config.make_rest_client c.url }
+          :rest_client => Confstruct.deferred { |c| config.make_rest_client c.url, c.cert_file, c.key_file, c.key_pass }
         },
         :gsearch => {
           :rest_client => Confstruct.deferred { |c| config.make_rest_client c.rest_url },
