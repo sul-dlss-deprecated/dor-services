@@ -143,8 +143,10 @@ module Dor
     # @return [Nokogiri::XML::Element] the new resource that was added to the contentMetadata
     #
     def add_virtual_resource(child_druid, child_resource)
+      fail ArgumentError, 'Parent must have existing contentMetadata' if self.ng_xml.nil? || self.ng_xml.root.nil?
+
       # create a virtual resource element with attributes linked to the child and omit label
-      sequence_max = self.ng_xml.search('//resource').map{ |node| node[:sequence].to_i }.max
+      sequence_max = self.ng_xml.search('//resource').map{ |node| node[:sequence].to_i }.max || 0
       resource = Nokogiri::XML::Element.new('resource', self.ng_xml)
       resource[:sequence] = sequence_max + 1
       resource[:id] = "#{self.pid.gsub(/^druid:/, '')}_#{resource[:sequence]}"

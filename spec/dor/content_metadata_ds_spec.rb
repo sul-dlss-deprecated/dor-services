@@ -303,5 +303,33 @@ describe Dor::ContentMetadataDS do
       expect(externalFile[0]['mimetype']).to eq('image/tiff')
       expect(externalFile[1]['mimetype']).to eq('image/jp2')
     end
+
+    it 'should add a virtual resource to an empty parent' do
+      child_druid = 'bb273jy3359'
+      child_resource = Nokogiri::XML('
+      <resource type="image" sequence="1" id="bb273jy3359_1">
+        <label>Image 1</label>
+        <file id="00006672_0007.jp2" mimetype="image/jp2" preserve="no" publish="yes" shelve="yes">
+          <imageData width="3883" height="2907"/>
+        </file>
+      </resource>
+      ').root
+
+      @item.contentMetadata.content = "<contentMetadata objectId='#{@item.pid}' type='image'/>"
+      expect(@item.contentMetadata).to be_a(Dor::ContentMetadataDS)
+
+      @item.contentMetadata.add_virtual_resource(child_druid, child_resource)
+      nodes = @item.contentMetadata.ng_xml.search('//resource[@id="ab123cd4567_1"]')
+      expect(nodes.size).to eq(1)
+      expect(nodes.first[:sequence]).to eq('1')
+      expect(nodes.first[:type]).to eq('image')
+    end
+
+    it 'should fail if missing contentMetadata entirely' do
+      child_druid = 'bb273jy3359'
+      child_resource = Nokogiri::XML('<resource/>').root
+      @item.contentMetadata.content = nil
+      expect { @item.contentMetadata.add_virtual_resource(child_druid, child_resource) }.to raise_error(ArgumentError)
+    end
   end
 end
