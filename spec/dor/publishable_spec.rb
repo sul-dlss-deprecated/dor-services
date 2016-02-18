@@ -345,7 +345,7 @@ describe Dor::Publishable do
   describe 'publish remotely' do
     before(:each) do
       Dor::Config.push! {|config| config.dor_services.url 'https://lyberservices-test.stanford.edu/dor'}
-      allow_any_instance_of(RestClient::Resource).to receive(:post)
+      stub_request(:any, 'https://lyberservices-test.stanford.edu/dor/v1/objects/druid:ab123cd4567/publish')
     end
     it 'should hit the correct url' do
       expect(@item.publish_metadata_remotely).to eq('https://lyberservices-test.stanford.edu/dor/v1/objects/druid:ab123cd4567/publish')
