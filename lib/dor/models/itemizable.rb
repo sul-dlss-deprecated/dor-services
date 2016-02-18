@@ -36,10 +36,10 @@ module Dor
       end
 
       # fetch content metadata inventory difference from SDR
-      if Dor::Config.sdr.rest_client.nil?
-        raise Dor::ParameterError, 'Missing Dor::Config.sdr.rest_client'
+      if Dor::Config.dor_services.rest_client.nil?
+        raise Dor::ParameterError, 'Missing Dor::Config.dor_services.rest_client'
       end
-      sdr_client = Dor::Config.sdr.rest_client
+      sdr_client = Dor::Config.dor_services.rest_client
       current_content = datastreams['contentMetadata'].content
       if current_content.nil?
         raise Dor::Exception, 'Missing contentMetadata datastream'
@@ -47,7 +47,7 @@ module Dor
       query_string = { :subset => subset.to_s }
       query_string[:version] = version.to_s unless version.nil?
       query_string = URI.encode_www_form(query_string)
-      sdr_query = "objects/#{pid}/#{DIFF_QUERY}?#{query_string}"
+      sdr_query = "sdr/objects/#{pid}/#{DIFF_QUERY}?#{query_string}"
       response = sdr_client[sdr_query].post(current_content, :content_type => 'application/xml')
       response
     end

@@ -103,8 +103,9 @@ module Dor
     # @param [String] dsname The identifier of the metadata datastream
     # @return [String] The datastream contents from the previous version of the digital object (fetched from SDR storage)
     def self.get_sdr_metadata(druid, dsname)
-      sdr_client = Dor::Config.sdr.rest_client
-      url = "objects/#{druid}/metadata/#{dsname}.xml"
+      sdr_client = Dor::Config.dor_services.rest_client
+      url = "sdr/objects/#{druid}/metadata/#{dsname}.xml"
+
       sdr_client[url].get
     end
 
