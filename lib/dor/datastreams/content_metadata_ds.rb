@@ -157,7 +157,7 @@ module Dor
       resource << generate_also_available_as_node(child_druid)
       
       # save the virtual resource as a sibling and return
-      self.ng_xml.root << resource
+      self.content = (self.ng_xml.root << resource).to_xml
       resource
     end
 
