@@ -22,7 +22,7 @@ Dor.configure do
     catalog.url 'http://example.edu/catalog/mods'
   end
 
-  solrizer.url     'https://example.edu/solr/solrizer'
+  solr.url     'https://example.edu/solr/solrizer'
   workflow.url     'http://example.edu/workflow/'
   sdr.url          'http://example.edu/sdr'
   dor_services.url 'https://example.edu/dor'

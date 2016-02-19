@@ -14,7 +14,7 @@ Configuration is handled through the `Dor::Config` object:
 Dor::Config.configure do
   # Basic DOR configuration
   fedora.url  = 'https://dor-dev.stanford.edu/fedora'
-  solrizer.url = 'http://dor-dev.stanford.edu/solr'
+  solr.url = 'http://dor-dev.stanford.edu/solr'
 
   # If using SSL certificates
   ssl do

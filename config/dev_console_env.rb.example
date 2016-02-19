@@ -37,7 +37,7 @@ Dor::Config.configure do
     local_document_cache_root '/purl'
   end
 
-  solrizer.url     'https://host/solr'
+  solr.url     'https://host/solr'
   workflow.url     'https://host/workflow/'
   dor_services.url 'https://host/dor/v1'
 

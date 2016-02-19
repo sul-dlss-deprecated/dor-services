@@ -34,7 +34,7 @@ module Dor::SpecHelpers
     @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__), 'fixtures')
     Dor::Config.push! do
       suri.mint_ids false
-      solrizer.url 'http://solr.edu/solrizer'
+      solr.url 'http://solr.edu/solrizer'
       fedora.url   'http://fedora.edu/fedora'
       stacks.document_cache_host       'purl-test.stanford.edu'
       stacks.local_workspace_root      File.join(fixture_dir, 'workspace')

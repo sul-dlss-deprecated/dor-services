@@ -12,7 +12,7 @@ describe Dor::Assembleable do
 
     Dor::Config.push! do |config|
       config.suri.mint_ids false
-      config.solrizer.url 'http://solr.edu/solrizer'
+      config.solr.url 'http://solr.edu/solrizer'
       config.fedora.url   'http://fedora.edu'
       config.stacks.local_workspace_root @temp_workspace
     end

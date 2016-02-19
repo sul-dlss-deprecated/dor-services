@@ -55,8 +55,10 @@ module Dor
     end
 
     def make_solr_connection(add_opts = {})
-      opts = Config.solrizer.opts.merge(add_opts).merge(
-        :url => Config.solrizer.url
+      c = Dor::Config.solr || Dor::Config.solrizer
+
+      opts = c.opts.merge(add_opts).merge(
+        :url => c.url
       )
       ::RSolr::Ext.connect(opts)
     end
@@ -101,26 +103,17 @@ module Dor
         config.fedora.delete(key)
       end
 
-      if ActiveFedora.respond_to?(:configurator)
-        if config.solrizer.url.present?
-          ActiveFedora::SolrService.register
-          ActiveFedora::SolrService.instance.instance_variable_set :@conn, make_solr_connection
-        end
-      else
-        ActiveFedora::RubydoraConnection.connect fedora_config if fedora.url.present?
-        if solrizer.url.present?
-          ActiveFedora::SolrService.register config.solrizer.url, config.solrizer.opts
-          conn = ActiveFedora::SolrService.instance.conn.connection
-          if config.ssl.cert_file.present?
-            conn.use_ssl = true
-            conn.cert = OpenSSL::X509::Certificate.new(File.read(config.ssl.cert_file))
-            conn.key = OpenSSL::PKey::RSA.new(File.read(config.ssl.key_file), config.ssl.key_pass) if config.ssl.key_file.present?
-            conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
-          end
-        end
-        ActiveFedora.init
-        ActiveFedora.fedora_config_path = File.expand_path('../../../config/dummy.yml', __FILE__)
+      if config.solrizer.present?
+        stack = Kernel.caller.dup
+        stack.shift while stack[0] =~ %r{(active_support/callbacks|dor/config|dor-services)\.rb}
+        ActiveSupport::Deprecation.warn "Dor::Config -- solrizer configuration is deprecated. Please use solr instead.", stack
       end
+
+      if (config.solr || config.solrizer).url.present?
+        ActiveFedora::SolrService.register
+        ActiveFedora::SolrService.instance.instance_variable_set :@conn, make_solr_connection
+      end
+
     end
 
     # Act like an ActiveFedora.configurator
@@ -136,7 +129,7 @@ module Dor
     end
 
     def solr_config
-      { :url => solrizer.url }
+      { :url => (solr || solrizer).url }
     end
 
     def predicate_config
@@ -145,5 +138,5 @@ module Dor
   end
 
   Config = Configuration.new(YAML.load(File.read(File.expand_path('../../../config/config_defaults.yml', __FILE__))))
-  ActiveFedora.configurator = Config if ActiveFedora.respond_to?(:configurator)
+  ActiveFedora.configurator = Config
 end
