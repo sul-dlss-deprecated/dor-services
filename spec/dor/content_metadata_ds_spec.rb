@@ -255,6 +255,7 @@ describe Dor::ContentMetadataDS do
       </resource>
       ').root
     
+      expect(@item.contentMetadata).to receive(:'content=').and_call_original
       @item.contentMetadata.add_virtual_resource(child_druid, child_resource)
       nodes = @item.contentMetadata.ng_xml.search('//resource[@id=\'ab123cd4567_2\']')
       expect(nodes.length).to eq(1)
@@ -295,7 +296,8 @@ describe Dor::ContentMetadataDS do
         </file>
       </resource>
       ').root
-  
+
+      expect(@item.contentMetadata).to receive(:'content=').and_call_original
       @item.contentMetadata.add_virtual_resource(child_druid, child_resource)
       nodes = @item.contentMetadata.ng_xml.search('//resource[@id=\'ab123cd4567_2\']')
       externalFile = nodes.search('externalFile')
