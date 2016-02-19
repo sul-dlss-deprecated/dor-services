@@ -22,10 +22,6 @@ Dor.configure do
     catalog.url 'http://example.edu/catalog/mods'
   end
 
-  gsearch do
-    rest_url 'https://example.edu/gsearch/rest'
-    url      'https://example.edu/solr/gsearch'
-  end
   solrizer.url     'https://example.edu/solr/solrizer'
   workflow.url     'http://example.edu/workflow/'
   sdr.url          'http://example.edu/sdr'

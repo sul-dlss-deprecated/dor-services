@@ -19,9 +19,6 @@
 :solrizer:
   :url:
   :opts: {}
-:gsearch:
-  :rest_url:
-  :url:
 :metadata:
   :catalog:
     :url:

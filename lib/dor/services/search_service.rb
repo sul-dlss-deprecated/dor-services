@@ -13,15 +13,6 @@ module Dor
         Dor::VERSION
       end
 
-      def reindex(*pids)
-        client = Config.gsearch.rest_client
-        pids.in_groups_of(20, false) do |group|
-          group.each { |pid| client["?operation=updateIndex&action=fromPid&value=#{pid}"].get }
-          yield group if block_given?
-        end
-        pids
-      end
-
       def risearch(query, opts = {})
         client = Config.fedora.client['risearch']
         client.options[:timeout] = opts.delete(:timeout)
@@ -52,19 +43,6 @@ module Dor
           start += pids.length
           pids = Dor::SearchService.risearch("#{opts[:query]} limit #{opts[:in_groups_of]} offset #{start}")
         end
-      end
-
-      def gsearch(params)
-        client = Config.gsearch.client
-        query_params = params.merge(:wt => 'json')
-        query_string = query_params.collect { |k, v|
-          if v.is_a?(Array)
-            v.collect { |vv| "#{k}=#{URI.encode(vv.to_s)}" }.join('&')
-          else
-            "#{k}=#{URI.encode(v.to_s)}"
-          end
-        }.join('&')
-        JSON.parse(client["select?#{query_string}"].get)
       end
 
       def query(query, args = {})
