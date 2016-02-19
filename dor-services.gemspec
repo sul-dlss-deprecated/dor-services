@@ -41,7 +41,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'retries'
 
   # Stanford dependencies
-  s.add_dependency 'dor-workflow-service', '~> 1.8'
+  s.add_dependency 'dor-workflow-service', '~> 2.0'
   s.add_dependency 'druid-tools', '~> 0.4', '>= 0.4.1'
   s.add_dependency 'dor-rights-auth', '~> 1.0', '>= 1.0.2'
   s.add_dependency 'lyber-utils', '~> 0.1.2'
