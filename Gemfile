@@ -10,7 +10,5 @@ group :test do
   gem 'webmock'
 end
 
-gem 'dor-rights-auth', :git => 'git@github.com:sul-dlss/dor-rights-auth.git', :branch => 'master'
-
 # Dependencies are defined in dor-services.gemspec
 gemspec
