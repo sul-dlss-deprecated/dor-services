@@ -16,7 +16,7 @@
   :password: ""
   :port: 61613
   :client_id: 'dor-services'
-:solrizer:
+:solr:
   :url:
   :opts: {}
 :metadata:
