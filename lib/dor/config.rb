@@ -55,10 +55,8 @@ module Dor
     end
 
     def make_solr_connection(add_opts = {})
-      c = Dor::Config.solr || Dor::Config.solrizer
-
-      opts = c.opts.merge(add_opts).merge(
-        :url => c.url
+      opts = Dor::Config.solr.opts.merge(add_opts).merge(
+        :url => Dor::Config.solr.url
       )
       ::RSolr::Ext.connect(opts)
     end
@@ -107,9 +105,13 @@ module Dor
         stack = Kernel.caller.dup
         stack.shift while stack[0] =~ %r{(active_support/callbacks|dor/config|dor-services)\.rb}
         ActiveSupport::Deprecation.warn "Dor::Config -- solrizer configuration is deprecated. Please use solr instead.", stack
+
+        config.solrizer.each do |k, v|
+          config.solr[k] ||= v
+        end
       end
 
-      if (config.solr || config.solrizer).url.present?
+      if config.solr.url.present?
         ActiveFedora::SolrService.register
         ActiveFedora::SolrService.instance.instance_variable_set :@conn, make_solr_connection
       end
@@ -129,7 +131,7 @@ module Dor
     end
 
     def solr_config
-      { :url => (solr || solrizer).url }
+      { :url => solr.url }
     end
 
     def predicate_config
