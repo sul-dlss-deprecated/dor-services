@@ -1,13 +1,7 @@
 source 'https://rubygems.org'
 
 group :development do
-  gem 'pry-byebug', :platform => [:ruby_20, :ruby_21, :ruby_22]
-  gem 'pry-debugger', '0.2.2', :platform => :ruby_19
-end
-
-group :test do
-  gem 'vcr'
-  gem 'webmock'
+  gem 'pry-byebug'
 end
 
 # Dependencies are defined in dor-services.gemspec
