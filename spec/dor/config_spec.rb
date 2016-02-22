@@ -37,4 +37,13 @@ describe Dor::Configuration do
 
     expect(Dor::WorkflowService.workflow_resource.to_s).to eq('http://mynewurl.edu/workflow')
   end
+
+  it 'adds deprecation warnings for old solrizer configurations' do
+    @config.solr.url = nil
+    expect(ActiveSupport::Deprecation).to receive(:warn)
+    @config.configure do
+      solrizer.url 'http://example.com/solr'
+    end
+    expect(@config.solr.url).to eq 'http://example.com/solr'
+  end
 end
