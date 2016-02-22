@@ -68,7 +68,7 @@ module Dor
           unshelve
           unpublish
           Dor::CleanupService.cleanup_by_druid @current_secondary.pid
-          Dor::WorkflowService.archive_active_workflow 'dor', @current_secondary.pid
+          Dor::Config.workflow.client.archive_active_workflow 'dor', @current_secondary.pid
         rescue => e
           @logger.error "Unable to decomission #{@current_secondary.pid} with primary object #{@primary.pid}: #{e.inspect}"
           @logger.error e.backtrace.join("\n")

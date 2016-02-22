@@ -70,7 +70,7 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
     end
   end
 
-  # Creates the xml used by Dor::WorkflowService.create_workflow
+  # Creates the xml used by Dor::WorkflowService#create_workflow
   # @return [String] An object's initial workflow as defined by the <workflow-def> in content
   def initial_workflow
     doc = Nokogiri::XML('<workflow/>')

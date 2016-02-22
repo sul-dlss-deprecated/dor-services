@@ -25,15 +25,6 @@ module Dor
       ensure
         $-v = temp_v
       end
-      params = { :dor_services_url => result.dor_services.url }
-
-      if result.workflow.logfile && result.workflow.shift_age
-        params[:logger] = Logger.new(result.workflow.logfile, result.workflow.shift_age)
-      elsif result.workflow.logfile
-        params[:logger] = Logger.new(result.workflow.logfile)
-      end
-      params[:timeout] = result.workflow.timeout if result.workflow.timeout
-      Dor::WorkflowService.configure result.workflow.url, params
       result
     end
 
@@ -84,6 +75,16 @@ module Dor
         :stomp => {
           :connection => Confstruct.deferred { |c| Stomp::Connection.new c.user, c.password, c.host, c.port, true, 5, { 'client-id' => c.client_id }},
           :client => Confstruct.deferred { |c| Stomp::Client.new c.user, c.password, c.host, c.port }
+        },
+        :workflow => {
+          :client => Confstruct.deferred { |c| Dor::WorkflowService.new c.url, logger: c.client_logger, timeout: c.timeout, dor_services_url: config.dor_services.url },
+          :client_logger => Confstruct.deferred do |c|
+            if c.logfile && c.shift_age
+              Logger.new(c.logfile, c.shift_age)
+            elsif c.logfile
+              Logger.new(c.logfile)
+            end
+          end
         }
       })
       true

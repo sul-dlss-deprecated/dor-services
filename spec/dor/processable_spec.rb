@@ -33,15 +33,15 @@ describe Dor::Processable do
   end
 
   it 'should load its content directly from the workflow service' do
-    expect(Dor::WorkflowService).to receive(:get_workflow_xml).with('dor', 'druid:ab123cd4567', nil).once { '<workflows/>' }
+    expect(Dor::Config.workflow.client).to receive(:get_workflow_xml).with('dor', 'druid:ab123cd4567', nil).once { '<workflows/>' }
     expect(@item.workflows.content).to eq('<workflows/>')
   end
 
   it 'should be able to invalidate the cache of its content' do
-    expect(Dor::WorkflowService).to receive(:get_workflow_xml).with('dor', 'druid:ab123cd4567', nil).once { '<workflows/>' }
+    expect(Dor::Config.workflow.client).to receive(:get_workflow_xml).with('dor', 'druid:ab123cd4567', nil).once { '<workflows/>' }
     expect(@item.workflows.content).to eq('<workflows/>')
     expect(@item.workflows.content).to eq('<workflows/>') # should be cached copy
-    expect(Dor::WorkflowService).to receive(:get_workflow_xml).with('dor', 'druid:ab123cd4567', nil).once { '<workflows>with some data</workflows>' }
+    expect(Dor::Config.workflow.client).to receive(:get_workflow_xml).with('dor', 'druid:ab123cd4567', nil).once { '<workflows>with some data</workflows>' }
     # pass refresh flag and should be refreshed copy
     expect(@item.workflows.content(true)).to eq('<workflows>with some data</workflows>')
     expect(@item.workflows.content).to eq('<workflows>with some data</workflows>')
@@ -147,7 +147,7 @@ describe Dor::Processable do
       '
 
       xml = Nokogiri::XML(xml)
-      allow(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
+      allow(Dor::Config.workflow.client).to receive(:query_lifecycle).and_return(xml)
       allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
       @versionMD = Dor::VersionMetadataDS.from_xml(dsxml)
       allow(@item).to receive(:versionMetadata).and_return(@versionMD)
@@ -172,7 +172,7 @@ describe Dor::Processable do
     end
     it 'should skip the versioning related steps if a new version has not been opened' do
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
-      allow(Dor::WorkflowService).to receive(:query_lifecycle).and_return(Nokogiri::XML('<?xml version="1.0" encoding="UTF-8"?>
+      allow(Dor::Config.workflow.client).to receive(:query_lifecycle).and_return(Nokogiri::XML('<?xml version="1.0" encoding="UTF-8"?>
       <lifecycle objectId="druid:gv054hp4128">
       <milestone date="2012-11-06T16:30:03-0800">submitted</milestone>
       <milestone date="2012-11-06T16:35:00-0800">described</milestone>
@@ -244,17 +244,17 @@ describe Dor::Processable do
       </lifecycle>
       '
       xml = Nokogiri::XML(xml)
-      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(xml)
+      expect(Dor::Config.workflow.client).to receive(:query_lifecycle).and_return(xml)
       expect(@versionMD).to receive(:current_version_id).and_return('4')
       expect(@item.status).to eq('v4 In accessioning (described, published)')
     end
     it 'should generate a status string' do
-      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(@gv054hp4128)
+      expect(Dor::Config.workflow.client).to receive(:query_lifecycle).and_return(@gv054hp4128)
       expect(@versionMD).to receive(:current_version_id).and_return('3')
       expect(@item.status).to eq('v3 In accessioning (described, published)')
     end
     it 'should generate a status string' do
-      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(@gv054hp4128)
+      expect(Dor::Config.workflow.client).to receive(:query_lifecycle).and_return(@gv054hp4128)
       expect(@versionMD).to receive(:current_version_id).and_return('3')
       expect(@item.status).to eq('v3 In accessioning (described, published)')
     end
@@ -284,7 +284,7 @@ describe Dor::Processable do
       @versionMD = double(Dor::VersionMetadataDS)
       allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
       expect(@item).to receive(:versionMetadata).and_return(@versionMD)
-      expect(Dor::WorkflowService).to receive(:query_lifecycle).and_return(@xml)
+      expect(Dor::Config.workflow.client).to receive(:query_lifecycle).and_return(@xml)
     end
 
     it 'should handle a v2 accessioned object' do
@@ -308,7 +308,7 @@ describe Dor::Processable do
       allow(item).to receive(:admin_policy_object) { apo }
       expect(Dor::WorkflowObject).to receive(:initial_workflow).and_return('<xml/>')
       expect(Dor::WorkflowObject).to receive(:initial_repo).and_return('dor')
-      expect(Dor::WorkflowService).to receive(:create_workflow).with('dor', 'druid:ab123cd4567', 'accessionWF', '<xml/>', {:create_ds => true, :lane_id => 'fast'})
+      expect(Dor::Config.workflow.client).to receive(:create_workflow).with('dor', 'druid:ab123cd4567', 'accessionWF', '<xml/>', {:create_ds => true, :lane_id => 'fast'})
       item.create_workflow('accessionWF')
     end
   end
