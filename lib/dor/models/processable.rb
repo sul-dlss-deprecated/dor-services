@@ -100,7 +100,7 @@ module Dor
     end
 
     def milestones
-      Dor::WorkflowService.get_milestones('dor', pid)
+      Dor::Config.workflow.client.get_milestones('dor', pid)
     end
 
     # @return [Hash{Symbol => Object}] including :current_version, :status_code and :status_time
@@ -214,7 +214,7 @@ module Dor
       priority = workflows.current_priority if priority == 0
       opts = { :create_ds => create_ds, :lane_id => default_workflow_lane }
       opts[:priority] = priority if priority > 0
-      Dor::WorkflowService.create_workflow(Dor::WorkflowObject.initial_repo(name), pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
+      Dor::Config.workflow.client.create_workflow(Dor::WorkflowObject.initial_repo(name), pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
       workflows.content(true) # refresh the copy of the workflows datastream
     end
 

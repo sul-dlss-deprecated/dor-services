@@ -23,7 +23,7 @@ describe Dor::WorkflowObject do
     end
 
     it 'indexes the number of archived objects for the workflow' do
-      expect(Dor::WorkflowService).to receive(:count_archived_for_workflow).and_return(5)
+      expect(Dor::Config.workflow.client).to receive(:count_archived_for_workflow).and_return(5)
       expect(@item.to_solr).to include 'accessionWF_archived_isi' => 5
     end
   end

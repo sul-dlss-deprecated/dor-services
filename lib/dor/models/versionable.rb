@@ -18,9 +18,9 @@ module Dor
     def open_new_version(opts = {})
       # During local development, we need a way to open a new version even if the object has not been accessioned.
       raise(Dor::Exception, 'Object net yet accessioned') unless
-        opts[:assume_accessioned] || Dor::WorkflowService.get_lifecycle('dor', pid, 'accessioned')
+        opts[:assume_accessioned] || Dor::Config.workflow.client.get_lifecycle('dor', pid, 'accessioned')
       raise Dor::Exception, 'Object already opened for versioning' if new_version_open?
-      raise Dor::Exception, 'Object currently being accessioned' if Dor::WorkflowService.get_active_lifecycle('dor', pid, 'submitted')
+      raise Dor::Exception, 'Object currently being accessioned' if Dor::Config.workflow.client.get_active_lifecycle('dor', pid, 'submitted')
 
       sdr_version = Sdr::Client.current_version pid
 
@@ -65,20 +65,20 @@ module Dor
 
       raise Dor::Exception, 'latest version in versionMetadata requires tag and description before it can be closed' unless datastreams['versionMetadata'].current_version_closeable?
       raise Dor::Exception, 'Trying to close version on an object not opened for versioning' unless new_version_open?
-      raise Dor::Exception, 'accessionWF already created for versioned object' if Dor::WorkflowService.get_active_lifecycle('dor', pid, 'submitted')
+      raise Dor::Exception, 'accessionWF already created for versioned object' if Dor::Config.workflow.client.get_active_lifecycle('dor', pid, 'submitted')
 
-      Dor::WorkflowService.close_version 'dor', pid, opts.fetch(:start_accession, true)  # Default to creating accessionWF when calling close_version
+      Dor::Config.workflow.client.close_version 'dor', pid, opts.fetch(:start_accession, true)  # Default to creating accessionWF when calling close_version
     end
 
     # @return [Boolean] true if 'opened' lifecycle is active, false otherwise
     def new_version_open?
-      return true if Dor::WorkflowService.get_active_lifecycle('dor', pid, 'opened')
+      return true if Dor::Config.workflow.client.get_active_lifecycle('dor', pid, 'opened')
       false
     end
 
     # @return [Boolean] true if the object is in a state that allows it to be modified. States that will allow modification are: has not been submitted for accessioning, has an open version or has sdr-ingest set to hold
     def allows_modification?
-      if Dor::WorkflowService.get_lifecycle('dor', pid, 'submitted') && !new_version_open? && Dor::WorkflowService.get_workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer') != 'hold'
+      if Dor::Config.workflow.client.get_lifecycle('dor', pid, 'submitted') && !new_version_open? && Dor::Config.workflow.client.get_workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer') != 'hold'
         false
       else
         true

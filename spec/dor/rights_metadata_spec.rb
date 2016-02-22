@@ -8,7 +8,7 @@ describe Dor::RightsMetadataDS do
     @item = instantiate_fixture('druid:bb046xn0881', Dor::Item)
     allow(Dor::Item).to receive(:find).with(@item.pid).and_return(@item)
     allow(@item).to receive(:workflows).and_return(double)
-    allow(Dor::WorkflowService).to receive(:get_milestones).and_return([])
+    allow(Dor::Config.workflow.client).to receive(:get_milestones).and_return([])
   end
 
   it '#new' do

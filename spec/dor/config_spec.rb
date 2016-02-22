@@ -35,7 +35,7 @@ describe Dor::Configuration do
       workflow.url 'http://mynewurl.edu/workflow'
     end
 
-    expect(Dor::WorkflowService.base_url.to_s).to eq 'http://mynewurl.edu/workflow'
+    expect(@config.workflow.client.base_url.to_s).to eq('http://mynewurl.edu/workflow')
   end
 
   it 'adds deprecation warnings for old solrizer configurations' do
