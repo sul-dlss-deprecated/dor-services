@@ -45,10 +45,7 @@ module Dor
 
     def to_solr(solr_doc = {}, *args)
       super solr_doc, *args
-      client = Dor::WorkflowService.workflow_resource
-      xml = client["workflow_archive?repository=#{definition.repo}&workflow=#{definition.name}&count-only=true"].get
-      count = Nokogiri::XML(xml).at_xpath('/objects/@count').value
-      solr_doc["#{definition.name}_archived_isi"] = count
+      solr_doc["#{definition.name}_archived_isi"] = Dor::WorkflowService.count_archived_for_workflow(definition.name)
       solr_doc
     end
 
