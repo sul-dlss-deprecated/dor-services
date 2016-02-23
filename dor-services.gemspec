@@ -21,12 +21,10 @@ Gem::Specification.new do |s|
   s.add_dependency 'confstruct', '~> 0.2.7'
   s.add_dependency 'equivalent-xml', '~> 0.5', '>= 0.5.1' # 5.0 insufficient
   s.add_dependency 'json', '~> 1.8.1'
-  s.add_dependency 'net-sftp', '~> 2.1.2'
-  s.add_dependency 'net-ssh', '~> 2.6.5' # 2.6.5 is the minimum for our 12/2014 version of net-stfp.  3.x requires ruby 2.0+
+  s.add_dependency 'net-sftp', '~> 2.1'
   s.add_dependency 'nokogiri', '~> 1.6'
   s.add_dependency 'nokogiri-pretty', '~> 0.1'
   s.add_dependency 'om', '~> 3.0'
-  s.add_dependency 'progressbar', '~> 0.21'
   s.add_dependency 'rdf', '~> 1.1.7' # 1.0.10 breaks
   s.add_dependency 'rest-client', '~> 1.7'
   s.add_dependency 'rsolr-ext', '~> 1.0.3'
@@ -37,7 +35,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'systemu', '~> 2.6'
   s.add_dependency 'uuidtools', '~> 2.1.4'
   # s.add_dependency 'validatable', '~> 1.6.7'
-  s.add_dependency 'osullivan', '~> 0.0.3'
   s.add_dependency 'retries'
 
   # Stanford dependencies
@@ -53,7 +50,6 @@ Gem::Specification.new do |s|
   # It will not add these as dependencies if you require dor-services for other projects
   s.add_development_dependency 'coveralls'
   s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'haml', '~> 4.0'
   s.add_development_dependency 'jhove-service', '~> 1.0.1'
   s.add_development_dependency 'pry'
   s.add_development_dependency 'rake', '~> 10.0'
