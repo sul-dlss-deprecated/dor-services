@@ -21,8 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'confstruct', '~> 0.2.7'
   s.add_dependency 'equivalent-xml', '~> 0.5', '>= 0.5.1' # 5.0 insufficient
   s.add_dependency 'json', '~> 1.8.1'
-  s.add_dependency 'net-sftp', '~> 2.1.2'
-  s.add_dependency 'net-ssh', '~> 2.6.5' # 2.6.5 is the minimum for our 12/2014 version of net-stfp.  3.x requires ruby 2.0+
+  s.add_dependency 'net-sftp', '~> 2.1'
   s.add_dependency 'nokogiri', '~> 1.6'
   s.add_dependency 'nokogiri-pretty', '~> 0.1'
   s.add_dependency 'om', '~> 3.0'
