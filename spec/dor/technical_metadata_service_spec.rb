@@ -159,7 +159,7 @@ describe Dor::TechnicalMetadataService do
   end
 
   specify 'Dor::TechnicalMetadataService.get_sdr_metadata' do
-    stub_request(:get, "#{Dor::Config.sdr.url}/objects/druid:ab123cd4567/metadata/technicalMetadata.xml").to_return(:body => '<technicalMetadata/>')
+    stub_request(:get, "#{Dor::Config.dor_services.url}/sdr/objects/druid:ab123cd4567/metadata/technicalMetadata.xml").to_return(:body => '<technicalMetadata/>')
     response = Dor::TechnicalMetadataService.get_sdr_metadata('druid:ab123cd4567', 'technicalMetadata')
     expect(response).to eq('<technicalMetadata/>')
   end

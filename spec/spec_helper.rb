@@ -43,6 +43,10 @@ module Dor::SpecHelpers
       sdr.local_workspace_root         File.join(fixture_dir, 'workspace')
       sdr.local_export_home            File.join(fixture_dir, 'export')
       indexing_svc.log                 'indexing_svc.log.test'
+
+      dor_services do
+        url 'http://localhost/dor/v1'
+      end
     end
     allow(ActiveFedora).to receive(:fedora).and_return(double('frepo').as_null_object)  # must be used in per-request context: :each not :all
   end

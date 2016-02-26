@@ -44,8 +44,8 @@ module Dor
     # @param [String] druid The object identifier
     # @return [Moab::SignatureCatalog] the catalog of all files previously ingested
     def self.get_signature_catalog(druid)
-      sdr_client = Dor::Config.sdr.rest_client
-      url = "objects/#{druid}/manifest/signatureCatalog.xml"
+      sdr_client = Dor::Config.dor_services.rest_client
+      url = "sdr/objects/#{druid}/manifest/signatureCatalog.xml"
       response = sdr_client[url].get
       Moab::SignatureCatalog.parse(response)
     rescue RestClient::ResourceNotFound

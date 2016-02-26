@@ -5,8 +5,8 @@ module Sdr
       # @param [String] druid id of the object you want the version of
       # @return [Integer] the current version from SDR
       def current_version(druid)
-        sdr_client = Dor::Config.sdr.rest_client
-        xml = sdr_client["objects/#{druid}/current_version"].get
+        sdr_client = Dor::Config.dor_services.rest_client
+        xml = sdr_client["sdr/objects/#{druid}/current_version"].get
 
         begin
           doc = Nokogiri::XML xml
