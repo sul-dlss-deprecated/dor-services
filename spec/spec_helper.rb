@@ -26,6 +26,7 @@ require 'nokogiri'
 
 require 'dor_config'
 require 'vcr'
+require 'retries'
 
 # ::ENABLE_SOLR_UPDATES = true
 

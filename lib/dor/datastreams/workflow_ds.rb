@@ -17,7 +17,7 @@ module Dor
     end
 
     def get_workflow(wf, repo = 'dor')
-      xml = Dor::WorkflowService.get_workflow_xml(repo, pid, wf)
+      xml = Dor::Config.workflow.client.get_workflow_xml(repo, pid, wf)
       xml = Nokogiri::XML(xml)
       return nil if xml.xpath('workflow').length == 0
       Workflow::Document.new(xml.to_s)
@@ -34,12 +34,12 @@ module Dor
     # service directly
     def content(refresh = false)
       @content = nil if refresh
-      @content ||= Dor::WorkflowService.get_workflow_xml 'dor', pid, nil
-    rescue Dor::WorkflowException => e
+      @content ||= Dor::Config.workflow.client.get_workflow_xml 'dor', pid, nil
+    rescue Dor::WorkflowException
       xml = Nokogiri::XML(%(<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<workflows objectId="#{pid}"/>))
       digital_object.datastreams.keys.each do |dsid|
         next unless dsid =~ /WF$/
-        ds_content = Nokogiri::XML(Dor::WorkflowService.get_workflow_xml 'dor', pid, dsid)
+        ds_content = Nokogiri::XML(Dor::Config.workflow.client.get_workflow_xml('dor', pid, dsid))
         xml.root.add_child(ds_content.root)
       end
       @content ||= xml.to_xml
