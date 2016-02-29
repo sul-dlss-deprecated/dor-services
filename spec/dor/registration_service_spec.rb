@@ -294,7 +294,7 @@ describe Dor::RegistrationService do
         expect(obj.label).to eq('a' * 254)
       end
       it 'sets workflow priority when passed in' do
-        expect_any_instance_of(Dor::Item).to receive(:initialize_workflow).with('digitizationWF', false, 50)
+        expect_any_instance_of(Dor::Item).to receive(:create_workflow).with('digitizationWF', false, 50)
         @params[:workflow_priority] = 50
         @params[:initiate_workflow] = 'digitizationWF'
         Dor::RegistrationService.register_object(@params)

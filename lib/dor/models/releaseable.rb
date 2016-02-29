@@ -20,7 +20,7 @@ module Dor
 
       # Save item to dor so the robots work with the latest data
       save
-      initialize_workflow('releaseWF')
+      create_workflow('releaseWF')
     end
 
     # Generate XML structure for inclusion to Purl

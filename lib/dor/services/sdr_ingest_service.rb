@@ -36,7 +36,7 @@ module Dor
       bagger.create_tagfiles
       verify_bag_structure(bag_dir)
       # Now bootstrap SDR workflow. but do not create the workflows datastream
-      dor_item.initialize_workflow('sdrIngestWF', false)
+      dor_item.create_workflow('sdrIngestWF', false)
     rescue Exception => e
       raise LyberCore::Exceptions::ItemError.new(druid, 'Export failure', e)
     end

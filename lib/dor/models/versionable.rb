@@ -12,7 +12,7 @@ module Dor
     # Increments the version number and initializes versioningWF for the object
     # @param [Hash] opts optional params
     # @option opts [Boolean] :assume_accessioned If true, does not check whether object has been accessioned.
-    # @option opts [Boolean] :create_workflows_ds If false, initialize_workflow() will not initialize the workflows datastream.
+    # @option opts [Boolean] :create_workflows_ds If false, create_workflow() will not initialize the workflows datastream.
     # @option opts [Hash] :vers_md_upd_info If present, used to add to the events datastream and set the desc and significance on the versionMetadata datastream
     # @raise [Dor::Exception] if the object hasn't been accessioned, or if a version is already opened
     def open_new_version(opts = {})
@@ -32,9 +32,9 @@ module Dor
       k = :create_workflows_ds
       if opts.key?(k)
         # During local development, Hydrus (or another app w/ local Fedora) does not want to initialize workflows datastream.
-        initialize_workflow('versioningWF', opts[k])
+        create_workflow('versioningWF', opts[k])
       else
-        initialize_workflow('versioningWF')
+        create_workflow('versioningWF')
       end
 
       vmd_upd_info = opts[:vers_md_upd_info]
