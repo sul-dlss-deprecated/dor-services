@@ -2,6 +2,7 @@ require 'active_fedora'
 require 'active_support/core_ext/module/attribute_accessors'
 require 'modsulator'
 require 'nokogiri-pretty'
+require 'dor/utils/sdr_client'
 
 module Dor
   @@registered_classes = {}

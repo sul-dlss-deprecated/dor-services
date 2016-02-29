@@ -116,7 +116,7 @@ class MergeIntegrationTest
   def publish_shelve
     @pids.map {|p| "druid:#{p}"}.each do |pid|
       i = Dor::Item.find pid
-      change_manifest = Dor::Versioning::FileInventoryDifference.new(i.get_content_diff(:shelve))
+      change_manifest = i.get_content_diff(:shelve)
       Dor::DigitalStacksService.shelve_to_stacks i.pid, change_manifest.file_sets(:added, :content)
       i.publish_metadata
     end

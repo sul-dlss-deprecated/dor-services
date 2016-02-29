@@ -44,12 +44,7 @@ module Dor
     # @param [String] druid The object identifier
     # @return [Moab::SignatureCatalog] the catalog of all files previously ingested
     def self.get_signature_catalog(druid)
-      sdr_client = Dor::Config.dor_services.rest_client
-      url = "sdr/objects/#{druid}/manifest/signatureCatalog.xml"
-      response = sdr_client[url].get
-      Moab::SignatureCatalog.parse(response)
-    rescue RestClient::ResourceNotFound
-      Moab::SignatureCatalog.new(:digital_object_id => druid, :version_id => 0)
+      Sdr::Client.get_signature_catalog(druid)
     end
 
     # @param [Dor::Item] dor_item The representation of the digital object

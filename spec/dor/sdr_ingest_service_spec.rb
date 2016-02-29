@@ -127,17 +127,6 @@ describe Dor::SdrIngestService do
     end
   end
 
-  specify 'get_signature_catalog' do
-    druid = 'druid:zz000zz0000'
-    resource = Dor::Config.dor_services.rest_client["sdr/objects/#{druid}/manifest/signatureCatalog.xml"]
-    stub_request(:get, resource.url).to_return(:body => '<signatureCatalog objectId="druid:zz000zz0000" versionId="0" catalogDatetime="" fileCount="0" byteCount="0" blockCount="0"/>')
-    catalog = Dor::SdrIngestService.get_signature_catalog(druid)
-    # p catalog
-    # p catalog.to_xml
-    expect(catalog.to_xml).to match(/<signatureCatalog/)
-    expect(catalog.version_id).to eq 0
-  end
-
   specify 'extract_datastreams' do
     dor_item = double('workitem')
     metadata_dir = double('metadata dir')
