@@ -47,7 +47,7 @@ describe Dor::Shelvable do
       workitem = ShelvableItem.new(:pid => druid)
       # read in a FileInventoryDifference manifest from the fixtures area
       xml_pathname = Pathname('spec').join('fixtures', 'content_diff_reports', 'jq937jp0017-v1-v2.xml')
-      expect(workitem).to receive(:get_content_diff).with(:shelve).and_return(xml_pathname.read)
+      expect(workitem).to receive(:get_content_diff).with(:shelve).and_return(Moab::FileInventoryDifference.parse(xml_pathname.read))
       result = workitem.get_shelve_diff
       expect(result.to_xml).to be_equivalent_to(<<-EOF
         <fileGroupDifference groupId="content" differenceCount="3" identical="3" copyadded="0" copydeleted="0" renamed="0" modified="1" added="0" deleted="2">

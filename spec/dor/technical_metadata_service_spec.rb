@@ -86,7 +86,7 @@ describe Dor::TechnicalMetadataService do
       )
       inventory_diff.group_differences << group_diff
       dor_item = double(Dor::Item)
-      allow(dor_item).to receive(:get_content_diff).with('all').and_return(inventory_diff.to_xml)
+      allow(dor_item).to receive(:get_content_diff).with('all').and_return(inventory_diff)
       content_group_diff = Dor::TechnicalMetadataService.get_content_group_diff(dor_item)
       expect(content_group_diff.to_xml).to eq(group_diff.to_xml)
     end
@@ -119,7 +119,7 @@ describe Dor::TechnicalMetadataService do
 
   specify 'Dor::TechnicalMetadataService.get_sdr_technical_metadata' do
     druid = 'druid:du000ps9999'
-    allow(Dor::TechnicalMetadataService).to receive(:get_sdr_metadata).with(druid, 'technicalMetadata').and_raise(RestClient::ResourceNotFound)
+    allow(Sdr::Client).to receive(:get_sdr_metadata).with(druid, 'technicalMetadata').and_return(nil)
     sdr_techmd = Dor::TechnicalMetadataService.get_sdr_technical_metadata(druid)
     expect(sdr_techmd).to be_nil
 
@@ -156,12 +156,6 @@ describe Dor::TechnicalMetadataService do
     allow(jhove_service).to receive(:upgrade_technical_metadata).and_return('upgraded techmd')
     dor_techmd = Dor::TechnicalMetadataService.get_dor_technical_metadata(dor_item)
     expect(dor_techmd).to eq('upgraded techmd')
-  end
-
-  specify 'Dor::TechnicalMetadataService.get_sdr_metadata' do
-    stub_request(:get, "#{Dor::Config.dor_services.url}/sdr/objects/druid:ab123cd4567/metadata/technicalMetadata.xml").to_return(:body => '<technicalMetadata/>')
-    response = Dor::TechnicalMetadataService.get_sdr_metadata('druid:ab123cd4567', 'technicalMetadata')
-    expect(response).to eq('<technicalMetadata/>')
   end
 
   specify 'Dor::TechnicalMetadataService.get_new_technical_metadata' do

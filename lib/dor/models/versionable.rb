@@ -1,5 +1,3 @@
-require 'dor/utils/sdr_client'
-
 module Dor
   module Versionable
     extend ActiveSupport::Concern

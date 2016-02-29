@@ -25,8 +25,7 @@ module Dor
     # retrieve the differences between the current contentMetadata and the previously ingested version
     # (filtering to select only the files that should be shelved to stacks)
     def get_shelve_diff
-      inventory_diff_xml = get_content_diff(:shelve)
-      inventory_diff = Moab::FileInventoryDifference.parse(inventory_diff_xml)
+      inventory_diff = get_content_diff(:shelve)
       shelve_diff = inventory_diff.group_difference('content')
       shelve_diff
     end

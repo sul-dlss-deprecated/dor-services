@@ -48,8 +48,7 @@ module Dor
     # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
     # @return [FileGroupDifference] The differences between two versions of a group of files
     def self.get_content_group_diff(dor_item)
-      inventory_diff_xml = dor_item.get_content_diff('all')
-      inventory_diff = Moab::FileInventoryDifference.parse(inventory_diff_xml)
+      inventory_diff = dor_item.get_content_diff('all')
       inventory_diff.group_difference('content')
     end
 
@@ -77,11 +76,7 @@ module Dor
     # @return [String] The technicalMetadata datastream from the previous version of the digital object (fetched from SDR storage)
     #   The data is updated to the latest format.
     def self.get_sdr_technical_metadata(druid)
-      begin
-        sdr_techmd = get_sdr_metadata(druid, 'technicalMetadata')
-      rescue RestClient::ResourceNotFound
-        return nil
-      end
+      sdr_techmd = get_sdr_metadata(druid, 'technicalMetadata')
       return sdr_techmd if sdr_techmd =~ /<technicalMetadata/
       return ::JhoveService.new.upgrade_technical_metadata(sdr_techmd) if sdr_techmd =~ /<jhove/
       nil
@@ -103,10 +98,7 @@ module Dor
     # @param [String] dsname The identifier of the metadata datastream
     # @return [String] The datastream contents from the previous version of the digital object (fetched from SDR storage)
     def self.get_sdr_metadata(druid, dsname)
-      sdr_client = Dor::Config.dor_services.rest_client
-      url = "sdr/objects/#{druid}/metadata/#{dsname}.xml"
-
-      sdr_client[url].get
+      Sdr::Client.get_sdr_metadata(druid, dsname)
     end
 
     # @param [DruidTools::Druid] druid A wrapper class for the druid identifier.  Used to generate paths
