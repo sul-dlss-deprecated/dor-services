@@ -64,7 +64,7 @@ describe Dor::SdrIngestService do
     before :each do
       druid = 'druid:dd116zh0343'
       @dor_item = double('dor_item')
-      expect(@dor_item).to receive(:initialize_workflow).with('sdrIngestWF', false)
+      expect(@dor_item).to receive(:create_workflow).with('sdrIngestWF', false)
       allow(@dor_item).to receive(:pid).and_return(druid)
       signature_catalog = Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
       @metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
