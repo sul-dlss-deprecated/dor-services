@@ -4,6 +4,7 @@ module Dor
     include Governable
     include Editable
     include Describable
+    include Permissable
     include Processable
     include Versionable
 

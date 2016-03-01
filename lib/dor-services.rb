@@ -108,6 +108,7 @@ module Dor
   autoload :Publishable,  'dor/models/publishable'
   autoload :Shelvable,    'dor/models/shelvable'
   autoload :Embargoable,  'dor/models/embargoable'
+  autoload :Permissable,  'dor/models/permissable'
   autoload :Preservable,  'dor/models/preservable'
   autoload :Assembleable, 'dor/models/assembleable'
   autoload :Upgradable,   'dor/models/upgradable'

@@ -4,6 +4,7 @@ module Dor
   class WorkflowObject < ::ActiveFedora::Base
     include Identifiable
     include Governable
+    include Permissable
     @@xml_cache  = {}
     @@repo_cache = {}
 
