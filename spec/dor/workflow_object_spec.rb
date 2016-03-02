@@ -23,7 +23,7 @@ describe Dor::WorkflowObject do
     end
 
     it 'indexes the workflow name' do
-      expect(@item.to_solr).to include 'workflow_name_ssim' => 'accessionWF'
+      expect(@item.to_solr).to include 'workflow_name_ssim' => ['accessionWF']
     end
   end
 end
