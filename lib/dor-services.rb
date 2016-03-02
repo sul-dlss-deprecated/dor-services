@@ -1,6 +1,5 @@
 require 'active_fedora'
 require 'active_support/core_ext/module/attribute_accessors'
-require 'modsulator'
 require 'nokogiri-pretty'
 require 'dor/utils/sdr_client'
 
@@ -78,6 +77,7 @@ module Dor
   require 'dor/utils/ng_tidy'
   require 'dor/utils/solr_doc_helper'
   require 'dor/utils/predicate_patch'
+  require 'dor/utils/normalizer'
 
   require 'dor/datastreams/datastream_spec_solrizer'
 

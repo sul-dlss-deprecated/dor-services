@@ -114,7 +114,7 @@ module Dor
       end
 
       # Call out to the general purpose XML normalization service
-      ::Normalizer.new.tap do |norm|
+      Dor::Utils::Normalizer.new.tap do |norm|
         norm.remove_empty_attributes(doc.root)
         # cleanup ordering is important here
         doc.xpath('//machine/text()').each { |node| node.content = node.content.strip }

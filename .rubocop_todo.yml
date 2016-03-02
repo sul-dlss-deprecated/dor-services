@@ -390,7 +390,7 @@ Style/SingleLineMethods:
 
 # Offense count: 76
 # Cop supports --auto-correct.
-Style/SingleSpaceBeforeFirstArg:
+Style/SpaceBeforeFirstArg:
   Exclude:
     - 'config/dev_console_env.rb'
     - 'lib/dor/datastreams/content_metadata_ds.rb'
