@@ -22,10 +22,8 @@ describe Dor::WorkflowObject do
       @item.workflowDefinition.content = '<workflow-def id="accessionWF"/>'
     end
 
-    it 'indexes the number of archived objects for the workflow' do
-      expect(Dor::Config.workflow.client).to receive(:count_archived_for_workflow).and_return(5)
-      expect(@item.to_solr).to include 'accessionWF_archived_isi' => 5
+    it 'indexes the workflow name' do
+      expect(@item.to_solr).to include 'workflow_name_ssim' => 'accessionWF'
     end
   end
-
 end
