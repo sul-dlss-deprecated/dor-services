@@ -18,4 +18,10 @@ describe Dor::Itemizable do
   it 'has a contentMetadata datastream' do
     expect(@item.datastreams['contentMetadata']).to be_a(Dor::ContentMetadataDS)
   end
+
+  it 'will run get_content_diff' do
+    expect(Sdr::Client).to receive(:get_content_diff).
+      with(@item.pid, @item.datastreams['contentMetadata'].content, :all, nil)
+    @item.get_content_diff
+  end
 end
