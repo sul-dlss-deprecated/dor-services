@@ -43,12 +43,6 @@ module Dor
       definition.graph *args
     end
 
-    def to_solr(solr_doc = {}, *args)
-      super solr_doc, *args
-      solr_doc["#{definition.name}_archived_isi"] = Dor::Config.workflow.client.count_archived_for_workflow(definition.name)
-      solr_doc
-    end
-
     def generate_initial_workflow
       datastreams['workflowDefinition'].initial_workflow
     end
