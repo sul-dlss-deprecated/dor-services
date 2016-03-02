@@ -286,7 +286,7 @@ module Dor
         # We assume a 404 means the document has never been published before and thus has no purl
         Dor.logger.warn "[Attempt #{attempt_number}] GET #{url} -- #{exception.class}: #{exception.message}; #{total_delay} seconds elapsed."
         raise exception unless exception.is_a? OpenURI::HTTPError
-        return Nokogiri::HTML::Document.new if exception.message.strip == '404'    # strip is needed if the actual message is "404 "
+        return Nokogiri::HTML::Document.new if exception.io.status.first == '404' # ["404", "Not Found"] from OpenURI::Meta.status
       end
 
       with_retries(:max_retries => 3, :base_sleep_seconds => 3, :max_sleep_seconds => 5, :handler => handler) do |attempt|
