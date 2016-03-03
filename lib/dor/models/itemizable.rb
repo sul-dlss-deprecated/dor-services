@@ -36,7 +36,7 @@ module Dor
         raise Dor::Exception, 'Missing contentMetadata datastream'
       end
 
-      Sdr::Client.get_content_diff(druid, current_content, subset, version)
+      Sdr::Client.get_content_diff(pid, current_content, subset, version)
     end
   end
 end
