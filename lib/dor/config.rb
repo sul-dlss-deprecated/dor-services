@@ -25,6 +25,14 @@ module Dor
       ensure
         $-v = temp_v
       end
+
+      # Initialize and configure the global Dor::WorkflowService for clients that
+      # do not yet explicitly initialize their workflow connection and/or expect
+      # dor-services to handle that for them.
+      #
+      # TODO: Remove this in dor-services 6.x and/or dor-workflow-service 3.x
+      result.workflow.client
+
       result
     end
 
@@ -50,6 +58,10 @@ module Dor
         :url => Dor::Config.solr.url
       )
       ::RSolr::Ext.connect(opts)
+    end
+
+    def make_workflow_service(opts)
+
     end
 
     set_callback :initialize, :after do |config|
