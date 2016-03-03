@@ -31,6 +31,14 @@ describe Dor::Configuration do
   end
 
   it 'configures the Dor::WorkflowService when Dor::Config.configure is called' do
+    expect(Dor::WorkflowService).to receive(:configure).with('http://mynewurl.edu/workflow', kind_of(Hash))
+
+    @config.configure do
+      workflow.url 'http://mynewurl.edu/workflow'
+    end
+  end
+
+  it 'provides an accessor to the Dor::WorkflowService' do
     @config.configure do
       workflow.url 'http://mynewurl.edu/workflow'
     end
