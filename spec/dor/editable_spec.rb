@@ -11,12 +11,21 @@ describe Dor::Editable do
   describe 'add_roleplayer' do
     it 'should add a role' do
       @apo.add_roleplayer('dor-apo-manager', 'dlss:some-staff')
-      expect(@apo.roles).to eq({'dor-apo-manager' => ['workgroup:dlss:developers', 'workgroup:dlss:pmag-staff', 'workgroup:dlss:smpl-staff', 'workgroup:dlss:dpg-staff', 'workgroup:dlss:argo-access-spec', 'sunetid:lmcrae', 'workgroup:dlss:some-staff']})
+      exp_result = {
+        'dor-apo-manager' => [
+          'workgroup:dlss:developers', 'workgroup:dlss:pmag-staff', 'workgroup:dlss:smpl-staff', 'workgroup:dlss:dpg-staff',
+          'workgroup:dlss:argo-access-spec', 'sunetid:lmcrae', 'workgroup:dlss:some-staff']}
+      expect(@apo.roles).to eq exp_result
     end
 
     it 'should create a new role' do
       @apo.add_roleplayer('dor-apo-viewer', 'dlss:some-staff')
-      {'dor-apo-manager' => ['workgroup:dlss:developers', 'workgroup:dlss:pmag-staff', 'workgroup:dlss:smpl-staff', 'workgroup:dlss:dpg-staff', 'workgroup:dlss:argo-access-spec', 'sunetid:lmcrae'], 'dor-apo-viewer' => ['workgroup:dlss:some-staff']}
+      exp_result = {
+        'dor-apo-manager' => [
+          'workgroup:dlss:developers', 'workgroup:dlss:pmag-staff', 'workgroup:dlss:smpl-staff', 'workgroup:dlss:dpg-staff',
+          'workgroup:dlss:argo-access-spec', 'sunetid:lmcrae'],
+        'dor-apo-viewer' => ['workgroup:dlss:some-staff']}
+      expect(@apo.roles).to eq exp_result
     end
 
     it 'should work on an empty datastream' do
@@ -56,7 +65,11 @@ describe Dor::Editable do
   end
   describe 'roles' do
     it 'should create a roles hash' do
-      expect(@apo.roles).to eq({'dor-apo-manager' => ['workgroup:dlss:developers', 'workgroup:dlss:pmag-staff', 'workgroup:dlss:smpl-staff', 'workgroup:dlss:dpg-staff', 'workgroup:dlss:argo-access-spec', 'sunetid:lmcrae']})
+      exp_result = {
+        'dor-apo-manager' => [
+          'workgroup:dlss:developers', 'workgroup:dlss:pmag-staff', 'workgroup:dlss:smpl-staff',
+          'workgroup:dlss:dpg-staff', 'workgroup:dlss:argo-access-spec', 'sunetid:lmcrae']}
+      expect(@apo.roles).to eq exp_result
     end
     it 'should not fail on an item with an empty datastream' do
       expect(@empty_item.roles).to eq({})
