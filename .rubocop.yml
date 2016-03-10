@@ -5,6 +5,7 @@ Style/FileName:
   Exclude:
     - 'lib/dor/migrations/identifiable/assert_adminPolicy.rb'
     - 'lib/dor-services.rb'
+    - 'spec/dor/releaseable_no_VCR_spec.rb'
 
 # rspec expect{...} is conventional
 Style/SpaceBeforeBlockBraces:
@@ -20,3 +21,5 @@ Style/EmptyLineBetweenDefs:
 # Configuration parameters: AllowURI, URISchemes.
 Metrics/LineLength:
   Max: 200
+  Exclude:
+    - spec/dor/editable_spec.rb
