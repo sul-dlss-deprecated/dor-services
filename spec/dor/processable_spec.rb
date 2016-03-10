@@ -186,7 +186,7 @@ describe Dor::Processable do
       @item = instantiate_fixture('druid:ab123cd4567', ProcessableOnlyItem)
       solr_doc = @item.to_solr
       # the facet field should have a date in it.
-      expect(solr_doc['modified_latest_dttsi']).to match /^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\dZ$/
+      expect(solr_doc['modified_latest_dttsi']).to match(/^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\dZ$/)
     end
     it 'should create a version field for each version, including the version number, tag and description' do
       expect(Dor.logger).to receive(:warn).with(/Cannot index druid:ab123cd4567\.descMetadata.*Dor::Item#generate_dublin_core produced incorrect xml/)

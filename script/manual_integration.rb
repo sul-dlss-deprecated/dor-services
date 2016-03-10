@@ -15,7 +15,7 @@ module Util
       Gem::Package::TarWriter.new(tarfile) do |tar|
         Dir[File.join(path, '**/*')].each do |file|
           mode = File.stat(file).mode
-          relative_file = file.sub /^#{Regexp.escape path}\/?/, ''
+          relative_file = file.sub(/^#{Regexp.escape path}\/?/, '')
 
           if File.directory?(file)
             tar.mkdir relative_file, mode
