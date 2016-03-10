@@ -119,7 +119,7 @@ module Dor
         # cleanup ordering is important here
         doc.xpath('//machine/text()').each { |node| node.content = node.content.strip }
         doc.xpath('//human')
-          .tap { |nodeset| norm.clean_linefeeds(nodeset) }
+          .tap { |node_set| norm.clean_linefeeds(node_set) }
           .each do |node|
             norm.trim_text(node)
             norm.remove_empty_nodes(node)
