@@ -44,7 +44,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'lyber-utils', '~> 0.1.2'
   s.add_dependency 'moab-versioning', '~> 2.0'
   s.add_dependency 'modsulator', '~> 0.0.7'
-  s.add_dependency 'stanford-mods', '= 1.5.3'  # v1.5.4 changes what sw_genre returns, which breaks test expectations.  TODO: figure out how to keep argo indexed counterparts of searchworks fields in sync w/ current SW behavior.
+  s.add_dependency 'stanford-mods', '= 1.5.3'  # v1.5.4 changes what sw_genre returns, which breaks test expectations.
+  # TODO: (stanford-mods) figure out how to keep argo indexed counterparts of searchworks fields in sync w/ current SW behavior.
 
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects
