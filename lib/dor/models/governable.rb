@@ -35,23 +35,25 @@ module Dor
     end
 
     def add_collection(collection_or_druid)
-      collection = case collection_or_druid
+      collection =
+        case collection_or_druid
         when String
           Dor::Collection.find(collection_or_druid)
         when Dor::Collection
           collection_or_druid
-      end
+        end
       collections << collection
       sets << collection
     end
 
     def remove_collection(collection_or_druid)
-      collection = case collection_or_druid
+      collection =
+        case collection_or_druid
         when String
           Dor::Collection.find(collection_or_druid)
         when Dor::Collection
           collection_or_druid
-      end
+        end
 
       collections.delete(collection)
       sets.delete(collection)
