@@ -105,7 +105,8 @@ module Workflow
         if process.date_time && process.status && (process.status == 'completed' || process.status == 'error')
           solr_doc["wf_#{wf_name}_#{process.name}_dttsi"] = "#{process.date_time}Z"
         end
-        add_solr_value(solr_doc, 'wf_error', "#{wf_name}:#{process.name}:#{process.error_message}", wf_solr_type, wf_solr_attrs) if process.error_message # index the error message without the druid so we hopefully get some overlap
+        # index the error message without the druid so we hopefully get some overlap
+        add_solr_value(solr_doc, 'wf_error', "#{wf_name}:#{process.name}:#{process.error_message}", wf_solr_type, wf_solr_attrs) if process.error_message
         add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}", wf_solr_type, wf_solr_attrs)
         add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}:#{process.name}", wf_solr_type, wf_solr_attrs)
         add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)
