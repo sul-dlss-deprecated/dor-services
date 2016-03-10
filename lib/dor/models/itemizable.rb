@@ -23,20 +23,19 @@ module Dor
 
     # Retrieves file difference manifest for contentMetadata from SDR
     #
-    # @param [String] subset keyword for file attributes :shelve, :preserve, :publish. Default is :all.
+    # @param [Symbol] subset keyword for file attributes :shelve, :preserve, :publish. Default is :all.
     # @param [String] version
-    # @return [String] XML contents of cm_inv_diff manifest
+    # @return [Moab::FileInventoryDifference] XML contents of cm_inv_diff manifest
     def get_content_diff(subset = :all, version = nil)
       if Dor::Config.stacks.local_workspace_root.nil?
         raise Dor::ParameterError, 'Missing Dor::Config.stacks.local_workspace_root'
       end
 
-      current_content = datastreams['contentMetadata'].content
-      if current_content.nil?
+      if contentMetadata.nil?
         raise Dor::Exception, 'Missing contentMetadata datastream'
       end
 
-      Sdr::Client.get_content_diff(pid, current_content, subset, version)
+      Sdr::Client.get_content_diff(pid, contentMetadata.content, subset, version)
     end
   end
 end

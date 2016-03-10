@@ -92,6 +92,13 @@ describe Dor::TechnicalMetadataService do
     end
   end
 
+  specify 'Dor::TechnicalMetadataService.get_content_group_diff(dor_item) without contentMetadata' do
+    dor_item = double(Dor::Item)
+    allow(dor_item).to receive(:get_content_diff).with('all').and_raise(Dor::Exception)
+    content_group_diff = Dor::TechnicalMetadataService.get_content_group_diff(dor_item)
+    expect(content_group_diff.difference_count).to be_zero
+  end
+
   specify 'Dor::TechnicalMetadataService.get_file_deltas(content_group_diff)' do
     @object_ids.each do |id|
       group_diff = @inventory_differences[id]

@@ -11,17 +11,21 @@ describe Dor::Itemizable do
   after(:each)  { unstub_config }
 
   before :each do
-    @item = instantiate_fixture('druid:ab123cd4567', ItemizableItem)
-    @item.contentMetadata.content = '<contentMetadata/>'
+    @item = instantiate_fixture('druid:bb046xn0881', ItemizableItem)
   end
 
   it 'has a contentMetadata datastream' do
-    expect(@item.datastreams['contentMetadata']).to be_a(Dor::ContentMetadataDS)
+    expect(@item.contentMetadata).to be_a(Dor::ContentMetadataDS)
   end
 
   it 'will run get_content_diff' do
     expect(Sdr::Client).to receive(:get_content_diff).
-      with(@item.pid, @item.datastreams['contentMetadata'].content, :all, nil)
-    @item.get_content_diff
+      with(@item.pid, @item.contentMetadata.content, :all, nil)
+    expect { @item.get_content_diff }.not_to raise_error
+  end
+
+  it 'will run get_content_diff without contentMetadata' do
+    @item.datastreams.delete 'contentMetadata'
+    expect { @item.get_content_diff }.to raise_error(Dor::Exception)
   end
 end
