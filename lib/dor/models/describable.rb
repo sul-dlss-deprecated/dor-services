@@ -109,12 +109,12 @@ module Dor
     end
 
     def add_related_item_node_for_collection(doc, collection_druid)
-      collection_obj  = Dor::Item.find(collection_druid)
-      related_item_node = Nokogiri::XML::Node.new('relatedItem', doc)
-      related_item_node['type'] = 'host'
-      title_info_node = Nokogiri::XML::Node.new('titleInfo', doc)
-      title_node      = Nokogiri::XML::Node.new('title', doc)
+      title_node         = Nokogiri::XML::Node.new('title', doc)
+      collection_obj     = Dor::Item.find(collection_druid)
       title_node.content = Dor::Describable.get_collection_title(collection_obj)
+
+      title_info_node = Nokogiri::XML::Node.new('titleInfo', doc)
+      title_info_node.add_child(title_node)
 
       # e.g.:
       #   <location>
@@ -127,11 +127,15 @@ module Dor
 
       type_node = Nokogiri::XML::Node.new('typeOfResource', doc)
       type_node['collection'] = 'yes'
-      doc.root.add_child(related_item_node)
+
+      related_item_node = Nokogiri::XML::Node.new('relatedItem', doc)
+      related_item_node['type'] = 'host'
+
       related_item_node.add_child(title_info_node)
-      title_info_node.add_child(title_node)
       related_item_node.add_child(loc_node)
       related_item_node.add_child(type_node)
+
+      doc.root.add_child(related_item_node)
     end
 
     # Adds to desc metadata a relatedItem with information about the collection this object belongs to.
