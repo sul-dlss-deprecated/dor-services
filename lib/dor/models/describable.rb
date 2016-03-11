@@ -101,6 +101,48 @@ module Dor
       end
     end
 
+    # Remove existing relatedItem entries for collections from descMetadata
+    def remove_related_item_nodes_for_collections(doc)
+      doc.search('/mods:mods/mods:relatedItem[@type="host"]/mods:typeOfResource[@collection=\'yes\']', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
+        node.parent.remove
+      end
+    end
+
+    def add_related_item_node_for_collection(doc, collection_druid)
+      begin
+        collection_obj = Dor::Item.find(collection_druid)
+      rescue ActiveFedora::ObjectNotFoundError
+        return nil
+      end
+
+      title_node         = Nokogiri::XML::Node.new('title', doc)
+      title_node.content = Dor::Describable.get_collection_title(collection_obj)
+
+      title_info_node = Nokogiri::XML::Node.new('titleInfo', doc)
+      title_info_node.add_child(title_node)
+
+      # e.g.:
+      #   <location>
+      #     <url>http://purl.stanford.edu/rh056sr3313</url>
+      #   </location>
+      loc_node = doc.create_element('location')
+      url_node = doc.create_element('url')
+      url_node.content = "https://#{Dor::Config.stacks.document_cache_host}/#{collection_druid.split(':').last}"
+      loc_node << url_node
+
+      type_node = Nokogiri::XML::Node.new('typeOfResource', doc)
+      type_node['collection'] = 'yes'
+
+      related_item_node = Nokogiri::XML::Node.new('relatedItem', doc)
+      related_item_node['type'] = 'host'
+
+      related_item_node.add_child(title_info_node)
+      related_item_node.add_child(loc_node)
+      related_item_node.add_child(type_node)
+
+      doc.root.add_child(related_item_node)
+    end
+
     # Adds to desc metadata a relatedItem with information about the collection this object belongs to.
     # For use in published mods and mods-to-DC conversion.
     # @param [Nokogiri::XML::Document] doc A copy of the descriptiveMetadata of the object, to be modified
@@ -110,41 +152,14 @@ module Dor
       return unless methods.include? :public_relationships
       collections = public_relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection',
                                        'fedora' => 'info:fedora/fedora-system:def/relations-external#',
-                                       'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' )
+                                       'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
       return if collections.empty?
 
-      # Remove any existing collections in the descMetadata
-      doc.search('/mods:mods/mods:relatedItem[@type="host"]/mods:typeOfResource[@collection=\'yes\']', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
-        node.parent.remove
-      end
+      remove_related_item_nodes_for_collections(doc)
 
       collections.each do |collection_node|
-        druid = collection_node['rdf:resource']
-        druid = druid.gsub('info:fedora/', '')
-        collection_obj = Dor::Item.find(druid)
-        collection_title = Dor::Describable.get_collection_title(collection_obj)
-        related_item_node = Nokogiri::XML::Node.new('relatedItem', doc)
-        related_item_node['type'] = 'host'
-        title_info_node = Nokogiri::XML::Node.new('titleInfo', doc)
-        title_node      = Nokogiri::XML::Node.new('title', doc)
-        title_node.content = collection_title
-
-        # e.g.:
-        #   <location>
-        #     <url>http://purl.stanford.edu/rh056sr3313</url>
-        #   </location>
-        loc_node = doc.create_element('location')
-        url_node = doc.create_element('url')
-        url_node.content = "https://#{Dor::Config.stacks.document_cache_host}/#{druid.split(':').last}"
-        loc_node << url_node
-
-        type_node = Nokogiri::XML::Node.new('typeOfResource', doc)
-        type_node['collection'] = 'yes'
-        doc.root.add_child(related_item_node)
-        related_item_node.add_child(title_info_node)
-        title_info_node.add_child(title_node)
-        related_item_node.add_child(loc_node)
-        related_item_node.add_child(type_node)
+        collection_druid = collection_node['rdf:resource'].gsub('info:fedora/', '')
+        add_related_item_node_for_collection(doc, collection_druid)
       end
     end
 
