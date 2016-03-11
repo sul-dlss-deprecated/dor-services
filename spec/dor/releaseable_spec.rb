@@ -30,7 +30,9 @@ describe Dor::Releaseable, :vcr do
   describe 'Tag sorting, combining, and comparision functions' do
 
     before :each do
-      @dummy_tags = [{'when' => @array_of_times[0], 'tag' => "Project: Jim Harbaugh's Finest Moments At Stanford.", 'what' => 'self'}, {'when' => @array_of_times[1], 'tag' => "Project: Jim Harbaugh's Even Finer Moments At Michigan.", 'what' => 'collection'}]
+      @dummy_tags = [
+        {'when' => @array_of_times[0], 'tag' => "Project: Jim Harbaugh's Finest Moments At Stanford.", 'what' => 'self'},
+        {'when' => @array_of_times[1], 'tag' => "Project: Jim Harbaugh's Even Finer Moments At Michigan.", 'what' => 'collection'}]
     end
 
     it 'should return the most recent tag from an array of release tags' do
@@ -153,7 +155,8 @@ describe Dor::Releaseable, :vcr do
       skip 'VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6'
       VCR.use_cassette('releaseable_respect_admin_tagging') do
         chambers_collection = Dor::Item.find('druid:wz243gf4151')
-        expect(chambers_collection.release_tags['Mogami']).to eq( [{'what' => 'collection', 'who' => 'carrickr', 'tag' => 'Project : ReleaseSpecTesting : Batch1', 'when' => Time.parse('2015-01-21 22:46:22Z').iso8601, 'release' => true}])
+        exp_result = [{'what' => 'collection', 'who' => 'carrickr', 'tag' => 'Project : ReleaseSpecTesting : Batch1', 'when' => Time.parse('2015-01-21 22:46:22Z').iso8601, 'release' => true}]
+        expect(chambers_collection.release_tags['Mogami']).to eq exp_result
         item_with_this_admin_tag = Dor::Item.find('druid:dc235vd9662')
         expect(item_with_this_admin_tag.tags).to include 'Project : ReleaseSpecTesting : Batch1'
         expect(item_with_this_admin_tag.released_for['Mogami']['release']).to be_truthy
@@ -302,14 +305,20 @@ describe 'Adding release nodes', :vcr do
 
   it 'should return the releases for an item that has release tags' do
     expect(@release_nodes).to be_a_kind_of(Hash)
-    expect(@release_nodes).to eq({'Revs' => [{'tag' => 'true', 'what' => 'collection', 'when' => Time.parse('2015-01-06 23:33:47Z'), 'who' => 'carrickr', 'release' => true}, {'tag' => 'true', 'what' => 'self', 'when' => Time.parse('2015-01-06 23:33:54Z'), 'who' => 'carrickr', 'release' => true}, {'tag' => 'Project : Fitch : Batch2', 'what' => 'self', 'when' => Time.parse('2015-01-06 23:40:01Z'), 'who' => 'carrickr', 'release' => false}]})
+    exp_result = {'Revs' => [
+      {'tag' => 'true', 'what' => 'collection', 'when' => Time.parse('2015-01-06 23:33:47Z'), 'who' => 'carrickr', 'release' => true},
+      {'tag' => 'true', 'what' => 'self', 'when' => Time.parse('2015-01-06 23:33:54Z'), 'who' => 'carrickr', 'release' => true},
+      {'tag' => 'Project : Fitch : Batch2', 'what' => 'self', 'when' => Time.parse('2015-01-06 23:40:01Z'), 'who' => 'carrickr', 'release' => false}]}
+    expect(@release_nodes).to eq exp_result
   end
 
   it 'should return a hash created from a single release tag' do
     n = Nokogiri('<release to="Revs" what="collection" when="2015-01-06T23:33:47Z" who="carrickr">true</release>').xpath('//release')[0]
-    expect(@item.release_tag_node_to_hash(n)).to eq({:to => 'Revs', :attrs => {'what' => 'collection', 'when' => Time.parse('2015-01-06 23:33:47Z'), 'who' => 'carrickr', 'release' => true}})
+    exp_result = {:to => 'Revs', :attrs => {'what' => 'collection', 'when' => Time.parse('2015-01-06 23:33:47Z'), 'who' => 'carrickr', 'release' => true}}
+    expect(@item.release_tag_node_to_hash(n)).to eq exp_result
     n = Nokogiri('<release tag="Project : Fitch: Batch1" to="Revs" what="collection" when="2015-01-06T23:33:47Z" who="carrickr">true</release>').xpath('//release')[0]
-    expect(@item.release_tag_node_to_hash(n)).to eq({:to => 'Revs', :attrs => {'tag' => 'Project : Fitch: Batch1', 'what' => 'collection', 'when' => Time.parse('2015-01-06 23:33:47Z'), 'who' => 'carrickr', 'release' => true}})
+    exp_result = {:to => 'Revs', :attrs => {'tag' => 'Project : Fitch: Batch1', 'what' => 'collection', 'when' => Time.parse('2015-01-06 23:33:47Z'), 'who' => 'carrickr', 'release' => true}}
+    expect(@item.release_tag_node_to_hash(n)).to eq exp_result
   end
 
   describe 'Getting XML From Purl' do

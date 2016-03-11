@@ -22,8 +22,8 @@ describe Dor::GeoMetadataDS do
         expect(@doc[k]).to be_a(Dor::GeoMetadataDS)
         expect(@doc[k].to_bbox.to_s).to eq({
           'co2_pipe' => Struct.new(:w, :e, :n, :s).new(-109.758319, -88.990844, 48.999336, 29.423028).to_s,
-          'oil_gas_fields' =>  Struct.new(:w, :e, :n, :s).new(-151.479444, -78.085007, 69.4325, 26.071745).to_s
-          }[k])
+          'oil_gas_fields' => Struct.new(:w, :e, :n, :s).new(-151.479444, -78.085007, 69.4325, 26.071745).to_s
+        }[k])
       end
     end
 

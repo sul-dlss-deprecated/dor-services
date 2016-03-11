@@ -69,8 +69,9 @@ module Dor
       add_solr_value(solr_doc, 'title_sort', label, :string, [:stored_sortable])
 
       rels_doc = Nokogiri::XML(datastreams['RELS-EXT'].content)
-      apos = rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy', 'hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-      collections = rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+      ns_hash = {'hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}
+      apos = rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy', ns_hash)
+      collections = rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection', ns_hash)
       solrize_related_obj_titles(solr_doc, apos, @@apo_hash, 'apo_title', 'nonhydrus_apo_title', 'hydrus_apo_title')
       solrize_related_obj_titles(solr_doc, collections, @@collection_hash, 'collection_title', 'nonhydrus_collection_title', 'hydrus_collection_title')
 
