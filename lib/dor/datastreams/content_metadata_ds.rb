@@ -69,7 +69,7 @@ module Dor
         externalFile.add_previous_sibling(src_label)
         externalFile << src_image_data unless src_image_data.nil?
       end
-      
+
       result
     end
 
@@ -132,7 +132,7 @@ module Dor
           preserved_size += file['size'].to_i if file['preserve'] == 'yes'
           next unless file['shelve'] == 'yes'
           counts['shelved_file'] += 1
-          first_shelved_image ||= file['id'] if file['id'].match(/jp2$/)
+          first_shelved_image ||= file['id'] if file['id'] =~ /jp2$/
         end
       end
       solr_doc['content_type_ssim'              ] = doc.root['type']

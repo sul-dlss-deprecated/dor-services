@@ -18,8 +18,13 @@ Style/EmptyLineBetweenDefs:
     - lib/dor/models/editable.rb
     - lib/dor/models/governable.rb
 
-# Configuration parameters: AllowURI, URISchemes.
 Metrics/LineLength:
   Max: 200
   Exclude:
+    # rights statement is a single string
     - spec/dor/editable_spec.rb
+
+# test is specifically written this way
+Lint/LiteralInCondition:
+  Exclude:
+    - 'spec/dor/upgradable_spec.rb'
