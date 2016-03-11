@@ -101,6 +101,13 @@ module Dor
       end
     end
 
+    # Remove existing relatedItem entries for collections from descMetadata
+    def remove_related_item_nodes_for_collections(doc)
+      doc.search('/mods:mods/mods:relatedItem[@type="host"]/mods:typeOfResource[@collection=\'yes\']', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
+        node.parent.remove
+      end
+    end
+
     # Adds to desc metadata a relatedItem with information about the collection this object belongs to.
     # For use in published mods and mods-to-DC conversion.
     # @param [Nokogiri::XML::Document] doc A copy of the descriptiveMetadata of the object, to be modified
@@ -113,21 +120,17 @@ module Dor
                                        'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' )
       return if collections.empty?
 
-      # Remove any existing collections in the descMetadata
-      doc.search('/mods:mods/mods:relatedItem[@type="host"]/mods:typeOfResource[@collection=\'yes\']', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
-        node.parent.remove
-      end
+      remove_related_item_nodes_for_collections(doc)
 
       collections.each do |collection_node|
-        druid = collection_node['rdf:resource']
-        druid = druid.gsub('info:fedora/', '')
+        druid = collection_node['rdf:resource'].gsub('info:fedora/', '')
+
         collection_obj = Dor::Item.find(druid)
-        collection_title = Dor::Describable.get_collection_title(collection_obj)
         related_item_node = Nokogiri::XML::Node.new('relatedItem', doc)
         related_item_node['type'] = 'host'
         title_info_node = Nokogiri::XML::Node.new('titleInfo', doc)
         title_node      = Nokogiri::XML::Node.new('title', doc)
-        title_node.content = collection_title
+        title_node.content = Dor::Describable.get_collection_title(collection_obj)
 
         # e.g.:
         #   <location>
