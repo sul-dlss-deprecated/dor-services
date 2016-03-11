@@ -328,6 +328,30 @@ describe Dor::Describable do
         expect(collection_title.length).to eq 1
         expect(collection_title.first.content).to eq 'Buckminster Fuller papers, 1920-1983'
       end
+
+      it 'does not add relatedItem and does not error out if the referenced collection does not exist' do
+        non_existent_druid = 'druid:doesnotexist'
+        expect(Dor::Item).to receive(:find).with(non_existent_druid).and_raise(ActiveFedora::ObjectNotFoundError)
+        relationships_xml = <<-XML
+        <?xml version="1.0"?>
+        <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+          <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
+            <fedora:isMemberOf rdf:resource="info:fedora/#{non_existent_druid}"/>
+            <fedora:isMemberOfCollection rdf:resource="info:fedora/#{non_existent_druid}"/>
+            </rdf:Description>
+        </rdf:RDF>
+        XML
+        relationships = Nokogiri::XML(relationships_xml)
+        expect(@item).to receive(:public_relationships).and_return(relationships)
+        @item.add_collection_reference(@xml)
+        expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@xml)
+        collections      = @xml.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
+        collection_title = @xml.search('//mods:relatedItem/mods:titleInfo/mods:title')
+        collection_uri   = @xml.search('//mods:relatedItem/mods:location/mods:url')
+        expect(collections.length     ).to eq 0
+        expect(collection_title.length).to eq 0
+        expect(collection_uri.length  ).to eq 0
+      end
     end
   end
 

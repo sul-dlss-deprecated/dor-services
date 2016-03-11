@@ -109,8 +109,13 @@ module Dor
     end
 
     def add_related_item_node_for_collection(doc, collection_druid)
+      begin
+        collection_obj = Dor::Item.find(collection_druid)
+      rescue ActiveFedora::ObjectNotFoundError
+        return nil
+      end
+
       title_node         = Nokogiri::XML::Node.new('title', doc)
-      collection_obj     = Dor::Item.find(collection_druid)
       title_node.content = Dor::Describable.get_collection_title(collection_obj)
 
       title_info_node = Nokogiri::XML::Node.new('titleInfo', doc)
@@ -147,7 +152,7 @@ module Dor
       return unless methods.include? :public_relationships
       collections = public_relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection',
                                        'fedora' => 'info:fedora/fedora-system:def/relations-external#',
-                                       'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' )
+                                       'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
       return if collections.empty?
 
       remove_related_item_nodes_for_collections(doc)
