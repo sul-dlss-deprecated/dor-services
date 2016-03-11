@@ -108,6 +108,32 @@ module Dor
       end
     end
 
+    def add_related_item_node_for_collection(doc, collection_druid)
+      collection_obj  = Dor::Item.find(collection_druid)
+      related_item_node = Nokogiri::XML::Node.new('relatedItem', doc)
+      related_item_node['type'] = 'host'
+      title_info_node = Nokogiri::XML::Node.new('titleInfo', doc)
+      title_node      = Nokogiri::XML::Node.new('title', doc)
+      title_node.content = Dor::Describable.get_collection_title(collection_obj)
+
+      # e.g.:
+      #   <location>
+      #     <url>http://purl.stanford.edu/rh056sr3313</url>
+      #   </location>
+      loc_node = doc.create_element('location')
+      url_node = doc.create_element('url')
+      url_node.content = "https://#{Dor::Config.stacks.document_cache_host}/#{collection_druid.split(':').last}"
+      loc_node << url_node
+
+      type_node = Nokogiri::XML::Node.new('typeOfResource', doc)
+      type_node['collection'] = 'yes'
+      doc.root.add_child(related_item_node)
+      related_item_node.add_child(title_info_node)
+      title_info_node.add_child(title_node)
+      related_item_node.add_child(loc_node)
+      related_item_node.add_child(type_node)
+    end
+
     # Adds to desc metadata a relatedItem with information about the collection this object belongs to.
     # For use in published mods and mods-to-DC conversion.
     # @param [Nokogiri::XML::Document] doc A copy of the descriptiveMetadata of the object, to be modified
@@ -123,31 +149,8 @@ module Dor
       remove_related_item_nodes_for_collections(doc)
 
       collections.each do |collection_node|
-        druid = collection_node['rdf:resource'].gsub('info:fedora/', '')
-
-        collection_obj = Dor::Item.find(druid)
-        related_item_node = Nokogiri::XML::Node.new('relatedItem', doc)
-        related_item_node['type'] = 'host'
-        title_info_node = Nokogiri::XML::Node.new('titleInfo', doc)
-        title_node      = Nokogiri::XML::Node.new('title', doc)
-        title_node.content = Dor::Describable.get_collection_title(collection_obj)
-
-        # e.g.:
-        #   <location>
-        #     <url>http://purl.stanford.edu/rh056sr3313</url>
-        #   </location>
-        loc_node = doc.create_element('location')
-        url_node = doc.create_element('url')
-        url_node.content = "https://#{Dor::Config.stacks.document_cache_host}/#{druid.split(':').last}"
-        loc_node << url_node
-
-        type_node = Nokogiri::XML::Node.new('typeOfResource', doc)
-        type_node['collection'] = 'yes'
-        doc.root.add_child(related_item_node)
-        related_item_node.add_child(title_info_node)
-        title_info_node.add_child(title_node)
-        related_item_node.add_child(loc_node)
-        related_item_node.add_child(type_node)
+        collection_druid = collection_node['rdf:resource'].gsub('info:fedora/', '')
+        add_related_item_node_for_collection(doc, collection_druid)
       end
     end
 
