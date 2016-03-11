@@ -229,26 +229,50 @@ describe Dor::Identifiable do
   end
 
   describe 'get_related_obj_display_title' do
-    it 'should return the dc:title if it is available' do
+    it 'should return the descMetadata main title if it is available' do
       mock_apo_title = 'apo title'
       mock_apo_obj = double(Dor::AdminPolicyObject)
-      mock_dc_datastream = double(Dor::SimpleDublinCoreDs)
+      mock_desc_md_datastream = double(Dor::DescMetadataDS)
+      mock_title_info = double(OM::XML::DynamicNode)
 
-      allow(mock_dc_datastream).to receive(:title).and_return(mock_apo_title)
-      allow(mock_apo_obj).to receive(:datastreams).and_return({'DC' => mock_dc_datastream})
+      expect(mock_desc_md_datastream).to receive(:title_info).and_return(mock_title_info)
+      expect(mock_title_info).to receive(:main_title).and_return([mock_apo_title, ""])
+      expect(mock_apo_obj).to receive(:datastreams).and_return({'descMetadata' => mock_desc_md_datastream})
 
       mock_default_title = 'druid:zy098xw7654'
       expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_apo_title)
     end
-    it 'should return the fedora label if the dc:title is not available' do
-      mock_apo_label = 'object label'
+    it 'should return the default if the first descMetadata main title entry is empty string' do
       mock_apo_obj = double(Dor::AdminPolicyObject)
+      mock_desc_md_datastream = double(Dor::DescMetadataDS)
+      mock_title_info = double(OM::XML::DynamicNode)
 
-      allow(mock_apo_obj).to receive(:label).and_return(mock_apo_label)
-      allow(mock_apo_obj).to receive(:datastreams).and_return({})
+      expect(mock_desc_md_datastream).to receive(:title_info).and_return(mock_title_info)
+      expect(mock_title_info).to receive(:main_title).and_return(["", ""])
+      expect(mock_apo_obj).to receive(:datastreams).and_return({'descMetadata' => mock_desc_md_datastream})
 
       mock_default_title = 'druid:zy098xw7654'
-      expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_apo_label)
+      expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_default_title)
+    end
+    it 'should return the default if the descMetadata main title array is empty' do
+      mock_apo_obj = double(Dor::AdminPolicyObject)
+      mock_desc_md_datastream = double(Dor::DescMetadataDS)
+      mock_title_info = double(OM::XML::DynamicNode)
+
+      expect(mock_desc_md_datastream).to receive(:title_info).and_return(mock_title_info)
+      expect(mock_title_info).to receive(:main_title).and_return([])
+      expect(mock_apo_obj).to receive(:datastreams).and_return({'descMetadata' => mock_desc_md_datastream})
+
+      mock_default_title = 'druid:zy098xw7654'
+      expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_default_title)
+    end
+    it 'should return the default if the descMetadata datastream is not available' do
+      mock_apo_obj = double(Dor::AdminPolicyObject)
+
+      expect(mock_apo_obj).to receive(:datastreams).and_return({})
+
+      mock_default_title = 'druid:zy098xw7654'
+      expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_default_title)
     end
     it 'should return the default if the related object is nil' do
       mock_apo_obj = nil
