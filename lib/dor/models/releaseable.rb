@@ -103,7 +103,7 @@ module Dor
     def get_tags_for_what_value(tags, what_target)
       return_hash = {}
       tags.keys.each do |key|
-        self_tags = tags[key].select {|tag| tag['what'] == what_target.downcase}
+        self_tags = tags[key].select {|tag| tag['what'].casecmp(what_target) == 0}
         return_hash[key] = self_tags if self_tags.size > 0
       end
       return_hash
@@ -180,7 +180,7 @@ module Dor
       attrs = rtag.attributes
       return_hash = { :to => attrs[to].value }
       attrs.tap { |a| a.delete(to) }
-      attrs[release] = rtag.text.downcase == 'true' # save release as a boolean
+      attrs[release] = rtag.text.casecmp('true') == 0 # save release as a boolean
       return_hash[:attrs] = attrs
 
       # convert all the attrs beside :to to strings, they are currently Nokogiri::XML::Attr
@@ -316,7 +316,7 @@ module Dor
     def get_release_tags_from_purl_xml(doc)
       nodes = doc.xpath('//html/body/publicobject/releasedata').children
       # We only want the nodes with a name that isn't text
-      nodes.reject {|n| n.name.nil? || n.name.downcase == 'text'}.map {|n| n.attr('to')}.uniq
+      nodes.reject {|n| n.name.nil? || n.name.casecmp('text') == 0 }.map {|n| n.attr('to')}.uniq
     end
 
     # Pull all release nodes from the public xml obtained via the purl query
