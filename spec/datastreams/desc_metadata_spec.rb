@@ -61,6 +61,13 @@ describe Dor::DescMetadataDS do
           <subject><topic>Topic2: The Interesting Part!</topic></subject>
         </mods>
       EOF
+      @empty = Dor::DescMetadataDS.from_xml <<-EOF
+        <mods xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://www.loc.gov/mods/v3" version="3.3"
+          xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+        </mods>
+      EOF
     end
 
     it 'should get correct values from OM terminology' do
@@ -88,6 +95,16 @@ describe Dor::DescMetadataDS do
       @partial.language.languageTerm = 'eng'
       @partial.abstract = 'Abstract contents.'
       expect(@partial.to_xml).to be_equivalent_to(@dsdoc.to_xml)
+    end
+    it 'should not throw an error when retrieving title_info if titleInfo is missing from the xml' do
+      expect(@empty.title_info.main_title).to eq([])
+    end
+  end
+
+  context 'Behavior of a freshly initialized Datastream' do
+    it 'should not throw an error when retrieving title_info if the datastream object has yet to have XML content set' do
+      desc_md_datastream = Dor::DescMetadataDS.new
+      expect(desc_md_datastream.title_info.main_title).to eq([""])
     end
   end
 end
