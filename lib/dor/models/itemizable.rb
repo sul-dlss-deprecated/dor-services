@@ -9,7 +9,7 @@ module Dor
       has_metadata :name => 'contentMetadata', :type => Dor::ContentMetadataDS, :label => 'Content Metadata', :control_group => 'M'
     end
 
-    DIFF_FILENAME = 'cm_inv_diff'
+    DIFF_FILENAME = 'cm_inv_diff'.freeze
 
     # Deletes all cm_inv_diff files in the workspace for the Item
     def clear_diff_cache

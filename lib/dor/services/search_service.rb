@@ -4,7 +4,7 @@ require 'active_support/core_ext'
 module Dor
   class SearchService
 
-    RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'"
+    RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'".freeze
     @@index_version = nil
 
     class << self

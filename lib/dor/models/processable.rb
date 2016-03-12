@@ -23,7 +23,7 @@ module Dor
       7 => 'Accessioned (indexed)',
       8 => 'Accessioned (indexed, ingested)',
       9 => 'Opened'
-    }
+    }.freeze
 
     # milestones from accessioning and the order they happen in
     STEPS = {
@@ -36,7 +36,7 @@ module Dor
       'indexed'     => 7,
       'shelved'     => 8,
       'opened'      => 9
-    }
+    }.freeze
 
     # This is a work-around for some strange logic in ActiveFedora that
     # don't allow self.workflows.new? to work if we load the object using

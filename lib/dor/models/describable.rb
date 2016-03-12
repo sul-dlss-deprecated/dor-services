@@ -5,7 +5,7 @@ module Dor
     DESC_MD_FORMATS = {
       'http://www.tei-c.org/ns/1.0' => 'tei',
       'http://www.loc.gov/mods/v3'  => 'mods'
-    }
+    }.freeze
     class CrosswalkError < Exception; end
 
     included do

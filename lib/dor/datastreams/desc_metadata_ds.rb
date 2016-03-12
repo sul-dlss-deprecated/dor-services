@@ -1,7 +1,7 @@
 module Dor
   class DescMetadataDS < ActiveFedora::OmDatastream
 
-    MODS_NS = 'http://www.loc.gov/mods/v3'
+    MODS_NS = 'http://www.loc.gov/mods/v3'.freeze
     set_terminology do |t|
       t.root :path => 'mods', :xmlns => MODS_NS, :index_as => [:not_searchable]
       t.originInfo  :index_as => [:not_searchable] do
