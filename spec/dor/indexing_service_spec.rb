@@ -49,7 +49,7 @@ describe Dor::IndexingService do
 
     it 'should log the default entry_id if entry_id_block throws a StandardError' do
       test_index_logger = Dor::IndexingService.generate_index_logger do
-        raise ZeroDivisionError.new 'whoops'
+        raise ZeroDivisionError, 'whoops'
       end
       test_index_logger.info @mock_log_msg
 

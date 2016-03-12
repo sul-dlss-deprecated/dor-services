@@ -201,7 +201,7 @@ module Dor
     # @option opts [Symbol] :significance which part of the version tag to increment
     def sync_then_increment_version(known_version, opts = {})
       cv = current_version_id.to_i
-      raise Dor::Exception.new("Cannot sync to a version greater than current: #{cv}, requested #{known_version}") if cv < known_version
+      raise Dor::Exception, "Cannot sync to a version greater than current: #{cv}, requested #{known_version}" if cv < known_version
 
       while cv != known_version &&
             current_version_node.remove

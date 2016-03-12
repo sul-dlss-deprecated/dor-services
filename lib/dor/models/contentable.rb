@@ -181,7 +181,7 @@ module Dor
             secondary_file['id'] = new_secondary_file_name(secondary_file['id'], max_sequence)
 
             if primary_cm.at_xpath("//file[@id = '#{secondary_file['id']}']")
-              raise Dor::Exception.new "File '#{secondary_file['id']}' from secondary object #{src_pid} already exist in primary object: #{pid}"
+              raise Dor::Exception, "File '#{secondary_file['id']}' from secondary object #{src_pid} already exist in primary object: #{pid}"
             end
           end
 
