@@ -17,7 +17,7 @@ module Dor
         ids = resource["identifiers?quantity=#{quantity}"].post('').chomp.split(/\n/).collect { |id| "#{Config.suri.id_namespace}:#{id.strip}" }
       else
         repo = ActiveFedora::Base.respond_to?(:connection_for_pid) ? ActiveFedora::Base.connection_for_pid(0) : ActiveFedora.fedora.connection
-        resp = Nokogiri::XML(repo.next_pid :numPIDs => quantity)
+        resp = Nokogiri::XML(repo.next_pid(numPIDs: quantity))
         ids = resp.xpath('/pidList/pid').collect { |node| node.text }
       end
       want_array ? ids : ids.first

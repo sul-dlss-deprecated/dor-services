@@ -178,7 +178,7 @@ describe Dor::Releaseable, :vcr do
           expect(release_node.name).to eq('release') # Well, duh
           expect(release_node.attributes.keys).to eq(['to'])
           expect(release_node.attributes['to'].value).to be_a(String)
-          expect(true_or_false.include? release_node.children.text).to be_truthy
+          expect(true_or_false.include?(release_node.children.text)).to be_truthy
         end
       end
     end
