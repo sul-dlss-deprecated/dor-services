@@ -244,7 +244,7 @@ module Dor
           title = node.text
         end
         creator_title = creator + title
-        add_solr_value(solr_doc, 'creator_title', creator_title , :string, [:stored_sortable])
+        add_solr_value(solr_doc, 'creator_title', creator_title, :string, [:stored_sortable])
       rescue CrosswalkError => e
         ActiveFedora.logger.warn "Cannot index #{pid}.descMetadata: #{e.message}"
       end
