@@ -10,7 +10,7 @@ describe Dor::Releaseable, :vcr do
   before :each do
     Dor::Config.push! do
       solr.url 'http://127.0.0.1:8080/solr/argo_test'
-      fedora.url   'https://sul-dor-test.stanford.edu/fedora' # attempts to match the VCR-recorded requests, should not actually reach remotely!
+      fedora.url 'https://sul-dor-test.stanford.edu/fedora' # attempts to match the VCR-recorded requests, should not actually reach remotely!
       stacks.document_cache_host 'purl-test.stanford.edu'
     end
 
@@ -197,7 +197,7 @@ describe 'Adding release nodes', :vcr do
         key_pass  ''
       end
       solr.url 'http://127.0.0.1:8080/solr/argo_test'
-      fedora.url   'https://sul-dor-test.stanford.edu/fedora'
+      fedora.url 'https://sul-dor-test.stanford.edu/fedora'
       stacks.document_cache_host 'purl-test.stanford.edu'
     end
 
