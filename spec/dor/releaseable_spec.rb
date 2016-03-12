@@ -61,18 +61,18 @@ describe Dor::Releaseable, :vcr do
     end
 
     it 'should recongize at a release tag with no tag attribute applies' do
-      local_dummy_tag = {'when' =>  @array_of_times[0], 'who' => 'carrickr' }
+      local_dummy_tag = {'when' => @array_of_times[0], 'who' => 'carrickr' }
       expect(@bryar_trans_am.does_release_tag_apply(local_dummy_tag, @bryar_trans_am_admin_tags)).to be_truthy
     end
 
     it 'should not require admin tags to be passed in' do
-      local_dummy_tag = {'when' =>  @array_of_times[0], 'who' => 'carrickr' }
+      local_dummy_tag = {'when' => @array_of_times[0], 'who' => 'carrickr' }
       expect(@bryar_trans_am.does_release_tag_apply(local_dummy_tag)).to be_truthy
       expect(@bryar_trans_am.does_release_tag_apply(@dummy_tags[0])).to be_falsey
     end
 
     it 'should return the latest tag for each key/target in a hash' do
-      dummy_hash = {'Revs' =>  @dummy_tags, 'FRDA' =>  @dummy_tags}
+      dummy_hash = {'Revs' => @dummy_tags, 'FRDA' => @dummy_tags}
       expect(@bryar_trans_am.get_newest_release_tag(dummy_hash)).to eq({'Revs' => @dummy_tags[1], 'FRDA' => @dummy_tags[1]})
     end
 

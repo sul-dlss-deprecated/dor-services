@@ -211,7 +211,7 @@ module Dor
     def to_solr(solr_doc = {}, *args)
       super solr_doc, *args
       mods_sources = {
-        'sw_language_ssim'           => :sw_language_facet,
+        'sw_language_ssim'            => :sw_language_facet,
         'sw_language_tesim'           => :sw_language_facet,
         'sw_genre_ssim'               => :sw_genre,
         'sw_genre_tesim'              => :sw_genre,

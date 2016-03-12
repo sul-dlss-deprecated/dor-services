@@ -107,7 +107,7 @@ describe Dor::IndexingService do
     before :each do
       @mock_pid = 'unique_id'
       @mock_obj = double(Dor::Item)
-      @mock_solr_doc  = {id: @mock_pid, text_field_tesim: 'a field to be searched'}
+      @mock_solr_doc = {id: @mock_pid, text_field_tesim: 'a field to be searched'}
     end
 
     it 'should reindex the object via Dor::SearchService' do
@@ -123,7 +123,7 @@ describe Dor::IndexingService do
       @mock_pid = 'unique_id'
       @mock_default_logger = double(Logger)
       @mock_obj = double(Dor::Item)
-      @mock_solr_doc  = {id: @mock_pid, text_field_tesim: 'a field to be searched'}
+      @mock_solr_doc = {id: @mock_pid, text_field_tesim: 'a field to be searched'}
       expect(Dor::IndexingService).to receive(:default_index_logger).at_least(:once).and_return(@mock_default_logger)
     end
 
