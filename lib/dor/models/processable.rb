@@ -138,7 +138,9 @@ module Dor
     # @return [String] single composed status from status_info
     def status(include_time = false)
       status_info_hash = status_info
-      current_version, status_code, status_time = status_info_hash[:current_version], status_info_hash[:status_code], status_info_hash[:status_time]
+      current_version = status_info_hash[:current_version]
+      status_code = status_info_hash[:status_code]
+      status_time = status_info_hash[:status_time]
 
       # use the translation table to get the appropriate verbage for the latest step
       result = "v#{current_version} #{STATUS_CODE_DISP_TXT[status_code]}"
