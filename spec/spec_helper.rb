@@ -36,7 +36,7 @@ module Dor::SpecHelpers
     Dor::Config.push! do
       suri.mint_ids false
       solr.url 'http://solr.edu/solrizer'
-      fedora.url   'http://fedora.edu/fedora'
+      fedora.url 'http://fedora.edu/fedora'
       stacks.document_cache_host       'purl-test.stanford.edu'
       stacks.local_workspace_root      File.join(fixture_dir, 'workspace')
       stacks.local_stacks_root         File.join(fixture_dir, 'stacks')

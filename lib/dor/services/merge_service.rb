@@ -23,9 +23,9 @@ module Dor
     end
 
     def check_objects_editable
-      raise Dor::Exception.new("Primary object is not editable: #{@primary.pid}") unless @primary.allows_modification?
+      raise Dor::Exception, "Primary object is not editable: #{@primary.pid}" unless @primary.allows_modification?
       non_editable = @secondary_objs.detect {|obj| !obj.allows_modification? }
-      raise Dor::Exception.new "Secondary object is not editable: #{non_editable.pid}" if non_editable
+      raise Dor::Exception, "Secondary object is not editable: #{non_editable.pid}" if non_editable
     end
 
     def move_metadata_and_content

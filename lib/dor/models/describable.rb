@@ -5,7 +5,7 @@ module Dor
     DESC_MD_FORMATS = {
       'http://www.tei-c.org/ns/1.0' => 'tei',
       'http://www.loc.gov/mods/v3'  => 'mods'
-    }
+    }.freeze
     class CrosswalkError < Exception; end
 
     included do
@@ -211,7 +211,7 @@ module Dor
     def to_solr(solr_doc = {}, *args)
       super solr_doc, *args
       mods_sources = {
-        'sw_language_ssim'           => :sw_language_facet,
+        'sw_language_ssim'            => :sw_language_facet,
         'sw_language_tesim'           => :sw_language_facet,
         'sw_genre_ssim'               => :sw_genre,
         'sw_genre_tesim'              => :sw_genre,
@@ -244,7 +244,7 @@ module Dor
           title = node.text
         end
         creator_title = creator + title
-        add_solr_value(solr_doc, 'creator_title', creator_title , :string, [:stored_sortable])
+        add_solr_value(solr_doc, 'creator_title', creator_title, :string, [:stored_sortable])
       rescue CrosswalkError => e
         ActiveFedora.logger.warn "Cannot index #{pid}.descMetadata: #{e.message}"
       end

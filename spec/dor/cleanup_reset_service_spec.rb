@@ -234,7 +234,7 @@ describe Dor::CleanupResetService do
 
     it 'should read the bag directory with 1 version' do
       base_bag_dir = "#{@export_pathname}/#{@druid_1v}"
-      dir_list =  Dor::CleanupResetService.get_reset_bag_dir_list(1, base_bag_dir)
+      dir_list = Dor::CleanupResetService.get_reset_bag_dir_list(1, base_bag_dir)
       expect_dir_file = "#{base_bag_dir}_v1"
       expect(dir_list.length).to eq 1
       expect(dir_list[0]).to eq expect_dir_file
@@ -242,7 +242,7 @@ describe Dor::CleanupResetService do
 
     it 'should return a list of bag directories with 2 versions' do
       base_bag_dir = "#{@export_pathname}/#{@druid_2v}"
-      dir_list =  Dor::CleanupResetService.get_reset_bag_dir_list(3, base_bag_dir)
+      dir_list = Dor::CleanupResetService.get_reset_bag_dir_list(3, base_bag_dir)
       expect_dir_file_1 = "#{base_bag_dir}_v2"
       expect_dir_file_2 = "#{base_bag_dir}_v3"
       expect(dir_list.length).to eq 2
@@ -252,7 +252,7 @@ describe Dor::CleanupResetService do
 
     it 'should return a list of tars with 1 version and 1 opened version' do
       base_bag_dir = "#{@export_pathname}/#{@druid_1_1v}"
-      dir_list =  Dor::CleanupResetService.get_reset_bag_dir_list(1, base_bag_dir)
+      dir_list = Dor::CleanupResetService.get_reset_bag_dir_list(1, base_bag_dir)
       expect_dir_file = "#{base_bag_dir}_v1"
       expect(dir_list.length).to eq 1
       expect(dir_list[0]).to eq expect_dir_file
@@ -273,7 +273,7 @@ describe Dor::CleanupResetService do
 
     it 'should return a list of tars with 1 version' do
       base_bag_dir = "#{@export_pathname}/#{@druid_1v}"
-      tar_list =  Dor::CleanupResetService.get_reset_bag_tar_list(1, base_bag_dir)
+      tar_list = Dor::CleanupResetService.get_reset_bag_tar_list(1, base_bag_dir)
       expect_tar_file = "#{base_bag_dir}_v1.tar"
       expect(tar_list.length).to eq 1
       expect(tar_list[0]).to eq expect_tar_file
@@ -281,7 +281,7 @@ describe Dor::CleanupResetService do
 
     it 'should return a list of tars with 2 versions' do
       base_bag_dir = "#{@export_pathname}/#{@druid_2v}"
-      tar_list =  Dor::CleanupResetService.get_reset_bag_tar_list(3, base_bag_dir)
+      tar_list = Dor::CleanupResetService.get_reset_bag_tar_list(3, base_bag_dir)
       expect_tar_file_1 = "#{base_bag_dir}_v2.tar"
       expect_tar_file_2 = "#{base_bag_dir}_v3.tar"
       expect(tar_list.length).to eq 2
@@ -291,7 +291,7 @@ describe Dor::CleanupResetService do
 
     it 'should return a list of tars with 1 version and 1 opened version' do
       base_bag_dir = "#{@export_pathname}/#{@druid_1_1v}"
-      tar_list =  Dor::CleanupResetService.get_reset_bag_tar_list(1, base_bag_dir)
+      tar_list = Dor::CleanupResetService.get_reset_bag_tar_list(1, base_bag_dir)
       expect_tar_file = "#{base_bag_dir}_v1.tar"
       expect(tar_list.length).to eq 1
       expect(tar_list[0]).to eq expect_tar_file

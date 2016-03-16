@@ -99,9 +99,9 @@ describe Dor::MergeService do
       ms.copy_workspace_content
 
       druid_primary = DruidTools::Druid.new primary_pid, Dor::Config.stacks.local_workspace_root
-      expect(druid_primary.find_content 'image_a.jp2').to_not be_nil
-      expect(druid_primary.find_content 'image_a_2.jp2').to_not be_nil
-      expect(druid_primary.find_content 'image_a_2.jp2').to match(/image_a_2.jp2/)
+      expect(druid_primary.find_content('image_a.jp2')).to_not be_nil
+      expect(druid_primary.find_content('image_a_2.jp2')).to_not be_nil
+      expect(druid_primary.find_content('image_a_2.jp2')).to match(/image_a_2.jp2/)
     end
   end
 

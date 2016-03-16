@@ -126,7 +126,7 @@ describe Dor::Versionable do
       # Stub out calls to update and archive workflow
       allow(Dor::Config.workflow.client).to receive(:update_workflow_status)
 
-      expect(Dor::Config.workflow.client).to receive(:close_version).with('dor', dr , true)
+      expect(Dor::Config.workflow.client).to receive(:close_version).with('dor', dr, true)
 
       allow(obj).to receive(:create_workflow)
 

@@ -4,10 +4,10 @@ module Dor
 module Workflow
 class Graph
 
-  FILL_COLORS = { 'waiting' => 'white', 'ready' => 'white', 'error' => '#8B0000', 'blocked' => 'white', 'completed' => 'darkgreen', 'unknown' => '#CFCFCF' }
-  TEXT_COLORS = { 'waiting' => 'black', 'ready' => 'black', 'error' => 'white', 'blocked' => '#8B0000', 'completed' => 'white', 'unknown' => 'black' }
-  PATTERNS    = { 'waiting' => 'diagonals', 'ready' => 'filled', 'error' => 'filled', 'blocked' => 'diagonals', 'completed' => 'filled', 'unknown' => 'filled' }
-  RESERVED_KEYS = %w(repository name)
+  FILL_COLORS = { 'waiting' => 'white', 'ready' => 'white', 'error' => '#8B0000', 'blocked' => 'white', 'completed' => 'darkgreen', 'unknown' => '#CFCFCF' }.freeze
+  TEXT_COLORS = { 'waiting' => 'black', 'ready' => 'black', 'error' => 'white', 'blocked' => '#8B0000', 'completed' => 'white', 'unknown' => 'black' }.freeze
+  PATTERNS    = { 'waiting' => 'diagonals', 'ready' => 'filled', 'error' => 'filled', 'blocked' => 'diagonals', 'completed' => 'filled', 'unknown' => 'filled' }.freeze
+  RESERVED_KEYS = %w(repository name).freeze
 
   attr_reader :repo, :name, :processes, :graph, :root
 
@@ -142,7 +142,7 @@ class Graph
         edge.dir = 'both'
         edge.arrowhead = 'none'
         edge.arrowtail = 'none'
-        edge.style = 'dashed' if (wf1 != wf2)
+        edge.style = 'dashed' if wf1 != wf2
         prerequisites << process
       }
       self

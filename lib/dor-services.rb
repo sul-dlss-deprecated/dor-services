@@ -7,7 +7,7 @@ require 'dor/utils/sdr_client'
 module Dor
   @@registered_classes = {}
   mattr_reader :registered_classes
-  INDEX_VERSION_FIELD = 'dor_services_version_ssi'
+  INDEX_VERSION_FIELD = 'dor_services_version_ssi'.freeze
 
   class << self
 

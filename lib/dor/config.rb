@@ -30,7 +30,7 @@ module Dor
 
     def autoconfigure(url, cert_file = Config.ssl.cert_file, key_file = Config.ssl.key_file, key_pass = Config.ssl.key_pass)
       client = make_rest_client(url, cert_file, key_file, key_pass)
-      config = Confstruct::Configuration.symbolize_hash JSON.parse(client.get :accept => 'application/json')
+      config = Confstruct::Configuration.symbolize_hash JSON.parse(client.get(accept: 'application/json'))
       configure(config)
     end
 

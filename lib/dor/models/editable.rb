@@ -35,7 +35,7 @@ module Dor
                       :uri => 'https://creativecommons.org/licenses/by-nc-nd/3.0/' },
       'pdm' =>      { :human_readable => 'Public Domain Mark 1.0',
                       :uri => 'https://creativecommons.org/publicdomain/mark/1.0/'}
-    }
+    }.freeze
     OPEN_DATA_COMMONS_USE_LICENSES = {
       'pddl' =>     { :human_readable => 'Open Data Commons Public Domain Dedication and License 1.0',
                       :uri => 'http://opendatacommons.org/licenses/pddl/1.0/' },
@@ -43,7 +43,7 @@ module Dor
                       :uri => 'http://opendatacommons.org/licenses/by/1.0/' },
       'odc-odbl' => { :human_readable => 'Open Data Commons Open Database License 1.0',
                       :uri => 'http://opendatacommons.org/licenses/odbl/1.0/' }
-    }
+    }.freeze
 
     def to_solr(solr_doc = {}, *args)
       super(solr_doc, *args)

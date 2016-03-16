@@ -17,7 +17,7 @@ module Dor
       :gco => 'http://www.isotc211.org/2005/gco',
       :gmd => 'http://www.isotc211.org/2005/gmd',
       :gfc => 'http://www.isotc211.org/2005/gfc'
-    }
+    }.freeze
 
     # hash with all namespaces
     XMLNS = Hash[NS.map {|k, v| ["xmlns:#{k}", v]}]

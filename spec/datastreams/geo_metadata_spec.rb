@@ -10,9 +10,9 @@ describe Dor::GeoMetadataDS do
     @doc = {}
     @test_keys = %w(co2_pipe oil_gas_fields)
     @test_keys.each do |k|
-      @doc[k] = Dor::GeoMetadataDS.from_xml(read_fixture "geoMetadata_#{k}.xml")
+      @doc[k] = Dor::GeoMetadataDS.from_xml(read_fixture("geoMetadata_#{k}.xml"))
     end
-    @template = Nokogiri::XML(read_fixture 'geoMetadata_template.xml')
+    @template = Nokogiri::XML(read_fixture('geoMetadata_template.xml'))
   end
 
   context 'Exports' do

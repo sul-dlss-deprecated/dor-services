@@ -101,7 +101,7 @@ module Dor
     def self.copy_file(workspace_pathname, stacks_pathname, moab_signature)
       if stacks_pathname.exist?
         file_signature = Moab::FileSignature.new.signature_from_file(stacks_pathname)
-        stacks_pathname.delete if (file_signature != moab_signature)
+        stacks_pathname.delete if file_signature != moab_signature
       end
       unless stacks_pathname.exist?
         stacks_pathname.parent.mkpath

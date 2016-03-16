@@ -53,11 +53,11 @@ module Workflow
     end
 
     def ready?
-      self.waiting? && (!prerequisite.nil?) && prerequisite.all? { |pr| (prq = owner[pr]) && prq.completed? }
+      self.waiting? && !prerequisite.nil? && prerequisite.all? { |pr| (prq = owner[pr]) && prq.completed? }
     end
 
     def blocked?
-      self.waiting? && (!prerequisite.nil?) && prerequisite.any? { |pr| (prq = owner[pr]) && (prq.error? || prq.blocked?) }
+      self.waiting? && !prerequisite.nil? && prerequisite.any? { |pr| (prq = owner[pr]) && (prq.error? || prq.blocked?) }
     end
 
     def state

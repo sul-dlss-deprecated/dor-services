@@ -239,7 +239,7 @@ describe Dor::Governable do
       @item = instantiate_fixture('druid:ab123cd4567', GovernableItem)
     end
     it "returns the default lane as defined in the object's APO" do
-      apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
+      apo = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
       allow(@item).to receive(:admin_policy_object) { apo }
       expect(@item.default_workflow_lane).to eq 'fast'
     end
@@ -248,7 +248,7 @@ describe Dor::Governable do
       expect(@item.default_workflow_lane).to eq 'default'
     end
     it "returns the value 'default' if the object's APO does not have a default lane defined" do
-      apo  = instantiate_fixture('druid:zt570tx3016', Dor::AdminPolicyObject)
+      apo = instantiate_fixture('druid:zt570tx3016', Dor::AdminPolicyObject)
       allow(@item).to receive(:admin_policy_object) { apo }
       expect(@item.default_workflow_lane).to eq 'default'
     end

@@ -23,7 +23,7 @@ module Dor
       7 => 'Accessioned (indexed)',
       8 => 'Accessioned (indexed, ingested)',
       9 => 'Opened'
-    }
+    }.freeze
 
     # milestones from accessioning and the order they happen in
     STEPS = {
@@ -36,7 +36,7 @@ module Dor
       'indexed'     => 7,
       'shelved'     => 8,
       'opened'      => 9
-    }
+    }.freeze
 
     # This is a work-around for some strange logic in ActiveFedora that
     # don't allow self.workflows.new? to work if we load the object using
@@ -138,7 +138,9 @@ module Dor
     # @return [String] single composed status from status_info
     def status(include_time = false)
       status_info_hash = status_info
-      current_version, status_code, status_time = status_info_hash[:current_version], status_info_hash[:status_code], status_info_hash[:status_time]
+      current_version = status_info_hash[:current_version]
+      status_code = status_info_hash[:status_code]
+      status_time = status_info_hash[:status_time]
 
       # use the translation table to get the appropriate verbage for the latest step
       result = "v#{current_version} #{STATUS_CODE_DISP_TXT[status_code]}"
@@ -229,8 +231,12 @@ module Dor
     # handles formating utc date/time to human readable
     # XXX: bad form to hardcode TZ here.  Code smell abounds.
     def format_date(datetime)
-      d = datetime.is_a?(Time) ? datetime :
-        DateTime.parse(datetime).in_time_zone(ActiveSupport::TimeZone.new('Pacific Time (US & Canada)'))
+      d =
+        if datetime.is_a?(Time)
+          datetime
+        else
+          DateTime.parse(datetime).in_time_zone(ActiveSupport::TimeZone.new('Pacific Time (US & Canada)'))
+        end
       I18n.l(d).strftime('%Y-%m-%d %I:%M%p')
     rescue
       d = datetime.is_a?(Time) ? datetime : Time.parse(datetime.to_s)

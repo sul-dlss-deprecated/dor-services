@@ -58,7 +58,7 @@ describe Dor::Contentable do
     allow(@resp).to receive(:message).and_return('sup')
     allow(@sftp).to receive(:stat!) do |arg|
       # raise an exception when checking whether the file exists, but no exception when checking whether the folder it belongs in exists
-      raise(Net::SFTP::StatusException.new @resp, 'sup') if arg =~ /desc/
+      raise(Net::SFTP::StatusException.new(@resp, 'sup')) if arg =~ /desc/
     end
     allow(@sftp).to receive(:upload!).and_return(true)
     allow(Net::SFTP).to receive(:start).and_return(@sftp) # mock sftp obj
@@ -87,7 +87,7 @@ describe Dor::Contentable do
 
     it 'should work ok if the object was set up using the old directory structure' do
       allow(@sftp).to receive(:stat!) do |arg|
-        raise(Net::SFTP::StatusException.new @resp, 'sup') if arg =~ /desc/ || arg =~ /ab123/
+        raise(Net::SFTP::StatusException.new(@resp, 'sup')) if arg =~ /desc/ || arg =~ /ab123/
       end
       @item.add_file(@file, '0001', 'ab123cd4567_descMetadata.xml')
       xml = @item.contentMetadata.ng_xml

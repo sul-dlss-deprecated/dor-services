@@ -60,7 +60,7 @@ describe Dor::RightsMetadataDS do
         'rights_characteristics_ssim' => include(
           'world_discover', 'has_group_rights', 'has_rule', 'group|stanford', 'world_read', 'world|no-download', 'profile:group1|world1'
         ),
-        'use_license_machine_ssi'     => 'by-nc'
+        'use_license_machine_ssi' => 'by-nc'
       )
       expect(doc).not_to include('rights_errors_ssim')  # don't include empties
     end

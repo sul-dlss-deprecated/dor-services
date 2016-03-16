@@ -50,11 +50,11 @@ describe Dor::Identifiable do
 
   describe 'source_id= (AKA set_source_id)' do
     it 'raises on unsalvageable values' do
-      expect{item.source_id=('Too:Many:Colons')}.to raise_error ArgumentError
-      expect{item.source_id=('Still::TooMany')}.to raise_error ArgumentError
-      expect{item.source_id=('NotEnoughColons')}.to raise_error ArgumentError
-      expect{item.source_id=(':EmptyFirstPart')}.to raise_error ArgumentError
-      expect{item.source_id=('WhitespaceSecondPart:   ')}.to raise_error ArgumentError
+      expect{item.source_id = 'Too:Many:Colons'}.to raise_error ArgumentError
+      expect{item.source_id = 'Still::TooMany'}.to raise_error ArgumentError
+      expect{item.source_id = 'NotEnoughColons'}.to raise_error ArgumentError
+      expect{item.source_id = ':EmptyFirstPart'}.to raise_error ArgumentError
+      expect{item.source_id = 'WhitespaceSecondPart:   '}.to raise_error ArgumentError
     end
     it 'should set the source_id' do
       item.source_id = 'fake:sourceid'
