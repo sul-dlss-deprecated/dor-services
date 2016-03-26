@@ -23,7 +23,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'json', '~> 1.8.1'
   s.add_dependency 'net-sftp', '~> 2.1'
   s.add_dependency 'nokogiri', '~> 1.6'
-  s.add_dependency 'nokogiri-pretty', '~> 0.1'
   s.add_dependency 'om', '~> 3.0'
   s.add_dependency 'rdf', '~> 1.1.7' # 1.0.10 breaks
   s.add_dependency 'rest-client', '~> 1.7'
