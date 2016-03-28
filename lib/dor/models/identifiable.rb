@@ -209,13 +209,10 @@ module Dor
     end
 
     def get_related_obj_display_title(related_obj, default_title)
-      # desc_md_ds_title will be nil if related_obj is nil
-      desc_md_ds_title =
-        if related_obj
-          desc_md_ds = related_obj.datastreams['descMetadata']
-          desc_md_ds ? desc_md_ds.title_info.main_title.first : nil
-        end
+      return default_title unless related_obj
 
+      desc_md_ds = related_obj.datastreams['descMetadata']
+      desc_md_ds_title = desc_md_ds ? desc_md_ds.title_info.main_title.first : nil
       desc_md_ds_title.present? ? desc_md_ds_title : default_title
     end
 
