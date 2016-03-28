@@ -77,7 +77,7 @@ XML
 
   it 'is human-readable XML' do
     subject.normalize!
-    expect(subject.content).to eq('<?xml version="1.0" encoding="ISO-8859-1"?>
+    expect(subject.content).to eq('<?xml version="1.0" encoding="UTF-8"?>
 
 <rightsMetadata objectId="druid">
    <copyright>
@@ -100,5 +100,42 @@ XML
    </use>
 </rightsMetadata>
 ')
+  end
+
+  describe 'prettify' do
+    it 'correctly indents XML' do
+      expected_result = '<?xml version="1.0" encoding="UTF-8"?>
+
+<rightsMetadata objectId="druid">
+   <copyright>
+      <human type="copyright">  All rights reserved.  </human>
+   </copyright>
+   <access type="discover">
+      <machine>
+         <world/>
+      </machine>
+   </access>
+   <access type="read">
+      <machine>
+         <world/>
+      </machine>
+   </access>
+   <use>
+      <human type="useAndReproduction">  You may re-distribute this object, unaltered, with attribution to the author.  </human>
+   </use>
+   <use>
+      <human type="creativeCommons">
+        CC Attribution Non-Commercial license
+      </human>
+      <machine type="creativeCommons" uri="https://creativecommons.org/licenses/by-nc/3.0/">
+        by-nc
+      </machine>
+   </use>
+</rightsMetadata>
+'
+      default_object_rights = Dor::DefaultObjectRightsDS.new
+      pretty_xml = default_object_rights.prettify(Nokogiri::XML(subject.content))
+      expect(pretty_xml).to eq(expected_result)
+    end
   end
 end

@@ -94,7 +94,7 @@ module Dor
     end
 
     def content
-      ng_xml.human
+      prettify(ng_xml).to_s
     end
 
     # Purge the XML of any empty or duplicate elements -- keeps <rightsMetadata> clean
@@ -127,7 +127,16 @@ module Dor
         doc.xpath('/rightsMetadata/copyright').each { |node| norm.remove_empty_nodes(node) }
         doc.xpath('/rightsMetadata/use').each { |node| norm.remove_empty_nodes(node) }
       end
-      self.content = doc.human
+      self.content = prettify(doc)
+    end
+
+    # Returns a nicely indented XML document.
+    # Note that the XSL file was taken from the (apparently defunct) nokogiri-pretty project:
+    # https://github.com/tobym/nokogiri-pretty/blob/master/lib/indent.xsl
+    # The only modification made was to declare UTF-8 to be the encoding, instead of ISO-8859-1.
+    def prettify(xml_doc)
+      template = Nokogiri::XSLT(File.read(File.expand_path('../human.xslt', __FILE__)))
+      template.apply_to(xml_doc)
     end
   end
 end
