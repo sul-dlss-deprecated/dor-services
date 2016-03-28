@@ -50,6 +50,8 @@ module Dor
     def self.get_content_group_diff(dor_item)
       inventory_diff = dor_item.get_content_diff('all')
       inventory_diff.group_difference('content')
+    rescue Dor::Exception # no contentMetadata
+      Moab::FileGroupDifference.new
     end
 
     # @param [FileGroupDifference] content_group_diff

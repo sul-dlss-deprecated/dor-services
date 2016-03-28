@@ -33,6 +33,7 @@ module Sdr
         Moab::SignatureCatalog.new(:digital_object_id => druid, :version_id => 0)
       end
 
+      # @return [Moab::FileInventoryDifference] the differences for the given content and subset
       def get_content_diff(druid, current_content, subset = :all, version = nil)
         unless %w(all shelve preserve publish).include?(subset.to_s)
           raise Dor::ParameterError, "Invalid subset value: #{subset}"
