@@ -47,6 +47,10 @@ module Sdr
         Moab::FileInventoryDifference.parse(response)
       end
 
+      def get_preserved_file_content(druid, filename, version)
+        client["objects/#{druid}/content/#{URI.encode(filename)}?version=#{version}"].get
+      end
+
       def client
         if Dor::Config.sdr.url
           Dor::Config.sdr.rest_client
