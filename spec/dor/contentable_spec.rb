@@ -126,6 +126,16 @@ describe Dor::Contentable do
       expect{ @item.replace_file(@file, 'abcdgw177fc7976_00_0001.tif')}.to raise_error(StandardError)
     end
   end
+  describe 'get_preserved_file' do
+    let(:filename) { 'old_file' }
+    let(:item_version) { 2 }
+    let(:preserved_file_content) { 'expected content' }
+    it 'should get the file content' do
+      expect(Sdr::Client).to receive(:get_preserved_file_content).with(@item.id, filename, item_version).and_return(preserved_file_content)
+      returned_content = @item.get_preserved_file(filename, item_version)
+      expect(returned_content).to eq(preserved_file_content)
+    end
+  end
   describe 'get_file' do
     it 'should fetch the file' do
       data_file = File.new(File.dirname(__FILE__) + '/../fixtures/ab123cd4567_descMetadata.xml')
