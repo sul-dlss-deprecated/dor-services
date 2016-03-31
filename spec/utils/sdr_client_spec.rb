@@ -63,6 +63,32 @@ describe Sdr::Client do
     end
   end
 
+  describe '.get_preserved_file_content' do
+    let(:druid) { 'druid:zz000zz0000' }
+    let(:filename_with_spaces) { 'filename with spaces.txt' }
+    let(:item_version) { 2 }
+    let(:sdr_resp_body) { 'expected response' }
+    let(:sdr_resp_content_type) { 'text/plain' }
+
+    it 'properly encodes filename and passes along the sdr response with the correct content type and status code' do
+      resource = Sdr::Client.client["objects/#{druid}/content/#{URI.encode(filename_with_spaces)}?version=#{item_version}"]
+      stub_request(:get, resource.url).to_return(:body => sdr_resp_body, :headers => {:content_type => sdr_resp_content_type})
+
+      preserved_content = Sdr::Client.get_preserved_file_content(druid, filename_with_spaces, item_version)
+      expect(preserved_content).to eq(sdr_resp_body)
+      expect(preserved_content.body).to eq(sdr_resp_body)
+      expect(preserved_content.net_http_res.content_type).to eq(sdr_resp_content_type)
+      expect(preserved_content.net_http_res.code.to_i).to eq(200)
+    end
+
+    it 'passes errors through to the caller' do
+      resource = Sdr::Client.client["objects/#{druid}/content/bogus_filename?version=#{item_version}"]
+      stub_request(:get, resource.url).to_return(:status => 404)
+
+      expect { Sdr::Client.get_preserved_file_content(druid, filename_with_spaces, item_version) }.to raise_error RestClient::ResourceNotFound
+    end
+  end
+
   describe '.client' do
     context 'with SDR configuration' do
       before do

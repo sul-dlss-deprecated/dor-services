@@ -62,12 +62,7 @@ module Dor
     end
 
     def get_preserved_file(file, version)
-      uri = URI(Config.content.sdr_server + "/sdr/objects/#{pid}/content/" + URI.encode(file) + "?version=#{version}")
-      req = Net::HTTP::Get.new(uri.request_uri)
-      req.basic_auth Config.content.sdr_user, Config.content.sdr_pass
-      Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https') {|http|
-        http.request(req)
-      }
+      Sdr::Client.get_preserved_file_content(pid, file, version)
     end
 
     def get_file(file)
