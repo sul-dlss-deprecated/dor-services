@@ -21,7 +21,8 @@ module Dor
       embargo_md.status = 'released'
 
       # Remove all read acces nodes
-      rights_xml = datastreams['rightsMetadata'].ng_xml
+      rights_md = datastreams['rightsMetadata']
+      rights_xml = rights_md.ng_xml
       rights_xml.xpath("//rightsMetadata/access[@type='read']").each { |n| n.remove }
 
       # Replace rights <access> nodes with those from embargoMetadta
@@ -35,7 +36,7 @@ module Dor
         end
       end
 
-      datastreams['rightsMetadata'].content_will_change!
+      rights_md.content = rights_md.ng_xml.to_s
       datastreams['events'].add_event('embargo', release_agent, 'Embargo released')
     end
 
@@ -45,7 +46,8 @@ module Dor
       embargo_md.twenty_pct_status = 'released'
 
       # Remove all read acces nodes
-      rights_xml = datastreams['rightsMetadata'].ng_xml
+      rights_md = datastreams['rightsMetadata']
+      rights_xml = rights_md.ng_xml
       rights_xml.xpath("//rightsMetadata/access[@type='read']").each { |n| n.remove }
 
       # Replace rights <access> nodes with 1 machine/world node
@@ -56,7 +58,7 @@ module Dor
         rights_xml.root.add_child(world_doc.root.clone)
       end
 
-      datastreams['rightsMetadata'].content_will_change!
+      rights_md.content = rights_md.ng_xml.to_s
       datastreams['events'].add_event('embargo', release_agent, '20% Visibility Embargo released')
     end
 
