@@ -102,8 +102,8 @@ module Workflow
       processes.each do |process|
         next unless process.status.present?
         # add a record of the robot having operated on this item, so we can track robot activity
-        if process.date_time && process.status && (process.status == 'completed' || process.status == 'error')
-          solr_doc["wf_#{wf_name}_#{process.name}_dttsi"] = "#{process.date_time}Z"
+        if !process.date_time.blank? && process.status && (process.status == 'completed' || process.status == 'error')
+          solr_doc["wf_#{wf_name}_#{process.name}_dttsi"] = Time.parse(process.date_time).utc.iso8601
         end
         # index the error message without the druid so we hopefully get some overlap
         add_solr_value(solr_doc, 'wf_error', "#{wf_name}:#{process.name}:#{process.error_message}", wf_solr_type, wf_solr_attrs) if process.error_message
