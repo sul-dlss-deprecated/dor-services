@@ -172,6 +172,54 @@ describe Dor::Workflow::Document do
       expect(doc).to match a_hash_including('workflow_status_ssim' => ['accessionWF|completed|0|dor'])
     end
 
+    it 'should index the iso8601 UTC dates for completed and errored workflow steps' do
+      xml = <<-eos
+      <?xml version="1.0" encoding="UTF-8"?>
+      <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:57-0800" status="error" name="hello"/>
+        <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:58-0800" status="" name="goodbye"/>
+      </workflow>
+      eos
+
+      d = Dor::Workflow::Document.new(xml)
+      allow(d).to receive(:definition).and_return(@wf_definition)
+      doc = d.to_solr
+
+      expect(doc).to match a_hash_including('wf_accessionWF_hello_dttsi' => '2012-11-07T00:18:57Z')
+      expect(doc).to match a_hash_including('wf_accessionWF_technical-metadata_dttsi' => '2012-11-07T00:18:58Z')
+    end
+
+    it 'should only index dates for completed and errored workflow steps which include a date' do
+      xml = <<-eos
+      <?xml version="1.0" encoding="UTF-8"?>
+      <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+         datetime="" status="error" name="hello"/>
+        <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:58-0800" status="" name="goodbye"/>
+      </workflow>
+      eos
+
+      d = Dor::Workflow::Document.new(xml)
+      allow(d).to receive(:definition).and_return(@wf_definition)
+      doc = d.to_solr
+
+      expect(doc).to match a_hash_including('wf_accessionWF_technical-metadata_dttsi')
+      expect(doc).not_to match a_hash_including('wf_accessionWF_hello_dttsi')
+      expect(doc).not_to match a_hash_including('wf_accessionWF_start-accession_dttsi')
+      expect(doc).not_to match a_hash_including('wf_accessionWF_goodbye_dttsi')
+    end
+
     it 'should index error messages' do
       xml = <<-eos
       <?xml version="1.0" encoding="UTF-8"?>
