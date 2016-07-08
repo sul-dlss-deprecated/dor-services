@@ -466,6 +466,13 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
     <machine>
       <group>stanford</group>
       <world rule="no-download"></world>
+      <location rule="no-download">reading_room</location>
+    </machine>
+  </access>
+  <access type="read">
+    <file>dark_file</file>
+    <machine>
+      <none/>
     </machine>
   </access>
   <use>
@@ -491,6 +498,13 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
     <machine>
       <group>stanford</group>
       <world rule="no-download"></world>
+      <location rule="no-download">reading_room</location>
+    </machine>
+  </access>
+  <access type="read">
+    <file>dark_file</file>
+    <machine>
+      <none/>
     </machine>
   </access>
   <use>
