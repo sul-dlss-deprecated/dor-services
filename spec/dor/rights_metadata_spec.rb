@@ -58,7 +58,7 @@ describe Dor::RightsMetadataDS do
       expect(doc).to match a_hash_including(
         'rights_primary_ssi'          => 'world_qualified',
         'rights_descriptions_ssim'    => include(
-          'world_qualified', 'location: reading_room (no-download)', 'stanford', 'world (no-download)', 'dark (file)'
+          'location: reading_room (no-download)', 'stanford', 'world (no-download)', 'dark (file)'
         ),
         'metadata_source_ssi'         => 'DOR',
         'title_tesim'                 => ['Indianapolis 500'],
@@ -93,6 +93,27 @@ describe Dor::RightsMetadataDS do
       )
       expect(doc).not_to match a_hash_including(
         'rights_descriptions_ssim' => include('access_restricted')
+      )
+    end
+
+    it 'should filter world_qualified from what gets aggregated into rights_descriptions_ssim' do
+      rights_md_ds = Dor::RightsMetadataDS.new
+      mock_dra_obj = double(Dor::RightsAuth)
+      expect(mock_dra_obj).to receive(:index_elements).with(no_args).at_least(:once).and_return(
+        :primary => 'world_qualified',
+        :errors  => [],
+        :terms   => [],
+        :obj_world_qualified => [{:rule => 'somerule'}]
+      )
+      expect(rights_md_ds).to receive(:dra_object).and_return(mock_dra_obj)
+
+      doc = rights_md_ds.to_solr
+      expect(doc).to match a_hash_including(
+        'rights_primary_ssi'       => 'world_qualified',
+        'rights_descriptions_ssim' => include('world (somerule)'),
+      )
+      expect(doc).not_to match a_hash_including(
+        'rights_descriptions_ssim' => include('world_qualified')
       )
     end
 

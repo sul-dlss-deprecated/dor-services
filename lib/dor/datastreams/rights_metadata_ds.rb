@@ -144,7 +144,7 @@ module Dor
 
       # these two values are returned by index_elements[:primary], but are just a less granular version of
       # what the other more specific fields return, so discard them
-      solr_doc['rights_descriptions_ssim'].reject! { |rights_desc| ['access_restricted', 'access_restricted_qualified'].include? rights_desc }
+      solr_doc['rights_descriptions_ssim'].reject! { |rights_desc| ['access_restricted', 'access_restricted_qualified', 'world_qualified'].include? rights_desc }
       solr_doc['rights_descriptions_ssim'] << 'dark (file)' if dra.index_elements[:terms].include? 'none_read_file'
 
       solr_doc['obj_rights_locations_ssim'] = dra.index_elements[:obj_locations] if !dra.index_elements[:obj_locations].blank?
