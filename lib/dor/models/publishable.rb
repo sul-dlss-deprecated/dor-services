@@ -1,4 +1,5 @@
 require 'dor/datastreams/content_metadata_ds'
+require 'fileutils'
 
 module Dor
   module Publishable
@@ -61,6 +62,7 @@ module Dor
         end
         DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
         DigitalStacksService.transfer_to_document_store(pid, generate_public_desc_md, 'mods') if metadata_format == 'mods'
+        publish_notify_on_success
       else
         # Clear out the document cache for this item
         DigitalStacksService.prune_purl_dir pid
@@ -73,6 +75,16 @@ module Dor
       endpoint = dor_services["v1/objects/#{pid}/publish"]
       endpoint.post ''
       endpoint.url
+    end
+
+    ##
+    # When publishing a PURL, we drop a `aa11bb2222` file into the `local_recent_changes` folder
+    # to notify other applications watching the filesystem (i.e., purl-fetcher).
+    # @param [String] `local_recent_changes` usually `/purl/recent_changes`
+    def publish_notify_on_success(local_recent_changes = Config.stacks.local_recent_changes)
+      raise ArgumentError, "Missing local_recent_changes directory: #{local_recent_changes}" unless File.directory?(local_recent_changes)
+      id = pid.gsub(/^druid:/, '')
+      FileUtils.touch(File.join(local_recent_changes, id))
     end
   end
 end

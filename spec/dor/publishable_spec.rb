@@ -327,6 +327,7 @@ describe Dor::Publishable do
           expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<oai_dc:dc/, 'dc')
           expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<publicObject/, 'public')
           expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<mods:mods/, 'mods')
+          expect(@item).to receive(:publish_notify_on_success).with(no_args)
         end
         it 'identityMetadta, contentMetadata, rightsMetadata, generated dublin core, and public xml' do
           @item.rightsMetadata.content = "<rightsMetadata><access type='discover'><machine><world/></machine></access></rightsMetadata>"
@@ -337,6 +338,28 @@ describe Dor::Publishable do
             <access type='discover'><machine><world/></machine></access></rightsMetadata>)
           @item.publish_metadata
         end
+      end
+    end
+
+    context 'publish_notify_on_success' do
+      let(:dir) { '/my/dir' }
+      it 'writes empty notification file' do
+        Dor::Config.push! {|config| config.stacks.local_recent_changes dir}
+        expect(File).to receive(:directory?).with(dir).and_return(true)
+        expect(FileUtils).to receive(:touch).with(dir + '/ab123cd4567')
+        @item.publish_notify_on_success
+      end
+      it 'writes empty notification file even when given only the base id' do
+        Dor::Config.push! {|config| config.stacks.local_recent_changes dir}
+        expect(File).to receive(:directory?).with(dir).and_return(true)
+        expect(@item).to receive(:pid).and_return('aa111bb2222')
+        expect(FileUtils).to receive(:touch).with(dir + '/aa111bb2222')
+        @item.publish_notify_on_success
+      end
+      it 'raises error if misconfigured' do
+        expect(File).to receive(:directory?).with(nil).and_return(false)
+        expect(FileUtils).not_to receive(:touch)
+        expect { @item.publish_notify_on_success }.to raise_error(ArgumentError, /Missing local_recent_changes directory/)
       end
     end
 
