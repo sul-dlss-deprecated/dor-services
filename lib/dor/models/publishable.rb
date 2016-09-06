@@ -86,7 +86,11 @@ module Dor
       raise ArgumentError, "Missing local_recent_changes directory: #{local_recent_changes}" unless File.directory?(local_recent_changes)
       id = pid.gsub(/^druid:/, '')
       FileUtils.touch(File.join(local_recent_changes, id))
-      DruidTools::Druid.new(id, Dor::Config.stacks.local_document_cache_root).deletes_delete_record
+      begin
+        DruidTools::Druid.new(id, Dor::Config.stacks.local_document_cache_root).deletes_delete_record
+      rescue Errno::EACCES
+        Dor.logger.warn "Access denied while trying to remove .deletes file for druid:#{id}"
+      end
     end
   end
 end

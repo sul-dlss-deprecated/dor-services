@@ -379,7 +379,17 @@ describe Dor::Publishable do
         @item.publish_notify_on_success
         expect(druid1.deletes_record_exists?).to be_falsey # deletes record not there anymore
         expect(File.exists?(changes_file)).to be_truthy # changes file is there
-      end      
+      end  
+      it 'does not explode if the deletes entry cannot be removed' do
+        druid1 = DruidTools::Druid.new @item.pid, purl_root
+        druid1.creates_delete_record # create a deletes record
+        expect(druid1.deletes_record_exists?).to be_truthy # confirm our deletes record is there
+        allow(FileUtils).to receive(:rm).and_raise(Errno::EACCES) # prevent the deletes method from running
+        expect(Dor.logger).to receive(:warn).with("Access denied while trying to remove .deletes file for #{@item.pid}") # we will get a warning
+        @item.publish_notify_on_success
+        expect(druid1.deletes_record_exists?).to be_truthy # deletes record is still there since it cannot be removed
+        expect(File.exists?(changes_file)).to be_truthy # changes file is there
+      end          
       it 'raises error if misconfigured' do
         Dor::Config.push! {|config| config.stacks.local_recent_changes nil}
         expect(File).to receive(:directory?).with(nil).and_return(false)
