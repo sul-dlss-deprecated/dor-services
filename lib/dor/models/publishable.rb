@@ -80,11 +80,17 @@ module Dor
     ##
     # When publishing a PURL, we drop a `aa11bb2222` file into the `local_recent_changes` folder
     # to notify other applications watching the filesystem (i.e., purl-fetcher).
+    # We also remove any .deletes entry that may have left over from a previous removal
     # @param [String] `local_recent_changes` usually `/purl/recent_changes`
     def publish_notify_on_success(local_recent_changes = Config.stacks.local_recent_changes)
       raise ArgumentError, "Missing local_recent_changes directory: #{local_recent_changes}" unless File.directory?(local_recent_changes)
       id = pid.gsub(/^druid:/, '')
       FileUtils.touch(File.join(local_recent_changes, id))
+      begin
+        DruidTools::Druid.new(id, Dor::Config.stacks.local_document_cache_root).deletes_delete_record
+      rescue Errno::EACCES
+        Dor.logger.warn "Access denied while trying to remove .deletes file for druid:#{id}"
+      end
     end
   end
 end

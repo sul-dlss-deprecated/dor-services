@@ -226,13 +226,15 @@ describe Dor::Publishable do
           @item.publish_metadata
         end
 
-        it "removes the item's content from the Purl document cache" do
-          # create druid tree and content in purl root
+        it "removes the item's content from the Purl document cache and creates a .delete entry" do
+          # create druid tree and dummy content in purl root
           druid1 = DruidTools::Druid.new @item.pid, purl_root
           druid1.mkdir
+          expect(druid1.deletes_record_exists?).to be_falsey # deletes record not there yet
           File.open(File.join(druid1.path, 'tmpfile'), 'w') {|f| f.write 'junk' }
           @item.publish_metadata
-          expect(File).to_not exist(druid1.path)
+          expect(File).to_not exist(druid1.path) # it should now be gone
+          expect(druid1.deletes_record_exists?).to be_truthy # deletes record created
         end
       end
 
@@ -342,21 +344,54 @@ describe Dor::Publishable do
     end
 
     context 'publish_notify_on_success' do
-      let(:dir) { '/my/dir' }
+      let(:changes_dir) { Dir.mktmpdir }
+      let(:purl_root) { Dir.mktmpdir }
+      let(:changes_file) { File.join(changes_dir,@item.pid.gsub('druid:','')) }
+      
+      before(:each) do 
+        Dor::Config.push! {|config| config.stacks.local_document_cache_root purl_root}
+        Dor::Config.push! {|config| config.stacks.local_recent_changes changes_dir}
+      end
+      
+      after(:each) do
+        FileUtils.remove_entry purl_root
+        FileUtils.remove_entry changes_dir
+        Dor::Config.pop!
+      end
+      
       it 'writes empty notification file' do
-        Dor::Config.push! {|config| config.stacks.local_recent_changes dir}
-        expect(File).to receive(:directory?).with(dir).and_return(true)
-        expect(FileUtils).to receive(:touch).with(dir + '/ab123cd4567')
+        expect(File).to receive(:directory?).with(changes_dir).and_return(true)
+        expect(File.exists?(changes_file)).to be_falsey
         @item.publish_notify_on_success
+        expect(File.exists?(changes_file)).to be_truthy
       end
       it 'writes empty notification file even when given only the base id' do
-        Dor::Config.push! {|config| config.stacks.local_recent_changes dir}
-        expect(File).to receive(:directory?).with(dir).and_return(true)
-        expect(@item).to receive(:pid).and_return('aa111bb2222')
-        expect(FileUtils).to receive(:touch).with(dir + '/aa111bb2222')
+        expect(File).to receive(:directory?).with(changes_dir).and_return(true)
+        allow(@item).to receive(:pid).and_return('aa111bb2222')
+        expect(File.exists?(changes_file)).to be_falsey
         @item.publish_notify_on_success
+        expect(File.exists?(changes_file)).to be_truthy
       end
+      it 'removes any associated delete entry' do
+        druid1 = DruidTools::Druid.new @item.pid, purl_root
+        druid1.creates_delete_record # create a deletes record so we confirm it is removed by the publish_notify_on_success method
+        expect(druid1.deletes_record_exists?).to be_truthy # confirm our deletes record is there
+        @item.publish_notify_on_success
+        expect(druid1.deletes_record_exists?).to be_falsey # deletes record not there anymore
+        expect(File.exists?(changes_file)).to be_truthy # changes file is there
+      end  
+      it 'does not explode if the deletes entry cannot be removed' do
+        druid1 = DruidTools::Druid.new @item.pid, purl_root
+        druid1.creates_delete_record # create a deletes record
+        expect(druid1.deletes_record_exists?).to be_truthy # confirm our deletes record is there
+        allow(FileUtils).to receive(:rm).and_raise(Errno::EACCES) # prevent the deletes method from running
+        expect(Dor.logger).to receive(:warn).with("Access denied while trying to remove .deletes file for #{@item.pid}") # we will get a warning
+        @item.publish_notify_on_success
+        expect(druid1.deletes_record_exists?).to be_truthy # deletes record is still there since it cannot be removed
+        expect(File.exists?(changes_file)).to be_truthy # changes file is there
+      end          
       it 'raises error if misconfigured' do
+        Dor::Config.push! {|config| config.stacks.local_recent_changes nil}
         expect(File).to receive(:directory?).with(nil).and_return(false)
         expect(FileUtils).not_to receive(:touch)
         expect { @item.publish_notify_on_success }.to raise_error(ArgumentError, /Missing local_recent_changes directory/)
