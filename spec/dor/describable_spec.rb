@@ -661,7 +661,7 @@ describe Dor::Describable do
       )
     end
     it 'genre fields' do
-      genre_list = ['Aquatint.', 'Mezzotint engraving.', 'Engravings.', 'Etchings.', 'Lithographs.']
+      genre_list = ['Thesis/Dissertation']
       expect(@doc).to match a_hash_including(
         'sw_genre_ssim'               => genre_list,
         'sw_genre_tesim'              => genre_list

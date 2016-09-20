@@ -8,11 +8,8 @@
     <namePart type="date">1890-</namePart>
   </name>
   <typeOfResource collection="yes" manuscript="yes">mixed material</typeOfResource>
-  <genre authority="lcsh">Aquatint.</genre>
-  <genre authority="lcsh">Mezzotint engraving.</genre>
-  <genre authority="ftamc">Engravings.</genre>
-  <genre authority="ftamc">Etchings.</genre>
-  <genre authority="ftamc">Lithographs.</genre>
+  <genre authority="lcsh">thesis</genre>  
+  <genre authority="lcsh">something else</genre>
   <originInfo>
     <place>
       <placeTerm authority="marccountry" type="code">cau</placeTerm>
