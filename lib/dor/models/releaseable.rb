@@ -209,7 +209,6 @@ module Dor
       end
       raise ArgumentError, ':what must be self or collection' unless what_correct
       raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag # rubocop:disable Style/DoubleNegation
-      validate_tag_format(attrs[:tag]) unless attrs[:tag].nil? # Will Raise exception if invalid tag
       true
     end
 
@@ -223,9 +222,9 @@ module Dor
     # @raise [ArgumentError] Raised if attributes are improperly supplied
     #
     # @example
-    #  item.add_release_node(true,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket'})
+    #  item.add_release_node(true,{:what=>'self',:to=>'Searchworks',:who=>'petucket'})
     def add_release_node(release, attrs = {})
-      allowed_release_attributes=[:tag,:what,:to,:who,:when] # any other release attributes sent in will be rejected and not stored
+      allowed_release_attributes=[:what,:to,:who,:when] # any other release attributes sent in will be rejected and not stored
       identity_metadata_ds = identityMetadata
       attrs.delete_if { |key, value| !allowed_release_attributes.include?(key) }
       attrs[:when] = Time.now.utc.iso8601 if attrs[:when].nil? # add the timestamp
@@ -244,15 +243,8 @@ module Dor
       [:who, :to, :what].each do |check_attr|
         raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
-
-      what_correct = false
-      %w(self collection).each do |allowed_what_value|
-        what_correct = true if attrs[:what] == allowed_what_value
-      end
-      raise ArgumentError, ':what must be self or collection' unless what_correct
-      raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag # rubocop:disable Style/DoubleNegation
-
-      validate_tag_format(attrs[:tag]) unless attrs[:tag].nil? # Will Raise exception if invalid tag
+      raise ArgumentError, ':what must be self or collection' unless %w(self collection).include? attrs[:what]
+      raise ArgumentError, 'the value set for this tag is not a boolean' unless [true,false].include? tag
       true
     end
 

@@ -247,29 +247,34 @@ describe 'Adding release nodes', :vcr do
     it 'raises an argument error when :what is a string, but is not self or collection' do
       expect{@item.valid_release_attributes(true, @args.merge(:what => 'foo'))}.to raise_error(ArgumentError)
     end
-    it 'should add a tag when all attributes are properly provided' do
+    it 'should add a tag when all attributes are properly provided, and drop the invalid <tag> attribute' do
       VCR.use_cassette('simple_release_tag_add_success_test') do
         tag_xml=@item.add_release_node(true, @args.merge(:what => 'self'))
         expect(tag_xml).to be_a_kind_of(Nokogiri::XML::Element)
-        expect(tag_xml.to_xml).to eq("<release when=\"2015-01-05T23:23:45Z\" who=\"carrickr\" to=\"Revs\" what=\"self\" tag=\"Project:Fitch:Batch2\">true</release>")
+        expect(tag_xml.to_xml).to eq("<release when=\"2015-01-05T23:23:45Z\" who=\"carrickr\" to=\"Revs\" what=\"self\">true</release>")
       end
     end
     it 'should fail to add a release node when there is an attribute error' do
-      VCR.use_cassette('simple_release_tag_add_failure_test') do
-        expect{@item.add_release_node(true,  {:who => nil, :to => 'Revs', :what => 'self', :tag => 'Project:Fitch:Batch2'})}.to raise_error(ArgumentError)
-        expect{@item.add_release_node(false, @args.merge(:tag => 'Project'))}.to raise_error(ArgumentError)
-        expect{@item.add_release_node(1, @args)}.to raise_error(ArgumentError)
+      VCR.use_cassette('simple_release_tag_add_success_test') do
+        expect{@item.add_release_node(true,  {:who => nil, :to => 'Revs', :what => 'self'})}.to raise_error(ArgumentError) # who is not a string
+        expect{@item.add_release_node(true,  {:who => nil, :to => 'Revs', :what => 'unknown_value'})}.to raise_error(ArgumentError) # who is not a string
+        expect{@item.add_release_node(1, @args)}.to raise_error(ArgumentError) # invalid release value
       end
     end
+    it 'should drop all invalid attributes passed in' do
+      VCR.use_cassette('simple_release_tag_add_success_test') do
+        new_tag="<release when=\"2016-01-05T23:23:45Z\" who=\"petucket\" to=\"Revs\" what=\"self\">true</release>"
+        expect(@item.identityMetadata.to_xml).to_not include new_tag
+        @item.add_release_node(true,  {:when => '2016-01-05T23:23:45Z', :who => 'petucket', :to=> 'Revs', :what=> 'self', :blop => "something", :tag => 'Revs', 'something_else' => 'whatup'})
+        expect(@item.identityMetadata.to_xml).to include new_tag
+      end
+    end    
     it 'should return true when valid_release_attributes is called with valid attributes and no tag attribute' do
       @args.delete :tag
       expect(@item.valid_release_attributes(true, @args)).to be true
     end
     it 'should return true when valid_release_attributes is called with valid attributes and tag attribute' do
       expect(@item.valid_release_attributes(true, @args)).to be true
-    end
-    it 'should raise an error when valid_release_attributes is called with valid attributes but an invalid tag attribute' do
-      expect{@item.valid_release_attributes(true, @args.merge(:tag => 'Batch2'))}.to raise_error(ArgumentError)
     end
     it 'should raise an error when valid_release_attributes is called with a tag content that is not a boolean' do
       expect{@item.valid_release_attributes(1, @args)}.to raise_error(ArgumentError)
