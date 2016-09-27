@@ -215,7 +215,7 @@ module Dor
 
     # Add a release node for the item
     # Will use the current time if timestamp not supplied. You can supply a timestap for correcting history, etc if desired
-    # Timestamp will be calculated by the function, if no displayType is passed in, it will default to file
+    # Timestamp will be calculated by the function
     #
     # @param release [Boolean] True or false for the release node
     # @param attrs [hash]  A hash of any attributes to be placed onto the tag
@@ -223,16 +223,13 @@ module Dor
     # @raise [ArgumentError] Raised if attributes are improperly supplied
     #
     # @example
-    #  item.add_tag(true,:release,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket', :displayType='filmstrip'})
+    #  item.add_release_node(true,{:tag=>'Fitch : Batch2',:what=>'self',:to=>'Searchworks',:who=>'petucket'})
     def add_release_node(release, attrs = {})
+      allowed_release_attributes=[:tag,:what,:to,:who,:when] # any other release attributes sent in will be rejected and not stored
       identity_metadata_ds = identityMetadata
+      attrs.delete_if { |key, value| !allowed_release_attributes.include?(key) }
       attrs[:when] = Time.now.utc.iso8601 if attrs[:when].nil? # add the timestamp
-      attrs[:displayType] = 'file' if attrs[:displayType].nil? # default to file is no display type is passed
       valid_release_attributes(release, attrs)
-
-      # Remove the old displayType and then add the one for this tag
-      remove_displayTypes
-      identity_metadata_ds.add_value(:displayType, attrs[:displayType], {})
       identity_metadata_ds.add_value(:release, release.to_s, attrs)
     end
 
@@ -254,7 +251,6 @@ module Dor
       end
       raise ArgumentError, ':what must be self or collection' unless what_correct
       raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag # rubocop:disable Style/DoubleNegation
-      raise ArgumentError, ':displayType must be passed in as a String' unless attrs[:displayType].class == String
 
       validate_tag_format(attrs[:tag]) unless attrs[:tag].nil? # Will Raise exception if invalid tag
       true

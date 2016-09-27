@@ -189,17 +189,6 @@ module Dor
         .any?
     end
 
-    # Removes all displayTypes from an item in preparation of adding a new display type
-    # @return Boolean True if displayTypes were removed, False if no displayTypes were removed
-    def remove_displayTypes
-      nodes = identityMetadata.ng_xml.search('//displayType')
-      # NOTE: .each after search is different than normal ruby enumerator:
-      # ~ ng_xml.search('//nonexistant_tag').each(&:foo) == 0
-      # ~ [].each(&:foo) == []
-      nodes.each(&:remove)
-      nodes.any?
-    end
-
     def update_tag(old_tag, new_tag)
       normtag = normalize_tag(old_tag)
       identityMetadata.ng_xml.search('//tag')

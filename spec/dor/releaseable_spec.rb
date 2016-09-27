@@ -212,25 +212,6 @@ describe 'Adding release nodes', :vcr do
     Dor::Config.pop!
   end
 
-  describe 'add_release_node' do
-    it 'removes all current displayTypes' do
-      expect(@item).to receive(:remove_displayTypes).once
-      @item.add_release_node(true, {:what => 'self', :who => 'carrickr', :to => 'FRDA'})
-    end
-    it 'adds a displayType of file when adding a releaseNode with no type is set' do
-      iM = @item.identityMetadata # Grab an identityMetadata so we can do expects and allows on it
-      expect(iM).to receive(:add_value).once.with(:displayType, 'file', {})
-      expect(iM).to receive(:add_value).once.with(:release, any_args)
-      @item.add_release_node(true, {:what => 'self', :who => 'carrickr', :to => 'FRDA'})
-    end
-    it 'uses the supplied displayType of file when adding a releaseNode' do
-      iM = @item.identityMetadata # Grab an identityMetadata so we can do expects and allows on it
-      expect(iM).to receive(:add_value).once.with(:displayType, 'filmstrip', {})
-      expect(iM).to receive(:add_value).once.with(:release, any_args)
-      @item.add_release_node(true, {:what => 'self', :who => 'carrickr', :to => 'FRDA', :displayType => 'filmstrip'})
-    end
-  end
-
   describe 'Adding tags and workflows' do
     it 'should release an item with one release tag supplied' do
       allow(@item).to receive(:save).and_return(true) # stud out the true in that it we lack a connection to solr
@@ -249,7 +230,7 @@ describe 'Adding release nodes', :vcr do
 
   describe 'valid_release_attributes' do
     before :each do
-      @args = {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => 'collection', :tag => 'Project:Fitch:Batch2', :displayType => 'file'}
+      @args = {:when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => 'collection', :tag => 'Project:Fitch:Batch2'}
     end
     it 'should raise an error when :who, :to, :what are missing or are not strings' do
       expect{@item.valid_release_attributes(true,  @args.merge(:who  => nil ))}.to raise_error(ArgumentError)
@@ -266,12 +247,11 @@ describe 'Adding release nodes', :vcr do
     it 'raises an argument error when :what is a string, but is not self or collection' do
       expect{@item.valid_release_attributes(true, @args.merge(:what => 'foo'))}.to raise_error(ArgumentError)
     end
-    it 'raises an argument error when :displayType is not a string' do
-      expect{@item.valid_release_attributes(true, @args.merge(:displayType => ['file']))}.to raise_error(ArgumentError)
-    end
     it 'should add a tag when all attributes are properly provided' do
       VCR.use_cassette('simple_release_tag_add_success_test') do
-        expect(@item.add_release_node(true, @args.merge(:what => 'self'))).to be_a_kind_of(Nokogiri::XML::Element)
+        tag_xml=@item.add_release_node(true, @args.merge(:what => 'self'))
+        expect(tag_xml).to be_a_kind_of(Nokogiri::XML::Element)
+        expect(tag_xml.to_xml).to eq("<release when=\"2015-01-05T23:23:45Z\" who=\"carrickr\" to=\"Revs\" what=\"self\" tag=\"Project:Fitch:Batch2\">true</release>")
       end
     end
     it 'should fail to add a release node when there is an attribute error' do
