@@ -91,8 +91,9 @@ describe Dor::Publishable do
         expect(@item).to receive(:released_for).and_return({})
         @p_xml = Nokogiri::XML(@item.public_xml)
       end
-      it 'does not include a releaseData element' do
+      it 'does not include a releaseData element and any info in identityMetadata' do
         expect(@p_xml.at_xpath('/publicObject/releaseData')).to be_nil
+        expect(@p_xml.at_xpath('/publicObject/identityMetadata/release')).to be_nil
       end
     end
 
@@ -180,11 +181,12 @@ describe Dor::Publishable do
         expect(releases.map{ |r| r['to']}).to eq ['Searchworks', 'Some_special_place']
       end
 
-      it 'does include a releaseData element when there is content inside it' do
+      it 'include a releaseData element when there is content inside it, but does not include this release data in identityMetadata' do
         releaseData = '<releaseData><release>foo</release></releaseData>'
         allow(@item).to receive(:generate_release_xml).and_return(releaseData)
         p_xml = Nokogiri::XML(@item.public_xml)
         expect(p_xml.at_xpath('/publicObject/releaseData/release').inner_text).to eq 'foo'
+        expect(p_xml.at_xpath('/publicObject/identityMetadata/release')).to be_nil
       end
 
     end
