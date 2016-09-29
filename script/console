@@ -31,5 +31,6 @@ silence_warnings do
   rescue LoadError
   end
 end
+WebMock.allow_net_connect! 
 
 IRB.start

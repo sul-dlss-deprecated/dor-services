@@ -33,7 +33,6 @@ module Dor
 
       im = datastreams['identityMetadata'].ng_xml.clone
       im.search('//release').each(&:remove) # remove any <release> tags from public xml which have full history
-      im.root.add_child(release_xml)
 
       pub.add_child(im.root) # add in modified identityMetadata datastream
       pub.add_child(datastreams['contentMetadata'].public_xml.root.clone)
@@ -81,7 +80,7 @@ module Dor
     # When publishing a PURL, we drop a `aa11bb2222` file into the `local_recent_changes` folder
     # to notify other applications watching the filesystem (i.e., purl-fetcher).
     # We also remove any .deletes entry that may have left over from a previous removal
-    # @param [String] `local_recent_changes` usually `/purl/recent_changes`
+    # @param [String] local_recent_changes usually `/purl/recent_changes`
     def publish_notify_on_success(local_recent_changes = Config.stacks.local_recent_changes)
       raise ArgumentError, "Missing local_recent_changes directory: #{local_recent_changes}" unless File.directory?(local_recent_changes)
       id = pid.gsub(/^druid:/, '')
