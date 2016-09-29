@@ -311,6 +311,10 @@ describe 'Adding release nodes', :vcr do
       expect(@item.remove_druid_prefix).to eq('bb004bn8654')
     end
 
+    it 'should remove the druid prefix for an arbitrary druid passed in' do
+      expect(@item.remove_druid_prefix('druid:oo000oo0001')).to eq('oo000oo0001')
+    end
+    
     it 'should return the full url for a druid' do
       expect(@item.form_purl_url).to eq("https://#{Dor::Config.stacks.document_cache_host}/bb004bn8654.xml")
     end

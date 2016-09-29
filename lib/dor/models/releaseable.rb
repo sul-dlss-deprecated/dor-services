@@ -286,9 +286,9 @@ module Dor
 
     # Since purl does not use the druid: prefix but much of dor does, use this function to strip the druid: if needed
     # @return [String] the druid sans the druid: or if there was no druid: prefix, the entire string you passed
-    def remove_druid_prefix
+    def remove_druid_prefix(druid=id)
       druid_prefix = 'druid:'
-      return id.split(druid_prefix)[1] if id.split(druid_prefix).size > 1
+      return druid.split(druid_prefix)[1] if druid.split(druid_prefix).size > 1
       druid
     end
 
