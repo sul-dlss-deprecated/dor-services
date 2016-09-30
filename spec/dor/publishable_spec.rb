@@ -125,6 +125,10 @@ describe Dor::Publishable do
       it 'rightsMetadata' do
         expect(@p_xml.at_xpath('/publicObject/rightsMetadata')).to be
       end
+      it 'generated mods' do
+        expect(@p_xml.at_xpath('/publicObject/mods:mods', 'mods' => 'http://www.loc.gov/mods/v3')).to be
+      end
+
       it 'generated dublin core' do
         expect(@p_xml.at_xpath('/publicObject/oai_dc:dc', 'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/')).to be
       end
