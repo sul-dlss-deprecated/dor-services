@@ -35,14 +35,14 @@ describe Dor::Contentable do
   before(:each) do
     @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
     @item.contentMetadata.content = '<?xml version="1.0"?>
-    <contentMetadata objectId="druid:gw177fc7976" type="map">
+    <contentMetadata objectId="druid:ab123cd4567" type="map">
     <resource id="0001" sequence="1" type="image">
-    <file format="JPEG2000" id="gw177fc7976_05_0001.jp2" mimetype="image/jp2" preserve="yes" publish="yes" shelve="yes" size="5143883">
+    <file format="JPEG2000" id="ab123cd4567_05_0001.jp2" mimetype="image/jp2" preserve="yes" publish="yes" shelve="yes" size="5143883">
     <imageData height="4580" width="5939"/>
     <checksum type="md5">3d3ff46d98f3d517d0bf086571e05c18</checksum>
     <checksum type="sha1">ca1eb0edd09a21f9dd9e3a89abc790daf4d04916</checksum>
     </file>
-    <file format="TIFF" id="gw177fc7976_00_0001.tif" mimetype="image/tiff" preserve="yes" publish="no" shelve="no" size="81630420">
+    <file format="TIFF" id="ab123cd4567_00_0001.tif" mimetype="image/tiff" preserve="yes" publish="no" shelve="no" size="81630420">
     <imageData height="4580" width="5939"/>
     <checksum type="md5">81ccd17bccf349581b779615e82a0366</checksum>
     <checksum type="sha1">12586b624540031bfa3d153299160c4885c3508c</checksum>
@@ -108,11 +108,11 @@ describe Dor::Contentable do
 
   describe 'replace_file' do
     it 'should update the md5, sha1, and size for the file, and attempt to ftp it to the workspace' do
-      @item.replace_file(@file, 'gw177fc7976_00_0001.tif')
+      @item.replace_file(@file, 'ab123cd4567_00_0001.tif')
       xml = @item.contentMetadata.ng_xml
-      file_node = xml.search('//file[@id=\'gw177fc7976_00_0001.tif\']')
+      file_node = xml.search('//file[@id=\'ab123cd4567_00_0001.tif\']')
       expect(file_node.length).to eq(1)
-      checksums = xml.search('//file[@id=\'gw177fc7976_00_0001.tif\']/checksum')
+      checksums = xml.search('//file[@id=\'ab123cd4567_00_0001.tif\']/checksum')
       expect(checksums.length).to eq(2)
       checksums.each do |checksum|
         if checksum['type'] == 'md5'
@@ -123,7 +123,7 @@ describe Dor::Contentable do
       end
     end
     it 'should raise an exception if there isnt a matching file record in the metadata' do
-      expect{ @item.replace_file(@file, 'abcdgw177fc7976_00_0001.tif')}.to raise_error(StandardError)
+      expect{ @item.replace_file(@file, 'abcdab123cd4567_00_0001.tif')}.to raise_error(StandardError)
     end
   end
   describe 'get_preserved_file' do
@@ -147,13 +147,13 @@ describe Dor::Contentable do
   describe 'rename_file' do
     it 'should attempt to rename the file in the workspace and update the metadata' do
       expect(@sftp).to receive(:rename!)
-      @item.rename_file('gw177fc7976_05_0001.jp2', 'test.jp2')
+      @item.rename_file('ab123cd4567_05_0001.jp2', 'test.jp2')
     end
   end
   describe 'remove_file' do
     it 'should use sftp to remove the file and update the metadata' do
       expect(@sftp).to receive(:remove!)
-      @item.remove_file('gw177fc7976_05_0001.jp2')
+      @item.remove_file('ab123cd4567_05_0001.jp2')
     end
   end
   describe 'is_file_in_workspace?' do
