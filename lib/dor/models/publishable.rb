@@ -94,6 +94,7 @@ module Dor
       rels = public_relationships.root
       pub.add_child(rels.clone) unless rels.nil? # TODO: Should never be nil in practice; working around an ActiveFedora quirk for testing
       pub.add_child(generate_dublin_core.root.clone)
+      pub.add_child(Nokogiri::XML(generate_public_desc_md).root.clone) if metadata_format == 'mods'
       pub.add_child(Nokogiri(generate_release_xml).root.clone) unless release_xml.children.size == 0 # If there are no release_tags, this prevents an empty <releaseData/> from being added
       # Note we cannot base this on if an individual object has release tags or not, because the collection may cause one to be generated for an item,
       # so we need to calculate it and then look at the final result.s
