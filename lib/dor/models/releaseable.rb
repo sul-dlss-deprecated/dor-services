@@ -284,14 +284,6 @@ module Dor
       end
     end
 
-    # Since purl does not use the druid: prefix but much of dor does, use this function to strip the druid: if needed
-    # @return [String] the druid sans the druid: or if there was no druid: prefix, the entire string you passed
-    def remove_druid_prefix(druid=id)
-      druid_prefix = 'druid:'
-      return druid.split(druid_prefix)[1] if druid.split(druid_prefix).size > 1
-      druid
-    end
-
     # Take the and create the entire purl url that will usable for the open method in open-uri, returns http
     # @return [String] the full url
     def form_purl_url

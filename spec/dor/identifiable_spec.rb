@@ -155,6 +155,48 @@ describe Dor::Identifiable do
     end
   end
 
+  describe 'remove_druid_prefix' do
+    it 'should remove the druid prefix if it is present' do
+      expect(item.remove_druid_prefix).to eq('ab123cd4567')
+    end
+
+    it 'should remove the druid prefix for an arbitrary druid passed in' do
+      expect(item.remove_druid_prefix('druid:oo000oo0001')).to eq('oo000oo0001')
+    end
+
+    it 'should leave the string unchanged if the druid prefix is already stripped' do
+      expect(item.remove_druid_prefix('oo000oo0001')).to eq('oo000oo0001')
+    end
+
+    it 'should just return the input string if there are no matches' do
+      expect(item.remove_druid_prefix('bogus')).to eq('bogus')
+    end
+  end
+
+  describe 'regex' do
+    it 'should identify pids by regex' do
+      expect('ab123cd4567'.match(item.pid_regex).size).to eq(1)
+    end
+    it 'should pull out a pid by regex' do
+      expect('druid:ab123cd4567/other crappola'.match(item.pid_regex)[0]).to eq("ab123cd4567")
+    end
+    it 'should not identify non-pids' do
+      expect('bogus'.match(item.pid_regex)).to be_nil
+    end
+    it 'should not identify pid by druid regex' do
+      expect('ab123cd4567'.match(item.druid_regex)).to be_nil
+    end
+    it 'should identify full druid by regex' do
+      expect('druid:ab123cd4567'.match(item.druid_regex).size).to eq(1)
+    end
+    it 'should pull out a full druid by regex' do
+      expect('druid:ab123cd4567/other crappola'.match(item.druid_regex)[0]).to eq("druid:ab123cd4567")
+    end
+    it 'should not identify non-druids' do
+      expect('bogus'.match(item.druid_regex)).to be_nil
+    end
+  end
+
   describe 'remove_tag' do
     it 'should delete a tag' do
       item.add_tag('sometag:someval')

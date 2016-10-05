@@ -24,9 +24,9 @@ module Dor
            {image_type: 'external', finder: "/contentMetadata/resource[@type='thumb' and @thumb='yes']/externalFile[#{mime_type_finder}]"}, # same thing for external files
            {image_type: 'local', finder: "/contentMetadata/resource[(@type='page' or @type='image') and @thumb='yes']/file[#{mime_type_finder}]"},# next find any image or page resource types with the thumb=yes attribute of mimetype jp2
            {image_type: 'external', finder: "/contentMetadata/resource[(@type='page' or @type='image') and @thumb='yes']/externalFile[#{mime_type_finder}]"},# same thing for external file
-           {image_type: 'local', finder: "/contentMetadata/resource[@type='thumb']/file[#{mime_type_finder}]"}, # next find a file of mimetype jp2 or resource type=thumb but no marked with the thumb directive
+           {image_type: 'local', finder: "/contentMetadata/resource[@type='thumb']/file[#{mime_type_finder}]"}, # next find a file of mimetype jp2 and resource type=thumb but not marked with the thumb directive
            {image_type: 'external', finder: "/contentMetadata/resource[@type='thumb']/externalFile[#{mime_type_finder}]"}, # same thing for external file
-           {image_type: 'local', finder: "/contentMetadata/resource[@type='page' or @type='image']/file[#{mime_type_finder}]"}, # finally find the first very first page or image resource of mimetype jp2
+           {image_type: 'local', finder: "/contentMetadata/resource[@type='page' or @type='image']/file[#{mime_type_finder}]"}, # finally find the first page or image resource of mimetype jp2
            {image_type: 'external', finder: "/contentMetadata/resource[@type='page' or @type='image']/externalFile[#{mime_type_finder}]"} # same thing for external file
          ]
               
@@ -48,9 +48,10 @@ module Dor
     # Return a URI encoded version of the thumb image for use by indexers (leaving the extension of the filename)
     # @return [String] URI encoded version of the thumb with the druid prefix, e.g. oo000oo0001%2Ffilenamewith%20space.jp2
     def encoded_thumb
-      return unless thumb
-      thumb_druid=thumb.split('/').first # the druid (before the first slash)
-      thumb_filename=thumb.split(/[a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2}[0-9]{4}[\/]/).last # everything after the druid
+      thumb_image = thumb # store the result locally, so we don't have to compute each time we use it below
+      return unless thumb_image
+      thumb_druid=thumb_image.split('/').first # the druid (before the first slash)
+      thumb_filename=thumb_image.split(/#{pid_regex}[\/]/).last # everything after the druid
       "#{thumb_druid}%2F#{URI.escape(thumb_filename)}"
     end
     

@@ -205,6 +205,25 @@ module Dor
       desc_md_ds_title.present? ? desc_md_ds_title : default_title
     end
 
+    # a regex that can be used to identify the last part of a druid (e.g. oo000oo0001)
+    # @return [Regex] a regular expression to identify the ID part of the druid
+    def pid_regex
+      /[a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2}[0-9]{4}/
+    end
+
+    # a regex that can be used to identify a full druid with prefix (e.g. druid:oo000oo0001)
+    # @return [Regex] a regular expression to identify a full druid
+    def druid_regex
+      /druid:#{pid_regex}/
+    end
+
+    # Since purl does not use the druid: prefix but much of dor does, use this function to strip the druid: if needed
+    # @return [String] the druid sans the druid: or if there was no druid: prefix, the entire string you passed
+    def remove_druid_prefix(druid=id)
+      result=druid.match(/#{pid_regex}/)
+      result.nil? ? druid : result[0]  # if no matches, return the string passed in, otherwise return the match 
+    end
+
     private
 
     def solrize_related_obj_titles(solr_doc, relationships, title_hash, union_field_name, nonhydrus_field_name, hydrus_field_name)
