@@ -323,8 +323,8 @@ module Dor
 
       # TODO: sort of worried about the performance impact in bulk reindex
       # situations, since released_for recurses all parent collections.  jmartin 2015-07-14
-      released_for(true).each { |key, val|
-        add_solr_value(solr_doc, 'released_to', key, :symbol, []) if val
+      released_for(true).each { |release_target, release_info|
+        add_solr_value(solr_doc, 'released_to', release_target, :symbol, []) if release_info['release']
       }
 
       # TODO: need to solrize whether item is released to purl?  does released_for return that?
