@@ -373,11 +373,13 @@ describe 'to_solr' do
 
   before :each do
     @rlsbl_item = instantiate_fixture('druid:ab123cd4567', ReleaseableItem)
-    @rlsbl_item.datastreams['identityMetadata'].content = read_fixture('identity_metadata_full.xml')
   end
 
   it 'should solrize release tags' do
-    allow(@rlsbl_item).to receive(:released_for).and_return('Project' => true, 'test_target' => true, 'test_nontarget' => false)
+    released_for_info = {
+      'Project' => {'release'=>true}, 'test_target' => {'release'=>true}, 'test_nontarget' => {'release'=>false}
+    }
+    allow(@rlsbl_item).to receive(:released_for).and_return(released_for_info)
     solr_doc = @rlsbl_item.to_solr
     released_to_field_name = Solrizer.solr_name('released_to', :symbol)
     expect(solr_doc).to match a_hash_including({released_to_field_name => %w(Project test_target)})
