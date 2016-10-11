@@ -80,7 +80,7 @@ describe Dor::RegistrationService do
           </access>
           <access type="read">
             <machine>
-              <group>Stanford</group>
+              <group>stanford</group>
             </machine>
           </access>
           <use>
@@ -203,29 +203,7 @@ describe Dor::RegistrationService do
           end
           it_behaves_like 'common registration'
           it 'sets rightsMetadata based on the APO default' do
-            # note annoyingly different than stanford_xml... by whitespace and capital "S"
-            expect(@obj.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to <<-XML
-              <?xml version="1.0"?>
-              <rightsMetadata>
-                <copyright>
-                  <human type="copyright">This work is in the Public Domain.</human>
-                </copyright>
-                <access type="discover">
-                  <machine>
-                    <world/>
-                  </machine
-                </access>
-                <access type="read">
-                  <machine>
-                    <group>stanford</group>
-                  </machine>
-                </access>
-                <use>
-                  <human type="creativecommons">Attribution Share Alike license</human>
-                  <machine type="creativecommons">by-sa</machine>
-                </use>
-              </rightsMetadata>
-            XML
+            expect(@obj.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to stanford_xml
           end
         end
         describe 'world' do

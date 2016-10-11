@@ -91,7 +91,7 @@ describe Dor::Governable do
         </access>
         <access type="read">
           <machine>
-            <group>Stanford</group>
+            <group>stanford</group>
           </machine>
         </access>
         <use>
