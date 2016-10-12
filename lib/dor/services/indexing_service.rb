@@ -22,14 +22,14 @@ module Dor
     end
 
     # takes a Dor object and indexes it to solr.  doesn't commit automatically.
-    def self.reindex_object(obj)
+    def self.reindex_object(obj, options = {})
       solr_doc = obj.to_solr
-      Dor::SearchService.solr.add(solr_doc)
+      Dor::SearchService.solr.add(solr_doc, options)
       solr_doc
     end
 
     # retrieves a single Dor object by pid, indexes the object to solr, does some logging
-    # (will use a defualt logger if one is not provided).  doesn't commit automatically.
+    # (will use a default logger if one is not provided).  doesn't commit automatically.
     #
     # WARNING/TODO:  the tests indicate that the "rescue Exception" block at the end will
     # get skipped, and the thrown exception (e.g. SystemStackError) will not be logged.  since
@@ -37,10 +37,26 @@ module Dor
     # doesn't seem worth blocking refactoring.  see https://github.com/sul-dlss/dor-services/issues/156
     # extra logging in this case would be nice, but centralized indexing that's otherwise
     # fully functional is nicer.
-    def self.reindex_pid(pid, index_logger = nil, should_raise_errors = true)
-      index_logger ||= default_index_logger
+    #
+    # @overload reindex_pid(pid, index_logger, options = {})
+    # @overload reindex_pid(pid, index_logger, should_raise_errors, options = {})
+    # @overload reindex_pid(pid, options = {})
+    def self.reindex_pid(pid, *args)
+      options = {}
+      options = args.pop if args.last.is_a? Hash
+
+      if args.length > 0
+        warn "Dor::IndexingService.reindex_pid with primitive arguments is deprecated; pass e.g. { logger: logger, raise_errors: bool } instead"
+        index_logger, should_raise_errors = args
+        index_logger ||= default_index_logger
+        should_raise_errors = true if should_raise_errors.nil?
+      else
+        index_logger = options.fetch(:logger, default_index_logger)
+        should_raise_errors = options.fetch(:raise_errors, true)
+      end
+
       obj = Dor.load_instance pid
-      solr_doc = reindex_object obj
+      solr_doc = reindex_object obj, options
       index_logger.info "updated index for #{pid}"
       solr_doc
     rescue StandardError => se
@@ -57,7 +73,7 @@ module Dor
 
     # given a list of pids, retrieve those objects from fedora, index each to solr, optionally commit
     def self.reindex_pid_list(pid_list, should_commit = false)
-      pid_list.each { |pid| reindex_pid pid, nil, false } # use the default logger, don't let individual errors nuke the rest of the batch
+      pid_list.each { |pid| reindex_pid pid, raise_errors: false } # use the default logger, don't let individual errors nuke the rest of the batch
       ActiveFedora.solr.conn.commit if should_commit
     end
   end
