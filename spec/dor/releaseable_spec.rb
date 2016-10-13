@@ -8,19 +8,13 @@ end
 
 describe Dor::Releaseable, :vcr do
   before :each do
-    Dor::Config.push! do
-      solr.url 'http://127.0.0.1:8080/solr/argo_test'
-      fedora.url 'https://sul-dor-test.stanford.edu/fedora' # attempts to match the VCR-recorded requests, should not actually reach remotely!
-      stacks.document_cache_host 'purl-test.stanford.edu'
-    end
+    stub_config
 
-    VCR.use_cassette('fetch_bryar_transam') do
-      @bryar_trans_am_druid = 'druid:bb004bn8654'
-      @bryar_trans_am       = Dor::Item.find(@bryar_trans_am_druid)
-      @bryar_trans_am_admin_tags   = @bryar_trans_am.tags
-      @bryar_trans_am_release_tags = @bryar_trans_am.release_nodes
-      @array_of_times = ['2015-01-06 23:33:47Z', '2015-01-07 23:33:47Z', '2015-01-08 23:33:47Z', '2015-01-09 23:33:47Z'].map{ |x| Time.parse(x).iso8601 }
-    end
+    @bryar_trans_am_druid = 'druid:bb004bn8654'
+    @bryar_trans_am = instantiate_fixture('druid:bb004bn8654', Dor::Item)
+    @bryar_trans_am_admin_tags   = @bryar_trans_am.tags
+    @bryar_trans_am_release_tags = @bryar_trans_am.release_nodes
+    @array_of_times = ['2015-01-06 23:33:47Z', '2015-01-07 23:33:47Z', '2015-01-08 23:33:47Z', '2015-01-09 23:33:47Z'].map{ |x| Time.parse(x).iso8601 }
   end
 
   after :each do
@@ -187,25 +181,12 @@ describe Dor::Releaseable, :vcr do
 end
 
 describe 'Adding release nodes', :vcr do
-  before :all do
-    Dor::Config.push! do
-      cert_dir = File.expand_path('../../certs', __FILE__)
-      ssl do
-        # If rerecording or adding new cassettes, point these to real files
-        cert_file File.join(cert_dir, 'robots-dor-test.crt')
-        key_file  File.join(cert_dir, 'robots-dor-test.key')
-        key_pass  ''
-      end
-      solr.url 'http://127.0.0.1:8080/solr/argo_test'
-      fedora.url 'https://sul-dor-test.stanford.edu/fedora'
-      stacks.document_cache_host 'purl-test.stanford.edu'
-    end
+  before :each do
+    stub_config
 
-    VCR.use_cassette('releaseable_sample_obj') do
-      @item = Dor::Item.find('druid:bb004bn8654')
-      @release_nodes = @item.release_nodes
-      @le_mans_druid = 'druid:dc235vd9662'
-    end
+    @item = instantiate_fixture('druid:bb004bn8654', Dor::Item)
+    @release_nodes = @item.release_nodes
+    @le_mans_druid = 'druid:dc235vd9662'
   end
 
   after :all do
@@ -282,10 +263,8 @@ describe 'Adding release nodes', :vcr do
   end
 
   it 'should return no release nodes for an item that does n0t have any' do
-    VCR.use_cassette('releaseable_no_release_tags') do
-      no_release_nodes_item = Dor::Item.find('druid:qv648vd4392')
-      expect(no_release_nodes_item.release_nodes).to eq({})
-    end
+    no_release_nodes_item = instantiate_fixture('druid:qv648vd4392', Dor::Item)
+    expect(no_release_nodes_item.release_nodes).to eq({})
   end
 
   it 'should return the releases for an item that has release tags' do
@@ -329,30 +308,26 @@ describe 'Adding release nodes', :vcr do
 
     # TODO:  These two are pending because first we need to create and object in purl with a release data section, then we can record a purl fetch for them
     xit 'should get a list of release tags in druid for a druid' do
-      VCR.use_cassette('fetch_le_mans_purl') do
-        item = Dor::Item.find(@le_mans_druid)
-        x = item.get_xml_from_purl
-        expect(item.get_release_tags_from_purl_xml(x)).to match_array(%w(Kurita Mogami Atago))
-      end
+      item = instantiate_fixture(@le_mans_druid, Dor::Item)
+      x = item.get_xml_from_purl
+      expect(item.get_release_tags_from_purl_xml(x)).to match_array(%w(Kurita Mogami Atago))
     end
 
     xit 'should add in release tags as false for targets that are listed on the purl but not in new tag generation' do
-      VCR.use_cassette('fetch_le_mans_purl') do
-        item = Dor::Item.find(@le_mans_druid)
-        x = item.get_xml_from_purl
-        generated_tags = {} # pretend no tags were found in the most recent dor object, so all tags in the purl should return false
-        tags_currently_in_purl = item.get_release_tags_from_purl_xml(x)  # These are the tags currently in purl
-        final_result_tags = item.add_tags_from_purl(generated_tags)      # Final result of dor and purl tags
-        expect(final_result_tags.keys).to match(tags_currently_in_purl)  # all tags currently in purl should be reflected
-        final_result_tags.keys.each do |tag|
-          expect(final_result_tags[tag]).to match({'release' => false})  # all tags should be false for their releas
-        end
+      item = instantiate_fixture(@le_mans_druid, Dor::Item)
+      x = item.get_xml_from_purl
+      generated_tags = {} # pretend no tags were found in the most recent dor object, so all tags in the purl should return false
+      tags_currently_in_purl = item.get_release_tags_from_purl_xml(x)  # These are the tags currently in purl
+      final_result_tags = item.add_tags_from_purl(generated_tags)      # Final result of dor and purl tags
+      expect(final_result_tags.keys).to match(tags_currently_in_purl)  # all tags currently in purl should be reflected
+      final_result_tags.keys.each do |tag|
+        expect(final_result_tags[tag]).to match({'release' => false})  # all tags should be false for their releas
       end
     end
 
     it 'should add in release tags as false for targets that are listed on the purl but not in new tag generation' do
       VCR.use_cassette('fetch_le_mans_purl') do
-        item = Dor::Item.find(@le_mans_druid)
+        item = instantiate_fixture(@le_mans_druid, Dor::Item)
         x = item.get_xml_from_purl
         generated_tags = {'Kurita' => {'release' => true}}              # only kurita has returned as true
         tags_currently_in_purl = item.get_release_tags_from_purl_xml(x) # These are the tags currently in purl

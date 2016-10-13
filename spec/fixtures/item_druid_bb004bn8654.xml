@@ -1,0 +1,171 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<foxml:digitalObject VERSION="1.1" PID="druid:bb004bn8654" FEDORA_URI="info:fedora/druid:bb004bn8654"
+xmlns:foxml="info:fedora/fedora-system:def/foxml#"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/definitions/1/0/foxml1-1.xsd">
+<foxml:objectProperties>
+<foxml:property NAME="info:fedora/fedora-system:def/model#state" VALUE="Active"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#label" VALUE="Bryar 250 Trans-American: July 9-10"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#ownerId" VALUE="preassembly@sul-lyberservices-prod.stanford.edu"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#createdDate" VALUE="2013-01-11T23:09:12.860Z"/>
+<foxml:property NAME="info:fedora/fedora-system:def/view#lastModifiedDate" VALUE="2016-05-18T17:25:27.764Z"/>
+</foxml:objectProperties>
+<foxml:datastream ID="DC" FEDORA_URI="info:fedora/druid:bb004bn8654/DC" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="DC1.0" LABEL="Dublin Core Record for this object" CREATED="2013-01-11T23:09:12.860Z" MIMETYPE="text/xml" FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/" SIZE="405">
+<foxml:xmlContent>
+<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+  <dc:title>Bryar 250 Trans-American: July 9-10</dc:title>
+  <dc:identifier>druid:bb004bn8654</dc:identifier>
+</oai_dc:dc>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="RELS-EXT" FEDORA_URI="info:fedora/druid:bb004bn8654/RELS-EXT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="RELS-EXT.2" LABEL="Fedora Object-to-Object Relationship Metadata" CREATED="2015-02-13T00:27:20.207Z" MIMETYPE="application/rdf+xml" SIZE="1031">
+<foxml:xmlContent>
+<rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="info:fedora/druid:bb004bn8654">
+    <hydra:isGovernedBy rdf:resource="info:fedora/druid:qv648vd4392"></hydra:isGovernedBy>
+    <fedora-model:hasModel rdf:resource="info:fedora/afmodel:Hydrus_Item"></fedora-model:hasModel>
+    <fedora:isMemberOf rdf:resource="info:fedora/druid:kz071cg8658"></fedora:isMemberOf>
+    <fedora:isMemberOf rdf:resource="info:fedora/druid:nt028fd5773"></fedora:isMemberOf>
+    <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:gb045hv3517"></fedora:isMemberOfCollection>
+    <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:kz071cg8658"></fedora:isMemberOfCollection>
+    <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:nt028fd5773"></fedora:isMemberOfCollection>
+  </rdf:Description>
+</rdf:RDF>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="identityMetadata" FEDORA_URI="info:fedora/druid:bb004bn8654/identityMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="identityMetadata.19" LABEL="Identity Metadata" CREATED="2015-05-05T21:44:57.982Z" MIMETYPE="text/xml" SIZE="950">
+<foxml:xmlContent>
+<identityMetadata>
+  <sourceId source="Revs">2012-027NADI-1966-b1_4.3_0015</sourceId>
+  <objectId>druid:bb004bn8654</objectId>
+  <objectCreator>DOR</objectCreator>
+  <objectLabel>Bryar 250 Trans-American: July 9-10</objectLabel>
+  <objectType>item</objectType>
+  <adminPolicy>druid:qv648vd4392</adminPolicy>
+  <otherId name="uuid">e96fdf84-5c43-11e2-a99a-0050569b52d5</otherId>
+  <tag>Project : Revs</tag>
+  <tag>Remediated By : 3.25.0</tag>
+  <tag>tag : test1</tag>
+  <tag>old : tag</tag>
+  <release tag="true" to="Revs" what="collection" when="2015-01-06T23:33:47Z" who="carrickr">true</release>
+  <release tag="true" to="Revs" what="self" when="2015-01-06T23:33:54Z" who="carrickr">true</release>
+  <release tag="Project : Fitch : Batch2" to="Revs" what="self" when="2015-01-06T23:40:01Z" who="carrickr">false</release>
+</identityMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="rightsMetadata" FEDORA_URI="info:fedora/druid:bb004bn8654/rightsMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="rightsMetadata.6" LABEL="Rights Metadata" CREATED="2014-06-30T18:38:14.586Z" MIMETYPE="text/xml" SIZE="599">
+<foxml:xmlContent>
+<rightsMetadata>
+  <copyright>
+    <human type="copyright">Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.</human>
+  </copyright>
+  <access type="discover">
+    <machine>
+      <world></world>
+    </machine>
+  </access>
+  <access type="read">
+    <machine>
+      <group>stanford</group>
+      <world rule="no-download"></world>
+    </machine>
+  </access>
+  <use>
+    <human type="useAndReproduction">Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.</human>
+  </use>
+</rightsMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="provenanceMetadata" FEDORA_URI="info:fedora/druid:bb004bn8654/provenanceMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="provenanceMetadata.3" LABEL="Provenance Metadata" CREATED="2013-07-08T17:45:27.246Z" MIMETYPE="text/xml" SIZE="265">
+<foxml:xmlContent>
+<provenanceMetadata objectId="druid:bb004bn8654">
+  <agent name="DOR">
+    <what object="druid:bb004bn8654">
+      <event when="2013-07-08T10:45:27-07:00" who="DOR-accessionWF">DOR Common Accessioning completed</event>
+    </what>
+  </agent>
+</provenanceMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="embargoMetadata" FEDORA_URI="info:fedora/druid:bb004bn8654/embargoMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+<foxml:datastreamVersion ID="embargoMetadata.0" LABEL="Embargo metadata" CREATED="2014-12-11T22:21:52.762Z" MIMETYPE="text/xml" SIZE="248">
+<foxml:xmlContent>
+<embargoMetadata>
+  <status></status>
+  <releaseDate></releaseDate>
+  <releaseAccess></releaseAccess>
+  <twentyPctVisibilityStatus></twentyPctVisibilityStatus>
+  <twentyPctVisibilityReleaseDate></twentyPctVisibilityReleaseDate>
+</embargoMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="events" FEDORA_URI="info:fedora/druid:bb004bn8654/events" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+<foxml:datastreamVersion ID="events.3" LABEL="Events" CREATED="2015-02-13T00:27:20.704Z" MIMETYPE="text/xml" SIZE="1177">
+<foxml:xmlContent>
+<events>
+  <event type="remediation" when="2013-01-11T20:08:06-08:00" who="Dor::Identifiable 3.6.1">Record Remediation Version</event>
+  <event type="remediation" when="2013-01-11T20:08:06-08:00" who="Dor::Versionable 3.12.2">Add missing versionMetadata</event>
+  <event type="close" when="2013-06-13T16:14:29-07:00" who="Peter Alexander Mangiafico">Version 3 closed</event>
+  <event type="remediation" when="2013-06-17T15:18:40-07:00" who="Dor::Identifiable 3.6.1">Record Remediation Version</event>
+  <event type="hydrus" when="2015-02-12T16:07:05-08:00" who="">Item modified: abstract</event>
+  <event type="hydrus" when="2015-02-12T16:07:41-08:00" who="">Item modified: abstract</event>
+  <event type="hydrus" when="2015-02-12T16:08:32-08:00" who="">Item modified: abstract</event>
+  <event type="hydrus" when="2015-02-12T16:11:12-08:00" who="">Item modified: abstract</event>
+  <event type="hydrus" when="2015-02-12T16:15:20-08:00" who="">Item modified: abstract</event>
+  <event type="hydrus" when="2015-02-12T16:25:47-08:00" who="">Item modified: abstract</event>
+  <event type="hydrus" when="2015-02-12T16:27:19-08:00" who="">Item modified: abstract</event>
+</events>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="hydrusProperties" FEDORA_URI="info:fedora/druid:bb004bn8654/hydrusProperties" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="hydrusProperties.0" LABEL="Hydrus Properties" CREATED="2015-02-13T00:27:20.813Z" MIMETYPE="text/xml" SIZE="633">
+<foxml:xmlContent>
+<hydrusProperties>
+  <itemType>dataset</itemType>
+  <acceptedTermsOfDeposit>true</acceptedTermsOfDeposit>
+  <reviewedReleaseSettings>true</reviewedReleaseSettings>
+  <requiresHumanApproval>false</requiresHumanApproval>
+  <objectStatus>published</objectStatus>
+  <lastModifyTime>2015-02-13T00:27:19Z</lastModifyTime>
+  <submitForApprovalTime>2015-02-12T23:53:31Z</submitForApprovalTime>
+  <initialPublishTime>2015-02-12T23:53:31Z</initialPublishTime>
+  <initialSubmittedForPublishTime>2015-02-12T23:53:31Z</initialSubmittedForPublishTime>
+  <submittedForPublishTime>2015-02-12T23:53:32Z</submittedForPublishTime>
+</hydrusProperties>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="versionMetadata" FEDORA_URI="info:fedora/druid:bb004bn8654/versionMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+<foxml:datastreamVersion ID="versionMetadata.8" LABEL="Version Metadata" CREATED="2016-05-18T17:25:27.764Z" MIMETYPE="text/xml" SIZE="445">
+<foxml:xmlContent>
+<versionMetadata objectId="druid:bb004bn8654">
+  <version tag="1.0.0" versionId="1">
+    <description>Initial Version</description>
+  </version>
+  <version tag="1.0.1" versionId="2">
+    <description>test</description>
+  </version>
+  <version tag="1.1.0" versionId="3">
+    <description>incremenet</description>
+  </version>
+  <version tag="1.1.1" versionId="4">
+    <description>auto remeditation</description>
+  </version>
+</versionMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+</foxml:digitalObject>
