@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<foxml:digitalObject VERSION="1.1" PID="druid:qv648vd4392" FEDORA_URI="info:fedora/druid:qv648vd4392"
+xmlns:foxml="info:fedora/fedora-system:def/foxml#"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/definitions/1/0/foxml1-1.xsd">
+<foxml:objectProperties>
+<foxml:property NAME="info:fedora/fedora-system:def/model#state" VALUE="Active"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#label" VALUE="Revs Institute"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#ownerId" VALUE="DOR"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#createdDate" VALUE="2011-07-05T17:12:18.757Z"/>
+<foxml:property NAME="info:fedora/fedora-system:def/view#lastModifiedDate" VALUE="2013-07-24T19:00:57.027Z"/>
+</foxml:objectProperties>
+<foxml:datastream ID="DC" FEDORA_URI="info:fedora/druid:qv648vd4392/DC" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+<foxml:datastreamVersion ID="DC.0" LABEL="Dublin Core Record for this object" CREATED="2011-07-05T20:50:11.624Z" MIMETYPE="text/xml" FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/" SIZE="459">
+<foxml:xmlContent>
+<oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+  <dc:title>Revs Institute</dc:title>
+  <dc:identifier>uuid:20d6c780-42eb-11e1-b86c-0800200c9a66</dc:identifier>
+  <dc:identifier>druid:qv648vd4392</dc:identifier>
+</oai_dc:dc>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="RELS-EXT" FEDORA_URI="info:fedora/druid:qv648vd4392/RELS-EXT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+<foxml:datastreamVersion ID="RELS-EXT.0" LABEL="RDF Statements about this object" CREATED="2011-07-25T20:32:10.617Z" MIMETYPE="application/rdf+xml" FORMAT_URI="info:fedora/fedora-system:FedoraRELSExt-1.0" SIZE="424">
+<foxml:xmlContent>
+<rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rel="info:fedora/fedora-system:def/relations-external#">
+  <rdf:Description rdf:about="info:fedora/druid:qv648vd4392">
+    <hydra:isGovernedBy rdf:resource="info:fedora/druid:hv992ry2431"></hydra:isGovernedBy>
+  </rdf:Description>
+</rdf:RDF>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="administrativeMetadata" FEDORA_URI="info:fedora/druid:qv648vd4392/administrativeMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="administrativeMetadata.5" LABEL="Administrative Metadata" CREATED="2012-11-13T21:52:16.507Z" MIMETYPE="text/xml" SIZE="2192">
+<foxml:xmlContent>
+<administrativeMetadata objectId="druid:qv648vd4392">
+  <descMetadata>
+    <format>MODS</format>
+    <source>MD Toolkit</source>
+  </descMetadata>
+  <relationships xmlns:fedora-rel="info:fedora/fedora-system:def/relations-external#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <fedora-rel:isMemberOf rdf:resource="info:fedora/druid:nt028fd5773"></fedora-rel:isMemberOf>
+    <fedora-rel:isMemberOfCollection rdf:resource="info:fedora/druid:nt028fd5773"></fedora-rel:isMemberOfCollection>
+  </relationships>
+  <registration>
+    <agreementId>druid:xf765cv5573</agreementId>
+    <workflow id="digitizationWF">
+      <process lifecycle="registered" name="initiate" status="completed"></process>
+      <process name="digitize" status="waiting"></process>
+      <process name="start-accession" status="waiting"></process>
+    </workflow>
+  </registration>
+  <assembly>
+    <workflow id="assemblyWF">
+      <process name="start-assembly" status="completed"></process>
+      <process name="jp2-create" status="waiting"></process>
+      <process name="checksum-compute" status="waiting"></process>
+      <process name="exif-collect" status="waiting"></process>
+      <process name="accessioning-initiate" status="waiting"></process>
+    </workflow>
+  </assembly>
+  <accessioning>
+    <workflow id="accessionWF">
+      <process lifecycle="submitted" name="start-accession" status="completed"></process>
+      <process name="content-metadata" status="waiting"></process>
+      <process lifecycle="described" name="descriptive-metadata" status="waiting"></process>
+      <process name="rights-metadata" status="waiting"></process>
+      <process name="technical-metadata" status="waiting"></process>
+      <process name="provenance-metadata" status="waiting"></process>
+      <process name="remediate-object" status="waiting"></process>
+      <process name="shelve" status="waiting"></process>
+      <process lifecycle="published" name="publish" status="waiting"></process>
+      <process name="sdr-ingest-transfer" status="waiting"></process>
+      <process lifecycle="accessioned" name="cleanup" status="waiting"></process>
+    </workflow>
+  </accessioning>
+</administrativeMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="identityMetadata" FEDORA_URI="info:fedora/druid:qv648vd4392/identityMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+<foxml:datastreamVersion ID="identityMetadata.1" LABEL="Identity Metadata" CREATED="2012-04-09T22:31:44.666Z" MIMETYPE="text/xml" SIZE="345">
+<foxml:xmlContent>
+<identityMetadata>
+  <objectId>druid:qv648vd4392</objectId>
+  <objectType>adminPolicy</objectType>
+  <objectLabel>Revs Institute</objectLabel>
+  <objectCreator>DOR</objectCreator>
+  <otherId name="uuid">20d6c780-42eb-11e1-b86c-0800200c9a66</otherId>
+  <agreementId>druid:tx617qp8040</agreementId>
+  <tag>Project : DOR</tag>
+</identityMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="roleMetadata" FEDORA_URI="info:fedora/druid:qv648vd4392/roleMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="roleMetadata.1" LABEL="Role Metadata" CREATED="2012-05-03T23:28:48.801Z" MIMETYPE="text/xml" SIZE="406">
+<foxml:xmlContent>
+<roleMetadata>
+  <role type="manager">
+    <group>
+      <identifier type="workgroup">dlss:pmag-staff</identifier>
+    </group>
+    <group>
+      <identifier type="workgroup">dlss:dor-admin</identifier>
+    </group>
+    <person>
+      <identifier type="sunetid">petucket</identifier>
+    </person>
+    <person>
+      <identifier type="sunetid">hindman</identifier>
+    </person>
+  </role>
+</roleMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+<foxml:datastreamVersion ID="roleMetadata.2" LABEL="Role Metadata" CREATED="2013-01-09T23:20:35.392Z" MIMETYPE="text/xml" SIZE="415">
+<foxml:xmlContent>
+<roleMetadata>
+  <role type="dor-apo-manager">
+    <group>
+      <identifier type="workgroup">dlss:pmag-staff</identifier>
+    </group>
+    <group>
+      <identifier type="workgroup">dlss:developers</identifier>
+    </group>
+    <person>
+      <identifier type="sunetid">petucket</identifier>
+    </person>
+    <person>
+      <identifier type="sunetid">hindman</identifier>
+    </person>
+  </role>
+</roleMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="workflows" FEDORA_URI="info:fedora/druid:qv648vd4392/workflows" STATE="A" CONTROL_GROUP="E" VERSIONABLE="true">
+<foxml:datastreamVersion ID="workflows.0" LABEL="workflows" CREATED="2012-01-28T02:45:40.006Z" MIMETYPE="application/xml">
+<foxml:contentLocation TYPE="URL" REF="https://lyberservices-test.stanford.edu/workflow/dor/objects/druid:qv648vd4392/workflows"/>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="descMetadata" FEDORA_URI="info:fedora/druid:qv648vd4392/descMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+<foxml:datastreamVersion ID="descMetadata.1" LABEL="Descriptive Metadata" CREATED="2013-06-07T18:47:16.527Z" MIMETYPE="text/xml" SIZE="401">
+<foxml:xmlContent>
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+  <mods:titleInfo>
+    <mods:title>Revs Institute for Automotive Research</mods:title>
+  </mods:titleInfo>
+  <mods:identifier type="druid">qv648vd4392</mods:identifier>
+</mods:mods>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="defaultObjectRights" FEDORA_URI="info:fedora/druid:qv648vd4392/defaultObjectRights" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+<foxml:datastreamVersion ID="defaultObjectRights.4" LABEL="Default Object Rights" CREATED="2013-07-24T19:00:57.027Z" MIMETYPE="text/xml" SIZE="600">
+<foxml:xmlContent>
+<rightsMetadata>
+  <copyright>
+    <human type="copyright">Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.</human>
+  </copyright>
+  <access type="discover">
+    <machine>
+      <world></world>
+    </machine>
+  </access>
+  <access type="read">
+    <machine>
+      <group>stanford</group>
+      <world rule="no-download"></world>
+    </machine>
+  </access>
+  <use>
+    <human type="useAndReproduction">Users must contact the The Revs Institute for Automotive Research for re-use and reproduction informations.</human>
+  </use>
+</rightsMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+</foxml:digitalObject>
