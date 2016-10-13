@@ -24,12 +24,12 @@ Gem::Specification.new do |s|
   s.add_dependency 'net-sftp', '~> 2.1'
   s.add_dependency 'nokogiri', '~> 1.6'
   s.add_dependency 'om', '~> 3.0'
-  s.add_dependency 'rdf', '~> 1.1.7' # 1.0.10 breaks
+  s.add_dependency 'rdf', '~> 1.1', '>= 1.1.7'
   s.add_dependency 'rest-client', '~> 1.7'
   s.add_dependency 'rsolr-ext', '~> 1.0.3'
   s.add_dependency 'ruby-cache', '~> 0.3.0'
   s.add_dependency 'ruby-graphviz'
-  s.add_dependency 'rubydora', '~> 1.6.5' # highly sensitive/volatile dependency
+  s.add_dependency 'rubydora', '~> 1.6', '>= 1.6.5'
   s.add_dependency 'solrizer', '~> 3.0'
   s.add_dependency 'systemu', '~> 2.6'
   s.add_dependency 'uuidtools', '~> 2.1.4'
