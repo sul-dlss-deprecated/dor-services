@@ -80,23 +80,22 @@ describe Dor::IndexingService do
 
     it 'should reindex the pids and not commit by default' do
       pids = [1..10].map(&:to_s)
-      pids.each { |pid| expect(Dor::IndexingService).to receive(:reindex_pid).with(pid, nil, false) }
+      pids.each { |pid| expect(Dor::IndexingService).to receive(:reindex_pid).with(pid, raise_errors: false) }
       expect(@mock_solr_conn).to_not receive(:commit)
       Dor::IndexingService.reindex_pid_list pids
     end
 
     it 'should reindex the pids and commit if should_commit is true' do
       pids = [1..10].map(&:to_s)
-      pids.each { |pid| expect(Dor::IndexingService).to receive(:reindex_pid).with(pid, nil, false) }
+      pids.each { |pid| expect(Dor::IndexingService).to receive(:reindex_pid).with(pid, raise_errors: false) }
       expect(ActiveFedora.solr).to receive(:conn).and_return(@mock_solr_conn)
       expect(@mock_solr_conn).to receive(:commit)
       Dor::IndexingService.reindex_pid_list pids, true
     end
 
     it 'should proceed despite individual indexing failures' do
-      pids = [1..10].map(&:to_s)
-      expect(Dor::IndexingService).to receive(:reindex_pid).with(pids[0], nil, false)
-      pids[1..-1].each { |pid| expect(Dor::IndexingService).to receive(:reindex_pid).with(pid, nil, false) }
+      pids = (1..10).map(&:to_s)
+      pids.each { |pid| expect(Dor::IndexingService).to receive(:reindex_pid).with(pid, raise_errors: false) }
       expect(ActiveFedora.solr).to receive(:conn).and_return(@mock_solr_conn)
       expect(@mock_solr_conn).to receive(:commit)
       Dor::IndexingService.reindex_pid_list pids, true
@@ -112,8 +111,15 @@ describe Dor::IndexingService do
 
     it 'should reindex the object via Dor::SearchService' do
       expect(@mock_obj).to receive(:to_solr).and_return(@mock_solr_doc)
-      expect(Dor::SearchService.solr).to receive(:add).with(hash_including(:id => @mock_pid))
+      expect(Dor::SearchService.solr).to receive(:add).with(hash_including(:id => @mock_pid), {})
       ret_val = Dor::IndexingService.reindex_object @mock_obj
+      expect(ret_val).to eq(@mock_solr_doc)
+    end
+
+    it 'passes add_attributes options to solr' do
+      expect(@mock_obj).to receive(:to_solr).and_return(@mock_solr_doc)
+      expect(Dor::SearchService.solr).to receive(:add).with(hash_including(:id => @mock_pid), add_attributes: { commitWithin: 10 })
+      ret_val = Dor::IndexingService.reindex_object @mock_obj, add_attributes: { commitWithin: 10 }
       expect(ret_val).to eq(@mock_solr_doc)
     end
   end
@@ -127,9 +133,16 @@ describe Dor::IndexingService do
       expect(Dor::IndexingService).to receive(:default_index_logger).at_least(:once).and_return(@mock_default_logger)
     end
 
+    it 'handles old, primitive arguments' do
+      expect(Dor).to receive(:load_instance).with(@mock_pid).and_raise(ActiveFedora::ObjectNotFoundError)
+      expect(@mock_default_logger).to receive(:warn).with("failed to update index for #{@mock_pid}, object not found in Fedora")
+      expect(Dor::IndexingService).to receive(:warn)
+      expect { Dor::IndexingService.reindex_pid(@mock_pid, nil, false) }.to_not raise_error
+    end
+
     it 'should reindex the object via Dor::IndexingService.reindex_pid and log success' do
       expect(Dor).to receive(:load_instance).with(@mock_pid).and_return(@mock_obj)
-      expect(Dor::IndexingService).to receive(:reindex_object).with(@mock_obj).and_return(@mock_solr_doc)
+      expect(Dor::IndexingService).to receive(:reindex_object).with(@mock_obj, {}).and_return(@mock_solr_doc)
       expect(@mock_default_logger).to receive(:info).with("updated index for #{@mock_pid}")
       ret_val = Dor::IndexingService.reindex_pid @mock_pid
       expect(ret_val).to eq(@mock_solr_doc)
@@ -144,7 +157,7 @@ describe Dor::IndexingService do
     it 'should log the right thing if an object is not found, but swallow the exception when should_raise_errors is false' do
       expect(Dor).to receive(:load_instance).with(@mock_pid).and_raise(ActiveFedora::ObjectNotFoundError)
       expect(@mock_default_logger).to receive(:warn).with("failed to update index for #{@mock_pid}, object not found in Fedora")
-      expect { Dor::IndexingService.reindex_pid(@mock_pid, nil, false) }.to_not raise_error
+      expect { Dor::IndexingService.reindex_pid(@mock_pid, raise_errors: false) }.to_not raise_error
     end
 
     it "should log the right thing if there's an unexpected error, then re-raise the exception by default" do
@@ -159,7 +172,7 @@ describe Dor::IndexingService do
       expect(Dor).to receive(:load_instance).with(@mock_pid).and_raise(stack_overflow_ex)
       # TODO: fix this expectation and the code it's testing, as per https://github.com/sul-dlss/dor-services/issues/156
       # expect(@mock_default_logger).to receive(:error).with(start_with("failed to update index for #{@mock_pid}, unexpected Exception, see main app log: ["))
-      expect { Dor::IndexingService.reindex_pid(@mock_pid, nil, false) }.to raise_error(stack_overflow_ex)
+      expect { Dor::IndexingService.reindex_pid(@mock_pid, raise_errors: false) }.to raise_error(stack_overflow_ex)
     end
   end
 end
