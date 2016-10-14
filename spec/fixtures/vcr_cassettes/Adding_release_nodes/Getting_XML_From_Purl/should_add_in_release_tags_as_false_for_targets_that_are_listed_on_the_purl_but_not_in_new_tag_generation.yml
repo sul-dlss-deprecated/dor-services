@@ -1,0 +1,307 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://purl-test.stanford.edu/dc235vd9662.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Fri, 14 Oct 2016 20:03:48 GMT
+      Server:
+      - Apache/2.2.15 (CentOS)
+      Cache-Control:
+      - no-cache
+      X-Runtime:
+      - '0.015389'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Request-Id:
+      - 0bad0d83-4ba5-4259-81ca-0ac02c352afd
+      X-Powered-By:
+      - Phusion Passenger 5.0.22
+      Set-Cookie:
+      - _purl_session=eyJzZXNzaW9uX2lkIjoiOGRlZDgyNmY0OWUwYzVkNWVmYTdjYWIwYzZkODQ0NTYiLCJfY3NyZl90b2tlbiI6ImhDMkM4SEh3dDhzb2prblVFOEFLdHB5Y1djTDJKN3ovMVZuSjBwaS9OMXM9In0%3D--18f8437c74d3cfe903a34e63b1f1782cf1f8fe0f;
+        path=/; HttpOnly
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Status:
+      - 404 Not Found
+      Transfer-Encoding:
+      - chunked
+      Content-Type:
+      - text/html; charset=utf-8
+    body:
+      encoding: UTF-8
+      string: "<!DOCTYPE html>\n<html lang=\"en\" class=\"no-js\">\n  <head>\n    <meta
+        charset=\"utf-8\">\n    <meta http-equiv=\"Content-Type\" content=\"text/html;
+        charset=utf-8\">\n    <!-- Mobile viewport optimization h5bp.com/ad -->\n
+        \   <meta name=\"HandheldFriendly\" content=\"True\">\n    <meta name=\"viewport\"
+        content=\"width=device-width,initial-scale=1.0\">\n    <meta name=\"google-site-verification\"
+        content=\"\" />\n    <!-- Mobile IE allows us to activate ClearType technology
+        for smoothing fonts for easy reading -->\n    <!--[if IEMobile]>\n      <meta
+        http-equiv=\"cleartype\" content=\"on\">\n    <![endif]-->\n\n    <title>Stanford
+        Digital Repository</title>\n\n    <link rel=\"shortcut icon\" type=\"image/x-icon\"
+        href=\"/assets/favicon-8a4c41227945e5f20503f62517defcfb2ef88f578e222838318c704472d483b0.ico\"
+        />\n    <link rel=\"stylesheet\" media=\"all\" href=\"/assets/application-0ae63e62a085dfa2800d37a0f8694cf1593deffdfa55f66b5ad7ad717e25de83.css\"
+        />\n    <link rel=\"stylesheet\" media=\"print\" href=\"/assets/print-cf9d738fbdc9036db72118e77df203e50bdabf3b827858e080363bfe13484418.css\"
+        />\n    <link href=\"https://www.stanford.edu/su-identity/css/su-identity.css\"
+        rel=\"stylesheet\">\n    <link rel=\"stylesheet\" media=\"screen\" href=\"https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700\"
+        />\n    <script src=\"/assets/application-e031b322c2daee262c90664b13244491a39c1b92461d26ffb7b957f82aaf810f.js\"></script>\n
+        \   <meta name=\"csrf-param\" content=\"authenticity_token\" />\n<meta name=\"csrf-token\"
+        content=\"jUagqs1kneh1yt/WUv7D5rtp5cIgR27j4hwJixZ4KwMJayJavJQqI11ElgJBPslQJ/W8ANZg0hw3RcBZjsccWA==\"
+        />\n\n    \n    \n    \n    <meta name=\"twitter:card\" />\n    \n\n    <!--[if
+        lt IE 9]>\n      <script src=\"http://html5shim.googlecode.com/svn/trunk/html5.js\"></script>\n
+        \   <![endif]-->\n    <!--[if IE 8]>\n      <link rel=\"stylesheet\" type=\"text/css\"
+        href=\"https://www.stanford.edu/su-identity/css/ie/ie8.css\" />\n    <![endif]-->\n
+        \   <!--[if IE 7]>\n      <link rel=\"stylesheet\" type=\"text/css\" href=\"https://www.stanford.edu/su-identity/css/ie/ie7.css\"
+        />\n    <![endif]-->\n\n  </head>\n  <body>\n    \n\n\n\n\n    <div id=\"su-wrap\">
+        <!-- #su-wrap start -->\n      <div id=\"su-content\"> <!-- #su-content start
+        -->\n        <div id=\"outer-container\" class=\"container-fluid\">\n          <div
+        id=\"topnav-container\">\n  <header id=\"topnav\" class=\"header-logo\" role=\"banner\">\n
+        \   <a href=\"http://library.stanford.edu\">\n      <span class=\"sr-only\">Stanford
+        University Libraries</span>\n      <img data-hidpi-src=\"/assets/sul-logo@2x-adac22f3e7cbf3849320e16173ec68ebe0b89d73c80f07baabb5b5920d50a8df.png\"
+        class=\"hidden-xs\" alt=\"\" height=\"25\" src=\"/assets/sul-logo-8dfefc678313c186818297b03fab4a4ed59926e46a30022cd1b015cbb1bdb0ad.png\"
+        />\n      <img data-hidpi-src=\"/assets/sul-logo-small@2x-ce1097d8e0a05fe55599e2761c0728a5de180dc1f6214450f23e70d22790d0f5.png\"
+        class=\"visible-xs\" alt=\"\" height=\"25\" src=\"/assets/sul-logo-small-dae80ac9d5187216139a309d4aa53cdd343a67e6a5cb5d56b7fc0711fa3888a4.png\"
+        />\n</a>    <div class=\"header-links\">\n      <a class=\"first\" data-toggle=\"collapse\"
+        data-target=\"#feedback-form\" href=\"/feedback\">\n        Feedback\n</a>
+        \   </div>\n  </header>\n</div>\n<div id=\"feedback-form\" class=\"feedback-form-container
+        collapse\">\n  <div class=\"container\">\n  <form class=\"form-horizontal
+        feedback-form\" role=\"form\" action=\"/feedback\" accept-charset=\"UTF-8\"
+        method=\"post\"><input name=\"utf8\" type=\"hidden\" value=\"&#x2713;\" /><input
+        type=\"hidden\" name=\"authenticity_token\" value=\"LouWyGtAKdxOBVKQrnUMrDCcprYlhieh+TYSQf0mlSOqphQ4GrCeF2aLG0S9tQYarAD/dNOhm14sb9uTZZmieA==\"
+        />\n    <div class=\"col-sm-6 col-sm-offset-2\">\n      <div class=\"col-sm-offset-3\">\n
+        \       Reporting from: <span class=\"reporting-from-field\"></span>\n<input
+        type=\"hidden\" name=\"url\" id=\"url\" class=\"reporting-from-field\" />\n\n
+        \     </div>\n    </div>\n    <span style=\"display:none;visibility:hidden;\">\n
+        \     <label for=\"email_address\">Ignore this text box. It is used to detect
+        spammers. If you enter anything into this text box, your message will not
+        be sent.</label><br/>\n      <input type=\"email\" name=\"email_address\"
+        id=\"email_address\" /><br/>\n      <input type=\"text\" name=\"user_agent\"
+        id=\"user_agent\" />\n      <input type=\"text\" name=\"viewport\" id=\"viewport\"
+        />\n    </span>\n    <div class=\"col-sm-6 col-sm-offset-2\">\n      <div
+        class=\"form-group\">\n        <label class=\"col-sm-3 control-label\" for=\"message\">Message</label>\n
+        \       <div class=\"col-sm-9\">\n          <textarea name=\"message\" id=\"message\"
+        rows=\"5\" class=\"form-control\">\n</textarea>\n        </div>\n      </div>\n
+        \     <div class=\"form-group\">\n        <label class=\"col-sm-3 control-label\"
+        for=\"name\">Your name</label>\n        <div class=\"col-sm-9\">\n          <input
+        type=\"text\" name=\"name\" id=\"name\" value=\"\" class=\"form-control\"
+        />\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label
+        class=\"col-sm-3 control-label\" for=\"to\">Your email</label>\n        <div
+        class=\"col-sm-9\">\n          <input type=\"email\" name=\"to\" id=\"to\"
+        value=\"\" class=\"form-control\" />\n        </div>\n      </div>\n      <div
+        class=\"form-group\">\n        <div class=\"col-sm-offset-3 col-sm-9\">\n
+        \         <button type=\"submit\" class=\"btn btn-primary\">Send</button>\n
+        \         <a class=\"cancel-link\" data-toggle=\"collapse\" data-target=\"#feedback-form\"
+        href=\"javascript:history.back()\">Cancel</a>\n        </div>\n      </div>\n
+        \   </div>\n</form></div>\n\n</div>\n\n          <div id=\"search-navbar-container\">\n
+        \ <div id=\"search-navbar\">\n    <div class=\"sdr-brand\">Stanford Digital
+        Repository</div>\n  </div>\n</div>\n\n          <div class='visible-print
+        print-header pull-right'>\n  <h1>Stanford Digital Repository</h1>\n  <h2>Stanford
+        University Libraries</h2>\n</div>\n\n          <section id=\"main-container\"
+        role=\"main\" data-analytics-id=\"\">\n            <h2>The item you requested
+        is not available.</h2>\n<p>This item is in processing or does not exist. If
+        you believe you have reached this page in error, please send <a data-toggle=\"collapse\"
+        data-target=\"#feedback-form\" href=\"/feedback\">Feedback</a>.</p>\n\n          </section>\n
+        \       </div>\n      </div> <!-- #su-content end -->\n    </div> <!-- #su-wrap
+        end -->\n    <footer role=\"contentinfo\">\n  <div id=\"sul-footer-container\">\n
+        \   <div id=\"sul-footer\">\n      <div id=\"sul-footer-img\" class=\"span2\">\n
+        \       <img data-hidpi-src=\"/assets/SUL-logo-stacked@2x-5c5b140ede955a3354b2f84ec6711806e54f6db538f844cffa255c72dedf7dc1.png\"
+        alt=\"\" height=\"45\" src=\"/assets/SUL-logo-stacked-e88700b061a7f08a657172efc12ee6769cf2b90b14ad25a7b558aac9dc3232cc.png\"
+        />\n      </div>\n      <div id=\"sul-footer-links\" class=\"span2\">\n        <ul>\n
+        \         <li><a href=\"http://library.stanford.edu\">Stanford University
+        Libraries</a></li>\n          <li><a href=\"http://library.stanford.edu/hours\">Hours
+        &amp; locations</a></li>\n          <li> <a href=\"http://library.stanford.edu/myawrap.html\">My
+        Account</a></li>\n          <li> <a href=\"http://library.stanford.edu/ask\">Ask
+        us</a></li>\n          <li> <a href=\"http://library.stanford.edu/opt-out\">Opt
+        out of analytics</a></li>\n        </ul>\n      </div>\n    </div>\n  </div>\n</footer>\n<!--
+        Global footer snippet start -->\n<div id=\"global-footer\">\n  <div class=\"container\">\n
+        \   <div class=\"row\">\n      <div id=\"bottom-logo\" class=\"span2\">\n
+        \       <a href=\"http://www.stanford.edu\">\n          <img src=\"https://www.stanford.edu/su-identity/images/footer-stanford-logo@2x.png\"
+        alt=\"Stanford University\" width=\"105\" height=\"49\"/>\n        </a>\n
+        \     </div>\n      <!-- #bottom-logo end -->\n      <div id=\"bottom-text\"
+        class=\"span10\">\n        <ul>\n          <li class=\"home\"><a href=\"http://www.stanford.edu\">SU
+        Home</a></li>\n          <li class=\"maps alt\"><a href=\"http://visit.stanford.edu/plan/maps.html\">Maps
+        &amp; Directions</a></li>\n          <li class=\"search-stanford\"><a href=\"http://www.stanford.edu/search/\">Search
+        Stanford</a></li>\n          <li class=\"terms alt\"><a href=\"http://www.stanford.edu/site/terms.html\">Terms
+        of Use</a></li>\n          <li class=\"emergency-info\"><a href=\"http://emergency.stanford.edu\">Emergency
+        Info</a></li>\n        </ul>\n      </div> <!-- .bottom-text end -->\n      <div
+        class=\"clear\"></div>\n      <p class=\"copyright vcard\">&copy; <span class=\"fn
+        org\">Stanford University</span>, <span class=\"adr\"> <span class=\"locality\">Stanford</span>,
+        <span class=\"region\">California</span> <span class=\"postal-code\">94305</span></span>.&nbsp;&nbsp;\n
+        \     <span id=\"copyright-complaint\"><a href=\"http://www.stanford.edu/group/security/dmca.html\"
+        class=\"copyright-complaint\" >Copyright Complaints</a></span>\n      </p>\n
+        \   </div> <!-- .row end -->\n  </div> <!-- .container end -->\n</div> <!--
+        global-footer end -->\n<!-- Global footer snippet end -->\n\n  </body>\n</html>\n"
+    http_version: 
+  recorded_at: Fri, 14 Oct 2016 20:03:48 GMT
+- request:
+    method: get
+    uri: https://purl-test.stanford.edu/dc235vd9662.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Fri, 14 Oct 2016 20:03:48 GMT
+      Server:
+      - Apache/2.2.15 (CentOS)
+      Cache-Control:
+      - no-cache
+      X-Runtime:
+      - '0.015164'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Request-Id:
+      - 7584ce46-b8e0-45ef-b979-b1bab68c2a8d
+      X-Powered-By:
+      - Phusion Passenger 5.0.22
+      Set-Cookie:
+      - _purl_session=eyJzZXNzaW9uX2lkIjoiNGFlOGIwMGIyNjZhNWZmMTRkYzRiYzJhYmFhMTEwOTEiLCJfY3NyZl90b2tlbiI6ImR2eHVSb1BBMFE2M1Y4MThnY2I1UnBDYVFucmh6dmx1aFArY1h6QkF5OVk9In0%3D--19af1fcc4dfbb01b2cdfafba0620dd354fcd6917;
+        path=/; HttpOnly
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Status:
+      - 404 Not Found
+      Transfer-Encoding:
+      - chunked
+      Content-Type:
+      - text/html; charset=utf-8
+    body:
+      encoding: UTF-8
+      string: "<!DOCTYPE html>\n<html lang=\"en\" class=\"no-js\">\n  <head>\n    <meta
+        charset=\"utf-8\">\n    <meta http-equiv=\"Content-Type\" content=\"text/html;
+        charset=utf-8\">\n    <!-- Mobile viewport optimization h5bp.com/ad -->\n
+        \   <meta name=\"HandheldFriendly\" content=\"True\">\n    <meta name=\"viewport\"
+        content=\"width=device-width,initial-scale=1.0\">\n    <meta name=\"google-site-verification\"
+        content=\"\" />\n    <!-- Mobile IE allows us to activate ClearType technology
+        for smoothing fonts for easy reading -->\n    <!--[if IEMobile]>\n      <meta
+        http-equiv=\"cleartype\" content=\"on\">\n    <![endif]-->\n\n    <title>Stanford
+        Digital Repository</title>\n\n    <link rel=\"shortcut icon\" type=\"image/x-icon\"
+        href=\"/assets/favicon-8a4c41227945e5f20503f62517defcfb2ef88f578e222838318c704472d483b0.ico\"
+        />\n    <link rel=\"stylesheet\" media=\"all\" href=\"/assets/application-0ae63e62a085dfa2800d37a0f8694cf1593deffdfa55f66b5ad7ad717e25de83.css\"
+        />\n    <link rel=\"stylesheet\" media=\"print\" href=\"/assets/print-cf9d738fbdc9036db72118e77df203e50bdabf3b827858e080363bfe13484418.css\"
+        />\n    <link href=\"https://www.stanford.edu/su-identity/css/su-identity.css\"
+        rel=\"stylesheet\">\n    <link rel=\"stylesheet\" media=\"screen\" href=\"https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700\"
+        />\n    <script src=\"/assets/application-e031b322c2daee262c90664b13244491a39c1b92461d26ffb7b957f82aaf810f.js\"></script>\n
+        \   <meta name=\"csrf-param\" content=\"authenticity_token\" />\n<meta name=\"csrf-token\"
+        content=\"CVA19uXfA1vupTwIsTvOg7nCWKQV6Dj7f1ejf5gwFuN/rFuwZh/SVVny8XQw/TfFKVga3vQmwZX7qD8gqHDdNQ==\"
+        />\n\n    \n    \n    \n    <meta name=\"twitter:card\" />\n    \n\n    <!--[if
+        lt IE 9]>\n      <script src=\"http://html5shim.googlecode.com/svn/trunk/html5.js\"></script>\n
+        \   <![endif]-->\n    <!--[if IE 8]>\n      <link rel=\"stylesheet\" type=\"text/css\"
+        href=\"https://www.stanford.edu/su-identity/css/ie/ie8.css\" />\n    <![endif]-->\n
+        \   <!--[if IE 7]>\n      <link rel=\"stylesheet\" type=\"text/css\" href=\"https://www.stanford.edu/su-identity/css/ie/ie7.css\"
+        />\n    <![endif]-->\n\n  </head>\n  <body>\n    \n\n\n\n\n    <div id=\"su-wrap\">
+        <!-- #su-wrap start -->\n      <div id=\"su-content\"> <!-- #su-content start
+        -->\n        <div id=\"outer-container\" class=\"container-fluid\">\n          <div
+        id=\"topnav-container\">\n  <header id=\"topnav\" class=\"header-logo\" role=\"banner\">\n
+        \   <a href=\"http://library.stanford.edu\">\n      <span class=\"sr-only\">Stanford
+        University Libraries</span>\n      <img data-hidpi-src=\"/assets/sul-logo@2x-adac22f3e7cbf3849320e16173ec68ebe0b89d73c80f07baabb5b5920d50a8df.png\"
+        class=\"hidden-xs\" alt=\"\" height=\"25\" src=\"/assets/sul-logo-8dfefc678313c186818297b03fab4a4ed59926e46a30022cd1b015cbb1bdb0ad.png\"
+        />\n      <img data-hidpi-src=\"/assets/sul-logo-small@2x-ce1097d8e0a05fe55599e2761c0728a5de180dc1f6214450f23e70d22790d0f5.png\"
+        class=\"visible-xs\" alt=\"\" height=\"25\" src=\"/assets/sul-logo-small-dae80ac9d5187216139a309d4aa53cdd343a67e6a5cb5d56b7fc0711fa3888a4.png\"
+        />\n</a>    <div class=\"header-links\">\n      <a class=\"first\" data-toggle=\"collapse\"
+        data-target=\"#feedback-form\" href=\"/feedback\">\n        Feedback\n</a>
+        \   </div>\n  </header>\n</div>\n<div id=\"feedback-form\" class=\"feedback-form-container
+        collapse\">\n  <div class=\"container\">\n  <form class=\"form-horizontal
+        feedback-form\" role=\"form\" action=\"/feedback\" accept-charset=\"UTF-8\"
+        method=\"post\"><input name=\"utf8\" type=\"hidden\" value=\"&#x2713;\" /><input
+        type=\"hidden\" name=\"authenticity_token\" value=\"FtA8eN8mnTrHy6Hmf7ttQ4c26M/k3/lioT6yWI0Xa1pgLFI+XOZMNHCcbJr+fZQFF6yqtQURAAwlwS4HvVegjA==\"
+        />\n    <div class=\"col-sm-6 col-sm-offset-2\">\n      <div class=\"col-sm-offset-3\">\n
+        \       Reporting from: <span class=\"reporting-from-field\"></span>\n<input
+        type=\"hidden\" name=\"url\" id=\"url\" class=\"reporting-from-field\" />\n\n
+        \     </div>\n    </div>\n    <span style=\"display:none;visibility:hidden;\">\n
+        \     <label for=\"email_address\">Ignore this text box. It is used to detect
+        spammers. If you enter anything into this text box, your message will not
+        be sent.</label><br/>\n      <input type=\"email\" name=\"email_address\"
+        id=\"email_address\" /><br/>\n      <input type=\"text\" name=\"user_agent\"
+        id=\"user_agent\" />\n      <input type=\"text\" name=\"viewport\" id=\"viewport\"
+        />\n    </span>\n    <div class=\"col-sm-6 col-sm-offset-2\">\n      <div
+        class=\"form-group\">\n        <label class=\"col-sm-3 control-label\" for=\"message\">Message</label>\n
+        \       <div class=\"col-sm-9\">\n          <textarea name=\"message\" id=\"message\"
+        rows=\"5\" class=\"form-control\">\n</textarea>\n        </div>\n      </div>\n
+        \     <div class=\"form-group\">\n        <label class=\"col-sm-3 control-label\"
+        for=\"name\">Your name</label>\n        <div class=\"col-sm-9\">\n          <input
+        type=\"text\" name=\"name\" id=\"name\" value=\"\" class=\"form-control\"
+        />\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label
+        class=\"col-sm-3 control-label\" for=\"to\">Your email</label>\n        <div
+        class=\"col-sm-9\">\n          <input type=\"email\" name=\"to\" id=\"to\"
+        value=\"\" class=\"form-control\" />\n        </div>\n      </div>\n      <div
+        class=\"form-group\">\n        <div class=\"col-sm-offset-3 col-sm-9\">\n
+        \         <button type=\"submit\" class=\"btn btn-primary\">Send</button>\n
+        \         <a class=\"cancel-link\" data-toggle=\"collapse\" data-target=\"#feedback-form\"
+        href=\"javascript:history.back()\">Cancel</a>\n        </div>\n      </div>\n
+        \   </div>\n</form></div>\n\n</div>\n\n          <div id=\"search-navbar-container\">\n
+        \ <div id=\"search-navbar\">\n    <div class=\"sdr-brand\">Stanford Digital
+        Repository</div>\n  </div>\n</div>\n\n          <div class='visible-print
+        print-header pull-right'>\n  <h1>Stanford Digital Repository</h1>\n  <h2>Stanford
+        University Libraries</h2>\n</div>\n\n          <section id=\"main-container\"
+        role=\"main\" data-analytics-id=\"\">\n            <h2>The item you requested
+        is not available.</h2>\n<p>This item is in processing or does not exist. If
+        you believe you have reached this page in error, please send <a data-toggle=\"collapse\"
+        data-target=\"#feedback-form\" href=\"/feedback\">Feedback</a>.</p>\n\n          </section>\n
+        \       </div>\n      </div> <!-- #su-content end -->\n    </div> <!-- #su-wrap
+        end -->\n    <footer role=\"contentinfo\">\n  <div id=\"sul-footer-container\">\n
+        \   <div id=\"sul-footer\">\n      <div id=\"sul-footer-img\" class=\"span2\">\n
+        \       <img data-hidpi-src=\"/assets/SUL-logo-stacked@2x-5c5b140ede955a3354b2f84ec6711806e54f6db538f844cffa255c72dedf7dc1.png\"
+        alt=\"\" height=\"45\" src=\"/assets/SUL-logo-stacked-e88700b061a7f08a657172efc12ee6769cf2b90b14ad25a7b558aac9dc3232cc.png\"
+        />\n      </div>\n      <div id=\"sul-footer-links\" class=\"span2\">\n        <ul>\n
+        \         <li><a href=\"http://library.stanford.edu\">Stanford University
+        Libraries</a></li>\n          <li><a href=\"http://library.stanford.edu/hours\">Hours
+        &amp; locations</a></li>\n          <li> <a href=\"http://library.stanford.edu/myawrap.html\">My
+        Account</a></li>\n          <li> <a href=\"http://library.stanford.edu/ask\">Ask
+        us</a></li>\n          <li> <a href=\"http://library.stanford.edu/opt-out\">Opt
+        out of analytics</a></li>\n        </ul>\n      </div>\n    </div>\n  </div>\n</footer>\n<!--
+        Global footer snippet start -->\n<div id=\"global-footer\">\n  <div class=\"container\">\n
+        \   <div class=\"row\">\n      <div id=\"bottom-logo\" class=\"span2\">\n
+        \       <a href=\"http://www.stanford.edu\">\n          <img src=\"https://www.stanford.edu/su-identity/images/footer-stanford-logo@2x.png\"
+        alt=\"Stanford University\" width=\"105\" height=\"49\"/>\n        </a>\n
+        \     </div>\n      <!-- #bottom-logo end -->\n      <div id=\"bottom-text\"
+        class=\"span10\">\n        <ul>\n          <li class=\"home\"><a href=\"http://www.stanford.edu\">SU
+        Home</a></li>\n          <li class=\"maps alt\"><a href=\"http://visit.stanford.edu/plan/maps.html\">Maps
+        &amp; Directions</a></li>\n          <li class=\"search-stanford\"><a href=\"http://www.stanford.edu/search/\">Search
+        Stanford</a></li>\n          <li class=\"terms alt\"><a href=\"http://www.stanford.edu/site/terms.html\">Terms
+        of Use</a></li>\n          <li class=\"emergency-info\"><a href=\"http://emergency.stanford.edu\">Emergency
+        Info</a></li>\n        </ul>\n      </div> <!-- .bottom-text end -->\n      <div
+        class=\"clear\"></div>\n      <p class=\"copyright vcard\">&copy; <span class=\"fn
+        org\">Stanford University</span>, <span class=\"adr\"> <span class=\"locality\">Stanford</span>,
+        <span class=\"region\">California</span> <span class=\"postal-code\">94305</span></span>.&nbsp;&nbsp;\n
+        \     <span id=\"copyright-complaint\"><a href=\"http://www.stanford.edu/group/security/dmca.html\"
+        class=\"copyright-complaint\" >Copyright Complaints</a></span>\n      </p>\n
+        \   </div> <!-- .row end -->\n  </div> <!-- .container end -->\n</div> <!--
+        global-footer end -->\n<!-- Global footer snippet end -->\n\n  </body>\n</html>\n"
+    http_version: 
+  recorded_at: Fri, 14 Oct 2016 20:03:48 GMT
+recorded_with: VCR 2.9.3
