@@ -41,7 +41,7 @@ module Dor
 
     def replace_file(file, file_name)
       sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, :auth_methods => ['publickey'])
-      item = Dor::Item.find(pid)
+      item = Dor.find(pid)
       druid_tools = DruidTools::Druid.new(pid, Config.content.content_base_dir)
       location = druid_tools.path(file_name)
       oldlocation = location.gsub('/' + pid.gsub('druid:', ''), '')
@@ -161,7 +161,7 @@ module Dor
       max_sequence = primary_cm.at_xpath('/contentMetadata/resource[last()]/@sequence').value.to_i
 
       source_obj_pids.each do |src_pid|
-        source_obj = Dor::Item.find src_pid
+        source_obj = Dor.find src_pid
         source_cm = source_obj.contentMetadata.ng_xml
 
         # Copy the resources from each source object

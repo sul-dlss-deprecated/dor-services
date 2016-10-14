@@ -138,5 +138,10 @@ module Dor
       template = Nokogiri::XSLT(File.read(File.expand_path('../human.xslt', __FILE__)))
       template.apply_to(xml_doc)
     end
+
+    # maintain AF < 8 indexing behavior
+    def prefix
+      ''
+    end
   end
 end

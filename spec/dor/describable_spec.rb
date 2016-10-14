@@ -265,7 +265,7 @@ describe Dor::Describable do
       allow(@item).to receive(:public_relationships).and_return(relationships)
 
       @collection = instantiate_fixture('druid:ab123cd4567', Dor::Item)
-      allow(Dor::Item).to receive(:find) do |pid|
+      allow(Dor).to receive(:find) do |pid|
         pid == 'druid:ab123cd4567' ? @item : @collection
       end
     end
@@ -331,7 +331,7 @@ describe Dor::Describable do
 
       it 'does not add relatedItem and does not error out if the referenced collection does not exist' do
         non_existent_druid = 'druid:doesnotexist'
-        expect(Dor::Item).to receive(:find).with(non_existent_druid).and_raise(ActiveFedora::ObjectNotFoundError)
+        expect(Dor).to receive(:find).with(non_existent_druid).and_raise(ActiveFedora::ObjectNotFoundError)
         relationships_xml = <<-XML
         <?xml version="1.0"?>
         <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -409,7 +409,7 @@ describe Dor::Describable do
       c_mods = Nokogiri::XML(read_fixture('ex1_mods.xml'))
       collection.datastreams['descMetadata'].content = c_mods.to_s
 
-      allow(Dor::Item).to receive(:find) do |pid|
+      allow(Dor).to receive(:find) do |pid|
         pid == 'druid:ab123cd4567' ? itm : collection
       end
     end

@@ -6,6 +6,26 @@ notifications:
   email: false
 
 rvm:
-  - 2.1.2
-  - 2.2.2
+  - 2.2.5
   - 2.3.1
+
+env:
+  - 'RAILS_VERSION="~> 4.2"'
+  - 'RAILS_VERSION="~> 5.0"'
+
+matrix:
+  include:
+    - env: 'RAILS_VERSION="~> 4.2"'
+      rvm: 2.1.2
+    - env:
+        - 'AF_VERSION="~> 6.0"'
+        - 'RAILS_VERSION="~> 4.2"'
+      rvm: 2.3.1
+    - env:
+        - 'AF_VERSION="~> 7.0"'
+        - 'RAILS_VERSION="~> 4.2"'
+      rvm: 2.3.1
+    - env:
+        - 'AF_VERSION="~> 8.0"'
+        - 'RAILS_VERSION="~> 4.2"'
+      rvm: 2.3.1

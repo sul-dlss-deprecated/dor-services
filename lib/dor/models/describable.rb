@@ -110,7 +110,7 @@ module Dor
 
     def add_related_item_node_for_collection(doc, collection_druid)
       begin
-        collection_obj = Dor::Item.find(collection_druid)
+        collection_obj = Dor.find(collection_druid)
       rescue ActiveFedora::ObjectNotFoundError
         return nil
       end
@@ -172,7 +172,7 @@ module Dor
                                        'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' ).each do |parent|
         # fetch the parent object to get title
         druid = parent['rdf:resource'].gsub(/^info:fedora\//, '')
-        parent_item = Dor::Item.find(druid)
+        parent_item = Dor.find(druid)
 
         # create the MODS relation
         relatedItem = doc.create_element 'relatedItem'
@@ -209,7 +209,7 @@ module Dor
     end
 
     def to_solr(solr_doc = {}, *args)
-      super solr_doc, *args
+      solr_doc = super solr_doc, *args
       mods_sources = {
         'sw_language_ssim'            => :sw_language_facet,
         'sw_language_tesim'           => :sw_language_facet,
@@ -246,7 +246,7 @@ module Dor
         creator_title = creator + title
         add_solr_value(solr_doc, 'creator_title', creator_title, :string, [:stored_sortable])
       rescue CrosswalkError => e
-        ActiveFedora.logger.warn "Cannot index #{pid}.descMetadata: #{e.message}"
+        Dor.logger.warn "Cannot index #{pid}.descMetadata: #{e.message}"
       end
 
       begin

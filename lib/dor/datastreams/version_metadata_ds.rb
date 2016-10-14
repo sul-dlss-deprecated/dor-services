@@ -211,6 +211,11 @@ module Dor
       increment_version(opts[:description], opts[:significance])
     end
 
+    # maintain AF < 8 indexing behavior
+    def prefix
+      ''
+    end
+
     private
 
     # @return [Nokogiri::XML::Node] Node representing the current version
@@ -223,6 +228,5 @@ module Dor
       tags = find_by_terms(:version, :tag)
       tags.map {|t| VersionTag.parse(t.value)}.max
     end
-
   end
 end

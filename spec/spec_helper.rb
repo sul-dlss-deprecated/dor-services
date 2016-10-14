@@ -70,7 +70,6 @@ end
 
 RSpec.configure do |config|
   config.include Dor::SpecHelpers
-  config.logger.level = Logger::WARN  # if you want INFO and lesser messages, tweak here
 end
 
 VCR.configure do |c|

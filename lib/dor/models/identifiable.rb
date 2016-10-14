@@ -58,7 +58,7 @@ module Dor
 
     def to_solr(solr_doc = {}, *args)
       assert_content_model
-      super(solr_doc, *args)
+      solr_doc = super(solr_doc, *args)
 
       solr_doc[Dor::INDEX_VERSION_FIELD] = Dor::VERSION
       solr_doc['indexed_at_dtsi'] = Time.now.utc.xmlschema

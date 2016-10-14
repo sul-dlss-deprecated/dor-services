@@ -93,7 +93,7 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
   end
 
   def to_solr(solr_doc = {}, *args)
-    super(solr_doc, *args)
+    solr_doc = super(solr_doc, *args)
     add_solr_value(solr_doc, 'workflow_name', name, :symbol, [:symbol])
     processes.each do |p|
       add_solr_value(solr_doc, 'process', "#{p.name}|#{p.label}", :symbol, [:displayable])
@@ -103,6 +103,11 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
 
   def to_yaml
     YAML.dump(configuration)
+  end
+
+  # maintain AF < 8 indexing behavior
+  def prefix
+    ''
   end
 
 end

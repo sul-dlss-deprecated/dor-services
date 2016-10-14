@@ -363,8 +363,8 @@ describe Dor::Publishable do
         allow(@item).to receive(:add_collection_reference).and_call_original
         allow(@item).to receive(:add_constituent_relations).and_call_original
         # load up collection and constituent parent items from fixture data
-        expect(Dor::Item).to receive(:find).with('druid:xh235dd9059').and_return(instantiate_fixture('druid:xh235dd9059', DescribableItem))
-        expect(Dor::Item).to receive(:find).with('druid:hj097bm8879').and_return(instantiate_fixture('druid:hj097bm8879', DescribableItem))
+        expect(Dor).to receive(:find).with('druid:xh235dd9059').and_return(instantiate_fixture('druid:xh235dd9059', DescribableItem))
+        expect(Dor).to receive(:find).with('druid:hj097bm8879').and_return(instantiate_fixture('druid:hj097bm8879', DescribableItem))
 
         # test that we have 2 expansions
         doc = Nokogiri::XML(@item.generate_public_desc_md)
@@ -465,7 +465,7 @@ describe Dor::Publishable do
           child_item.label = child_item.datastreams[dsid].title
 
           # stub out retrieval for child item
-          allow(Dor::Item).to receive(:find).with(child_item.pid).and_return(child_item)
+          allow(Dor).to receive(:find).with(child_item.pid).and_return(child_item)
         end
 
         # generate publicObject XML and verify that the content metadata portion is correct and the correct thumb is present

@@ -20,8 +20,8 @@ module Dor
     # @param [String] pid The object's PID
     def load_instance(pid)
       ensure_models_loaded!
-      obj = Dor::Abstract.find pid
-      return nil if obj.new_object?
+      obj = Dor::Abstract.find pid, cast: false
+      return nil if obj.new_record?
       object_type = obj.identityMetadata.objectType.first
       object_class = registered_classes[object_type] || Dor::Item
       obj.adapt_to(object_class)
@@ -51,7 +51,7 @@ module Dor
           begin
             object_class.load_instance_from_solr solr_doc['id'], solr_doc
           rescue Exception => e
-            ActiveFedora.logger.warn("Exception: '#{e.message}' trying to load #{solr_doc['id']} from solr. Loading from Fedora")
+            Dor.logger.warn("Exception: '#{e.message}' trying to load #{solr_doc['id']} from solr. Loading from Fedora")
             load_instance(solr_doc['id'])
           end
         else
@@ -67,6 +67,19 @@ module Dor
     def root
       File.dirname(__FILE__)
     end
+
+    def logger
+      require 'logger'
+      @logger ||= if defined?(::Rails) && ::Rails.respond_to?(:logger)
+          Rails.logger
+        else
+          Logger.new(STDOUT)
+        end
+    end
+  end
+
+  def logger
+    Dor.logger
   end
 
   require 'dor/version'

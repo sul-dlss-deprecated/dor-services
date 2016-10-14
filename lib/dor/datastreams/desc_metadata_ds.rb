@@ -43,5 +43,10 @@ module Dor
       end.doc
     end
 
+    # maintain AF < 8 indexing behavior
+    def prefix
+      ''
+    end
+
   end
 end

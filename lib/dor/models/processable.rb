@@ -155,7 +155,7 @@ module Dor
     end
 
     def to_solr(solr_doc = {}, *args)
-      super(solr_doc, *args)
+      solr_doc = super(solr_doc, *args)
       sortable_milestones = {}
       current_version = '1'
       begin

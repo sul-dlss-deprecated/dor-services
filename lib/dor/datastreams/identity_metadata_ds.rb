@@ -80,7 +80,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
   end
 
   def to_solr(solr_doc = {}, *args)
-    super(solr_doc, *args)
+    solr_doc = super(solr_doc, *args)
 
     if digital_object.respond_to?(:profile)
       digital_object.profile.each_pair do |property, value|
@@ -127,6 +127,11 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
     }
 
     solr_doc
+  end
+
+  # maintain AF < 8 indexing behavior
+  def prefix
+    ''
   end
 end # class
 end

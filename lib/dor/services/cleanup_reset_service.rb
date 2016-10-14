@@ -14,7 +14,7 @@ module Dor
     end
 
     def self.get_druid_last_version(druid)
-      druid_obj = Dor::Item.find(druid)
+      druid_obj = Dor.find(druid)
       last_version = druid_obj.current_version.to_i
 
       # if the current version is still open, avoid this versioned directory

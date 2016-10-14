@@ -28,7 +28,7 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
   end
 
   def to_solr(solr_doc = {}, *args)
-    super
+    solr_doc = super
     #::Solrizer.insert_field(solr_doc, field_name, value, *index_types)
     rd1  = release_date
     rd20 = twenty_pct_release_date
@@ -105,6 +105,11 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
 
     term_value_delete(:select => '//embargoMetadata/releaseAccess')
     ng_xml.root.add_child(new_doc.root.clone)
+  end
+
+  # maintain AF < 8 indexing behavior
+  def prefix
+    ''
   end
 
 end

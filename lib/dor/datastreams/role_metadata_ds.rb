@@ -46,5 +46,10 @@ class RoleMetadataDS < ActiveFedora::OmDatastream
     solr_doc
   end
 
+  # maintain AF < 8 indexing behavior
+  def prefix
+    ''
+  end
+
 end
 end

@@ -71,8 +71,13 @@ module Dor
 
     def to_solr(solr_doc = {}, *args)
       # super solr_doc, *args
-      workflows.each { |wf| wf.to_solr(solr_doc, *args) }
+      workflows.each { |wf| solr_doc = wf.to_solr(solr_doc, *args) }
       solr_doc
+    end
+
+    # maintain AF < 8 indexing behavior
+    def prefix
+      ''
     end
   end
 end

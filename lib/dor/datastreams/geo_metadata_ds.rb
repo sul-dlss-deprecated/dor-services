@@ -74,5 +74,10 @@ module Dor
         bb.xpath('gmd:southBoundLatitude/gco:Decimal', params).text.to_f
       )
     end
+
+    # maintain AF < 8 indexing behavior
+    def prefix
+      ''
+    end
   end
 end
