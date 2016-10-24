@@ -90,6 +90,9 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
   <adminPolicy>druid:qv648vd4392</adminPolicy>
   <otherId name="uuid">f36fcad6-955f-11e1-9027-0050569b52c6</otherId>
   <tag>Project : Revs</tag>
+  <release to="Kurita" who="petucket" when="01-01-2016T00:00:00z">true</release>
+  <release to="Mogami" who="petucket" when="01-01-2016T00:00:00z">true</release>
+  <release to="Atago" who="petucket" when="01-01-2016T00:00:00z">true</release>
 </identityMetadata>
 </foxml:xmlContent>
 </foxml:datastreamVersion>

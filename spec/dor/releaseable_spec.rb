@@ -95,12 +95,20 @@ describe Dor::Releaseable, :vcr do
   describe 'handling tags on objects and determining release status' do
 
     it 'should use only the most recent self tag to determine if an item is released, with no release tags on the collection' do
-      skip 'VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6'
-      VCR.use_cassette('relaseable_self_tags_only') do
-        item = Dor::Item.find('druid:vs298kg2555')
-        expect(item.released_for['Kurita']['release']).to be_truthy
+      VCR.use_cassette('should_use_only_the_most_recent_self_tag_to_determine_if_an_item_is_released_with_no_release_tags_on_the_collection') do
+        item = instantiate_fixture("druid:vs298kg2555", Dor::Item)
+        expect(item.released_for['Kurita']['release']).to be_truthy 
       end
     end
+
+    it 'should deal with a bad collection record that references itself and not end up in an infinite loop by skipping the tag check for itself' do
+      collection_druid='druid:wz243gf4151'
+      collection = instantiate_fixture(collection_druid, Dor::Item)
+      allow(collection).to receive(:collections).and_return([collection]) # force it to return itself as a member
+      expect(collection.collections.first.id).to eq collection.id # confirm it is a member of itself
+      expect(collection.released_for['Kurita']['release']).to be_truthy # we can still get the tags without going into an infinite loop
+    end
+
 
     # This test takes an object with a self tag that is older and opposite the tag on this object's collection and ensures the self tag still is the one that is used to decide release status
     it 'should use the self tag over the collection tag to determine if an item is released, even if the collection tag is newer' do
@@ -306,22 +314,17 @@ describe 'Adding release nodes', :vcr do
       end
     end
 
-    # TODO:  These two are pending because first we need to create and object in purl with a release data section, then we can record a purl fetch for them
-    xit 'should get a list of release tags in druid for a druid' do
-      item = instantiate_fixture(@le_mans_druid, Dor::Item)
-      x = item.get_xml_from_purl
-      expect(item.get_release_tags_from_purl_xml(x)).to match_array(%w(Kurita Mogami Atago))
-    end
-
-    xit 'should add in release tags as false for targets that are listed on the purl but not in new tag generation' do
-      item = instantiate_fixture(@le_mans_druid, Dor::Item)
-      x = item.get_xml_from_purl
-      generated_tags = {} # pretend no tags were found in the most recent dor object, so all tags in the purl should return false
-      tags_currently_in_purl = item.get_release_tags_from_purl_xml(x)  # These are the tags currently in purl
-      final_result_tags = item.add_tags_from_purl(generated_tags)      # Final result of dor and purl tags
-      expect(final_result_tags.keys).to match(tags_currently_in_purl)  # all tags currently in purl should be reflected
-      final_result_tags.keys.each do |tag|
-        expect(final_result_tags[tag]).to match({'release' => false})  # all tags should be false for their releas
+    it 'should add in release tags as false for targets that are listed on the purl but not in new tag generation' do
+      VCR.use_cassette('fetch_le_mans_purl') do
+        item = instantiate_fixture(@le_mans_druid, Dor::Item)
+        x = item.get_xml_from_purl
+        generated_tags = {} # pretend no tags were found in the most recent dor object, so all tags in the purl should return false
+        tags_currently_in_purl = item.get_release_tags_from_purl_xml(x)  # These are the tags currently in purl
+        final_result_tags = item.add_tags_from_purl(generated_tags)      # Final result of dor and purl tags
+        expect(final_result_tags.keys).to match(tags_currently_in_purl)  # all tags currently in purl should be reflected
+        final_result_tags.keys.each do |tag|
+          expect(final_result_tags[tag]).to match({'release' => false})  # all tags should be false for their releas
+        end
       end
     end
 
