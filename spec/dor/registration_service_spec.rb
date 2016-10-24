@@ -105,10 +105,6 @@ describe Dor::RegistrationService do
         @params.delete(:object_type)
         expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::ParameterError)
       end
-      it 'indexing failure' do
-        allow_any_instance_of(Dor::Item).to receive(:update_index).and_raise('503 Service Unavailable')
-        expect{ Dor::RegistrationService.register_object(@params) }.to raise_error(RuntimeError)
-      end
       context 'empty label' do
         before :each do
           @params[:label] = ''
@@ -121,16 +117,9 @@ describe Dor::RegistrationService do
         end
         it 'except if metadata_source is mdtoolkit (just a warning)' do
           @params[:metadata_source] = 'mdtoolkit'
-          expect_any_instance_of(Dor::Item).to receive(:update_index).and_return(true)
+          expect_any_instance_of(Dor::Item).to receive(:save).and_return(true)
           Dor::RegistrationService.register_object(@params)
         end
-      end
-    end
-
-    describe ENABLE_SOLR_UPDATES do
-      it 'starts true... inexplicably' do
-        # We don't set this.  But somebody in our dependencies does, affecting our basic model behvaior.  Fun.
-        expect(::ENABLE_SOLR_UPDATES).to be_truthy
       end
     end
 
@@ -140,24 +129,6 @@ describe Dor::RegistrationService do
         expect(@obj.label).to eq(@params[:label])
         expect(@obj.identityMetadata.sourceId).to eq('barcode:9191919191')
         expect(@obj.identityMetadata.otherId).to match_array(@params[:other_ids].collect { |*e| e.join(':') })
-      end
-    end
-
-    describe 'update_index' do
-      before :each do
-        allow_any_instance_of(Dor::Item).to receive(:create).and_return(true) # restub half of save, see ActiveFedora::Persistence
-        @item = Dor::Item.new(:pid => @pid)
-        expect(Dor::Item).to receive(:new).with(:pid => @pid).and_return(@item)
-      end
-      it 'gets called only once for the item' do
-        expect(@item).to receive(:update_index).exactly(:once) # Avoid multiple writes to Solr!
-        @obj = Dor::RegistrationService.register_object(@params)
-      end
-      it 'is not called at all when ENABLE_SOLR_UPDATES=false' do
-        stub_const('ENABLE_SOLR_UPDATES', false)
-        expect(::ENABLE_SOLR_UPDATES).to be_falsey
-        expect(@item).not_to receive(:update_index)
-        @obj = Dor::RegistrationService.register_object(@params)
       end
     end
 
@@ -177,7 +148,7 @@ describe Dor::RegistrationService do
 
     context 'common cases' do
       before :each do
-        expect_any_instance_of(Dor::Item).to receive(:update_index).and_return(true)
+        expect_any_instance_of(Dor::Item).to receive(:save).and_return(true)
       end
 
       describe 'object registration' do

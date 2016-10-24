@@ -26,7 +26,7 @@ describe Dor::ContentMetadataDS do
     </file>
     </resource>
     </contentMetadata>'
-    allow(Dor::Item).to receive(:find).and_return(@item)
+    allow(Dor).to receive(:find).and_return(@item)
     @file = {
       :name     => 'new_file.jp2',
       :shelve   => 'no',

@@ -96,7 +96,7 @@ module Dor
     end
 
     def to_solr(solr_doc = {}, *args)
-      super(solr_doc, *args)
+      solr_doc = super(solr_doc, *args)
       dra = dra_object
       solr_doc['rights_primary_ssi'] = dra.index_elements[:primary]
       solr_doc['rights_errors_ssim'] = dra.index_elements[:errors] if dra.index_elements[:errors].size > 0
@@ -164,6 +164,11 @@ module Dor
     def use_license
       return creative_commons unless ['', nil].include?(creative_commons)
       return open_data_commons unless ['', nil].include?(open_data_commons)
+      ''
+    end
+
+    # maintain AF < 8 indexing behavior
+    def prefix
       ''
     end
 

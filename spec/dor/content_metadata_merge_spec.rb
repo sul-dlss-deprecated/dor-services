@@ -33,8 +33,8 @@ describe Dor::Contentable do
   before(:each) do
     allow(primary.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)
     allow(src1.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)
-    allow(Dor::Item).to receive(:find).with(src1_pid) { src1 }
-    allow(Dor::Item).to receive(:find).with(src2_pid) { src2 }
+    allow(Dor).to receive(:find).with(src1_pid) { src1 }
+    allow(Dor).to receive(:find).with(src2_pid) { src2 }
     primary.contentMetadata.content = <<-XML
     <?xml version="1.0"?>
     <contentMetadata objectId="ab123cd0001" type="map">

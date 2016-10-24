@@ -53,7 +53,7 @@ module Dor
         fail ArgumentError, "Malformed externalFile data: #{externalFile.inspect}" if [src_resource_id, src_file_id, src_druid].map(&:blank?).any?
 
         # grab source item
-        src_item = Dor::Item.find(src_druid)
+        src_item = Dor.find(src_druid)
 
         # locate and extract the resourceId/fileId elements
         doc = src_item.datastreams['contentMetadata'].ng_xml
@@ -366,6 +366,11 @@ module Dor
         end
       end
       self.content = ng_xml.to_s
+    end
+
+    # maintain AF < 8 indexing behavior
+    def prefix
+      ''
     end
   end
 end

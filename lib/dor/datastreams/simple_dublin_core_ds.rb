@@ -47,5 +47,10 @@ class SimpleDublinCoreDs < ActiveFedora::OmDatastream
     warn "ERROR in SimpleDublinCoreDs to_solr()! #{e}"
     solr_doc
   end
+
+  # maintain AF < 8 indexing behavior
+  def prefix
+    ''
+  end
 end
 end

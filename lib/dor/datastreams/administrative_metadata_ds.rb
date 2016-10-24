@@ -115,5 +115,10 @@ class AdministrativeMetadataDS < ActiveFedora::OmDatastream
     defaults.shelving.path.first
   end
 
+  # maintain AF < 8 indexing behavior
+  def prefix
+    ''
+  end
+
 end
 end

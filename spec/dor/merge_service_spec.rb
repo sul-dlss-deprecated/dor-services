@@ -72,8 +72,8 @@ describe Dor::MergeService do
       </contentMetadata>
       XML
 
-      allow(Dor::Item).to receive(:find).with(primary_pid) { primary }
-      allow(Dor::Item).to receive(:find).with(secondary_pid) { secondary }
+      allow(Dor).to receive(:find).with(primary_pid) { primary }
+      allow(Dor).to receive(:find).with(secondary_pid) { secondary }
       pri_druid_tree.mkdir
       create_tempfile pri_druid_tree.path, 'image_a.jp2'
     end

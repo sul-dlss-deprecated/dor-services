@@ -79,7 +79,7 @@ module Dor
     def get_release_tags_for_item_and_all_governing_sets
       return_tags = release_nodes || {}
       collections.each do |collection|
-        return_tags = combine_two_release_tag_hashes(return_tags, Dor::Item.find(collection.id).get_release_tags_for_item_and_all_governing_sets) # recurvise so parents of parents are found
+        return_tags = combine_two_release_tag_hashes(return_tags, Dor.find(collection.id).get_release_tags_for_item_and_all_governing_sets) # recurvise so parents of parents are found
       end
       return_tags
     end
@@ -319,7 +319,7 @@ module Dor
     end
 
     def to_solr(solr_doc = {}, *args)
-      super(solr_doc, *args)
+      solr_doc = super(solr_doc, *args)
 
       # TODO: sort of worried about the performance impact in bulk reindex
       # situations, since released_for recurses all parent collections.  jmartin 2015-07-14

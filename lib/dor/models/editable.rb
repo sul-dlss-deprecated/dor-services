@@ -46,7 +46,7 @@ module Dor
     }.freeze
 
     def to_solr(solr_doc = {}, *args)
-      super(solr_doc, *args)
+      solr_doc = super(solr_doc, *args)
       add_solr_value(solr_doc, 'default_rights', default_rights, :string, [:symbol])
       add_solr_value(solr_doc, 'agreement', agreement, :string, [:symbol]) if agreement_object
       add_solr_value(solr_doc, 'default_use_license_machine', use_license, :string, [:stored_sortable])
@@ -328,7 +328,7 @@ module Dor
     end
     def agreement=(val)
       fail ArgumentError, 'agreement must have a valid druid' if val.blank?
-      self.agreement_object = Dor::Item.find val.to_s, :cast => true
+      self.agreement_object = Dor.find val.to_s, :cast => true
     end
   end
 end

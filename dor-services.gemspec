@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = '>= 1.3.6'
 
   # Runtime dependencies
-  s.add_dependency 'active-fedora', '~> 6.0'
+  s.add_dependency 'active-fedora', '>= 6.0', '< 9.a'
   s.add_dependency 'activesupport', '>= 3.2.18' # '~> 4.0' #
   s.add_dependency 'confstruct', '~> 0.2.7'
   s.add_dependency 'equivalent-xml', '~> 0.5', '>= 0.5.1' # 5.0 insufficient
