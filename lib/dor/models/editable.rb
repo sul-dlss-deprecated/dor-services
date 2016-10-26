@@ -279,34 +279,7 @@ module Dor
       raise(ArgumentError, "Unrecognized rights value '#{rights}'") unless RightsMetadataDS.valid_rights_type? rights
 
       rights_xml = defaultObjectRights.ng_xml
-
-      label = rights == 'dark' ? 'none' : 'world'
-      rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
-        node.children.remove
-        node.add_child Nokogiri::XML::Node.new(label, rights_xml)
-      end
-
-      rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
-        node.children.remove
-        machine_node = Nokogiri::XML::Node.new('machine', rights_xml)
-        node.add_child(machine_node)
-        if rights.start_with?('world')
-          world_node = Nokogiri::XML::Node.new('world', rights_xml)
-          world_node.set_attribute('rule', 'no-download') if rights.end_with?('-nd')
-          machine_node.add_child(world_node)
-        elsif rights.start_with?('stanford')
-          group_node = Nokogiri::XML::Node.new('group', rights_xml)
-          group_node.content = 'stanford'
-          group_node.set_attribute('rule', 'no-download') if rights.end_with?('-nd')
-          machine_node.add_child(group_node)
-        elsif rights.start_with?('loc:')
-          loc_node = Nokogiri::XML::Node.new('location', rights_xml)
-          loc_node.content = rights.split(':').last
-          machine_node.add_child(loc_node)
-        else  # we know it is none or dark by the argument filter (first line)
-          machine_node.add_child Nokogiri::XML::Node.new('none', rights_xml)
-        end
-      end
+      RightsMetadataDS.upd_rights_xml_for_rights_type(rights_xml, rights)
     end
 
     def desc_metadata_format

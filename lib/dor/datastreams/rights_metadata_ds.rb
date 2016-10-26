@@ -83,7 +83,40 @@ module Dor
       RightsMetadataDS.valid_rights_types.include? rights
     end
 
-    # @param rights [string] archetypical rights to assign: 'world', 'stanford', 'none' or 'dark'
+    # a helper method for setting up well-structured rights_xml based on a rights type code
+    # @param rights_xml [ng_xml] a nokogiri xml (ruby) object that represents the rights xml for a DOR object
+    # @param rights_type [string] a recognized rights type code ('world', 'dark', 'loc:spec', etc)
+    def self.upd_rights_xml_for_rights_type(rights_xml, rights_type)
+      label = rights_type == 'dark' ? 'none' : 'world'
+      rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
+        node.children.remove
+        node.add_child Nokogiri::XML::Node.new(label, rights_xml)
+      end
+
+      rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
+        node.children.remove
+        machine_node = Nokogiri::XML::Node.new('machine', rights_xml)
+        node.add_child(machine_node)
+        if rights_type.start_with?('world')
+          world_node = Nokogiri::XML::Node.new('world', rights_xml)
+          world_node.set_attribute('rule', 'no-download') if rights_type.end_with?('-nd')
+          machine_node.add_child(world_node)
+        elsif rights_type.start_with?('stanford')
+          group_node = Nokogiri::XML::Node.new('group', rights_xml)
+          group_node.content = 'stanford'
+          group_node.set_attribute('rule', 'no-download') if rights_type.end_with?('-nd')
+          machine_node.add_child(group_node)
+        elsif rights_type.start_with?('loc:')
+          loc_node = Nokogiri::XML::Node.new('location', rights_xml)
+          loc_node.content = rights_type.split(':').last
+          machine_node.add_child(loc_node)
+        else  # we know it is none or dark by the argument filter (first line)
+          machine_node.add_child Nokogiri::XML::Node.new('none', rights_xml)
+        end
+      end
+    end
+
+    # @param rights [string] archetypical rights to assign: 'world', 'stanford', 'none', 'dark', etc
     # Moved from Governable
     # slight misnomer: also sets discover rights!
     # TODO: convert xpath reads to dra_object calls
@@ -95,33 +128,7 @@ module Dor
         raise('The rights metadata stream doesnt contain an entry for machine read permissions. Consider populating it from the APO before trying to change it.')
       end
 
-      label = rights == 'dark' ? 'none' : 'world'
-      rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
-        node.children.remove
-        node.add_child Nokogiri::XML::Node.new(label, rights_xml)
-      end
-
-      rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
-        node.children.remove
-        machine_node = Nokogiri::XML::Node.new('machine', rights_xml)
-        node.add_child(machine_node)
-        if rights.start_with?('world')
-          world_node = Nokogiri::XML::Node.new('world', rights_xml)
-          world_node.set_attribute('rule', 'no-download') if rights.end_with?('-nd')
-          machine_node.add_child(world_node)
-        elsif rights.start_with?('stanford')
-          group_node = Nokogiri::XML::Node.new('group', rights_xml)
-          group_node.content = 'stanford'
-          group_node.set_attribute('rule', 'no-download') if rights.end_with?('-nd')
-          machine_node.add_child(group_node)
-        elsif rights.start_with?('loc:')
-          loc_node = Nokogiri::XML::Node.new('location', rights_xml)
-          loc_node.content = rights.split(':').last
-          machine_node.add_child(loc_node)
-        else  # we know it is none or dark by the argument filter (first line)
-          machine_node.add_child Nokogiri::XML::Node.new('none', rights_xml)
-        end
-      end
+      RightsMetadataDS.upd_rights_xml_for_rights_type(rights_xml, rights)
 
       @dra_object = nil # until TODO complete, we'll expect to have to reparse after modification
       self.content = rights_xml.to_xml
