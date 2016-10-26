@@ -130,7 +130,7 @@ module Dor
 
       RightsMetadataDS.upd_rights_xml_for_rights_type(rights_xml, rights)
 
-      @dra_object = nil # until TODO complete, we'll expect to have to reparse after modification
+      self.dra_object = nil # until TODO complete, we'll expect to have to reparse after modification
       self.content = rights_xml.to_xml
       content_will_change!
     end

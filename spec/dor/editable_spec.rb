@@ -241,6 +241,7 @@ describe Dor::Editable do
     end
     it 'should use the OM template if the ds is empty' do
       expect(@empty_item.default_rights).to eq('world')
+      expect(@empty_item.default_rights_for_indexing).to eq('World')
     end
   end
   describe 'default_rights=' do
@@ -251,6 +252,7 @@ describe Dor::Editable do
     it 'should work on an empty ds' do
       @empty_item.default_rights = 'stanford'
       expect(@empty_item.default_rights).to eq('stanford')
+      expect(@empty_item.default_rights_for_indexing).to eq('Stanford')
     end
   end
   describe 'desc metadata format' do
@@ -263,10 +265,12 @@ describe Dor::Editable do
     it 'should set dark correctly' do
       @apo.default_rights = 'dark'
       expect(@apo.default_rights).to eq('dark')
+
     end
     it 'setters should be case insensitive' do
       @apo.default_rights = 'Dark'
       expect(@apo.default_rights).to eq('dark')
+      expect(@apo.default_rights_for_indexing).to eq('Dark (Preserve Only)')
     end
     it 'should set read rights to none for dark' do
       @apo.default_rights = 'Dark'
@@ -364,7 +368,7 @@ describe Dor::Editable do
       allow(@apo).to receive(:agreement).and_return('druid:agreement')
       allow(@apo).to receive(:agreement_object).and_return(true)
       solr_doc = @apo.to_solr
-      expect(solr_doc).to match a_hash_including('default_rights_ssim' => ['World'])
+      expect(solr_doc).to match a_hash_including('default_rights_ssim' => ['World']) # note that this is capitalized, because it comes from default_rights_for_indexing
       expect(solr_doc).to match a_hash_including('agreement_ssim'      => ['druid:agreement'])
       # expect(solr_doc).to match a_hash_including("registration_default_collection_sim" => ["druid:fz306fj8334"])
       expect(solr_doc).to match a_hash_including('registration_workflow_id_ssim' => ['digitizationWF'])

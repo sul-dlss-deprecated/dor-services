@@ -90,6 +90,54 @@ describe Dor::RegistrationService do
         </rightsMetadata>
       XML
     }
+    let(:stanford_no_download_xml) {
+      <<-XML
+        <?xml version="1.0"?>
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">This work is in the Public Domain.</human>
+          </copyright>
+          <access type="discover">
+            <machine>
+              <world/>
+            </machine>
+          </access>
+          <access type="read">
+            <machine>
+              <group rule="no-download">stanford</group>
+            </machine>
+          </access>
+          <use>
+            <human type="creativecommons">Attribution Share Alike license</human>
+            <machine type="creativecommons">by-sa</machine>
+          </use>
+        </rightsMetadata>
+      XML
+    }
+    let(:location_music_xml) {
+      <<-XML
+        <?xml version="1.0"?>
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">This work is in the Public Domain.</human>
+          </copyright>
+          <access type="discover">
+            <machine>
+              <world/>
+            </machine>
+          </access>
+          <access type="read">
+            <machine>
+              <location>music</location>
+            </machine>
+          </access>
+          <use>
+            <human type="creativecommons">Attribution Share Alike license</human>
+            <machine type="creativecommons">by-sa</machine>
+          </use>
+        </rightsMetadata>
+      XML
+    }
 
     context 'exception should be raised for' do
       it 'registering a duplicate PID' do
@@ -214,6 +262,26 @@ describe Dor::RegistrationService do
           it_behaves_like 'common registration'
           it 'sets rightsMetadata based on the APO default but replace read rights to be world' do
             expect(@obj.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to world_xml
+          end
+        end
+        describe 'loc:music' do
+          before :each do
+            @params[:rights] = 'loc:music'
+            @obj = Dor::RegistrationService.register_object(@params)
+          end
+          it_behaves_like 'common registration'
+          it 'sets rightsMetadata based on the APO default but replace read rights to be loc:music' do
+            expect(@obj.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to location_music_xml
+          end
+        end
+        describe 'stanford no-download' do
+          before :each do
+            @params[:rights] = 'stanford-nd'
+            @obj = Dor::RegistrationService.register_object(@params)
+          end
+          it_behaves_like 'common registration'
+          it 'sets rightsMetadata based on the APO default but replace read rights to be group stanford with the no-download rule' do
+            expect(@obj.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to stanford_no_download_xml
           end
         end
       end
