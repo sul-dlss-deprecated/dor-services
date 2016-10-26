@@ -237,20 +237,20 @@ describe Dor::Editable do
   end
   describe 'default object rights' do
     it 'should find the default object rights' do
-      expect(@apo.default_rights).to eq('World')
+      expect(@apo.default_rights).to eq('world')
     end
     it 'should use the OM template if the ds is empty' do
-      expect(@empty_item.default_rights).to eq('World')
+      expect(@empty_item.default_rights).to eq('world')
     end
   end
   describe 'default_rights=' do
     it 'should set default rights' do
       @apo.default_rights = 'stanford'
-      expect(@apo.default_rights).to eq('Stanford')
+      expect(@apo.default_rights).to eq('stanford')
     end
     it 'should work on an empty ds' do
       @empty_item.default_rights = 'stanford'
-      expect(@empty_item.default_rights).to eq('Stanford')
+      expect(@empty_item.default_rights).to eq('stanford')
     end
   end
   describe 'desc metadata format' do
@@ -262,11 +262,11 @@ describe Dor::Editable do
     end
     it 'should set dark correctly' do
       @apo.default_rights = 'dark'
-      expect(@apo.default_rights).to eq('Dark')
+      expect(@apo.default_rights).to eq('dark')
     end
     it 'setters should be case insensitive' do
       @apo.default_rights = 'Dark'
-      expect(@apo.default_rights).to eq('Dark')
+      expect(@apo.default_rights).to eq('dark')
     end
     it 'should set read rights to none for dark' do
       @apo.default_rights = 'Dark'
