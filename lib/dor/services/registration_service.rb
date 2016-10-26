@@ -75,7 +75,7 @@ module Dor
         rights = nil
         if params[:rights]
           rights = params[:rights]
-          unless %w(world stanford dark default none).include? rights
+          unless rights == 'default' || RightsMetadataDS.valid_rights_type?(rights)
             raise Dor::ParameterError, "Unknown rights setting '#{rights}' when calling #{name}.register_object"
           end
         end
