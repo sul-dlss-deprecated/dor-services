@@ -269,16 +269,7 @@ module Dor
 
     # @return [String] A description of the rights defined in the default object rights datastream. Can be 'Stanford', 'World', 'Dark' or 'None'
     def default_rights_for_indexing
-      {
-        'world' => 'World',
-        'world-nd' => 'World (no-download)',
-        'stanford' => 'Stanford',
-        'stanford-nd' => 'Stanford (no-download)',
-        'loc:spec' => 'Location spec',
-        'loc:music' => 'Location music',
-        'dark' => 'Dark',
-        'none' => 'Citation Only'
-      }.fetch(default_rights, 'Unrecognized default rights value')
+      RightsMetadataDS::RIGHTS_TYPE_CODES.fetch(default_rights, 'Unrecognized default rights value')
     end
 
     # Set the rights in default object rights

@@ -51,6 +51,18 @@ module Dor
       end.doc
     end
 
+    RIGHTS_TYPE_CODES = {
+      'world' => 'World',
+      'world-nd' => 'World (no-download)',
+      'stanford' => 'Stanford',
+      'stanford-nd' => 'Stanford (no-download)',
+      'loc:spec' => 'Location spec',
+      'loc:music' => 'Location music',
+      'dark' => 'Dark (Preserve Only)',
+      'none' => 'Citation Only'
+    }.freeze
+
+
     # just a wrapper to invalidate @dra_object
     def content=(xml)
       @dra_object = nil
@@ -61,8 +73,10 @@ module Dor
       @dra_object ||= Dor::RightsAuth.parse(ng_xml, true)
     end
 
+    # key is the rights type code, used by e.g. RightsMetadataDS#set_read_rights and Editable#default_rights=
+    # value is the human-readable string, used for indexing, and for things like building select lists in the argo UI.
     def self.valid_rights_types
-      %w(world world-nd stanford stanford-nd loc:spec loc:music none dark)
+      RIGHTS_TYPE_CODES.keys
     end
 
     def self.valid_rights_type?(rights)
