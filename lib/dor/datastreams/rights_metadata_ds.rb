@@ -82,7 +82,6 @@ module Dor
       end
 
       label = rights == 'dark' ? 'none' : 'world'
-      @dra_object = nil # until TODO complete, we'll expect to have to reparse after modification
       rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
         node.children.remove
         node.add_child Nokogiri::XML::Node.new(label, rights_xml)
@@ -110,6 +109,7 @@ module Dor
         end
       end
 
+      @dra_object = nil # until TODO complete, we'll expect to have to reparse after modification
       self.content = rights_xml.to_xml
       content_will_change!
     end
