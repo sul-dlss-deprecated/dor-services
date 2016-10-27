@@ -20,6 +20,291 @@ describe Dor::RightsMetadataDS do
     expect(@item.rightsMetadata).to eq(@item.datastreams['rightsMetadata'])
   end
 
+  describe 'upd_rights_xml_for_rights_type' do
+    let(:original_rights_xml) {
+      <<-XML
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.</human>
+          </copyright>
+          <access type="discover">
+            <machine>
+              <world></world>
+            </machine>
+          </access>
+          <access type="read">
+            <machine>
+              <group>stanford</group>
+              <world rule="no-download"></world>
+              <location rule="no-download">reading_room</location>
+            </machine>
+          </access>
+          <use>
+            <human type="useAndReproduction">Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.</human>
+            <human type="creativeCommons">Attribution Non-Commercial 3.0 Unported</human>
+            <machine type="creativeCommons">by-nc</machine>
+          </use>
+        </rightsMetadata>
+      XML
+    }
+
+    let(:world_rights_xml) {
+      <<-XML
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.</human>
+          </copyright>
+          <access type="discover">
+            <machine>
+              <world/>
+            </machine>
+          </access>
+          <access type="read">
+            <machine>
+              <world/>
+            </machine>
+          </access>
+          <use>
+            <human type="useAndReproduction">Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.</human>
+            <human type="creativeCommons">Attribution Non-Commercial 3.0 Unported</human>
+            <machine type="creativeCommons">by-nc</machine>
+          </use>
+        </rightsMetadata>
+      XML
+    }
+    let(:world_no_download_rights_xml) {
+      <<-XML
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.</human>
+          </copyright>
+          <access type="discover">
+            <machine>
+              <world/>
+            </machine>
+          </access>
+          <access type="read">
+            <machine>
+              <world rule="no-download"/>
+            </machine>
+          </access>
+          <use>
+            <human type="useAndReproduction">Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.</human>
+            <human type="creativeCommons">Attribution Non-Commercial 3.0 Unported</human>
+            <machine type="creativeCommons">by-nc</machine>
+          </use>
+        </rightsMetadata>
+      XML
+    }
+    let(:stanford_rights_xml) {
+      <<-XML
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.</human>
+          </copyright>
+          <access type="discover">
+            <machine>
+              <world/>
+            </machine>
+          </access>
+          <access type="read">
+            <machine>
+              <group>stanford</group>
+            </machine>
+          </access>
+          <use>
+            <human type="useAndReproduction">Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.</human>
+            <human type="creativeCommons">Attribution Non-Commercial 3.0 Unported</human>
+            <machine type="creativeCommons">by-nc</machine>
+          </use>
+        </rightsMetadata>
+      XML
+    }
+    let(:stanford_no_download_rights_xml) {
+      <<-XML
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.</human>
+          </copyright>
+          <access type="discover">
+            <machine>
+              <world/>
+            </machine>
+          </access>
+          <access type="read">
+            <machine>
+              <group rule="no-download">stanford</group>
+            </machine>
+          </access>
+          <use>
+            <human type="useAndReproduction">Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.</human>
+            <human type="creativeCommons">Attribution Non-Commercial 3.0 Unported</human>
+            <machine type="creativeCommons">by-nc</machine>
+          </use>
+        </rightsMetadata>
+      XML
+    }
+    let(:loc_spec_rights_xml) {
+      <<-XML
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.</human>
+          </copyright>
+          <access type="discover">
+            <machine>
+              <world/>
+            </machine>
+          </access>
+          <access type="read">
+            <machine>
+              <location>spec</group>
+            </machine>
+          </access>
+          <use>
+            <human type="useAndReproduction">Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.</human>
+            <human type="creativeCommons">Attribution Non-Commercial 3.0 Unported</human>
+            <machine type="creativeCommons">by-nc</machine>
+          </use>
+        </rightsMetadata>
+      XML
+    }
+    let(:dark_rights_xml) {
+      <<-XML
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.</human>
+          </copyright>
+          <access type="discover">
+            <machine>
+              <none/>
+            </machine>
+          </access>
+          <access type="read">
+            <machine>
+              <none/>
+            </machine>
+          </access>
+          <use>
+            <human type="useAndReproduction">Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.</human>
+            <human type="creativeCommons">Attribution Non-Commercial 3.0 Unported</human>
+            <machine type="creativeCommons">by-nc</machine>
+          </use>
+        </rightsMetadata>
+      XML
+    }
+    let(:citation_only_rights_xml) {
+      <<-XML
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.</human>
+          </copyright>
+          <access type="discover">
+            <machine>
+              <world/>
+            </machine>
+          </access>
+          <access type="read">
+            <machine>
+              <none/>
+            </machine>
+          </access>
+          <use>
+            <human type="useAndReproduction">Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.</human>
+            <human type="creativeCommons">Attribution Non-Commercial 3.0 Unported</human>
+            <machine type="creativeCommons">by-nc</machine>
+          </use>
+        </rightsMetadata>
+      XML
+    }
+    let(:loc_unsupported_rights_xml) {
+      <<-XML
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.</human>
+          </copyright>
+          <access type="discover">
+            <machine>
+              <world/>
+            </machine>
+          </access>
+          <access type="read">
+            <machine>
+              <location>unsupported</group>
+            </machine>
+          </access>
+          <use>
+            <human type="useAndReproduction">Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.</human>
+            <human type="creativeCommons">Attribution Non-Commercial 3.0 Unported</human>
+            <machine type="creativeCommons">by-nc</machine>
+          </use>
+        </rightsMetadata>
+      XML
+    }
+
+    it 'has the expected rights xml when read rights are set to world' do
+      rights_ng_xml = Nokogiri::XML(original_rights_xml)
+      Dor::RightsMetadataDS.upd_rights_xml_for_rights_type(rights_ng_xml, 'world')
+      expect(rights_ng_xml).to be_equivalent_to world_rights_xml
+    end
+
+    it 'has the expected rights xml when read rights are set to world with the no-download rule' do
+      rights_ng_xml = Nokogiri::XML(original_rights_xml)
+      Dor::RightsMetadataDS.upd_rights_xml_for_rights_type(rights_ng_xml, 'world-nd')
+      expect(rights_ng_xml).to be_equivalent_to world_no_download_rights_xml
+    end
+
+    it 'has the expected rights xml when read rights are set to group stanford' do
+      rights_ng_xml = Nokogiri::XML(original_rights_xml)
+      Dor::RightsMetadataDS.upd_rights_xml_for_rights_type(rights_ng_xml, 'stanford')
+      expect(rights_ng_xml).to be_equivalent_to stanford_rights_xml
+    end
+
+    it 'has the expected rights xml when read rights are set to group stanford with the no-download rule' do
+      rights_ng_xml = Nokogiri::XML(original_rights_xml)
+      Dor::RightsMetadataDS.upd_rights_xml_for_rights_type(rights_ng_xml, 'stanford-nd')
+      expect(rights_ng_xml).to be_equivalent_to stanford_no_download_rights_xml
+    end
+
+    it 'has the expected rights xml when read rights are set to location spec' do
+      rights_ng_xml = Nokogiri::XML(original_rights_xml)
+      Dor::RightsMetadataDS.upd_rights_xml_for_rights_type(rights_ng_xml, 'loc:spec')
+      expect(rights_ng_xml).to be_equivalent_to loc_spec_rights_xml
+    end
+
+    it 'has the expected rights xml when read rights are set to dark' do
+      rights_ng_xml = Nokogiri::XML(original_rights_xml)
+      Dor::RightsMetadataDS.upd_rights_xml_for_rights_type(rights_ng_xml, 'dark')
+      expect(rights_ng_xml).to be_equivalent_to dark_rights_xml
+    end
+
+    it 'has the expected rights xml when read rights are set to citation only' do
+      rights_ng_xml = Nokogiri::XML(original_rights_xml)
+      Dor::RightsMetadataDS.upd_rights_xml_for_rights_type(rights_ng_xml, 'none')
+      expect(rights_ng_xml).to be_equivalent_to citation_only_rights_xml
+    end
+
+    it 'will set an unrecognized location, because it is not where rights type code is validated' do
+      rights_ng_xml = Nokogiri::XML(original_rights_xml)
+      Dor::RightsMetadataDS.upd_rights_xml_for_rights_type(rights_ng_xml, 'loc:unsupported')
+      expect(rights_ng_xml).to be_equivalent_to loc_unsupported_rights_xml
+    end
+  end
+
+  describe 'set_read_rights' do
+    it 'will raise an exception when an unsupported rights type is given' do
+      expect { @item.rightsMetadata.set_read_rights 'loc:unsupported' }.to raise_error ArgumentError, "Argument 'loc:unsupported' is not a recognized value"
+    end
+
+    it 'will set the xml properly and indicate that datastream content has changed' do
+      expect(Dor::RightsMetadataDS).to receive(:upd_rights_xml_for_rights_type).with(@item.rightsMetadata.ng_xml, 'world')
+      expect(@item.rightsMetadata).to receive(:dra_object=).with(nil).and_call_original
+      expect(@item.rightsMetadata).to receive(:content=).with(@item.rightsMetadata.ng_xml.to_xml).and_call_original
+      expect(@item.rightsMetadata).to receive(:content_will_change!).and_call_original
+
+      @item.rightsMetadata.set_read_rights 'world'
+    end
+  end
+
   describe 'rightsMetadata' do
     before :each do
       @rm = @item.rightsMetadata

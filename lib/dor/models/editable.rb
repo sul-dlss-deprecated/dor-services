@@ -47,7 +47,7 @@ module Dor
 
     def to_solr(solr_doc = {}, *args)
       solr_doc = super(solr_doc, *args)
-      add_solr_value(solr_doc, 'default_rights', default_rights, :string, [:symbol])
+      add_solr_value(solr_doc, 'default_rights', default_rights_for_indexing, :string, [:symbol])
       add_solr_value(solr_doc, 'agreement', agreement, :string, [:symbol]) if agreement_object
       add_solr_value(solr_doc, 'default_use_license_machine', use_license, :string, [:stored_sortable])
       solr_doc
@@ -229,50 +229,57 @@ module Dor
       end
     end
 
-    # @return [String] A description of the rights defined in the default object rights datastream. Can be 'Stanford', 'World', 'Dark' or 'None'
+    # @return [String] A description of the rights defined in the default object rights datastream. Can be one of
+    # RightsMetadataDS::RIGHTS_TYPE_CODES.keys (so this is essentially the inverse of RightsMetadataDS.upd_rights_xml_for_rights_type).
     def default_rights
       xml = defaultObjectRights.ng_xml
-      if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
-        'Stanford'
-      elsif xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length == 1
-        'World'
-      elsif xml.search('//rightsMetadata/access[@type=\'discover\']/machine/none').length == 1
-        'Dark'
+      machine_read_access = xml.search('//rightsMetadata/access[@type="read"]/machine')
+      machine_discover_access = xml.search('//rightsMetadata/access[@type="discover"]/machine')
+
+      machine_read_access_node = machine_read_access.length == 1 ? machine_read_access.first : nil
+      machine_discover_access_node = machine_discover_access.length == 1 ? machine_discover_access.first : nil
+
+      if machine_read_access_node && machine_read_access_node.search('./group[text()="Stanford" or text()="stanford"]').length == 1
+        if machine_read_access_node.search('./group[@rule="no-download"]').length == 1
+          'stanford-nd'
+        else
+          'stanford'
+        end
+      elsif machine_read_access_node && machine_read_access_node.search('./world').length == 1
+        if machine_read_access_node.search('./world[@rule="no-download"]').length == 1
+          'world-nd'
+        else
+          'world'
+        end
+      elsif machine_read_access_node && machine_read_access_node.search('./location[text()="spec"]').length == 1
+        'loc:spec'
+      elsif machine_read_access_node && machine_read_access_node.search('./location[text()="music"]').length == 1
+        'loc:music'
+      elsif machine_discover_access_node && machine_discover_access_node.search('./world').length == 1
+        # if it's not stanford restricted, world readable, or location restricted, but it is world discoverable, it's "citation only"
+        'none'
+      elsif machine_discover_access_node && machine_discover_access_node.search('./none').length == 1
+        # if it's not even discoverable, it's "dark"
+        'dark'
       else
-        'None'
+        # if none of the above, the rights xml structure is unsupported/unintelligible
+        nil
       end
     end
+
+    # @return [String] A description of the rights defined in the default object rights datastream. Can be 'Stanford', 'World', 'Dark' or 'None'
+    def default_rights_for_indexing
+      RightsMetadataDS::RIGHTS_TYPE_CODES.fetch(default_rights, 'Unrecognized default rights value')
+    end
+
     # Set the rights in default object rights
     # @param rights [String] Stanford, World, Dark, or None
     def default_rights=(rights)
       rights = rights.downcase
+      raise(ArgumentError, "Unrecognized rights value '#{rights}'") unless RightsMetadataDS.valid_rights_type? rights
+
       rights_xml = defaultObjectRights.ng_xml
-      rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
-        node.children.remove
-        world_node = Nokogiri::XML::Node.new((rights == 'dark' ? 'none' : 'world'), rights_xml)
-        node.add_child(world_node)
-      end
-      rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
-        node.children.remove
-        machine_node = Nokogiri::XML::Node.new('machine', rights_xml)
-        if rights == 'world'
-          world_node = Nokogiri::XML::Node.new(rights, rights_xml)
-          node.add_child(machine_node)
-          machine_node.add_child(world_node)
-        elsif rights == 'stanford'
-          node.add_child(machine_node)
-          group_node = Nokogiri::XML::Node.new('group', rights_xml)
-          group_node.content = 'Stanford'
-          node.add_child(machine_node)
-          machine_node.add_child(group_node)
-        elsif rights == 'none' || rights == 'dark'
-          none_node = Nokogiri::XML::Node.new('none', rights_xml)
-          node.add_child(machine_node)
-          machine_node.add_child(none_node)
-        else
-          raise ArgumentError, "Unrecognized rights value '#{rights}'"
-        end
-      end
+      RightsMetadataDS.upd_rights_xml_for_rights_type(rights_xml, rights)
     end
 
     def desc_metadata_format
