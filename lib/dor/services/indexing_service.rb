@@ -1,3 +1,5 @@
+require 'benchmark'
+
 module Dor
   class IndexingService
     ##
@@ -55,9 +57,21 @@ module Dor
         should_raise_errors = options.fetch(:raise_errors, true)
       end
 
-      obj = Dor.load_instance pid
-      solr_doc = reindex_object obj, options
-      index_logger.info "updated index for #{pid}"
+      obj = nil
+      solr_doc = nil
+
+      # benchmark how long it takes to load the object
+      load_stats = Benchmark.measure('load_instance') do
+        obj = Dor.load_instance pid
+      end.format('%n realtime %rs total CPU %ts').gsub(/[\(\)]/, '')
+
+      # benchmark how long it takes to convert the object to a Solr document
+      to_solr_stats = Benchmark.measure('to_solr') do
+        solr_doc = reindex_object obj, options
+      end.format('%n realtime %rs total CPU %ts').gsub(/[\(\)]/, '')
+
+      index_logger.info "successfully updated index for #{pid} (metrics: #{load_stats}; #{to_solr_stats})"
+
       solr_doc
     rescue StandardError => se
       if se.is_a? ActiveFedora::ObjectNotFoundError

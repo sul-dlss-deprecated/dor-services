@@ -143,7 +143,7 @@ describe Dor::IndexingService do
     it 'should reindex the object via Dor::IndexingService.reindex_pid and log success' do
       expect(Dor).to receive(:load_instance).with(@mock_pid).and_return(@mock_obj)
       expect(Dor::IndexingService).to receive(:reindex_object).with(@mock_obj, {}).and_return(@mock_solr_doc)
-      expect(@mock_default_logger).to receive(:info).with("updated index for #{@mock_pid}")
+      expect(@mock_default_logger).to receive(:info).with(/successfully updated index for #{@mock_pid}.*metrics.*load_instance.*to_solr/)
       ret_val = Dor::IndexingService.reindex_pid @mock_pid
       expect(ret_val).to eq(@mock_solr_doc)
     end
