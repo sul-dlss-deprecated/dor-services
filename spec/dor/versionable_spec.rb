@@ -31,7 +31,7 @@ describe Dor::Versionable do
         expect(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', dr, 'submitted').and_return(nil)
         expect(Sdr::Client).to receive(:current_version).and_return(1)
         expect(obj).to receive(:create_workflow).with('versioningWF')
-        allow(obj).to receive(:new_object?).and_return(false)
+        expect(obj).to receive(:new_record?).and_return(false)
         expect(vmd_ds).to receive(:save)
       end
 

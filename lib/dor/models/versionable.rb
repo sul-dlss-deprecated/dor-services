@@ -25,7 +25,7 @@ module Dor
       vmd_ds = datastreams['versionMetadata']
       vmd_ds.sync_then_increment_version sdr_version
       vmd_ds.content = vmd_ds.ng_xml.to_s
-      vmd_ds.save unless self.new_object?
+      vmd_ds.save unless self.new_record?
 
       k = :create_workflows_ds
       if opts.key?(k)
