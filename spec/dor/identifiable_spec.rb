@@ -337,5 +337,13 @@ describe Dor::Identifiable do
         expect(item.adapt_to_cmodel.class).to eq Dor::Item
       end
     end
+
+    context 'for an agreement' do
+      let(:item) { instantiate_fixture('druid:dd327qr3670', Dor::Abstract) }
+
+      it 'adapts to the object type asserted in the identityMetadata' do
+        expect(item.adapt_to_cmodel.class).to eq Dor::Agreement
+      end
+    end
   end
 end
