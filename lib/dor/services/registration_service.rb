@@ -46,7 +46,6 @@ module Dor
       # @option params [Array<String>] :initiate_workflow workflow_ids
       # @option params [Array] :tags
       def register_object(params = {})
-        Dor.ensure_models_loaded!
         [:object_type, :label].each do |required_param|
           raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{name}.register_object" unless params[required_param]
         end

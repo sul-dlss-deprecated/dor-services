@@ -1,0 +1,204 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<foxml:digitalObject VERSION="1.1" PID="druid:kq696sh3014"
+xmlns:foxml="info:fedora/fedora-system:def/foxml#"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/definitions/1/0/foxml1-1.xsd">
+<foxml:objectProperties>
+<foxml:property NAME="info:fedora/fedora-system:def/model#state" VALUE="Active"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#label" VALUE="History of Media Preservation in Research Libraries"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#ownerId" VALUE="hydrus-prod.stanford.edu"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#createdDate" VALUE="2013-01-31T20:34:03.633Z"/>
+<foxml:property NAME="info:fedora/fedora-system:def/view#lastModifiedDate" VALUE="2016-03-30T23:02:22.115Z"/>
+</foxml:objectProperties>
+<foxml:datastream ID="DC" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="DC.3" LABEL="Dublin Core Record for this object" CREATED="2013-03-01T01:53:36.404Z" MIMETYPE="text/xml" FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/" SIZE="376">
+<foxml:xmlContent>
+<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+  <dc:title>Hydrus</dc:title>
+  <dc:identifier>druid:kq696sh3014</dc:identifier>
+</oai_dc:dc>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="RELS-EXT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="RELS-EXT.1" LABEL="Fedora Object-to-Object Relationship Metadata" CREATED="2013-01-31T20:34:09.336Z" MIMETYPE="application/rdf+xml" SIZE="467">
+<foxml:xmlContent>
+<rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="info:fedora/druid:kq696sh3014">
+    <hydra:isGovernedBy rdf:resource="info:fedora/druid:rz646cy2429"></hydra:isGovernedBy>
+    <fedora-model:hasModel rdf:resource="info:fedora/afmodel:Hydrus_Collection"></fedora-model:hasModel>
+  </rdf:Description>
+</rdf:RDF>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="identityMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="identityMetadata.36" LABEL="Identity Metadata" CREATED="2015-03-25T20:07:44.397Z" MIMETYPE="text/xml" SIZE="566">
+<foxml:xmlContent>
+<identityMetadata>
+  <sourceId source="Hydrus">collection-hfrost-2013-01-31T20:34:02.368Z</sourceId>
+  <objectId>druid:kq696sh3014</objectId>
+  <objectCreator>DOR</objectCreator>
+  <objectLabel>History of Media Preservation in Research Libraries</objectLabel>
+  <objectType>collection</objectType>
+  <adminPolicy>druid:rz646cy2429</adminPolicy>
+  <otherId name="uuid">8c8d78ec-6be5-11e2-a045-0050569b3c6e</otherId>
+  <tag>Project : Hydrus</tag>
+  <objectType>set</objectType>
+  <tag>Hydrus : collection</tag>
+  <tag>Remediated By : 3.24.3</tag>
+</identityMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+<foxml:datastreamVersion ID="identityMetadata.37" LABEL="Identity Metadata" CREATED="2016-03-30T23:02:22.115Z" MIMETYPE="text/xml" SIZE="533">
+<foxml:xmlContent>
+<identityMetadata>
+  <sourceId source="Hydrus">collection-hfrost-2013-01-31T20:34:02.368Z</sourceId>
+  <objectId>druid:kq696sh3014</objectId>
+  <objectCreator>DOR</objectCreator>
+  <objectLabel>History of Media Preservation in Research Libraries</objectLabel>
+  <objectType>collection</objectType>
+  <adminPolicy>druid:rz646cy2429</adminPolicy>
+  <otherId name="uuid">8c8d78ec-6be5-11e2-a045-0050569b3c6e</otherId>
+  <tag>Project : Hydrus</tag>
+  <objectType>set</objectType>
+  <tag>Remediated By : 3.24.3</tag>
+</identityMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="workflows" STATE="A" CONTROL_GROUP="E" VERSIONABLE="false">
+<foxml:datastreamVersion ID="workflows.0" LABEL="Workflows" CREATED="2013-01-31T20:34:03.958Z" MIMETYPE="application/xml">
+<foxml:contentLocation TYPE="URL" REF="https://sul-lyberservices-prod.stanford.edu/workflow/dor/objects/druid:kq696sh3014/workflows"/>
+</foxml:datastreamVersion>
+<foxml:datastreamVersion ID="workflows.5" LABEL="Workflow" CREATED="2013-06-05T21:41:38.112Z" MIMETYPE="application/xml">
+<foxml:contentLocation TYPE="URL" REF="https://lyberservices-prod.stanford.edu/workflow/dor/objects/druid:kq696sh3014/workflows"/>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="hydrusProperties" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="hydrusProperties.34" LABEL="Hydrus Properties" CREATED="2015-03-25T20:07:44.488Z" MIMETYPE="text/xml" SIZE="725">
+<foxml:xmlContent>
+<hydrusProperties>
+  <itemType>collection</itemType>
+  <visibilityOption>varies</visibilityOption>
+  <embargoOption>varies</embargoOption>
+  <embargoTerms>3 years</embargoTerms>
+  <requiresHumanApproval>no</requiresHumanApproval>
+  <licenseOption>varies</licenseOption>
+  <objectStatus>published_open</objectStatus>
+  <lastModifyTime>2015-03-25T20:07:29Z</lastModifyTime>
+  <objectVersion>2013.02.28e</objectVersion>
+  <submittedForPublishTime>2013-02-08T19:21:34Z</submittedForPublishTime>
+  <initialSubmittedForPublishTime>2013-02-08T19:21:34Z</initialSubmittedForPublishTime>
+  <usersAcceptedTermsOfDeposit>
+    <user dateAccepted="2014-12-17T18:24:30Z">hfrost</user>
+  </usersAcceptedTermsOfDeposit>
+</hydrusProperties>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="descMetadata" STATE="A" CONTROL_GROUP="M" VERSIONABLE="true">
+<foxml:datastreamVersion ID="descMetadata.34" LABEL="Descriptive Metadata" CREATED="2015-03-25T20:07:44.627Z" MIMETYPE="text/xml" SIZE="1350">
+<foxml:binaryContent> 
+              PG1vZHMgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOnhzaT0i
+              aHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vd3d3
+              LmxvYy5nb3YvbW9kcy92MyIgdmVyc2lvbj0iMy4zIiB4c2k6c2NoZW1hTG9jYXRpb249Imh0dHA6Ly93
+              d3cubG9jLmdvdi9tb2RzL3YzIGh0dHA6Ly93d3cubG9jLmdvdi9zdGFuZGFyZHMvbW9kcy92My9tb2Rz
+              LTMtMy54c2QiPgogIDx0aXRsZUluZm8+CiAgICA8dGl0bGU+SGlzdG9yeSBvZiBNZWRpYSBQcmVzZXJ2
+              YXRpb24gaW4gUmVzZWFyY2ggTGlicmFyaWVzPC90aXRsZT4KICA8L3RpdGxlSW5mbz4KICA8bmFtZT4K
+              ICAgIDxuYW1lUGFydC8+CiAgICA8cm9sZT4KICAgICAgPHJvbGVUZXJtIGF1dGhvcml0eT0ibWFyY3Jl
+              bGF0b3IiIHR5cGU9InRleHQiLz4KICAgIDwvcm9sZT4KICA8L25hbWU+CiAgPGFic3RyYWN0PkknbSB0
+              ZXN0aW5nIHNlbGYtZGVwb3NpdCByaWdodCBub3cgc28gdGhhdCBJIGNhbiBmaW5lIHR1bmUgdGhlIHVz
+              ZXIgZG9jdW1lbnRhdGlvbjwvYWJzdHJhY3Q+CiAgPG5vdGUgdHlwZT0icHJlZmVycmVkIGNpdGF0aW9u
+              IiBkaXNwbGF5TGFiZWw9IlByZWZlcnJlZCBDaXRhdGlvbiIvPgogIDxub3RlIHR5cGU9ImNpdGF0aW9u
+              L3JlZmVyZW5jZSIgZGlzcGxheUxhYmVsPSJSZWxhdGVkIFB1YmxpY2F0aW9uIi8+CiAgPG5vdGUgdHlw
+              ZT0iY29udGFjdCIgZGlzcGxheUxhYmVsPSJDb250YWN0Ij5oZnJvc3RAc3RhbmZvcmQuZWR1PC9ub3Rl
+              PgogIDxzdWJqZWN0PgogICAgPHRvcGljLz4KICA8L3N1YmplY3Q+CiAgPHJlbGF0ZWRJdGVtPgogICAg
+              PHRpdGxlSW5mbz4KICAgICAgPHRpdGxlPm15IGxpbmsgdGl0bGUgaXMgdW50aXRsZWQ8L3RpdGxlPgog
+              ICAgPC90aXRsZUluZm8+CiAgICA8bG9jYXRpb24+CiAgICAgIAogICAgPHVybD5odHRwOi8vd3d3Lmpv
+              ZWxvbnNvZnR3YXJlLmNvbS9pdGVtcy8yMDA5LzAzLzA5Lmh0bWw8L3VybD48L2xvY2F0aW9uPgogIDwv
+              cmVsYXRlZEl0ZW0+PHJlbGF0ZWRJdGVtPjx0aXRsZUluZm8+PHRpdGxlPnRpdGxlIDI8L3RpdGxlPjwv
+              dGl0bGVJbmZvPjxsb2NhdGlvbj48dXJsPmh0dHA6Ly93d3cuam9lbG9uc29mdHdhcmUuY29tL2l0ZW1z
+              LzIwMDkvMDMvMDkuaHRtbDwvdXJsPjwvbG9jYXRpb24+PC9yZWxhdGVkSXRlbT48cmVsYXRlZEl0ZW0+
+              PHRpdGxlSW5mbz48dGl0bGU+dGl0bGUgMzwvdGl0bGU+PC90aXRsZUluZm8+PGxvY2F0aW9uPjx1cmw+
+              aHR0cDovL3d3dy5qb2Vsb25zb2Z0d2FyZS5jb20vaXRlbXMvMjAwOS8wMy8wOS5odG1sPC91cmw+PC9s
+              b2NhdGlvbj48L3JlbGF0ZWRJdGVtPgo8L21vZHM+
+</foxml:binaryContent> 
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="rightsMetadata" STATE="A" CONTROL_GROUP="M" VERSIONABLE="true">
+<foxml:datastreamVersion ID="rightsMetadata.18" LABEL="Rights Metadata" CREATED="2015-03-25T20:07:44.736Z" MIMETYPE="text/xml" SIZE="329">
+<foxml:binaryContent> 
+              PHJpZ2h0c01ldGFkYXRhPgogIDxhY2Nlc3MgdHlwZT0iZGlzY292ZXIiPgogICAgPG1hY2hpbmU+CiAg
+              ICAgIDx3b3JsZC8+CiAgICA8L21hY2hpbmU+CiAgPC9hY2Nlc3M+CiAgPGFjY2VzcyB0eXBlPSJyZWFk
+              Ij4KICAgIDxtYWNoaW5lPgogICAgICAKICAgIDx3b3JsZC8+PC9tYWNoaW5lPgogIDwvYWNjZXNzPgog
+              IAo8dXNlPjxodW1hbiB0eXBlPSJjcmVhdGl2ZUNvbW1vbnMiPkNDIEJZLU5DIEF0dHJpYnV0aW9uLU5v
+              bkNvbW1lcmNpYWw8L2h1bWFuPjxtYWNoaW5lIHR5cGU9ImNyZWF0aXZlQ29tbW9ucyI+YnktbmM8L21h
+              Y2hpbmU+PC91c2U+PC9yaWdodHNNZXRhZGF0YT4=
+</foxml:binaryContent> 
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="contentMetadata" STATE="A" CONTROL_GROUP="M" VERSIONABLE="true">
+<foxml:datastreamVersion ID="contentMetadata.3" LABEL="Content Metadata" CREATED="2013-03-01T01:53:36.826Z" MIMETYPE="text/xml" SIZE="54">
+<foxml:binaryContent> 
+              PGNvbnRlbnRNZXRhZGF0YSBvYmplY3RJZD0ia3E2OTZzaDMwMTQiIHR5cGU9ImZpbGUiLz4K
+</foxml:binaryContent> 
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="versionMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+<foxml:datastreamVersion ID="versionMetadata.0" LABEL="Version Metadata" CREATED="2013-06-05T22:07:18.746Z" MIMETYPE="text/xml" SIZE="136">
+<foxml:xmlContent>
+<versionMetadata>
+  <version tag="1.0.0" versionId="1">
+    <description>Initial Version</description>
+  </version>
+</versionMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="provenanceMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="provenanceMetadata.0" LABEL="Provenance Metadata" CREATED="2013-06-05T22:08:09.669Z" MIMETYPE="text/xml" SIZE="265">
+<foxml:xmlContent>
+<provenanceMetadata objectId="druid:kq696sh3014">
+  <agent name="DOR">
+    <what object="druid:kq696sh3014">
+      <event when="2013-06-05T15:08:09-07:00" who="DOR-accessionWF">DOR Common Accessioning completed</event>
+    </what>
+  </agent>
+</provenanceMetadata>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="events" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+<foxml:datastreamVersion ID="events.24" LABEL="Events" CREATED="2014-12-18T00:36:48.409Z" MIMETYPE="text/xml" SIZE="2401">
+<foxml:xmlContent>
+<events>
+  <event type="hydrus" when="2013-01-31T12:34:06-08:00" who="hfrost">Collection created</event>
+  <event type="hydrus" when="2013-02-08T11:16:49-08:00" who="hfrost">Collection modified: title, description, license</event>
+  <event type="hydrus" when="2013-02-08T11:21:33-08:00" who="hfrost">Collection opened</event>
+  <event type="hydrus" when="2013-02-08T11:22:06-08:00" who="hfrost">Collection closed</event>
+  <event type="hydrus" when="2013-02-08T11:22:20-08:00" who="hfrost">Collection opened</event>
+  <event type="hydrus" when="2013-02-11T14:53:38-08:00" who="hindman">Collection modified: title</event>
+  <event type="hydrus" when="2013-03-20T11:39:05-07:00" who="hfrost">Collection modified: roles</event>
+  <event type="hydrus" when="2013-05-23T15:08:26-07:00" who="petucket">Collection closed</event>
+  <event type="hydrus" when="2013-05-23T15:08:45-07:00" who="petucket">Collection opened</event>
+  <event type="hydrus" when="2013-05-28T11:26:45-07:00" who="hfrost">Collection closed</event>
+  <event type="remediation" when="2013-06-05T15:07:18-07:00" who="Dor::Identifiable 3.6.1">Record Remediation Version</event>
+  <event type="remediation" when="2013-06-05T15:07:18-07:00" who="Dor::Versionable 3.12.2">Add missing versionMetadata</event>
+  <event type="hydrus" when="2013-07-02T15:24:35-07:00" who="hfrost">Collection opened</event>
+  <event type="hydrus" when="2013-09-04T16:26:24-07:00" who="hfrost">Collection closed</event>
+  <event type="hydrus" when="2013-09-04T16:28:27-07:00" who="hfrost">Collection opened</event>
+  <event type="hydrus" when="2013-09-04T16:28:50-07:00" who="hfrost">Collection closed</event>
+  <event type="hydrus" when="2013-09-04T16:35:34-07:00" who="hfrost">Collection modified: title</event>
+  <event type="hydrus" when="2013-09-18T16:48:55-07:00" who="hfrost">Collection opened</event>
+  <event type="hydrus" when="2013-09-18T17:10:38-07:00" who="hfrost">Collection modified: embargo, visibility</event>
+  <event type="hydrus" when="2014-01-22T14:21:34-08:00" who="hfrost">Collection modified: roles</event>
+  <event type="hydrus" when="2014-05-22T10:39:22-07:00" who="hfrost">Collection modified: roles</event>
+  <event type="hydrus" when="2014-09-21T21:06:23-07:00" who="hfrost">Collection modified: visibility</event>
+  <event type="hydrus" when="2014-12-17T16:36:39-08:00" who="hfrost">Collection modified: visibility</event>
+</events>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+</foxml:digitalObject>
