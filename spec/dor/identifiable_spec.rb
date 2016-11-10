@@ -312,4 +312,30 @@ describe Dor::Identifiable do
       expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_default_title)
     end
   end
+
+  describe '#adapt_to_cmodel' do
+    context 'for a Hydrus collection' do
+      let(:item) { instantiate_fixture('druid:kq696sh3014', Dor::Abstract) }
+
+      it 'adapts to the object type asserted in the identityMetadata' do
+        expect(item.adapt_to_cmodel.class).to eq Dor::Collection
+      end
+    end
+
+    context 'for a Hydrus item' do
+      let(:item) { instantiate_fixture('druid:bb004bn8654', Dor::Abstract) }
+
+      it 'adapts to the object type asserted in the identityMetadata' do
+        expect(item.adapt_to_cmodel.class).to eq Dor::Item
+      end
+    end
+
+    context 'for a Dor item' do
+      let(:item) { instantiate_fixture('druid:dc235vd9662', Dor::Abstract) }
+
+      it 'adapts to the object type asserted in the identityMetadata' do
+        expect(item.adapt_to_cmodel.class).to eq Dor::Item
+      end
+    end
+  end
 end

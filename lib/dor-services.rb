@@ -4,6 +4,7 @@ require 'modsulator'
 require 'dor/utils/sdr_client'
 
 module Dor
+  extend ActiveSupport::Autoload
   @@registered_classes = {}
   mattr_reader :registered_classes
   INDEX_VERSION_FIELD = 'dor_services_version_ssi'.freeze
@@ -19,12 +20,9 @@ module Dor
     # index is missing the objectType property.
     # @param [String] pid The object's PID
     def load_instance(pid)
-      ensure_models_loaded!
       obj = Dor::Abstract.find pid, cast: false
       return nil if obj.new_record?
-      object_type = obj.identityMetadata.objectType.first
-      object_class = registered_classes[object_type] || Dor::Item
-      obj.adapt_to(object_class)
+      obj.adapt_to_cmodel
     end
 
     # Get objectType information from solr and load the correct class the first time,
@@ -40,7 +38,6 @@ module Dor
     # TODO: return enumerable and lazy load_instance
     # TODO: restrict fieldlist (fl) for non-:lightweight queries
     def find_all(query, opts = {})
-      ensure_models_loaded!
       resp = SearchService.query query, opts
       resp.docs.collect do |solr_doc|
         doc_version = solr_doc[INDEX_VERSION_FIELD].first rescue '0.0.0'
@@ -60,8 +57,10 @@ module Dor
       end
     end
 
+    # @deprecated
     def ensure_models_loaded!
-      [Item, Set, Collection, AdminPolicyObject, WorkflowObject]
+      ActiveSupport::Deprecation.warn 'Dor.ensure_models_loaded! is unnecessary and has been deprecated.'
+      eager_load!
     end
 
     def root
@@ -132,13 +131,15 @@ module Dor
   autoload :Releaseable,  'dor/models/releaseable'
   autoload :Rightsable,   'dor/models/rightsable'
 
-  # ActiveFedora Classes
-  autoload :Abstract,          'dor/models/item'
-  autoload :Item,              'dor/models/item'
-  autoload :Set,               'dor/models/set'
-  autoload :Collection,        'dor/models/collection'
-  autoload :AdminPolicyObject, 'dor/models/admin_policy_object'
-  autoload :WorkflowObject,    'dor/models/workflow_object'
+  eager_autoload do
+    # ActiveFedora Classes
+    autoload :Abstract,          'dor/models/item'
+    autoload :Item,              'dor/models/item'
+    autoload :Set,               'dor/models/set'
+    autoload :Collection,        'dor/models/collection'
+    autoload :AdminPolicyObject, 'dor/models/admin_policy_object'
+    autoload :WorkflowObject,    'dor/models/workflow_object'
+  end
 
   # Services
   autoload :SearchService,             'dor/services/search_service'
@@ -167,4 +168,6 @@ module Dor
     autoload :Process,  'dor/workflow/process'
     autoload :Document, 'dor/workflow/document'
   end
+
+  eager_load!
 end

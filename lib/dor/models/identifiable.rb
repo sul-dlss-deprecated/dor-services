@@ -224,6 +224,19 @@ module Dor
       result.nil? ? druid : result[0]  # if no matches, return the string passed in, otherwise return the match 
     end
 
+    # Override ActiveFedora::Core#adapt_to_cmodel (used with associations, among other places) to
+    # preferentially use the objectType asserted in the identityMetadata.
+    def adapt_to_cmodel
+      object_type = identityMetadata.objectType.first
+      object_class = Dor.registered_classes[object_type]
+
+      if object_class
+        self.instance_of?(object_class) ? self : self.adapt_to(object_class)
+      else
+        super
+      end
+    end
+
     private
 
     def solrize_related_obj_titles(solr_doc, relationships, title_hash, union_field_name, nonhydrus_field_name, hydrus_field_name)
