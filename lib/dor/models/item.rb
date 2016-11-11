@@ -13,10 +13,6 @@ module Dor
     include Releaseable
   end
 
-  class Abstract < ::ActiveFedora::Base
-    include Identifiable
-  end
-
   class Item < ::ActiveFedora::Base
     include BasicItem
     has_object_type 'item'
