@@ -21,9 +21,7 @@ module Dor
     # index is missing the objectType property.
     # @param [String] pid The object's PID
     def load_instance(pid)
-      obj = Dor::Abstract.find pid, cast: false
-      return nil if obj.new_record?
-      obj.adapt_to_cmodel
+      Dor::Base.find pid, cast: true
     end
 
     # Get objectType information from solr and load the correct class the first time,
@@ -32,29 +30,17 @@ module Dor
     # @param [String] pid The object's PID
     # @return [Object] the ActiveFedora-modeled object
     def find(pid, opts = {})
-      opts[:rows] = 1 # we know we are going to just pay attention to the .first doc anyway
-      find_all(%(id:"#{pid}"), opts).first || load_instance(pid)
+      load_instance(pid)
     end
 
     # TODO: return enumerable and lazy load_instance
     # TODO: restrict fieldlist (fl) for non-:lightweight queries
     def find_all(query, opts = {})
+      ActiveSupport::Deprecation.warn 'Dor.ensure_models_loaded! is unnecessary and has been deprecated.'
+
       resp = SearchService.query query, opts
       resp['response']['docs'].collect do |solr_doc|
-        doc_version = solr_doc[INDEX_VERSION_FIELD].first rescue '0.0.0'
-        doc_version = Gem::Version.new(doc_version)
-        object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType', :symbol)]).first
-        object_class = registered_classes[object_type] || ActiveFedora::Base
-        if opts[:lightweight] && doc_version >= Gem::Version.new('3.1.0')
-          begin
-            object_class.load_instance_from_solr solr_doc['id'], solr_doc
-          rescue Exception => e
-            Dor.logger.warn("Exception: '#{e.message}' trying to load #{solr_doc['id']} from solr. Loading from Fedora")
-            load_instance(solr_doc['id'])
-          end
-        else
-          load_instance solr_doc['id']
-        end
+        find solr_doc['id']
       end
     end
 
