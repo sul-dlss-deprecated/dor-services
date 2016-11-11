@@ -1,10 +1,15 @@
 require 'spec_helper'
 
 class PublishableItem < ActiveFedora::Base
+  include Dor::Identifiable
   include Dor::Contentable
   include Dor::Publishable
+  include Dor::Describable
   include Dor::Processable
   include Dor::Releaseable
+  include Dor::Rightsable
+  include Dor::Governable
+  include Dor::Itemizable
 end
 
 class DescribableItem < ActiveFedora::Base

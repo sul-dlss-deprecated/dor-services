@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 class EmbargoedItem < ActiveFedora::Base
+  include Dor::Rightsable
   include Dor::Embargoable
+  include Dor::Eventable
 end
 
 describe Dor::Embargoable do

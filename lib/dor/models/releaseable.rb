@@ -4,7 +4,6 @@ require 'retries'
 module Dor
   module Releaseable
     extend ActiveSupport::Concern
-    include Itemizable
 
     # Add release tags to an item and initialize the item release workflow
     # Each tag should be of the form !{:tag => 'Fitch : Batch2', :what => 'self', :to => 'Searchworks', :who => 'petucket', :release => true}

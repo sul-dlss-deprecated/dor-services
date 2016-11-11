@@ -135,6 +135,7 @@ module Dor
     # ActiveFedora Classes
     autoload :Abstract,          'dor/models/abstract'
     autoload :Agreement,         'dor/models/agreement'
+    autoload :Base,              'dor/models/base'
     autoload :Item,              'dor/models/item'
     autoload :Set,               'dor/models/set'
     autoload :Collection,        'dor/models/collection'

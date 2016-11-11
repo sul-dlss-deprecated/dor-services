@@ -1,11 +1,6 @@
 module Dor
-  class AdminPolicyObject < ::ActiveFedora::Base
-    include Identifiable
-    include Governable
+  class AdminPolicyObject < Dor::Abstract
     include Editable
-    include Describable
-    include Processable
-    include Versionable
 
     has_many :things, :property => :is_governed_by, :class_name => 'ActiveFedora::Base'
     has_object_type 'adminPolicy'

@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 class ShelvableItem < ActiveFedora::Base
+  include Dor::Itemizable
   include Dor::Shelvable
 end
 
