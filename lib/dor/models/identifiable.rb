@@ -59,7 +59,7 @@ module Dor
       collections = rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection', ns_hash)
       solrize_related_obj_titles(solr_doc, apos, @@apo_hash, 'apo_title', 'nonhydrus_apo_title', 'hydrus_apo_title')
       solrize_related_obj_titles(solr_doc, collections, @@collection_hash, 'collection_title', 'nonhydrus_collection_title', 'hydrus_collection_title')
-
+      solr_doc['public_dc_relation_tesim'] ||= solr_doc['collection_title_tesim'] if solr_doc['collection_title_tesim']
       solr_doc['metadata_source_ssi'] = identity_metadata_source
       solr_doc
     end
