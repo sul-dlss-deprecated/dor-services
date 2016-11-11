@@ -1,7 +1,5 @@
 module Dor
-  module BasicItem
-    extend ActiveSupport::Concern
-
+  class Item < ::ActiveFedora::Base
     include Processable
     include Shelvable
     include Embargoable # implies Publishable implies Identifiable, Describable, Governable, Rightsable ...
@@ -11,10 +9,7 @@ module Dor
     include Contentable
     include Geoable
     include Releaseable
-  end
 
-  class Item < ::ActiveFedora::Base
-    include BasicItem
     has_object_type 'item'
   end
 end
