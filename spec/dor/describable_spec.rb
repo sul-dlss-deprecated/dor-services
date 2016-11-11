@@ -41,17 +41,10 @@ describe Dor::Describable do
     expect(@item.datastreams['descMetadata']).to be_a(Dor::DescMetadataDS)
   end
 
-  it 'should know its metadata format' do
-    allow(@item).to receive(:find_metadata_file).and_return(nil)
-    stub_request(:get, "#{Dor::Config.metadata.catalog.url}/?barcode=36105049267078").to_return(:body => read_fixture('ab123cd4567_descMetadata.xml'))
-    @item.build_datastream('descMetadata')
-    expect(@item.metadata_format).to eq('mods')
-  end
-
   it 'should provide a descMetadata datastream builder' do
+    stub_request(:get, "#{Dor::Config.metadata.catalog.url}/?barcode=36105049267078").to_return(:body => read_fixture('ab123cd4567_descMetadata.xml'))
     allow(@item).to receive(:find_metadata_file).and_return(nil)
-    Dor::MetadataService.class_eval { class << self; alias_method :_fetch, :fetch; end }
-    expect(Dor::MetadataService).to receive(:fetch).with('barcode:36105049267078') { Dor::MetadataService._fetch('barcode:36105049267078') }
+    expect(Dor::MetadataService).to receive(:fetch).with('barcode:36105049267078').and_call_original
     xml = <<-END_OF_XML
     <?xml version="1.0"?>
     <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
@@ -75,12 +68,6 @@ describe Dor::Describable do
     b = Dor::Item.new
     b.datastreams['descMetadata'].content = read_fixture('ex2_related_mods.xml')
     expect(b.generate_dublin_core).to be_equivalent_to read_fixture('ex2_related_dc.xml')
-  end
-
-  it 'throws an exception if the generated dc has no root element' do
-    b = DescribableItem.new
-    b.datastreams['descMetadata'].content = '<tei><stuff>ha</stuff></tei>'
-    expect {b.generate_dublin_core}.to raise_error(Dor::Describable::CrosswalkError)
   end
 
   describe '#add_access_conditions' do
