@@ -100,7 +100,7 @@ module Dor
     end
 
     def milestones
-      Dor::Config.workflow.client.get_milestones('dor', pid)
+      @milestones ||= Dor::Config.workflow.client.get_milestones('dor', pid)
     end
 
     # @return [Hash{Symbol => Object}] including :current_version, :status_code and :status_time
