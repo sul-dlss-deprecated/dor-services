@@ -1,4 +1,5 @@
 require 'active_fedora'
+require 'active_fedora/version'
 require 'active_support/core_ext/module/attribute_accessors'
 require 'modsulator'
 require 'dor/utils/sdr_client'

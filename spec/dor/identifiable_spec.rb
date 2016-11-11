@@ -345,5 +345,13 @@ describe Dor::Identifiable do
         expect(item.adapt_to_cmodel.class).to eq Dor::Agreement
       end
     end
+
+    context 'for an object without identityMetadata or a RELS-EXT model' do
+      let(:item) { item_from_foxml(read_fixture('foxml_empty.xml'), Dor::Abstract) }
+
+      it 'defaults to Dor::Item' do
+        expect(item.adapt_to_cmodel.class).to eq Dor::Item
+      end
+    end
   end
 end
