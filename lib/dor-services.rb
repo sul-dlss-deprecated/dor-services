@@ -133,7 +133,7 @@ module Dor
 
   eager_autoload do
     # ActiveFedora Classes
-    autoload :Abstract,          'dor/models/item'
+    autoload :Abstract,          'dor/models/abstract'
     autoload :Agreement,         'dor/models/agreement'
     autoload :Item,              'dor/models/item'
     autoload :Set,               'dor/models/set'
