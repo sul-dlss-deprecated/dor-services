@@ -10,7 +10,6 @@ module Dor
       content_ds = admin_policy_object.datastreams['defaultObjectRights']
       ds.dsLabel = 'Rights Metadata'
       ds.ng_xml = content_ds.ng_xml.clone
-      ds.content = ds.ng_xml.to_xml
     end
 
     def world_doc

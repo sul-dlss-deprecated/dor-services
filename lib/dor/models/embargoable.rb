@@ -23,6 +23,7 @@ module Dor
       # Remove all read acces nodes
       rights_md = datastreams['rightsMetadata']
       rights_xml = rights_md.ng_xml
+      rights_md.ng_xml_will_change!
       rights_xml.xpath("//rightsMetadata/access[@type='read']").each { |n| n.remove }
 
       # Replace rights <access> nodes with those from embargoMetadta
@@ -36,7 +37,6 @@ module Dor
         end
       end
 
-      rights_md.content = rights_md.ng_xml.to_s
       datastreams['events'].add_event('embargo', release_agent, 'Embargo released')
     end
 
@@ -48,6 +48,7 @@ module Dor
       # Remove all read acces nodes
       rights_md = datastreams['rightsMetadata']
       rights_xml = rights_md.ng_xml
+      rights_md.ng_xml_will_change!
       rights_xml.xpath("//rightsMetadata/access[@type='read']").each { |n| n.remove }
 
       # Replace rights <access> nodes with 1 machine/world node
@@ -58,7 +59,6 @@ module Dor
         rights_xml.root.add_child(world_doc.root.clone)
       end
 
-      rights_md.content = rights_md.ng_xml.to_s
       datastreams['events'].add_event('embargo', release_agent, '20% Visibility Embargo released')
     end
 
@@ -74,13 +74,13 @@ module Dor
         node.content = new_date.beginning_of_day.utc.xmlschema
         updated = true
       end
-      rightsMetadata.content = rightsMetadata.ng_xml.to_s
+      rightsMetadata.ng_xml_will_change!
       rightsMetadata.save
       raise 'No release date in rights metadata, cannot proceed!' unless updated
       embargoMetadata.ng_xml.xpath('//releaseDate').each do |node|
         node.content = new_date.beginning_of_day.utc.xmlschema
       end
-      embargoMetadata.content = embargoMetadata.ng_xml.to_s
+      embargoMetadata.ng_xml_will_change!
       embargoMetadata.save
     end
   end

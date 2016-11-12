@@ -67,7 +67,7 @@ describe Dor::Embargoable do
       rds = Dor::RightsMetadataDS.new
       rds.content = Nokogiri::XML(rights_xml) {|config| config.default_xml.noblanks}.to_s
       embargo_item.datastreams['rightsMetadata'] = rds
-      expect(embargo_item.rightsMetadata).to receive(:content=)
+      expect(embargo_item.rightsMetadata).to receive(:ng_xml_will_change!)
       embargo_item.release_embargo('application:embargo-release')
       embargo_item
     }
@@ -118,7 +118,7 @@ describe Dor::Embargoable do
       embargo_item = EmbargoedItem.new
       embargo_item.datastreams['embargoMetadata'] = embargo_ds
       embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config| config.default_xml.noblanks}
-      expect(embargo_item.rightsMetadata).to receive(:content=)
+      expect(embargo_item.rightsMetadata).to receive(:ng_xml_will_change!)
       embargo_item.release_20_pct_vis_embargo('application:embargo-release')
       embargo_item
     }
@@ -166,8 +166,8 @@ describe Dor::Embargoable do
       expect(embargo_item.embargoMetadata.release_date).not_to eq old_embargo_date
     end
     it 'updates embargo and rights datastreams with content= ' do
-      expect(embargo_item.embargoMetadata).to receive(:content=)
-      expect(embargo_item.rightsMetadata).to receive(:content=)
+      expect(embargo_item.embargoMetadata).to receive(:ng_xml_will_change!)
+      expect(embargo_item.rightsMetadata).to receive(:ng_xml_will_change!)
       embargo_item.update_embargo(Time.now.utc + 1.month)
     end
     it "raises ArgumentError if the item isn't embargoed" do

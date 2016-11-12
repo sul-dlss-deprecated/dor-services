@@ -58,7 +58,6 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
   # @param [Time] rd the release date object
   def release_date=(rd = Time.now.utc)
     update_values([:release_date] => rd.utc.xmlschema)
-    self.content = ng_xml.to_s
   end
 
   # Current releaseDate value
@@ -70,7 +69,6 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
 
   def twenty_pct_status=(new_status)
     update_values([:twenty_pct_status] => new_status)
-    content_will_change!
   end
 
   def twenty_pct_status
@@ -81,7 +79,6 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
   # @param [Time] rd A Time object represeting the release date.  By default, it is set to now
   def twenty_pct_release_date=(rd = Time.now.utc)
     update_values([:twenty_pct_release_date] => rd.beginning_of_day.utc.xmlschema)
-    content_will_change!
   end
 
   # Current twentyPctVisibilityReleaseDate value

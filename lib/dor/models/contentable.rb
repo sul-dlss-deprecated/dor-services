@@ -157,6 +157,7 @@ module Dor
     # @param [Array<String>] source_obj_pids ids of the secondary objects that will get their contentMetadata merged into this one
     def copy_file_resources(source_obj_pids)
       primary_cm = contentMetadata.ng_xml
+      contentMetadata.ng_xml_will_change!
       base_id = primary_cm.at_xpath('/contentMetadata/@objectId').value
       max_sequence = primary_cm.at_xpath('/contentMetadata/resource[last()]/@sequence').value.to_i
 
@@ -198,7 +199,6 @@ module Dor
           resource_copy.first_element_child.add_previous_sibling attr_node
         end
       end
-      contentMetadata.content_will_change!
     end
 
     def new_secondary_file_name(old_name, sequence_num)
