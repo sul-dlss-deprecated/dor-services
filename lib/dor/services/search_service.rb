@@ -48,14 +48,14 @@ module Dor
       def query(query, args = {})
         params = args.merge({ :q => query })
         params[:start] ||= 0
-        resp = solr.find params
+        resp = solr.get 'select', params: params
         return resp unless block_given?
         cont = true
-        while cont && resp.docs.length > 0
+        while cont && resp['response']['docs'].length > 0
           cont = yield(resp)
-          params[:rows] ||= resp.docs.length
+          params[:rows] ||= resp['response']['docs'].length
           params[:start] += params[:rows]
-          resp = solr.find params
+          resp = solr.get 'select', params: params
         end
       end
 
@@ -68,7 +68,7 @@ module Dor
         q = %(#{Solrizer.solr_name 'identifier', :stored_searchable}:"#{id}")
         result = []
         query(q, :fl => 'id', :rows => 1000) do |resp|
-          result += resp.docs.collect { |doc| doc['id'] }
+          result += resp['response']['docs'].collect { |doc| doc['id'] }
           true
         end
         result
@@ -86,10 +86,10 @@ module Dor
 
       def find_sdr_graveyard_apo_druid
         r = Dor::SearchService.query('dc_title_tesim:"SDR Graveyard"', :fl => 'id')
-        if r.docs.empty?
+        if r['response']['docs'].empty?
           nil
         else
-          r.docs.first[:id]
+          r['response']['docs'].first[:id]
         end
       end
 

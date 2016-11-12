@@ -40,7 +40,7 @@ module Dor
     # TODO: restrict fieldlist (fl) for non-:lightweight queries
     def find_all(query, opts = {})
       resp = SearchService.query query, opts
-      resp.docs.collect do |solr_doc|
+      resp['response']['docs'].collect do |solr_doc|
         doc_version = solr_doc[INDEX_VERSION_FIELD].first rescue '0.0.0'
         doc_version = Gem::Version.new(doc_version)
         object_type = Array(solr_doc[ActiveFedora::SolrService.solr_name('objectType', :symbol)]).first
