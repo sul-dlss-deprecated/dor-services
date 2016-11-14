@@ -2,10 +2,8 @@ module Dor
   module Describable
     extend ActiveSupport::Concern
 
-    DESC_MD_FORMATS = {
-      'http://www.tei-c.org/ns/1.0' => 'tei',
-      'http://www.loc.gov/mods/v3'  => 'mods'
-    }.freeze
+    MODS_TO_DC_XSLT = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/mods2dc.xslt")))
+
     class CrosswalkError < Exception; end
 
     included do
@@ -44,11 +42,9 @@ module Dor
     # @raise [CrosswalkError] Raises an Exception if the generated DC is empty or has no children
     # @return [Nokogiri::Doc] the DublinCore XML document object
     def generate_dublin_core
-      raise CrosswalkError, "Unknown descMetadata namespace: #{metadata_namespace.inspect}" if metadata_format.nil?
-      xslt = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/#{metadata_format}2dc.xslt")) )
       desc_md = descMetadata.ng_xml.dup(1)
       add_collection_reference(desc_md)
-      dc_doc = xslt.transform(desc_md)
+      dc_doc = MODS_TO_DC_XSLT.transform(desc_md)
       dc_doc.xpath('/oai_dc:dc/*[count(text()) = 0]').remove # Remove empty nodes
       raise CrosswalkError, "Dor::Item#generate_dublin_core produced incorrect xml (no root):\n#{dc_doc.to_xml}" if dc_doc.root.nil?
       raise CrosswalkError, "Dor::Item#generate_dublin_core produced incorrect xml (no children):\n#{dc_doc.to_xml}" if dc_doc.root.children.size == 0
@@ -198,16 +194,6 @@ module Dor
       end
     end
 
-    def metadata_namespace
-      desc_md = datastreams['descMetadata'].ng_xml
-      return nil if desc_md.nil? || desc_md.root.nil? || desc_md.root.namespace.nil?
-      desc_md.root.namespace.href
-    end
-
-    def metadata_format
-      DESC_MD_FORMATS[metadata_namespace]
-    end
-
     def to_solr(solr_doc = {}, *args)
       solr_doc = super solr_doc, *args
       mods_sources = {
@@ -229,7 +215,7 @@ module Dor
         solr_doc[key] ||= []     # initialize multivalue targts if necessary
       }
 
-      solr_doc['metadata_format_ssim'] << metadata_format
+      solr_doc['metadata_format_ssim'] << 'mods'
       begin
         dc_doc = generate_dublin_core
         dc_doc.xpath('/oai_dc:dc/*').each do |node|
