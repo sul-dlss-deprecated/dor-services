@@ -1,5 +1,5 @@
 require 'confstruct/configuration'
-require 'rsolr-ext'
+require 'rsolr'
 require 'stomp'
 require 'yaml'
 
@@ -49,7 +49,7 @@ module Dor
       opts = Dor::Config.solr.opts.merge(add_opts).merge(
         :url => Dor::Config.solr.url
       )
-      ::RSolr::Ext.connect(opts)
+      ::RSolr.connect(opts)
     end
 
     set_callback :initialize, :after do |config|

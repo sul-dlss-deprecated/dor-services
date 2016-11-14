@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'om', '~> 3.0'
   s.add_dependency 'rdf', '~> 1.1', '>= 1.1.7'
   s.add_dependency 'rest-client', '>= 1.7', '< 3'
-  s.add_dependency 'rsolr-ext', '~> 1.0.3'
+  s.add_dependency 'rsolr', '>= 1.0.3', '< 3'
   s.add_dependency 'ruby-cache', '~> 0.3.0'
   s.add_dependency 'ruby-graphviz'
   s.add_dependency 'rubydora', '~> 1.6', '>= 1.6.5'

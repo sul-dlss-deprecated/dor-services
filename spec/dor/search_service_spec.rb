@@ -68,13 +68,13 @@ describe Dor::SearchService do
 
     it 'should return a single batch of docs without a block' do
       resp = Dor::SearchService.query(solr_field + ':"barcode:9191919191"', :fl => 'id', :rows => 14)
-      expect(resp.docs.length).to eq(14)
+      expect(resp['response']['docs'].length).to eq(14)
     end
 
     it 'should yield multiple batches of docs with a block' do
       batch = [14, 11]
       Dor::SearchService.query(solr_field + ':"barcode:9191919191"', :fl => 'id', :rows => 14) do |resp|
-        expect(resp.docs.length).to eq(batch.shift)
+        expect(resp['response']['docs'].length).to eq(batch.shift)
       end
     end
   end
