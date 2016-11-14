@@ -1,6 +1,5 @@
 module Dor
   class ContentMetadataDS < ActiveFedora::OmDatastream
-    include Upgradable
 
     set_terminology do |t|
       t.root        :path => 'contentMetadata',          :index_as => [:not_searchable]

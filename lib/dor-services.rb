@@ -122,7 +122,6 @@ module Dor
   autoload :Embargoable,  'dor/models/embargoable'
   autoload :Preservable,  'dor/models/preservable'
   autoload :Assembleable, 'dor/models/assembleable'
-  autoload :Upgradable,   'dor/models/upgradable'
   autoload :Eventable,    'dor/models/eventable'
   autoload :Versionable,  'dor/models/versionable'
   autoload :Contentable,  'dor/models/contentable'

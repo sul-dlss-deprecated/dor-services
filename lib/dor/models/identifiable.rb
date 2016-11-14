@@ -3,7 +3,6 @@ module Dor
     extend ActiveSupport::Concern
     include SolrDocHelper
     include Eventable
-    include Upgradable
 
     included do
       has_metadata :name => 'DC', :type => SimpleDublinCoreDs, :label => 'Dublin Core Record for self object'
