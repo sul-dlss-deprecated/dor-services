@@ -41,9 +41,9 @@ module Dor
     #    Should not be used for the Fedora DC datastream
     # @raise [CrosswalkError] Raises an Exception if the generated DC is empty or has no children
     # @return [Nokogiri::Doc] the DublinCore XML document object
-    def generate_dublin_core
+    def generate_dublin_core(include_collection_as_related_item: true)
       desc_md = descMetadata.ng_xml.dup(1)
-      add_collection_reference(desc_md)
+      add_collection_reference(desc_md) if include_collection_as_related_item
       dc_doc = MODS_TO_DC_XSLT.transform(desc_md)
       dc_doc.xpath('/oai_dc:dc/*[count(text()) = 0]').remove # Remove empty nodes
       raise CrosswalkError, "Dor::Item#generate_dublin_core produced incorrect xml (no root):\n#{dc_doc.to_xml}" if dc_doc.root.nil?
@@ -217,7 +217,9 @@ module Dor
 
       solr_doc['metadata_format_ssim'] << 'mods'
       begin
-        dc_doc = generate_dublin_core
+        dc_doc = generate_dublin_core(include_collection_as_related_item: false)
+        # we excluding the generated collection relation here; we instead get the collection
+        # title from Dor::Identifiable.
         dc_doc.xpath('/oai_dc:dc/*').each do |node|
           add_solr_value(solr_doc, "public_dc_#{node.name}", node.text, :string, [:stored_searchable])
         end
