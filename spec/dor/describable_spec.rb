@@ -515,50 +515,6 @@ describe Dor::Describable do
     expect {b.generate_dublin_core}.to raise_error(Dor::Describable::CrosswalkError)
   end
 
-  describe 'update_title' do
-    it 'should update the title' do
-      found = false
-      @obj.update_title('new title')
-      @obj.descMetadata.ng_xml.search('//mods:mods/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
-        expect(node.content).to eq('new title')
-        found = true
-      end
-      expect(found).to be_truthy
-    end
-    it 'should raise an exception if the mods lacks a title' do
-      @obj.update_title('new title')
-      @obj.descMetadata.ng_xml.search('//mods:mods/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').each do |node|
-        node.remove
-      end
-      expect {@obj.update_title('druid:oo201oo0001', 'new title')}.to raise_error(StandardError)
-    end
-  end
-  describe 'add_identifier' do
-    it 'should add an identifier' do
-      @obj.add_identifier('type', 'new attribute')
-      res = @obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]', 'mods' => 'http://www.loc.gov/mods/v3')
-      expect(res.length).to be > 0
-      res.each do |node|
-        expect(node.content).to eq('new attribute')
-      end
-    end
-  end
-  describe 'delete_identifier' do
-    it 'should delete an identifier' do
-      @obj.add_identifier('type', 'new attribute')
-      res = @obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]', 'mods' => 'http://www.loc.gov/mods/v3')
-      expect(res.length).to be > 0
-      res.each do |node|
-        expect(node.content).to eq('new attribute')
-      end
-      expect(@obj.delete_identifier('type', 'new attribute')).to be_truthy
-      res = @obj.descMetadata.ng_xml.search('//mods:identifier[@type="type"]', 'mods' => 'http://www.loc.gov/mods/v3')
-      expect(res.length).to eq 0
-    end
-    it 'should return false if there was nothing to delete' do
-      expect(@obj.delete_identifier('type', 'new attribute')).to be_falsey
-    end
-  end
   describe 'set_desc_metadata_using_label' do
     it 'should create basic mods using the object label' do
       allow(@obj.datastreams['descMetadata']).to receive(:content).and_return ''
