@@ -163,13 +163,7 @@ module Dor
     # @param [Nokogiri::XML] doc public MODS XML being built
     # @return [Void]
     def add_constituent_relations(doc)
-      public_relationships.search('//rdf:RDF/rdf:Description/fedora:isConstituentOf',
-                                       'fedora' => 'info:fedora/fedora-system:def/relations-external#',
-                                       'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' ).each do |parent|
-        # fetch the parent object to get title
-        druid = parent['rdf:resource'].gsub(/^info:fedora\//, '')
-        parent_item = Dor.find(druid)
-
+      constituent_objects.each do |parent_item|
         # create the MODS relation
         relatedItem = doc.create_element 'relatedItem'
         relatedItem['type'] = 'host'

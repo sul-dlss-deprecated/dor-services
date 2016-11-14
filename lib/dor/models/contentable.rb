@@ -2,6 +2,10 @@ module Dor
   module Contentable
     extend ActiveSupport::Concern
 
+    included do
+      has_and_belongs_to_many :constituent_objects, property: :is_constituent_of, class_name: 'ActiveFedora::Base'
+    end
+
     # add a file to a resource, not to be confused with add a resource to an object
     def add_file(file, resource, file_name, mime_type = nil, publish = 'no', shelve = 'no', preserve = 'no')
       xml = datastreams['contentMetadata'].ng_xml
@@ -227,7 +231,7 @@ module Dor
     # @param [String] druid the parent druid of the constituent relationship
     #   e.g.: <fedora:isConstituentOf rdf:resource="info:fedora/druid:hj097bm8879" />
     def add_constituent(druid)
-      add_relationship :is_constituent_of, ActiveFedora::Base.find(druid)
+      constituent_objects << ActiveFedora::Base.find(druid)
     end
   end
 end

@@ -5,7 +5,7 @@ class ContentableItem < ActiveFedora::Base
   include Dor::Contentable
 end
 
-class SpecNode
+class SpecNode < ActiveFedora::Base
   include ActiveFedora::SemanticNode
 
   attr_accessor :pid
@@ -15,6 +15,10 @@ class SpecNode
 
   def internal_uri
     'info:fedora/' + pid.to_s
+  end
+  
+  def new_record?
+    false
   end
 end
 
