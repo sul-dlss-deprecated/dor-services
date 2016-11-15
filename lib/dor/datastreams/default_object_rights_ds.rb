@@ -1,5 +1,9 @@
 module Dor
   class DefaultObjectRightsDS < ActiveFedora::OmDatastream
+    # Note that the XSL file was taken from the (apparently defunct) nokogiri-pretty project:
+    # https://github.com/tobym/nokogiri-pretty/blob/master/lib/indent.xsl
+    # The only modification made was to declare UTF-8 to be the encoding, instead of ISO-8859-1.
+    HUMAN_XSLT = Nokogiri::XSLT(File.read(File.expand_path('../human.xslt', __FILE__)))
 
     set_terminology do |t|
       t.root :path => 'rightsMetadata', :index_as => [:not_searchable]
@@ -131,12 +135,8 @@ module Dor
     end
 
     # Returns a nicely indented XML document.
-    # Note that the XSL file was taken from the (apparently defunct) nokogiri-pretty project:
-    # https://github.com/tobym/nokogiri-pretty/blob/master/lib/indent.xsl
-    # The only modification made was to declare UTF-8 to be the encoding, instead of ISO-8859-1.
     def prettify(xml_doc)
-      template = Nokogiri::XSLT(File.read(File.expand_path('../human.xslt', __FILE__)))
-      template.apply_to(xml_doc)
+      HUMAN_XSLT.apply_to(xml_doc)
     end
 
     # maintain AF < 8 indexing behavior

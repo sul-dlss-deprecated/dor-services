@@ -20,8 +20,7 @@ end
 
 class Nokogiri::XML::Document
 
-  def prettify
-    xslt = Nokogiri::XSLT <<-EOC
+  PRETTIFY_XSLT = Nokogiri::XSLT <<-EOC
     <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       <xsl:output omit-xml-declaration="yes" indent="yes"/>
       <xsl:template match="node()|@*">
@@ -31,7 +30,9 @@ class Nokogiri::XML::Document
       </xsl:template>
     </xsl:stylesheet>
     EOC
-    xslt.transform(self).to_xml
+
+  def prettify
+    PRETTIFY_XSLT.transform(self).to_xml
   end
 
 end
