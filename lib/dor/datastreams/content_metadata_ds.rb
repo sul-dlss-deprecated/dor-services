@@ -63,7 +63,7 @@ module Dor
 
         # always use title regardless of whether a child label is present
         src_label = doc.create_element('label')
-        src_label.content = src_item.datastreams['DC'].title.first
+        src_label.content = src_item.full_title
 
         # add the extracted label and imageData
         externalFile.add_previous_sibling(src_label)

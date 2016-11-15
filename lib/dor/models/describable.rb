@@ -178,7 +178,7 @@ module Dor
         # load the title from the parent's DC.title
         titleInfo = doc.create_element 'titleInfo'
         title = doc.create_element 'title'
-        title.content = parent_item.datastreams['DC'].title.first
+        title.content = Dor::Describable.get_collection_title(parent_item)
         titleInfo << title
         relatedItem << titleInfo
 
@@ -275,15 +275,11 @@ module Dor
     end
 
     def self.get_collection_title(obj)
-      xml = obj.descMetadata.ng_xml
-      title = ''
-      title_node = xml.at_xpath('//mods:mods/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3')
-      if title_node
-        title = title_node.content
-        subtitle = xml.at_xpath('//mods:mods/mods:titleInfo/mods:subTitle', 'mods' => 'http://www.loc.gov/mods/v3')
-        title += " (#{subtitle.content})" if subtitle
-      end
-      title
+      obj.full_title
+    end
+
+    def full_title
+      stanford_mods.sw_title_display
     end
 
     private

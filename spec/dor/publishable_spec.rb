@@ -15,6 +15,7 @@ end
 
 class ItemizableItem < ActiveFedora::Base
   include Dor::Itemizable
+  include Dor::Describable
 end
 
 describe Dor::Publishable do
@@ -378,7 +379,7 @@ describe Dor::Publishable do
 
         # test the validity of the constituent expansion
         xpath_expr = '//mods:mods/mods:relatedItem[@type="host" and @displayLabel="Appears in"]/mods:titleInfo/mods:title'
-        expect(doc.xpath(xpath_expr, 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to eq('Rumsey Atlas 2542')
+        expect(doc.xpath(xpath_expr, 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to start_with("Carey's American Atlas: Containing Twenty Maps")
         xpath_expr = '//mods:mods/mods:relatedItem[@type="host" and @displayLabel="Appears in"]/mods:location/mods:url'
         expect(doc.xpath(xpath_expr, 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to match(/^http:\/\/purl.*\.stanford\.edu\/hj097bm8879$/)
       end
@@ -462,7 +463,10 @@ describe Dor::Publishable do
           # load child DC metadata fixture and set label
           dsid = 'DC'
           child_item.datastreams[dsid] = Dor::SimpleDublinCoreDs.from_xml read_fixture("#{druid}_#{dsid}.xml")
-          child_item.label = child_item.datastreams[dsid].title
+
+          dsid = 'descMetadata'
+          child_item.datastreams[dsid] = Dor::DescMetadataDS.new
+          child_item.descMetadata.title_info.main_title = child_item.datastreams['DC'].title.first
 
           # stub out retrieval for child item
           allow(Dor).to receive(:find).with(child_item.pid).and_return(child_item)

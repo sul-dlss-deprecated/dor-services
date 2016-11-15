@@ -263,45 +263,13 @@ describe Dor::Identifiable do
   describe 'get_related_obj_display_title' do
     it 'should return the descMetadata main title if it is available' do
       mock_apo_title = 'apo title'
-      mock_apo_obj = double(Dor::AdminPolicyObject)
-      mock_desc_md_datastream = double(Dor::DescMetadataDS)
-      mock_title_info = double(OM::XML::DynamicNode)
-
-      expect(mock_desc_md_datastream).to receive(:title_info).and_return(mock_title_info)
-      expect(mock_title_info).to receive(:main_title).and_return([mock_apo_title, ""])
-      expect(mock_apo_obj).to receive(:datastreams).and_return({'descMetadata' => mock_desc_md_datastream})
+      mock_apo_obj = double(Dor::AdminPolicyObject, full_title: mock_apo_title)
 
       mock_default_title = 'druid:zy098xw7654'
       expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_apo_title)
     end
     it 'should return the default if the first descMetadata main title entry is empty string' do
-      mock_apo_obj = double(Dor::AdminPolicyObject)
-      mock_desc_md_datastream = double(Dor::DescMetadataDS)
-      mock_title_info = double(OM::XML::DynamicNode)
-
-      expect(mock_desc_md_datastream).to receive(:title_info).and_return(mock_title_info)
-      expect(mock_title_info).to receive(:main_title).and_return(["", ""])
-      expect(mock_apo_obj).to receive(:datastreams).and_return({'descMetadata' => mock_desc_md_datastream})
-
-      mock_default_title = 'druid:zy098xw7654'
-      expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_default_title)
-    end
-    it 'should return the default if the descMetadata main title array is empty' do
-      mock_apo_obj = double(Dor::AdminPolicyObject)
-      mock_desc_md_datastream = double(Dor::DescMetadataDS)
-      mock_title_info = double(OM::XML::DynamicNode)
-
-      expect(mock_desc_md_datastream).to receive(:title_info).and_return(mock_title_info)
-      expect(mock_title_info).to receive(:main_title).and_return([])
-      expect(mock_apo_obj).to receive(:datastreams).and_return({'descMetadata' => mock_desc_md_datastream})
-
-      mock_default_title = 'druid:zy098xw7654'
-      expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_default_title)
-    end
-    it 'should return the default if the descMetadata datastream is not available' do
-      mock_apo_obj = double(Dor::AdminPolicyObject)
-
-      expect(mock_apo_obj).to receive(:datastreams).and_return({})
+      mock_apo_obj = double(Dor::AdminPolicyObject, full_title: nil)
 
       mock_default_title = 'druid:zy098xw7654'
       expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_default_title)
