@@ -298,8 +298,7 @@ describe Dor::RightsMetadataDS do
     it 'will set the xml properly and indicate that datastream content has changed' do
       expect(Dor::RightsMetadataDS).to receive(:upd_rights_xml_for_rights_type).with(@item.rightsMetadata.ng_xml, 'world')
       expect(@item.rightsMetadata).to receive(:dra_object=).with(nil).and_call_original
-      expect(@item.rightsMetadata).to receive(:content=).with(@item.rightsMetadata.ng_xml.to_xml).and_call_original
-      expect(@item.rightsMetadata).to receive(:content_will_change!).and_call_original
+      expect(@item.rightsMetadata).to receive(:ng_xml_will_change!).and_call_original
 
       @item.rightsMetadata.set_read_rights 'world'
     end

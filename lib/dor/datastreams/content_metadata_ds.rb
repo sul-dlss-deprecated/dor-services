@@ -157,6 +157,8 @@ module Dor
     def add_file(file, resource_name)
       resource_nodes = ng_xml.search('//resource[@id=\'' + resource_name + '\']')
       raise 'resource doesnt exist.' if resource_nodes.length == 0
+      self.ng_xml_will_change!
+
       node = resource_nodes.first
       file_node = Nokogiri::XML::Node.new('file', ng_xml)
       file_node['id'] = file[:name]
@@ -174,7 +176,6 @@ module Dor
       end
       file_node['size'    ] = file[:size     ] if file[:size     ]
       file_node['mimetype'] = file[:mime_type] if file[:mime_type]
-      self.content = ng_xml.to_s
       file_node
     end
 
@@ -185,6 +186,7 @@ module Dor
     # @return [Nokogiri::XML::Element] the new resource that was added to the contentMetadata
     def add_virtual_resource(child_druid, child_resource)
       # create a virtual resource element with attributes linked to the child and omit label
+      self.ng_xml_will_change!
       sequence_max = ng_xml.search('//resource').map { |node| node[:sequence].to_i }.max
       resource = Nokogiri::XML::Element.new('resource', ng_xml)
       resource[:sequence] = sequence_max + 1
@@ -199,7 +201,6 @@ module Dor
 
       # attach the virtual resource as a sibling and return
       ng_xml.root << resource
-      self.content = ng_xml.to_s
       resource
     end
 
@@ -210,6 +211,7 @@ module Dor
     # @return [Nokogiri::XML::Node] the new resource that was added to the contentMetadata
     def add_resource(files, resource_name, position, type = 'file')
       raise "resource #{resource_name} already exists" if ng_xml.search('//resource[@id=\'' + resource_name + '\']').length > 0
+      self.ng_xml_will_change!
       max = ng_xml.search('//resource').map { |node| node['sequence'].to_i }.max
       # renumber all of the resources that will come after the newly added one
       while max > position
@@ -237,12 +239,12 @@ module Dor
         file_node['size'] = file[:size] if file[:size]
       end
       ng_xml.search('//contentMetadata').first.add_child(node)
-      self.content = ng_xml.to_s
       node
     end
 
     # @param [String] resource_name ID of the resource
     def remove_resource(resource_name)
+      self.ng_xml_will_change!
       node = singular_node('//resource[@id=\'' + resource_name + '\']')
       position = node['sequence'].to_i + 1
       node.remove
@@ -252,13 +254,12 @@ module Dor
         res['sequence'] = position.to_s
         position += 1
       end
-      self.content = ng_xml.to_s
     end
 
     # @param [String] file_name ID of the file element
     def remove_file(file_name)
+      self.ng_xml_will_change!
       ng_xml.search('//file[@id=\'' + file_name + '\']').each(&:remove)
-      self.content = ng_xml.to_s
     end
 
     # @param [String] file_name ID of the file element
@@ -266,16 +267,17 @@ module Dor
     # @param [String] shelve
     # @param [String] preserve
     def update_attributes(file_name, publish, shelve, preserve)
+      self.ng_xml_will_change!
       file_node = ng_xml.search('//file[@id=\'' + file_name + '\']').first
       file_node['publish' ] = publish
       file_node['shelve'  ] = shelve
       file_node['preserve'] = preserve
-      self.content = ng_xml.to_s
     end
 
     # @param file [Object] some hash-like file
     # @param old_file_id [String] unique id attribute of the file element
     def update_file(file, old_file_id)
+      self.ng_xml_will_change!
       file_node = ng_xml.search('//file[@id=\'' + old_file_id + '\']').first
       file_node['id'] = file[:name]
       [:md5, :sha1].each { |algo|
@@ -292,16 +294,15 @@ module Dor
       [:size, :shelve, :preserve, :publish].each { |x|
         file_node[x.to_s] = file[x] if file[x]
       }
-      self.content = ng_xml.to_s
     end
 
     # @param old_name [String] unique id attribute of the file element
     # @param new_name [String] new unique id value being assigned
     # @return [Nokogiri::XML::Element] the file node
     def rename_file(old_name, new_name)
+      self.ng_xml_will_change!
       file_node = ng_xml.search('//file[@id=\'' + old_name + '\']').first
       file_node['id'] = new_name
-      self.content = ng_xml.to_s
       file_node
     end
 
@@ -310,6 +311,7 @@ module Dor
     # @param new_label [String] label value being assigned
     # @return [Nokogiri::XML::Element] the resource node
     def update_resource_label(resource_name, new_label)
+      self.ng_xml_will_change!
       node = singular_node('//resource[@id=\'' + resource_name + '\']')
       labels = node.xpath('./label')
       if labels.length == 0
@@ -319,15 +321,14 @@ module Dor
       else
         labels.first.content = new_label
       end
-      self.content = ng_xml.to_s
       node
     end
 
     # @param resource_name [String] unique id attribute of the resource
     # @param new_type [String] type value being assigned
     def update_resource_type(resource_name, new_type)
+      self.ng_xml_will_change!
       singular_node('//resource[@id=\'' + resource_name + '\']')['type'] = new_type
-      self.content = ng_xml.to_s
     end
 
     # You just *had* to have ordered lists in XML, didn't you?
@@ -336,6 +337,7 @@ module Dor
     # @param new_position [Integer, String] new sequence number of the resource, or a string that looks like one
     # @return [Nokogiri::XML::Element] the resource node
     def move_resource(resource_name, new_position)
+      self.ng_xml_will_change!
       node = singular_node('//resource[@id=\'' + resource_name + '\']')
       position = node['sequence'].to_i
       new_position = new_position.to_i # tolerate strings as a Legacy behavior
@@ -348,7 +350,6 @@ module Dor
         item['sequence'] = (up ? i - 1 : i + 1).to_s # if you're going up, everything else comes down and vice versa
       end
       node['sequence'] = new_position.to_s # set the node we already had last, so we don't hit it twice!
-      self.content = ng_xml.to_s
       node
     end
 
@@ -358,13 +359,13 @@ module Dor
     # @param [String] new_type the new content type
     # @param [String] new_resource_type the new type for all resources
     def set_content_type(old_type, old_resource_type, new_type, new_resource_type)
+      self.ng_xml_will_change!
       ng_xml.search('/contentMetadata[@type=\'' + old_type + '\']').each do |node|
         node['type'] = new_type
         ng_xml.search('//resource[@type=\'' + old_resource_type + '\']').each do |resource|
           resource['type'] = new_resource_type
         end
       end
-      self.content = ng_xml.to_s
     end
 
     # maintain AF < 8 indexing behavior

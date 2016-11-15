@@ -60,6 +60,7 @@ module Dor
     # @param type   [Symbol] :workgroup for a group or :person for a person
     def add_roleplayer(role, entity, type = :workgroup)
       xml = roleMetadata.ng_xml
+      roleMetadata.ng_xml_will_change!
       group = type == :workgroup ? 'group' : 'person'
       nodes = xml.search('/roleMetadata/role[@type=\'' + role + '\']')
       if nodes.length > 0
@@ -80,7 +81,6 @@ module Dor
         id_node['type'] = type.to_s
         xml.search('/roleMetadata').first.add_child(node)
       end
-      roleMetadata.content = xml.to_s
     end
 
     # remove all people groups and roles from the APO role metadata datastream
@@ -106,6 +106,7 @@ module Dor
     # @param val [String] pid of the collection, ex. druid:ab123cd4567
     def add_default_collection(val)
       xml = administrativeMetadata.ng_xml
+      administrativeMetadata.ng_xml_will_change!
       reg = xml.search('//administrativeMetadata/registration').first
       unless reg
         reg = Nokogiri::XML::Node.new('registration', xml)
@@ -114,12 +115,11 @@ module Dor
       node = Nokogiri::XML::Node.new('collection', xml)
       node['id'] = val
       reg.add_child(node)
-      administrativeMetadata.content = xml.to_s
     end
     def remove_default_collection(val)
       xml = administrativeMetadata.ng_xml
+      administrativeMetadata.ng_xml_will_change!
       xml.search('//administrativeMetadata/registration/collection[@id=\'' + val + '\']').remove
-      administrativeMetadata.content = xml.to_s
     end
 
     # Get all roles defined in the role metadata, and the people or groups in those roles. Groups are prefixed with 'workgroup:'

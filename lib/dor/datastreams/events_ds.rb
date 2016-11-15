@@ -29,10 +29,10 @@ class EventsDS < ActiveFedora::OmDatastream
   # @param [String] who who is responsible for this event. Sets the who attribute for the event
   # @param [String] message what happened. Sets the content of the event with this message
   def add_event(type, who, message)
+    ng_xml_will_change!
     ev = ng_xml.create_element 'event', message,
       :type => type, :who => who, :when => Time.now.utc.xmlschema
     ng_xml.root.add_child(ev)
-    ng_xml_will_change!
   end
 
   # Finds events with the desired type attribute

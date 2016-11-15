@@ -128,11 +128,10 @@ module Dor
         raise('The rights metadata stream doesnt contain an entry for machine read permissions. Consider populating it from the APO before trying to change it.')
       end
 
+      ng_xml_will_change!
       RightsMetadataDS.upd_rights_xml_for_rights_type(rights_xml, rights)
 
       self.dra_object = nil # until TODO complete, we'll expect to have to reparse after modification
-      self.content = rights_xml.to_xml
-      content_will_change!
     end
 
     def to_solr(solr_doc = {}, *args)

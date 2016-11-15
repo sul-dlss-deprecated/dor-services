@@ -78,7 +78,8 @@ module Dor
     # @param [Symbol] significance optional which part of the version tag to increment
     #  :major, :minor, :admin (see VersionTag#increment)
     def increment_version(description = nil, significance = nil)
-      if  find_by_terms(:version).size == 0
+      ng_xml_will_change!
+      if find_by_terms(:version).size == 0
         v = ng_xml.create_element 'version',
         :versionId => '1', :tag => '1.0.0'
         d = ng_xml.create_element 'description', 'Initial Version'
@@ -122,6 +123,7 @@ module Dor
       ng_xml.root['objectId'] = pid
       return if find_by_terms(:version).size == 1
       return if opts.empty?
+      ng_xml_will_change!
       current = current_version_node
       if opts.include? :description
         d = current.at_xpath('description')
@@ -145,7 +147,6 @@ module Dor
         end
 
       end
-      self.content = ng_xml.to_s
     end
 
     # @return [Boolean] returns true if the current version has a tag and a description, false otherwise
