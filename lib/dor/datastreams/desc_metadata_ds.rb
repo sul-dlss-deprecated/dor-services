@@ -29,6 +29,7 @@ module Dor
       t.scale       :index_as => [:symbol]
       t.topic       :index_as => [:symbol, :stored_searchable]
       t.abstract    :index_as => [:stored_searchable]
+      t.identifier  :index_as => [:symbol, :stored_searchable]
     end
 
     def self.xml_template
