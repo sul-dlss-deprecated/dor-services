@@ -4,7 +4,6 @@ module Dor
   module Processable
     extend ActiveSupport::Concern
     include SolrDocHelper
-    include Upgradable
 
     included do
       has_metadata :name => 'workflows', :type => Dor::WorkflowDs, :label => 'Workflows', :control_group => 'E'
