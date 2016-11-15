@@ -65,7 +65,7 @@ module Dor
         elsif id.is_a?(Array) # Two values: [ 'google', 'STANFORD_0123456789' ]
           id = id.join(':')
         end
-        q = %(#{Solrizer.solr_name 'identifier', :stored_searchable}:"#{id}")
+        q = "{!term f=#{Solrizer.solr_name 'identifier', :symbol}}#{id}"
         result = []
         query(q, :fl => 'id', :rows => 1000) do |resp|
           result += resp['response']['docs'].collect { |doc| doc['id'] }
