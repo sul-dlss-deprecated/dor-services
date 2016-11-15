@@ -452,25 +452,10 @@ describe Dor::Publishable do
         correctPublicContentMetadata = Nokogiri::XML(read_fixture('hj097bm8879_publicObject.xml')).at_xpath('/publicObject/contentMetadata').to_xml
         @item.contentMetadata.content = read_fixture('hj097bm8879_contentMetadata.xml')
 
-        # setup stubs for child items
-        %w(cg767mn6478 jw923xn5254).each do |druid|
-          child_item = ItemizableItem.new(:pid => "druid:#{druid}")
-
-          # load child content metadata fixture
-          dsid = 'contentMetadata'
-          child_item.datastreams[dsid] = Dor::ContentMetadataDS.from_xml read_fixture("#{druid}_#{dsid}.xml")
-
-          # load child DC metadata fixture and set label
-          dsid = 'DC'
-          child_item.datastreams[dsid] = Dor::SimpleDublinCoreDs.from_xml read_fixture("#{druid}_#{dsid}.xml")
-
-          dsid = 'descMetadata'
-          child_item.datastreams[dsid] = Dor::DescMetadataDS.new
-          child_item.descMetadata.title_info.main_title = child_item.datastreams['DC'].title.first
-
-          # stub out retrieval for child item
-          allow(Dor).to receive(:find).with(child_item.pid).and_return(child_item)
-        end
+        cover_item = instantiate_fixture('druid:cg767mn6478', Dor::Item)
+        allow(Dor).to receive(:find).with(cover_item.pid).and_return(cover_item)
+        title_item = instantiate_fixture('druid:jw923xn5254', Dor::Item)
+        allow(Dor).to receive(:find).with(title_item.pid).and_return(title_item)
 
         # generate publicObject XML and verify that the content metadata portion is correct and the correct thumb is present
         public_xml=@item.public_xml
