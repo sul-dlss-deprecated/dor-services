@@ -2,6 +2,10 @@ module Dor
   module Contentable
     extend ActiveSupport::Concern
 
+    included do
+      belongs_to :constituent_object, :property => :is_constituent_of
+    end
+
     # add a file to a resource, not to be confused with add a resource to an object
     def add_file(file, resource, file_name, mime_type = nil, publish = 'no', shelve = 'no', preserve = 'no')
       xml = datastreams['contentMetadata'].ng_xml
