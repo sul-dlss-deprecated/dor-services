@@ -86,8 +86,8 @@ describe Dor::SearchService do
 
     it 'should look up an object based on any of its IDs' do
       id = 'barcode:9191919191'
-      solr_field = Solrizer.solr_name('identifier', :stored_searchable)
-      solr_url = "http://solr.edu/solrizer/select?fl=id&q=#{solr_field}%3A%22barcode%3A9191919191%22&rows=1000&wt=ruby"
+      solr_field = Solrizer.solr_name('identifier', :symbol)
+      solr_url = "http://solr.edu/solrizer/select?fl=id&q=%7B%21term+f%3D#{solr_field}%7Dbarcode%3A9191919191&rows=1000&wt=ruby"
       solr_resp = <<-EOF
       {'responseHeader'=>
         {'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'0','q'=>'dor_id_t:"barcode:9191919191"','wt'=>'ruby','rows'=>'1000'}},
