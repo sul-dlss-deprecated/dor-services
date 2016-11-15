@@ -23,6 +23,7 @@ describe Dor::WorkflowObject do
     end
 
     it 'indexes the workflow name' do
+      allow(@item).to receive(:milestones).and_return([])
       expect(@item.to_solr).to include 'workflow_name_ssim' => ['accessionWF']
     end
   end

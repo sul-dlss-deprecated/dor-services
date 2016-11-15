@@ -1,7 +1,7 @@
 require 'dor/datastreams/workflow_definition_ds'
 
 module Dor
-  class WorkflowObject < Dor::Base
+  class WorkflowObject < Dor::Abstract
     @@xml_cache  = {}
     @@repo_cache = {}
 

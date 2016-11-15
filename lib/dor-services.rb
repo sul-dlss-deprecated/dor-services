@@ -21,7 +21,7 @@ module Dor
     # index is missing the objectType property.
     # @param [String] pid The object's PID
     def load_instance(pid)
-      Dor::Base.find pid, cast: true
+      Dor::Abstract.find pid, cast: true
     end
 
     # Get objectType information from solr and load the correct class the first time,
@@ -121,7 +121,6 @@ module Dor
     # ActiveFedora Classes
     autoload :Abstract,          'dor/models/abstract'
     autoload :Agreement,         'dor/models/agreement'
-    autoload :Base,              'dor/models/base'
     autoload :Item,              'dor/models/item'
     autoload :Set,               'dor/models/set'
     autoload :Collection,        'dor/models/collection'

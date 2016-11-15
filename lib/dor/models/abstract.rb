@@ -1,7 +1,11 @@
 module Dor
-  class Abstract < Dor::Base
+  class Abstract < ::ActiveFedora::Base
+    include Identifiable
+    include Eventable
+    include Governable
+    include Rightsable
     include Describable
-    include Processable
     include Versionable
+    include Processable
   end
 end
