@@ -16,7 +16,7 @@ SimpleCov.start 'dor'
 require 'rspec'
 require 'dor-services'
 # require 'ruby-debug'
-require 'foxml_helper'
+require 'support/foxml_helper'
 require 'equivalent-xml/rspec_matchers'
 require 'webmock/rspec'
 
@@ -24,7 +24,7 @@ require 'pry'
 require 'tmpdir'
 require 'nokogiri'
 
-require 'dor_config'
+require 'support/dor_config'
 require 'vcr'
 require 'retries'
 
@@ -65,6 +65,10 @@ module Dor::SpecHelpers
 
   def read_fixture(fname)
     File.read(File.join(@fixture_dir, fname))
+  end
+  
+  def fixture_dir
+    @fixture_dir
   end
 end
 
