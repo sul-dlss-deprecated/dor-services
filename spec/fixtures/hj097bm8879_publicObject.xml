@@ -13,14 +13,14 @@
 </identityMetadata>
 <contentMetadata objectId="hj097bm8879" type="map">
   <resource id="hj097bm8879_1" sequence="1" type="image">
-    <label>Cover: Carey's American atlas.</label>
+    <label>(Covers to) Carey's American Atlas: Containing Twenty Maps And One Chart ... Philadelphia: Engraved For, And Published By, Mathew Carey, No. 118, Market Street. M.DCC.XCV. [Price, Plain, Five Dollars-Coloured, Six Dollars.]</label>
     <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478" resourceId="cg767mn6478_1" mimetype="image/jp2">
       <imageData width="6475" height="4747"/>
     </externalFile>
     <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
   </resource>
   <resource id="hj097bm8879_2" sequence="2" thumb="yes" type="image">
-    <label>Title Page: Carey's American atlas.</label>
+    <label>(Title Page to) Carey's American Atlas: Containing Twenty Maps And One Chart ... Philadelphia: Engraved For, And Published By, Mathew Carey, No. 118, Market Street. M.DCC.XCV. [Price, Plain, Five Dollars-Coloured, Six Dollars.]</label>
     <externalFile fileId="2542B.jp2" objectId="druid:jw923xn5254" resourceId="jw923xn5254_1" mimetype="image/jp2">
       <imageData width="3139" height="4675"/>
     </externalFile>

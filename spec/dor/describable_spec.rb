@@ -279,7 +279,7 @@ describe Dor::Describable do
         expect(collections.length     ).to eq 1
         expect(collection_title.length).to eq 1
         expect(collection_uri.length  ).to eq 1
-        expect(collection_title.first.content).to eq 'complete works of Henry George'
+        expect(collection_title.first.content).to eq 'The complete works of Henry George'
         expect(collection_uri.first.content  ).to eq 'https://purl.stanford.edu/zb871zd0767'
       end
 
@@ -292,7 +292,7 @@ describe Dor::Describable do
         expect(collections.length     ).to eq 1
         expect(collection_title.length).to eq 1
         expect(collection_uri.length  ).to eq 1
-        expect(collection_title.first.content).to eq 'complete works of Henry George'
+        expect(collection_title.first.content).to eq 'The complete works of Henry George'
         expect(collection_uri.first.content  ).to eq 'https://purl.stanford.edu/zb871zd0767'
       end
 
@@ -422,7 +422,7 @@ describe Dor::Describable do
       expect(collections.length     ).to eq 1
       expect(collection_title.length).to eq 1
       expect(collection_uri.length  ).to eq 1
-      expect(collection_title.first.content).to eq 'complete works of Henry George'
+      expect(collection_title.first.content).to eq 'The complete works of Henry George'
       expect(collection_uri.first.content  ).to eq 'https://purl.stanford.edu/zb871zd0767'
       %w(useAndReproduction copyright license).each{ |term|
         expect(doc.xpath('//mods:accessCondition[@type="' + term + '"]').size).to eq 1
@@ -447,7 +447,7 @@ describe Dor::Describable do
       expect(collections.length     ).to eq 1
       expect(collection_title.length).to eq 1
       expect(collection_uri.length  ).to eq 1
-      expect(collection_title.first.content).to eq 'complete works of Henry George'
+      expect(collection_title.first.content).to eq 'The complete works of Henry George'
       expect(collection_uri.first.content  ).to eq 'https://purl.stanford.edu/zb871zd0767'
       %w(useAndReproduction copyright license).each{ |term|
         expect(doc.xpath('//xmlns:accessCondition[@type="' + term + '"]').size).to eq 1
@@ -484,7 +484,7 @@ describe Dor::Describable do
       </titleInfo>
       </mods>
       XML
-      expect(Dor::Describable.get_collection_title(@item)).to eq 'Foxml Test Object (Hello world)'
+      expect(Dor::Describable.get_collection_title(@item)).to eq 'Foxml Test Object : Hello world'
     end
   end
 

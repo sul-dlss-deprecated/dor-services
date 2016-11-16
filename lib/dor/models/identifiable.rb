@@ -183,9 +183,7 @@ module Dor
     def get_related_obj_display_title(related_obj, default_title)
       return default_title unless related_obj
 
-      desc_md_ds = related_obj.datastreams['descMetadata']
-      desc_md_ds_title = desc_md_ds ? desc_md_ds.title_info.main_title.first : nil
-      desc_md_ds_title.present? ? desc_md_ds_title : default_title
+      related_obj.full_title || default_title
     end
 
     # a regex that can be used to identify the last part of a druid (e.g. oo000oo0001)

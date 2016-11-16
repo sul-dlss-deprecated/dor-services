@@ -9,7 +9,13 @@ def item_from_foxml(foxml, item_class = Dor::Abstract)
   result.owner_id = properties['ownerId']
   xml_streams.each do |stream|
     begin
-      content = stream.xpath('.//foxml:xmlContent/*').first.to_xml
+      xml_content = if stream.xpath('.//foxml:xmlContent/*').any?
+        stream.xpath('.//foxml:xmlContent/*').first
+      elsif stream.xpath('.//foxml:binaryContent').any?
+        Nokogiri::XML(Base64.decode64(stream.xpath('.//foxml:binaryContent').first.text))
+      end
+
+      content = xml_content.to_xml
       dsid = stream['ID']
       ds = result.datastreams[dsid]
       if ds.nil?
