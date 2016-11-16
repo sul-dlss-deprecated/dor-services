@@ -2,6 +2,8 @@ require 'benchmark'
 
 module Dor
   class IndexingService
+    class ReindexError < RuntimeError; end
+
     ##
     # Returns a Logger instance for recording info about indexing attempts
     # @yield attempt to execute 'entry_id_block' and use the result as an extra identifier for the log
@@ -28,6 +30,26 @@ module Dor
       solr_doc = obj.to_solr
       Dor::SearchService.solr.add(solr_doc, options)
       solr_doc
+    end
+
+    # Use the dor-indexing-app service to reindex a pid
+    # @param [String] `pid` the druid
+    # @raise [ReindexError] on failure
+    def self.reindex_pid_remotely(pid)
+      pid = "druid:#{pid}" unless pid =~ /^druid:/
+      realtime = Benchmark.realtime do
+        with_retries(max_tries: 3, rescue: [ RestClient::Exception, Errno::ECONNREFUSED ]) do
+          RestClient.post(URI.join(Config.dor_indexing_app.url, "reindex/#{pid}"), '')
+        end
+      end
+      default_index_logger.info "successfully updated index for #{pid} in #{'%.3f' % realtime}s"
+    rescue RestClient::Exception, Errno::ECONNREFUSED => e
+      msg = "failed to reindex #{pid}: #{e}"
+      default_index_logger.error msg
+      raise ReindexError.new(msg)
+    rescue => e
+      default_index_logger.error "failed to reindex #{pid}: #{e}"
+      raise
     end
 
     # retrieves a single Dor object by pid, indexes the object to solr, does some logging

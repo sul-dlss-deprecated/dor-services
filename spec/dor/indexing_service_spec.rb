@@ -175,4 +175,41 @@ describe Dor::IndexingService do
       expect { Dor::IndexingService.reindex_pid(@mock_pid, raise_errors: false) }.to raise_error(stack_overflow_ex)
     end
   end
+  describe '#reindex_pid_remotely' do
+    before :each do
+      @mock_pid = 'druid:aa111bb2222'
+      @mock_default_logger = double(Logger)
+      expect(Dor::IndexingService).to receive(:default_index_logger).at_least(:once).and_return(@mock_default_logger)
+    end
+
+    it 'calls a remote service to reindex' do
+      expect(RestClient).to receive(:post).and_return(double)
+      expect(@mock_default_logger).to receive(:info).with(/successfully updated index for druid:/)
+      Dor::IndexingService.reindex_pid_remotely(@mock_pid)
+    end
+
+    it 'calls a remote service to reindex even without a druid: prefix' do
+      expect(RestClient).to receive(:post).and_return(double)
+      expect(@mock_default_logger).to receive(:info).with(/successfully updated index for druid:/)
+      Dor::IndexingService.reindex_pid_remotely('aa111bb2222')
+    end
+
+    it 'raises a ReindexRemotelyError exception in cases of predictable failures' do
+      expect(RestClient).to receive(:post).exactly(3).and_raise(RestClient::Exception.new(double))
+      expect(@mock_default_logger).to receive(:error).with(/failed to reindex/)
+      expect { Dor::IndexingService.reindex_pid_remotely(@mock_pid) }.to raise_error(Dor::IndexingService::ReindexError)
+    end
+
+    it 'raises a ReindexRemotelyError exception in cases of remote host is down' do
+      expect(RestClient).to receive(:post).exactly(3).and_raise(Errno::ECONNREFUSED)
+      expect(@mock_default_logger).to receive(:error).with(/failed to reindex/)
+      expect { Dor::IndexingService.reindex_pid_remotely(@mock_pid) }.to raise_error(Dor::IndexingService::ReindexError)
+    end
+
+    it 'raises other exceptions in cases of unpredictable failures' do
+      expect(RestClient).to receive(:post).and_raise(RuntimeError.new)
+      expect(@mock_default_logger).to receive(:error).with(/failed to reindex/)
+      expect { Dor::IndexingService.reindex_pid_remotely(@mock_pid) }.to raise_error(RuntimeError)
+    end
+  end
 end
