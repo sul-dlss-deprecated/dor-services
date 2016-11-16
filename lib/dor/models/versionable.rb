@@ -1,7 +1,6 @@
 module Dor
   module Versionable
     extend ActiveSupport::Concern
-    include Processable
 
     included do
       has_metadata :name => 'versionMetadata', :type => Dor::VersionMetadataDS, :label => 'Version Metadata', :autocreate => true

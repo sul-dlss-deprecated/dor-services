@@ -2,7 +2,6 @@ module Dor
   module Identifiable
     extend ActiveSupport::Concern
     include SolrDocHelper
-    include Eventable
 
     included do
       has_metadata :name => 'DC', :type => SimpleDublinCoreDs, :label => 'Dublin Core Record for self object'

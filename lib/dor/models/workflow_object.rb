@@ -1,9 +1,7 @@
 require 'dor/datastreams/workflow_definition_ds'
 
 module Dor
-  class WorkflowObject < ::ActiveFedora::Base
-    include Identifiable
-    include Governable
+  class WorkflowObject < Dor::Abstract
     @@xml_cache  = {}
     @@repo_cache = {}
 

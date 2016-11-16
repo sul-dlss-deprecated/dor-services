@@ -1,7 +1,6 @@
 module Dor
   module Embargoable
     extend ActiveSupport::Concern
-    include Dor::Publishable
 
     included do
       has_metadata :name => 'embargoMetadata', :type => Dor::EmbargoMetadataDS, :label => 'Embargo metadata'

@@ -1,11 +1,11 @@
 module Dor
-  class Item < ::ActiveFedora::Base
-    include Processable
+  class Item < Dor::Abstract
     include Shelvable
-    include Embargoable # implies Publishable implies Identifiable, Describable, Governable, Rightsable ...
+    include Embargoable
+    include Publishable
+    include Itemizable
     include Preservable
     include Assembleable
-    include Versionable
     include Contentable
     include Geoable
     include Releaseable

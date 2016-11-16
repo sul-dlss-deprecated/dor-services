@@ -3,7 +3,6 @@ require 'moab/stanford'
 module Dor
   module Shelvable
     extend ActiveSupport::Concern
-    include Itemizable
 
     # Push file changes for shelve-able files into the stacks
     def shelve

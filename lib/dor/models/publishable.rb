@@ -4,11 +4,6 @@ require 'fileutils'
 module Dor
   module Publishable
     extend ActiveSupport::Concern
-    include Identifiable
-    include Governable
-    include Describable
-    include Itemizable
-    include Rightsable
 
     # Compute the thumbnail for this object following the rules at https://consul.stanford.edu/display/chimera/The+Rules+of+Thumb
     # @return [String] the computed thumb filename, with the druid prefix and a slash in front of it, e.g. oo000oo0001/filenamewith space.jp2
