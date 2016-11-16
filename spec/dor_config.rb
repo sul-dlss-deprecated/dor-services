@@ -26,4 +26,5 @@ Dor.configure do
   workflow.url     'http://example.edu/workflow/'
   sdr.url          'http://example.edu/sdr'
   dor_services.url 'https://example.edu/dor'
+  dor_indexing_app.url 'https://example.edu/dor'
 end
