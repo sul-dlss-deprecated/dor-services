@@ -39,7 +39,7 @@ module Dor
       pid = "druid:#{pid}" unless pid =~ /^druid:/
       realtime = Benchmark.realtime do
         with_retries(max_tries: 3, rescue: [ RestClient::Exception, Errno::ECONNREFUSED ]) do
-          RestClient.post(URI.join(Config.dor_indexing_app.url, "reindex/#{pid}"), '')
+          RestClient.post("#{Config.dor_indexing_app.url}/reindex/#{pid}", '')
         end
       end
       default_index_logger.info "successfully updated index for #{pid} in #{'%.3f' % realtime}s"
