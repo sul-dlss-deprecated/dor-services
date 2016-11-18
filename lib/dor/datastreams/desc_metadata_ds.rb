@@ -29,7 +29,10 @@ module Dor
       t.scale       :index_as => [:symbol]
       t.topic       :index_as => [:symbol, :stored_searchable]
       t.abstract    :index_as => [:stored_searchable]
-      t.identifier  :index_as => [:symbol, :stored_searchable]
+
+      # 'identifier' conflicts with identityMetadata indexing. Explicitly namespace this one value
+      # until we use #prefix to automatically namespace them for us.
+      t.mods_identifier path: 'identifier', :index_as => [:symbol, :stored_searchable]
     end
 
     def self.xml_template
