@@ -131,6 +131,7 @@ module Dor
       connection_opts = { :url => fedora.safeurl, :user => fedora_uri.user, :password => fedora_uri.password }
       connection_opts[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(ssl.cert_file)) if ssl.cert_file.present?
       connection_opts[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(ssl.key_file), ssl.key_pass) if ssl.key_file.present?
+      connection_opts[:ssl_cert_store] = default_ssl_cert_store
       connection_opts
     end
 
@@ -140,6 +141,10 @@ module Dor
 
     def predicate_config
       YAML.load(File.read(File.expand_path('../../../config/predicate_mappings.yml', __FILE__)))
+    end
+
+    def default_ssl_cert_store
+      @default_ssl_cert_store ||= RestClient::Request.default_ssl_cert_store
     end
   end
 
