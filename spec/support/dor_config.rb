@@ -1,4 +1,4 @@
-cert_dir = File.join(File.dirname(__FILE__), 'certs')
+cert_dir = File.join(File.dirname(__FILE__), '..', 'certs')
 
 Dor.configure do
   ssl do

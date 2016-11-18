@@ -50,7 +50,7 @@ describe Dor::Contentable do
     </resource>
     </contentMetadata>'
     allow(Dor).to receive(:find).and_return(@item)
-    file_path = File.dirname(__FILE__) + '/../fixtures/ab123cd4567_descMetadata.xml'
+    file_path = File.join(fixture_dir, 'ab123cd4567_descMetadata.xml')
     # allow_any_instance_of(DruidTools::Druid).to receive(:path).and_return("#{file_path}/ab123cd4567/ab123cd4567_descMetadata.xml")
     @sftp = double(Net::SFTP)
     @resp = double(Net::SFTP::Response)
@@ -138,7 +138,7 @@ describe Dor::Contentable do
   end
   describe 'get_file' do
     it 'should fetch the file' do
-      data_file = File.new(File.dirname(__FILE__) + '/../fixtures/ab123cd4567_descMetadata.xml')
+      data_file = File.new(File.join(fixture_dir, 'ab123cd4567_descMetadata.xml'))
       expect(@sftp).to receive(:download!).and_return(data_file.read)
       data = @item.get_file('ab123cd4567_descMetadata.xml')
       expect(Digest::MD5.hexdigest(data)).to eq('55251c7b93b3fbab83354f28e267f42f')

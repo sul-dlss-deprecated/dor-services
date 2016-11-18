@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Dor::Configuration do
 
   before :each do
-    @config = Dor::Configuration.new(YAML.load(File.read(File.expand_path('../../../config/config_defaults.yml', __FILE__))))
+    @config = Dor::Configuration.new(YAML.load(File.read(File.expand_path('../../config/config_defaults.yml', __FILE__))))
   end
 
   it 'should issue a deprecation warning if SSL options are passed to the fedora block' do

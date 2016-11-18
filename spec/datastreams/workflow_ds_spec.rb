@@ -1,71 +1,85 @@
 require 'spec_helper'
 
 describe Dor::WorkflowDs do
-  let(:dsxml) { <<-EOF
-        <workflows objectId="druid:bm570gc7690">
-          <workflow repository="dor" objectId="druid:bm570gc7690" id="accessionWF">
-            <process priority="0" lifecycle="accessioned" elapsed="0.0" attempts="0" datetime="2012-06-22T13:29:26-0700" status="waiting" name="cleanup"/>
-            <process priority="0" note="Needs more MODS!" lifecycle="submitted" elapsed="0.0" attempts="0" datetime="2012-06-22T13:29:26-0700" status="completed" name="start-accession"/>
-            <process priority="0" lifecycle="described" elapsed="0.643" attempts="1" datetime="2012-06-22T13:29:39-0700" status="completed" name="descriptive-metadata"/>
-            <process priority="0" elapsed="0.723" attempts="1" datetime="2012-06-22T13:29:39-0700" status="completed" name="content-metadata"/>
-            <process priority="0" elapsed="0.849" attempts="1" datetime="2012-06-22T13:29:47-0700" status="completed" name="rights-metadata"/>
-            <process priority="0" elapsed="5.587" attempts="1" datetime="2012-06-22T13:30:52-0700" status="completed" name="remediate-object"/>
-            <process priority="0" elapsed="3.631" attempts="1" datetime="2012-06-22T13:31:39-0700" status="completed" name="shelve"/>
-            <process priority="0" lifecycle="published" elapsed="9.473" attempts="1" datetime="2012-06-22T13:33:30-0700" status="completed" name="publish"/>
-            <process priority="0" elapsed="2.969" attempts="3" datetime="2012-11-21T11:38:50-0800" status="completed" name="technical-metadata"/>
-            <process priority="0" elapsed="0.507" attempts="1" datetime="2012-11-21T11:41:39-0800" status="completed" name="provenance-metadata"/>
-            <process priority="0" elapsed="0.0" attempts="1" datetime="2013-01-10T15:17:54-0800" status="completed" name="sdr-ingest-transfer"/>
-          </workflow>
-          <workflow repository="dor" objectId="druid:bm570gc7690" id="assemblyWF">
-            <process version="1" priority="20" note="dor" lifecycle="inprocess" elapsed="0.0" archived="true" attempts="0" datetime="2012-06-22T13:05:43-0700" status="completed" name="start-assembly"/>
-            <process version="1" priority="20" note="dor" elapsed="0.394" archived="true" attempts="1" datetime="2012-06-22T13:27:25-0700" status="completed" name="jp2-create"/>
-            <process version="1" priority="20" note="dor" elapsed="2.996" archived="true" attempts="1" datetime="2012-06-22T13:28:54-0700" status="completed" name="checksum-compute"/>
-            <process version="1" priority="20" note="dor" elapsed="0.296" archived="true" attempts="1" datetime="2012-06-22T13:28:55-0700" status="completed" name="exif-collect"/>
-            <process version="1" priority="20" note="dor" elapsed="2.447" archived="true" attempts="1" datetime="2012-06-22T13:29:26-0700" status="completed" name="accessioning-initiate"/>
-          </workflow>
-          <workflow repository="dor" objectId="druid:bm570gc7690" id="digitizationWF">
-            <process priority="30" lifecycle="registered" elapsed="0.0" attempts="0" datetime="2012-03-29T15:22:18-0700" status="completed" name="initiate"/>
-            <process priority="30" elapsed="0.0" attempts="0" datetime="2012-03-29T15:22:18-0700" status="waiting" name="digitize"/>
-            <process priority="30" elapsed="0.0" attempts="0" datetime="2012-03-29T15:22:18-0700" status="waiting" name="start-accession"/>
-          </workflow>
-          <workflow repository="dor" objectId="druid:bm570gc7690" id="disseminationWF">
-            <process version="1" priority="0" note="dor" lifecycle="published" elapsed="9.355" archived="true" attempts="1" datetime="2012-06-22T13:33:30-0700" status="completed" name="publish"/>
-          </workflow>
-        </workflows>
-    EOF
-  }
 
-  let(:ds) { Dor::WorkflowDs.from_xml(dsxml) }
+  before(:each) { stub_config }
+  after(:each)  { unstub_config }
 
-  context 'Marshalling to and from a Fedora Datastream' do
-    it 'creates itself from xml' do
-      expect(ds.workflows.size).to eq 4
+  before(:each) do
+    @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
+  end
+  describe '[]' do
+    it 'should build a Document object if there is xml' do
+      xml = '<?xml version="1.0" encoding="UTF-8"?>
+      <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+        <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+            datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+            datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+            datetime="2012-11-06T16:19:02-0800" status="completed" name="provenance-metadata"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+            datetime="2012-11-06T16:19:05-0800" status="completed" name="remediate-object"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+            datetime="2012-11-06T16:19:06-0800" status="completed" name="shelve"/>
+        <process version="2" lifecycle="published" elapsed="0.0" archived="true" attempts="1"
+            datetime="2012-11-06T16:19:07-0800" status="completed" name="publish"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+            datetime="2012-11-06T16:19:09-0800" status="completed" name="sdr-ingest-transfer"/>
+        <process version="2" lifecycle="accessioned" elapsed="0.0" archived="true" attempts="1"
+            datetime="2012-11-06T16:19:10-0800" status="completed" name="cleanup"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+          datetime="2012-11-06T16:19:13-0800" status="completed" name="rights-metadata"/>
+        <process version="2" lifecycle="described" elapsed="0.0" archived="true" attempts="1"
+          datetime="2012-11-06T16:19:15-0800" status="completed" name="descriptive-metadata"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="2"
+          datetime="2012-11-06T16:19:16-0800" status="completed" name="content-metadata"/>'
+      allow(Dor::Config.workflow.client).to receive(:get_workflow_xml).and_return(xml)
+      accessionWF = @item.workflows['accessionWF']
+      expect(accessionWF).not_to be_nil
+    end
+    it 'should return nil if the xml is empty' do
+      allow(Dor::Config.workflow.client).to receive(:get_workflow_xml).and_return('')
+      expect(@item.workflows['accessionWF']).to be_nil
     end
   end
-
-  describe '#current_priority' do
-    it 'searches through all the workflows and returns the first active priority it finds' do
-      allow_any_instance_of(Dor::Workflow::Document).to receive(:definition).and_return(nil)
-      expect(ds.current_priority).to eq 30
+  describe 'get_workflow' do
+    it 'should build a Document object if there is xml' do
+      xml = '<?xml version="1.0" encoding="UTF-8"?>
+       <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+         <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+         <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
+         <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:19:02-0800" status="completed" name="provenance-metadata"/>
+         <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:19:05-0800" status="completed" name="remediate-object"/>
+         <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:19:06-0800" status="completed" name="shelve"/>
+         <process version="2" lifecycle="published" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:19:07-0800" status="completed" name="publish"/>
+         <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:19:09-0800" status="completed" name="sdr-ingest-transfer"/>
+         <process version="2" lifecycle="accessioned" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:19:10-0800" status="completed" name="cleanup"/>
+         <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:19:13-0800" status="completed" name="rights-metadata"/>
+         <process version="2" lifecycle="described" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:19:15-0800" status="completed" name="descriptive-metadata"/>
+         <process version="2" elapsed="0.0" archived="true" attempts="2"
+           datetime="2012-11-06T16:19:16-0800" status="completed" name="content-metadata"/>'
+      allow(Dor::Config.workflow.client).to receive(:get_workflow_xml).and_return(xml)
+      accessionWF = @item.workflows.get_workflow 'accessionWF'
+      expect(accessionWF).not_to be_nil
     end
-
-    it 'returns 0 if none of the workflows are expedited' do
-      xml = <<-EOF
-            <workflows objectId="druid:bm570gc7690">
-              <workflow repository="dor" objectId="druid:bm570gc7690" id="digitizationWF">
-                <process priority="0" lifecycle="registered" elapsed="0.0" attempts="0" datetime="2012-03-29T15:22:18-0700" status="completed" name="initiate"/>
-                <process priority="0" elapsed="0.0" attempts="0" datetime="2012-03-29T15:22:18-0700" status="waiting" name="digitize"/>
-                <process priority="0" elapsed="0.0" attempts="0" datetime="2012-03-29T15:22:18-0700" status="waiting" name="start-accession"/>
-              </workflow>
-              <workflow repository="dor" objectId="druid:bm570gc7690" id="disseminationWF">
-                <process version="1" priority="0" note="dor" lifecycle="published" elapsed="9.355" archived="true" attempts="1" datetime="2012-06-22T13:33:30-0700" status="completed" name="publish"/>
-              </workflow>
-            </workflows>
-      EOF
-      ds2 = Dor::WorkflowDs.from_xml(xml)
-      allow_any_instance_of(Dor::Workflow::Document).to receive(:definition).and_return(nil)
-      expect(ds2.current_priority).to eq 0
+    it 'should return nil if the xml is empty' do
+      allow(Dor::Config.workflow.client).to receive(:get_workflow_xml).and_return('')
+      expect(@item.workflows.get_workflow('accessionWF')).to be_nil
+    end
+    it 'should request the workflow for a different repository if one is specified' do
+      expect(Dor::Config.workflow.client).to receive(:get_workflow_xml).with('sdr', 'druid:ab123cd4567', 'accessionWF').and_return('')
+      @item.workflows.get_workflow('accessionWF', 'sdr')
     end
   end
-
 end
