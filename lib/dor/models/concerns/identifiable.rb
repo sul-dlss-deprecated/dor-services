@@ -67,8 +67,6 @@ module Dor
       if identityMetadata.otherId('catkey').first ||
          identityMetadata.otherId('barcode').first
         'Symphony'
-      elsif identityMetadata.otherId('mdtoolkit').first
-        'Metadata Toolkit'
       else
         'DOR'
       end
