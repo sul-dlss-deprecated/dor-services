@@ -3,6 +3,8 @@ module Dor
     extend ActiveSupport::Concern
 
     MODS_TO_DC_XSLT = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/mods2dc.xslt")))
+    XMLNS_OAI_DC = 'http://www.openarchives.org/OAI/2.0/oai_dc/'.freeze
+    XMLNS_DC = 'http://purl.org/dc/elements/1.1/'.freeze
 
     class CrosswalkError < Exception; end
 
@@ -45,7 +47,7 @@ module Dor
       desc_md = descMetadata.ng_xml.dup(1)
       add_collection_reference(desc_md) if include_collection_as_related_item
       dc_doc = MODS_TO_DC_XSLT.transform(desc_md)
-      dc_doc.xpath('/oai_dc:dc/*[count(text()) = 0]').remove # Remove empty nodes
+      dc_doc.xpath('/oai_dc:dc/*[count(text()) = 0]', oai_dc: XMLNS_OAI_DC).remove # Remove empty nodes
       raise CrosswalkError, "Dor::Item#generate_dublin_core produced incorrect xml (no root):\n#{dc_doc.to_xml}" if dc_doc.root.nil?
       raise CrosswalkError, "Dor::Item#generate_dublin_core produced incorrect xml (no children):\n#{dc_doc.to_xml}" if dc_doc.root.children.size == 0
       dc_doc
@@ -226,15 +228,15 @@ module Dor
         dc_doc = generate_dublin_core(include_collection_as_related_item: false)
         # we excluding the generated collection relation here; we instead get the collection
         # title from Dor::Identifiable.
-        dc_doc.xpath('/oai_dc:dc/*').each do |node|
+        dc_doc.xpath('/oai_dc:dc/*', oai_dc: XMLNS_OAI_DC).each do |node|
           add_solr_value(solr_doc, "public_dc_#{node.name}", node.text, :string, [:stored_searchable])
         end
         creator = ''
-        dc_doc.xpath('//dc:creator').each do |node|
+        dc_doc.xpath('//dc:creator', dc: XMLNS_DC).each do |node|
           creator = node.text
         end
         title = ''
-        dc_doc.xpath('//dc:title').each do |node|
+        dc_doc.xpath('//dc:title', dc: XMLNS_DC).each do |node|
           title = node.text
         end
         creator_title = creator + title
