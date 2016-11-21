@@ -109,10 +109,7 @@ describe Dor::Identifiable do
     it 'should affect identity_metadata_source computation' do
       item.remove_other_Id('catkey', '129483625')
       item.remove_other_Id('barcode', '36105049267078')
-      item.add_other_Id('mdtoolkit', 'someid123')
-      expect(item.identity_metadata_source).to eq 'Metadata Toolkit'
       item.add_other_Id('catkey', '129483625')
-      item.remove_other_Id('mdtoolkit', 'someid123')
       expect(item.identity_metadata_source).to eq 'Symphony'
       item.remove_other_Id('catkey', '129483625')
       item.add_other_Id('barcode', '36105049267078')

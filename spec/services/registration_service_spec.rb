@@ -163,11 +163,6 @@ describe Dor::RegistrationService do
           @params[:metadata_source] = 'none'
           expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::ParameterError)
         end
-        it 'except if metadata_source is mdtoolkit (just a warning)' do
-          @params[:metadata_source] = 'mdtoolkit'
-          expect_any_instance_of(Dor::Item).to receive(:save).and_return(true)
-          Dor::RegistrationService.register_object(@params)
-        end
       end
     end
 
