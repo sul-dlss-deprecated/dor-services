@@ -10,12 +10,6 @@
 :fedora:
   :url:
   :safeurl:
-:stomp:
-  :host:
-  :user: ""
-  :password: ""
-  :port: 61613
-  :client_id: 'dor-services'
 :solr:
   :url:
   :opts: {}
