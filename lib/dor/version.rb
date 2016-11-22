@@ -1,3 +1,3 @@
 module Dor
-  VERSION = '5.17.2'.freeze
+  VERSION = '5.17.3'.freeze
 end
