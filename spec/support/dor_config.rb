@@ -18,7 +18,6 @@ Dor.configure do
   end
 
   metadata do
-    exist.url   'http://mdtkUser:mdtkPass@example.edu/exist/rest/'
     catalog.url 'http://example.edu/catalog/mods'
   end
 
