@@ -38,6 +38,7 @@ describe Dor::Publishable do
   before :each do
 
     @item = instantiate_fixture('druid:ab123cd4567', PublishableItem)
+    @collection = instantiate_fixture('druid:ab123cd4567', Dor::Collection)
     @apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
     allow(@item).to receive(:admin_policy_object).and_return(@apo)
     @mods = <<-EOXML
@@ -100,6 +101,11 @@ describe Dor::Publishable do
   end
 
   describe '#thumb' do
+    it 'should return nil if there is no contentMetadata datastream' do
+      expect(@collection.thumb).to be_nil
+      expect(@collection.thumb_url).to be_nil
+    end
+
     it 'should return nil if there is no contentMetadata' do
       expect(@item.thumb).to be_nil
       expect(@item.thumb_url).to be_nil

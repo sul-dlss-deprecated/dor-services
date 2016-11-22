@@ -8,7 +8,7 @@ module Dor
     # Compute the thumbnail for this object following the rules at https://consul.stanford.edu/display/chimera/The+Rules+of+Thumb
     # @return [String] the computed thumb filename, with the druid prefix and a slash in front of it, e.g. oo000oo0001/filenamewith space.jp2
     def thumb
-       return if contentMetadata.nil?
+       return unless respond_to?(:contentMetadata) && !contentMetadata.nil?
        cm = contentMetadata.ng_xml
        mime_type_finder = "@mimetype='image/jp2' or @mimeType='image/jp2'" # allow the mimetype attribute to be lower or camelcase when searching to make it more robust
        thumb_image=nil
