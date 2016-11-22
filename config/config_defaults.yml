@@ -9,7 +9,6 @@
   :key_pass: ""
 :fedora:
   :url:
-  :safeurl:
 :solr:
   :url:
   :opts: {}
