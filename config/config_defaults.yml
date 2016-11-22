@@ -34,8 +34,6 @@
   :rest_url: ""
 :stacks:
   :local_workspace_root: /dor
-  :storage_root: /stacks
-  :document_cache_storage_root:
   :host:
   :user:
   :document_cache_host:
