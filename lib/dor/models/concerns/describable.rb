@@ -18,10 +18,12 @@ module Dor
     # @param [Nokogiri::XML::Document] content Nokogiri descMetadata document (overriding internal data)
     # @param [boolean] ns_aware namespace awareness toggle for from_nk_node()
     def stanford_mods(content = nil, ns_aware = true)
-      m = Stanford::Mods::Record.new
-      desc = content.nil? ? descMetadata.ng_xml : content
-      m.from_nk_node(desc.root, ns_aware)
-      m
+      @stanford_mods ||= begin
+        m = Stanford::Mods::Record.new
+        desc = content.nil? ? descMetadata.ng_xml : content
+        m.from_nk_node(desc.root, ns_aware)
+        m
+      end
     end
 
     def fetch_descMetadata_datastream
@@ -198,68 +200,74 @@ module Dor
 
     def to_solr(solr_doc = {}, *args)
       solr_doc = super solr_doc, *args
+      add_metadata_format_to_solr_doc(solr_doc)
+      add_dc_to_solr_doc(solr_doc)
+      add_mods_to_solr_doc(solr_doc)
+    end
+
+    def add_metadata_format_to_solr_doc(solr_doc)
+      solr_doc['metadata_format_ssim'] ||= []
+      solr_doc['metadata_format_ssim'] += ['mods']
+    end
+
+    def add_dc_to_solr_doc(solr_doc)
+      dc_doc = generate_dublin_core(include_collection_as_related_item: false)
+      # we excluding the generated collection relation here; we instead get the collection
+      # title from Dor::Identifiable.
+      dc_doc.xpath('/oai_dc:dc/*', oai_dc: XMLNS_OAI_DC).each do |node|
+        add_solr_value(solr_doc, "public_dc_#{node.name}", node.text, :string, [:stored_searchable])
+      end
+      creator = ''
+      dc_doc.xpath('//dc:creator', dc: XMLNS_DC).each do |node|
+        creator = node.text
+      end
+      title = ''
+      dc_doc.xpath('//dc:title', dc: XMLNS_DC).each do |node|
+        title = node.text
+      end
+      creator_title = creator + title
+      add_solr_value(solr_doc, 'creator_title', creator_title, :string, [:stored_sortable])
+    rescue CrosswalkError => e
+      Dor.logger.warn "Cannot index #{pid}.descMetadata: #{e.message}"
+    end
+
+    def add_mods_to_solr_doc(solr_doc)
       mods_sources = {
-        'sw_display_title_tesim'      => :sw_title_display,
-        'sw_author_ssim'              => :main_author_w_date,
-        'sw_author_tesim'             => :main_author_w_date,
-        'sw_author_sort_ssi'          => :sw_sort_author,
-        'sw_language_ssim'            => :sw_language_facet,
-        'sw_language_tesim'           => :sw_language_facet,
-        'sw_genre_ssim'               => :sw_genre,
-        'sw_genre_tesim'              => :sw_genre,
-        'sw_format_ssim'              => :format_main,   # basically sw_typeOfResource_ssim
-        'sw_format_tesim'             => :format_main,   # basically sw_typeOfResource_tesim
-        'sw_topic_ssim'               => :topic_facet,
-        'sw_topic_tesim'              => :topic_facet,
-        'sw_subject_temporal_ssim'    => :era_facet,
-        'sw_subject_temporal_tesim'   => :era_facet,
-        'sw_subject_geographic_ssim'  => :geographic_facet,
-        'sw_subject_geographic_tesim' => :geographic_facet,
-        'mods_typeOfResource_ssim'    => [:term_values, :typeOfResource],
-        'mods_typeOfResource_tesim'   => [:term_values, :typeOfResource]
-      }
-      keys = mods_sources.keys.concat(%w( metadata_format_ssim ))
-      keys.each { |key|
-        solr_doc[key] ||= []     # initialize multivalue targts if necessary
+        sw_title_display: %w(sw_display_title_tesim),
+        main_author_w_date: %w(sw_author_ssim sw_author_tesim),
+        sw_sort_author: %w(sw_author_sort_ssi),
+        sw_language_facet: %w(sw_language_ssim sw_language_tesim),
+        sw_genre: %w(sw_genre_ssim sw_genre_tesim),
+        format_main: %w(sw_format_ssim sw_format_tesim),
+        topic_facet: %w(sw_topic_ssim sw_topic_tesim),
+        era_facet: %w(sw_subject_temporal_ssim sw_subject_temporal_tesim),
+        geographic_facet: %w(sw_subject_geographic_ssim sw_subject_geographic_tesim),
+        [:term_values, :typeOfResource] => %w(mods_typeOfResource_ssim mods_typeOfResource_tesim),
+        pub_year_sort_str: %w(sw_pub_date_sort_ssi),
+        pub_year_int: %w(sw_pub_date_sort_isi),
+        pub_year_display_str: %w(sw_pub_date_facet_ssi)
       }
 
-      solr_doc['metadata_format_ssim'] << 'mods'
-      begin
-        dc_doc = generate_dublin_core(include_collection_as_related_item: false)
-        # we excluding the generated collection relation here; we instead get the collection
-        # title from Dor::Identifiable.
-        dc_doc.xpath('/oai_dc:dc/*', oai_dc: XMLNS_OAI_DC).each do |node|
-          add_solr_value(solr_doc, "public_dc_#{node.name}", node.text, :string, [:stored_searchable])
+      mods_sources.each_pair do |meth, solr_keys|
+        vals = meth.is_a?(Array) ? stanford_mods.send(meth.shift, *meth) : stanford_mods.send(meth)
+
+        next if vals.nil? || (vals.respond_to?(:empty?) && vals.empty?)
+
+        solr_keys.each do |key|
+          solr_doc[key] ||= []
+          solr_doc[key].push *vals
         end
-        creator = ''
-        dc_doc.xpath('//dc:creator', dc: XMLNS_DC).each do |node|
-          creator = node.text
-        end
-        title = ''
-        dc_doc.xpath('//dc:title', dc: XMLNS_DC).each do |node|
-          title = node.text
-        end
-        creator_title = creator + title
-        add_solr_value(solr_doc, 'creator_title', creator_title, :string, [:stored_sortable])
-      rescue CrosswalkError => e
-        Dor.logger.warn "Cannot index #{pid}.descMetadata: #{e.message}"
+        # asterisk to avoid multi-dimensional array: push values, not the array
       end
 
-      begin
-        mods = stanford_mods
-        mods_sources.each_pair do |solr_key, meth|
-          vals = meth.is_a?(Array) ? mods.send(meth.shift, *meth) : mods.send(meth)
-          solr_doc[solr_key].push *vals unless vals.nil? || vals.empty?
-          # asterisk to avoid multi-dimensional array: push values, not the array
-        end
-        solr_doc['sw_pub_date_sort_ssi' ] = mods.pub_year_sort_str  # e.g. '0800'
-        solr_doc['sw_pub_date_sort_isi' ] = mods.pub_year_int  # e.g. '0800'
-        solr_doc['sw_pub_date_facet_ssi'] = mods.pub_year_display_str # e.g. '9th century'
+      # convert multivalued fields to single value
+      %w(sw_pub_date_sort_ssi sw_pub_date_sort_isi sw_pub_date_facet_ssi).each do |key|
+        solr_doc[key] = solr_doc[key].first unless solr_doc[key].nil?
       end
       # some fields get explicit "(none)" placeholder values, mostly for faceting
-      %w(sw_language_tesim sw_genre_tesim sw_format_tesim).each { |key| solr_doc[key] = ['(none)'] if solr_doc[key].empty? }
-      # otherwise remove empties
-      keys.each { |key| solr_doc.delete(key) if solr_doc[key].nil? || solr_doc[key].empty?}
+      %w(sw_language_tesim sw_genre_tesim sw_format_tesim).each do |key|
+        solr_doc[key] = ['(none)'] if solr_doc[key].nil? || solr_doc[key].empty?
+      end
       solr_doc
     end
 
