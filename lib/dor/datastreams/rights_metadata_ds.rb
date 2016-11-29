@@ -183,17 +183,17 @@ module Dor
 
       # these two values are returned by index_elements[:primary], but are just a less granular version of
       # what the other more specific fields return, so discard them
-      solr_doc['rights_descriptions_ssim'].reject! { |rights_desc| ['access_restricted', 'access_restricted_qualified', 'world_qualified'].include? rights_desc }
-      solr_doc['rights_descriptions_ssim'] << 'dark (file)' if dra.index_elements[:terms].include? 'none_read_file'
+      solr_doc['rights_descriptions_ssim'] -= ['access_restricted', 'access_restricted_qualified', 'world_qualified']
+      solr_doc['rights_descriptions_ssim'] += ['dark (file)'] if dra.index_elements[:terms].include? 'none_read_file'
 
-      solr_doc['obj_rights_locations_ssim'] = dra.index_elements[:obj_locations] if !dra.index_elements[:obj_locations].blank?
-      solr_doc['file_rights_locations_ssim'] = dra.index_elements[:file_locations] if !dra.index_elements[:file_locations].blank?
-      solr_doc['obj_rights_agents_ssim'] = dra.index_elements[:obj_agents] if !dra.index_elements[:obj_agents].blank?
-      solr_doc['file_rights_agents_ssim'] = dra.index_elements[:file_agents] if !dra.index_elements[:file_agents].blank?
+      solr_doc['obj_rights_locations_ssim'] = dra.index_elements[:obj_locations] unless dra.index_elements[:obj_locations].blank?
+      solr_doc['file_rights_locations_ssim'] = dra.index_elements[:file_locations] unless dra.index_elements[:file_locations].blank?
+      solr_doc['obj_rights_agents_ssim'] = dra.index_elements[:obj_agents] unless dra.index_elements[:obj_agents].blank?
+      solr_doc['file_rights_agents_ssim'] = dra.index_elements[:file_agents] unless dra.index_elements[:file_agents].blank?
 
       # suppress empties
       %w(use_statement_ssim copyright_ssim).each do |key|
-        solr_doc[key] = solr_doc[key].reject { |val| val.nil? || val == '' }.flatten unless solr_doc[key].nil?
+        solr_doc[key] = solr_doc[key].reject(&:blank?).flatten unless solr_doc[key].nil?
       end
       add_solr_value(solr_doc, 'use_license_machine', use_license, :string, [:stored_sortable])
 
@@ -201,9 +201,9 @@ module Dor
     end
 
     def use_license
-      return creative_commons unless ['', nil].include?(creative_commons)
-      return open_data_commons unless ['', nil].include?(open_data_commons)
-      ''
+      return creative_commons unless creative_commons.blank?
+      return open_data_commons unless open_data_commons.blank?
+      nil
     end
 
     # maintain AF < 8 indexing behavior

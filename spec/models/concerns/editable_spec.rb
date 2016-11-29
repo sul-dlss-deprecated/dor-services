@@ -219,15 +219,15 @@ describe Dor::Editable do
     end
     it 'should throw an exception if no valid license code is given' do
       expect { @empty_item.use_license = 'something-unexpected' }.to raise_exception(ArgumentError)
-      expect(@empty_item.use_license).to eq('')
-      expect(@empty_item.use_license_human).to eq('')
+      expect(@empty_item.use_license).to be_blank
+      expect(@empty_item.use_license_human).to be_blank
     end
     it 'should be able to remove the use license' do
       [:none, '  ', nil].each do |v|
         @apo.use_license = v
-        expect(@apo.use_license).to eq('')
+        expect(@apo.use_license).to be_blank
         expect(@apo.use_license_uri).to be_nil
-        expect(@apo.use_license_human).to eq('')
+        expect(@apo.use_license_human).to be_blank
         expect(@apo.creative_commons_license).to be_nil
         expect(@apo.creative_commons_license_human).to be_nil
         expect(@apo.open_data_commons_license).to be_nil
