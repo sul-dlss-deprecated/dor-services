@@ -174,19 +174,19 @@ module Dor
     end
 
     def use_license
-      return creative_commons_license unless ['', nil].include?(creative_commons_license)
-      return open_data_commons_license unless ['', nil].include?(open_data_commons_license)
-      ''
+      return creative_commons_license unless creative_commons_license.blank?
+      return open_data_commons_license unless open_data_commons_license.blank?
+      nil
     end
     def use_license_uri
-      return defaultObjectRights.creative_commons.uri.first unless ['', nil].include?(defaultObjectRights.creative_commons.uri)
-      return defaultObjectRights.open_data_commons.uri.first unless ['', nil].include?(defaultObjectRights.open_data_commons.uri)
-      ''
+      return defaultObjectRights.creative_commons.uri.first unless defaultObjectRights.creative_commons.uri.blank?
+      return defaultObjectRights.open_data_commons.uri.first unless defaultObjectRights.open_data_commons.uri.blank?
+      nil
     end
     def use_license_human
-      return creative_commons_license_human unless ['', nil].include?(creative_commons_license_human)
-      return open_data_commons_license_human unless ['', nil].include?(open_data_commons_license_human)
-      ''
+      return creative_commons_license_human unless creative_commons_license_human.blank?
+      return open_data_commons_license_human unless open_data_commons_license_human.blank?
+      nil
     end
 
     def creative_commons_license=(use_license_machine)
