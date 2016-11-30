@@ -145,11 +145,6 @@ module Dor
   autoload :ResetWorkspaceService,     'dor/services/reset_workspace_service'
   autoload :CleanupResetService,       'dor/services/cleanup_reset_service'
 
-  # Versioning Classes
-  module Versioning
-    autoload :FileInventoryDifference, 'dor/versioning/file_inventory_difference'
-  end
-
   # Workflow Classes
   module Workflow
     autoload :Graph,    'dor/workflow/graph'
