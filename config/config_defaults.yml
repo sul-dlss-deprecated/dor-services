@@ -9,21 +9,12 @@
   :key_pass: ""
 :fedora:
   :url:
-  :safeurl:
-:stomp:
-  :host:
-  :user: ""
-  :password: ""
-  :port: 61613
-  :client_id: 'dor-services'
 :solr:
   :url:
   :opts: {}
 :solrizer: {} # deprecated
 :metadata:
   :catalog:
-    :url:
-  :exist:
     :url:
 :sdr:
   :local_workspace_root: /dor/workspace
@@ -40,8 +31,6 @@
   :rest_url: ""
 :stacks:
   :local_workspace_root: /dor
-  :storage_root: /stacks
-  :document_cache_storage_root:
   :host:
   :user:
   :document_cache_host:
@@ -49,7 +38,7 @@
   :local_stacks_root: /stacks
   :local_document_cache_root: /purl/document_cache
   :url:
-  :iiif_profile:
+  :iiif_profile: 'http://iiif.io/api/image/2/level1.json'
 :suri:
   :pass:
   :id_namespace: druid
@@ -69,3 +58,10 @@
   :log: 'log/indexing_svc.log'
   :log_date_format_str: '%Y-%m-%d %H:%M:%S.%L'
   :log_rotation_interval: 'daily'
+:goobi:
+  :url:
+  :dpg_workflow_name: 'goobiWF'
+  :default_goobi_workflow_name: 'Example_Workflow'
+  :max_tries: 3
+  :max_sleep_seconds: 20
+  :base_sleep_seconds: 2

@@ -30,7 +30,6 @@ Dor::Config.configure do
     document_cache_host 'purl-dev.stanford.edu'
     document_cache_user ''
     local_workspace_root '/dor/workspace'
-    storage_root '/stacks'
     host 'host'
     user ''
     local_stacks_root '/stacks'
