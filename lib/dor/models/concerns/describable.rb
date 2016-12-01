@@ -201,34 +201,12 @@ module Dor
     def to_solr(solr_doc = {}, *args)
       solr_doc = super solr_doc, *args
       add_metadata_format_to_solr_doc(solr_doc)
-      add_dc_to_solr_doc(solr_doc)
       add_mods_to_solr_doc(solr_doc)
     end
 
     def add_metadata_format_to_solr_doc(solr_doc)
       solr_doc['metadata_format_ssim'] ||= []
       solr_doc['metadata_format_ssim'] += ['mods']
-    end
-
-    def add_dc_to_solr_doc(solr_doc)
-      dc_doc = generate_dublin_core(include_collection_as_related_item: false)
-      # we excluding the generated collection relation here; we instead get the collection
-      # title from Dor::Identifiable.
-      dc_doc.xpath('/oai_dc:dc/*', oai_dc: XMLNS_OAI_DC).each do |node|
-        add_solr_value(solr_doc, "public_dc_#{node.name}", node.text, :string, [:stored_searchable])
-      end
-      creator = ''
-      dc_doc.xpath('//dc:creator', dc: XMLNS_DC).each do |node|
-        creator = node.text
-      end
-      title = ''
-      dc_doc.xpath('//dc:title', dc: XMLNS_DC).each do |node|
-        title = node.text
-      end
-      creator_title = creator + title
-      add_solr_value(solr_doc, 'creator_title', creator_title, :string, [:stored_sortable])
-    rescue CrosswalkError => e
-      Dor.logger.warn "Cannot index #{pid}.descMetadata: #{e.message}"
     end
 
     def add_mods_to_solr_doc(solr_doc)
