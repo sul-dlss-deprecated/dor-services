@@ -417,8 +417,7 @@ describe Dor::Publishable do
       end
 
       it 'include a releaseData element when there is content inside it, but does not include this release data in identityMetadata' do
-        releaseData = '<releaseData><release>foo</release></releaseData>'
-        allow(@item).to receive(:generate_release_xml).and_return(releaseData)
+        allow(@item).to receive(:released_for).and_return('' => { 'release' => 'foo'})
         p_xml = Nokogiri::XML(@item.public_xml)
         expect(p_xml.at_xpath('/publicObject/releaseData/release').inner_text).to eq 'foo'
         expect(p_xml.at_xpath('/publicObject/identityMetadata/release')).to be_nil

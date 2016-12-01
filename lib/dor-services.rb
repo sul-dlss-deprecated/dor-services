@@ -145,6 +145,7 @@ module Dor
   autoload :ResetWorkspaceService,     'dor/services/reset_workspace_service'
   autoload :CleanupResetService,       'dor/services/cleanup_reset_service'
   autoload :PublicDescMetadataService, 'dor/services/public_desc_metadata_service'
+  autoload :PublicXmlService,       'dor/services/public_xml_service'
 
   # Workflow Classes
   module Workflow
