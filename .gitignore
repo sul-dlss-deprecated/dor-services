@@ -22,3 +22,4 @@ spec/fixtures/export
 spec/fixtures/workspace/*/*/*/*/*/temp/
 spec/fixtures/workspace/.deletes
 tmp.xml
+spec/examples.txt
