@@ -351,6 +351,7 @@ describe Dor::RightsMetadataDS do
           'world_read', 'world|no-download', 'profile:group1|location1|world1', 'none_read_file'
         ),
         'use_license_machine_ssi'     => 'by-nc',
+        'use_licenses_machine_ssim'     => ['by-nc'],
         'obj_rights_locations_ssim'   => ['reading_room']
       )
       expect(doc).not_to include(
