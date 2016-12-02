@@ -294,39 +294,56 @@ describe Dor::Publishable do
     end
 
     context 'produces xml with' do
+      let(:public_xml) { Nokogiri::XML(@item.public_xml) }
       before(:each) do
         @now = Time.now.utc
-        expect(Time).to receive(:now).and_return(@now).at_least(:once)
-        @p_xml = Nokogiri::XML(@item.public_xml)
+        allow(Time).to receive(:now).and_return(@now)
       end
 
       it 'an encoding of UTF-8' do
-        expect(@p_xml.encoding).to match(/UTF-8/)
+        expect(public_xml.encoding).to match(/UTF-8/)
       end
       it 'an id attribute' do
-        expect(@p_xml.at_xpath('/publicObject/@id').value).to match(/^druid:ab123cd4567/)
+        expect(public_xml.at_xpath('/publicObject/@id').value).to match(/^druid:ab123cd4567/)
       end
       it 'a published attribute' do
-        expect(@p_xml.at_xpath('/publicObject/@published').value).to eq(@now.xmlschema)
+        expect(public_xml.at_xpath('/publicObject/@published').value).to eq(@now.xmlschema)
       end
       it 'a published version' do
-        expect(@p_xml.at_xpath('/publicObject/@publishVersion').value).to eq('dor-services/' + Dor::VERSION)
+        expect(public_xml.at_xpath('/publicObject/@publishVersion').value).to eq('dor-services/' + Dor::VERSION)
       end
       it 'identityMetadata' do
-        expect(@p_xml.at_xpath('/publicObject/identityMetadata')).to be
+        expect(public_xml.at_xpath('/publicObject/identityMetadata')).to be
       end
-      it 'contentMetadata' do
-        expect(@p_xml.at_xpath('/publicObject/contentMetadata')).to be
+      it 'no contentMetadata element' do
+        expect(public_xml.at_xpath('/publicObject/contentMetadata')).not_to be
       end
+
+      describe 'with contentMetadata present' do
+        before do
+          @item.contentMetadata.content = <<-XML
+            <?xml version="1.0"?>
+            <contentMetadata objectId="druid:ab123cd4567" type="file">
+              <resource id="0001" sequence="1" type="file">
+                <file id="some_file.pdf" mimetype="file/pdf" publish="yes"/>
+              </resource>
+            </contentMetadata>
+          XML
+        end
+        it 'include contentMetadata' do
+          expect(public_xml.at_xpath('/publicObject/contentMetadata')).to be
+        end
+      end
+
       it 'rightsMetadata' do
-        expect(@p_xml.at_xpath('/publicObject/rightsMetadata')).to be
+        expect(public_xml.at_xpath('/publicObject/rightsMetadata')).to be
       end
       it 'generated mods' do
-        expect(@p_xml.at_xpath('/publicObject/mods:mods', 'mods' => 'http://www.loc.gov/mods/v3')).to be
+        expect(public_xml.at_xpath('/publicObject/mods:mods', 'mods' => 'http://www.loc.gov/mods/v3')).to be
       end
 
       it 'generated dublin core' do
-        expect(@p_xml.at_xpath('/publicObject/oai_dc:dc', 'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/')).to be
+        expect(public_xml.at_xpath('/publicObject/oai_dc:dc', 'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/')).to be
       end
 
       it 'relationships' do
@@ -336,12 +353,12 @@ describe Dor::Publishable do
           'fedora'       => 'info:fedora/fedora-system:def/relations-external#',
           'fedora-model' => 'info:fedora/fedora-system:def/model#'
         }
-        expect(@p_xml.at_xpath('/publicObject/rdf:RDF', ns)).to be
-        expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOf', ns)).to be
-        expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOfCollection', ns)).to be
-        expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isConstituentOf', ns)).to be
-        expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora-model:hasModel', ns)).not_to be
-        expect(@p_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/hydra:isGovernedBy', ns)).not_to be
+        expect(public_xml.at_xpath('/publicObject/rdf:RDF', ns)).to be
+        expect(public_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOf', ns)).to be
+        expect(public_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOfCollection', ns)).to be
+        expect(public_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isConstituentOf', ns)).to be
+        expect(public_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/fedora-model:hasModel', ns)).not_to be
+        expect(public_xml.at_xpath('/publicObject/rdf:RDF/rdf:Description/hydra:isGovernedBy', ns)).not_to be
       end
 
       it 'clones of the content of the other datastreams, keeping the originals in tact' do
@@ -352,7 +369,7 @@ describe Dor::Publishable do
       end
 
       it 'does not add a thumb node if no thumb is present' do
-        expect(@p_xml.at_xpath('/publicObject/thumb')).not_to be
+        expect(public_xml.at_xpath('/publicObject/thumb')).not_to be
       end
 
       it 'include a thumb node if a thumb is present' do
@@ -396,7 +413,7 @@ describe Dor::Publishable do
       end
 
       it 'includes releaseData element from release tags' do
-        releases = @p_xml.xpath('/publicObject/releaseData/release')
+        releases = public_xml.xpath('/publicObject/releaseData/release')
         expect(releases.map(&:inner_text)).to eq ['true', 'true']
         expect(releases.map{ |r| r['to']}).to eq ['Searchworks', 'Some_special_place']
       end

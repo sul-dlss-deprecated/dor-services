@@ -83,7 +83,8 @@ module Dor
       im.search('//release').each(&:remove) # remove any <release> tags from public xml which have full history
 
       pub.add_child(im.root) # add in modified identityMetadata datastream
-      pub.add_child(datastreams['contentMetadata'].public_xml.root.clone)
+      public_content_metadata = datastreams['contentMetadata'].public_xml
+      pub.add_child(public_content_metadata.root.clone) if public_content_metadata.xpath('//resource').any?
       pub.add_child(datastreams['rightsMetadata'].ng_xml.root.clone)
 
       rels = public_relationships.root
