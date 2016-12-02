@@ -19,7 +19,6 @@ module Dor
       return 'default' if admin_policy_object.nil?  # TODO: log warning?
 
       admin_md = admin_policy_object.datastreams['administrativeMetadata']
-      return 'default' unless admin_md.respond_to? :default_workflow_lane
       lane = admin_md.default_workflow_lane
       return 'default' if lane.blank?
       lane
