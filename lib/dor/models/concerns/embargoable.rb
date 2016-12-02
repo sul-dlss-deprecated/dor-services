@@ -36,7 +36,7 @@ module Dor
         end
       end
 
-      datastreams['events'].add_event('embargo', release_agent, 'Embargo released')
+      add_event('embargo', release_agent, 'Embargo released')
     end
 
     def release_20_pct_vis_embargo(release_agent = 'unknown')
@@ -58,7 +58,7 @@ module Dor
         rights_xml.root.add_child(world_doc.root.clone)
       end
 
-      datastreams['events'].add_event('embargo', release_agent, '20% Visibility Embargo released')
+      add_event('embargo', release_agent, '20% Visibility Embargo released')
     end
 
     def update_embargo(new_date)

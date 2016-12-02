@@ -21,7 +21,7 @@ module Dor
       admin_md = admin_policy_object.datastreams['administrativeMetadata']
       return 'default' unless admin_md.respond_to? :default_workflow_lane
       lane = admin_md.default_workflow_lane
-      return 'default' if lane.nil? || lane.strip == ''
+      return 'default' if lane.blank?
       lane
     end
 
