@@ -2,8 +2,6 @@ module Dor
   module Geoable
     extend ActiveSupport::Concern
 
-    class CrosswalkError < Exception; end
-
     included do
       has_metadata  :name => 'geoMetadata',
                     :type => Dor::GeoMetadataDS,
