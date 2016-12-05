@@ -195,15 +195,18 @@ module Dor
       %w(use_statement_ssim copyright_ssim).each do |key|
         solr_doc[key] = solr_doc[key].reject(&:blank?).flatten unless solr_doc[key].nil?
       end
-      add_solr_value(solr_doc, 'use_license_machine', use_license, :string, [:stored_sortable])
+      add_solr_value(solr_doc, 'use_license_machine', use_license.first, :string, [:stored_sortable])
+      add_solr_value(solr_doc, 'use_licenses_machine', use_license, :symbol, [:stored_searchable])
 
       solr_doc
     end
 
     def use_license
-      return creative_commons unless creative_commons.blank?
-      return open_data_commons unless open_data_commons.blank?
-      nil
+      use_license = []
+      use_license += Array(creative_commons)
+      use_license += Array(open_data_commons)
+
+      use_license.reject(&:blank?)
     end
 
     # maintain AF < 8 indexing behavior
