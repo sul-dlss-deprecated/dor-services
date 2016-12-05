@@ -37,7 +37,7 @@ module Dor
     # TODO: return enumerable and lazy load_instance
     # TODO: restrict fieldlist (fl) for non-:lightweight queries
     def find_all(query, opts = {})
-      ActiveSupport::Deprecation.warn 'Dor.ensure_models_loaded! is unnecessary and has been deprecated.'
+      ActiveSupport::Deprecation.warn 'Dor.find_all is deprecated; use activefedora finders instead'
 
       resp = SearchService.query query, opts
       resp['response']['docs'].collect do |solr_doc|
