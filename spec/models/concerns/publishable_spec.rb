@@ -84,8 +84,7 @@ describe Dor::Publishable do
     @item.descMetadata.content    = @mods
     @item.rightsMetadata.content  = @rights
     @item.rels_ext.content        = @rels
-    allow(@item).to receive(:add_collection_reference).and_return(@mods) # calls Item.find and not needed in general tests
-    allow(@item).to receive(:add_constituent_relations).and_return(@mods) # calls Item.find not needed in general tests
+    allow(@item).to receive(:generate_public_desc_md).and_return(@mods) # calls Item.find and not needed in general tests
     allow(OpenURI).to receive(:open_uri).with('https://purl-test.stanford.edu/ab123cd4567.xml').and_return('<xml/>')
   end
 
@@ -389,8 +388,7 @@ describe Dor::Publishable do
       end
       
       it 'should expand isMemberOfCollection and isConstituentOf into correct MODS' do
-        allow(@item).to receive(:add_collection_reference).and_call_original
-        allow(@item).to receive(:add_constituent_relations).and_call_original
+        allow(@item).to receive(:generate_public_desc_md).and_call_original
         # load up collection and constituent parent items from fixture data
         expect(Dor).to receive(:find).with('druid:xh235dd9059').and_return(instantiate_fixture('druid:xh235dd9059', DescribableItem))
         expect(Dor).to receive(:find).with('druid:hj097bm8879').and_return(instantiate_fixture('druid:hj097bm8879', DescribableItem))
