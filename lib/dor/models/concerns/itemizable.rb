@@ -31,7 +31,7 @@ module Dor
         raise Dor::ParameterError, 'Missing Dor::Config.stacks.local_workspace_root'
       end
 
-      if contentMetadata.nil?
+      if !respond_to?(:contentMetadata) || contentMetadata.nil?
         raise Dor::Exception, 'Missing contentMetadata datastream'
       end
 

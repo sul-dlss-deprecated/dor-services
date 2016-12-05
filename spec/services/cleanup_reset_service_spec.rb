@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'pathname'
 require 'druid-tools'
 
-describe Dor::CleanupResetService do
+describe Dor::CleanupResetService, order: :defined do
 
   before(:all) do
     @fixtures = fixtures = Pathname(File.dirname(__FILE__)).join('../fixtures')
