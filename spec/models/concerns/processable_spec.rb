@@ -154,8 +154,6 @@ describe Dor::Processable do
     end
 
     it 'should include the semicolon delimited version, an earliest published date and a status' do
-      #     allow(@item.descMetadata).to receive(:to_solr).and_return({})
-      expect(Dor.logger).to receive(:warn)
       solr_doc = @item.to_solr
       # lifecycle_display should have the semicolon delimited version
       expect(solr_doc['lifecycle_ssim']).to include('published:2012-01-27T05:06:54Z;2')
@@ -189,7 +187,6 @@ describe Dor::Processable do
       expect(solr_doc['modified_latest_dttsi']).to match(/^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\dZ$/)
     end
     it 'should create a version field for each version, including the version number, tag and description' do
-      expect(Dor.logger).to receive(:warn).with(/Cannot index druid:ab123cd4567\.descMetadata.*Dor::Item#generate_dublin_core produced incorrect xml/)
       solr_doc = @item.to_solr
       expect(solr_doc['versions_ssm'].length).to be > 1
       expect(solr_doc['versions_ssm']).to include('4;2.2.0;Another typo')
@@ -211,7 +208,6 @@ describe Dor::Processable do
       </versionMetadata>
       '
       allow(@item).to receive(:versionMetadata).and_return(Dor::VersionMetadataDS.from_xml(dsxml))
-      expect(Dor.logger).to receive(:warn).with(/Cannot index druid:ab123cd4567\.descMetadata.*Dor::Item#generate_dublin_core produced incorrect xml/)
       solr_doc = @item.to_solr
       expect(solr_doc['versions_ssm']).to include('4;2.2.0;')
     end

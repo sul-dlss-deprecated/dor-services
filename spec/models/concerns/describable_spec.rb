@@ -22,21 +22,6 @@ describe Dor::Describable do
     @obj.datastreams['descMetadata'].content = read_fixture('ex1_mods.xml')
   end
 
-  it 'should add a creator_title field' do
-    expected_dc = read_fixture('ex1_dc.xml')
-    found = 0
-    allow(@simple).to receive(:generate_dublin_core).and_return(Nokogiri::XML(expected_dc))
-    # this is hacky but effective
-    allow(@simple).to receive(:add_solr_value) do |doc, field, value, otherstuff|
-      if field == 'creator_title'
-        expect(value).to eq('George, Henry, 1839-1897The complete works of Henry George')
-        found = 1
-      end
-    end
-    @simple.to_solr({})
-    expect(found).to eq 1
-  end
-
   it 'should have a descMetadata datastream' do
     expect(@item.datastreams['descMetadata']).to be_a(Dor::DescMetadataDS)
   end

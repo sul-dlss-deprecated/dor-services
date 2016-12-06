@@ -336,7 +336,6 @@ describe Dor::RightsMetadataDS do
     end
 
     it 'should have correct primary' do
-      expect(Dor.logger).to receive(:warn).with(/Cannot index druid:bb046xn0881\.descMetadata/)
       doc = @item.to_solr
 
       expect(doc).to match a_hash_including(
