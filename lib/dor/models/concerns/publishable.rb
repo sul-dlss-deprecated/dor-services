@@ -73,31 +73,7 @@ module Dor
     # Generate the public .xml for a PURL page.
     # @return [xml] The public xml for the item
     def public_xml
-      pub = Nokogiri::XML('<publicObject/>').root
-      pub['id'] = pid
-      pub['published'] = Time.now.utc.xmlschema
-      pub['publishVersion'] = 'dor-services/' + Dor::VERSION
-      release_xml = Nokogiri(generate_release_xml).xpath('//release')
-
-      im = datastreams['identityMetadata'].ng_xml.clone
-      im.search('//release').each(&:remove) # remove any <release> tags from public xml which have full history
-
-      pub.add_child(im.root) # add in modified identityMetadata datastream
-      public_content_metadata = datastreams['contentMetadata'].public_xml
-      pub.add_child(public_content_metadata.root.clone) if public_content_metadata.xpath('//resource').any?
-      pub.add_child(datastreams['rightsMetadata'].ng_xml.root.clone)
-
-      rels = public_relationships.root
-      pub.add_child(rels.clone) unless rels.nil? # TODO: Should never be nil in practice; working around an ActiveFedora quirk for testing
-      pub.add_child(generate_dublin_core.root.clone)
-      pub.add_child(Nokogiri::XML(generate_public_desc_md).root.clone)
-      pub.add_child(Nokogiri(generate_release_xml).root.clone) unless release_xml.children.size == 0 # If there are no release_tags, this prevents an empty <releaseData/> from being added
-      # Note we cannot base this on if an individual object has release tags or not, because the collection may cause one to be generated for an item,
-      # so we need to calculate it and then look at the final result.s
-      pub.add_child(Nokogiri("<thumb>#{thumb}</thumb>").root.clone) unless thumb.nil?
-      new_pub = Nokogiri::XML(pub.to_xml) { |x| x.noblanks }
-      new_pub.encoding = 'UTF-8'
-      new_pub.to_xml
+      PublicXmlService.new(self).to_xml
     end
 
     # Copies this object's public_xml to the Purl document cache if it is world discoverable

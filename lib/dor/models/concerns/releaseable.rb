@@ -22,19 +22,6 @@ module Dor
       create_workflow('releaseWF')
     end
 
-    # Generate XML structure for inclusion to Purl
-    # @return [String] The XML release node as a string, with ReleaseDigest as the root document
-    def generate_release_xml
-      builder = Nokogiri::XML::Builder.new do |xml|
-        xml.releaseData {
-          released_for.each do |project, released_value|
-            xml.release(released_value['release'], :to => project)
-          end
-        }
-      end
-      builder.to_xml
-    end
-
     # Determine projects in which an item is released
     # @param [Boolean] skip_live_purl set true to skip requesting from purl backend
     # @return [Hash{String => Boolean}] all namespaces, keys are Project name Strings, values are Boolean
