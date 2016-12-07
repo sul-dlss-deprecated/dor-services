@@ -146,6 +146,7 @@ describe Dor::Editable do
     it 'should set the metadata source' do
       @apo.metadata_source = 'Symphony'
       expect(@apo.metadata_source).to eq('Symphony')
+      expect(@apo.administrativeMetadata).to be_changed
     end
     it 'should set the metadata source for an empty datastream' do
       @empty_item.desc_metadata_format = 'TEI'

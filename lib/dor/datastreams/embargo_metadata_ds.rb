@@ -101,6 +101,7 @@ class EmbargoMetadataDS < ActiveFedora::OmDatastream
     end
 
     term_value_delete(:select => '//embargoMetadata/releaseAccess')
+    ng_xml_will_change!
     ng_xml.root.add_child(new_doc.root.clone)
   end
 

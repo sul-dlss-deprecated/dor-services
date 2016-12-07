@@ -28,6 +28,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
   end
 
   def add_value(name, value, attrs = {})
+    ng_xml_will_change!
     add_child_node(ng_xml.root, :value, name, value, attrs)
   end
 
@@ -44,6 +45,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
   # @return [String, Nil] The same value, as per Ruby convention for assignment operators
   # @note The actual values assigned will have leading/trailing whitespace stripped.
   def sourceId=(value)
+    ng_xml_will_change!
     node = find_by_terms(:sourceId).first
     unless value.present? # so setting it to '' is the same as removal: worth documenting maybe?
       node.remove unless node.nil?
@@ -72,6 +74,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
   end
 
   def add_otherId(other_id)
+    ng_xml_will_change!
     (name, val) = other_id.split(/:/, 2)
     node = ng_xml.root.add_child('<otherId/>').first
     node['name'] = name

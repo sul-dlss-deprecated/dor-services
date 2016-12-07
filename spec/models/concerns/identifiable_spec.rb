@@ -88,6 +88,7 @@ describe Dor::Identifiable do
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someid123')
       # return value should be true when it finds something to update
       expect(item.update_other_Id('mdtoolkit', 'someotherid234', 'someid123')).to be_truthy
+      expect(item.identityMetadata).to be_changed
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someotherid234')
     end
     it 'should return false if there was no existing record to update' do
@@ -98,6 +99,7 @@ describe Dor::Identifiable do
   describe 'remove_other_Id' do
     it 'should remove an existing otherid when the tag and value match' do
       item.add_other_Id('mdtoolkit', 'someid123')
+      expect(item.identityMetadata).to be_changed
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someid123')
       expect(item.remove_other_Id('mdtoolkit', 'someid123')).to be_truthy
       expect(item.identityMetadata.otherId('mdtoolkit').length).to eq(0)
@@ -118,6 +120,7 @@ describe Dor::Identifiable do
       expect(item.identity_metadata_source).to eq 'DOR'
       item.remove_other_Id('foo', 'bar')
       expect(item.identity_metadata_source).to eq 'DOR'
+      expect(item.identityMetadata).to be_changed
     end
   end
 
