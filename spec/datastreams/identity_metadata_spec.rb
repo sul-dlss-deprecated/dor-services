@@ -59,6 +59,7 @@ describe Dor::IdentityMetadataDS do
         </identityMetadata>
       EOF
       @dsdoc.sourceId = ' test:  ab110cd8219  '
+      expect(@dsdoc).to be_changed
       expect(@dsdoc.sourceId).to eq('test:ab110cd8219')
       expect(@dsdoc.to_xml).to be_equivalent_to resultxml
     end

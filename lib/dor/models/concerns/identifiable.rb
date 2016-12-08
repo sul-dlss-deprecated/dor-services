@@ -97,6 +97,7 @@ module Dor
     def update_other_Id(type, new_val, val = nil)
       identityMetadata.ng_xml.search('//otherId[@name=\'' + type + '\']')
         .select { |node| val.nil? || node.content == val }
+        .each { identityMetadata.ng_xml_will_change! }
         .each  { |node| node.content = new_val }
         .any?
     end
@@ -104,6 +105,7 @@ module Dor
     def remove_other_Id(type, val = nil)
       identityMetadata.ng_xml.search('//otherId[@name=\'' + type + '\']')
         .select { |node| val.nil? || node.content == val }
+        .each { identityMetadata.ng_xml_will_change! }
         .each(&:remove)
         .any?
     end
@@ -166,6 +168,7 @@ module Dor
       normtag = normalize_tag(tag)
       identityMetadata.ng_xml.search('//tag')
         .select { |node| normalize_tag(node.content) == normtag }
+        .each { identityMetadata.ng_xml_will_change! }
         .each(&:remove)
         .any?
     end
@@ -174,6 +177,7 @@ module Dor
       normtag = normalize_tag(old_tag)
       identityMetadata.ng_xml.search('//tag')
         .select { |node| normalize_tag(node.content) == normtag }
+        .each { identityMetadata.ng_xml_will_change! }
         .each  { |node| node.content = normalize_tag(new_tag)  }
         .any?
     end

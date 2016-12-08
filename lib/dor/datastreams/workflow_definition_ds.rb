@@ -33,6 +33,7 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
   end
 
   def add_process(attributes)
+    ng_xml_will_change!
     add_child_node(ng_xml.at_xpath('/workflow-def'), :process, self, attributes)
   end
 

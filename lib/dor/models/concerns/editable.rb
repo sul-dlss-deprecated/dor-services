@@ -140,6 +140,7 @@ module Dor
     end
     def metadata_source=(val)
       if administrativeMetadata.descMetadata.nil?
+        administrativeMetadata.ng_xml_will_change!
         administrativeMetadata.add_child_node(administrativeMetadata, :descMetadata)
       end
       administrativeMetadata.update_values({[:descMetadata, :source] => val})
@@ -279,6 +280,7 @@ module Dor
       raise(ArgumentError, "Unrecognized rights value '#{rights}'") unless RightsMetadataDS.valid_rights_type? rights
 
       rights_xml = defaultObjectRights.ng_xml
+      defaultObjectRights.ng_xml_will_change!
       RightsMetadataDS.upd_rights_xml_for_rights_type(rights_xml, rights)
     end
 
@@ -288,6 +290,7 @@ module Dor
     def desc_metadata_format=(format)
       # create the node if it isnt there already
       unless administrativeMetadata.metadata_format.first
+        administrativeMetadata.ng_xml_will_change!
         administrativeMetadata.add_child_node(administrativeMetadata.ng_xml.root, :metadata_format)
       end
       administrativeMetadata.update_values({[:metadata_format] => format})
@@ -299,6 +302,7 @@ module Dor
     def desc_metadata_source=(source)
       # create the node if it isnt there already
       unless administrativeMetadata.metadata_source.first
+        administrativeMetadata.ng_xml_will_change!
         administrativeMetadata.add_child_node(administrativeMetadata.ng_xml.root, :metadata_source)
       end
       administrativeMetadata.update_values({[:metadata_source] => format})
@@ -314,6 +318,7 @@ module Dor
     def default_workflow=(wf)
       fail ArgumentError, 'Must have a valid workflow for default' if wf.blank?
       xml = administrativeMetadata.ng_xml
+      administrativeMetadata.ng_xml_will_change!
       nodes = xml.search('//registration/workflow')
       if nodes.first
         nodes.first['id'] = wf

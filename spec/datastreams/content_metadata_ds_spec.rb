@@ -138,6 +138,7 @@ describe Dor::ContentMetadataDS do
       expect(new_file['publish' ]).to eq('no')
       expect(new_file['preserve']).to eq('no')
       expect(new_file['size'    ]).to eq('12345')
+      expect(@cm).to be_changed
     end
   end
 
@@ -240,6 +241,7 @@ describe Dor::ContentMetadataDS do
       ').root
 
       @item.contentMetadata.add_virtual_resource(child_druid, child_resource)
+      expect(@item.contentMetadata).to be_changed
       nodes = @item.contentMetadata.ng_xml.search('//resource[@id=\'ab123cd4567_2\']')
       expect(nodes.length).to eq(1)
       node = nodes.first
