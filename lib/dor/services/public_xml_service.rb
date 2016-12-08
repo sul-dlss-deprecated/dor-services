@@ -12,11 +12,10 @@ module Dor
       pub['published'] = Time.now.utc.xmlschema
       pub['publishVersion'] = 'dor-services/' + Dor::VERSION
 
-
       pub.add_child(public_identity_metadata.root) # add in modified identityMetadata datastream
-      public_content_metadata = object.datastreams['contentMetadata'].public_xml
-      pub.add_child(public_content_metadata.root.clone) if public_content_metadata.xpath('//resource').any?
+      pub.add_child(public_content_metadata.root) if public_content_metadata.xpath('//resource').any?
       pub.add_child(public_rights_metadata.root)
+
       pub.add_child(public_relationships.root) unless public_relationships.nil? # TODO: Should never be nil in practice; working around an ActiveFedora quirk for testing
       pub.add_child(object.generate_dublin_core.root)
       pub.add_child(Nokogiri::XML(object.generate_public_desc_md).root)
@@ -61,6 +60,44 @@ module Dor
       end
     end
 
+    # @return [Nokogiri::XML::Document] sanitized for public consumption
+    def public_content_metadata
+      @public_content_metadata ||= begin
+        result = object.datastreams['contentMetadata'].ng_xml.clone
+
+        # remove any resources or attributes that are not destined for the public XML
+        result.xpath('/contentMetadata/resource[not(file[(@deliver="yes" or @publish="yes")]|externalFile)]').each(&:remove)
+        result.xpath('/contentMetadata/resource/file[not(@deliver="yes" or @publish="yes")]'                ).each(&:remove)
+        result.xpath('/contentMetadata/resource/file').xpath('@preserve|@shelve|@publish|@deliver'          ).each(&:remove)
+        result.xpath('/contentMetadata/resource/file/checksum'                                              ).each(&:remove)
+
+        # support for dereferencing links via externalFile element(s) to the source (child) item - see JUMBO-19
+        result.xpath('/contentMetadata/resource/externalFile').each do |externalFile|
+          # enforce pre-conditions that resourceId, objectId, fileId are required
+          src_resource_id = externalFile['resourceId']
+          src_druid = externalFile['objectId']
+          src_file_id = externalFile['fileId']
+          fail ArgumentError, "Malformed externalFile data: #{externalFile.inspect}" if [src_resource_id, src_file_id, src_druid].map(&:blank?).any?
+
+          # grab source item
+          src_item = Dor.find(src_druid)
+
+          # locate and extract the resourceId/fileId elements
+          doc = src_item.datastreams['contentMetadata'].ng_xml
+          src_resource = doc.at_xpath("//resource[@id=\"#{src_resource_id}\"]")
+          src_file = src_resource.at_xpath("file[@id=\"#{src_file_id}\"]")
+          src_image_data = src_file.at_xpath('imageData')
+
+          # always use title regardless of whether a child label is present
+          src_label = doc.create_element('label')
+          src_label.content = src_item.full_title
+
+          # add the extracted label and imageData
+          externalFile.add_previous_sibling(src_label)
+          externalFile << src_image_data unless src_image_data.nil?
+        end
+
+        result
       end
     end
   end
