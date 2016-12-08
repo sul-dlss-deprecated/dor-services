@@ -54,22 +54,6 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
     ng_xml.at_xpath('/workflow-def/@repository').to_s
   end
 
-  def configuration
-    result = ActiveSupport::OrderedHash.new
-    result['repository'] = repo
-    result['name'] = name
-    processes.each { |process| result[process.name] = process.to_hash }
-    result
-  end
-
-  def configuration=(hash)
-    self.ng_xml = Nokogiri::XML(%(<workflow-def id="#{hash['name']}" repository="#{hash['repository']}"/>))
-    i = 0
-    hash.each_pair do |k, v|
-      add_process(v.merge({:name => k, :sequence => i += 1})) if v.is_a?(Hash)
-    end
-  end
-
   # Creates the xml used by Dor::WorkflowService#create_workflow
   # @return [String] An object's initial workflow as defined by the <workflow-def> in content
   def initial_workflow
@@ -99,10 +83,6 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
       add_solr_value(solr_doc, 'process', "#{p.name}|#{p.label}", :symbol, [:displayable])
     end
     solr_doc
-  end
-
-  def to_yaml
-    YAML.dump(configuration)
   end
 
   # maintain AF < 8 indexing behavior
