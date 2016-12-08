@@ -2,8 +2,6 @@ module Dor
   class RightsMetadataDS < ActiveFedora::OmDatastream
     require 'dor/rights_auth'
 
-    attr_writer :dra_object
-
     # This is separate from default_object_rights because
     # (1) we cannot default to such a permissive state
     # (2) this is real, not default
@@ -131,7 +129,7 @@ module Dor
       ng_xml_will_change!
       RightsMetadataDS.upd_rights_xml_for_rights_type(rights_xml, rights)
 
-      self.dra_object = nil # until TODO complete, we'll expect to have to reparse after modification
+      @dra_object = nil # until TODO complete, we'll expect to have to reparse after modification
     end
 
     def to_solr(solr_doc = {}, *args)
