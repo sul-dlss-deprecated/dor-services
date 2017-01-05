@@ -33,45 +33,6 @@ module Dor
 
     ### READ ONLY METHODS
 
-    # @return [Nokogiri::XML::Document] sanitized for public consumption
-    def public_xml
-      result = ng_xml.clone
-
-      # remove any resources or attributes that are not destined for the public XML
-      result.xpath('/contentMetadata/resource[not(file[(@deliver="yes" or @publish="yes")]|externalFile)]').each(&:remove)
-      result.xpath('/contentMetadata/resource/file[not(@deliver="yes" or @publish="yes")]'                ).each(&:remove)
-      result.xpath('/contentMetadata/resource/file').xpath('@preserve|@shelve|@publish|@deliver'          ).each(&:remove)
-      result.xpath('/contentMetadata/resource/file/checksum'                                              ).each(&:remove)
-
-      # support for dereferencing links via externalFile element(s) to the source (child) item - see JUMBO-19
-      result.xpath('/contentMetadata/resource/externalFile').each do |externalFile|
-        # enforce pre-conditions that resourceId, objectId, fileId are required
-        src_resource_id = externalFile['resourceId']
-        src_druid = externalFile['objectId']
-        src_file_id = externalFile['fileId']
-        fail ArgumentError, "Malformed externalFile data: #{externalFile.inspect}" if [src_resource_id, src_file_id, src_druid].map(&:blank?).any?
-
-        # grab source item
-        src_item = Dor.find(src_druid)
-
-        # locate and extract the resourceId/fileId elements
-        doc = src_item.datastreams['contentMetadata'].ng_xml
-        src_resource = doc.at_xpath("//resource[@id=\"#{src_resource_id}\"]")
-        src_file = src_resource.at_xpath("file[@id=\"#{src_file_id}\"]")
-        src_image_data = src_file.at_xpath('imageData')
-
-        # always use title regardless of whether a child label is present
-        src_label = doc.create_element('label')
-        src_label.content = src_item.full_title
-
-        # add the extracted label and imageData
-        externalFile.add_previous_sibling(src_label)
-        externalFile << src_image_data unless src_image_data.nil?
-      end
-
-      result
-    end
-
     # Only use this when you want the behavior of raising an exception if anything besides exactly one matching node
     # is found.  Otherwise just use .xpath, .at_xpath or .search.
     # @param xpath [String] accessor invocation for Nokogiri xpath
