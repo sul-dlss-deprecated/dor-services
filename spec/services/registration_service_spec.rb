@@ -307,6 +307,7 @@ describe Dor::RegistrationService do
         obj = Dor::RegistrationService.register_object(@params)
         expect(obj.label).to eq('a' * 254)
       end
+
       it 'sets workflow priority when passed in' do
         expect_any_instance_of(Dor::Item).to receive(:create_workflow).with('digitizationWF', false, 50)
         @params[:workflow_priority] = 50
@@ -316,4 +317,45 @@ describe Dor::RegistrationService do
     end # context common cases
 
   end
+
+  context '#create_from_request' do
+    before :each do
+      allow(Dor::SuriService).to receive(:mint_id).and_return(@pid)
+      allow(Dor::SearchService).to receive(:query_by_id).and_return([])
+      allow(ActiveFedora::Base).to receive(:connection_for_pid).and_return(@mock_repo)
+      # allow(Dor::SearchService).to receive(:solr).and_return(@mock_solr)
+      allow_any_instance_of(Dor::Item).to receive(:save).and_return(true)
+      # allow_any_instance_of(Dor::Collection).to receive(:save).and_return(true)
+      allow_any_instance_of(Dor::Item).to receive(:create).and_return(true)
+
+      @params = {
+        :object_type   => 'item',
+        :admin_policy  => 'druid:fg890hi1234',
+        :label         => 'web-archived-crawl for http://www.example.org',
+        :source_id     => 'sul:SOMETHING-www.example.org'
+      }
+    end
+
+    it 'source_id may have one or more colons' do
+      expect { Dor::RegistrationService.create_from_request(@params) }.not_to raise_error
+      @params[:source_id] = 'sul:SOMETHING-http://www.example.org'
+      expect { Dor::RegistrationService.create_from_request(@params) }.not_to raise_error
+    end
+
+    it 'source_id must have at least one colon' do
+      # Execution gets into IdentityMetadataDS code for specific error
+      @params[:source_id] = 'no-colon'
+      exp_regex = /Source ID must follow the format 'namespace:value'/
+      expect { Dor::RegistrationService.create_from_request(@params) }.to raise_error(ArgumentError, exp_regex)
+    end
+
+    it 'other_id may have any number of colons' do
+      @params[:other_id] = 'no-colon'
+      expect { Dor::RegistrationService.create_from_request(@params) }.not_to raise_error
+      @params[:other_id] = 'catkey:000'
+      expect { Dor::RegistrationService.create_from_request(@params) }.not_to raise_error
+      @params[:other_id] = 'catkey:oop:sie'
+      expect { Dor::RegistrationService.create_from_request(@params) }.not_to raise_error
+    end
+  end # create_from_request
 end
