@@ -35,7 +35,7 @@ describe Dor::IdentityMetadataDS do
       expect(@dsdoc.sourceId).to eq('sulair:bb110sm8219')
     end
 
-    it 'should be able to read ID fields as attributes' do
+    it 'can read ID fields as attributes' do
       expect(@dsdoc.objectId).to eq('druid:bb110sm8219')
       expect(@dsdoc.otherId).to eq(['mdtoolkit:bb110sm8219', 'uuid:b382ee92-da77-11e0-9036-0016034322e4'])
       expect(@dsdoc.otherId('mdtoolkit')).to eq(['bb110sm8219'])
@@ -44,7 +44,7 @@ describe Dor::IdentityMetadataDS do
       expect(@dsdoc.sourceId).to eq('sulair:bb110sm8219')
     end
 
-    it 'should be able to set the (stripped) sourceID' do
+    it 'sets the (stripped) sourceID' do
       resultxml = <<-EOF
         <identityMetadata>
           <objectCreator>DOR</objectCreator>
@@ -90,17 +90,16 @@ describe Dor::IdentityMetadataDS do
       end
     end
 
-    it 'should raise on malformed sourceIDs' do
+    it 'raises ArgumentError on malformed sourceIDs' do
       expect{@dsdoc.sourceId = 'NotEnoughColons'}.to raise_exception(ArgumentError)
       expect{@dsdoc.sourceId = ':EmptyFirstPart'}.to raise_exception(ArgumentError)
       expect{@dsdoc.sourceId = 'WhitespaceSecondPart:  '}.to raise_exception(ArgumentError)
       expect{@dsdoc.sourceId = 'WhitespaceSecondPart:  '}.to raise_exception(ArgumentError)
     end
 
-    it 'should raise on a value containing too many colons' do
-      # This may need to be loosened in the future to accommodate colon-having values from as-yet-unknown sources
-      expect{@dsdoc.sourceId = 'Too:Many:Parts'}.to raise_exception(ArgumentError)
-      expect{@dsdoc.sourceId = 'Too::ManyColons'}.to raise_exception(ArgumentError)
+    it 'does not raise error on a sourceId with multiple colons' do
+      expect{@dsdoc.sourceId = 'Too:Many:Parts'}.not_to raise_exception
+      expect{@dsdoc.sourceId = 'Too::ManyColons'}.not_to raise_exception
     end
 
     it 'creates a simple default with #new' do
@@ -108,7 +107,7 @@ describe Dor::IdentityMetadataDS do
       expect(new_doc.to_xml).to be_equivalent_to '<identityMetadata/>'
     end
 
-    it 'should properly add elements' do
+    it 'properly adds elements' do
       resultxml = <<-EOF
         <identityMetadata>
           <objectId>druid:ab123cd4567</objectId>

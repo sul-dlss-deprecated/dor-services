@@ -40,8 +40,6 @@ describe Dor::Identifiable do
 
   describe 'source_id= (AKA set_source_id)' do
     it 'raises on unsalvageable values' do
-      expect{item.source_id = 'Too:Many:Colons'}.to raise_error ArgumentError
-      expect{item.source_id = 'Still::TooMany'}.to raise_error ArgumentError
       expect{item.source_id = 'NotEnoughColons'}.to raise_error ArgumentError
       expect{item.source_id = ':EmptyFirstPart'}.to raise_error ArgumentError
       expect{item.source_id = 'WhitespaceSecondPart:   '}.to raise_error ArgumentError
@@ -59,6 +57,12 @@ describe Dor::Identifiable do
     it 'should do normalization via identityMetadata.sourceID=' do
       item.source_id = ' SourceX :  Value Y  '
       expect(item.source_id).to eq('SourceX:Value Y')
+    end
+    it 'allows colons in the value' do
+      item.source_id = 'one:two:three'
+      expect(item.source_id).to eq('one:two:three')
+      item.source_id = 'one::two::three'
+      expect(item.source_id).to eq('one::two::three')
     end
     it 'should delete the sourceId node on nil or empty-string' do
       item.source_id = nil

@@ -187,7 +187,7 @@ module Dor
 
       def ids_to_hash(ids)
         return nil if ids.nil?
-        Hash[Array(ids).map { |id| id.split(/:/) }]
+        Hash[Array(ids).map { |id| id.split(':', 2) }]
       end
     end
   end

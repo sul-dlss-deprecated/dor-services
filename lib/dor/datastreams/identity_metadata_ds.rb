@@ -51,8 +51,7 @@ class IdentityMetadataDS < ActiveFedora::OmDatastream
       node.remove unless node.nil?
       return nil
     end
-    parts = value.split(':').map(&:strip)
-    # parts = value.split(/:/, 2).map(&:strip) # if we needed to allow colons in values or bunched colon separators
+    parts = value.split(':', 2).map(&:strip)
     raise ArgumentError, "Source ID must follow the format 'namespace:value', not '#{value}'" unless
       parts.length == 2 && parts[0].present? && parts[1].present?
     node ||= ng_xml.root.add_child('<sourceId/>').first
