@@ -155,4 +155,6 @@ module Dor
   end
 
   eager_load!
+
+  require 'dor/utils/hydrus_shims'
 end
