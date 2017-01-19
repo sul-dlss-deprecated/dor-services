@@ -252,6 +252,12 @@ describe Dor::Governable do
       allow(@item).to receive(:admin_policy_object) { apo }
       expect(@item.default_workflow_lane).to eq 'default'
     end
+    it "returns the value 'default' if the object's APO does not have administrativeMetadata" do
+      apo = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
+      allow(@item).to receive(:admin_policy_object) { apo }
+      allow(apo.datastreams).to receive(:[]).with('administrativeMetadata').and_return(nil)
+      expect(@item.default_workflow_lane).to eq 'default'
+    end
     it "returns the value 'default' for a newly created object" do
       apo  = instantiate_fixture('druid:zt570tx3016', Dor::AdminPolicyObject)
       item = GovernableItem.new
