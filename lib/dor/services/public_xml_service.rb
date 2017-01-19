@@ -62,6 +62,7 @@ module Dor
 
     # @return [Nokogiri::XML::Document] sanitized for public consumption
     def public_content_metadata
+      return Nokogiri::XML::Document.new unless object.datastreams['contentMetadata']
       @public_content_metadata ||= begin
         result = object.datastreams['contentMetadata'].ng_xml.clone
 

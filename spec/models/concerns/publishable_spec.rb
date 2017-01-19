@@ -424,6 +424,21 @@ describe Dor::Publishable do
       end
     end
 
+    context 'with a collection' do
+      let(:public_xml) { Nokogiri::XML(@item.public_xml) }
+      before(:each) do
+        @now = Time.now.utc
+        allow(Time).to receive(:now).and_return(@now)
+      end
+
+      it 'publishes the expected datastreams' do
+        expect(public_xml.at_xpath('/publicObject/identityMetadata')).to be
+        expect(public_xml.at_xpath('/publicObject/rightsMetadata')).to be
+        expect(public_xml.at_xpath('/publicObject/mods:mods', 'mods' => 'http://www.loc.gov/mods/v3')).to be
+        expect(public_xml.at_xpath('/publicObject/rdf:RDF', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')).to be
+        expect(public_xml.at_xpath('/publicObject/oai_dc:dc', 'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/')).to be
+      end
+    end
     describe '#publish_metadata' do
       context 'with no world discover access in rightsMetadata' do
 
@@ -547,23 +562,48 @@ describe Dor::Publishable do
       end
 
       context 'copies to the document cache' do
-        before(:each) do
-          expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<identityMetadata/, 'identityMetadata')
-          expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<contentMetadata/, 'contentMetadata')
-          expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<rightsMetadata/, 'rightsMetadata')
-          expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<oai_dc:dc/, 'dc')
-          expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<publicObject/, 'public')
-          expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<mods:mods/, 'mods')
-          expect(@item).to receive(:publish_notify_on_success).with(no_args)
+        context 'with an item' do
+          before(:each) do
+            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<identityMetadata/, 'identityMetadata')
+            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<contentMetadata/, 'contentMetadata')
+            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<rightsMetadata/, 'rightsMetadata')
+            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<oai_dc:dc/, 'dc')
+            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<publicObject/, 'public')
+            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<mods:mods/, 'mods')
+            expect(@item).to receive(:publish_notify_on_success).with(no_args)
+          end
+          it 'identityMetadta, contentMetadata, rightsMetadata, generated dublin core, and public xml' do
+            @item.rightsMetadata.content = "<rightsMetadata><access type='discover'><machine><world/></machine></access></rightsMetadata>"
+            @item.publish_metadata
+          end
+          it 'even when rightsMetadata uses xml namespaces' do
+            @item.rightsMetadata.content = %q(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1">
+              <access type='discover'><machine><world/></machine></access></rightsMetadata>)
+            @item.publish_metadata
+          end
         end
-        it 'identityMetadta, contentMetadata, rightsMetadata, generated dublin core, and public xml' do
-          @item.rightsMetadata.content = "<rightsMetadata><access type='discover'><machine><world/></machine></access></rightsMetadata>"
-          @item.publish_metadata
-        end
-        it 'even when rightsMetadata uses xml namespaces' do
-          @item.rightsMetadata.content = %q(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1">
-            <access type='discover'><machine><world/></machine></access></rightsMetadata>)
-          @item.publish_metadata
+
+        context 'with a collection object' do
+          before do
+            @collection.descMetadata.content    = @mods
+            @collection.rightsMetadata.content = "<rightsMetadata><access type='discover'><machine><world/></machine></access></rightsMetadata>"
+            @collection.rels_ext.content        = @rels
+            allow(@collection).to receive(:generate_public_desc_md).and_return(@mods) # calls Item.find and not needed in general tests
+          end
+
+          before do
+            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<identityMetadata/, 'identityMetadata')
+            expect(Dor::DigitalStacksService).not_to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<contentMetadata/, 'contentMetadata')
+            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<rightsMetadata/, 'rightsMetadata')
+            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<oai_dc:dc/, 'dc')
+            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<publicObject/, 'public')
+            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<mods:mods/, 'mods')
+            expect(@collection).to receive(:publish_notify_on_success).with(no_args)
+          end
+
+          it 'ignores missing data' do
+            @collection.publish_metadata
+          end
         end
       end
     end
