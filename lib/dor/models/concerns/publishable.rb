@@ -84,7 +84,7 @@ module Dor
         dc_xml = generate_dublin_core.to_xml {|config| config.no_declaration}
         DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'dc')
         %w(identityMetadata contentMetadata rightsMetadata).each do |stream|
-          DigitalStacksService.transfer_to_document_store(pid, datastreams[stream].to_xml, stream) if datastreams[stream]
+          DigitalStacksService.transfer_to_document_store(pid, datastreams[stream].content.to_s, stream) if datastreams[stream]
         end
         DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
         DigitalStacksService.transfer_to_document_store(pid, generate_public_desc_md, 'mods')
