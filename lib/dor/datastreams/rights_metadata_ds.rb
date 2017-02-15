@@ -54,8 +54,12 @@ module Dor
       'world-nd' => 'World (no-download)',
       'stanford' => 'Stanford',
       'stanford-nd' => 'Stanford (no-download)',
-      'loc:spec' => 'Location spec',
-      'loc:music' => 'Location music',
+      'loc:spec' => 'Location: Special Collections',
+      'loc:music' => 'Location: Music Library',
+      'loc:ars' => 'Location: Archive of Recorded Sound',
+      'loc:art' => 'Location: Art Library',
+      'loc:hoover' => 'Location: Hoover Library',
+      'loc:m&m' => 'Location: Media & Microtext',
       'dark' => 'Dark (Preserve Only)',
       'none' => 'Citation Only'
     }.freeze
