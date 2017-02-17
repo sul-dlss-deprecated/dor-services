@@ -128,6 +128,61 @@ describe Dor::Identifiable do
     end
   end
 
+  describe 'catkey' do
+
+    let(:current_catkey) { '129483625' }
+    let(:new_catkey) { '999' }
+
+    it 'should get the current catkey with the convenience method' do
+      expect(item.catkey).to eq(current_catkey)
+    end
+    it 'should get the previous catkeys with the convenience method' do
+      expect(item.previous_catkeys).to eq([])
+    end
+    it 'should update the catkey when one exists, and store the previous when it does not exist' do
+      expect(item.identityMetadata.otherId('catkey').length).to eq(1)
+      expect(item.catkey).to eq(current_catkey)
+      expect(item.previous_catkeys.empty?).to be_truthy
+      item.catkey=new_catkey
+      expect(item.identityMetadata.otherId('catkey').length).to eq(1)
+      expect(item.catkey).to eq(new_catkey)
+      expect(item.previous_catkeys.length).to eq(1)
+      expect(item.previous_catkeys).to eq([current_catkey])
+    end
+    it 'should add the catkey when it does not exist' do
+      item.remove_other_Id('catkey')
+      expect(item.identityMetadata.otherId('catkey').length).to eq(0)
+      expect(item.catkey).to be_nil
+      expect(item.previous_catkeys.empty?).to be_truthy
+      item.catkey=new_catkey
+      expect(item.identityMetadata.otherId('catkey').length).to eq(1)
+      expect(item.catkey).to eq(new_catkey)
+      expect(item.previous_catkeys.empty?).to be_truthy
+    end
+    it 'should update the catkey when one exists, and add the previous catkey id to the list' do
+      previous_catkey = '111'
+      item.add_other_Id('previous_catkey', previous_catkey)
+      expect(item.identityMetadata.otherId('catkey').length).to eq(1)
+      expect(item.catkey).to eq(current_catkey)
+      expect(item.previous_catkeys.length).to eq(1)
+      expect(item.previous_catkeys.first).to eq(previous_catkey)
+      item.catkey=new_catkey
+      expect(item.identityMetadata.otherId('catkey').length).to eq(1)
+      expect(item.catkey).to eq(new_catkey)
+      expect(item.previous_catkeys.length).to eq(2)
+      expect(item.previous_catkeys).to eq([previous_catkey,current_catkey])
+    end
+    it 'should not do anything if there is a previous catkey and you set the catkey to the same value' do
+      expect(item.identityMetadata.otherId('catkey').length).to eq(1)
+      expect(item.catkey).to eq(current_catkey)
+      expect(item.previous_catkeys.empty?).to be_truthy  # no previous catkeys
+      item.catkey=current_catkey
+      expect(item.identityMetadata.otherId('catkey').length).to eq(1)
+      expect(item.catkey).to eq(current_catkey)
+      expect(item.previous_catkeys.empty?).to be_truthy # still empty, we haven't updated the previous catkey since it was the same
+    end
+  end
+
   # when looking for tags after addition/update/removal, check for the normalized form.
   # when doing the add/update/removal, specify the tag in non-normalized form so that the
   # normalization mechanism actually gets tested.

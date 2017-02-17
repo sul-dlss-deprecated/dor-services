@@ -3,6 +3,10 @@ module Dor
     extend ActiveSupport::Concern
     include SolrDocHelper
 
+    # ids for previous and current catkeys
+    CATKEY_TYPE_ID = 'catkey'.freeze
+    PREVIOUS_CATKEY_TYPE_ID = 'previous_catkey'.freeze
+
     included do
       has_metadata :name => 'DC', :type => SimpleDublinCoreDs, :label => 'Dublin Core Record for self object'
       has_metadata :name => 'identityMetadata', :type => Dor::IdentityMetadataDS, :label => 'Identity Metadata'
@@ -86,6 +90,37 @@ module Dor
     end
     alias_method :set_source_id, :source_id=
     deprecate set_source_id: 'Use source_id= instead'
+
+    # Convenience method to get the current catkey
+    # @return [String] current catkey value (or nil if none found)
+    def catkey
+      identityMetadata.otherId(CATKEY_TYPE_ID).first
+    end
+
+    # Convenience method to set the catkey
+    # @param  [String] catkey the new source identifier
+    # @return [String] same value, as per Ruby assignment convention
+    def catkey=(val)
+
+      # try and grab the current and previous catkeys
+      current_catkey = catkey
+
+      # if there is no current catkey, then add it and we are done
+      if current_catkey.blank?
+        add_other_Id(CATKEY_TYPE_ID,val)
+      elsif val != current_catkey # if there is a current catkey, store that in the "previous" spot assuming there is no change
+        identityMetadata.add_otherId("#{PREVIOUS_CATKEY_TYPE_ID}:#{current_catkey}")
+        # and then update the current catkey to the new value
+        update_other_Id(CATKEY_TYPE_ID,val)
+      end
+      val
+    end
+
+    # Convenience method to get the previous catkeys (will be an array)
+    # @return [Array] previous catkey values (empty array if none found)
+    def previous_catkeys
+      identityMetadata.otherId(PREVIOUS_CATKEY_TYPE_ID)
+    end
 
     def add_other_Id(type, val)
       if identityMetadata.otherId(type).length > 0
@@ -204,7 +239,7 @@ module Dor
     # @return [String] the druid sans the druid: or if there was no druid: prefix, the entire string you passed
     def remove_druid_prefix(druid=id)
       result=druid.match(/#{pid_regex}/)
-      result.nil? ? druid : result[0]  # if no matches, return the string passed in, otherwise return the match 
+      result.nil? ? druid : result[0]  # if no matches, return the string passed in, otherwise return the match
     end
 
     # Override ActiveFedora::Core#adapt_to_cmodel (used with associations, among other places) to
