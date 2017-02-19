@@ -2,6 +2,13 @@ module Dor
   class DescMetadataDS < ActiveFedora::OmDatastream
 
     MODS_NS = 'http://www.loc.gov/mods/v3'.freeze
+    MODS_HEADER_CONFIG = {
+      'xmlns' => MODS_NS,
+      'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+      version: '3.3',
+      'xsi:schemaLocation' => 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd'
+    }.freeze
+
     set_terminology do |t|
       t.root :path => 'mods', :xmlns => MODS_NS, :index_as => [:not_searchable]
       t.originInfo  :index_as => [:not_searchable] do
@@ -37,9 +44,7 @@ module Dor
 
     def self.xml_template
       Nokogiri::XML::Builder.new do |xml|
-        xml.mods(
-          'xmlns' => MODS_NS, 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance', :version => '3.3',
-          'xsi:schemaLocation' => 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd') {
+        xml.mods(MODS_HEADER_CONFIG) {
           xml.titleInfo {
             xml.title
           }
