@@ -32,7 +32,7 @@ describe Dor::Describable do
     expect(Dor::MetadataService).to receive(:fetch).with('barcode:36105049267078').and_call_original
     xml = <<-END_OF_XML
     <?xml version="1.0"?>
-    <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+    <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.6" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd">
       <titleInfo>
         <title/>
       </titleInfo>
@@ -112,7 +112,7 @@ describe Dor::Describable do
       @obj.set_desc_metadata_using_label
       expect(@obj.datastreams['descMetadata'].ng_xml).to be_equivalent_to <<-XML
       <?xml version="1.0"?>
-      <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+      <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.6" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd">
       <titleInfo>
       <title>Foxml Test Object</title>
       </titleInfo>
@@ -125,10 +125,11 @@ describe Dor::Describable do
       expect{@obj.set_desc_metadata_using_label}.to raise_error(StandardError)
     end
     it 'should run if there is content in the descriptive metadata stream and force is true' do
-      @obj.set_desc_metadata_using_label(false)
+      allow(@obj.descMetadata).to receive(:new?).and_return(false)
+      @obj.set_desc_metadata_using_label(true)
       expect(@obj.datastreams['descMetadata'].ng_xml).to be_equivalent_to <<-XML
       <?xml version="1.0"?>
-      <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+      <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.6" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd">
       <titleInfo>
       <title>Foxml Test Object</title>
       </titleInfo>

@@ -106,5 +106,13 @@ describe Dor::DescMetadataDS do
       desc_md_datastream = Dor::DescMetadataDS.new
       expect(desc_md_datastream.title_info.main_title).to eq([""])
     end
+
+    it 'should use the expected MODS version' do
+      desc_md_datastream = Dor::DescMetadataDS.new
+      base_xpath = desc_md_datastream.ng_xml.at_xpath('/xmlns:mods', 'mods')
+      expect(base_xpath.name).to eq 'mods'
+      expect(base_xpath['version']).to eq '3.6'
+      expect(base_xpath['xsi:schemaLocation']).to eq 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd'
+    end
   end
 end
