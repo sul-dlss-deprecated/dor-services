@@ -139,7 +139,7 @@ describe Dor::Identifiable do
     it 'should get the previous catkeys with the convenience method' do
       expect(item.previous_catkeys).to eq([])
     end
-    it 'should update the catkey when one exists, and store the previous when it does not exist' do
+    it 'should update the catkey when one exists, and store the previous value (when there is no current history yet)' do
       expect(item.identityMetadata.otherId('catkey').length).to eq(1)
       expect(item.catkey).to eq(current_catkey)
       expect(item.previous_catkeys.empty?).to be_truthy
@@ -149,7 +149,7 @@ describe Dor::Identifiable do
       expect(item.previous_catkeys.length).to eq(1)
       expect(item.previous_catkeys).to eq([current_catkey])
     end
-    it 'should add the catkey when it does not exist' do
+    it 'should add the catkey when it does not exist and never did' do
       item.remove_other_Id('catkey')
       expect(item.identityMetadata.otherId('catkey').length).to eq(0)
       expect(item.catkey).to be_nil
@@ -158,6 +158,29 @@ describe Dor::Identifiable do
       expect(item.identityMetadata.otherId('catkey').length).to eq(1)
       expect(item.catkey).to eq(new_catkey)
       expect(item.previous_catkeys.empty?).to be_truthy
+    end
+    it 'should add the catkey when it does not currently exist and there is a previous history (not touching that)' do
+      item.remove_other_Id('catkey')
+      expect(item.identityMetadata.otherId('catkey').length).to eq(0)
+      expect(item.catkey).to be_nil
+      item.identityMetadata.add_otherId("previous_catkey:123") # add a couple previous catkeys
+      item.identityMetadata.add_otherId("previous_catkey:456")
+      expect(item.previous_catkeys.length).to eq(2)
+      item.catkey=new_catkey
+      expect(item.identityMetadata.otherId('catkey').length).to eq(1)
+      expect(item.catkey).to eq(new_catkey)
+      expect(item.previous_catkeys.length).to eq(2) # still two entries, nothing changed in the history
+      expect(item.previous_catkeys).to eq(['123','456'])
+    end
+    it 'should remove the catkey from the XML when it is set to blank, but store the previously set value in the history' do
+      expect(item.identityMetadata.otherId('catkey').length).to eq(1)
+      expect(item.catkey).to eq(current_catkey)
+      expect(item.previous_catkeys.empty?).to be_truthy
+      item.catkey=''
+      expect(item.identityMetadata.otherId('catkey').length).to eq(0)
+      expect(item.catkey).to be_nil
+      expect(item.previous_catkeys.length).to eq(1)
+      expect(item.previous_catkeys).to eq([current_catkey])
     end
     it 'should update the catkey when one exists, and add the previous catkey id to the list' do
       previous_catkey = '111'

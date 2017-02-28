@@ -102,17 +102,18 @@ module Dor
     # @return [String] same value, as per Ruby assignment convention
     def catkey=(val)
 
-      # try and grab the current and previous catkeys
-      current_catkey = catkey
+      if val != catkey && !catkey.blank? # if there was already a catkey in the record, store that in the "previous" spot (assuming there is no change)
+        identityMetadata.add_otherId("#{PREVIOUS_CATKEY_TYPE_ID}:#{catkey}")
+      end
 
-      # if there is no current catkey, then add it and we are done
-      if current_catkey.blank?
+      if val.blank? # if we are setting the catkey to blank, remove the node from XML
+        remove_other_Id(CATKEY_TYPE_ID)
+      elsif catkey.blank? # if there is no current catkey, then add it
         add_other_Id(CATKEY_TYPE_ID,val)
-      elsif val != current_catkey # if there is a current catkey, store that in the "previous" spot assuming there is no change
-        identityMetadata.add_otherId("#{PREVIOUS_CATKEY_TYPE_ID}:#{current_catkey}")
-        # and then update the current catkey to the new value
+      elsif # if there is a current catkey, update the current catkey to the new value
         update_other_Id(CATKEY_TYPE_ID,val)
       end
+
       val
     end
 
