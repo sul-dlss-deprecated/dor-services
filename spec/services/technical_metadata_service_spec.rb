@@ -301,8 +301,11 @@ describe Dor::TechnicalMetadataService do
       new_techmd = @new_file_techmd[id]
       deltas = @deltas[id]
       merged_nodes = Dor::TechnicalMetadataService.merge_file_nodes(old_techmd, new_techmd, deltas)
-      final_techmd = Dor::TechnicalMetadataService.build_technical_metadata("druid:#{id}", merged_nodes)
-      expect(final_techmd.gsub(/datetime=["'].*?["']/, '')).to be_equivalent_to @expected_techmd[id].gsub(/datetime=["'].*?["']/, '')
+
+      # the final and expected_techmd need to be scrubbed of dates in a couple spots for the comparison to match since these will vary from test run to test run
+      final_techmd = Dor::TechnicalMetadataService.build_technical_metadata("druid:#{id}", merged_nodes).gsub(/datetime=["'].*?["']/, '').gsub(/<jhove:lastModified>.*?<\/jhove:lastModified>/, '')
+      expected_techmd = @expected_techmd[id].gsub(/datetime=["'].*?["']/, '').gsub(/<jhove:lastModified>.*?<\/jhove:lastModified>/, '')
+      expect(final_techmd).to be_equivalent_to expected_techmd
     end
   end
 
