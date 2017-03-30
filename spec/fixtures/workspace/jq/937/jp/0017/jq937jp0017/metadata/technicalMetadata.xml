@@ -1,9 +1,11 @@
 <technicalMetadata objectId='druid:jq937jp0017' datetime='2012-07-19T23:27:00Z'
     xmlns:jhove='http://hul.harvard.edu/ois/xml/ns/jhove'
     xmlns:mix='http://www.loc.gov/mix/v10'
-    xmlns:textmd='info:lc/xmlns/textMD-v3' >
+    xmlns:textmd='info:lc/xmlns/textMD-v3'>
   <file id='page-1.jpg'>
     <jhove:reportingModule release='1.2' date='2007-02-13'>JPEG-hul</jhove:reportingModule>
+    <jhove:lastModified>2012-08-28T09:44:26-07:00</jhove:lastModified>
+    <jhove:size>32915</jhove:size>
     <jhove:format>JPEG</jhove:format>
     <jhove:version>1.01</jhove:version>
     <jhove:status>Well-Formed and valid</jhove:status>
@@ -54,6 +56,8 @@
   </file>
   <file id='page-2.jpg'>
     <jhove:reportingModule release='1.2' date='2007-02-13'>JPEG-hul</jhove:reportingModule>
+    <jhove:lastModified>2012-08-28T09:44:26-07:00</jhove:lastModified>
+    <jhove:size>39539</jhove:size>
     <jhove:format>JPEG</jhove:format>
     <jhove:version>1.01</jhove:version>
     <jhove:status>Well-Formed and valid</jhove:status>

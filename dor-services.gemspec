@@ -49,7 +49,7 @@ Gem::Specification.new do |s|
   # It will not add these as dependencies if you require dor-services for other projects
   s.add_development_dependency 'coveralls'
   s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'jhove-service', '~> 1.0.1'
+  s.add_development_dependency 'jhove-service', '>= 1.1.1'
   s.add_development_dependency 'pry'
   s.add_development_dependency 'rake', '~> 10'
   s.add_development_dependency 'rspec', '~> 3.1'
