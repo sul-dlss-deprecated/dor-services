@@ -7,5 +7,6 @@ module Dor
     include Describable
     include Versionable
     include Processable
+    include Preservable
   end
 end
