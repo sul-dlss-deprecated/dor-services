@@ -61,6 +61,10 @@ scp sul-lyberservices-dev.stanford.edu:common-accessioning.old/common-accessioni
 
 Console is located in the `./script` subdirectory so that it does not get installed by clients of the gem.
 
+## Class Hierarchy
+
+![](https://cloud.githubusercontent.com/assets/111218/20289960/cf3e94a2-aa91-11e6-84bc-26c5789b922f.png)
+
 ## Copyright
 
 Copyright (c) 2014 Stanford University Library. See LICENSE for details.
