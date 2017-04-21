@@ -43,7 +43,7 @@ module Workflow
     def note          ; @attrs['note']         ; end
     def version       ; @attrs['version']      ; end
     def priority      ; @attrs['priority']     ; end
-    def completed?    ; status == 'completed'  ; end
+    def completed?    ; %w(completed skipped).include?(status); end
     def error?        ; status == 'error'      ; end
     def waiting?      ; status == 'waiting'    ; end
     def date_time     ; @attrs['datetime']     ; end
