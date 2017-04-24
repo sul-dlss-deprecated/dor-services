@@ -38,7 +38,7 @@ module Dor
       # Now bootstrap SDR workflow. but do not create the workflows datastream
       dor_item.create_workflow('sdrIngestWF', false)
     rescue Exception => e
-      raise LyberCore::Exceptions::ItemError.new(druid, 'Export failure', e)
+      raise Dor::Exception, 'Export failure'
     end
 
     # @param [String] druid The object identifier
