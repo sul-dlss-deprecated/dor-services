@@ -49,8 +49,15 @@ describe Dor::Preservable do
 
   end
 
-  it 'builds the technicalMetadata datastream' do
+  it 'builds the technicalMetadata datastream if the object is an item' do
+    allow(item).to receive(:is_a?).with(Dor::Item).and_return(true)
     expect(Dor::TechnicalMetadataService).to receive(:add_update_technical_metadata).with(item)
+    item.build_technicalMetadata_datastream('technicalMetadata')
+  end
+
+  it 'does not build the technicalMetadata datastream if the object is not an item' do
+    allow(item).to receive(:is_a?).with(Dor::Item).and_return(false)
+    expect(Dor::TechnicalMetadataService).not_to receive(:add_update_technical_metadata)
     item.build_technicalMetadata_datastream('technicalMetadata')
   end
 
