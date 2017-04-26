@@ -18,7 +18,7 @@ module Dor
     end
 
     def build_technicalMetadata_datastream(ds = nil)
-      TechnicalMetadataService.add_update_technical_metadata(self)
+      TechnicalMetadataService.add_update_technical_metadata(self) if self.is_a?(Dor::Item) # only items need technical metadata, other object types do not have contentMetadata or content
     end
 
     def sdr_ingest_transfer(agreement_id)
