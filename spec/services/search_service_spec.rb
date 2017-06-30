@@ -5,6 +5,10 @@ describe Dor::SearchService do
   before(:each) { stub_config }
   after(:each)  { unstub_config }
 
+  before do
+    RSolr::Client.default_wt = :ruby
+  end
+
   context '.risearch' do
     before :each do
       @druids = [
