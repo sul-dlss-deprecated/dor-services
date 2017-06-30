@@ -17,8 +17,6 @@ describe Dor::RegistrationService do
       else
         ActiveFedora.stub_chain(:fedora,:connection).and_return(@mock_repo)
       end
-      @mock_solr = double(RSolr::Connection).as_null_object
-      allow(Dor::SearchService).to receive(:solr).and_return(@mock_solr)
       @apo  = instantiate_fixture("druid:fg890hi1234", Dor::AdminPolicyObject)
       @apo.stub(:new_record? => false)
 
