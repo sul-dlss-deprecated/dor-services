@@ -1,3 +1,5 @@
+require 'set'
+
 module Dor
   class ContentMetadataDS < ActiveFedora::OmDatastream
 
@@ -82,6 +84,7 @@ module Dor
       preserved_size = 0
       counts = Hash.new(0)                # default count is zero
       resource_type_counts = Hash.new(0)  # default count is zero
+      mime_types = ::Set.new
       first_shelved_image = nil
 
       doc.xpath('contentMetadata/resource').sort { |a, b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
@@ -93,9 +96,11 @@ module Dor
           next unless file['shelve'] == 'yes'
           counts['shelved_file'] += 1
           first_shelved_image ||= file['id'] if file['id'] =~ /jp2$/
+          mime_types << file['mimetype']
         end
       end
       solr_doc['content_type_ssim'              ] = doc.root['type']
+      solr_doc['content_file_mimetypes_ssim'    ] = mime_types.to_a
       solr_doc['content_file_count_itsi'        ] = counts['content_file']
       solr_doc['shelved_content_file_count_itsi'] = counts['shelved_file']
       solr_doc['resource_count_itsi'            ] = counts['resource']

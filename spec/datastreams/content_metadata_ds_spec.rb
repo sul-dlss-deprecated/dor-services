@@ -198,15 +198,18 @@ describe Dor::ContentMetadataDS do
       @doc = @cm.to_solr
     end
     it 'should generate required fields' do
-      {
+      expected = {
         'content_type_ssim'               => 'map',
+        'content_file_mimetypes_ssim'     => ['image/jp2'],
         'shelved_content_file_count_itsi' => 1,
         'resource_count_itsi'             => 1,
         'content_file_count_itsi'         => 3,
         'image_resource_count_itsi'       => 1,
         'first_shelved_image_ss'          => 'gw177fc7976_05_0001.jp2',
         'preserved_size_dbtsi'            => 86774303
-      }.each {|k, v| expect(@doc[k]).to eq(v) }
+      }
+
+      expect(@doc).to include expected
     end
   end
   describe 'set_content_type' do
