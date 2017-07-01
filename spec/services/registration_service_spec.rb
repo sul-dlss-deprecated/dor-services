@@ -7,7 +7,6 @@ describe Dor::RegistrationService do
   before :each do
     @pid = 'druid:ab123cd4567'
     @mock_repo = double(Rubydora::Repository, :url => 'foo')
-    @mock_solr = double(RSolr::Connection).as_null_object
     @apo = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
     allow(@apo).to receive(:new_record?).and_return false
     allow(Dor).to receive(:find).with('druid:fg890hi1234').and_return(@apo)
@@ -18,7 +17,6 @@ describe Dor::RegistrationService do
       allow(Dor::SuriService).to receive(:mint_id).and_return(@pid)
       allow(Dor::SearchService).to receive(:query_by_id).and_return([])
       allow(ActiveFedora::Base).to receive(:connection_for_pid).and_return(@mock_repo)
-      allow(Dor::SearchService).to receive(:solr).and_return(@mock_solr)
       # allow_any_instance_of(Dor::Item).to receive(:save).and_return(true)
       allow_any_instance_of(Dor::Collection).to receive(:save).and_return(true)
       allow_any_instance_of(Dor::Item).to receive(:create).and_return(true)
@@ -323,7 +321,6 @@ describe Dor::RegistrationService do
       allow(Dor::SuriService).to receive(:mint_id).and_return(@pid)
       allow(Dor::SearchService).to receive(:query_by_id).and_return([])
       allow(ActiveFedora::Base).to receive(:connection_for_pid).and_return(@mock_repo)
-      # allow(Dor::SearchService).to receive(:solr).and_return(@mock_solr)
       allow_any_instance_of(Dor::Item).to receive(:save).and_return(true)
       # allow_any_instance_of(Dor::Collection).to receive(:save).and_return(true)
       allow_any_instance_of(Dor::Item).to receive(:create).and_return(true)
