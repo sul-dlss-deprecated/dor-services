@@ -89,8 +89,6 @@ module Dor
     end
 
     set_callback :configure, :after do |config|
-      config[:stomp][:host] ||= URI.parse(config.fedora.url).host rescue nil
-
       [:cert_file, :key_file, :key_pass].each do |key|
         next unless config.fedora[key].present?
         stack = Kernel.caller.dup
