@@ -41,9 +41,7 @@ describe Dor::TechnicalMetadataService do
 
   after(:each) do
     Dor::Config.pop!
-  end
 
-  after(:all) do
     @object_ids.each do |id|
       temp_pathname = Pathname(@druid_tool[id].temp_dir(false) )
       temp_pathname.rmtree if temp_pathname.exist?
