@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'json', '~> 1.8.1'
   s.add_dependency 'net-sftp', '~> 2.1.2'
   s.add_dependency 'net-ssh',  '~> 2.6.5' # 2.6.5 is pegged by our 12/2014 version of net-stfp
-  s.add_dependency 'nokogiri', '~> 1.6.0'
+  s.add_dependency 'nokogiri', '~> 1.6'
   s.add_dependency 'om', '~> 1.8.0'
   s.add_dependency 'progressbar', '~> 0.21.0'
   s.add_dependency 'rdf', '~> 1.0.9.0' # 1.0.10 breaks
