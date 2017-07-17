@@ -135,7 +135,7 @@ describe Dor::Publishable do
       end
 
       it 'should expand isMemberOfCollection and isConstituentOf into correct MODS' do
-        RSpec::Mocks.proxy_for(@item).reset # unstub
+        RSpec::Mocks.space.proxy_for(@item).reset # unstub
 
         # load up collection and constituent parent items from fixture data
         collection_item = instantiate_fixture('druid:xh235dd9059', DescribableItem)
@@ -143,23 +143,23 @@ describe Dor::Publishable do
 
         parent_item = instantiate_fixture('druid:hj097bm8879', DescribableItem)
         allow(Dor::Item).to receive(:find).with('druid:hj097bm8879').and_return(parent_item)
-        
+
         # test that we have 2 expansions
         doc = Nokogiri::XML(@item.generate_public_desc_md)
-        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host"]', 'mods' => 'http://www.loc.gov/mods/v3').size).to eq(2)                  
+        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host"]', 'mods' => 'http://www.loc.gov/mods/v3').size).to eq(2)
 
         # test the validity of the collection expansion
         expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and not(@displayLabel)]/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to eq('David Rumsey Map Collection at Stanford University Libraries')
-        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and not(@displayLabel)]/mods:location/mods:url', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to match(/^http:\/\/purl.*\.stanford\.edu\/xh235dd9059$/)                    
+        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and not(@displayLabel)]/mods:location/mods:url', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to match(/^http:\/\/purl.*\.stanford\.edu\/xh235dd9059$/)
 
         # test the validity of the constituent expansion
-        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and @displayLabel="Appears in"]/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to eq('Rumsey Atlas 2542')                    
+        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and @displayLabel="Appears in"]/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to eq('Rumsey Atlas 2542')
 
-        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and @displayLabel="Appears in"]/mods:location/mods:url', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to match(/^http:\/\/purl.*\.stanford\.edu\/hj097bm8879$/)                    
+        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and @displayLabel="Appears in"]/mods:location/mods:url', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to match(/^http:\/\/purl.*\.stanford\.edu\/hj097bm8879$/)
 
-        RSpec::Mocks.proxy_for(Dor::Item).reset # remove Item.find stubs
+        RSpec::Mocks.space.proxy_for(Dor::Item).reset # remove Item.find stubs
       end
-       
+
       it 'does not include a releaseData element when there are no release tags' do
         expect(@p_xml.at_xpath('/publicObject/releaseData')).to be nil
       end
@@ -224,11 +224,11 @@ describe Dor::Publishable do
           expect(File).to_not exist(druid1.path)
         end
       end
-      
+
       it 'handles externalFile references' do
-        correctPublicContentMetadata = Nokogiri::XML(read_fixture('hj097bm8879_publicObject.xml')).at_xpath('/publicObject/contentMetadata').to_xml               
+        correctPublicContentMetadata = Nokogiri::XML(read_fixture('hj097bm8879_publicObject.xml')).at_xpath('/publicObject/contentMetadata').to_xml
         @item.contentMetadata.content = read_fixture('hj097bm8879_contentMetadata.xml')
-        
+
         # setup stubs for child items
         %w(cg767mn6478 jw923xn5254).each do |druid|
           child_item = ItemizableItem.new(:pid => "druid:#{druid}")
@@ -245,7 +245,7 @@ describe Dor::Publishable do
           # stub out retrieval for child item
           allow(Dor::Item).to receive(:find).with(child_item.pid).and_return(child_item)
         end
-        
+
         # generate publicObject XML and verify that the content metadata portion is correct
         expect(Nokogiri::XML(@item.public_xml).at_xpath('/publicObject/contentMetadata').to_xml).to be_equivalent_to(correctPublicContentMetadata)
       end
@@ -258,7 +258,7 @@ describe Dor::Publishable do
               <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478"/>
               <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
             </resource>
-          </contentMetadata>        
+          </contentMetadata>
           EOXML
 
           # generate publicObject XML and verify that the content metadata portion is invalid
@@ -272,7 +272,7 @@ describe Dor::Publishable do
               <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478" resourceId=" " mimetype="image/jp2"/>
               <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
             </resource>
-          </contentMetadata>        
+          </contentMetadata>
           EOXML
 
           # generate publicObject XML and verify that the content metadata portion is invalid
@@ -286,7 +286,7 @@ describe Dor::Publishable do
               <externalFile fileId=" " objectId="druid:cg767mn6478" resourceId="cg767mn6478_1" mimetype="image/jp2"/>
               <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
             </resource>
-          </contentMetadata>        
+          </contentMetadata>
           EOXML
 
           # generate publicObject XML and verify that the content metadata portion is invalid
@@ -300,7 +300,7 @@ describe Dor::Publishable do
               <externalFile fileId="2542A.jp2" objectId=" " resourceId="cg767mn6478_1" mimetype="image/jp2"/>
               <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
             </resource>
-          </contentMetadata>        
+          </contentMetadata>
           EOXML
 
           # generate publicObject XML and verify that the content metadata portion is invalid
