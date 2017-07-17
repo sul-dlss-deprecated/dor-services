@@ -16,11 +16,11 @@ describe Dor::Itemizable do
   end
 
   it "has a contentMetadata datastream" do
-    @item.datastreams['contentMetadata'].should be_a(Dor::ContentMetadataDS)
+    expect(@item.datastreams['contentMetadata']).to be_a(Dor::ContentMetadataDS)
   end
 
   it "should retrieve a content diff" do
-    pending
+    skip
   end
 
 end

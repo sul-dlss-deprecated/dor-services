@@ -37,7 +37,7 @@ module Dor::SpecHelpers
       sdr.local_export_home            File.join(fixture_dir, 'export')
       indexing_svc.log                 'indexing_svc.log.test'
     end
-    ActiveFedora.stub(:fedora).and_return(double('frepo').as_null_object)
+    allow(ActiveFedora).to receive(:fedora).and_return(double('frepo').as_null_object)
   end
 
   def unstub_config

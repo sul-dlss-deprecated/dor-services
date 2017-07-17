@@ -26,8 +26,8 @@ describe Dor::ResetWorkspaceService do
     it "should rename the directory tree with the directory not empty" do
        Dor::ResetWorkspaceService.reset_workspace_druid_tree(@druid,"2",@workspace_root)
 
-       File.exists?("#{@druid_tree_path}_v2").should eq true
-       File.exists?(@druid_tree_path).should eq false
+       expect(File.exists?("#{@druid_tree_path}_v2")).to eq true
+       expect(File.exists?(@druid_tree_path)).to eq false
     end
 
     it "should do nothing with truncated druid" do
@@ -35,8 +35,8 @@ describe Dor::ResetWorkspaceService do
       Dor::ResetWorkspaceService.reset_workspace_druid_tree(truncated_druid,"2",@workspace_root)
       truncated_druid_tree_path = "#{@workspace_root}/tr/111/tr/1111/"
 
-      File.exists?("#{truncated_druid_tree_path}_v2").should eq false
-      File.exists?(truncated_druid_tree_path).should eq true
+      expect(File.exists?("#{truncated_druid_tree_path}_v2")).to eq false
+      expect(File.exists?(truncated_druid_tree_path)).to eq true
     end
 
     it "should throw an error if the directory is already archived" do
@@ -46,9 +46,9 @@ describe Dor::ResetWorkspaceService do
     it "should archived the current directory even if there is an older archived that hasn't been cleaned up" do
       Dor::ResetWorkspaceService.reset_workspace_druid_tree(@archived_druid,"3",@workspace_root)
 
-      File.exists?("#{@archived_druid_tree_path}_v2").should eq true
-      File.exists?("#{@archived_druid_tree_path}_v3").should eq true
-      File.exists?("#{@archived_druid_tree_path}").should eq false
+      expect(File.exists?("#{@archived_druid_tree_path}_v2")).to eq true
+      expect(File.exists?("#{@archived_druid_tree_path}_v3")).to eq true
+      expect(File.exists?("#{@archived_druid_tree_path}")).to eq false
     end
 
     after(:each) do
@@ -73,10 +73,10 @@ describe Dor::ResetWorkspaceService do
     it "should rename the export bags directory and tar files" do
       Dor::ResetWorkspaceService.reset_export_bag(@druid,"2",@export_root)
 
-      File.exists?("#{@bag_path}_v2").should eq true
-      File.exists?("#{@bag_path}_v2.tar").should eq true
-      File.exists?("#{@bag_path}").should eq false
-      File.exists?("#{@bag_path}.tar").should eq false
+      expect(File.exists?("#{@bag_path}_v2")).to eq true
+      expect(File.exists?("#{@bag_path}_v2.tar")).to eq true
+      expect(File.exists?("#{@bag_path}")).to eq false
+      expect(File.exists?("#{@bag_path}.tar")).to eq false
     end
 
     it "should throw an error if the renamed bag is already existent" do

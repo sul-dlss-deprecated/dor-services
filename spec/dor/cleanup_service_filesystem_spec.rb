@@ -42,8 +42,8 @@ describe 'Dor::CleanupService specs that check the file system' do
     let(:item2) { double('item1') }
 
     before(:each) do
-      item1.stub(:druid) { druid_1 }
-      item2.stub(:druid) { druid_2 }
+      allow(item1).to receive(:druid) { druid_1 }
+      allow(item2).to receive(:druid) { druid_2 }
     end
 
     it "correctly prunes directories" do
@@ -72,26 +72,26 @@ describe 'Dor::CleanupService specs that check the file system' do
       create_tempfile export_prefix_1
       File.open(export_prefix_1 + '.tar', 'w') {|f| f.write 'fake tar junk'}
 
-      File.should exist(dr1_wspace.path)
-      File.should exist(dr1_assembly.path)
+      expect(File).to exist(dr1_wspace.path)
+      expect(File).to exist(dr1_assembly.path)
 
       # druid_1 cleaned up, including files
       Dor::CleanupService.cleanup item1
-      File.should_not exist(dr1_wspace.path)
-      File.should_not exist(dr1_assembly.path)
-      File.should_not exist(export_prefix_1)
-      File.should_not exist(export_prefix_1 + '.tar')
+      expect(File).not_to exist(dr1_wspace.path)
+      expect(File).not_to exist(dr1_assembly.path)
+      expect(File).not_to exist(export_prefix_1)
+      expect(File).not_to exist(export_prefix_1 + '.tar')
 
       # But not druid_2
-      File.should exist(dr2_wspace.path)
-      File.should exist(dr2_assembly.path)
+      expect(File).to exist(dr2_wspace.path)
+      expect(File).to exist(dr2_assembly.path)
 
       Dor::CleanupService.cleanup item2
-      File.should_not exist(dr2_wspace.path)
-      File.should_not exist(dr2_assembly.path)
+      expect(File).not_to exist(dr2_wspace.path)
+      expect(File).not_to exist(dr2_assembly.path)
 
       # Empty common parent directories pruned
-      File.should_not exist(File.join(workspace_dir, 'cd'))
+      expect(File).not_to exist(File.join(workspace_dir, 'cd'))
     end
 
     it "cleans up without assembly content" do
@@ -99,7 +99,7 @@ describe 'Dor::CleanupService specs that check the file system' do
       dr1_wspace.mkdir
 
       Dor::CleanupService.cleanup item1
-      File.should_not exist(dr1_wspace.path)
+      expect(File).not_to exist(dr1_wspace.path)
     end
   end
 

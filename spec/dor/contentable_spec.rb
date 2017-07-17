@@ -48,19 +48,19 @@ describe Dor::Contentable do
     </file>
     </resource>
     </contentMetadata>'
-    Dor::Item.stub(:find).and_return(@item)
+    allow(Dor::Item).to receive(:find).and_return(@item)
     file_path=File.dirname(__FILE__) + '/../fixtures/ab123cd4567_descMetadata.xml'
-    DruidTools::Druid.any_instance.stub(:path).and_return('file_path/ab123cd4567/ab123cd4567_descMetadata.xml')
+    allow_any_instance_of(DruidTools::Druid).to receive(:path).and_return('file_path/ab123cd4567/ab123cd4567_descMetadata.xml')
     @sftp=double(Net::SFTP)
     @resp=double(Net::SFTP::Response)
-    @resp.stub(:code).and_return(123)
-    @resp.stub(:message).and_return('sup')
-    @sftp.stub(:stat!) do |arg|
+    allow(@resp).to receive(:code).and_return(123)
+    allow(@resp).to receive(:message).and_return('sup')
+    allow(@sftp).to receive(:stat!) do |arg|
       #raise an exception when checking whether the file exists, but no exception when checking whether the folder it belongs in exists
       raise(Net::SFTP::StatusException.new @resp, 'sup') if arg=~ /desc/
     end
-    @sftp.stub(:upload!).and_return(true)
-    Net::SFTP.stub(:start).and_return(@sftp) #mock sftp obj
+    allow(@sftp).to receive(:upload!).and_return(true)
+    allow(Net::SFTP).to receive(:start).and_return(@sftp) #mock sftp obj
     @file=File.new(File.expand_path(file_path))
   end
   describe 'add_file' do
@@ -81,11 +81,11 @@ describe Dor::Contentable do
       end
     end
     it 'should raise an exception if the resource doesnt exist' do
-      lambda{@item.add_file(@file,'abc0001','ab123cd4567_descMetadata.xml')}.should raise_error
+      expect{@item.add_file(@file,'abc0001','ab123cd4567_descMetadata.xml')}.to raise_error
     end
 
     it 'should work ok if the object was set up using the old directory structure' do
-      @sftp.stub(:stat!) do |arg|
+      allow(@sftp).to receive(:stat!) do |arg|
         raise(Net::SFTP::StatusException.new @resp, 'sup') if arg =~ /desc/ || arg =~ /ab123/
       end
       @item.add_file(@file, '0001', 'ab123cd4567_descMetadata.xml')
@@ -110,10 +110,10 @@ describe Dor::Contentable do
       @item.replace_file(@file,'gw177fc7976_00_0001.tif')
       xml=@item.contentMetadata.ng_xml
       file_node=xml.search('//file[@id=\'gw177fc7976_00_0001.tif\']')
-      file_node.length.should ==1
+      expect(file_node.length).to eq(1)
       file_node=file_node.first
       checksums=xml.search('//file[@id=\'gw177fc7976_00_0001.tif\']/checksum')
-      checksums.length.should ==2
+      expect(checksums.length).to eq(2)
       checksums.each do |checksum|
         if checksum['type'] == 'md5'
           expect(checksum.content).to eq('55251c7b93b3fbab83354f28e267f42f')
@@ -123,7 +123,7 @@ describe Dor::Contentable do
       end
     end
     it 'should raise an exception if there isnt a matching file record in the metadata' do
-      lambda{ @item.replace_file(@file,'abcdgw177fc7976_00_0001.tif')}.should raise_error
+      expect{ @item.replace_file(@file,'abcdgw177fc7976_00_0001.tif')}.to raise_error
     end
   end
   describe 'get_file' do
@@ -136,13 +136,13 @@ describe Dor::Contentable do
   end
   describe 'rename_file' do
     it 'should attempt to rename the file in the workspace and update the metadata' do
-      @sftp.stub(:rename!)
+      allow(@sftp).to receive(:rename!)
       @item.rename_file('gw177fc7976_05_0001.jp2','test.jp2')
     end
   end
   describe 'remove_file' do
     it 'should use sftp to remove the file and update the metadata' do
-      @sftp.stub(:remove!)
+      allow(@sftp).to receive(:remove!)
       @item.remove_file('gw177fc7976_05_0001.jp2')
     end
   end
@@ -151,7 +151,7 @@ describe Dor::Contentable do
 
     let(:dummy_obj) {
       node = SpecNode.new
-      node.stub(:rels_ext).and_return(double("rels_ext", :content_will_change! => true, :content=>''))
+      allow(node).to receive(:rels_ext).and_return(double("rels_ext", :content_will_change! => true, :content=>''))
       node.pid = 'old:apo'
       node
     }
@@ -166,14 +166,14 @@ describe Dor::Contentable do
 
     let(:graveyard_apo) do
       node = SpecNode.new
-      node.stub(:rels_ext).and_return(double("rels_ext", :content_will_change! => true, :content=>''))
+      allow(node).to receive(:rels_ext).and_return(double("rels_ext", :content_will_change! => true, :content=>''))
       node.pid = 'new:apo'
       node
     end
 
     before(:each) do
-      Dor::SearchService.stub(:sdr_graveyard_apo_druid)
-      ActiveFedora::Base.stub(:find) { graveyard_apo }
+      allow(Dor::SearchService).to receive(:sdr_graveyard_apo_druid)
+      allow(ActiveFedora::Base).to receive(:find) { graveyard_apo }
     end
 
     it "removes existing isMemberOf and isGovernedBy relationships" do
