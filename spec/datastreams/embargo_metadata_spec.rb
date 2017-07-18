@@ -26,11 +26,11 @@ describe Dor::EmbargoMetadataDS do
 
     it "creates itself from xml" do
       ds = Dor::EmbargoMetadataDS.from_xml(dsxml)
-      ds.term_values(:status).should == ["embargoed"]
-      ds.term_values(:release_date).should == ["2011-10-12T15:47:52-07:00"]
-      ds.term_values(:twenty_pct_status).should == ["released"]
-      ds.term_values(:twenty_pct_release_date).should == ["2016-10-12T15:47:52-07:00"]
-      ds.find_by_terms(:release_access).class.should == Nokogiri::XML::NodeSet
+      expect(ds.term_values(:status)).to eq(["embargoed"])
+      expect(ds.term_values(:release_date)).to eq(["2011-10-12T15:47:52-07:00"])
+      expect(ds.term_values(:twenty_pct_status)).to eq(["released"])
+      expect(ds.term_values(:twenty_pct_release_date)).to eq(["2016-10-12T15:47:52-07:00"])
+      expect(ds.find_by_terms(:release_access).class).to eq(Nokogiri::XML::NodeSet)
     end
 
     it "creates a simple default with #new" do
@@ -45,13 +45,13 @@ describe Dor::EmbargoMetadataDS do
       EOF
 
       ds = Dor::EmbargoMetadataDS.new nil, 'embargoMetadata'
-      ds.to_xml.should be_equivalent_to(emb_xml)
+      expect(ds.to_xml).to be_equivalent_to(emb_xml)
     end
 
     it "should solrize correctly" do
       ds = Dor::EmbargoMetadataDS.from_xml(dsxml)
-      ds.to_solr['embargo_release_date_dt'].should include('2011-10-12T22:47:52Z')
-      ds.to_solr['twenty_pct_visibility_release_date_dt'].should include('2016-10-12T22:47:52Z')
+      expect(ds.to_solr['embargo_release_date_dt']).to include('2011-10-12T22:47:52Z')
+      expect(ds.to_solr['twenty_pct_visibility_release_date_dt']).to include('2016-10-12T22:47:52Z')
     end
   end
 
@@ -61,15 +61,15 @@ describe Dor::EmbargoMetadataDS do
     ds.status = "released"
 
     it "= sets status" do
-      ds.term_values(:status).should == ["released"]
+      expect(ds.term_values(:status)).to eq(["released"])
     end
 
     it "= marks the datastream as changed" do
-      ds.should be_changed
+      expect(ds).to be_changed
     end
 
     it "gets the current value of status" do
-      ds.status.should == "released"
+      expect(ds.status).to eq("released")
     end
   end
 
@@ -81,17 +81,17 @@ describe Dor::EmbargoMetadataDS do
 
     it "= sets releaseDate from a Time object as the start of day, UTC" do
       rd = Time.parse(ds.term_values(:release_date).first)
-      rd.should == t.beginning_of_day.utc
+      expect(rd).to eq(t.beginning_of_day.utc)
     end
 
     it "= marks the datastram as changed" do
-      ds.should be_changed
+      expect(ds).to be_changed
     end
 
     it "gets the current value of releaseDate as a Time object" do
       rd = ds.release_date
-      rd.class.should == Time
-      rd.should < Time.now
+      expect(rd.class).to eq(Time)
+      expect(rd).to be < Time.now
     end
   end
 
@@ -101,8 +101,8 @@ describe Dor::EmbargoMetadataDS do
     nd = ds.release_access_node
 
     it "#release_access_node returns a Nokogiri::XML::Element" do
-      nd.class.should == Nokogiri::XML::Element
-      nd.name.should == 'releaseAccess'
+      expect(nd.class).to eq(Nokogiri::XML::Element)
+      expect(nd.name).to eq('releaseAccess')
     end
 
     it "#release_access_node= sets the embargoAccess node from a Nokogiri::XML::Node" do
@@ -124,13 +124,13 @@ describe Dor::EmbargoMetadataDS do
 
       ds.release_access_node = Nokogiri::XML(embargo_xml)
       embargo = ds.find_by_terms(:release_access)
-      embargo.at_xpath("//releaseAccess/access[@type='read']/machine/world").should be
-      ds.should be_changed
+      expect(embargo.at_xpath("//releaseAccess/access[@type='read']/machine/world")).to be
+      expect(ds).to be_changed
     end
 
     it "rejects Documents that do not have a root node of releaseAccess" do
       embargo_xml = "<incorrect/>"
-      lambda { ds.release_access_node = Nokogiri::XML(embargo_xml) }.should raise_error
+      expect { ds.release_access_node = Nokogiri::XML(embargo_xml) }.to raise_error
     end
   end
 

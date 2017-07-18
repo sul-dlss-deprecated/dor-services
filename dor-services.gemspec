@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'json', '~> 1.8.1'
   s.add_dependency 'net-sftp', '~> 2.1.2'
   s.add_dependency 'net-ssh',  '~> 2.6.5' # 2.6.5 is pegged by our 12/2014 version of net-stfp
-  s.add_dependency 'nokogiri', '~> 1.6.0'
+  s.add_dependency 'nokogiri', '~> 1.6'
   s.add_dependency 'om', '~> 1.8.0'
   s.add_dependency 'progressbar', '~> 0.21.0'
   s.add_dependency 'rdf', '~> 1.0.9.0' # 1.0.10 breaks
@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'uuidtools', '~> 2.1.4'
   s.add_dependency 'validatable', '~> 1.6.7'
   s.add_dependency 'osullivan', '~> 0.0.3'
-  s.add_dependency 'addressable', '2.3.5'
+  s.add_dependency 'addressable', '~> 2.3'
   s.add_dependency 'retries'
 
   # Stanford dependencies
@@ -54,9 +54,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'haml', '~> 4.0.4'
   s.add_development_dependency 'jhove-service', '~> 1.0.1'
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'rdoc', '~> 4.0.1'
-  s.add_development_dependency 'rspec', '~> 2.14.1'
-  s.add_development_dependency 'yard', '~> 0.8.7'
+  s.add_development_dependency 'rdoc', '~> 4.0'
+  s.add_development_dependency 'rspec', '~> 3.5'
+  s.add_development_dependency 'yard', '~> 0.8'
 
   s.files        = Dir.glob("lib/**/*") + Dir.glob("config/**/*") + Dir.glob('bin/*')
   s.bindir       = 'bin'

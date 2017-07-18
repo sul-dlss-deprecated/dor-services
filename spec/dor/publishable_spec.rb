@@ -23,7 +23,7 @@ describe Dor::Publishable do
   before :each do
     @item = instantiate_fixture('druid:ab123cd4567', PublishableItem)
     @apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
-    @item.stub(:admin_policy_object).and_return(@apo)
+    allow(@item).to receive(:admin_policy_object).and_return(@apo)
     @mods = <<-EOXML
       <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -73,14 +73,14 @@ describe Dor::Publishable do
   end
 
   it 'has a rightsMetadata datastream' do
-    @item.datastreams['rightsMetadata'].should be_a(ActiveFedora::OmDatastream)
+    expect(@item.datastreams['rightsMetadata']).to be_a(ActiveFedora::OmDatastream)
   end
 
   it 'should provide a rightsMetadata datastream builder' do
     rights_md = @apo.defaultObjectRights.content
-    @item.datastreams['rightsMetadata'].ng_xml.to_s.should_not be_equivalent_to(rights_md)
+    expect(@item.datastreams['rightsMetadata'].ng_xml.to_s).not_to be_equivalent_to(rights_md)
     @item.build_datastream('rightsMetadata', true)
-    @item.datastreams['rightsMetadata'].ng_xml.to_s.should be_equivalent_to(rights_md)
+    expect(@item.datastreams['rightsMetadata'].ng_xml.to_s).to be_equivalent_to(rights_md)
   end
 
   describe '#public_xml' do
@@ -135,31 +135,31 @@ describe Dor::Publishable do
       end
 
       it 'should expand isMemberOfCollection and isConstituentOf into correct MODS' do
-        RSpec::Mocks.proxy_for(@item).reset # unstub
+        RSpec::Mocks.space.proxy_for(@item).reset # unstub
 
         # load up collection and constituent parent items from fixture data
         collection_item = instantiate_fixture('druid:xh235dd9059', DescribableItem)
-        Dor::Item.stub(:find).with('druid:xh235dd9059').and_return(collection_item)
+        allow(Dor::Item).to receive(:find).with('druid:xh235dd9059').and_return(collection_item)
 
         parent_item = instantiate_fixture('druid:hj097bm8879', DescribableItem)
-        Dor::Item.stub(:find).with('druid:hj097bm8879').and_return(parent_item)
-        
+        allow(Dor::Item).to receive(:find).with('druid:hj097bm8879').and_return(parent_item)
+
         # test that we have 2 expansions
         doc = Nokogiri::XML(@item.generate_public_desc_md)
-        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host"]', 'mods' => 'http://www.loc.gov/mods/v3').size).to eq(2)                  
+        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host"]', 'mods' => 'http://www.loc.gov/mods/v3').size).to eq(2)
 
         # test the validity of the collection expansion
         expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and not(@displayLabel)]/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to eq('David Rumsey Map Collection at Stanford University Libraries')
-        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and not(@displayLabel)]/mods:location/mods:url', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to match(/^http:\/\/purl.*\.stanford\.edu\/xh235dd9059$/)                    
+        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and not(@displayLabel)]/mods:location/mods:url', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to match(/^http:\/\/purl.*\.stanford\.edu\/xh235dd9059$/)
 
         # test the validity of the constituent expansion
-        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and @displayLabel="Appears in"]/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to eq('Rumsey Atlas 2542')                    
+        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and @displayLabel="Appears in"]/mods:titleInfo/mods:title', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to eq('Rumsey Atlas 2542')
 
-        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and @displayLabel="Appears in"]/mods:location/mods:url', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to match(/^http:\/\/purl.*\.stanford\.edu\/hj097bm8879$/)                    
+        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host" and @displayLabel="Appears in"]/mods:location/mods:url', 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to match(/^http:\/\/purl.*\.stanford\.edu\/hj097bm8879$/)
 
-        RSpec::Mocks.proxy_for(Dor::Item).reset # remove Item.find stubs
+        RSpec::Mocks.space.proxy_for(Dor::Item).reset # remove Item.find stubs
       end
-       
+
       it 'does not include a releaseData element when there are no release tags' do
         expect(@p_xml.at_xpath('/publicObject/releaseData')).to be nil
       end
@@ -211,7 +211,7 @@ describe Dor::Publishable do
         end
 
         it 'does not publish the object' do
-          Dor::DigitalStacksService.should_not_receive(:transfer_to_document_store)
+          expect(Dor::DigitalStacksService).not_to receive(:transfer_to_document_store)
           @item.publish_metadata
         end
 
@@ -224,11 +224,11 @@ describe Dor::Publishable do
           expect(File).to_not exist(druid1.path)
         end
       end
-      
+
       it 'handles externalFile references' do
-        correctPublicContentMetadata = Nokogiri::XML(read_fixture('hj097bm8879_publicObject.xml')).at_xpath('/publicObject/contentMetadata').to_xml               
+        correctPublicContentMetadata = Nokogiri::XML(read_fixture('hj097bm8879_publicObject.xml')).at_xpath('/publicObject/contentMetadata').to_xml
         @item.contentMetadata.content = read_fixture('hj097bm8879_contentMetadata.xml')
-        
+
         # setup stubs for child items
         %w(cg767mn6478 jw923xn5254).each do |druid|
           child_item = ItemizableItem.new(:pid => "druid:#{druid}")
@@ -245,7 +245,7 @@ describe Dor::Publishable do
           # stub out retrieval for child item
           allow(Dor::Item).to receive(:find).with(child_item.pid).and_return(child_item)
         end
-        
+
         # generate publicObject XML and verify that the content metadata portion is correct
         expect(Nokogiri::XML(@item.public_xml).at_xpath('/publicObject/contentMetadata').to_xml).to be_equivalent_to(correctPublicContentMetadata)
       end
@@ -258,7 +258,7 @@ describe Dor::Publishable do
               <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478"/>
               <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
             </resource>
-          </contentMetadata>        
+          </contentMetadata>
           EOXML
 
           # generate publicObject XML and verify that the content metadata portion is invalid
@@ -272,7 +272,7 @@ describe Dor::Publishable do
               <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478" resourceId=" " mimetype="image/jp2"/>
               <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
             </resource>
-          </contentMetadata>        
+          </contentMetadata>
           EOXML
 
           # generate publicObject XML and verify that the content metadata portion is invalid
@@ -286,7 +286,7 @@ describe Dor::Publishable do
               <externalFile fileId=" " objectId="druid:cg767mn6478" resourceId="cg767mn6478_1" mimetype="image/jp2"/>
               <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
             </resource>
-          </contentMetadata>        
+          </contentMetadata>
           EOXML
 
           # generate publicObject XML and verify that the content metadata portion is invalid
@@ -300,7 +300,7 @@ describe Dor::Publishable do
               <externalFile fileId="2542A.jp2" objectId=" " resourceId="cg767mn6478_1" mimetype="image/jp2"/>
               <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
             </resource>
-          </contentMetadata>        
+          </contentMetadata>
           EOXML
 
           # generate publicObject XML and verify that the content metadata portion is invalid
@@ -310,12 +310,12 @@ describe Dor::Publishable do
 
       context 'copies to the document cache' do
         before(:each) do
-          Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123cd4567', /<identityMetadata/, 'identityMetadata')
-          Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123cd4567', /<contentMetadata/, 'contentMetadata')
-          Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123cd4567', /<rightsMetadata/, 'rightsMetadata')
-          Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123cd4567', /<oai_dc:dc/, 'dc')
-          Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123cd4567', /<publicObject/, 'public')
-          Dor::DigitalStacksService.should_receive(:transfer_to_document_store).with('druid:ab123cd4567', /<mods:mods/, 'mods')
+          expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<identityMetadata/, 'identityMetadata')
+          expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<contentMetadata/, 'contentMetadata')
+          expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<rightsMetadata/, 'rightsMetadata')
+          expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<oai_dc:dc/, 'dc')
+          expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<publicObject/, 'public')
+          expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<mods:mods/, 'mods')
         end
 
         it 'identityMetadata, contentMetadata, rightsMetadata, generated dublin core, and public xml' do
@@ -332,17 +332,17 @@ describe Dor::Publishable do
 
     context 'error handling' do
       it 'throws an exception if any of the required datastreams are missing' do
-        pending
+        skip
       end
     end
   end
   describe 'publish remotely' do
     before(:each) do
       Dor::Config.push! { |config| config.dor_services.url 'https://lyberservices-test.stanford.edu/dor' }
-      RestClient::Resource.any_instance.stub(:post)
+      allow_any_instance_of(RestClient::Resource).to receive(:post)
     end
     it 'should hit the correct url' do
-      @item.publish_metadata_remotely.should == 'https://lyberservices-test.stanford.edu/dor/v1/objects/druid:ab123cd4567/publish'
+      expect(@item.publish_metadata_remotely).to eq('https://lyberservices-test.stanford.edu/dor/v1/objects/druid:ab123cd4567/publish')
     end
   end
 end

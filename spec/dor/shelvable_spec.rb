@@ -131,12 +131,12 @@ describe Dor::Shelvable do
 
     it 'should return the default stack' do
       item.contentMetadata.content = '<contentMetadata/>'
-      item.get_stacks_location.should eq @stacks_root
+      expect(item.get_stacks_location).to eq @stacks_root
     end
 
     it 'should return the absolute stack' do
       item.contentMetadata.content = '<contentMetadata stacks="/specialstacks"/>'
-      item.get_stacks_location.should eq "/specialstacks"
+      expect(item.get_stacks_location).to eq "/specialstacks"
 
     end
 

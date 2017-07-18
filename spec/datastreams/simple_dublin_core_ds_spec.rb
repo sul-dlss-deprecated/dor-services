@@ -11,9 +11,9 @@ describe SimpleDublinCoreDs do
         <dc:identifier>identifier</dc:identifier>
       </oai_dc:dc>'
 
-      subject.to_solr['dc_title_t'].should include('title')
-      subject.to_solr['dc_creator_t'].should include('creator')
-      subject.to_solr['dc_identifier_t'].should include('identifier')
+      expect(subject.to_solr['dc_title_t']).to include('title')
+      expect(subject.to_solr['dc_creator_t']).to include('creator')
+      expect(subject.to_solr['dc_identifier_t']).to include('identifier')
     end
 
     context "sort fields" do
@@ -26,8 +26,8 @@ describe SimpleDublinCoreDs do
         <dc:identifier>identifier</dc:identifier>
       </oai_dc:dc>'
 
-      subject.to_solr['dc_title_sort'].should have(1).item
-      subject.to_solr['dc_creator_sort'].should have(1).item
+      expect(subject.to_solr['dc_title_sort'].size).to eq(1)
+      expect(subject.to_solr['dc_creator_sort'].size).to eq(1)
     end
 
     it "should create sort fields for each type of identifier" do
@@ -38,8 +38,8 @@ describe SimpleDublinCoreDs do
         <dc:identifier>uuid:identifierxyz</dc:identifier>
       </oai_dc:dc>'
 
-      subject.to_solr['dc_identifier_druid_sort'].should have(1).item
-      subject.to_solr['dc_identifier_uuid_sort'].should have(1).item
+      expect(subject.to_solr['dc_identifier_druid_sort'].size).to eq(1)
+      expect(subject.to_solr['dc_identifier_uuid_sort'].size).to eq(1)
     end
     end
   end

@@ -86,7 +86,7 @@ describe Dor::DigitalStacksService do
       content_diff = @jq937jp0017_content_diff
       rename_list = get_rename_list(content_diff)
       expect(rename_list.map { |file| file[0, 3] }).to eq([])
-      expect(Dor::DigitalStacksService.rename_in_stacks(s, content_diff)).to_not(raise_exception)
+      expect { Dor::DigitalStacksService.rename_in_stacks(s, content_diff) }.to_not raise_exception
 
       content_diff = @ng782rw8378_content_diff
       rename_list = get_rename_list(content_diff)

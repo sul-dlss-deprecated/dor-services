@@ -39,16 +39,16 @@ describe Dor::WorkflowDs do
 
   context 'Marshalling to and from a Fedora Datastream' do
     it 'creates itself from xml' do
-      ds.workflows.size.should == 4
+      expect(ds.workflows.size).to eq(4)
     end
   end
 
   describe '#current_priority' do
     before :each do
-      Dor::Workflow::Document.any_instance.stub(:definition).and_return(nil)
+      allow_any_instance_of(Dor::Workflow::Document).to receive(:definition).and_return(nil)
     end
     it 'searches through all the workflows and returns the first active priority it finds' do
-      ds.current_priority.should == 30
+      expect(ds.current_priority).to eq(30)
     end
     it 'returns 0 if none of the workflows are expedited' do
       xml = <<-EOF
@@ -64,7 +64,7 @@ describe Dor::WorkflowDs do
             </workflows>
       EOF
       ds2 = Dor::WorkflowDs.from_xml(xml)
-      ds2.current_priority.should == 0
+      expect(ds2.current_priority).to eq(0)
     end
   end
 

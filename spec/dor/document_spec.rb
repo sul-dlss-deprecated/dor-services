@@ -11,7 +11,7 @@ describe Dor::Workflow::Document do
     wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name'=>'technical-metadata', 'status'=>'error', 'sequence'=>'3'})
     wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name'=>'some-other-step', 'sequence'=>'4'})
 
-    @wf_definition.stub(:processes).and_return(wf_definition_procs)
+    allow(@wf_definition).to receive(:processes).and_return(wf_definition_procs)
   end
 
   describe 'processes' do
@@ -23,8 +23,8 @@ describe Dor::Workflow::Document do
 
       #xml=Nokogiri::XML(xml)
       d=Dor::Workflow::Document.new(xml)
-      d.stub(:definition).and_return(@wf_definition)
-      d.processes.length.should == 0
+      allow(d).to receive(:definition).and_return(@wf_definition)
+      expect(d.processes.length).to eq(0)
     end
 
     it 'should generate a process list based on the reified workflow which has sequence, not the processes list from the workflow service' do
@@ -37,13 +37,13 @@ describe Dor::Workflow::Document do
       eos
 
       d=Dor::Workflow::Document.new(xml)
-      d.stub(:definition).and_return(@wf_definition)
-      d.processes.length.should == 4
+      allow(d).to receive(:definition).and_return(@wf_definition)
+      expect(d.processes.length).to eq(4)
       proc=d.processes.first
-      proc.name.should == 'hello'
-      proc.status.should =='stat'
-      proc.lifecycle.should == 'lc'
-      proc.sequence.should == '1'
+      expect(proc.name).to eq('hello')
+      expect(proc.status).to eq('stat')
+      expect(proc.lifecycle).to eq('lc')
+      expect(proc.sequence).to eq('1')
 
     end
   end
@@ -61,8 +61,8 @@ describe Dor::Workflow::Document do
       eos
 
       d=Dor::Workflow::Document.new(xml)
-      d.stub(:definition).and_return(@wf_definition)
-      d.expedited?.should == false
+      allow(d).to receive(:definition).and_return(@wf_definition)
+      expect(d.expedited?).to eq(false)
     end
 
     it 'says true if there are incomplete prioritized items' do
@@ -77,8 +77,8 @@ describe Dor::Workflow::Document do
       eos
 
       d=Dor::Workflow::Document.new(xml)
-      d.stub(:definition).and_return(@wf_definition)
-      d.expedited?.should == true
+      allow(d).to receive(:definition).and_return(@wf_definition)
+      expect(d.expedited?).to eq(true)
     end
   end
 
@@ -94,7 +94,7 @@ describe Dor::Workflow::Document do
       eos
 
       d=Dor::Workflow::Document.new(xml)
-      expect(d.active?).to be_true
+      expect(d.active?).to be_truthy
     end
 
     it 'returns false if there are only archived rows' do
@@ -107,7 +107,7 @@ describe Dor::Workflow::Document do
       eos
 
       d=Dor::Workflow::Document.new(xml)
-      expect(d.active?).to be_false
+      expect(d.active?).to be_falsey
     end
   end
 
@@ -127,7 +127,7 @@ describe Dor::Workflow::Document do
       d=Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
       doc=d.to_solr
-      doc['workflow_status_display'].first.should == 'accessionWF|active|0|dor'
+      expect(doc['workflow_status_display'].first).to eq('accessionWF|active|0|dor')
     end
 
     it 'should index the right workflow status (completed) when all steps are completed or skipped' do
@@ -146,9 +146,9 @@ describe Dor::Workflow::Document do
       eos
 
       d=Dor::Workflow::Document.new(xml)
-      d.stub(:definition).and_return(@wf_definition)
+      allow(d).to receive(:definition).and_return(@wf_definition)
       doc=d.to_solr
-      doc['workflow_status_display'].first.should == 'accessionWF|completed|0|dor'
+      expect(doc['workflow_status_display'].first).to eq('accessionWF|completed|0|dor')
     end
 
     it 'should index the right workflow status (completed) when all steps have status of completed/skipped/nil/empty' do
@@ -167,9 +167,9 @@ describe Dor::Workflow::Document do
       eos
 
       d=Dor::Workflow::Document.new(xml)
-      d.stub(:definition).and_return(@wf_definition)
+      allow(d).to receive(:definition).and_return(@wf_definition)
       doc=d.to_solr
-      doc['workflow_status_display'].first.should == 'accessionWF|completed|0|dor'
+      expect(doc['workflow_status_display'].first).to eq('accessionWF|completed|0|dor')
     end
 
     it 'should index error messages' do
@@ -186,7 +186,7 @@ describe Dor::Workflow::Document do
       d=Dor::Workflow::Document.new(xml)
       allow(d).to receive(:definition).and_return(@wf_definition)
       doc=d.to_solr
-      doc['wf_error_display'].first.should == 'accessionWF:technical-metadata:druid:gv054hp4128 - Item error; caused by 413 Request Entity Too Large:'
+      expect(doc['wf_error_display'].first).to eq('accessionWF:technical-metadata:druid:gv054hp4128 - Item error; caused by 413 Request Entity Too Large:')
     end
   end
 end
