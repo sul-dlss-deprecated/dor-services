@@ -13,16 +13,17 @@ module Dor
       run_callbacks(:initialize) { }
     end
 
+    # Call the super method with callbacks and with $VERBOSE temporarily disabled
     def configure(*args)
       result = self
-      temp_v = $-v
-      $-v = nil
+      temp_verbose = $VERBOSE
+      $VERBOSE = nil
       begin
         run_callbacks :configure do
           result = super(*args)
         end
       ensure
-        $-v = temp_v
+        $VERBOSE = temp_verbose
       end
       result
     end
