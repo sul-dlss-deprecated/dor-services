@@ -1,6 +1,7 @@
 require 'confstruct/configuration'
 require 'rsolr'
 require 'yaml'
+require 'dor/certificate_authenticated_rest_resource_factory'
 
 module Dor
   class Configuration < Confstruct::Configuration
@@ -32,6 +33,7 @@ module Dor
       config = Confstruct::Configuration.symbolize_hash JSON.parse(client.get(accept: 'application/json'))
       configure(config)
     end
+    deprecation_deprecate :autoconfigure
 
     def sanitize
       dup
@@ -43,6 +45,8 @@ module Dor
       params[:ssl_client_key]  = OpenSSL::PKey::RSA.new(File.read(key), pass) if key
       RestClient::Resource.new(url, params)
     end
+    deprecation_deprecate :make_rest_client
+
 
     def make_solr_connection(add_opts = {})
       opts = Dor::Config.solr.opts.merge(add_opts).merge(
@@ -54,7 +58,7 @@ module Dor
     set_callback :initialize, :after do |config|
       config.deep_merge!({
         :fedora => {
-          :client => Confstruct.deferred { |c| config.make_rest_client c.url },
+          :client => Confstruct.deferred { |c| CertificateAuthenticatedRestResourceFactory.create(:fedora) },
           :safeurl => Confstruct.deferred { |c|
             begin
               fedora_uri = URI.parse(config.fedora.url)
@@ -66,10 +70,10 @@ module Dor
           }
         },
         :dor_services => {
-          :rest_client => Confstruct.deferred { |c| config.make_rest_client c.url, c.cert_file, c.key_file, c.key_pass }
+          :rest_client => Confstruct.deferred { |c| RestResourceFactory.create(:dor_services) }
         },
         :sdr => {
-          :rest_client => Confstruct.deferred { |c| config.make_rest_client c.url, c.cert_file, c.key_file, c.key_pass }
+          :rest_client => Confstruct.deferred { |c| RestResourceFactory.create(:sdr) }
         },
         :workflow => {
           :client => Confstruct.deferred do |c|
@@ -89,6 +93,7 @@ module Dor
     end
 
     set_callback :configure, :after do |config|
+      # Deprecate fedora.cert_file, fedora.key_file, fedora.key_pass
       [:cert_file, :key_file, :key_pass].each do |key|
         next unless config.fedora[key].present?
         stack = Kernel.caller.dup
@@ -112,7 +117,6 @@ module Dor
         ActiveFedora::SolrService.register
         ActiveFedora::SolrService.instance.instance_variable_set :@conn, make_solr_connection
       end
-
     end
 
     # Act like an ActiveFedora.configurator
