@@ -94,16 +94,6 @@ module Dor
     end
 
     set_callback :configure, :after do |config|
-      # Deprecate fedora.cert_file, fedora.key_file, fedora.key_pass
-      [:cert_file, :key_file, :key_pass].each do |key|
-        next unless config.fedora[key].present?
-        stack = Kernel.caller.dup
-        stack.shift while stack[0] =~ %r{(active_support/callbacks|dor/config|dor-services)\.rb}
-        ActiveSupport::Deprecation.warn "Dor::Config -- fedora.#{key} is deprecated. Please use ssl.#{key} instead.", stack
-        config.ssl[key] = config.fedora[key] unless config.ssl[key].present?
-        config.fedora.delete(key)
-      end
-
       if config.solrizer.present?
         stack = Kernel.caller.dup
         stack.shift while stack[0] =~ %r{(active_support/callbacks|dor/config|dor-services)\.rb}
