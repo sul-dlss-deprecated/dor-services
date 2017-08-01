@@ -35,7 +35,38 @@ describe Dor::Governable do
     end
   end
 
+  describe 'unshelve_and_unpublish' do
+    before :each do
+      @current_item = instantiate_fixture('druid:bb046xn0881', Dor::Item)
+    end
+    it 'should not do anything if there is no contentMetadata' do
+      @current_item = instantiate_fixture('druid:bb004bn8654', Dor::Item)
+      expect(@current_item).not_to receive(:ng_xml_will_change!)
+      @current_item.unshelve_and_unpublish
+    end
+
+    it 'should notify that the XML will change' do
+      expect(@current_item.contentMetadata).to receive(:ng_xml_will_change!).exactly(1).times
+      @current_item.unshelve_and_unpublish
+    end
+
+    it 'should set publish and shelve to no for all files' do
+      @current_item.unshelve_and_unpublish
+      new_metadata = @current_item.datastreams['contentMetadata']
+      expect(new_metadata.ng_xml.xpath('/contentMetadata/resource//file[@publish="yes"]').length).to eq(0)
+      expect(new_metadata.ng_xml.xpath('/contentMetadata/resource//file[@shelve="yes"]').length).to eq(0)
+    end
+  end
+
   describe 'set_read_rights' do
+    it 'should set rights to dark, unshelving and unpublishing content metadata' do
+      @current_item = instantiate_fixture('druid:bb046xn0881', Dor::Item)
+      allow(Dor).to receive(:find).with(@current_item.pid).and_return(@current_item)
+
+      expect(@current_item).to receive(:unshelve_and_unpublish)
+      @current_item.set_read_rights('dark')
+    end
+
     it 'should set rights to dark (double none), removing the discovery rights' do
       @item.set_read_rights('dark')
       expect(@item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
@@ -57,8 +88,9 @@ describe Dor::Governable do
       </rightsMetadata>
       XML
     end
-    it 'should set rights to <world/>' do
+    it 'should set rights to <world/> and not change publish or shelve attributes' do
       @item.set_read_rights('world')
+      expect(@item).not_to receive(:unshelve_and_unpublish)
       expect(@item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
       <?xml version="1.0"?>
       <rightsMetadata>
@@ -78,8 +110,9 @@ describe Dor::Governable do
       </rightsMetadata>
       XML
     end
-    it 'should set rights to stanford' do
+    it 'should set rights to stanford and not change publish or shelve attributes' do
       @item.set_read_rights('stanford')
+      expect(@item).not_to receive(:unshelve_and_unpublish)
       expect(@item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
       <?xml version="1.0"?>
       <rightsMetadata>
