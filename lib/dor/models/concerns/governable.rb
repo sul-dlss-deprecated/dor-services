@@ -32,6 +32,20 @@ module Dor
 
     def set_read_rights(rights)
       rightsMetadata.set_read_rights(rights)
+      unshelve_and_unpublish if rights == 'dark'
+    end
+
+    def unshelve_and_unpublish
+      if self.respond_to? :contentMetadata
+        content_ds = datastreams['contentMetadata']
+        unless content_ds.nil?
+          content_ds.ng_xml.xpath('/contentMetadata/resource//file').each_with_index do |file_node, index|
+            content_ds.ng_xml_will_change! if index == 0
+            file_node['publish'] = 'no'
+            file_node['shelve'] = 'no'
+          end
+        end
+      end
     end
 
     def add_collection(collection_or_druid)
