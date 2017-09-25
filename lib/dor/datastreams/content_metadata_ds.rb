@@ -82,6 +82,7 @@ module Dor
       return solr_doc unless doc.root['type']
 
       preserved_size = 0
+      shelved_size = 0
       counts = Hash.new(0)                # default count is zero
       resource_type_counts = Hash.new(0)  # default count is zero
       mime_types = ::Set.new
@@ -93,6 +94,7 @@ module Dor
         resource.xpath('file').each do |file|
           counts['content_file'] += 1
           preserved_size += file['size'].to_i if file['preserve'] == 'yes'
+          shelved_size += file['size'].to_i if file['shelve'] == 'yes'
           next unless file['shelve'] == 'yes'
           counts['shelved_file'] += 1
           first_shelved_image ||= file['id'] if file['id'] =~ /jp2$/
@@ -105,6 +107,7 @@ module Dor
       solr_doc['shelved_content_file_count_itsi'] = counts['shelved_file']
       solr_doc['resource_count_itsi'            ] = counts['resource']
       solr_doc['preserved_size_dbtsi'           ] = preserved_size # double (trie) to support very large sizes
+      solr_doc['shelved_size_dbtsi'             ] = shelved_size # double (trie) to support very large sizes
       solr_doc['resource_types_ssim'            ] = resource_type_counts.keys if resource_type_counts.size > 0
       resource_type_counts.each do |key, count|
         solr_doc["#{key}_resource_count_itsi"] = count

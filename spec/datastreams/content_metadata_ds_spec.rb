@@ -206,7 +206,8 @@ describe Dor::ContentMetadataDS do
         'content_file_count_itsi'         => 3,
         'image_resource_count_itsi'       => 1,
         'first_shelved_image_ss'          => 'gw177fc7976_05_0001.jp2',
-        'preserved_size_dbtsi'            => 86774303
+        'preserved_size_dbtsi'            => 86774303,
+        'shelved_size_dbtsi'              => 5143883
       }
 
       expect(@doc).to include expected
