@@ -160,7 +160,7 @@ end
 # ms = Dor::MergeService.new p_pid, [s_pid]
 # ms.check_objects_editable
 # ms.move_metadata_and_content
-# ms.decomission_secondaries
+# ms.decommission_secondaries
 
 # 2nd merge druids
 # %w(fq996gt6655 pf986hr8937 xz522yc4008 zf307yb9756)

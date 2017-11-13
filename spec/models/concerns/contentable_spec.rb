@@ -172,7 +172,7 @@ describe Dor::Contentable do
     end
   end
 
-  describe '#decomission' do
+  describe '#decommission' do
 
     let(:dummy_obj) {
       node = SpecNode.new
@@ -185,7 +185,7 @@ describe Dor::Contentable do
       o = Dor::Item.new
       o.add_relationship :is_member_of, dummy_obj
       o.add_relationship :is_governed_by, dummy_obj
-      o.decomission ' test '
+      o.decommission ' test '
       o
     end
 

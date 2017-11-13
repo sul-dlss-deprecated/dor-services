@@ -206,8 +206,8 @@ module Dor
     end
 
     # Clears RELS-EXT relationships, sets the isGovernedBy relationship to the SDR Graveyard APO
-    # @param [String] tag optional String of text that is concatenated to the identityMetadata/tag "Decomissioned : "
-    def decomission(tag)
+    # @param [String] tag optional String of text that is concatenated to the identityMetadata/tag "Decommissioned : "
+    def decommission(tag)
       # remove isMemberOf and isMemberOfCollection relationships
       clear_relationship :is_member_of
       clear_relationship :is_member_of_collection
@@ -222,6 +222,9 @@ module Dor
       rightsMetadata.content = '<rightsMetadata/>'
       add_tag "Decommissioned : #{tag}"
     end
+
+    alias_method :decomission, :decommission
+    deprecate decomission: 'Use decommission instead'
 
     # Adds a RELS-EXT constituent relationship to the given druid
     # @param [String] druid the parent druid of the constituent relationship
