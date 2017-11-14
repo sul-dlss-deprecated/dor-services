@@ -13,6 +13,7 @@ rvm:
 env:
   - 'RAILS_VERSION="~> 4.2"'
   - 'RAILS_VERSION="~> 5.0"'
+  - 'RAILS_VERSION="~> 5.1"'
 
 matrix:
   include:
