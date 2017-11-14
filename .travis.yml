@@ -6,16 +6,20 @@ notifications:
   email: false
 
 rvm:
-  - 2.2.8
   - 2.3.5
   - 2.4.2
 
 env:
   - 'RAILS_VERSION="~> 4.2"'
   - 'RAILS_VERSION="~> 5.0"'
+  - 'RAILS_VERSION="~> 5.1"'
 
 matrix:
   include:
+    - env: # pre-assembly
+        - 'AF_VERSION="~> 6.0"'
+        - 'RAILS_VERSION="~> 4.2.5.2"'
+      rvm: 2.2.8
     - env:
         - 'AF_VERSION="~> 6.0"'
         - 'RAILS_VERSION="~> 4.2"'
