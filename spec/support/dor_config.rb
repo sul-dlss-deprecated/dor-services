@@ -4,7 +4,7 @@ Dor.configure do
   ssl do
     cert_file File.join(cert_dir, 'spec.crt')
     key_file File.join(cert_dir, 'spec.key')
-    key_pass ''
+    key_pass 'thisisatleast4bytes'
   end
 
   fedora.url 'http://fedoraUser:fedoraPass@example.edu/fedora'
