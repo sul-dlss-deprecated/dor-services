@@ -3,15 +3,11 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'simplecov'
 require 'coveralls'
-SimpleCov.profiles.define 'dor' do
-  add_filter 'gemfiles'
-  add_filter 'spec'
-end
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
   SimpleCov::Formatter::HTMLFormatter,
   Coveralls::SimpleCov::Formatter
 ])
-SimpleCov.start 'dor'
+SimpleCov.start 'test_frameworks'
 
 require 'rspec'
 require 'dor-services'
@@ -66,7 +62,7 @@ module Dor::SpecHelpers
   def read_fixture(fname)
     File.read(File.join(@fixture_dir, fname))
   end
-  
+
   def fixture_dir
     @fixture_dir
   end
