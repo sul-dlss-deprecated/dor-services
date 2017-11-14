@@ -6,7 +6,7 @@ module Dor
       merge_service = Dor::MergeService.new primary_druid, secondary_druids, tag, logger
       merge_service.check_objects_editable
       merge_service.move_metadata_and_content
-      merge_service.decomission_secondaries
+      merge_service.decommission_secondaries
       # kick off commonAccessioning for the primary?
     end
 
@@ -58,11 +58,11 @@ module Dor
       end
     end
 
-    def decomission_secondaries
+    def decommission_secondaries
       @secondary_objs.each do |secondary_obj|
         begin
           @current_secondary = secondary_obj
-          @current_secondary.decomission @tag
+          @current_secondary.decommission @tag
           @current_secondary.save
 
           unshelve
@@ -70,11 +70,13 @@ module Dor
           Dor::CleanupService.cleanup_by_druid @current_secondary.pid
           Dor::Config.workflow.client.archive_active_workflow 'dor', @current_secondary.pid
         rescue => e
-          @logger.error "Unable to decomission #{@current_secondary.pid} with primary object #{@primary.pid}: #{e.inspect}"
+          @logger.error "Unable to decommission #{@current_secondary.pid} with primary object #{@primary.pid}: #{e.inspect}"
           @logger.error e.backtrace.join("\n")
         end
       end
     end
+    alias_method :decomission_secondaries, :decommission_secondaries
+    deprecate decomission_secondaries: 'Use decommission_secondaries instead'
 
     # Remove content from stacks
     # TODO: might set workflow status in future for robot to do
