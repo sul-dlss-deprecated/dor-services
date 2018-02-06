@@ -200,7 +200,7 @@ describe Dor::ContentMetadataDS do
     it 'should generate required fields' do
       expected = {
         'content_type_ssim'               => 'map',
-        'content_file_mimetypes_ssim'     => ['image/jp2'],
+        'content_file_mimetypes_ssim'     => ['image/jp2', 'image/gif', 'image/tiff'],
         'shelved_content_file_count_itsi' => 1,
         'resource_count_itsi'             => 1,
         'content_file_count_itsi'         => 3,

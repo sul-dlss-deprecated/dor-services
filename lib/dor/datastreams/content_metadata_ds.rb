@@ -95,9 +95,10 @@ module Dor
           counts['content_file'] += 1
           preserved_size += file['size'].to_i if file['preserve'] == 'yes'
           shelved_size += file['size'].to_i if file['shelve'] == 'yes'
-          next unless file['shelve'] == 'yes'
-          counts['shelved_file'] += 1
-          first_shelved_image ||= file['id'] if file['id'] =~ /jp2$/
+          if file['shelve'] == 'yes'
+            counts['shelved_file'] += 1
+            first_shelved_image ||= file['id'] if file['id'] =~ /jp2$/
+          end
           mime_types << file['mimetype']
         end
       end
