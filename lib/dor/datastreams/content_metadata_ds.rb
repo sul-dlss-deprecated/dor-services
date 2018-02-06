@@ -19,6 +19,7 @@ module Dor
           t.mimeType :path => { :attribute => 'mimeType' }, :index_as => [:displayable]
           t.dataType :path => { :attribute => 'dataType' }, :index_as => [:displayable]
           t.size     :path => { :attribute => 'size'     }, :index_as => [:displayable]    # , :data_type => :long
+          t.role     :path => { :attribute => 'role' },     :index_as => [:not_searchable]
           t.shelve   :path => { :attribute => 'shelve'   }, :index_as => [:not_searchable] # , :data_type => :boolean
           t.publish  :path => { :attribute => 'publish'  }, :index_as => [:not_searchable] # , :data_type => :boolean
           t.preserve :path => { :attribute => 'preserve' }, :index_as => [:not_searchable] # , :data_type => :boolean
@@ -85,6 +86,7 @@ module Dor
       shelved_size = 0
       counts = Hash.new(0)                # default count is zero
       resource_type_counts = Hash.new(0)  # default count is zero
+      file_roles = ::Set.new
       mime_types = ::Set.new
       first_shelved_image = nil
 
@@ -100,6 +102,7 @@ module Dor
             first_shelved_image ||= file['id'] if file['id'] =~ /jp2$/
           end
           mime_types << file['mimetype']
+          file_roles << file['role'] if file['role']
         end
       end
       solr_doc['content_type_ssim'              ] = doc.root['type']
@@ -110,6 +113,7 @@ module Dor
       solr_doc['preserved_size_dbtsi'           ] = preserved_size # double (trie) to support very large sizes
       solr_doc['shelved_size_dbtsi'             ] = shelved_size # double (trie) to support very large sizes
       solr_doc['resource_types_ssim'            ] = resource_type_counts.keys if resource_type_counts.size > 0
+      solr_doc['content_file_roles_ssim'        ] = file_roles.to_a if file_roles.size > 0
       resource_type_counts.each do |key, count|
         solr_doc["#{key}_resource_count_itsi"] = count
       end
@@ -146,6 +150,7 @@ module Dor
       end
       file_node['size'    ] = file[:size     ] if file[:size     ]
       file_node['mimetype'] = file[:mime_type] if file[:mime_type]
+      file_node['role'] = file[:role] if file[:role]
       file_node
     end
 
@@ -207,6 +212,7 @@ module Dor
           file_node.add_child(checksum_node)
         }
         file_node['size'] = file[:size] if file[:size]
+        file_node['role'] = file[:role] if file[:role]
       end
       ng_xml.search('//contentMetadata').first.add_child(node)
       node
@@ -236,12 +242,15 @@ module Dor
     # @param [String] publish
     # @param [String] shelve
     # @param [String] preserve
-    def update_attributes(file_name, publish, shelve, preserve)
+    def update_attributes(file_name, publish, shelve, preserve, attributes = {})
       self.ng_xml_will_change!
       file_node = ng_xml.search('//file[@id=\'' + file_name + '\']').first
       file_node['publish' ] = publish
       file_node['shelve'  ] = shelve
       file_node['preserve'] = preserve
+      attributes.each do |key, value|
+        file_node[key] = value
+      end
     end
 
     # @param file [Object] some hash-like file
@@ -261,7 +270,7 @@ module Dor
         checksum_node.content = file[algo]
       }
 
-      [:size, :shelve, :preserve, :publish].each { |x|
+      [:size, :shelve, :preserve, :publish, :role].each { |x|
         file_node[x.to_s] = file[x] if file[x]
       }
     end

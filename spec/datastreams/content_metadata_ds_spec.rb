@@ -14,7 +14,7 @@ describe Dor::ContentMetadataDS do
     <checksum type="md5">3d3ff46d98f3d517d0bf086571e05c18</checksum>
     <checksum type="sha1">ca1eb0edd09a21f9dd9e3a89abc790daf4d04916</checksum>
     </file>
-    <file format="GIF" id="gw177fc7976_05_0001.gif" mimetype="image/gif" preserve="no" publish="no" shelve="no" size="4128877">
+    <file format="GIF" id="gw177fc7976_05_0001.gif" mimetype="image/gif" preserve="no" publish="no" shelve="no" size="4128877" role="derivative">
     <imageData height="4580" width="5939"/>
     <checksum type="md5">406d5d80fdd9ecc0352d339badb4a8fb</checksum>
     <checksum type="sha1">61940d4fad097cba98a3e9dd9f12a90dde0be1ac</checksum>
@@ -105,6 +105,18 @@ describe Dor::ContentMetadataDS do
         expect(checksum.content).to eq(checksum['type'] == 'md5' ? '123456' : '56789')
       end
     end
+
+    it 'should add a file with a role="transcription"' do
+      files = [
+        @file.merge(:name => 'transcription.txt', :role => 'transcription', :size => '23456', :preserve => 'yes')
+      ]
+      @cm.add_resource(files, 'resource', 1, 'page')
+      nodes = @cm.ng_xml.search('//resource[@id=\'resource\']/file')
+      expect(nodes.length).to eq(1)
+      node = nodes.first
+      expect(node['id'      ]).to eq('transcription.txt')
+      expect(node['role'    ]).to eq('transcription')
+    end
   end
 
   describe 'remove_resource' do
@@ -128,7 +140,7 @@ describe Dor::ContentMetadataDS do
   end
   describe 'add_file' do
     it 'should add a file to the resource' do
-      @cm.add_file(@file, '0001')
+      @cm.add_file(@file.merge(role: 'some-role'), '0001')
       xml = @cm.ng_xml
       hits = xml.search('//resource[@id=\'0001\']/file')
       expect(hits.length).to eq(4)
@@ -138,13 +150,14 @@ describe Dor::ContentMetadataDS do
       expect(new_file['publish' ]).to eq('no')
       expect(new_file['preserve']).to eq('no')
       expect(new_file['size'    ]).to eq('12345')
+      expect(new_file['role'    ]).to eq('some-role')
       expect(@cm).to be_changed
     end
   end
 
   describe 'update_file' do
     it 'should modify an existing file record' do
-      @cm.update_file(@file, 'gw177fc7976_05_0001.jp2')
+      @cm.update_file(@file.merge(role: 'some-role'), 'gw177fc7976_05_0001.jp2')
       file = @cm.ng_xml.search('//file[@id=\'new_file.jp2\']')
       expect(file.length).to eq(1)
       file = file.first
@@ -152,6 +165,7 @@ describe Dor::ContentMetadataDS do
       expect(file['publish' ]).to eq('no')
       expect(file['preserve']).to eq('no')
       expect(file['size'    ]).to eq('12345')
+      expect(file['role'    ]).to eq('some-role')
     end
     it 'should error out if there isnt an existing record to modify' do
       expect { @cm.update_file(@file, 'gw177fc7976_05_0001_different.jp2')}.to raise_error(StandardError)
@@ -201,6 +215,7 @@ describe Dor::ContentMetadataDS do
       expected = {
         'content_type_ssim'               => 'map',
         'content_file_mimetypes_ssim'     => ['image/jp2', 'image/gif', 'image/tiff'],
+        'content_file_roles_ssim'         => ['derivative'],
         'shelved_content_file_count_itsi' => 1,
         'resource_count_itsi'             => 1,
         'content_file_count_itsi'         => 3,
