@@ -10,6 +10,7 @@ module Dor
       params = super
       params[:ssl_client_cert] = cert if cert
       params[:ssl_client_key]  = key if key
+      params
     end
 
     # @return [OpenSSL::X509::Certificate]
