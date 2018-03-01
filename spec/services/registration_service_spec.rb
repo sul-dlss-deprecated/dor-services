@@ -6,7 +6,7 @@ describe Dor::RegistrationService do
 
   before :each do
     @pid = 'druid:ab123cd4567'
-    @mock_repo = double(Rubydora::Repository, :url => 'foo')
+    @mock_repo = instance_double(Rubydora::Repository)
     @apo = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
     allow(@apo).to receive(:new_record?).and_return false
     allow(Dor).to receive(:find).with('druid:fg890hi1234').and_return(@apo)

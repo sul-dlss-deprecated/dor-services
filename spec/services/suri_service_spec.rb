@@ -51,7 +51,10 @@ describe Dor::SuriService do
     end
 
     before :each do
-      @mock_repo = double(Rubydora::Repository)
+      @mock_repo = instance_double(Rubydora::Repository)
+      @mock_client = instance_double(Rubydora::RestApiClient)
+      allow(@mock_repo).to receive(:api).and_return(@mock_client)
+
       if ActiveFedora::Base.respond_to?(:connection_for_pid)
         allow(ActiveFedora::Base).to receive(:connection_for_pid).and_return(@mock_repo)
       else
@@ -70,7 +73,7 @@ describe Dor::SuriService do
         <pid>pid:123</pid>
       </pidList>
       EOXML
-      expect(@mock_repo).to receive(:next_pid).with(:numPIDs => 1).and_return(xml_response)
+      expect(@mock_client).to receive(:next_pid).with(:numPIDs => 1).and_return(xml_response)
       expect(Dor::SuriService.mint_id).to eq('pid:123')
       Dor::Config.suri.pop
     end
@@ -84,7 +87,7 @@ describe Dor::SuriService do
         <pid>pid:789</pid>
       </pidList>
       EOXML
-      expect(@mock_repo).to receive(:next_pid).with(:numPIDs => 3).and_return(xml_response)
+      expect(@mock_client).to receive(:next_pid).with(:numPIDs => 3).and_return(xml_response)
       expect(Dor::SuriService.mint_id(3)).to eq(['pid:123', 'pid:456', 'pid:789'])
       Dor::Config.suri.pop
     end

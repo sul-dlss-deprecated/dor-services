@@ -17,8 +17,14 @@ module Dor
         ids = resource["identifiers?quantity=#{quantity}"].post('').chomp.split(/\n/).collect { |id| "#{Config.suri.id_namespace}:#{id.strip}" }
       else
         repo = ActiveFedora::Base.respond_to?(:connection_for_pid) ? ActiveFedora::Base.connection_for_pid(0) : ActiveFedora.fedora.connection
-        resp = Nokogiri::XML(repo.next_pid(numPIDs: quantity))
+        resp = Nokogiri::XML(repo.api.next_pid(numPIDs: quantity))
         ids = resp.xpath('/pidList/pid').collect { |node| node.text }
+        # With modernish (circa 2015/6) dependencies, including Nokogiri and
+        # ActiveFedora/Rubydora, `ids` is `[]` above. If that is the case, try
+        # the XPath that works (confirmed with most recent `hydra_etd` work)
+        if ids.empty? && resp.root.namespaces.any?
+          ids = resp.xpath('/xmlns:pidList/xmlns:pid').collect { |node| node.text }
+        end
       end
       want_array ? ids : ids.first
 
