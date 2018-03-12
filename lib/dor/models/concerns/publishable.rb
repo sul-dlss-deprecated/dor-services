@@ -47,7 +47,7 @@ module Dor
       return unless thumb_image
       thumb_druid=thumb_image.split('/').first # the druid (before the first slash)
       thumb_filename=thumb_image.split(/#{pid_regex}[\/]/).last # everything after the druid
-      "#{thumb_druid}%2F#{URI.escape(thumb_filename)}"
+      "#{thumb_druid}%2F#{ERB::Util.url_encode(thumb_filename)}"
     end
     
     # Return a full qualified thumbnail image URL if the thumb is computable
