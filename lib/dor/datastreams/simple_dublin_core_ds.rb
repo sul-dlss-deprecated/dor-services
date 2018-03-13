@@ -15,11 +15,12 @@ class SimpleDublinCoreDs < ActiveFedora::OmDatastream
 
   def self.xml_template
     builder = Nokogiri::XML::Builder.new do |xml|
-      xml.dc(:xmlns => 'http://www.openarchives.org/OAI/2.0/oai_dc/', 'xmlns:dc' => 'http://purl.org/dc/elements/1.1/') {
-        xml['dc'].title
-        xml['dc'].creator
-        xml['dc'].identifier
-      }
+      xml['oai_dc'].dc(
+        'xmlns:oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/',
+        'xmlns:dc' => 'http://purl.org/dc/elements/1.1/',
+        'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+        'xsi:schemaLocation' => 'http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
+      )
     end
 
     builder.doc
