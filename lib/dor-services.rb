@@ -2,7 +2,6 @@ require 'active_fedora'
 require 'active_fedora/version'
 require 'active_support/core_ext/module/attribute_accessors'
 require 'active_support/core_ext/object/blank'
-require 'modsulator'
 require 'dor/utils/sdr_client'
 
 module Dor
