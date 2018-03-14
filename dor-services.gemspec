@@ -44,14 +44,14 @@ Gem::Specification.new do |s|
   s.add_dependency 'moab-versioning', '~> 2.0'
   s.add_dependency 'stanford-mods', '>= 2.3.1'
   s.add_dependency 'stanford-mods-normalizer', '~> 0.1'
-  
+
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects
   s.add_development_dependency 'coveralls'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'jhove-service', '>= 1.1.1'
   s.add_development_dependency 'pry'
-  s.add_development_dependency 'rake', '~> 10'
+  s.add_development_dependency 'rake', '>= 10'
   s.add_development_dependency 'rspec', '~> 3.1'
   s.add_development_dependency 'rdoc'
   s.add_development_dependency 'vcr'
