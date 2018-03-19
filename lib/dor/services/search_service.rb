@@ -67,7 +67,7 @@ module Dor
         end
         q = "{!term f=#{Solrizer.solr_name 'identifier', :symbol}}#{id}"
         result = []
-        query(q, :fl => 'id', :rows => 1000) do |resp|
+        query(q, :fl => 'id', :rows => 1000, :defType => 'lucene') do |resp|
           result += resp['response']['docs'].collect { |doc| doc['id'] }
           true
         end
