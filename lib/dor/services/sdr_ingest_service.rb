@@ -1,6 +1,8 @@
 require 'moab/stanford'
 
 module Dor
+  # Note: This should probably live in common-accessioning robot sdr-ingest-transfer
+  #  as that is the only robot that uses it.  See also preservable concern.
   class SdrIngestService
 
     # @param [Dor::Item] dor_item The representation of the digital object
@@ -40,6 +42,8 @@ module Dor
     rescue Exception => e
       raise Dor::Exception, "Error exporting new object version to bag: #{e.message}"
     end
+
+    # Note: the following methods should probably all be private
 
     # @param [String] druid The object identifier
     # @return [Moab::SignatureCatalog] the catalog of all files previously ingested
