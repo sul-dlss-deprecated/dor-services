@@ -5,7 +5,7 @@ module Dor
 
     # @param [Dor::Item] dor_item The representation of the digital object
     # @param [String] agreement_id  depreciated, included for backward compatability with common-accessoning
-    # @return [void] Create the moab manifests, export data to a BagIt bag, kick off the SDR ingest workflow
+    # @return [void] Create the Moab/bag manifests for new version, export data to BagIt bag, kick off the SDR preservation workflow
     def self.transfer(dor_item, agreement_id = nil)
       druid = dor_item.pid
       workspace = DruidTools::Druid.new(druid, Dor::Config.sdr.local_workspace_root)
@@ -35,8 +35,8 @@ module Dor
       bagger.deposit_group('metadata', metadata_dir)
       bagger.create_tagfiles
       verify_bag_structure(bag_dir)
-      # Now bootstrap SDR workflow. but do not create the workflows datastream
-      dor_item.create_workflow('sdrIngestWF', false)
+      # start SDR preservation workflow (but do not create the workflows datastream)
+      dor_item.create_workflow('preservationIngestWF', false)
     rescue Exception => e
       raise Dor::Exception, 'Export failure'
     end
