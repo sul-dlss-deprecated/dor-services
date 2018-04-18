@@ -38,7 +38,7 @@ module Dor
       # start SDR preservation workflow (but do not create the workflows datastream)
       dor_item.create_workflow('preservationIngestWF', false)
     rescue Exception => e
-      raise Dor::Exception, 'Export failure'
+      raise Dor::Exception, "Error exporting new object version to bag: #{e.message}"
     end
 
     # @param [String] druid The object identifier
