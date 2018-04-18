@@ -1,11 +1,13 @@
 require 'moab/stanford'
 
 module Dor
+  # Note: This should probably live in common-accessioning robot sdr-ingest-transfer
+  #  as that is the only robot that uses it.  See also preservable concern.
   class SdrIngestService
 
     # @param [Dor::Item] dor_item The representation of the digital object
     # @param [String] agreement_id  depreciated, included for backward compatability with common-accessoning
-    # @return [void] Create the moab manifests, export data to a BagIt bag, kick off the SDR ingest workflow
+    # @return [void] Create the Moab/bag manifests for new version, export data to BagIt bag, kick off the SDR preservation workflow
     def self.transfer(dor_item, agreement_id = nil)
       druid = dor_item.pid
       workspace = DruidTools::Druid.new(druid, Dor::Config.sdr.local_workspace_root)
@@ -35,11 +37,13 @@ module Dor
       bagger.deposit_group('metadata', metadata_dir)
       bagger.create_tagfiles
       verify_bag_structure(bag_dir)
-      # Now bootstrap SDR workflow. but do not create the workflows datastream
-      dor_item.create_workflow('sdrIngestWF', false)
+      # start SDR preservation workflow (but do not create the workflows datastream)
+      dor_item.create_workflow('preservationIngestWF', false)
     rescue Exception => e
-      raise Dor::Exception, 'Export failure'
+      raise Dor::Exception, "Error exporting new object version to bag: #{e.message}"
     end
+
+    # Note: the following methods should probably all be private
 
     # @param [String] druid The object identifier
     # @return [Moab::SignatureCatalog] the catalog of all files previously ingested
