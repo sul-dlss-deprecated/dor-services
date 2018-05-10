@@ -16,14 +16,6 @@ env:
 
 matrix:
   include:
-    - env: # pre-assembly
-        - 'AF_VERSION="~> 6.0"'
-        - 'RAILS_VERSION="~> 4.2.5.2"'
-      rvm: 2.2.8
-    - env:
-        - 'AF_VERSION="~> 6.0"'
-        - 'RAILS_VERSION="~> 4.2"'
-      rvm: 2.3.5
     - env:
         - 'AF_VERSION="~> 7.0"'
         - 'RAILS_VERSION="~> 4.2"'

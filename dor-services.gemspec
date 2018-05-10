@@ -16,8 +16,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = '>= 1.3.6'
 
   # Runtime dependencies
-  s.add_dependency 'active-fedora', '>= 6.0', '< 9.a'
-  s.add_dependency 'activesupport', '>= 3.2.18' # '~> 4.0' #
+  s.add_dependency 'active-fedora', '>= 7.0', '< 9.a'
+  s.add_dependency 'activesupport', '>= 4.2.10', '< 5.2.0'
   s.add_dependency 'confstruct', '~> 0.2.7'
   s.add_dependency 'equivalent-xml', '~> 0.5', '>= 0.5.1' # 5.0 insufficient
   s.add_dependency 'json', '>= 1.8.1'
@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rsolr', '>= 1.0.3', '< 3'
   s.add_dependency 'ruby-cache', '~> 0.3.0'
   s.add_dependency 'ruby-graphviz'
-  s.add_dependency 'rubydora', '~> 1.6', '>= 1.6.5'
+  s.add_dependency 'rubydora', '~> 2.1'
   s.add_dependency 'solrizer', '~> 3.0'
   s.add_dependency 'systemu', '~> 2.6'
   s.add_dependency 'uuidtools', '~> 2.1.4'
