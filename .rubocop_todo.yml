@@ -399,6 +399,7 @@ Lint/HandleExceptions:
   Exclude:
     - 'lib/dor/models/concerns/contentable.rb'
     - 'lib/dor/models/concerns/processable.rb'
+    - 'lib/dor/indexers/processable_indexer.rb'
     - 'script/console'
     - 'script/manual_integration.rb'
     - 'spec/support/foxml_helper.rb'
@@ -616,6 +617,7 @@ Naming/VariableName:
     - 'lib/dor/services/public_xml_service.rb'
     - 'spec/datastreams/content_metadata_ds_spec.rb'
     - 'spec/datastreams/workflow_ds_spec.rb'
+    - 'spec/indexers/processable_indexer_spec.rb'
     - 'spec/models/concerns/processable_spec.rb'
     - 'spec/models/concerns/publishable_spec.rb'
 
@@ -699,7 +701,7 @@ Style/ClassAndModuleChildren:
 Style/ClassVars:
   Exclude:
     - 'lib/dor-services.rb'
-    - 'lib/dor/models/concerns/identifiable.rb'
+    - 'lib/dor/indexers/identifiable_indexer.rb'
     - 'lib/dor/models/workflow_object.rb'
     - 'lib/dor/services/indexing_service.rb'
     - 'lib/dor/services/metadata_service.rb'

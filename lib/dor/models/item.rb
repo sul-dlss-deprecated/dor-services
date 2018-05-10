@@ -11,6 +11,14 @@ module Dor
     include Releaseable
 
     has_object_type 'item'
+
+    self.resource_indexer = CompositeIndexer.new(
+      DataIndexer,
+      DescribableIndexer,
+      IdentifiableIndexer,
+      ProcessableIndexer,
+      ReleasableIndexer
+    )
   end
 end
 
