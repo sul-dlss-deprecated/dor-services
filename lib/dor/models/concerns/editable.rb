@@ -93,6 +93,7 @@ module Dor
     def mods_title
       descMetadata.term_values(:title_info, :main_title).first
     end
+
     def mods_title=(val)
       descMetadata.update_values({[:title_info, :main_title] => val})
     end
@@ -102,6 +103,7 @@ module Dor
     def default_collections
       administrativeMetadata.term_values(:registration, :default_collection)
     end
+
     # Add a collection to the listing of collections for items governed by this apo.
     # @param val [String] pid of the collection, ex. druid:ab123cd4567
     def add_default_collection(val)
@@ -116,6 +118,7 @@ module Dor
       node['id'] = val
       reg.add_child(node)
     end
+
     def remove_default_collection(val)
       xml = administrativeMetadata.ng_xml
       administrativeMetadata.ng_xml_will_change!
@@ -138,6 +141,7 @@ module Dor
     def metadata_source
       administrativeMetadata.metadata_source.first
     end
+
     def metadata_source=(val)
       if administrativeMetadata.descMetadata.nil?
         administrativeMetadata.ng_xml_will_change!
@@ -149,6 +153,7 @@ module Dor
     def use_statement
       defaultObjectRights.use_statement.first
     end
+
     def use_statement=(val)
       defaultObjectRights.update_term!(:use_statement, val.nil? ? '' : val)
     end
@@ -156,6 +161,7 @@ module Dor
     def copyright_statement
       defaultObjectRights.copyright.first
     end
+
     def copyright_statement=(val)
       defaultObjectRights.update_term!(:copyright, val.nil? ? '' : val)
     end
@@ -163,6 +169,7 @@ module Dor
     def creative_commons_license
       defaultObjectRights.creative_commons.first
     end
+
     def creative_commons_license_human
       defaultObjectRights.creative_commons_human.first
     end
@@ -170,6 +177,7 @@ module Dor
     def open_data_commons_license
       defaultObjectRights.open_data_commons.first
     end
+
     def open_data_commons_license_human
       defaultObjectRights.open_data_commons_human.first
     end
@@ -179,11 +187,13 @@ module Dor
       return open_data_commons_license unless open_data_commons_license.blank?
       nil
     end
+
     def use_license_uri
       return defaultObjectRights.creative_commons.uri.first unless defaultObjectRights.creative_commons.uri.blank?
       return defaultObjectRights.open_data_commons.uri.first unless defaultObjectRights.open_data_commons.uri.blank?
       nil
     end
+
     def use_license_human
       return creative_commons_license_human unless creative_commons_license_human.blank?
       return open_data_commons_license_human unless open_data_commons_license_human.blank?
@@ -195,6 +205,7 @@ module Dor
       defaultObjectRights.creative_commons = use_license_machine
       defaultObjectRights.creative_commons.uri = CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:uri]
     end
+
     def creative_commons_license_human=(use_license_human)
       defaultObjectRights.initialize_term!(:creative_commons_human)
       defaultObjectRights.creative_commons_human = use_license_human
@@ -205,6 +216,7 @@ module Dor
       defaultObjectRights.open_data_commons = use_license_machine
       defaultObjectRights.open_data_commons.uri = OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine][:uri]
     end
+
     def open_data_commons_license_human=(use_license_human)
       defaultObjectRights.initialize_term!(:open_data_commons_human)
       defaultObjectRights.open_data_commons_human = use_license_human
@@ -287,6 +299,7 @@ module Dor
     def desc_metadata_format
       administrativeMetadata.metadata_format.first
     end
+
     def desc_metadata_format=(format)
       # create the node if it isnt there already
       unless administrativeMetadata.metadata_format.first
@@ -299,6 +312,7 @@ module Dor
     def desc_metadata_source
       administrativeMetadata.metadata_source.first
     end
+
     def desc_metadata_source=(source)
       # create the node if it isnt there already
       unless administrativeMetadata.metadata_source.first
@@ -313,6 +327,7 @@ module Dor
     def default_workflows
       administrativeMetadata.term_values(:registration, :workflow_id)
     end
+
     # set a single default workflow
     # @param wf [String] the name of the workflow, ex. 'digitizationWF'
     def default_workflow=(wf)
@@ -338,6 +353,7 @@ module Dor
     def agreement
       agreement_object ? agreement_object.pid : ''
     end
+
     def agreement=(val)
       fail ArgumentError, 'agreement must have a valid druid' if val.blank?
       self.agreement_object = Dor.find val.to_s, :cast => true

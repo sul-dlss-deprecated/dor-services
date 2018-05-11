@@ -15,14 +15,22 @@ module Dor
 
        # these are the finders we will use to search for a thumb resource in contentMetadata, they will be searched in the order provided, stopping when one is reached
        thumb_xpath_finders = [
-           {image_type: 'local', finder: "/contentMetadata/resource[@type='thumb' and @thumb='yes']/file[#{mime_type_finder}]"},      # first find a file of mimetype jp2 explicitly marked as a thumb in the resource type and with a thumb=yes attribute
-           {image_type: 'external', finder: "/contentMetadata/resource[@type='thumb' and @thumb='yes']/externalFile[#{mime_type_finder}]"}, # same thing for external files
-           {image_type: 'local', finder: "/contentMetadata/resource[(@type='page' or @type='image') and @thumb='yes']/file[#{mime_type_finder}]"},# next find any image or page resource types with the thumb=yes attribute of mimetype jp2
-           {image_type: 'external', finder: "/contentMetadata/resource[(@type='page' or @type='image') and @thumb='yes']/externalFile[#{mime_type_finder}]"},# same thing for external file
-           {image_type: 'local', finder: "/contentMetadata/resource[@type='thumb']/file[#{mime_type_finder}]"}, # next find a file of mimetype jp2 and resource type=thumb but not marked with the thumb directive
-           {image_type: 'external', finder: "/contentMetadata/resource[@type='thumb']/externalFile[#{mime_type_finder}]"}, # same thing for external file
-           {image_type: 'local', finder: "/contentMetadata/resource[@type='page' or @type='image']/file[#{mime_type_finder}]"}, # finally find the first page or image resource of mimetype jp2
-           {image_type: 'external', finder: "/contentMetadata/resource[@type='page' or @type='image']/externalFile[#{mime_type_finder}]"} # same thing for external file
+           # first find a file of mimetype jp2 explicitly marked as a thumb in the resource type and with a thumb=yes attribute
+           {image_type: 'local', finder: "/contentMetadata/resource[@type='thumb' and @thumb='yes']/file[#{mime_type_finder}]"},
+           # same thing for external files
+           {image_type: 'external', finder: "/contentMetadata/resource[@type='thumb' and @thumb='yes']/externalFile[#{mime_type_finder}]"},
+           # next find any image or page resource types with the thumb=yes attribute of mimetype jp2
+           {image_type: 'local', finder: "/contentMetadata/resource[(@type='page' or @type='image') and @thumb='yes']/file[#{mime_type_finder}]"},
+           # same thing for external file
+           {image_type: 'external', finder: "/contentMetadata/resource[(@type='page' or @type='image') and @thumb='yes']/externalFile[#{mime_type_finder}]"},
+           # next find a file of mimetype jp2 and resource type=thumb but not marked with the thumb directive
+           {image_type: 'local', finder: "/contentMetadata/resource[@type='thumb']/file[#{mime_type_finder}]"},
+           # same thing for external file
+           {image_type: 'external', finder: "/contentMetadata/resource[@type='thumb']/externalFile[#{mime_type_finder}]"},
+           # finally find the first page or image resource of mimetype jp2
+           {image_type: 'local', finder: "/contentMetadata/resource[@type='page' or @type='image']/file[#{mime_type_finder}]"},
+           # same thing for external file
+           {image_type: 'external', finder: "/contentMetadata/resource[@type='page' or @type='image']/externalFile[#{mime_type_finder}]"}
          ]
 
        thumb_xpath_finders.each do |search_path|

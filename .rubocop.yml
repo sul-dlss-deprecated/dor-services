@@ -1,6 +1,6 @@
 inherit_from: .rubocop_todo.yml
 
-Style/FileName:
+Naming/FileName:
   Enabled: true
   Exclude:
     - 'lib/dor/migrations/identifiable/assert_adminPolicy.rb'
@@ -8,23 +8,22 @@ Style/FileName:
     - 'spec/dor/releaseable_no_VCR_spec.rb'
 
 # rspec expect{...} is conventional
-Style/SpaceBeforeBlockBraces:
+Layout/SpaceBeforeBlockBraces:
   Exclude:
     - 'spec/**/*_spec.rb'
 
-Style/EmptyLineBetweenDefs:
+Layout/EmptyLineBetweenDefs:
   AllowAdjacentOneLineDefs: true
   Exclude:
     - lib/dor/models/editable.rb
     - lib/dor/models/governable.rb
 
+
+# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
+# URISchemes: http, https
 Metrics/LineLength:
   Max: 200
+  IgnoredPatterns: ['\A#'] # ignore comments
   Exclude:
     # rights statement is a single string
-    - spec/dor/editable_spec.rb
-
-# test is specifically written this way
-Lint/LiteralInCondition:
-  Exclude:
-    - 'spec/dor/upgradable_spec.rb'
+    - spec/models/concerns/editable_spec.rb
