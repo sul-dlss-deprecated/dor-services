@@ -24,9 +24,9 @@ module Dor
            {image_type: 'local', finder: "/contentMetadata/resource[@type='page' or @type='image']/file[#{mime_type_finder}]"}, # finally find the first page or image resource of mimetype jp2
            {image_type: 'external', finder: "/contentMetadata/resource[@type='page' or @type='image']/externalFile[#{mime_type_finder}]"} # same thing for external file
          ]
-              
+
        thumb_xpath_finders.each do |search_path|
-         thumb_files = cm.xpath(search_path[:finder]) # look for a thumb  
+         thumb_files = cm.xpath(search_path[:finder]) # look for a thumb
          if thumb_files.size > 0   # if we find one, return the filename based on whether it is a local file or external file
            if search_path[:image_type] == 'local'
              thumb_image="#{remove_druid_prefix}/#{thumb_files[0]['id']}"
@@ -35,8 +35,8 @@ module Dor
            end
            break  # break out of the loop so we stop searching
          end
-       end 
-              
+       end
+
        thumb_image
     end
 
@@ -49,7 +49,7 @@ module Dor
       thumb_filename=thumb_image.split(/#{pid_regex}[\/]/).last # everything after the druid
       "#{thumb_druid}%2F#{ERB::Util.url_encode(thumb_filename)}"
     end
-    
+
     # Return a full qualified thumbnail image URL if the thumb is computable
     # @return [String] fully qualified image URL for the computed thumbnail, e.g. https://stacks.stanford.edu/image/iiif/oo000oo0001%2Ffilenamewith%20space/full
     def thumb_url
@@ -57,7 +57,9 @@ module Dor
       thumb_basename=File.basename(encoded_thumb, File.extname(encoded_thumb)) # strip the extension for URL generation
       "https://#{Dor::Config.stacks.host}/image/iiif/#{thumb_basename}/full/!400,400/0/default.jpg"
     end
-    
+
+    # strips away the relationships that should not be shown in public desc metadata
+    # @return [Nokogiri::XML]
     def public_relationships
       include_elements = ['fedora:isMemberOf', 'fedora:isMemberOfCollection', 'fedora:isConstituentOf']
       rels_doc = Nokogiri::XML(datastreams['RELS-EXT'].content)
