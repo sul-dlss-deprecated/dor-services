@@ -2,6 +2,7 @@ require 'rubygems'
 require 'rake'
 require 'bundler'
 require 'bundler/gem_tasks'
+require 'rubocop/rake_task'
 
 Dir.glob('lib/tasks/*.rake').each { |r| import r }
 
@@ -19,6 +20,8 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = 'spec/**/*_spec.rb'
 end
 
+RuboCop::RakeTask.new(:rubocop)
+
 task :rcov => [:spec]
 
 task :clean do
@@ -26,4 +29,4 @@ task :clean do
   FileUtils.rm('coverage.data') if File.exist? 'coverage.data'
 end
 
-task :default => [:spec, :doc]
+task default: [:rubocop, :spec, :doc]
