@@ -19,6 +19,8 @@ Dor.configure do
 
   metadata do
     catalog.url 'http://example.edu/catalog/mods'
+    catalog.user 'user'
+    catalog.pass 'pass'
   end
 
   solr.url         'https://example.edu/solr/solrizer'
