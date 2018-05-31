@@ -40,7 +40,9 @@ describe Dor::MetadataService do
       @mods = File.read(File.join(@specdir, 'fixtures', 'mods_record.xml'))
       @mock_resource = double('catalog-resource', :get => @mods)
       allow(@mock_resource).to receive(:[]).and_return(@mock_resource)
-      expect(RestClient::Resource).to receive(:new).with(Dor::Config.metadata.catalog.url).and_return(@mock_resource)
+      expect(RestClient::Resource).to receive(:new).with(Dor::Config.metadata.catalog.url,
+                                                         Dor::Config.metadata.catalog.user,
+                                                         Dor::Config.metadata.catalog.pass).and_return(@mock_resource)
     end
 
     it 'should fetch a record based on barcode' do

@@ -2,7 +2,9 @@ require 'rest-client'
 
 handler = Class.new do
   def fetch(prefix, identifier)
-    client = RestClient::Resource.new(Dor::Config.metadata.catalog.url)
+    client = RestClient::Resource.new(Dor::Config.metadata.catalog.url,
+                                      Dor::Config.metadata.catalog.user,
+                                      Dor::Config.metadata.catalog.pass)
     client["?#{prefix.chomp}=#{identifier.chomp}"].get
   end
 

@@ -16,6 +16,8 @@
 :metadata:
   :catalog:
     :url:
+    :user:
+    :pass:
 :sdr:
   :local_workspace_root: /dor/workspace
   :local_export_home: /dor/export
