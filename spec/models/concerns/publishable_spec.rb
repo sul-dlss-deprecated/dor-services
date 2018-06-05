@@ -463,7 +463,12 @@ describe Dor::Publishable do
             </rightsMetadata>
           EOXML
 
-          Dor::Config.push! {|config| config.stacks.local_document_cache_root purl_root}
+          Dor::Config.push! do |config|
+            config.stacks.local_document_cache_root purl_root
+            config.purl_services.url 'http://example.com/purl'
+          end
+
+          stub_request(:delete, 'example.com/purl/purls/ab123cd4567')
         end
 
         after(:each) do
@@ -474,6 +479,11 @@ describe Dor::Publishable do
         it 'does not publish the object' do
           expect(Dor::DigitalStacksService).not_to receive(:transfer_to_document_store)
           @item.publish_metadata
+        end
+
+        it 'notifies the purl service of the deletion' do
+          @item.publish_metadata
+          expect(WebMock).to have_requested(:delete, 'example.com/purl/purls/ab123cd4567')
         end
 
         it "removes the item's content from the Purl document cache and creates a .delete entry" do
@@ -612,18 +622,26 @@ describe Dor::Publishable do
       let(:changes_dir) { Dir.mktmpdir }
       let(:purl_root) { Dir.mktmpdir }
       let(:changes_file) { File.join(changes_dir,@item.pid.gsub('druid:','')) }
-      
-      before(:each) do 
+
+      before(:each) do
         Dor::Config.push! {|config| config.stacks.local_document_cache_root purl_root}
         Dor::Config.push! {|config| config.stacks.local_recent_changes changes_dir}
       end
-      
+
       after(:each) do
         FileUtils.remove_entry purl_root
         FileUtils.remove_entry changes_dir
         Dor::Config.pop!
       end
-      
+
+      it 'notifies the purl service of the update' do
+        Dor::Config.push! do |config|
+          config.purl_services.url 'http://example.com/purl'
+        end
+        stub_request(:post, 'example.com/purl/purls/ab123cd4567')
+        @item.publish_notify_on_success
+        expect(WebMock).to have_requested(:post, 'example.com/purl/purls/ab123cd4567')
+      end
       it 'writes empty notification file' do
         expect(File).to receive(:directory?).with(changes_dir).and_return(true)
         expect(File.exists?(changes_file)).to be_falsey
