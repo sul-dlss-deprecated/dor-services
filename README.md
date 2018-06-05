@@ -1,6 +1,5 @@
 [![Build Status](https://travis-ci.org/sul-dlss/dor-services.svg?branch=master)](https://travis-ci.org/sul-dlss/dor-services)
 [![Coverage Status](https://coveralls.io/repos/sul-dlss/dor-services/badge.svg?branch=master&service=github)](https://coveralls.io/github/sul-dlss/dor-services?branch=master)
-[![Dependency Status](https://gemnasium.com/badges/github.com/sul-dlss/dor-services.svg)](https://gemnasium.com/github.com/sul-dlss/dor-services)
 [![Gem Version](https://badge.fury.io/rb/dor-services.svg)](https://badge.fury.io/rb/dor-services)
 
 # dor-services
