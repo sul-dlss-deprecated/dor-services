@@ -102,6 +102,7 @@ module Dor
       else
         # Clear out the document cache for this item
         DigitalStacksService.prune_purl_dir pid
+        publish_delete_on_success
       end
     end
 
@@ -114,19 +115,37 @@ module Dor
     end
 
     ##
-    # When publishing a PURL, we drop a `aa11bb2222` file into the `local_recent_changes` folder
+    # When publishing a PURL, we notify purl-fetcher of changes.
+    # If the purl service isn't configured, instead we drop a `aa11bb2222` file into the `local_recent_changes` folder
     # to notify other applications watching the filesystem (i.e., purl-fetcher).
     # We also remove any .deletes entry that may have left over from a previous removal
-    # @param [String] local_recent_changes usually `/purl/recent_changes`
-    def publish_notify_on_success(local_recent_changes = Config.stacks.local_recent_changes)
-      raise ArgumentError, "Missing local_recent_changes directory: #{local_recent_changes}" unless File.directory?(local_recent_changes)
+    def publish_notify_on_success
       id = pid.gsub(/^druid:/, '')
-      FileUtils.touch(File.join(local_recent_changes, id))
-      begin
-        DruidTools::Druid.new(id, Dor::Config.stacks.local_document_cache_root).deletes_delete_record
-      rescue Errno::EACCES
-        Dor.logger.warn "Access denied while trying to remove .deletes file for druid:#{id}"
+
+      if Dor::Config.purl_services.url
+        purl_services = Dor::Config.purl_services.rest_client
+        purl_services["purls/#{id}"].post ''
+      else
+        local_recent_changes = Config.stacks.local_recent_changes
+        raise ArgumentError, "Missing local_recent_changes directory: #{local_recent_changes}" unless File.directory?(local_recent_changes)
+
+        FileUtils.touch(File.join(local_recent_changes, id))
+        begin
+          DruidTools::Druid.new(id, Dor::Config.stacks.local_document_cache_root).deletes_delete_record
+        rescue Errno::EACCES
+          Dor.logger.warn "Access denied while trying to remove .deletes file for druid:#{id}"
+        end
       end
+    end
+
+    ##
+    # When publishing a PURL, we notify purl-fetcher of changes.
+    def publish_delete_on_success
+      return unless Dor::Config.purl_services.url
+      id = pid.gsub(/^druid:/, '')
+
+      purl_services = Dor::Config.purl_services.rest_client
+      purl_services["purls/#{id}"].delete
     end
   end
 end

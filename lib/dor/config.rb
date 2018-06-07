@@ -73,6 +73,9 @@ module Dor
         :dor_services => {
           :rest_client => Confstruct.deferred { |c| RestResourceFactory.create(:dor_services) }
         },
+        :purl_services => {
+          :rest_client => Confstruct.deferred { |c| RestResourceFactory.create(:purl_services) }
+        },
         :sdr => {
           :rest_client => Confstruct.deferred { |c| RestResourceFactory.create(:sdr) }
         },
