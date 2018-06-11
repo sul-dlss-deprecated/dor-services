@@ -5,8 +5,8 @@ module Dor
     extend ActiveSupport::Concern
 
     included do
-      has_metadata :name => 'provenanceMetadata', :type => ActiveFedora::OmDatastream, :label => 'Provenance Metadata'
-      has_metadata :name => 'technicalMetadata', :type => ActiveFedora::OmDatastream, :label => 'Technical Metadata', :control_group => 'M'
+      has_metadata name: 'provenanceMetadata', type: ProvenanceMetadataDS, label: 'Provenance Metadata'
+      has_metadata name: 'technicalMetadata', type: TechnicalMetadataDS, label: 'Technical Metadata', control_group: 'M'
     end
 
     def build_provenanceMetadata_datastream(workflow_id, event_text)

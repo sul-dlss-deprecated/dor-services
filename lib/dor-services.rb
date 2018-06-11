@@ -85,18 +85,20 @@ module Dor
   autoload_under 'datastreams' do
     autoload :AdministrativeMetadataDS
     autoload :ContentMetadataDS
+    autoload :DefaultObjectRightsDS
     autoload :DescMetadataDS
     autoload :EmbargoMetadataDS
     autoload :EventsDS
     autoload :GeoMetadataDS
     autoload :IdentityMetadataDS
+    autoload :ProvenanceMetadataDS
     autoload :RightsMetadataDS
     autoload :RoleMetadataDS
+    autoload :SimpleDublinCoreDs
+    autoload :TechnicalMetadataDS
+    autoload :VersionMetadataDS
     autoload :WorkflowDefinitionDs
     autoload :WorkflowDs
-    autoload :VersionMetadataDS
-    autoload :DefaultObjectRightsDS
-    autoload :SimpleDublinCoreDs
   end
 
   # DOR Concerns
