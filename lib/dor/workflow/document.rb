@@ -8,7 +8,7 @@ module Workflow
       t.root(:path => 'workflow')
       t.repository(:path => {:attribute => 'repository'})
       t.workflowId(:path => {:attribute => 'id'})
-      t.process {
+      t.process do
         t.name_(:path => {:attribute => 'name'})
         t.status(:path => {:attribute => 'status'})
         t.timestamp(:path => {:attribute => 'datetime'}) # , :data_type => :date)
@@ -16,7 +16,7 @@ module Workflow
         t.lifecycle(:path => {:attribute => 'lifecycle'})
         t.attempts(:path => {:attribute => 'attempts'}, :index_as => [:not_searchable])
         t.version(:path => {:attribute => 'version'})
-      }
+      end
     end
 
     @@definitions = {}

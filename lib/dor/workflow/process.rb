@@ -82,8 +82,10 @@ module Workflow
       @attrs['elapsed'].nil? ? nil : @attrs['elapsed'].to_f
     end
 
-    def update!(info, new_owner = nil)
-      @owner = new_owner unless new_owner.nil?
+    # @param info [Nokogiri::XML::Element]
+    # @param new_owner [Dor::Workflow::Document]
+    def update!(info, new_owner)
+      @owner = new_owner
       if info.is_a? Nokogiri::XML::Node
         info = Hash[info.attributes.collect { |k, v| [k, v.value] }]
       end
