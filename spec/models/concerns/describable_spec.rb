@@ -15,7 +15,7 @@ describe Dor::Describable do
   before(:each) { stub_config   }
   after(:each)  { unstub_config }
 
-  before :each do
+  before do
     @simple = instantiate_fixture('druid:ab123cd4567', SimpleItem)
     @item   = instantiate_fixture('druid:ab123cd4567', DescribableItem)
     @obj    = instantiate_fixture('druid:ab123cd4567', DescribableItem)
@@ -187,14 +187,14 @@ describe Dor::Describable do
   end
 
   describe 'to_solr: more mods stuff' do
-    before :each do
+    before do
       allow(@obj).to receive(:milestones).and_return({})
       @obj.datastreams['descMetadata'].content = read_fixture('bs646cd8717_mods.xml')
-      @doc = @obj.to_solr
-      expect(@doc).not_to be_nil
     end
+    subject(:doc) { @obj.to_solr }
+
     it 'searchworks date-fu: temporal periods and pub_dates' do
-      expect(@doc).to match a_hash_including(
+      expect(doc).to match a_hash_including(
         'sw_subject_temporal_ssim'  => a_collection_containing_exactly('18th century', '17th century'),
         'sw_subject_temporal_tesim' => a_collection_containing_exactly('18th century', '17th century'),
         'sw_pub_date_sort_ssi'      => '1600',
@@ -202,15 +202,17 @@ describe Dor::Describable do
         'sw_pub_date_facet_ssi'     => '1600'
       )
     end
+
     it 'subject geographic fields' do
-      expect(@doc).to match a_hash_including(
+      expect(doc).to match a_hash_including(
         'sw_subject_geographic_ssim'  => %w(Europe Europe),
         'sw_subject_geographic_tesim' => %w(Europe Europe)
       )
     end
+
     it 'genre fields' do
-      genre_list = ['Thesis/Dissertation']
-      expect(@doc).to match a_hash_including(
+      genre_list = @obj.stanford_mods.sw_genre
+      expect(doc).to match a_hash_including(
         'sw_genre_ssim'               => genre_list,
         'sw_genre_tesim'              => genre_list
       )
