@@ -6,8 +6,6 @@ notifications:
   email: false
 
 rvm:
-  - 2.3.7
-  - 2.4.2
   - 2.5.3
 
 env:
@@ -18,12 +16,12 @@ matrix:
   include:
     - env:
         - 'RAILS_VERSION="~> 5.2.0"'
-      rvm: 2.3.7
+      rvm: 2.5.3
     - env:
         - 'AF_VERSION="~> 7.0"'
         - 'RAILS_VERSION="~> 4.2"'
-      rvm: 2.3.7
+      rvm: 2.5.3
     - env:
         - 'AF_VERSION="~> 8.0"'
         - 'RAILS_VERSION="~> 4.2"'
-      rvm: 2.3.7
+      rvm: 2.5.3
