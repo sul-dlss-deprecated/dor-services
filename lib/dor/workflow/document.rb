@@ -53,13 +53,6 @@ module Workflow
       end
     end
 
-    def graph(parent = nil, dir = nil)
-      wf_definition = definition
-      result = wf_definition ? Workflow::Graph.from_processes(wf_definition.repo, wf_definition.name, processes, parent) : nil
-      result['rankdir'] = dir || 'TB' unless result.nil?
-      result
-    end
-
     def [](value)
       processes.find { |p| p.name == value }
     end

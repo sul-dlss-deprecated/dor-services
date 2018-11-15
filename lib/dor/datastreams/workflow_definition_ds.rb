@@ -37,10 +37,6 @@ class WorkflowDefinitionDs < ActiveFedora::OmDatastream
     add_child_node(ng_xml.at_xpath('/workflow-def'), :process, self, attributes)
   end
 
-  def graph(parent = nil)
-    Workflow::Graph.from_processes(repo, name, processes, parent)
-  end
-
   def processes
     ng_xml.xpath('/workflow-def/process').collect do |node|
       Workflow::Process.new(repo, name, node)
