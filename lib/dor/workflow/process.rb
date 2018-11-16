@@ -3,6 +3,9 @@ module Workflow
   class Process
     attr_reader :owner, :repo, :workflow
 
+    # @param repo [String] the name of the repository, typically 'dor'
+    # @param workflow [String] the name of the workflow, e.g. 'assemblyWF'
+    # @param attrs [Nokogiri::XML::Node, Hash]
     def initialize(repo, workflow, attrs)
       @workflow = workflow
       @repo = repo
@@ -82,14 +85,18 @@ module Workflow
       @attrs['elapsed'].nil? ? nil : @attrs['elapsed'].to_f
     end
 
-    # @param info [Nokogiri::XML::Element]
+    # Updates this object with the attributes passed in.
+    # @param info [Hash,Nokogiri::XML::Element,NilClass]
     # @param new_owner [Dor::Workflow::Document]
     def update!(info, new_owner)
       @owner = new_owner
+      return self if info.nil?
+
       if info.is_a? Nokogiri::XML::Node
         info = Hash[info.attributes.collect { |k, v| [k, v.value] }]
       end
       @attrs.merge! info
+      self
     end
 
     def to_hash

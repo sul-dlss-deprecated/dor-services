@@ -33,6 +33,7 @@ module Dor
       @@repo_cache[name]
     end
 
+    # @return [Dor::WorkflowDefinitionDs]
     def definition
       datastreams['workflowDefinition']
     end

@@ -40,6 +40,7 @@ module Workflow
       ng_xml.at_xpath('/workflow/process[not(@version)]') ? true : false
     end
 
+    # @return [Dor::WorkflowDefinitionDs]
     def definition
       @definition ||= begin
         if @@definitions.key? workflowId.first
@@ -71,14 +72,12 @@ module Workflow
       if definition
         definition.processes.collect do |process|
           node = ng_xml.at("/workflow/process[@name = '#{process.name}']")
-          process.update!(node, self) unless node.nil?
-          process
+          process.update!(node, self)
         end
       else
         find_by_terms(:workflow, :process).collect do |x|
           pnode = Dor::Workflow::Process.new(repository, workflowId, {})
           pnode.update!(x, self)
-          pnode
         end.sort_by(&:datetime)
       end
     end
