@@ -18,13 +18,13 @@ module Dor
         @object_type = str
         Dor.registered_classes[str] = self
       end
-    end
 
-    def initialize(attrs = {})
-      if Dor::Config.suri.mint_ids && !attrs[:pid]
-        attrs = attrs.merge!({:pid => Dor::SuriService.mint_id, :new_object => true})
+      # Overrides the method in ActiveFedora to mint a pid using SURI rather
+      # than the default Fedora sequence
+      def assign_pid(_)
+        return Dor::SuriService.mint_id if Dor::Config.suri.mint_ids
+        super
       end
-      super
     end
 
     # helper method to get the tags as an array
