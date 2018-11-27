@@ -4,6 +4,7 @@ module Dor
     include Embargoable
     include Publishable
     include Itemizable
+    include Preservable
     include Assembleable
     include Contentable
     include Geoable
