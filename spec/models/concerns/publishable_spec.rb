@@ -100,15 +100,30 @@ describe Dor::Publishable do
   end
 
   describe '#thumb' do
+    before do
+      expect(Deprecation).to receive(:warn)
+    end
+    subject { item.thumb  }
+    let(:item) { @item }
+    let(:service) { instance_double(Dor::ThumbnailService, thumb: 'Test Result')}
+
+    it 'calls the thumbnail service' do
+      expect(Dor::ThumbnailService).to receive(:new).with(item).and_return(service)
+      expect(subject).to eq 'Test Result'
+    end
+  end
+
+  describe '#thumb_url' do
+    before do
+      expect(Deprecation).to receive(:warn).at_least(1).times
+    end
     it 'should return nil if there is no contentMetadata datastream' do
-      expect(@collection.thumb).to be_nil
       expect(@collection.thumb_url).to be_nil
     end
 
     it 'should return nil if there is no contentMetadata' do
-      expect(@item.thumb).to be_nil
       expect(@item.thumb_url).to be_nil
-    end   
+    end
     it 'should find the first image as the thumb when no specific thumbs are specified' do
       @item.contentMetadata.content = <<-XML
         <?xml version="1.0"?>
@@ -118,79 +133,9 @@ describe Dor::Publishable do
           </resource>
         </contentMetadata>
       XML
-      expect(@item.thumb).to eq('ab123cd4567/ab123cd4567_05_0001.jp2')
       expect(@item.thumb_url).to eq('https://stacks.stanford.edu/image/iiif/ab123cd4567%2Fab123cd4567_05_0001/full/!400,400/0/default.jpg')
     end
-    it 'should find a thumb resource marked as thumb with the thumb attribute first, even if it is listed second' do
-      @item.contentMetadata.content = <<-XML
-        <?xml version="1.0"?>
-        <contentMetadata objectId="druid:ab123cd4567" type="map">
-          <resource id="0001" sequence="1" type="image">
-            <file id="ab123cd4567_05_0001.jp2" mimetype="image/jp2"/>
-          </resource>
-          <resource id="0002" sequence="2" thumb="yes" type="thumb">
-            <file id="ab123cd4567_thumb.jp2" mimetype="image/jp2"/>
-          </resource>
-        </contentMetadata>
-      XML
-      expect(@item.thumb).to eq('ab123cd4567/ab123cd4567_thumb.jp2')
-    end
-    it 'should find a thumb resource marked as thumb without the thumb attribute first, even if it is listed second when there are no other thumbs specified' do
-      @item.contentMetadata.content = <<-XML
-        <?xml version="1.0"?>
-        <contentMetadata objectId="druid:ab123cd4567" type="map">
-          <resource id="0001" sequence="1" type="image">
-            <file id="ab123cd4567_05_0001.jp2" mimetype="image/jp2"/>
-          </resource>
-          <resource id="0002" sequence="2" type="thumb">
-            <file id="ab123cd4567_thumb.jp2" mimetype="image/jp2"/>
-          </resource>
-        </contentMetadata>
-      XML
-      expect(@item.thumb).to eq('ab123cd4567/ab123cd4567_thumb.jp2')
-    end    
-    it 'should find a thumb resource marked as thumb with the thumb attribute first, even if it is listed second and there is another image marked as thumb first' do
-      @item.contentMetadata.content = <<-XML
-        <?xml version="1.0"?>
-        <contentMetadata objectId="druid:ab123cd4567" type="map">
-          <resource id="0001" sequence="1" thumb="yes" type="image">
-            <file id="ab123cd4567_05_0001.jp2" mimetype="image/jp2"/>
-          </resource>
-          <resource id="0002" sequence="2" thumb="yes" type="thumb">
-            <file id="ab123cd4567_thumb.jp2" mimetype="image/jp2"/>
-          </resource>
-        </contentMetadata>
-      XML
-      expect(@item.thumb).to eq('ab123cd4567/ab123cd4567_thumb.jp2')
-    end 
-    it 'should find an image resource marked as thumb with the thumb attribute when there is no resource thumb specified' do
-      @item.contentMetadata.content = <<-XML
-        <?xml version="1.0"?>
-        <contentMetadata objectId="druid:ab123cd4567" type="map">
-          <resource id="0001" sequence="1" type="image">
-            <file id="ab123cd4567_05_0001.jp2" mimetype="image/jp2"/>
-          </resource>
-          <resource id="0002" sequence="2" thumb="yes" type="image">
-            <file id="ab123cd4567_05_0002.jp2" mimetype="image/jp2"/>
-          </resource>
-        </contentMetadata>
-      XML
-      expect(@item.thumb).to eq('ab123cd4567/ab123cd4567_05_0002.jp2')
-    end 
-    it 'should find an image resource marked as thumb with the thumb attribute when there is a resource thumb specified but not the thumb attribute' do
-      @item.contentMetadata.content = <<-XML
-        <?xml version="1.0"?>
-        <contentMetadata objectId="druid:ab123cd4567" type="book">
-          <resource id="0001" sequence="1" type="thumb">
-            <file id="ab123cd4567_05_0001.jp2" mimetype="image/jp2"/>
-          </resource>
-          <resource id="0002" sequence="2" thumb="yes" type="image">
-            <file id="ab123cd4567_05_0002.jp2" mimetype="image/jp2"/>
-          </resource>
-        </contentMetadata>
-      XML
-      expect(@item.thumb).to eq('ab123cd4567/ab123cd4567_05_0002.jp2')
-    end  
+
     it 'should find a page resource marked as thumb with the thumb attribute when there is a resource thumb specified but not the thumb attribute' do
       @item.contentMetadata.content = <<-XML
         <?xml version="1.0"?>
@@ -204,13 +149,12 @@ describe Dor::Publishable do
           </resource>
           <resource id="0003" sequence="3" type="page">
             <externalFile fileId="2542A.jp2" mimetype="image/jp2" objectId="druid:cg767mn6478" resourceId="cg767mn6478_1">
-          </resource>          
+          </resource>
         </contentMetadata>
       XML
-      expect(@item.thumb).to eq('ab123cd4567/ab123cd4567_05_0002.jp2')
       expect(@item.encoded_thumb).to eq('ab123cd4567%2Fab123cd4567_05_0002.jp2')
       expect(@item.thumb_url).to eq('https://stacks.stanford.edu/image/iiif/ab123cd4567%2Fab123cd4567_05_0002/full/!400,400/0/default.jpg')
-    end 
+    end
     it 'should find an externalFile image resource when there are no other images' do
       @item.contentMetadata.content = <<-XML
         <?xml version="1.0"?>
@@ -223,10 +167,9 @@ describe Dor::Publishable do
           </resource>
         </contentMetadata>
       XML
-      expect(@item.thumb).to eq('cg767mn6478/2542A.jp2')
       expect(@item.encoded_thumb).to eq('cg767mn6478%2F2542A.jp2')
       expect(@item.thumb_url).to eq('https://stacks.stanford.edu/image/iiif/cg767mn6478%2F2542A/full/!400,400/0/default.jpg')
-    end    
+    end
     it 'should find an externalFile page resource when there are no other images, even if objectId attribute is missing druid prefix' do
       @item.contentMetadata.content = <<-XML
         <?xml version="1.0"?>
@@ -239,10 +182,9 @@ describe Dor::Publishable do
           </resource>
         </contentMetadata>
       XML
-      expect(@item.thumb).to eq('cg767mn6478/2542A.jp2')
       expect(@item.encoded_thumb).to eq('cg767mn6478%2F2542A.jp2')
       expect(@item.thumb_url).to eq('https://stacks.stanford.edu/image/iiif/cg767mn6478%2F2542A/full/!400,400/0/default.jpg')
-    end  
+    end
     it 'should find an explicit externalFile thumb resource before another image resource, and encode the space' do
       @item.contentMetadata.content = <<-XML
         <?xml version="1.0"?>
@@ -255,10 +197,9 @@ describe Dor::Publishable do
           </resource>
         </contentMetadata>
       XML
-      expect(@item.thumb).to eq('cg767mn6478/2542A withspace.jp2')
       expect(@item.encoded_thumb).to eq('cg767mn6478%2F2542A%20withspace.jp2')
       expect(@item.thumb_url).to eq('https://stacks.stanford.edu/image/iiif/cg767mn6478%2F2542A%20withspace/full/!400,400/0/default.jpg')
-    end                             
+    end
     it 'should return nil if no thumb is identified' do
       @item.contentMetadata.content = <<-XML
         <?xml version="1.0"?>
@@ -268,16 +209,14 @@ describe Dor::Publishable do
           </resource>
         </contentMetadata>
       XML
-      expect(@item.thumb).to be_nil
       expect(@item.encoded_thumb).to be_nil
       expect(@item.thumb_url).to be_nil
-    end                           
+    end
     it 'should return nil if there is no contentMetadata datastream at all' do
       @item.datastreams['contentMetadata'] = nil
-      expect(@item.thumb).to be_nil
       expect(@item.encoded_thumb).to be_nil
       expect(@item.thumb_url).to be_nil
-    end                                     
+    end
   end
 
   describe '#public_xml' do
@@ -386,7 +325,7 @@ describe Dor::Publishable do
         p_xml = Nokogiri::XML(@item.public_xml)
         expect(p_xml.at_xpath('/publicObject/thumb').to_xml).to be_equivalent_to('<thumb>ab123cd4567/ab123cd4567_05_0002.jp2</thumb>')
       end
-      
+
       it 'should expand isMemberOfCollection and isConstituentOf into correct MODS' do
         allow(@item).to receive(:generate_public_desc_md).and_call_original
         # load up collection and constituent parent items from fixture data
@@ -662,7 +601,7 @@ describe Dor::Publishable do
         @item.publish_notify_on_success
         expect(druid1.deletes_record_exists?).to be_falsey # deletes record not there anymore
         expect(File.exists?(changes_file)).to be_truthy # changes file is there
-      end  
+      end
       it 'does not explode if the deletes entry cannot be removed' do
         druid1 = DruidTools::Druid.new @item.pid, purl_root
         druid1.creates_delete_record # create a deletes record
@@ -672,7 +611,7 @@ describe Dor::Publishable do
         @item.publish_notify_on_success
         expect(druid1.deletes_record_exists?).to be_truthy # deletes record is still there since it cannot be removed
         expect(File.exists?(changes_file)).to be_truthy # changes file is there
-      end          
+      end
       it 'raises error if misconfigured' do
         Dor::Config.push! {|config| config.stacks.local_recent_changes nil}
         expect(File).to receive(:directory?).with(nil).and_return(false)

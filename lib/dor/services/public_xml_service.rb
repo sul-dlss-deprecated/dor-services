@@ -5,7 +5,7 @@ module Dor
     def initialize(object)
       @object = object
     end
-    
+
     def to_xml
       pub = Nokogiri::XML('<publicObject/>').root
       pub['id'] = object.pid
@@ -21,8 +21,10 @@ module Dor
       pub.add_child(Nokogiri::XML(object.generate_public_desc_md).root)
       pub.add_child(release_xml.root) unless release_xml.xpath('//release').children.size == 0 # If there are no release_tags, this prevents an empty <releaseData/> from being added
       # Note we cannot base this on if an individual object has release tags or not, because the collection may cause one to be generated for an item,
-      # so we need to calculate it and then look at the final result.s
-      pub.add_child(Nokogiri("<thumb>#{object.thumb}</thumb>").root) unless object.thumb.nil?
+      # so we need to calculate it and then look at the final result.
+
+      thumb = ThumbnailService.new(object).thumb
+      pub.add_child(Nokogiri("<thumb>#{thumb}</thumb>").root) unless thumb.nil?
 
       new_pub = Nokogiri::XML(pub.to_xml) { |x| x.noblanks }
       new_pub.encoding = 'UTF-8'

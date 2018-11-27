@@ -154,6 +154,7 @@ module Dor
     autoload :CleanupResetService
     autoload :PublicDescMetadataService
     autoload :PublicXmlService
+    autoload :ThumbnailService
   end
 
   # Workflow Classes

@@ -3,50 +3,17 @@ require 'fileutils'
 
 module Dor
   module Publishable
+    extend Deprecation
     extend ActiveSupport::Concern
+    self.deprecation_horizon = 'dor-services version 7.0.0'
 
     # Compute the thumbnail for this object following the rules at https://consul.stanford.edu/display/chimera/The+Rules+of+Thumb
+    # Used by PublicXmlService
     # @return [String] the computed thumb filename, with the druid prefix and a slash in front of it, e.g. oo000oo0001/filenamewith space.jp2
     def thumb
-       return unless respond_to?(:contentMetadata) && !contentMetadata.nil?
-       cm = contentMetadata.ng_xml
-       mime_type_finder = "@mimetype='image/jp2' or @mimeType='image/jp2'" # allow the mimetype attribute to be lower or camelcase when searching to make it more robust
-       thumb_image=nil
-
-       # these are the finders we will use to search for a thumb resource in contentMetadata, they will be searched in the order provided, stopping when one is reached
-       thumb_xpath_finders = [
-           # first find a file of mimetype jp2 explicitly marked as a thumb in the resource type and with a thumb=yes attribute
-           {image_type: 'local', finder: "/contentMetadata/resource[@type='thumb' and @thumb='yes']/file[#{mime_type_finder}]"},
-           # same thing for external files
-           {image_type: 'external', finder: "/contentMetadata/resource[@type='thumb' and @thumb='yes']/externalFile[#{mime_type_finder}]"},
-           # next find any image or page resource types with the thumb=yes attribute of mimetype jp2
-           {image_type: 'local', finder: "/contentMetadata/resource[(@type='page' or @type='image') and @thumb='yes']/file[#{mime_type_finder}]"},
-           # same thing for external file
-           {image_type: 'external', finder: "/contentMetadata/resource[(@type='page' or @type='image') and @thumb='yes']/externalFile[#{mime_type_finder}]"},
-           # next find a file of mimetype jp2 and resource type=thumb but not marked with the thumb directive
-           {image_type: 'local', finder: "/contentMetadata/resource[@type='thumb']/file[#{mime_type_finder}]"},
-           # same thing for external file
-           {image_type: 'external', finder: "/contentMetadata/resource[@type='thumb']/externalFile[#{mime_type_finder}]"},
-           # finally find the first page or image resource of mimetype jp2
-           {image_type: 'local', finder: "/contentMetadata/resource[@type='page' or @type='image']/file[#{mime_type_finder}]"},
-           # same thing for external file
-           {image_type: 'external', finder: "/contentMetadata/resource[@type='page' or @type='image']/externalFile[#{mime_type_finder}]"}
-         ]
-
-       thumb_xpath_finders.each do |search_path|
-         thumb_files = cm.xpath(search_path[:finder]) # look for a thumb
-         if thumb_files.size > 0   # if we find one, return the filename based on whether it is a local file or external file
-           if search_path[:image_type] == 'local'
-             thumb_image="#{remove_druid_prefix}/#{thumb_files[0]['id']}"
-           else
-             thumb_image="#{remove_druid_prefix(thumb_files[0]['objectId'])}/#{thumb_files[0]['fileId']}"
-           end
-           break  # break out of the loop so we stop searching
-         end
-       end
-
-       thumb_image
+      ThumbnailService.new(self).thumb
     end
+    deprecation_deprecate :thumb
 
     # Return a URI encoded version of the thumb image for use by indexers (leaving the extension of the filename)
     # @return [String] URI encoded version of the thumb with the druid prefix, e.g. oo000oo0001%2Ffilenamewith%20space.jp2
@@ -57,6 +24,7 @@ module Dor
       thumb_filename=thumb_image.split(/#{pid_regex}[\/]/).last # everything after the druid
       "#{thumb_druid}%2F#{ERB::Util.url_encode(thumb_filename)}"
     end
+    deprecation_deprecate :encoded_thumb
 
     # Return a full qualified thumbnail image URL if the thumb is computable
     # @return [String] fully qualified image URL for the computed thumbnail, e.g. https://stacks.stanford.edu/image/iiif/oo000oo0001%2Ffilenamewith%20space/full
@@ -65,6 +33,7 @@ module Dor
       thumb_basename=File.basename(encoded_thumb, File.extname(encoded_thumb)) # strip the extension for URL generation
       "https://#{Dor::Config.stacks.host}/image/iiif/#{thumb_basename}/full/!400,400/0/default.jpg"
     end
+    deprecation_deprecate :thumb_url
 
     # strips away the relationships that should not be shown in public desc metadata
     # @return [Nokogiri::XML]
