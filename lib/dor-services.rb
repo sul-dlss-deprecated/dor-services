@@ -159,7 +159,6 @@ module Dor
   # Workflow Classes
   module Workflow
     extend ActiveSupport::Autoload
-    autoload :Graph
     autoload :Process
     autoload :Document
   end

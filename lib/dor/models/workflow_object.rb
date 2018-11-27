@@ -38,10 +38,6 @@ module Dor
       datastreams['workflowDefinition']
     end
 
-    def graph(*args)
-      definition.graph *args
-    end
-
     def generate_initial_workflow
       datastreams['workflowDefinition'].initial_workflow
     end

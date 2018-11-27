@@ -89,6 +89,7 @@ module Workflow
     # @param info [Hash,Nokogiri::XML::Element,NilClass]
     # @param new_owner [Dor::Workflow::Document]
     def update!(info, new_owner)
+      raise ArgumentError, 'Owner can not be nil. It must be an instance of Dor::Workflow::Document' unless new_owner
       @owner = new_owner
       return self if info.nil?
 

@@ -49,17 +49,6 @@ module Dor
       @workflows ||= workflow.nodeset.collect { |wf_node| Workflow::Document.new wf_node.to_xml }
     end
 
-    def graph(dir = nil)
-      result = GraphViz.digraph(pid)
-      sg = result.add_graph('rank') { |g| g[:rank => 'same'] }
-      workflows.reject(&:nil?).each do |wf|
-        g = wf.graph(result)
-        sg.add_node(g.root.id) unless g.nil?
-      end
-      result['rankdir'] = dir || 'TB'
-      result
-    end
-
     # Finds the first workflow that is expedited, then returns the value of its priority
     #
     # @return [Integer] value of the priority.  Defaults to 0 if none of the workflows are expedited
