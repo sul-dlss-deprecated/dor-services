@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rubygems'
 require 'rubygems/package'
 require 'zlib'
@@ -89,7 +91,7 @@ class MergeIntegrationTest
     @pids.map { |p| 'druid:' + p }.each do |pid|
       begin
         i = Dor::Item.find pid
-        i.delete if i
+        i&.delete
       rescue
       end
     end
@@ -97,7 +99,7 @@ class MergeIntegrationTest
 
   def load_foxml(delete = true)
     delete_objs if delete
-    @pids.map {|p| File.join(@fixture_dir, "druid_#{p}.foxml.xml")}.each do |foxml|
+    @pids.map { |p| File.join(@fixture_dir, "druid_#{p}.foxml.xml") }.each do |foxml|
       ActiveFedora::FixtureLoader.import_to_fedora foxml
     end
   end
@@ -114,7 +116,7 @@ class MergeIntegrationTest
   end
 
   def publish_shelve
-    @pids.map {|p| "druid:#{p}"}.each do |pid|
+    @pids.map { |p| "druid:#{p}" }.each do |pid|
       i = Dor::Item.find pid
       change_manifest = i.get_content_diff(:shelve)
       Dor::DigitalStacksService.shelve_to_stacks i.pid, change_manifest.file_sets(:added, :content)
@@ -123,10 +125,9 @@ class MergeIntegrationTest
   end
 
   def merge
-    druids = @pids.map {|p| "druid:#{p}"}
+    druids = @pids.map { |p| "druid:#{p}" }
     Dor::MergeService.merge_into_primary druids.shift, druids
   end
-
 end
 
 #

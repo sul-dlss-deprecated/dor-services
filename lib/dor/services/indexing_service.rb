@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'benchmark'
 
 module Dor
@@ -38,7 +40,7 @@ module Dor
     def self.reindex_pid_remotely(pid)
       pid = "druid:#{pid}" unless pid =~ /^druid:/
       realtime = Benchmark.realtime do
-        with_retries(max_tries: 3, rescue: [ RestClient::Exception, Errno::ECONNREFUSED ]) do
+        with_retries(max_tries: 3, rescue: [RestClient::Exception, Errno::ECONNREFUSED]) do
           RestClient.post("#{Config.dor_indexing_app.url}/reindex/#{pid}", '')
         end
       end

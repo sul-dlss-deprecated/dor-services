@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::Editable do
@@ -14,7 +16,9 @@ describe Dor::Editable do
       exp_result = {
         'dor-apo-manager' => [
           'workgroup:dlss:developers', 'workgroup:dlss:pmag-staff', 'workgroup:dlss:smpl-staff', 'workgroup:dlss:dpg-staff',
-          'workgroup:dlss:argo-access-spec', 'sunetid:lmcrae', 'workgroup:dlss:some-staff']}
+          'workgroup:dlss:argo-access-spec', 'sunetid:lmcrae', 'workgroup:dlss:some-staff'
+        ]
+      }
       expect(@apo.roles).to eq exp_result
     end
 
@@ -23,14 +27,16 @@ describe Dor::Editable do
       exp_result = {
         'dor-apo-manager' => [
           'workgroup:dlss:developers', 'workgroup:dlss:pmag-staff', 'workgroup:dlss:smpl-staff', 'workgroup:dlss:dpg-staff',
-          'workgroup:dlss:argo-access-spec', 'sunetid:lmcrae'],
-        'dor-apo-viewer' => ['workgroup:dlss:some-staff']}
+          'workgroup:dlss:argo-access-spec', 'sunetid:lmcrae'
+        ],
+        'dor-apo-viewer' => ['workgroup:dlss:some-staff']
+      }
       expect(@apo.roles).to eq exp_result
     end
 
     it 'should work on an empty datastream' do
       @empty_item.add_roleplayer('dor-apo-manager', 'dlss:some-staff')
-      expect(@empty_item.roles).to eq({'dor-apo-manager' => ['workgroup:dlss:some-staff']})
+      expect(@empty_item.roles).to eq({ 'dor-apo-manager' => ['workgroup:dlss:some-staff'] })
     end
   end
 
@@ -68,7 +74,9 @@ describe Dor::Editable do
       exp_result = {
         'dor-apo-manager' => [
           'workgroup:dlss:developers', 'workgroup:dlss:pmag-staff', 'workgroup:dlss:smpl-staff',
-          'workgroup:dlss:dpg-staff', 'workgroup:dlss:argo-access-spec', 'sunetid:lmcrae']}
+          'workgroup:dlss:dpg-staff', 'workgroup:dlss:argo-access-spec', 'sunetid:lmcrae'
+        ]
+      }
       expect(@apo.roles).to eq exp_result
     end
     it 'should not fail on an item with an empty datastream' do
@@ -264,7 +272,6 @@ describe Dor::Editable do
     it 'should set dark correctly' do
       @apo.default_rights = 'dark'
       expect(@apo.default_rights).to eq('dark')
-
     end
     it 'setters should be case insensitive' do
       @apo.default_rights = 'Dark'

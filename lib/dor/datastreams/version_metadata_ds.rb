@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dor
   class VersionTag
     include Comparable
@@ -81,7 +83,7 @@ module Dor
       ng_xml_will_change!
       if find_by_terms(:version).size == 0
         v = ng_xml.create_element 'version',
-        :versionId => '1', :tag => '1.0.0'
+                                  :versionId => '1', :tag => '1.0.0'
         d = ng_xml.create_element 'description', 'Initial Version'
         ng_xml.root['objectId'] = pid
         ng_xml.root.add_child(v)
@@ -141,8 +143,8 @@ module Dor
         else
           # get rid of the current tag
           tags = find_by_terms(:version, :tag)
-          sorted_tags = tags.map {|t| VersionTag.parse(t.value)}.sort
-          current_tag = sorted_tags[sorted_tags.length - 2]           # Get the second greatest tag since we are dropping the current, greatest
+          sorted_tags = tags.map { |t| VersionTag.parse(t.value) }.sort
+          current_tag = sorted_tags[sorted_tags.length - 2] # Get the second greatest tag since we are dropping the current, greatest
           current[:tag] = current_tag.increment(opts[:significance]).to_s
         end
 
@@ -222,12 +224,12 @@ module Dor
     # @return [Nokogiri::XML::Node] Node representing the current version
     def current_version_node
       versions = find_by_terms(:version)
-      versions.max_by {|v| v[:versionId].to_i }
+      versions.max_by { |v| v[:versionId].to_i }
     end
 
     def newest_tag
       tags = find_by_terms(:version, :tag)
-      tags.map {|t| VersionTag.parse(t.value)}.max
+      tags.map { |t| VersionTag.parse(t.value) }.max
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Dor::Workflow::Document do
@@ -5,10 +7,10 @@ RSpec.describe Dor::Workflow::Document do
     # stub the wf definition. The workflow document updates the processes in the definition with the values from the xml.
     @wf_definition = double(Dor::WorkflowObject)
     wf_definition_procs = []
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name' => 'hello', 'lifecycle' => 'lc', 'status' => 'stat', 'sequence' => '1' })
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name' => 'goodbye', 'status' => 'waiting', 'sequence' => '2', 'prerequisite' => ['hello'] })
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name' => 'technical-metadata', 'status' => 'error', 'sequence' => '3' })
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', {'name' => 'some-other-step', 'sequence' => '4'})
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', { 'name' => 'hello', 'lifecycle' => 'lc', 'status' => 'stat', 'sequence' => '1' })
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', { 'name' => 'goodbye', 'status' => 'waiting', 'sequence' => '2', 'prerequisite' => ['hello'] })
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', { 'name' => 'technical-metadata', 'status' => 'error', 'sequence' => '3' })
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', { 'name' => 'some-other-step', 'sequence' => '4' })
 
     allow(@wf_definition).to receive(:processes).and_return(wf_definition_procs)
   end
@@ -104,7 +106,6 @@ RSpec.describe Dor::Workflow::Document do
   end
 
   describe 'active?' do
-
     it 'returns true if there are any non-archived rows' do
       xml = <<-eos
       <?xml version="1.0" encoding="UTF-8"?>
@@ -276,6 +277,5 @@ RSpec.describe Dor::Workflow::Document do
         expect(solr_doc[Solrizer.solr_name('wf_error', :symbol)].first).to eq('accessionWF:technical-metadata:druid:gv054hp4128 - Item error; caused by 413 Request Entity Too Large:')
       end
     end
-
   end
 end

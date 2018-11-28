@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_fedora'
 require 'active_fedora/version'
 require 'active_support/core_ext/module/attribute_accessors'
@@ -8,10 +10,9 @@ module Dor
   extend ActiveSupport::Autoload
   @@registered_classes = {}
   mattr_reader :registered_classes
-  INDEX_VERSION_FIELD = 'dor_services_version_ssi'.freeze
+  INDEX_VERSION_FIELD = 'dor_services_version_ssi'
 
   class << self
-
     def configure(*args, &block)
       Dor::Config.configure *args, &block
     end
@@ -57,10 +58,10 @@ module Dor
     def logger
       require 'logger'
       @logger ||= if defined?(::Rails) && ::Rails.respond_to?(:logger)
-          Rails.logger
-        else
-          Logger.new(STDOUT)
-        end
+                    Rails.logger
+                  else
+                    Logger.new(STDOUT)
+                  end
     end
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class PreservableItem < ActiveFedora::Base
@@ -6,7 +8,6 @@ class PreservableItem < ActiveFedora::Base
 end
 
 describe Dor::Preservable do
-
   let(:item) { instantiate_fixture('druid:ab123cd4567', PreservableItem) }
 
   let(:workflow_id) { 'accessionWF' }
@@ -17,7 +18,6 @@ describe Dor::Preservable do
   after(:each)  { unstub_config }
 
   describe 'provenanceMetadata' do
-
     it 'builds the provenanceMetadata datastream' do
       expect(item.datastreams['provenanceMetadata'].ng_xml.to_s).to be_equivalent_to('<xml/>')
       item.build_provenanceMetadata_datastream('workflow_id', 'event_text')
@@ -46,7 +46,6 @@ describe Dor::Preservable do
       expect(event[:who]).to eql("DOR-#{workflow_id}")
       expect(event.content).to eql(event_text)
     end
-
   end
 
   it 'builds the technicalMetadata datastream if the object is an item' do
@@ -65,5 +64,4 @@ describe Dor::Preservable do
     expect(Dor::SdrIngestService).to receive(:transfer).with(item, nil)
     item.sdr_ingest_transfer(nil)
   end
-
 end

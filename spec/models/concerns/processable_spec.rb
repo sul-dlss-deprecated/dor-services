@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class ProcessableItem < ActiveFedora::Base
@@ -18,7 +20,6 @@ class ProcessableWithApoItem < ActiveFedora::Base
 end
 
 describe Dor::Processable do
-
   before(:each) { stub_config   }
   after(:each)  { unstub_config }
 
@@ -48,7 +49,6 @@ describe Dor::Processable do
   end
 
   context 'build_datastream()' do
-
     before(:each) do
       # Paths to two files with the same content.
       f1 = 'workspace/ab/123/cd/4567/ab123cd4567/metadata/descMetadata.xml'
@@ -59,7 +59,6 @@ describe Dor::Processable do
     end
 
     context 'datastream exists as a file' do
-
       before(:each) do
         allow(@item).to receive(:find_metadata_file).and_return(@dm_filename)
         allow(File).to receive(:read).and_return(@dm_fixture_xml)
@@ -86,11 +85,9 @@ describe Dor::Processable do
         expect(@item.descMetadata.ng_xml).to be_equivalent_to(xml)
         expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@dm_fixture_xml)
       end
-
     end
 
     context 'datastream does not exist as a file' do
-
       before(:each) do
         allow(@item).to receive(:find_metadata_file).and_return(nil)
       end
@@ -202,7 +199,7 @@ describe Dor::Processable do
       allow(item).to receive(:admin_policy_object) { apo }
       expect(Dor::WorkflowObject).to receive(:initial_workflow).and_return('<xml/>')
       expect(Dor::WorkflowObject).to receive(:initial_repo).and_return('dor')
-      expect(Dor::Config.workflow.client).to receive(:create_workflow).with('dor', 'druid:ab123cd4567', 'accessionWF', '<xml/>', {:create_ds => true, :lane_id => 'fast'})
+      expect(Dor::Config.workflow.client).to receive(:create_workflow).with('dor', 'druid:ab123cd4567', 'accessionWF', '<xml/>', { :create_ds => true, :lane_id => 'fast' })
       item.create_workflow('accessionWF')
     end
   end

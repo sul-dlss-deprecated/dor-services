@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::IdentityMetadataDS do
@@ -65,7 +67,8 @@ describe Dor::IdentityMetadataDS do
     end
 
     describe 'removes source ID node' do
-      let(:resultxml) {<<-EOF
+      let(:resultxml) {
+        <<-EOF
           <identityMetadata>
             <objectCreator>DOR</objectCreator>
             <objectId>druid:bb110sm8219</objectId>
@@ -91,15 +94,15 @@ describe Dor::IdentityMetadataDS do
     end
 
     it 'raises ArgumentError on malformed sourceIDs' do
-      expect{@dsdoc.sourceId = 'NotEnoughColons'}.to raise_exception(ArgumentError)
-      expect{@dsdoc.sourceId = ':EmptyFirstPart'}.to raise_exception(ArgumentError)
-      expect{@dsdoc.sourceId = 'WhitespaceSecondPart:  '}.to raise_exception(ArgumentError)
-      expect{@dsdoc.sourceId = 'WhitespaceSecondPart:  '}.to raise_exception(ArgumentError)
+      expect{ @dsdoc.sourceId = 'NotEnoughColons' }.to raise_exception(ArgumentError)
+      expect{ @dsdoc.sourceId = ':EmptyFirstPart' }.to raise_exception(ArgumentError)
+      expect{ @dsdoc.sourceId = 'WhitespaceSecondPart:  ' }.to raise_exception(ArgumentError)
+      expect{ @dsdoc.sourceId = 'WhitespaceSecondPart:  ' }.to raise_exception(ArgumentError)
     end
 
     it 'does not raise error on a sourceId with multiple colons' do
-      expect{@dsdoc.sourceId = 'Too:Many:Parts'}.not_to raise_exception
-      expect{@dsdoc.sourceId = 'Too::ManyColons'}.not_to raise_exception
+      expect{ @dsdoc.sourceId = 'Too:Many:Parts' }.not_to raise_exception
+      expect{ @dsdoc.sourceId = 'Too::ManyColons' }.not_to raise_exception
     end
 
     it 'creates a simple default with #new' do
@@ -126,5 +129,4 @@ describe Dor::IdentityMetadataDS do
       expect(new_doc.otherId).to match_array(['mdtoolkit:ab123cd4567', 'uuid:12345678-abcd-1234-ef01-23456789abcd'])
     end
   end
-
 end

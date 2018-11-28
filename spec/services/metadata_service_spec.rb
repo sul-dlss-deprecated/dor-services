@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::MetadataService do
-
   before :all do
     @specdir = File.join(File.dirname(__FILE__), '..')
   end

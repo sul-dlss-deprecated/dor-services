@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hydrus
   # These shims allow DOR to interact seamlessly with Hydrus' custom models
   class Item < Dor::Item

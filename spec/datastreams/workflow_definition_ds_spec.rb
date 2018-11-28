@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::WorkflowDefinitionDs do
-  let(:dsxml) { <<-EOF
+  let(:dsxml) {
+    <<-EOF
         <workflow-def id="accessionWF" repository="dor">
           <process lifecycle="submitted" name="start-accession" status="completed" sequence="1">
             <label>Start Accessioning</label>
@@ -38,5 +41,4 @@ describe Dor::WorkflowDefinitionDs do
       expect(ds.initial_workflow).to be_equivalent_to(expected)
     end
   end
-
 end

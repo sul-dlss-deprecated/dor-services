@@ -1,14 +1,14 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'active_support/core_ext'
 
 module Dor
   class SearchService
-
-    RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'".freeze
+    RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'"
     @@index_version = nil
 
     class << self
-
       def index_version
         Dor::VERSION
       end
@@ -92,8 +92,6 @@ module Dor
           r['response']['docs'].first[:id]
         end
       end
-
     end
-
   end
 end

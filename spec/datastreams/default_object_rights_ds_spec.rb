@@ -1,29 +1,31 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::DefaultObjectRightsDS do
   before(:each) do
-    subject.content = <<XML
-<rightsMetadata objectId="druid">
-   <copyright>
-      <human type="copyright">  All rights reserved.  </human>
-   </copyright>
-   <access type="discover"><machine><world/></machine></access>
-   <access type="read">
-      <machine><world/></machine>
-   </access>
-   <use>
-      <human type="useAndReproduction">  You may re-distribute this object, unaltered, with attribution to the author.  </human>
-   </use>
-   <use>
-      <human type="creativeCommons">
-        CC Attribution Non-Commercial license
-      </human>
-      <machine type="creativeCommons" uri="https://creativecommons.org/licenses/by-nc/3.0/">
-        by-nc
-      </machine>
-   </use>
+    subject.content = <<~XML
+      <rightsMetadata objectId="druid">
+         <copyright>
+            <human type="copyright">  All rights reserved.  </human>
+         </copyright>
+         <access type="discover"><machine><world/></machine></access>
+         <access type="read">
+            <machine><world/></machine>
+         </access>
+         <use>
+            <human type="useAndReproduction">  You may re-distribute this object, unaltered, with attribution to the author.  </human>
+         </use>
+         <use>
+            <human type="creativeCommons">
+              CC Attribution Non-Commercial license
+            </human>
+            <machine type="creativeCommons" uri="https://creativecommons.org/licenses/by-nc/3.0/">
+              by-nc
+            </machine>
+         </use>
 
-</rightsMetadata>
+      </rightsMetadata>
 XML
   end
 

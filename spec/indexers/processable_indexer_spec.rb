@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Dor::ProcessableIndexer do
@@ -73,8 +75,8 @@ RSpec.describe Dor::ProcessableIndexer do
       expect(doc['published_earliest_dttsi']).to eq('2012-01-27T05:06:54Z')
       expect(doc['published_latest_dttsi']).to eq('2012-11-07T00:59:39Z')
       expect(doc['published_dttsim'].first).to eq(doc['published_earliest_dttsi'])
-      expect(doc['published_dttsim'].last ).to eq(doc['published_latest_dttsi'])
-      expect(doc['published_dttsim'].size ).to eq(3) # not 4 because 1 deduplicated value removed!
+      expect(doc['published_dttsim'].last).to eq(doc['published_latest_dttsi'])
+      expect(doc['published_dttsim'].size).to eq(3) # not 4 because 1 deduplicated value removed!
       expect(doc['opened_earliest_dttsi']).to eq('2012-10-29T23:30:07Z') #  2012-10-29T16:30:07-0700
       expect(doc['opened_latest_dttsi']).to eq('2012-11-07T00:21:02Z') #  2012-11-06T16:21:02-0800
     end
@@ -121,5 +123,4 @@ RSpec.describe Dor::ProcessableIndexer do
       expect(doc['versions_ssm']).to include('4;2.2.0;')
     end
   end
-
 end

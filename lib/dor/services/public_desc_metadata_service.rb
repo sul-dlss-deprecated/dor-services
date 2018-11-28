@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 module Dor
   class PublicDescMetadataService
     attr_reader :object
-    
+
     NOKOGIRI_DEEP_COPY = 1
 
     def initialize(object)
       @object = object
     end
-    
+
     def doc
       @doc ||= object.descMetadata.ng_xml.dup(NOKOGIRI_DEEP_COPY)
     end
@@ -18,7 +20,7 @@ module Dor
       add_access_conditions! if include_access_conditions
       add_constituent_relations!
       strip_comments!
-      
+
       new_doc = Nokogiri::XML(doc.to_xml) { |x| x.noblanks }
       new_doc.encoding = 'UTF-8'
       new_doc.to_xml
@@ -35,7 +37,7 @@ module Dor
     # @note this method modifies the passed in doc
     def add_access_conditions!
       # clear out any existing accessConditions
-      doc.xpath('//mods:accessCondition', 'mods' => 'http://www.loc.gov/mods/v3').each {|n| n.remove}
+      doc.xpath('//mods:accessCondition', 'mods' => 'http://www.loc.gov/mods/v3').each { |n| n.remove }
       rights = object.datastreams['rightsMetadata'].ng_xml
 
       rights.xpath('//use/human[@type="useAndReproduction"]').each do |use|
@@ -69,8 +71,8 @@ module Dor
     # @return [Void]
     def add_constituent_relations!
       object.public_relationships.search('//rdf:RDF/rdf:Description/fedora:isConstituentOf',
-                                       'fedora' => 'info:fedora/fedora-system:def/relations-external#',
-                                       'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' ).each do |parent|
+                                         'fedora' => 'info:fedora/fedora-system:def/relations-external#',
+                                         'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#').each do |parent|
         # fetch the parent object to get title
         druid = parent['rdf:resource'].gsub(/^info:fedora\//, '')
         parent_item = Dor.find(druid)
@@ -106,8 +108,8 @@ module Dor
     # @note this method modifies the passed in doc
     def add_collection_reference!
       collections = object.public_relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection',
-                                       'fedora' => 'info:fedora/fedora-system:def/relations-external#',
-                                       'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+                                                       'fedora' => 'info:fedora/fedora-system:def/relations-external#',
+                                                       'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
       return if collections.empty?
 
       remove_related_item_nodes_for_collections!

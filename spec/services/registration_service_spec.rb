@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::RegistrationService do
@@ -313,7 +315,6 @@ describe Dor::RegistrationService do
         Dor::RegistrationService.register_object(@params)
       end
     end # context common cases
-
   end
 
   context '#create_from_request' do

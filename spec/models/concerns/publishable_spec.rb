@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class PublishableItem < ActiveFedora::Base
@@ -24,7 +26,6 @@ class ItemizableItem < ActiveFedora::Base
 end
 
 describe Dor::Publishable do
-
   before(:each) {
     stub_config
     Dor.configure do
@@ -33,13 +34,12 @@ describe Dor::Publishable do
       end
     end
   }
-  after(:each)  { unstub_config }
+  after(:each) { unstub_config }
 
   before :each do
-
     @item = instantiate_fixture('druid:ab123cd4567', PublishableItem)
     @collection = instantiate_fixture('druid:ab123cd4567', Dor::Collection)
-    @apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
+    @apo = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
     allow(@item).to receive(:admin_policy_object).and_return(@apo)
     @mods = <<-EOXML
       <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
@@ -103,9 +103,9 @@ describe Dor::Publishable do
     before do
       expect(Deprecation).to receive(:warn)
     end
-    subject { item.thumb  }
+    subject { item.thumb }
     let(:item) { @item }
-    let(:service) { instance_double(Dor::ThumbnailService, thumb: 'Test Result')}
+    let(:service) { instance_double(Dor::ThumbnailService, thumb: 'Test Result') }
 
     it 'calls the thumbnail service' do
       expect(Dor::ThumbnailService).to receive(:new).with(item).and_return(service)
@@ -352,11 +352,11 @@ describe Dor::Publishable do
       it 'includes releaseData element from release tags' do
         releases = public_xml.xpath('/publicObject/releaseData/release')
         expect(releases.map(&:inner_text)).to eq ['true', 'true']
-        expect(releases.map{ |r| r['to']}).to eq ['Searchworks', 'Some_special_place']
+        expect(releases.map{ |r| r['to'] }).to eq ['Searchworks', 'Some_special_place']
       end
 
       it 'include a releaseData element when there is content inside it, but does not include this release data in identityMetadata' do
-        allow(@item).to receive(:released_for).and_return('' => { 'release' => 'foo'})
+        allow(@item).to receive(:released_for).and_return('' => { 'release' => 'foo' })
         p_xml = Nokogiri::XML(@item.public_xml)
         expect(p_xml.at_xpath('/publicObject/releaseData/release').inner_text).to eq 'foo'
         expect(p_xml.at_xpath('/publicObject/identityMetadata/release')).to be_nil
@@ -380,7 +380,6 @@ describe Dor::Publishable do
     end
     describe '#publish_metadata' do
       context 'with no world discover access in rightsMetadata' do
-
         let(:purl_root) { Dir.mktmpdir }
 
         before(:each) do
@@ -430,7 +429,7 @@ describe Dor::Publishable do
           druid1 = DruidTools::Druid.new @item.pid, purl_root
           druid1.mkdir
           expect(druid1.deletes_record_exists?).to be_falsey # deletes record not there yet
-          File.open(File.join(druid1.path, 'tmpfile'), 'w') {|f| f.write 'junk' }
+          File.open(File.join(druid1.path, 'tmpfile'), 'w') { |f| f.write 'junk' }
           @item.publish_metadata
           expect(File).to_not exist(druid1.path) # it should now be gone
           expect(druid1.deletes_record_exists?).to be_truthy # deletes record created
@@ -447,7 +446,7 @@ describe Dor::Publishable do
         allow(Dor).to receive(:find).with(title_item.pid).and_return(title_item)
 
         # generate publicObject XML and verify that the content metadata portion is correct and the correct thumb is present
-        public_xml=@item.public_xml
+        public_xml = @item.public_xml
         expect(Nokogiri::XML(public_xml).at_xpath('/publicObject/contentMetadata').to_xml).to be_equivalent_to(correctPublicContentMetadata)
         expect(Nokogiri::XML(public_xml).at_xpath('/publicObject/thumb').to_xml).to be_equivalent_to('<thumb>jw923xn5254/2542B.jp2</thumb>')
       end
@@ -534,9 +533,9 @@ describe Dor::Publishable do
 
         context 'with a collection object' do
           before do
-            @collection.descMetadata.content    = @mods
+            @collection.descMetadata.content = @mods
             @collection.rightsMetadata.content = "<rightsMetadata><access type='discover'><machine><world/></machine></access></rightsMetadata>"
-            @collection.rels_ext.content        = @rels
+            @collection.rels_ext.content = @rels
             allow(@collection).to receive(:generate_public_desc_md).and_return(@mods) # calls Item.find and not needed in general tests
           end
 
@@ -560,11 +559,11 @@ describe Dor::Publishable do
     context 'publish_notify_on_success' do
       let(:changes_dir) { Dir.mktmpdir }
       let(:purl_root) { Dir.mktmpdir }
-      let(:changes_file) { File.join(changes_dir,@item.pid.gsub('druid:','')) }
+      let(:changes_file) { File.join(changes_dir, @item.pid.gsub('druid:', '')) }
 
       before(:each) do
-        Dor::Config.push! {|config| config.stacks.local_document_cache_root purl_root}
-        Dor::Config.push! {|config| config.stacks.local_recent_changes changes_dir}
+        Dor::Config.push! { |config| config.stacks.local_document_cache_root purl_root }
+        Dor::Config.push! { |config| config.stacks.local_recent_changes changes_dir }
       end
 
       after(:each) do
@@ -613,7 +612,7 @@ describe Dor::Publishable do
         expect(File.exists?(changes_file)).to be_truthy # changes file is there
       end
       it 'raises error if misconfigured' do
-        Dor::Config.push! {|config| config.stacks.local_recent_changes nil}
+        Dor::Config.push! { |config| config.stacks.local_recent_changes nil }
         expect(File).to receive(:directory?).with(nil).and_return(false)
         expect(FileUtils).not_to receive(:touch)
         expect { @item.publish_notify_on_success }.to raise_error(ArgumentError, /Missing local_recent_changes directory/)
@@ -629,12 +628,11 @@ describe Dor::Publishable do
 
   describe 'publish remotely' do
     before(:each) do
-      Dor::Config.push! {|config| config.dor_services.url 'https://lyberservices-test.stanford.edu/dor'}
+      Dor::Config.push! { |config| config.dor_services.url 'https://lyberservices-test.stanford.edu/dor' }
       stub_request(:any, 'https://lyberservices-test.stanford.edu/dor/v1/objects/druid:ab123cd4567/publish')
     end
     it 'should hit the correct url' do
       expect(@item.publish_metadata_remotely).to eq('https://lyberservices-test.stanford.edu/dor/v1/objects/druid:ab123cd4567/publish')
     end
   end
-
 end

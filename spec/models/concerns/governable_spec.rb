@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class GovernableItem < ActiveFedora::Base
@@ -7,7 +9,6 @@ class GovernableItem < ActiveFedora::Base
 end
 
 describe Dor::Governable do
-
   before(:each) { stub_config   }
   after(:each)  { unstub_config }
 
@@ -28,10 +29,10 @@ describe Dor::Governable do
 
   describe 'set_read_rights error handling' do
     it 'should raise an exception if the rights option doesnt match the accepted values' do
-      expect{@item.set_read_rights('"druid:oo201oo0001"', 'Something')}.to raise_error(ArgumentError)
+      expect{ @item.set_read_rights('"druid:oo201oo0001"', 'Something') }.to raise_error(ArgumentError)
     end
     it 'should raise an exception if the rights option doesnt match the accepted values' do
-      expect{@item.set_read_rights('mambo')}.to raise_error(ArgumentError)
+      expect{ @item.set_read_rights('mambo') }.to raise_error(ArgumentError)
     end
   end
 

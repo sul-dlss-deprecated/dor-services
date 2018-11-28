@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::SuriService do
-
   describe 'an enabled SuriService' do
     before(:each) do
       Dor::Config.push! do
@@ -42,7 +43,6 @@ describe Dor::SuriService do
       expect(@my_client).to receive(:post).with('').and_raise(ex)
       expect{ Dor::SuriService.mint_id }.to raise_error(Exception, 'thrown exception')
     end
-
   end
 
   describe 'a disabled SuriService' do
@@ -92,5 +92,4 @@ describe Dor::SuriService do
       Dor::Config.suri.pop
     end
   end
-
 end

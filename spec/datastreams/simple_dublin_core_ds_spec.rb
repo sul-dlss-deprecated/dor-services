@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Dor::SimpleDublinCoreDs' do
-
   describe '#to_solr' do
     it 'should do OM mapping' do
       @xml = '<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/">
@@ -15,9 +16,9 @@ describe 'Dor::SimpleDublinCoreDs' do
       id_field      = Solrizer.solr_name('identifier', :stored_searchable)
       dublin = Dor::SimpleDublinCoreDs.from_xml(@xml)
       expect(dublin.to_solr).to match a_hash_including(title_field, creator_field, id_field)
-      expect(dublin.to_solr[title_field]  ).to eq ['title']
+      expect(dublin.to_solr[title_field]).to eq ['title']
       expect(dublin.to_solr[creator_field]).to eq ['creator']
-      expect(dublin.to_solr[id_field]     ).to eq ['identifier']
+      expect(dublin.to_solr[id_field]).to eq ['identifier']
     end
 
     context 'sort fields' do

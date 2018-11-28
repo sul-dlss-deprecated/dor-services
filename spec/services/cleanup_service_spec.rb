@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'pathname'
 require 'druid-tools'
 
 describe Dor::CleanupService do
-
   attr_reader :fixture_dir
 
   before(:all) do
@@ -26,7 +27,7 @@ describe Dor::CleanupService do
     @workspace_root_pathname = Pathname(Dor::Config.cleanup.local_workspace_root)
     @workitem_pathname       = Pathname(DruidTools::Druid.new(@druid, @workspace_root_pathname.to_s).path)
     @workitem_pathname.rmtree if @workitem_pathname.exist?
-    @export_pathname         = Pathname(Dor::Config.cleanup.local_export_home)
+    @export_pathname = Pathname(Dor::Config.cleanup.local_export_home)
     @export_pathname.rmtree if @export_pathname.exist?
     @bag_pathname            = @export_pathname.join(@druid.split(':').last)
     @tarfile_pathname        = @export_pathname.join(@bag_pathname + '.tar')
@@ -95,5 +96,4 @@ describe Dor::CleanupService do
     expect(@bag_pathname.exist?).to be_falsey
     expect(@tarfile_pathname.exist?).to be_falsey
   end
-
 end

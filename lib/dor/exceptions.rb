@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dor
   class Exception < ::StandardError; end
   class ParameterError < Exception; end

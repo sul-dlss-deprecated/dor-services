@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Monkey patch ActiveFedora::RelsExtDatastream.short_predicate to
 # create missing mappings on the fly.
 

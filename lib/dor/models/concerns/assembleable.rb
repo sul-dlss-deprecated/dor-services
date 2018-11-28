@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dor
   module Assembleable
     def initialize_workspace(source = nil)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class ItemizableItem < ActiveFedora::Base
@@ -6,7 +8,6 @@ class ItemizableItem < ActiveFedora::Base
 end
 
 describe Dor::Itemizable do
-
   before(:each) { stub_config   }
   after(:each)  { unstub_config }
 
@@ -19,8 +20,8 @@ describe Dor::Itemizable do
   end
 
   it 'will run get_content_diff' do
-    expect(Sdr::Client).to receive(:get_content_diff).
-      with(@item.pid, @item.contentMetadata.content, :all, nil)
+    expect(Sdr::Client).to receive(:get_content_diff)
+      .with(@item.pid, @item.contentMetadata.content, :all, nil)
     expect { @item.get_content_diff }.not_to raise_error
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dor
   module Governable
     extend ActiveSupport::Concern
@@ -16,7 +18,7 @@ module Dor
     #   and APO, or if the APO does not have a default_lane
     # @return [String] the lane id
     def default_workflow_lane
-      return 'default' if admin_policy_object.nil?  # TODO: log warning?
+      return 'default' if admin_policy_object.nil? # TODO: log warning?
 
       admin_md = admin_policy_object.datastreams['administrativeMetadata']
       return 'default' unless admin_md.respond_to?(:default_workflow_lane) # Some APOs don't have this datastream
@@ -82,7 +84,7 @@ module Dor
       return nil unless self.respond_to? :rightsMetadata
       return nil if rightsMetadata.nil?
       xml = rightsMetadata.ng_xml
-      return nil if xml.search('//rightsMetadata').length != 1      # ORLY?
+      return nil if xml.search('//rightsMetadata').length != 1 # ORLY?
       if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
         'Stanford'
       elsif xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length == 1

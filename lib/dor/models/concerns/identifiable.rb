@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module Dor
   module Identifiable
     extend ActiveSupport::Concern
 
     # ids for previous and current catkeys
-    CATKEY_TYPE_ID = 'catkey'.freeze
-    PREVIOUS_CATKEY_TYPE_ID = 'previous_catkey'.freeze
+    CATKEY_TYPE_ID = 'catkey'
+    PREVIOUS_CATKEY_TYPE_ID = 'previous_catkey'
 
     included do
       has_metadata :name => 'DC', :type => SimpleDublinCoreDs, :label => 'Dublin Core Record for self object'
@@ -33,7 +35,7 @@ module Dor
 
     # helper method to get just the content type tag
     def content_type_tag
-      content_tag = tags.select {|tag| tag.include?('Process : Content Type')}
+      content_tag = tags.select { |tag| tag.include?('Process : Content Type') }
       content_tag.size == 1 ? content_tag[0].split(':').last.strip : ''
     end
 
@@ -62,7 +64,6 @@ module Dor
     # @param  [String] catkey the new source identifier
     # @return [String] same value, as per Ruby assignment convention
     def catkey=(val)
-
       if val != catkey && !catkey.blank? # if there was already a catkey in the record, store that in the "previous" spot (assuming there is no change)
         identityMetadata.add_otherId("#{PREVIOUS_CATKEY_TYPE_ID}:#{catkey}")
       end
@@ -70,9 +71,9 @@ module Dor
       if val.blank? # if we are setting the catkey to blank, remove the node from XML
         remove_other_Id(CATKEY_TYPE_ID)
       elsif catkey.blank? # if there is no current catkey, then add it
-        add_other_Id(CATKEY_TYPE_ID,val)
-      elsif # if there is a current catkey, update the current catkey to the new value
-        update_other_Id(CATKEY_TYPE_ID,val)
+        add_other_Id(CATKEY_TYPE_ID, val)
+      else # if there is a current catkey, update the current catkey to the new value
+        update_other_Id(CATKEY_TYPE_ID, val)
       end
 
       val
@@ -93,24 +94,24 @@ module Dor
 
     def update_other_Id(type, new_val, val = nil)
       identityMetadata.ng_xml.search('//otherId[@name=\'' + type + '\']')
-        .select { |node| val.nil? || node.content == val }
-        .each { identityMetadata.ng_xml_will_change! }
-        .each  { |node| node.content = new_val }
-        .any?
+                      .select { |node| val.nil? || node.content == val }
+                      .each { identityMetadata.ng_xml_will_change! }
+                      .each { |node| node.content = new_val }
+                      .any?
     end
 
     def remove_other_Id(type, val = nil)
       identityMetadata.ng_xml.search('//otherId[@name=\'' + type + '\']')
-        .select { |node| val.nil? || node.content == val }
-        .each { identityMetadata.ng_xml_will_change! }
-        .each(&:remove)
-        .any?
+                      .select { |node| val.nil? || node.content == val }
+                      .each { identityMetadata.ng_xml_will_change! }
+                      .each(&:remove)
+                      .any?
     end
 
     # turns a tag string into an array with one element per tag part.
     # split on ":", disregard leading and trailing whitespace on tokens.
     def split_tag_to_arr(tag_str)
-      tag_str.split(':').map {|str| str.strip}
+      tag_str.split(':').map { |str| str.strip }
     end
 
     # turn a tag array back into a tag string with a standard format
@@ -147,7 +148,7 @@ module Dor
       if tag_arr.length < 2
         raise ArgumentError, "Invalid tag structure: tag '#{tag_str}' must have at least 2 elements"
       end
-      if tag_arr.detect {|str| str.empty?}
+      if tag_arr.detect { |str| str.empty? }
         raise ArgumentError, "Invalid tag structure: tag '#{tag_str}' contains empty elements"
       end
       tag_arr
@@ -164,19 +165,19 @@ module Dor
     def remove_tag(tag)
       normtag = normalize_tag(tag)
       identityMetadata.ng_xml.search('//tag')
-        .select { |node| normalize_tag(node.content) == normtag }
-        .each { identityMetadata.ng_xml_will_change! }
-        .each(&:remove)
-        .any?
+                      .select { |node| normalize_tag(node.content) == normtag }
+                      .each { identityMetadata.ng_xml_will_change! }
+                      .each(&:remove)
+                      .any?
     end
 
     def update_tag(old_tag, new_tag)
       normtag = normalize_tag(old_tag)
       identityMetadata.ng_xml.search('//tag')
-        .select { |node| normalize_tag(node.content) == normtag }
-        .each { identityMetadata.ng_xml_will_change! }
-        .each  { |node| node.content = normalize_tag(new_tag)  }
-        .any?
+                      .select { |node| normalize_tag(node.content) == normtag }
+                      .each { identityMetadata.ng_xml_will_change! }
+                      .each { |node| node.content = normalize_tag(new_tag) }
+                      .any?
     end
 
     def get_related_obj_display_title(related_obj, default_title)
@@ -199,9 +200,9 @@ module Dor
 
     # Since purl does not use the druid: prefix but much of dor does, use this function to strip the druid: if needed
     # @return [String] the druid sans the druid: or if there was no druid: prefix, the entire string you passed
-    def remove_druid_prefix(druid=id)
-      result=druid.match(/#{pid_regex}/)
-      result.nil? ? druid : result[0]  # if no matches, return the string passed in, otherwise return the match
+    def remove_druid_prefix(druid = id)
+      result = druid.match(/#{pid_regex}/)
+      result.nil? ? druid : result[0] # if no matches, return the string passed in, otherwise return the match
     end
 
     # Override ActiveFedora::Core#adapt_to_cmodel (used with associations, among other places) to

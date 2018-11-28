@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'fileutils'
 
 describe Dor::SdrIngestService do
-
   before(:each) do
     @fixtures = fixtures = Pathname(File.dirname(__FILE__)).join('../fixtures')
     Dor::Config.push! do
@@ -55,7 +56,7 @@ describe Dor::SdrIngestService do
         expect(Dor::SdrIngestService.get_datastream_content(@mock_item, 'dummy', 'optional')).to be_nil
       end
       it 'raises exception if datastream was required' do
-        expect{Dor::SdrIngestService.get_datastream_content(@mock_item, 'dummy', 'required')}.to raise_exception(RuntimeError)
+        expect{ Dor::SdrIngestService.get_datastream_content(@mock_item, 'dummy', 'required') }.to raise_exception(RuntimeError)
       end
     end
   end
@@ -76,30 +77,31 @@ describe Dor::SdrIngestService do
       Dor::SdrIngestService.transfer(@dor_item)
       @fixtures.join('export/dd116zh0343').find { |f| @files << f.relative_path_from(@fixtures).to_s }
       expect(@files.sort).to eq([
-          'export/dd116zh0343',
-          'export/dd116zh0343/bag-info.txt',
-          'export/dd116zh0343/bagit.txt',
-          'export/dd116zh0343/data',
-          'export/dd116zh0343/data/content',
-          'export/dd116zh0343/data/content/folder1PuSu',
-          'export/dd116zh0343/data/content/folder1PuSu/story3m.txt',
-          'export/dd116zh0343/data/content/folder1PuSu/story5a.txt',
-          'export/dd116zh0343/data/content/folder3PaSd',
-          'export/dd116zh0343/data/content/folder3PaSd/storyDm.txt',
-          'export/dd116zh0343/data/content/folder3PaSd/storyFa.txt',
-          'export/dd116zh0343/data/metadata',
-          'export/dd116zh0343/data/metadata/contentMetadata.xml',
-          'export/dd116zh0343/data/metadata/tech-generated.xml',
-          'export/dd116zh0343/data/metadata/technicalMetadata.xml',
-          'export/dd116zh0343/data/metadata/versionMetadata.xml',
-          'export/dd116zh0343/manifest-md5.txt',
-          'export/dd116zh0343/manifest-sha1.txt',
-          'export/dd116zh0343/manifest-sha256.txt',
-          'export/dd116zh0343/tagmanifest-md5.txt',
-          'export/dd116zh0343/tagmanifest-sha1.txt',
-          'export/dd116zh0343/tagmanifest-sha256.txt',
-          'export/dd116zh0343/versionAdditions.xml',
-          'export/dd116zh0343/versionInventory.xml'])
+                                  'export/dd116zh0343',
+                                  'export/dd116zh0343/bag-info.txt',
+                                  'export/dd116zh0343/bagit.txt',
+                                  'export/dd116zh0343/data',
+                                  'export/dd116zh0343/data/content',
+                                  'export/dd116zh0343/data/content/folder1PuSu',
+                                  'export/dd116zh0343/data/content/folder1PuSu/story3m.txt',
+                                  'export/dd116zh0343/data/content/folder1PuSu/story5a.txt',
+                                  'export/dd116zh0343/data/content/folder3PaSd',
+                                  'export/dd116zh0343/data/content/folder3PaSd/storyDm.txt',
+                                  'export/dd116zh0343/data/content/folder3PaSd/storyFa.txt',
+                                  'export/dd116zh0343/data/metadata',
+                                  'export/dd116zh0343/data/metadata/contentMetadata.xml',
+                                  'export/dd116zh0343/data/metadata/tech-generated.xml',
+                                  'export/dd116zh0343/data/metadata/technicalMetadata.xml',
+                                  'export/dd116zh0343/data/metadata/versionMetadata.xml',
+                                  'export/dd116zh0343/manifest-md5.txt',
+                                  'export/dd116zh0343/manifest-sha1.txt',
+                                  'export/dd116zh0343/manifest-sha256.txt',
+                                  'export/dd116zh0343/tagmanifest-md5.txt',
+                                  'export/dd116zh0343/tagmanifest-sha1.txt',
+                                  'export/dd116zh0343/tagmanifest-sha256.txt',
+                                  'export/dd116zh0343/versionAdditions.xml',
+                                  'export/dd116zh0343/versionInventory.xml'
+                                ])
     end
     specify 'with no change in content' do
       v1_content_metadata = @fixtures.join('sdr_repo/dd116zh0343/v0001/data/metadata/contentMetadata.xml')
@@ -107,23 +109,24 @@ describe Dor::SdrIngestService do
       Dor::SdrIngestService.transfer(@dor_item)
       @fixtures.join('export/dd116zh0343').find { |f| @files << f.relative_path_from(@fixtures).to_s }
       expect(@files.sort).to eq([
-          'export/dd116zh0343',
-          'export/dd116zh0343/bag-info.txt',
-          'export/dd116zh0343/bagit.txt',
-          'export/dd116zh0343/data',
-          'export/dd116zh0343/data/metadata',
-          'export/dd116zh0343/data/metadata/contentMetadata.xml',
-          'export/dd116zh0343/data/metadata/tech-generated.xml',
-          'export/dd116zh0343/data/metadata/technicalMetadata.xml',
-          'export/dd116zh0343/data/metadata/versionMetadata.xml',
-          'export/dd116zh0343/manifest-md5.txt',
-          'export/dd116zh0343/manifest-sha1.txt',
-          'export/dd116zh0343/manifest-sha256.txt',
-          'export/dd116zh0343/tagmanifest-md5.txt',
-          'export/dd116zh0343/tagmanifest-sha1.txt',
-          'export/dd116zh0343/tagmanifest-sha256.txt',
-          'export/dd116zh0343/versionAdditions.xml',
-          'export/dd116zh0343/versionInventory.xml'])
+                                  'export/dd116zh0343',
+                                  'export/dd116zh0343/bag-info.txt',
+                                  'export/dd116zh0343/bagit.txt',
+                                  'export/dd116zh0343/data',
+                                  'export/dd116zh0343/data/metadata',
+                                  'export/dd116zh0343/data/metadata/contentMetadata.xml',
+                                  'export/dd116zh0343/data/metadata/tech-generated.xml',
+                                  'export/dd116zh0343/data/metadata/technicalMetadata.xml',
+                                  'export/dd116zh0343/data/metadata/versionMetadata.xml',
+                                  'export/dd116zh0343/manifest-md5.txt',
+                                  'export/dd116zh0343/manifest-sha1.txt',
+                                  'export/dd116zh0343/manifest-sha256.txt',
+                                  'export/dd116zh0343/tagmanifest-md5.txt',
+                                  'export/dd116zh0343/tagmanifest-sha1.txt',
+                                  'export/dd116zh0343/tagmanifest-sha256.txt',
+                                  'export/dd116zh0343/versionAdditions.xml',
+                                  'export/dd116zh0343/versionInventory.xml'
+                                ])
     end
   end
 
@@ -198,14 +201,14 @@ describe Dor::SdrIngestService do
   specify 'get_metadata_file_group' do
     metadata_dir = double(Pathname)
     file_group = double(Moab::FileGroup)
-    expect(Moab::FileGroup).to receive(:new).with({:group_id => 'metadata'}).and_return(file_group)
+    expect(Moab::FileGroup).to receive(:new).with({ :group_id => 'metadata' }).and_return(file_group)
     expect(file_group).to receive(:group_from_directory).with(metadata_dir)
     Dor::SdrIngestService.get_metadata_file_group(metadata_dir)
   end
 
   specify 'verify_version_id' do
     expect(Dor::SdrIngestService.verify_version_id('/mypath/myfile', 2, 2)).to be_truthy
-    expect{Dor::SdrIngestService.verify_version_id('/mypath/myfile', 1, 2)}.to raise_exception('Version mismatch in /mypath/myfile, expected 1, found 2')
+    expect{ Dor::SdrIngestService.verify_version_id('/mypath/myfile', 1, 2) }.to raise_exception('Version mismatch in /mypath/myfile, expected 1, found 2')
   end
 
   specify 'vmfile_version_id' do
@@ -220,6 +223,6 @@ describe Dor::SdrIngestService do
     vmfile = metadata_dir.join('versionMetadata.xml')
     expect(Dor::SdrIngestService.verify_pathname(vmfile)).to be_truthy
     badfile = metadata_dir.join('badfile.xml')
-    expect{Dor::SdrIngestService.verify_pathname(badfile)}.to raise_exception(/badfile.xml not found/)
+    expect{ Dor::SdrIngestService.verify_pathname(badfile) }.to raise_exception(/badfile.xml not found/)
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dor
   class DescribableIndexer
     attr_reader :resource

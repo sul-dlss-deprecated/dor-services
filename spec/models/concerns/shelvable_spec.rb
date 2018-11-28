@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class ShelvableItem < ActiveFedora::Base
@@ -6,7 +8,6 @@ class ShelvableItem < ActiveFedora::Base
 end
 
 describe Dor::Shelvable do
-
   before(:all) do
     @stacks_root = Dir.mktmpdir
     @workspace_root = Dir.mktmpdir
@@ -83,7 +84,7 @@ describe Dor::Shelvable do
           <subset change="copydeleted" count="0"/>
         </fileGroupDifference>
       EOF
-      )
+                                               )
     end
   end
 
@@ -145,5 +146,4 @@ describe Dor::Shelvable do
       expect { item.get_stacks_location }.to raise_error(RuntimeError)
     end
   end
-
 end

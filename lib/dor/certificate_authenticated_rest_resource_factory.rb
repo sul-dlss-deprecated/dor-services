@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'dor/rest_resource_factory'
 # Creates RestClient::Resources with client ssl keys for various connections
 module Dor
   class CertificateAuthenticatedRestResourceFactory < RestResourceFactory
-
     private
 
     # @return [Hash] options for creating a RestClient::Resource

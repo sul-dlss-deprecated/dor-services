@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dor
   ## This is basically used just by APOs.  Arguably "editable" is the wrong name.
   module Editable
@@ -34,7 +36,7 @@ module Dor
       'by-nc-nd' => { :human_readable => 'Attribution Non-Commercial, No Derivatives 3.0 Unported',
                       :uri => 'https://creativecommons.org/licenses/by-nc-nd/3.0/' },
       'pdm' =>      { :human_readable => 'Public Domain Mark 1.0',
-                      :uri => 'https://creativecommons.org/publicdomain/mark/1.0/'}
+                      :uri => 'https://creativecommons.org/publicdomain/mark/1.0/' }
     }.freeze
     OPEN_DATA_COMMONS_USE_LICENSES = {
       'pddl' =>     { :human_readable => 'Open Data Commons Public Domain Dedication and License 1.0',
@@ -87,7 +89,7 @@ module Dor
     end
 
     def mods_title=(val)
-      descMetadata.update_values({[:title_info, :main_title] => val})
+      descMetadata.update_values({ [:title_info, :main_title] => val })
     end
 
     # get all collections listed for this APO, used during registration
@@ -139,7 +141,7 @@ module Dor
         administrativeMetadata.ng_xml_will_change!
         administrativeMetadata.add_child_node(administrativeMetadata, :descMetadata)
       end
-      administrativeMetadata.update_values({[:descMetadata, :source] => val})
+      administrativeMetadata.update_values({ [:descMetadata, :source] => val })
     end
 
     def use_statement
@@ -293,7 +295,7 @@ module Dor
         administrativeMetadata.ng_xml_will_change!
         administrativeMetadata.add_child_node(administrativeMetadata.ng_xml.root, :metadata_format)
       end
-      administrativeMetadata.update_values({[:metadata_format] => format})
+      administrativeMetadata.update_values({ [:metadata_format] => format })
     end
 
     def desc_metadata_source
@@ -306,7 +308,7 @@ module Dor
         administrativeMetadata.ng_xml_will_change!
         administrativeMetadata.add_child_node(administrativeMetadata.ng_xml.root, :metadata_source)
       end
-      administrativeMetadata.update_values({[:metadata_source] => format})
+      administrativeMetadata.update_values({ [:metadata_source] => format })
     end
 
     # List of default workflows, used to provide choices at registration

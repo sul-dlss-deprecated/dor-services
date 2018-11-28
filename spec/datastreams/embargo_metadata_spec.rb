@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'nokogiri'
 
@@ -7,7 +9,8 @@ describe Dor::EmbargoMetadataDS do
   end
 
   context 'Marshalling to and from a Fedora Datastream' do
-    let(:dsxml) { <<-EOF
+    let(:dsxml) {
+      <<-EOF
           <embargoMetadata>
             <status>embargoed</status>
             <releaseDate>2011-10-12T15:47:52-07:00</releaseDate>
@@ -56,8 +59,8 @@ describe Dor::EmbargoMetadataDS do
       release_date_field = Solrizer.solr_name('embargo_release', :dateable)
       twenty_pct_field   = Solrizer.solr_name('twenty_pct_visibility_release', :dateable)
       expect(ds.to_solr).to match a_hash_including(release_date_field, twenty_pct_field)
-      expect(ds.to_solr[release_date_field]).to eq ['2011-10-12T00:00:00Z']  # field removes time granularity -- for questionable reasons
-      expect(ds.to_solr[twenty_pct_field  ]).to eq ['2016-10-12T00:00:00Z']  # field removes time granularity -- for questionable reasons
+      expect(ds.to_solr[release_date_field]).to eq ['2011-10-12T00:00:00Z'] # field removes time granularity -- for questionable reasons
+      expect(ds.to_solr[twenty_pct_field]).to eq ['2016-10-12T00:00:00Z'] # field removes time granularity -- for questionable reasons
     end
   end
 

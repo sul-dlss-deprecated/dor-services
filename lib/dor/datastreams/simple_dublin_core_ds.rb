@@ -1,57 +1,59 @@
+# frozen_string_literal: true
+
 module Dor
-class SimpleDublinCoreDs < ActiveFedora::OmDatastream
-
-  set_terminology do |t|
-    t.root(
-      path: 'dc',
-      xmlns: 'http://www.openarchives.org/OAI/2.0/oai_dc/',
-      schema: 'http://cosimo.stanford.edu/standards/oai_dc/v2/oai_dc.xsd',
-      namespace_prefix: 'oai_dc',
-      index_as: [:not_searchable])
-    t.title(     :index_as => [:stored_sortable, :stored_searchable], :xmlns => 'http://purl.org/dc/elements/1.1/', :namespace_prefix => 'dc')
-    t.creator(   :index_as => [:stored_sortable, :stored_searchable], :xmlns => 'http://purl.org/dc/elements/1.1/', :namespace_prefix => 'dc')
-    t.identifier(:index_as => [:symbol, :stored_searchable],          :xmlns => 'http://purl.org/dc/elements/1.1/', :namespace_prefix => 'dc')
-  end
-
-  def self.xml_template
-    builder = Nokogiri::XML::Builder.new do |xml|
-      xml['oai_dc'].dc(
-        'xmlns:oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/',
-        'xmlns:dc' => 'http://purl.org/dc/elements/1.1/',
-        'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
-        'xsi:schemaLocation' => 'http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
+  class SimpleDublinCoreDs < ActiveFedora::OmDatastream
+    set_terminology do |t|
+      t.root(
+        path: 'dc',
+        xmlns: 'http://www.openarchives.org/OAI/2.0/oai_dc/',
+        schema: 'http://cosimo.stanford.edu/standards/oai_dc/v2/oai_dc.xsd',
+        namespace_prefix: 'oai_dc',
+        index_as: [:not_searchable]
       )
+      t.title(:index_as => [:stored_sortable, :stored_searchable], :xmlns => 'http://purl.org/dc/elements/1.1/', :namespace_prefix => 'dc')
+      t.creator(:index_as => [:stored_sortable, :stored_searchable], :xmlns => 'http://purl.org/dc/elements/1.1/', :namespace_prefix => 'dc')
+      t.identifier(:index_as => [:symbol, :stored_searchable], :xmlns => 'http://purl.org/dc/elements/1.1/', :namespace_prefix => 'dc')
     end
 
-    builder.doc
-  end
+    def self.xml_template
+      builder = Nokogiri::XML::Builder.new do |xml|
+        xml['oai_dc'].dc(
+          'xmlns:oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/',
+          'xmlns:dc' => 'http://purl.org/dc/elements/1.1/',
+          'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+          'xsi:schemaLocation' => 'http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
+        )
+      end
 
-  def to_solr(solr_doc = {}, *args)
-    # There are a whole bunch of namespace-related things that can go
-    # wrong with this terminology. Until it's fixed in OM, ignore them all.
-
-    doc = super solr_doc, *args
-
-    add_solr_value(doc, 'dc_title',   title.first,   :string, [:stored_sortable, :stored_searchable])
-    add_solr_value(doc, 'dc_creator', creator.first, :string, [:stored_sortable, :stored_searchable])
-
-    identifiers = {}
-
-    identifier.each { |i| ns, val = i.split(':'); identifiers[ns] ||= val }
-
-    identifiers.each do |ns, val|
-      add_solr_value(doc, "dc_identifier_#{ns}", val, :string, [:stored_sortable, :stored_searchable])
+      builder.doc
     end
 
-    return doc
-  rescue Exception => e
-    warn "ERROR in SimpleDublinCoreDs to_solr()! #{e}"
-    solr_doc
-  end
+    def to_solr(solr_doc = {}, *args)
+      # There are a whole bunch of namespace-related things that can go
+      # wrong with this terminology. Until it's fixed in OM, ignore them all.
 
-  # maintain AF < 8 indexing behavior
-  def prefix
-    ''
+      doc = super solr_doc, *args
+
+      add_solr_value(doc, 'dc_title',   title.first,   :string, [:stored_sortable, :stored_searchable])
+      add_solr_value(doc, 'dc_creator', creator.first, :string, [:stored_sortable, :stored_searchable])
+
+      identifiers = {}
+
+      identifier.each { |i| ns, val = i.split(':'); identifiers[ns] ||= val }
+
+      identifiers.each do |ns, val|
+        add_solr_value(doc, "dc_identifier_#{ns}", val, :string, [:stored_sortable, :stored_searchable])
+      end
+
+      return doc
+    rescue Exception => e
+      warn "ERROR in SimpleDublinCoreDs to_solr()! #{e}"
+      solr_doc
+    end
+
+    # maintain AF < 8 indexing behavior
+    def prefix
+      ''
+    end
   end
-end
 end

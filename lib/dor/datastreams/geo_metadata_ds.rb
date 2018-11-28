@@ -1,4 +1,5 @@
 # encoding: UTF-8
+# frozen_string_literal: true
 
 require 'scanf'
 require 'uri'
@@ -10,7 +11,6 @@ module Dor
   # @see http://www.isotc211.org
   # @author Darren Hardy
   class GeoMetadataDS < ActiveFedora::OmDatastream
-
     # namespaces
     NS = {
       :rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
@@ -20,10 +20,10 @@ module Dor
     }.freeze
 
     # hash with all namespaces
-    XMLNS = Hash[NS.map {|k, v| ["xmlns:#{k}", v]}]
+    XMLNS = Hash[NS.map { |k, v| ["xmlns:#{k}", v] }]
 
     # schema locations
-    NS_XSD = NS.keys.collect {|k| "#{NS[k]} #{NS[k]}/#{k}.xsd"}
+    NS_XSD = NS.keys.collect { |k| "#{NS[k]} #{NS[k]}/#{k}.xsd" }
 
     # @return [Nokogiri::XML::Document] with gmd:MD_Metadata as root node
     # @raise [Dor::ParameterError] if MD_Metadata is missing
@@ -40,7 +40,7 @@ module Dor
     #     or nil if not provided
     def feature_catalogue
       root = ng_xml.xpath('/rdf:RDF/rdf:Description/gfc:FC_FeatureCatalogue', XMLNS)
-      return nil if root.nil? || root.empty?  # Feature catalog is optional
+      return nil if root.nil? || root.empty? # Feature catalog is optional
       Nokogiri::XML(root.first.to_xml)
     end
 
@@ -50,8 +50,8 @@ module Dor
     def self.xml_template
       Nokogiri::XML::Builder.new do |xml|
         xml['rdf'].RDF XMLNS,
-          'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
-          'xsi:schemaLocation' => NS_XSD.join(' ') do
+                       'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+                       'xsi:schemaLocation' => NS_XSD.join(' ') do
           xml['rdf'].Description 'rdf:about' => nil do
             xml['gmd'].MD_Metadata
           end

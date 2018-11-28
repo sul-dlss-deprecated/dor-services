@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DatastreamSpecSolrizer
   extend ActiveSupport::Concern
   include SolrDocHelper

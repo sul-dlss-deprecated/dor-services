@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class AssembleableItem < ActiveFedora::Base
@@ -5,7 +7,6 @@ class AssembleableItem < ActiveFedora::Base
 end
 
 describe Dor::Assembleable do
-
   before :all do
     @temp_workspace = '/tmp/dor_ws'
     FileUtils.rm_rf(@temp_workspace)

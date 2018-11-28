@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dor
   module Contentable
     extend ActiveSupport::Concern
@@ -15,7 +17,7 @@ module Dor
       sha1 = Digest::SHA1.file(file.path).hexdigest
       size = File.size?(file.path)
       # update contentmd
-      file_hash = {:name => file_name, :md5 => md5, :publish => publish, :shelve => shelve, :preserve => preserve, :size => size.to_s, :sha1 => sha1, :mime_type => mime_type}
+      file_hash = { :name => file_name, :md5 => md5, :publish => publish, :shelve => shelve, :preserve => preserve, :size => size.to_s, :sha1 => sha1, :mime_type => mime_type }
       begin
         sftp.stat!(location.gsub(file_name, ''))
         begin
@@ -49,7 +51,7 @@ module Dor
       sha1 = Digest::SHA1.file(file.path).hexdigest
       size = File.size?(file.path)
       # update contentmd
-      file_hash = {:name => file_name, :md5 => md5, :size => size.to_s, :sha1 => sha1}
+      file_hash = { :name => file_name, :md5 => md5, :size => size.to_s, :sha1 => sha1 }
       begin
         sftp.stat!(location)
         sftp.upload!(file.path, location)

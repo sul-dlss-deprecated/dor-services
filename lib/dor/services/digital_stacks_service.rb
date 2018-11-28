@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 require 'net/ssh'
 require 'net/sftp'
 
 module Dor
   class DigitalStacksService
-
     # Delete files from stacks that have change type 'deleted', 'copydeleted', or 'modified'
     # @param [Pathname] stacks_object_pathname the stacks location of the digital object
     # @param [Moab::FileGroupDifference] content_diff the content file version differences report

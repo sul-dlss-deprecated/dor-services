@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::RoleMetadataDS do
-
   context '#to_solr' do
-
     it 'creates solr docs from its content' do
       xml = <<-XML
       <roleMetadata>

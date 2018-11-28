@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 cert_dir = File.join(File.dirname(__FILE__), '..', 'certs')
 
 Dor.configure do

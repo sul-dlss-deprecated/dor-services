@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 # require File.expand_path(File.dirname(__FILE__) + '/../../lib/dor/models/contentable')
 
@@ -7,8 +9,7 @@ class MergeableItem < ActiveFedora::Base
 end
 
 describe Dor::Contentable do
-
-  let(:primary_pid)   { 'druid:ab123cd0001' }
+  let(:primary_pid) { 'druid:ab123cd0001' }
   let(:src1_pid) { 'druid:ab123cd0002' }
   let(:src2_pid) { 'druid:ab123cd0003' }
 
@@ -50,7 +51,6 @@ describe Dor::Contentable do
   end
 
   describe '#copy_file_resources' do
-
     it 'copies all the file resources from a secondary object to a primary object' do
       src1.contentMetadata.content = <<-XML
       <?xml version="1.0"?>
@@ -165,7 +165,7 @@ describe Dor::Contentable do
       </contentMetadata>
       XML
 
-      expect{primary.copy_file_resources([src1_pid])}.to raise_error Dor::Exception
+      expect{ primary.copy_file_resources([src1_pid]) }.to raise_error Dor::Exception
     end
 
     it 'processes more than one source object at a time' do
@@ -211,7 +211,6 @@ describe Dor::Contentable do
     end
 
     context '<label> processing' do
-
       it 'copies resource level labels' do
         src1.contentMetadata.content = <<-XML
         <?xml version="1.0"?>
@@ -256,6 +255,5 @@ describe Dor::Contentable do
         expect(merged_cm.at_xpath("//resource[@sequence = '2']/label").text).to eq('Image 2')
       end
     end
-
   end
 end

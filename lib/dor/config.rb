@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'confstruct/configuration'
 require 'rsolr'
 require 'yaml'
@@ -11,7 +13,7 @@ module Dor
 
     def initialize(*args)
       super *args
-      run_callbacks(:initialize) { }
+      run_callbacks(:initialize) {}
     end
 
     # Call the super method with callbacks and with $VERBOSE temporarily disabled
@@ -48,7 +50,6 @@ module Dor
     end
     deprecation_deprecate :make_rest_client
 
-
     def make_solr_connection(add_opts = {})
       opts = Dor::Config.solr.opts.merge(add_opts).merge(
         :url => Dor::Config.solr.url
@@ -58,41 +59,41 @@ module Dor
 
     set_callback :initialize, :after do |config|
       config.deep_merge!({
-        :fedora => {
-          :client => Confstruct.deferred { |c| CertificateAuthenticatedRestResourceFactory.create(:fedora) },
-          :safeurl => Confstruct.deferred { |c|
-            begin
-              fedora_uri = URI.parse(config.fedora.url)
-              fedora_uri.user = fedora_uri.password = nil
-              fedora_uri.to_s
-            rescue URI::InvalidURIError
-              nil
-            end
-          }
-        },
-        :dor_services => {
-          :rest_client => Confstruct.deferred { |c| RestResourceFactory.create(:dor_services) }
-        },
-        :purl_services => {
-          :rest_client => Confstruct.deferred { |c| RestResourceFactory.create(:purl_services) }
-        },
-        :sdr => {
-          :rest_client => Confstruct.deferred { |c| RestResourceFactory.create(:sdr) }
-        },
-        :workflow => {
-          :client => Confstruct.deferred do |c|
-            Dor::WorkflowService.configure c.url, logger: c.client_logger, timeout: c.timeout, dor_services_url: config.dor_services.url
-            Dor::WorkflowService
-          end,
-          :client_logger => Confstruct.deferred do |c|
-            if c.logfile && c.shift_age
-              Logger.new(c.logfile, c.shift_age)
-            elsif c.logfile
-              Logger.new(c.logfile)
-            end
-          end
-        }
-      })
+                           :fedora => {
+                             :client => Confstruct.deferred { |c| CertificateAuthenticatedRestResourceFactory.create(:fedora) },
+                             :safeurl => Confstruct.deferred { |c|
+                               begin
+                                 fedora_uri = URI.parse(config.fedora.url)
+                                 fedora_uri.user = fedora_uri.password = nil
+                                 fedora_uri.to_s
+                               rescue URI::InvalidURIError
+                                 nil
+                               end
+                             }
+                           },
+                           :dor_services => {
+                             :rest_client => Confstruct.deferred { |c| RestResourceFactory.create(:dor_services) }
+                           },
+                           :purl_services => {
+                             :rest_client => Confstruct.deferred { |c| RestResourceFactory.create(:purl_services) }
+                           },
+                           :sdr => {
+                             :rest_client => Confstruct.deferred { |c| RestResourceFactory.create(:sdr) }
+                           },
+                           :workflow => {
+                             :client => Confstruct.deferred do |c|
+                               Dor::WorkflowService.configure c.url, logger: c.client_logger, timeout: c.timeout, dor_services_url: config.dor_services.url
+                               Dor::WorkflowService
+                             end,
+                             :client_logger => Confstruct.deferred do |c|
+                                                 if c.logfile && c.shift_age
+                                                   Logger.new(c.logfile, c.shift_age)
+                                                 elsif c.logfile
+                                                   Logger.new(c.logfile)
+                                                 end
+                                               end
+                           }
+                         })
       true
     end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'equivalent-xml'
 
 module Dor
@@ -129,7 +131,7 @@ module Dor
         status_time = m_time
       end
 
-      {:current_version => current_version, :status_code => status_code, :status_time => status_time}
+      { :current_version => current_version, :status_code => status_code, :status_time => status_time }
     end
 
     # @param [Boolean] include_time

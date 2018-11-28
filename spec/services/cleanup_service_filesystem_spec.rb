@@ -1,15 +1,16 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Dor::CleanupService specs that check the file system' do
-
   let(:fixture_dir) { '/tmp/cleanup-spec' }
-  let(:workspace_dir) { File.join(fixture_dir, 'workspace')}
-  let(:export_dir) { File.join(fixture_dir, 'export')}
-  let(:assembly_dir) { File.join(fixture_dir, 'assembly')}
-  let(:stacks_dir) { File.join(fixture_dir, 'stacks')}
+  let(:workspace_dir) { File.join(fixture_dir, 'workspace') }
+  let(:export_dir) { File.join(fixture_dir, 'export') }
+  let(:assembly_dir) { File.join(fixture_dir, 'assembly') }
+  let(:stacks_dir) { File.join(fixture_dir, 'stacks') }
 
-  let(:druid_1) {'druid:cd456ef7890'}
-  let(:druid_2) {'druid:cd456gh1234'}
+  let(:druid_1) { 'druid:cd456ef7890' }
+  let(:druid_2) { 'druid:cd456gh1234' }
 
   before(:each) do
     Dor::Config.push! do |config|
@@ -70,7 +71,7 @@ describe 'Dor::CleanupService specs that check the file system' do
       #        {export_dir}/druid1.tar
       FileUtils.mkdir export_prefix_1
       create_tempfile export_prefix_1
-      File.open(export_prefix_1 + '.tar', 'w') {|f| f.write 'fake tar junk'}
+      File.open(export_prefix_1 + '.tar', 'w') { |f| f.write 'fake tar junk' }
 
       expect(File).to exist(dr1_wspace.path)
       expect(File).to exist(dr1_assembly.path)
@@ -104,7 +105,6 @@ describe 'Dor::CleanupService specs that check the file system' do
   end
 
   context 'CleanupService.cleanup_stacks' do
-
     it 'prunes the item from the local stacks root' do
       stacks_dr = DruidTools::StacksDruid.new(druid_1, Dor::Config.stacks.local_stacks_root)
       stacks_dr.mkdir
@@ -114,9 +114,6 @@ describe 'Dor::CleanupService specs that check the file system' do
 
       Dor::CleanupService.cleanup_stacks druid_1
       expect(File).to_not exist(stacks_dr.path)
-
     end
-
   end
-
 end

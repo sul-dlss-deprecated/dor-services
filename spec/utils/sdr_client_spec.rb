@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'dor/utils/sdr_client'
 
@@ -72,7 +74,7 @@ describe Sdr::Client do
 
     it 'properly encodes filename and passes along the sdr response with the correct content type and status code' do
       resource = Sdr::Client.client["objects/#{druid}/content/#{URI.encode(filename_with_spaces)}?version=#{item_version}"]
-      stub_request(:get, resource.url).to_return(:body => sdr_resp_body, :headers => {:content_type => sdr_resp_content_type})
+      stub_request(:get, resource.url).to_return(:body => sdr_resp_body, :headers => { :content_type => sdr_resp_content_type })
 
       preserved_content = Sdr::Client.get_preserved_file_content(druid, filename_with_spaces, item_version)
       expect(preserved_content).to eq(sdr_resp_body)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 group :development do
@@ -9,7 +11,6 @@ gemspec
 
 gem 'activemodel', ENV['RAILS_VERSION'] if ENV['RAILS_VERSION']
 gem 'active-fedora', ENV['AF_VERSION'] if ENV['AF_VERSION']
-
 
 # Due to a possible bundler bug, resolving the dependencies for linkeddata 1.99
 # either breaks or takes an incredibly long time. Pinning these dependencies

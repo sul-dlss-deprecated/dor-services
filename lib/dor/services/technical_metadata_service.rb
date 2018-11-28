@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rubygems'
 require 'moab/stanford'
 require 'jhove_service'
@@ -5,7 +7,6 @@ require 'dor-services'
 
 module Dor
   class TechnicalMetadataService
-
     # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
     # @return [Boolean] True if technical metadata is correctly added or updated
     def self.add_update_technical_metadata(dor_item)
@@ -124,7 +125,7 @@ module Dor
     # @return [Pathname] Save the new_files list to a text file and return that file's name
     def self.write_fileset(temp_dir, new_files)
       fileset_pathname = Pathname(temp_dir).join('jhove_fileset.txt')
-      fileset_pathname.open('w') {|f| f.puts(new_files) }
+      fileset_pathname.open('w') { |f| f.puts(new_files) }
       fileset_pathname
     end
 
@@ -188,16 +189,15 @@ module Dor
     # @param [Hash<String,Nokogiri::XML::Node>] merged_nodes The complete set of technicalMetadata nodes for the digital object, indexed by filename
     # @return [String] The finalized technicalMetadata datastream contents for the new object version
     def self.build_technical_metadata(druid, merged_nodes)
-      techmd_root = <<-EOF
-<technicalMetadata objectId='#{druid}' datetime='#{Time.now.utc.iso8601}'
-    xmlns:jhove='http://hul.harvard.edu/ois/xml/ns/jhove'
-    xmlns:mix='http://www.loc.gov/mix/v10'
-    xmlns:textmd='info:lc/xmlns/textMD-v3'>
+      techmd_root = +<<~EOF
+        <technicalMetadata objectId='#{druid}' datetime='#{Time.now.utc.iso8601}'
+            xmlns:jhove='http://hul.harvard.edu/ois/xml/ns/jhove'
+            xmlns:mix='http://www.loc.gov/mix/v10'
+            xmlns:textmd='info:lc/xmlns/textMD-v3'>
       EOF
       doc = techmd_root
-      merged_nodes.keys.sort.each {|path| doc << merged_nodes[path] }
+      merged_nodes.keys.sort.each { |path| doc << merged_nodes[path] }
       doc + '</technicalMetadata>'
     end
-
   end
 end
