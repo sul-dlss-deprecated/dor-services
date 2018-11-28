@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'pathname'
 require 'druid-tools'
 
 describe Dor::CleanupResetService, order: :defined do
-
   before(:all) do
     @fixtures = fixtures = Pathname(File.dirname(__FILE__)).join('../fixtures')
 
@@ -76,7 +77,6 @@ describe Dor::CleanupResetService, order: :defined do
       expect(File.exist?(@base_workspace_druid_dir + '_v1')).to be_falsey
       expect(File.exist?(@base_assembly_druid_dir)).to be_falsey
     end
-
   end
 
   # cleanup_reset_workspace_content
@@ -145,7 +145,6 @@ describe Dor::CleanupResetService, order: :defined do
       expect(File.exist?(@workspace_root_pathname.join('cc').join('111').join('ck').join('1111'))).to be_falsey
       expect(File.exist?(@workspace_root_pathname.join('cc').join('111').join('ck'))).to be_truthy
     end
-
   end
 
   # workspace_dir_list
@@ -309,7 +308,7 @@ describe Dor::CleanupResetService, order: :defined do
     it 'should not do anything if the assembly workspace is empty' do
       druid_id = 'ef123gh4567'
       expect(File.exist?(@assembly_root_pathname.join('ab').join('123').join('cd').join('4567'))).to be_falsey
-      expect{Dor::CleanupResetService.cleanup_assembly_content(druid_id, @assembly_root_pathname.to_s)}.to_not raise_error
+      expect{ Dor::CleanupResetService.cleanup_assembly_content(druid_id, @assembly_root_pathname.to_s) }.to_not raise_error
       expect(File.exist?(@assembly_root_pathname.join('ab').join('123').join('cd').join('4567'))).to be_falsey
     end
   end
@@ -328,7 +327,7 @@ describe Dor::CleanupResetService, order: :defined do
 
   def create_druid_dir(druid_id, version, base_dir)
     druid = "druid:#{druid_id}"
-    base_druid_tree = DruidTools::Druid.new(druid, base_dir )
+    base_druid_tree = DruidTools::Druid.new(druid, base_dir)
     base_druid_dir = base_druid_tree.pathname.to_s
     if version.nil?
       Pathname("#{base_druid_dir}").mkpath unless File.exist?("#{base_druid_dir}")

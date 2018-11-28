@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::ContentMetadataDS do
@@ -46,11 +48,11 @@ describe Dor::ContentMetadataDS do
       nodes = @cm.ng_xml.search('//resource[@id=\'resource\']')
       expect(nodes.length).to eq(1)
       node = nodes.first
-      expect(node['id'      ]).to eq('resource')
-      expect(node['type'    ]).to eq('file')
+      expect(node['id']).to eq('resource')
+      expect(node['type']).to eq('file')
       expect(node['sequence']).to eq('1')
       resource = node.at_xpath('./file')
-      expect(resource.attr('id')  ).to eq(@file[:name])
+      expect(resource.attr('id')).to eq(@file[:name])
       expect(resource.attr('size')).to eq(@file[:size])
       [:shelve, :publish, :preserve].each { |x| expect(resource.attr(x.to_s)).to eq(@file[x]) }
     end
@@ -70,18 +72,18 @@ describe Dor::ContentMetadataDS do
       nodes = @cm.ng_xml.search('//resource[@id=\'resource\']')
       expect(nodes.length).to eq(1)
       node = nodes.first
-      expect(node['id'      ]).to eq('resource')
-      expect(node['type'    ]).to eq('file')
+      expect(node['id']).to eq('resource')
+      expect(node['type']).to eq('file')
       expect(node['sequence']).to eq('1')
       resource = node.xpath('./file')
       expect(resource.size).to eq(2)
-      expect(resource.first.attr('id')  ).to eq(more_files.first[:name])
+      expect(resource.first.attr('id')).to eq(more_files.first[:name])
       expect(resource.first.attr('size')).to eq(more_files.first[:size])
-      expect(resource.last.attr('id')   ).to eq(more_files.last[:name] )
-      expect(resource.last.attr('size') ).to eq(more_files.last[:size] )
+      expect(resource.last.attr('id')).to eq(more_files.last[:name])
+      expect(resource.last.attr('size')).to eq(more_files.last[:size])
       [:shelve, :publish, :preserve].each do |x|
         expect(resource.first.attr(x.to_s)).to eq(more_files.first[x])
-        expect(resource.last.attr(x.to_s) ).to eq(more_files.last[x])
+        expect(resource.last.attr(x.to_s)).to eq(more_files.last[x])
       end
     end
 
@@ -90,8 +92,8 @@ describe Dor::ContentMetadataDS do
       nodes = @cm.ng_xml.search('//resource[@id=\'resource\']')
       expect(nodes.length).to eq(1)
       node = nodes.first
-      expect(node['id'      ]).to eq('resource')
-      expect(node['type'    ]).to eq('image')
+      expect(node['id']).to eq('resource')
+      expect(node['type']).to eq('image')
       expect(node['sequence']).to eq('1')
     end
 
@@ -114,8 +116,8 @@ describe Dor::ContentMetadataDS do
       nodes = @cm.ng_xml.search('//resource[@id=\'resource\']/file')
       expect(nodes.length).to eq(1)
       node = nodes.first
-      expect(node['id'      ]).to eq('transcription.txt')
-      expect(node['role'    ]).to eq('transcription')
+      expect(node['id']).to eq('transcription.txt')
+      expect(node['role']).to eq('transcription')
     end
   end
 
@@ -146,11 +148,11 @@ describe Dor::ContentMetadataDS do
       expect(hits.length).to eq(4)
       expect(xml.search('//file[@id=\'new_file.jp2\']').length).to eq(1)
       new_file = xml.search('//file[@id=\'new_file.jp2\']').first
-      expect(new_file['shelve'  ]).to eq('no')
-      expect(new_file['publish' ]).to eq('no')
+      expect(new_file['shelve']).to eq('no')
+      expect(new_file['publish']).to eq('no')
       expect(new_file['preserve']).to eq('no')
-      expect(new_file['size'    ]).to eq('12345')
-      expect(new_file['role'    ]).to eq('some-role')
+      expect(new_file['size']).to eq('12345')
+      expect(new_file['role']).to eq('some-role')
       expect(@cm).to be_changed
     end
   end
@@ -161,14 +163,14 @@ describe Dor::ContentMetadataDS do
       file = @cm.ng_xml.search('//file[@id=\'new_file.jp2\']')
       expect(file.length).to eq(1)
       file = file.first
-      expect(file['shelve'  ]).to eq('no')
-      expect(file['publish' ]).to eq('no')
+      expect(file['shelve']).to eq('no')
+      expect(file['publish']).to eq('no')
       expect(file['preserve']).to eq('no')
-      expect(file['size'    ]).to eq('12345')
-      expect(file['role'    ]).to eq('some-role')
+      expect(file['size']).to eq('12345')
+      expect(file['role']).to eq('some-role')
     end
     it 'should error out if there isnt an existing record to modify' do
-      expect { @cm.update_file(@file, 'gw177fc7976_05_0001_different.jp2')}.to raise_error(StandardError)
+      expect { @cm.update_file(@file, 'gw177fc7976_05_0001_different.jp2') }.to raise_error(StandardError)
     end
   end
   describe 'rename_file' do
@@ -264,8 +266,8 @@ describe Dor::ContentMetadataDS do
       nodes = @item.contentMetadata.ng_xml.search('//resource[@id=\'ab123cd4567_2\']')
       expect(nodes.length).to eq(1)
       node = nodes.first
-      expect(node['id'      ]).to eq('ab123cd4567_2')
-      expect(node['type'    ]).to eq('image')
+      expect(node['id']).to eq('ab123cd4567_2')
+      expect(node['type']).to eq('image')
       expect(node['sequence']).to eq('2')
 
       expect(nodes.search('label').length).to eq(0)

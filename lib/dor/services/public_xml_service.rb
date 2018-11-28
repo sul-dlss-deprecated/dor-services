@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dor
   class PublicXmlService
     attr_reader :object
@@ -35,7 +37,7 @@ module Dor
     # @return [String] The XML release node as a string, with ReleaseDigest as the root document
     def release_xml
       @release_xml ||= begin
-          builder = Nokogiri::XML::Builder.new do |xml|
+        builder = Nokogiri::XML::Builder.new do |xml|
           xml.releaseData {
             object.released_for.each do |project, released_value|
               xml.release(released_value['release'], :to => project)
@@ -70,9 +72,9 @@ module Dor
 
         # remove any resources or attributes that are not destined for the public XML
         result.xpath('/contentMetadata/resource[not(file[(@deliver="yes" or @publish="yes")]|externalFile)]').each(&:remove)
-        result.xpath('/contentMetadata/resource/file[not(@deliver="yes" or @publish="yes")]'                ).each(&:remove)
-        result.xpath('/contentMetadata/resource/file').xpath('@preserve|@shelve|@publish|@deliver'          ).each(&:remove)
-        result.xpath('/contentMetadata/resource/file/checksum'                                              ).each(&:remove)
+        result.xpath('/contentMetadata/resource/file[not(@deliver="yes" or @publish="yes")]').each(&:remove)
+        result.xpath('/contentMetadata/resource/file').xpath('@preserve|@shelve|@publish|@deliver').each(&:remove)
+        result.xpath('/contentMetadata/resource/file/checksum').each(&:remove)
 
         # support for dereferencing links via externalFile element(s) to the source (child) item - see JUMBO-19
         result.xpath('/contentMetadata/resource/externalFile').each do |externalFile|

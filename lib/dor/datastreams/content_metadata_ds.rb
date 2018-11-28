@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'set'
 
 module Dor
   class ContentMetadataDS < ActiveFedora::OmDatastream
-
     set_terminology do |t|
       t.root        :path => 'contentMetadata',          :index_as => [:not_searchable]
       t.contentType :path => '/contentMetadata/@type',   :index_as => [:not_searchable]
@@ -27,7 +28,7 @@ module Dor
             t.type_ :path => { :attribute => 'type' }
           end
         end
-        t.shelved_file(:path => 'file', :attributes => {:shelve => 'yes'}, :index_as => [:not_searchable]) do
+        t.shelved_file(:path => 'file', :attributes => { :shelve => 'yes' }, :index_as => [:not_searchable]) do
           t.id_ :path => { :attribute => 'id' }, :index_as => [:displayable, :stored_searchable]
         end
       end
@@ -105,15 +106,15 @@ module Dor
           file_roles << file['role'] if file['role']
         end
       end
-      solr_doc['content_type_ssim'              ] = doc.root['type']
-      solr_doc['content_file_mimetypes_ssim'    ] = mime_types.to_a
-      solr_doc['content_file_count_itsi'        ] = counts['content_file']
+      solr_doc['content_type_ssim'] = doc.root['type']
+      solr_doc['content_file_mimetypes_ssim'] = mime_types.to_a
+      solr_doc['content_file_count_itsi'] = counts['content_file']
       solr_doc['shelved_content_file_count_itsi'] = counts['shelved_file']
-      solr_doc['resource_count_itsi'            ] = counts['resource']
-      solr_doc['preserved_size_dbtsi'           ] = preserved_size # double (trie) to support very large sizes
-      solr_doc['shelved_size_dbtsi'             ] = shelved_size # double (trie) to support very large sizes
-      solr_doc['resource_types_ssim'            ] = resource_type_counts.keys if resource_type_counts.size > 0
-      solr_doc['content_file_roles_ssim'        ] = file_roles.to_a if file_roles.size > 0
+      solr_doc['resource_count_itsi'] = counts['resource']
+      solr_doc['preserved_size_dbtsi'] = preserved_size # double (trie) to support very large sizes
+      solr_doc['shelved_size_dbtsi'] = shelved_size # double (trie) to support very large sizes
+      solr_doc['resource_types_ssim'] = resource_type_counts.keys if resource_type_counts.size > 0
+      solr_doc['content_file_roles_ssim'] = file_roles.to_a if file_roles.size > 0
       resource_type_counts.each do |key, count|
         solr_doc["#{key}_resource_count_itsi"] = count
       end
@@ -136,8 +137,8 @@ module Dor
       node = resource_nodes.first
       file_node = Nokogiri::XML::Node.new('file', ng_xml)
       file_node['id'] = file[:name]
-      file_node['shelve'  ] = file[:shelve  ] ? file[:shelve  ] : ''
-      file_node['publish' ] = file[:publish ] ? file[:publish ] : ''
+      file_node['shelve'] = file[:shelve] ? file[:shelve] : ''
+      file_node['publish'] = file[:publish] ? file[:publish] : ''
       file_node['preserve'] = file[:preserve] ? file[:preserve] : ''
       node.add_child(file_node)
 
@@ -148,7 +149,7 @@ module Dor
         checksum_node.content = file[algo]
         file_node.add_child(checksum_node)
       end
-      file_node['size'    ] = file[:size     ] if file[:size     ]
+      file_node['size'] = file[:size] if file[:size]
       file_node['mimetype'] = file[:mime_type] if file[:mime_type]
       file_node['role'] = file[:role] if file[:role]
       file_node
@@ -200,7 +201,7 @@ module Dor
       node['type']     = type
       files.each do |file|
         file_node = Nokogiri::XML::Node.new('file', ng_xml)
-        %w(shelve publish preserve).each {|x| file_node[x] = file[x.to_sym] ? file[x.to_sym] : '' }
+        %w(shelve publish preserve).each { |x| file_node[x] = file[x.to_sym] ? file[x.to_sym] : '' }
         file_node['id'] = file[:name]
         node.add_child(file_node)
 
@@ -245,8 +246,8 @@ module Dor
     def update_attributes(file_name, publish, shelve, preserve, attributes = {})
       self.ng_xml_will_change!
       file_node = ng_xml.search('//file[@id=\'' + file_name + '\']').first
-      file_node['publish' ] = publish
-      file_node['shelve'  ] = shelve
+      file_node['publish'] = publish
+      file_node['shelve'] = shelve
       file_node['preserve'] = preserve
       attributes.each do |key, value|
         file_node[key] = value

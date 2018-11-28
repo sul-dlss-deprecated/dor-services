@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dor
   module Eventable
     extend ActiveSupport::Concern

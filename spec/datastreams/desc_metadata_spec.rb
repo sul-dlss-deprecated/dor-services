@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::DescMetadataDS do
@@ -72,12 +74,12 @@ describe Dor::DescMetadataDS do
 
     it 'should get correct values from OM terminology' do
       expect(@dsdoc.term_values(:abstract)).to eq(['Abstract contents.'])
-      expect(@dsdoc.abstract              ).to eq(['Abstract contents.']) # equivalent accessor
-      expect(@dsdoc.subject.geographic    ).to eq(['First Place', 'Other Place, Nation;'])
-      expect(@dsdoc.subject.temporal      ).to eq(['1890-1910', '20th century', 'another'])
-      expect(@dsdoc.subject.topic         ).to eq(['Topic1: Boring Part', 'Topic2: The Interesting Part!'])
-      expect(@dsdoc.title_info.main_title ).to eq(['Electronic Theses and Dissertations'])
-      expect(@dsdoc.language.languageTerm ).to eq(['eng'])
+      expect(@dsdoc.abstract).to eq(['Abstract contents.']) # equivalent accessor
+      expect(@dsdoc.subject.geographic).to eq(['First Place', 'Other Place, Nation;'])
+      expect(@dsdoc.subject.temporal).to eq(['1890-1910', '20th century', 'another'])
+      expect(@dsdoc.subject.topic).to eq(['Topic1: Boring Part', 'Topic2: The Interesting Part!'])
+      expect(@dsdoc.title_info.main_title).to eq(['Electronic Theses and Dissertations'])
+      expect(@dsdoc.language.languageTerm).to eq(['eng'])
     end
 
     it 'should solrize correctly' do

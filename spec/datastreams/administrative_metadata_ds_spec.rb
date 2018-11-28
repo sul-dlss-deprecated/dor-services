@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::AdministrativeMetadataDS do
-
   context 'defaults terms' do
     it '#default_workflow_lane gets and sets the attribute defaults/initiateWorkflow/@lane' do
       ds = Dor::AdministrativeMetadataDS.new
@@ -14,7 +15,7 @@ describe Dor::AdministrativeMetadataDS do
           </defaults>
         </administrativeMetadata>
       XML
-      )
+                                           )
       expect(ds.default_workflow_lane).to eq('slow')
     end
 
@@ -29,7 +30,7 @@ describe Dor::AdministrativeMetadataDS do
           </defaults>
         </administrativeMetadata>
       XML
-      )
+                                           )
       expect(ds.default_shelving_path).to eq('/hoover')
     end
   end

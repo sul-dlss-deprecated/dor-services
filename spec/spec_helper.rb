@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'simplecov'
 require 'coveralls'
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-  SimpleCov::Formatter::HTMLFormatter,
-  Coveralls::SimpleCov::Formatter
-])
+                                                                 SimpleCov::Formatter::HTMLFormatter,
+                                                                 Coveralls::SimpleCov::Formatter
+                                                               ])
 SimpleCov.start 'test_frameworks'
 
 require 'rspec'
@@ -45,7 +47,7 @@ module Dor::SpecHelpers
         url 'http://localhost/dor'
       end
     end
-    allow(ActiveFedora).to receive(:fedora).and_return(double('frepo').as_null_object)  # must be used in per-request context: :each not :all
+    allow(ActiveFedora).to receive(:fedora).and_return(double('frepo').as_null_object) # must be used in per-request context: :each not :all
   end
 
   def unstub_config
@@ -152,4 +154,4 @@ VCR.configure do |c|
   c.configure_rspec_metadata!
 end
 
-Retries.sleep_enabled = false  # fail fast in tests
+Retries.sleep_enabled = false # fail fast in tests

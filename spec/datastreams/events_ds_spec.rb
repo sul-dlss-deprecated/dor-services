@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::EventsDS do
-
   before(:each) do
     @dsxml = <<-EOF
       <events>
@@ -51,7 +52,6 @@ describe Dor::EventsDS do
   end
 
   describe '#find_events_by_type' do
-
     it 'returns a block with who, timestamp, and message' do
       ds = Dor::EventsDS.from_xml(@dsxml)
       ds.add_event 'publish', 'application:common-accessioning-robot', 'Released to the world'
@@ -63,7 +63,7 @@ describe Dor::EventsDS do
       end
 
       count = 0
-      ds.find_events_by_type('embargo') {count += 1}
+      ds.find_events_by_type('embargo') { count += 1 }
       expect(count).to eq(2)
     end
   end
@@ -87,5 +87,4 @@ describe Dor::EventsDS do
       expect(count).to be 4
     end
   end
-
 end

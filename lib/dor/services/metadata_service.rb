@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'cache'
 
 module Dor
-  class MetadataError < Exception ; end
+  class MetadataError < Exception; end
 
   #  class MetadataHandler
   #
@@ -16,7 +18,6 @@ module Dor
   #  end
 
   class MetadataService
-
     class << self
       @@cache = Cache.new(nil, nil, 250, 300)
 
@@ -72,9 +73,7 @@ module Dor
       def handlers
         @handlers ||= {}
       end
-
     end
-
   end
 end
 

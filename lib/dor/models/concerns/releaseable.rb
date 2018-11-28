@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open-uri'
 require 'retries'
 
@@ -31,21 +33,21 @@ module Dor
       # Get the most recent self tag for all targets and retain their result since most recent self always trumps any other non self tags
       latest_self_tags = get_newest_release_tag get_self_release_tags(release_nodes)
       latest_self_tags.each do |key, payload|
-        released_hash[key] = {'release' => payload['release']}
+        released_hash[key] = { 'release' => payload['release'] }
       end
 
       # With Self Tags resolved we now need to deal with tags on all sets this object is part of.
       # Get all release tags on the item and strip out the what = self ones, we've already processed all the self tags on this item.
       # This will be where we store all tags that apply, regardless of their timestamp:
       potential_applicable_release_tags = get_tags_for_what_value(get_release_tags_for_item_and_all_governing_sets, 'collection')
-      administrative_tags = tags  # Get admin tags once here and pass them down
+      administrative_tags = tags # Get admin tags once here and pass them down
 
       # We now have the keys for all potential releases, we need to check the tags: the most recent timestamp with an explicit true or false wins.
       # In a nil case, the lack of an explicit false tag we do nothing.
-      (potential_applicable_release_tags.keys - released_hash.keys).each do |key|  # don't bother checking if already added to the release hash, they were added due to a self tag so that has won
+      (potential_applicable_release_tags.keys - released_hash.keys).each do |key| # don't bother checking if already added to the release hash, they were added due to a self tag so that has won
         latest_tag = latest_applicable_release_tag_in_array(potential_applicable_release_tags[key], administrative_tags)
         next if latest_tag.nil? # Otherwise, we have a valid tag, record it
-        released_hash[key] = {'release' => latest_tag['release']}
+        released_hash[key] = { 'release' => latest_tag['release'] }
       end
 
       # See what the application is currently released for on Purl.  If released in purl but not listed here, it needs to be added as a false
@@ -65,7 +67,7 @@ module Dor
     def get_release_tags_for_item_and_all_governing_sets
       return_tags = release_nodes || {}
       collections.each do |collection|
-        next if collection.id == id  # recursive, so parents of parents are found, but we need to avoid an infinite loop if the collection references itself (i.e. bad data)
+        next if collection.id == id # recursive, so parents of parents are found, but we need to avoid an infinite loop if the collection references itself (i.e. bad data)
         return_tags = combine_two_release_tag_hashes(return_tags, collection.get_release_tags_for_item_and_all_governing_sets)
       end
       return_tags
@@ -90,7 +92,7 @@ module Dor
     def get_tags_for_what_value(tags, what_target)
       return_hash = {}
       tags.keys.each do |key|
-        self_tags = tags[key].select {|tag| tag['what'].casecmp(what_target) == 0}
+        self_tags = tags[key].select { |tag| tag['what'].casecmp(what_target) == 0 }
         return_hash[key] = self_tags if self_tags.size > 0
       end
       return_hash
@@ -100,7 +102,7 @@ module Dor
     # @param tags [Hash] a hash of tags obtained via Dor::Item.release_tags or matching format
     # @return [Hash] a hash of latest tags for each to value
     def get_newest_release_tag(tags)
-      Hash[tags.map {|key, val| [key, newest_release_tag_in_an_array(val)]}]
+      Hash[tags.map { |key, val| [key, newest_release_tag_in_an_array(val)] }]
     end
 
     # Takes an array of release tags and returns the most recent one
@@ -211,7 +213,7 @@ module Dor
     # @example
     #  item.add_release_node(true,{:what=>'self',:to=>'Searchworks',:who=>'petucket'})
     def add_release_node(release, attrs = {})
-      allowed_release_attributes=[:what,:to,:who,:when] # any other release attributes sent in will be rejected and not stored
+      allowed_release_attributes = [:what, :to, :who, :when] # any other release attributes sent in will be rejected and not stored
       identity_metadata_ds = identityMetadata
       attrs.delete_if { |key, value| !allowed_release_attributes.include?(key) }
       attrs[:when] = Time.now.utc.iso8601 if attrs[:when].nil? # add the timestamp
@@ -231,7 +233,7 @@ module Dor
         raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
       raise ArgumentError, ':what must be self or collection' unless %w(self collection).include? attrs[:what]
-      raise ArgumentError, 'the value set for this tag is not a boolean' unless [true,false].include? tag
+      raise ArgumentError, 'the value set for this tag is not a boolean' unless [true, false].include? tag
       true
     end
 
@@ -283,7 +285,7 @@ module Dor
     def get_release_tags_from_purl_xml(doc)
       nodes = doc.xpath('//html/body/publicobject/releasedata').children
       # We only want the nodes with a name that isn't text
-      nodes.reject {|n| n.name.nil? || n.name.casecmp('text') == 0 }.map {|n| n.attr('to')}.uniq
+      nodes.reject { |n| n.name.nil? || n.name.casecmp('text') == 0 }.map { |n| n.attr('to') }.uniq
     end
 
     # Pull all release nodes from the public xml obtained via the purl query
@@ -300,7 +302,7 @@ module Dor
       tags_currently_in_purl = get_release_tags_from_purl
       missing_tags = tags_currently_in_purl.map(&:downcase) - new_tags.keys.map(&:downcase)
       missing_tags.each do |missing_tag|
-        new_tags[missing_tag.capitalize] = {'release' => false}
+        new_tags[missing_tag.capitalize] = { 'release' => false }
       end
       new_tags
     end

@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module Dor
   class DescMetadataDS < ActiveFedora::OmDatastream
-
-    MODS_NS = 'http://www.loc.gov/mods/v3'.freeze
+    MODS_NS = 'http://www.loc.gov/mods/v3'
     MODS_HEADER_CONFIG = {
       'xmlns' => MODS_NS,
       'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
@@ -15,7 +16,7 @@ module Dor
         t.publisher :index_as => [:stored_searchable]
         t.date_created :path => 'dateCreated', :index_as => [:stored_searchable]
         t.place :index_as => [:not_searchable] do
-          t.placeTerm :attributes => {:type => 'text'}, :index_as => [:stored_searchable]
+          t.placeTerm :attributes => { :type => 'text' }, :index_as => [:stored_searchable]
         end
       end
       t.subject(:index_as => [:not_searchable]) do
@@ -25,11 +26,11 @@ module Dor
       end
       t.title_info(:path => 'titleInfo') {
         t.main_title(:index_as => [:symbol], :path => 'title', :label => 'title') {
-          t.main_title_lang(:path => {:attribute => 'xml:lang'})
+          t.main_title_lang(:path => { :attribute => 'xml:lang' })
         }
       }
       t.language {
-        t.languageTerm :attributes => {:type => 'code', :authority => 'iso639-2b'}, :index_as => [:not_searchable]
+        t.languageTerm :attributes => { :type => 'code', :authority => 'iso639-2b' }, :index_as => [:not_searchable]
       }
       t.coordinates :index_as => [:symbol]
       t.extent      :index_as => [:symbol]
@@ -56,6 +57,5 @@ module Dor
     def prefix
       ''
     end
-
   end
 end

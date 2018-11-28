@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::WorkflowDs do
-
   before(:each) { stub_config }
   after(:each)  { unstub_config }
 

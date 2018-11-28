@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module Dor
   class MergeService
-
     def self.merge_into_primary(primary_druid, secondary_druids, tag, logger = nil)
       # TODO: test the secondary_obj to see if we've processed it already
       merge_service = Dor::MergeService.new primary_druid, secondary_druids, tag, logger
@@ -13,7 +14,7 @@ module Dor
     def initialize(primary_druid, secondary_pids, tag, logger = nil)
       @primary = Dor.find primary_druid
       @secondary_pids = secondary_pids
-      @secondary_objs = secondary_pids.map {|pid|  Dor.find pid }
+      @secondary_objs = secondary_pids.map { |pid| Dor.find pid }
       if logger.nil?
         @logger = Logger.new(STDERR)
       else
@@ -24,7 +25,7 @@ module Dor
 
     def check_objects_editable
       raise Dor::Exception, "Primary object is not editable: #{@primary.pid}" unless @primary.allows_modification?
-      non_editable = @secondary_objs.detect {|obj| !obj.allows_modification? }
+      non_editable = @secondary_objs.detect { |obj| !obj.allows_modification? }
       raise Dor::Exception, "Secondary object is not editable: #{non_editable.pid}" if non_editable
     end
 
@@ -48,7 +49,7 @@ module Dor
           primary_resource = primary_cm.at_xpath "//resource[attr[@name = 'mergedFromPid']/text() = '#{secondary.pid}' and
                                                              attr[@name = 'mergedFromResource']/text() = '#{src_resource['id']}' ]"
           sequence = primary_resource['sequence']
-          src_resource.xpath('//file/@id').map {|id| id.value }.each do |file_id|
+          src_resource.xpath('//file/@id').map { |id| id.value }.each do |file_id|
             copy_path = sec_druid.find_content file_id
             new_name = secondary.new_secondary_file_name(file_id, sequence)
             # TODO: verify new_name exists in primary_cm?

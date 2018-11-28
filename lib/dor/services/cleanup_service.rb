@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 require 'pathname'
 
 module Dor
   # Remove all traces of the object's data files from the workspace and export areas
   class CleanupService
-
     # @param [LyberCore::Robots::WorkItem] dor_item The DOR work item whose workspace should be cleaned up
     # @return [void] Delete all workspace and export entities for the druid
     def self.cleanup(dor_item)

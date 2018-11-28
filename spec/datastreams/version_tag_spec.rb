@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::VersionTag do
-
   describe '.parse' do
     it 'parses a String into a VersionTag object' do
       t = Dor::VersionTag.parse('1.1.0')
@@ -46,5 +47,4 @@ describe Dor::VersionTag do
       expect(v1).to eq(v4)
     end
   end
-
 end

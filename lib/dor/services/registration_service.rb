@@ -1,10 +1,10 @@
+# frozen_string_literal: true
+
 require 'uuidtools'
 
 module Dor
   class RegistrationService
-
     class << self
-
       # @TODO: Why isn't all this logic in, for example, Dor::Item.create? or Dor::Base.create? or Dor::Creatable.create?
       # @TODO: these duplicate checks could be combined into 1 query
 
@@ -108,7 +108,7 @@ module Dor
         if rights && %w(item collection).include?(object_type)
           rights_xml = apo_object.defaultObjectRights.ng_xml
           new_item.datastreams['rightsMetadata'].content = rights_xml.to_s
-          new_item.set_read_rights(rights) unless rights == 'default'    # already defaulted to default!
+          new_item.set_read_rights(rights) unless rights == 'default' # already defaulted to default!
         end
         # create basic mods from the label
         if metadata_source == 'label'
@@ -126,7 +126,7 @@ module Dor
         workflow_priority = params[:workflow_priority] ? params[:workflow_priority].to_i : 0
 
         Array(params[:seed_datastream]).each { |datastream_name| new_item.build_datastream(datastream_name) }
-        Array(params[:initiate_workflow]).each { |workflow_id| new_item.create_workflow(workflow_id, !new_item.new_record?, workflow_priority)}
+        Array(params[:initiate_workflow]).each { |workflow_id| new_item.create_workflow(workflow_id, !new_item.new_record?, workflow_priority) }
 
         new_item.assert_content_model
 

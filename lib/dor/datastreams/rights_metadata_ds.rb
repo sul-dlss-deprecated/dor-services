@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dor
   class RightsMetadataDS < ActiveFedora::OmDatastream
     require 'dor/rights_auth'
@@ -35,7 +37,7 @@ module Dor
             xml.machine { xml.none }
           }
           xml.access(:type => 'read') {
-            xml.machine { xml.none }   # dark default
+            xml.machine { xml.none } # dark default
           }
           xml.use {
             xml.human(:type => 'useAndReproduction')
@@ -63,7 +65,6 @@ module Dor
       'dark' => 'Dark (Preserve Only)',
       'none' => 'Citation Only'
     }.freeze
-
 
     # just a wrapper to invalidate @dra_object
     def content=(xml)
@@ -112,7 +113,7 @@ module Dor
           loc_node = Nokogiri::XML::Node.new('location', rights_xml)
           loc_node.content = rights_type.split(':').last
           machine_node.add_child(loc_node)
-        else  # we know it is none or dark by the argument filter (first line)
+        else # we know it is none or dark by the argument filter (first line)
           machine_node.add_child Nokogiri::XML::Node.new('none', rights_xml)
         end
       end
@@ -215,6 +216,5 @@ module Dor
     def prefix
       ''
     end
-
   end # class
 end

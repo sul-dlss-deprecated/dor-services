@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class GeoableItem < ActiveFedora::Base
@@ -6,7 +8,7 @@ class GeoableItem < ActiveFedora::Base
 end
 
 describe Dor::Geoable do
-  after(:each)	{ unstub_config }
+  after(:each) { unstub_config }
 
   before :each do
     stub_config
@@ -20,5 +22,4 @@ describe Dor::Geoable do
   it 'expected constants' do
     expect(@item.datastreams['geoMetadata'].dsid).to eq('geoMetadata')
   end
-
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class EmbargoedItem < ActiveFedora::Base
@@ -8,7 +10,8 @@ end
 
 describe Dor::Embargoable do
   let(:embargo_release_date) { Time.now.utc - 100000 }
-  let(:release_access) { <<-EOXML
+  let(:release_access) {
+    <<-EOXML
     <releaseAccess>
       <access type="read">
         <machine>
@@ -24,7 +27,8 @@ describe Dor::Embargoable do
     </releaseAccess>
     EOXML
   }
-  let(:rights_xml) { <<-EOXML
+  let(:rights_xml) {
+    <<-EOXML
     <rightsMetadata objectId="druid:rt923jk342">
       <copyright>
         <human>(c) Copyright [conferral year] by [student name]</human>
@@ -60,14 +64,14 @@ describe Dor::Embargoable do
       eds = Dor::EmbargoMetadataDS.new
       eds.status = 'embargoed'
       eds.release_date = embargo_release_date
-      eds.release_access_node = Nokogiri::XML(release_access) {|config| config.default_xml.noblanks}
+      eds.release_access_node = Nokogiri::XML(release_access) { |config| config.default_xml.noblanks }
       eds
     }
     let!(:embargo_item) {
       embargo_item = EmbargoedItem.new
       embargo_item.datastreams['embargoMetadata'] = embargo_ds
       rds = Dor::RightsMetadataDS.new
-      rds.content = Nokogiri::XML(rights_xml) {|config| config.default_xml.noblanks}.to_s
+      rds.content = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }.to_s
       embargo_item.datastreams['rightsMetadata'] = rds
       expect(embargo_item.rightsMetadata).to receive(:ng_xml_will_change!)
       embargo_item.release_embargo('application:embargo-release')
@@ -113,13 +117,13 @@ describe Dor::Embargoable do
       eds = Dor::EmbargoMetadataDS.new
       eds.status = 'embargoed'
       eds.release_date = embargo_release_date
-      eds.release_access_node = Nokogiri::XML(release_access) {|config| config.default_xml.noblanks}
+      eds.release_access_node = Nokogiri::XML(release_access) { |config| config.default_xml.noblanks }
       eds
     }
     let!(:embargo_item) {
       embargo_item = EmbargoedItem.new
       embargo_item.datastreams['embargoMetadata'] = embargo_ds
-      embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config| config.default_xml.noblanks}
+      embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }
       expect(embargo_item.rightsMetadata).to receive(:ng_xml_will_change!)
       embargo_item.release_20_pct_vis_embargo('application:embargo-release')
       embargo_item
@@ -132,8 +136,8 @@ describe Dor::Embargoable do
     context 'rightsMetadata modifications' do
       it 'replaces stanford group read access to world read access' do
         rights = embargo_item.datastreams['rightsMetadata'].ng_xml
-        expect(rights.xpath("//rightsMetadata/access[@type='read']"              ).size).to eq 1
-        expect(rights.xpath("//rightsMetadata/access[@type='discover']"          ).size).to eq 1
+        expect(rights.xpath("//rightsMetadata/access[@type='read']").size).to eq 1
+        expect(rights.xpath("//rightsMetadata/access[@type='discover']").size).to eq 1
         expect(rights.xpath("//rightsMetadata/access[@type='read']/machine/world").size).to eq 1
       end
       it 'marks the datastream as content changed' do
@@ -156,9 +160,9 @@ describe Dor::Embargoable do
       eds = embargo_item.datastreams['embargoMetadata']
       eds.status = 'embargoed'
       eds.release_date = embargo_release_date
-      eds.release_access_node = Nokogiri::XML(release_access) {|config| config.default_xml.noblanks}
+      eds.release_access_node = Nokogiri::XML(release_access) { |config| config.default_xml.noblanks }
       allow_any_instance_of(ActiveFedora::OmDatastream).to receive(:save).and_return(true)
-      embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) {|config| config.default_xml.noblanks}
+      embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }
       embargo_item
     }
 
@@ -174,10 +178,10 @@ describe Dor::Embargoable do
     end
     it "raises ArgumentError if the item isn't embargoed" do
       embargo_item.release_embargo('application:embargo-release')
-      expect{embargo_item.update_embargo(Time.now.utc + 1.month)}.to raise_error(ArgumentError)
+      expect{ embargo_item.update_embargo(Time.now.utc + 1.month) }.to raise_error(ArgumentError)
     end
     it 'raises ArgumentError if the new date is in the past' do
-      expect{embargo_item.update_embargo(1.month.ago)}.to raise_error(ArgumentError)
+      expect{ embargo_item.update_embargo(1.month.ago) }.to raise_error(ArgumentError)
     end
   end
 end

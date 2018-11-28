@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dor/datastreams/workflow_definition_ds'
 
 module Dor
@@ -61,6 +63,5 @@ module Dor
       @@xml_cache[name]  = wobj.generate_initial_workflow
       wobj
     end
-
   end
 end

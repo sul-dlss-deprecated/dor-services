@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dor/datastreams/content_metadata_ds'
 require 'fileutils'
 
@@ -20,8 +22,8 @@ module Dor
     def encoded_thumb
       thumb_image = thumb # store the result locally, so we don't have to compute each time we use it below
       return unless thumb_image
-      thumb_druid=thumb_image.split('/').first # the druid (before the first slash)
-      thumb_filename=thumb_image.split(/#{pid_regex}[\/]/).last # everything after the druid
+      thumb_druid = thumb_image.split('/').first # the druid (before the first slash)
+      thumb_filename = thumb_image.split(/#{pid_regex}[\/]/).last # everything after the druid
       "#{thumb_druid}%2F#{ERB::Util.url_encode(thumb_filename)}"
     end
     deprecation_deprecate :encoded_thumb
@@ -30,7 +32,7 @@ module Dor
     # @return [String] fully qualified image URL for the computed thumbnail, e.g. https://stacks.stanford.edu/image/iiif/oo000oo0001%2Ffilenamewith%20space/full
     def thumb_url
       return unless encoded_thumb
-      thumb_basename=File.basename(encoded_thumb, File.extname(encoded_thumb)) # strip the extension for URL generation
+      thumb_basename = File.basename(encoded_thumb, File.extname(encoded_thumb)) # strip the extension for URL generation
       "https://#{Dor::Config.stacks.host}/image/iiif/#{thumb_basename}/full/!400,400/0/default.jpg"
     end
     deprecation_deprecate :thumb_url
@@ -60,7 +62,7 @@ module Dor
     def publish_metadata
       rights = datastreams['rightsMetadata'].ng_xml.clone.remove_namespaces!
       if rights.at_xpath("//rightsMetadata/access[@type='discover']/machine/world")
-        dc_xml = generate_dublin_core.to_xml {|config| config.no_declaration}
+        dc_xml = generate_dublin_core.to_xml { |config| config.no_declaration }
         DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'dc')
         %w(identityMetadata contentMetadata rightsMetadata).each do |stream|
           DigitalStacksService.transfer_to_document_store(pid, datastreams[stream].content.to_s, stream) if datastreams[stream]

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::RightsMetadataDS do
@@ -349,13 +351,13 @@ describe Dor::RightsMetadataDS do
           'world_discover', 'has_group_rights', 'has_rule', 'group|stanford', 'location', 'location_with_rule',
           'world_read', 'world|no-download', 'profile:group1|location1|world1', 'none_read_file'
         ),
-        'use_license_machine_ssi'     => 'by-nc',
-        'use_licenses_machine_ssim'     => ['by-nc'],
-        'obj_rights_locations_ssim'   => ['reading_room']
+        'use_license_machine_ssi' => 'by-nc',
+        'use_licenses_machine_ssim' => ['by-nc'],
+        'obj_rights_locations_ssim' => ['reading_room']
       )
       expect(doc).not_to include(
         'rights_errors_ssim', 'file_rights_locations_ssim', 'obj_rights_agents_ssim', 'file_rights_agents_ssim'
-      )  # don't include empties
+      ) # don't include empties
     end
 
     it 'should filter access_restricted from what gets aggregated into rights_descriptions_ssim' do
@@ -365,8 +367,8 @@ describe Dor::RightsMetadataDS do
         :primary => 'access_restricted',
         :errors  => [],
         :terms   => [],
-        :obj_locations_qualified => [{:location => 'someplace', :rule => 'somerule'}],
-        :file_groups_qualified   => [{:group => 'somegroup', :rule => 'someotherrule'}]
+        :obj_locations_qualified => [{ :location => 'someplace', :rule => 'somerule' }],
+        :file_groups_qualified   => [{ :group => 'somegroup', :rule => 'someotherrule' }]
       )
       expect(rights_md_ds).to receive(:dra_object).and_return(mock_dra_obj)
 
@@ -387,7 +389,7 @@ describe Dor::RightsMetadataDS do
         :primary => 'world_qualified',
         :errors  => [],
         :terms   => [],
-        :obj_world_qualified => [{:rule => 'somerule'}]
+        :obj_world_qualified => [{ :rule => 'somerule' }]
       )
       expect(rights_md_ds).to receive(:dra_object).and_return(mock_dra_obj)
 

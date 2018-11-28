@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dor
   class IdentifiableIndexer
     include SolrDocHelper
@@ -26,7 +28,7 @@ module Dor
       add_solr_value(solr_doc, 'title_sort', resource.label, :string, [:stored_sortable])
 
       rels_doc = Nokogiri::XML(resource.datastreams['RELS-EXT'].content)
-      ns_hash = {'hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}
+      ns_hash = { 'hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' }
       apos = rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy', ns_hash)
       collections = rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection', ns_hash)
       solrize_related_obj_titles(solr_doc, apos, @@apo_hash, 'apo_title', 'nonhydrus_apo_title', 'hydrus_apo_title')
@@ -51,11 +53,11 @@ module Dor
     def solrize_related_obj_titles(solr_doc, relationships, title_hash, union_field_name, nonhydrus_field_name, hydrus_field_name)
       # TODO: if you wanted to get a little fancier, you could also solrize a 2 level hierarchy and display using hierarchial facets, like
       # ["SOURCE", "SOURCE : TITLE"] (e.g. ["Hydrus", "Hydrus : Special Collections"], see (exploded) tags in IdentityMetadataDS#to_solr).
-      title_type = :symbol  # we'll get an _ssim because of the type
-      title_attrs = [:stored_searchable]  # we'll also get a _tesim from this attr
+      title_type = :symbol # we'll get an _ssim because of the type
+      title_attrs = [:stored_searchable] # we'll also get a _tesim from this attr
       relationships.each do |rel_node|
         rel_druid = rel_node['rdf:resource']
-        next unless rel_druid   # TODO: warning here would also be useful
+        next unless rel_druid # TODO: warning here would also be useful
         rel_druid = rel_druid.gsub('info:fedora/', '')
 
         # populate cache if necessary
@@ -63,11 +65,11 @@ module Dor
           begin
             related_obj = Dor.find(rel_druid)
             related_obj_title = get_related_obj_display_title(related_obj, rel_druid)
-            is_from_hydrus = (related_obj && related_obj.tags.include?('Project : Hydrus'))
-            title_hash[rel_druid] = {'related_obj_title' => related_obj_title, 'is_from_hydrus' => is_from_hydrus}
+            is_from_hydrus = (related_obj&.tags&.include?('Project : Hydrus'))
+            title_hash[rel_druid] = { 'related_obj_title' => related_obj_title, 'is_from_hydrus' => is_from_hydrus }
           rescue ActiveFedora::ObjectNotFoundError
             # This may happen if the given APO or Collection does not exist (bad data)
-            title_hash[rel_druid] = {'related_obj_title' => rel_druid, 'is_from_hydrus' => false}
+            title_hash[rel_druid] = { 'related_obj_title' => rel_druid, 'is_from_hydrus' => false }
           end
         end
 

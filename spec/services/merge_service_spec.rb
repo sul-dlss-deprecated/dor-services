@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class MergeableItem < ActiveFedora::Base
@@ -6,7 +8,6 @@ class MergeableItem < ActiveFedora::Base
 end
 
 describe Dor::MergeService do
-
   let(:workspace) { Dir.mktmpdir }
 
   let(:primary_pid)   { 'druid:ab123cd0001' }
@@ -48,7 +49,6 @@ describe Dor::MergeService do
   end
 
   describe '#copy_workspace_content' do
-
     before(:each) do
       primary.contentMetadata.content = <<-XML
       <?xml version="1.0"?>
@@ -104,5 +104,4 @@ describe Dor::MergeService do
       expect(druid_primary.find_content('image_a_2.jp2')).to match(/image_a_2.jp2/)
     end
   end
-
 end

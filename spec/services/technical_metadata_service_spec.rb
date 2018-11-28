@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'moab/stanford'
 
 describe Dor::TechnicalMetadataService do
-
   before(:all) do
     @object_ids = %w(dd116zh0343 du000ps9999 jq937jp0017)
     @druid_tool = {}
@@ -40,7 +41,6 @@ describe Dor::TechnicalMetadataService do
       @new_file_techmd[id] = Dor::TechnicalMetadataService.get_new_technical_metadata(druid, @new_files[id])
       @expected_techmd[id] = Pathname(@druid_tool[id].metadata_dir).join('technicalMetadata.xml').read
     end
-
   end
 
   after(:each) do
@@ -50,7 +50,7 @@ describe Dor::TechnicalMetadataService do
   after(:all) do
     @object_ids = [] if @object_ids.nil?
     @object_ids.each do |id|
-      temp_pathname = Pathname(@druid_tool[id].temp_dir(false) )
+      temp_pathname = Pathname(@druid_tool[id].temp_dir(false))
       temp_pathname.rmtree if temp_pathname.exist?
     end
   end
@@ -64,7 +64,7 @@ describe Dor::TechnicalMetadataService do
       expect(Dor::TechnicalMetadataService).to receive(:get_old_technical_metadata).with(dor_item).and_return(@repo_techmd[id])
       expect(Dor::TechnicalMetadataService).to receive(:get_new_technical_metadata).with(dor_item.pid, an_instance_of(Array)).and_return(@new_file_techmd[id])
       mock_datastream = double('datastream')
-      ds_hash = {'technicalMetadata' => mock_datastream}
+      ds_hash = { 'technicalMetadata' => mock_datastream }
       allow(dor_item).to receive(:datastreams).and_return(ds_hash)
       unless @inventory_differences[id].difference_count == 0
         expect(mock_datastream).to receive(:dsLabel=).with('Technical Metadata')
@@ -146,7 +146,7 @@ describe Dor::TechnicalMetadataService do
     dor_item = double(Dor::Item)
     tech_ds  = double('techmd datastream')
     allow(tech_ds).to receive(:content).and_return('<technicalMetadata/>')
-    datastreams = {'technicalMetadata' => tech_ds}
+    datastreams = { 'technicalMetadata' => tech_ds }
     allow(dor_item).to receive(:datastreams).and_return(datastreams)
 
     allow(tech_ds).to receive(:new?).and_return(true)
@@ -170,12 +170,12 @@ describe Dor::TechnicalMetadataService do
       new_techmd = Dor::TechnicalMetadataService.get_new_technical_metadata("druid:#{id}", @new_files[id])
       file_nodes = Nokogiri::XML(new_techmd).xpath('//file')
       case id
-        when 'dd116zh0343'
-          expect(file_nodes.size).to eq(6)
-        when 'du000ps9999'
-          expect(file_nodes.size).to eq(0)
-        when 'jq937jp0017'
-          expect(file_nodes.size).to eq(2)
+      when 'dd116zh0343'
+        expect(file_nodes.size).to eq(6)
+      when 'du000ps9999'
+        expect(file_nodes.size).to eq(0)
+      when 'jq937jp0017'
+        expect(file_nodes.size).to eq(2)
       end
     end
   end
@@ -191,7 +191,6 @@ describe Dor::TechnicalMetadataService do
         expect(Pathname(filename).read).to eq('')
       end
     end
-
   end
 
   specify 'Dor::TechnicalMetadataService.merge_file_nodes' do
@@ -202,35 +201,35 @@ describe Dor::TechnicalMetadataService do
       deltas = @deltas[id]
       merged_nodes = Dor::TechnicalMetadataService.merge_file_nodes(old_techmd, new_techmd, deltas)
       case id
-        when 'dd116zh0343'
-          expect(new_nodes.keys.sort). to eq([
-              'folder1PuSu/story3m.txt',
-              'folder1PuSu/story5a.txt',
-              'folder2PdSa/story8m.txt',
-              'folder2PdSa/storyAa.txt',
-              'folder3PaSd/storyDm.txt',
-              'folder3PaSd/storyFa.txt'
-          ])
-          expect(merged_nodes.keys.sort).to eq([
-              'folder1PuSu/story1u.txt',
-              'folder1PuSu/story2rr.txt',
-              'folder1PuSu/story3m.txt',
-              'folder1PuSu/story5a.txt',
-              'folder2PdSa/story6u.txt',
-              'folder2PdSa/story7rr.txt',
-              'folder2PdSa/story8m.txt',
-              'folder2PdSa/storyAa.txt',
-              'folder3PaSd/storyBu.txt',
-              'folder3PaSd/storyCrr.txt',
-              'folder3PaSd/storyDm.txt',
-              'folder3PaSd/storyFa.txt'
-          ])
-        when 'du000ps9999'
-          expect(new_nodes.keys.sort). to eq([])
-          expect(merged_nodes.keys.sort).to eq(['a1.txt', 'a4.txt', 'a5.txt', 'a6.txt', 'b1.txt'])
-        when 'jq937jp0017'
-          expect(new_nodes.keys.sort). to eq(['page-1.jpg', 'page-2.jpg'])
-          expect(merged_nodes.keys.sort).to eq(['page-1.jpg', 'page-2.jpg', 'page-3.jpg', 'page-4.jpg', 'title.jpg'])
+      when 'dd116zh0343'
+        expect(new_nodes.keys.sort). to eq([
+                                             'folder1PuSu/story3m.txt',
+                                             'folder1PuSu/story5a.txt',
+                                             'folder2PdSa/story8m.txt',
+                                             'folder2PdSa/storyAa.txt',
+                                             'folder3PaSd/storyDm.txt',
+                                             'folder3PaSd/storyFa.txt'
+                                           ])
+        expect(merged_nodes.keys.sort).to eq([
+                                               'folder1PuSu/story1u.txt',
+                                               'folder1PuSu/story2rr.txt',
+                                               'folder1PuSu/story3m.txt',
+                                               'folder1PuSu/story5a.txt',
+                                               'folder2PdSa/story6u.txt',
+                                               'folder2PdSa/story7rr.txt',
+                                               'folder2PdSa/story8m.txt',
+                                               'folder2PdSa/storyAa.txt',
+                                               'folder3PaSd/storyBu.txt',
+                                               'folder3PaSd/storyCrr.txt',
+                                               'folder3PaSd/storyDm.txt',
+                                               'folder3PaSd/storyFa.txt'
+                                             ])
+      when 'du000ps9999'
+        expect(new_nodes.keys.sort). to eq([])
+        expect(merged_nodes.keys.sort).to eq(['a1.txt', 'a4.txt', 'a5.txt', 'a6.txt', 'b1.txt'])
+      when 'jq937jp0017'
+        expect(new_nodes.keys.sort). to eq(['page-1.jpg', 'page-2.jpg'])
+        expect(merged_nodes.keys.sort).to eq(['page-1.jpg', 'page-2.jpg', 'page-3.jpg', 'page-4.jpg', 'title.jpg'])
       end
     end
   end
@@ -292,7 +291,7 @@ describe Dor::TechnicalMetadataService do
       </jhove:properties>
     </file>
   EOF
-  )
+                                                   )
   end
 
   specify 'Dor::TechnicalMetadataService.build_technical_metadata(druid,merged_nodes)' do
@@ -308,5 +307,4 @@ describe Dor::TechnicalMetadataService do
       expect(final_techmd).to be_equivalent_to expected_techmd
     end
   end
-
 end

@@ -1,10 +1,11 @@
+# frozen_string_literal: true
+
 require 'moab/stanford'
 
 module Dor
   # Note: This should probably live in common-accessioning robot sdr-ingest-transfer
   #  as that is the only robot that uses it.  See also preservable concern.
   class SdrIngestService
-
     # @param [Dor::Item] dor_item The representation of the digital object
     # @param [String] agreement_id  depreciated, included for backward compatability with common-accessoning
     # @return [void] Create the Moab/bag manifests for new version, export data to BagIt bag, kick off the SDR preservation workflow
@@ -167,6 +168,5 @@ module Dor
       raise "#{pathname.basename} not found at #{pathname}" unless pathname.exist?
       true
     end
-
   end
 end

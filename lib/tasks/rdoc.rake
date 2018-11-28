@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 desc 'Generate RDoc'
 task :doc => ['doc:generate']
 
@@ -12,8 +14,8 @@ namespace :doc do
     YARD::Rake::YardocTask.new(:generate) do |yt|
       yt.files = Dir.glob(File.join(project_root, 'lib', '*.rb')) +
                  Dir.glob(File.join(project_root, 'lib', '**', '*.rb')) + ['-'] +
-                [ File.join(project_root, 'README.md') ] +
-                [ File.join(project_root, 'LICENSE') ]
+                 [File.join(project_root, 'README.md')] +
+                 [File.join(project_root, 'LICENSE')]
 
       yt.options = ['--output-dir', doc_destination, '--readme', 'README.md']
     end
@@ -28,5 +30,4 @@ namespace :doc do
   task :clean do
     rm_r doc_destination if File.exist?(doc_destination)
   end
-
 end

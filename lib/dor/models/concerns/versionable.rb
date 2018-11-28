@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dor
   module Versionable
     extend ActiveSupport::Concern
@@ -36,7 +38,7 @@ module Dor
       vmd_upd_info = opts[:vers_md_upd_info]
       return unless vmd_upd_info
       add_event('open', vmd_upd_info[:opening_user_name], "Version #{vmd_ds.current_version_id} opened")
-      vmd_ds.update_current_version({:description => vmd_upd_info[:description], :significance => vmd_upd_info[:significance].to_sym})
+      vmd_ds.update_current_version({ :description => vmd_upd_info[:description], :significance => vmd_upd_info[:significance].to_sym })
       save
     end
 
@@ -63,7 +65,7 @@ module Dor
       raise Dor::Exception, 'Trying to close version on an object not opened for versioning' unless new_version_open?
       raise Dor::Exception, 'accessionWF already created for versioned object' if Dor::Config.workflow.client.get_active_lifecycle('dor', pid, 'submitted')
 
-      Dor::Config.workflow.client.close_version 'dor', pid, opts.fetch(:start_accession, true)  # Default to creating accessionWF when calling close_version
+      Dor::Config.workflow.client.close_version 'dor', pid, opts.fetch(:start_accession, true) # Default to creating accessionWF when calling close_version
     end
 
     # @return [Boolean] true if 'opened' lifecycle is active, false otherwise
@@ -76,8 +78,8 @@ module Dor
     #  States that will allow modification are: has not been submitted for accessioning, has an open version or has sdr-ingest set to hold
     def allows_modification?
       if Dor::Config.workflow.client.get_lifecycle('dor', pid, 'submitted') &&
-          !new_version_open? &&
-          Dor::Config.workflow.client.get_workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer') != 'hold'
+         !new_version_open? &&
+         Dor::Config.workflow.client.get_workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer') != 'hold'
         false
       else
         true

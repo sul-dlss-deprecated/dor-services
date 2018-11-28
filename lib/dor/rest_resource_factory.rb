@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Creates RestClient::Resources for various connections
 module Dor
   class RestResourceFactory

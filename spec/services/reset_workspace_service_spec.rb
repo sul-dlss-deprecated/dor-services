@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Dor::ResetWorkspaceService do
@@ -11,7 +13,6 @@ describe Dor::ResetWorkspaceService do
   end
 
   describe 'reset_workspace_druid_tree' do
-
     before(:each) do
       @druid = 'druid:am111am1111'
       @druid_tree_path = "#{@workspace_root}/am/111/am/1111/am111am1111"
@@ -45,18 +46,17 @@ describe Dor::ResetWorkspaceService do
       Dor::ResetWorkspaceService.reset_workspace_druid_tree(@archived_druid, '3', @workspace_root)
       expect(File.exist?("#{@archived_druid_tree_path}_v2")).to be_truthy
       expect(File.exist?("#{@archived_druid_tree_path}_v3")).to be_truthy
-      expect(File.exist?("#{@archived_druid_tree_path}"   )).to be_falsey
+      expect(File.exist?("#{@archived_druid_tree_path}")).to be_falsey
     end
 
     after(:each) do
       # To reset the environment to its original format
       FileUtils.mv(@druid_tree_path + '_v2', @druid_tree_path) if File.exist?(@druid_tree_path + '_v2')
-      FileUtils.mv( "#{@archived_druid_tree_path}_v3", @archived_druid_tree_path) if File.exist?(@archived_druid_tree_path + '_v3')
+      FileUtils.mv("#{@archived_druid_tree_path}_v3", @archived_druid_tree_path) if File.exist?(@archived_druid_tree_path + '_v3')
     end
   end
 
   describe 'reset_export_bag' do
-
     before(:each) do
       id = 'zb871zd0767'
       @druid = "druid:#{id}"
@@ -69,10 +69,10 @@ describe Dor::ResetWorkspaceService do
 
     it 'should rename the export bags directory and tar files' do
       Dor::ResetWorkspaceService.reset_export_bag(@druid, '2', @export_root)
-      expect(File.exist?("#{@bag_path}_v2"    )).to be_truthy
+      expect(File.exist?("#{@bag_path}_v2")).to be_truthy
       expect(File.exist?("#{@bag_path}_v2.tar")).to be_truthy
-      expect(File.exist?("#{@bag_path}"       )).to be_falsey
-      expect(File.exist?("#{@bag_path}.tar"   )).to be_falsey
+      expect(File.exist?("#{@bag_path}")).to be_falsey
+      expect(File.exist?("#{@bag_path}.tar")).to be_falsey
     end
 
     it 'should throw an error if the renamed bag is already existent' do
@@ -81,7 +81,7 @@ describe Dor::ResetWorkspaceService do
       create_bag_dir(existent_id)
       bag_path = "#{@export_root}/#{existent_id}"
       # puts bag_path
-      FileUtils.mv( bag_path, "#{bag_path}_v2") unless File.exist?(bag_path + '_v2')
+      FileUtils.mv(bag_path, "#{bag_path}_v2") unless File.exist?(bag_path + '_v2')
       expect{ Dor::ResetWorkspaceService.reset_export_bag(existent_druid, '2', @export_root) }.to raise_error(RuntimeError)
     end
 
@@ -102,5 +102,4 @@ describe Dor::ResetWorkspaceService do
     bag_pathname.join('content').mkpath
     bag_pathname.join('temp').mkpath
   end
-
 end

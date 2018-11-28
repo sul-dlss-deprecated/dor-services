@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Dor::ReleasableIndexer do
@@ -15,7 +17,7 @@ RSpec.describe Dor::ReleasableIndexer do
 
     it 'indexes release tags' do
       released_for_info = {
-        'Project' => {'release' => true}, 'test_target' => {'release' => true}, 'test_nontarget' => {'release' => false}
+        'Project' => { 'release' => true }, 'test_target' => { 'release' => true }, 'test_nontarget' => { 'release' => false }
       }
       allow(obj).to receive(:released_for).and_return(released_for_info)
       released_to_field_name = Solrizer.solr_name('released_to', :symbol)

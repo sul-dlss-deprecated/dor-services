@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'moab/stanford'
 
 describe Dor::DigitalStacksService do
-
   before(:each) do
     @content_diff_reports = Pathname('spec').join('fixtures', 'content_diff_reports')
 
@@ -34,9 +35,10 @@ describe Dor::DigitalStacksService do
       content_diff = @jq937jp0017_content_diff
       delete_list = get_delete_list(content_diff)
       expect(delete_list.map { |file| file[0, 2] }).to eq([
-                    [:deleted, 'intro-1.jpg'],
-                    [:deleted, 'intro-2.jpg'],
-                    [:modified, 'page-1.jpg']])
+                                                            [:deleted, 'intro-1.jpg'],
+                                                            [:deleted, 'intro-2.jpg'],
+                                                            [:modified, 'page-1.jpg']
+                                                          ])
       delete_list.each do |change_type, filename, signature|
         expect(Dor::DigitalStacksService).to receive(:delete_file).with(s.join(filename), signature)
       end
@@ -45,9 +47,10 @@ describe Dor::DigitalStacksService do
       content_diff = @ng782rw8378_content_diff
       delete_list = get_delete_list(content_diff)
       expect(delete_list.map { |file| file[0, 2] }).to eq([
-          [:deleted, 'SUB2_b2000_1.bvecs'],
-          [:deleted, 'SUB2_b2000_1.bvals'],
-          [:deleted, 'SUB2_b2000_1.nii.gz']] )
+                                                            [:deleted, 'SUB2_b2000_1.bvecs'],
+                                                            [:deleted, 'SUB2_b2000_1.bvals'],
+                                                            [:deleted, 'SUB2_b2000_1.nii.gz']
+                                                          ])
       delete_list.each do |change_type, filename, signature|
         expect(Dor::DigitalStacksService).to receive(:delete_file).with(s.join(filename), signature)
       end
@@ -74,8 +77,9 @@ describe Dor::DigitalStacksService do
       content_diff = @gj643zf5650_content_diff
       rename_list = get_rename_list(content_diff)
       expect(rename_list.map { |file| file[0, 3] }).to eq([
-            [:renamed, 'page-2.jpg', 'page-2a.jpg'],
-            [:renamed, 'page-4.jpg', 'page-3.jpg']])
+                                                            [:renamed, 'page-2.jpg', 'page-2a.jpg'],
+                                                            [:renamed, 'page-4.jpg', 'page-3.jpg']
+                                                          ])
       rename_list.each do |change_type, oldname, newname, signature|
         tempname = signature.checksums.values.last
         expect(Dor::DigitalStacksService).to receive(:rename_file).with(s.join(oldname), s.join(tempname), signature)
@@ -86,13 +90,14 @@ describe Dor::DigitalStacksService do
       content_diff = @jq937jp0017_content_diff
       rename_list = get_rename_list(content_diff)
       expect(rename_list.map { |file| file[0, 3] }).to eq([])
-      expect{Dor::DigitalStacksService.rename_in_stacks(s, content_diff)}.not_to raise_error
+      expect{ Dor::DigitalStacksService.rename_in_stacks(s, content_diff) }.not_to raise_error
 
       content_diff = @ng782rw8378_content_diff
       rename_list = get_rename_list(content_diff)
       expect(rename_list.map { |file| file[0, 3] }).to eq([
-            [:renamed, 'SUB2_b2000_2.nii.gz', 'SUB2_b2000_1.nii.gz'],
-            [:renamed, 'SUB2_b2000_2.bvecs', 'SUB2_b2000_1.bvecs']])
+                                                            [:renamed, 'SUB2_b2000_2.nii.gz', 'SUB2_b2000_1.nii.gz'],
+                                                            [:renamed, 'SUB2_b2000_2.bvecs', 'SUB2_b2000_1.bvecs']
+                                                          ])
       rename_list.each do |change_type, oldname, newname, signature|
         tempname = signature.checksums.values.last
         expect(Dor::DigitalStacksService).to receive(:rename_file).with(s.join(oldname), s.join(tempname), signature)
@@ -119,7 +124,7 @@ describe Dor::DigitalStacksService do
 
       content_diff = @gj643zf5650_content_diff
       shelve_list = get_shelve_list(content_diff)
-      expect(shelve_list.map { |file| file[0, 2] }).to eq([ [:added, 'page-4.jpg'] ])
+      expect(shelve_list.map { |file| file[0, 2] }).to eq([[:added, 'page-4.jpg']])
       shelve_list.each do |change_type, filename, signature|
         expect(Dor::DigitalStacksService).to receive(:copy_file).with(w.join(filename), s.join(filename), signature)
       end
@@ -127,7 +132,7 @@ describe Dor::DigitalStacksService do
 
       content_diff = @jq937jp0017_content_diff
       shelve_list = get_shelve_list(content_diff)
-      expect(shelve_list.map { |file| file[0, 2] }).to eq([ [ :modified, 'page-1.jpg' ] ])
+      expect(shelve_list.map { |file| file[0, 2] }).to eq([[:modified, 'page-1.jpg']])
       shelve_list.each do |change_type, filename, signature|
         expect(Dor::DigitalStacksService).to receive(:copy_file).with(w.join(filename), s.join(filename), signature)
       end
@@ -136,9 +141,10 @@ describe Dor::DigitalStacksService do
       content_diff = @ng782rw8378_content_diff
       shelve_list = get_shelve_list(content_diff)
       expect(shelve_list.map { |file| file[0, 2] }).to eq([
-            [:added, 'SUB2_b2000_2.bvecs'],
-            [:added, 'SUB2_b2000_2.nii.gz'],
-            [:copyadded, 'SUB2_b2000_1.bvals']])
+                                                            [:added, 'SUB2_b2000_2.bvecs'],
+                                                            [:added, 'SUB2_b2000_2.nii.gz'],
+                                                            [:copyadded, 'SUB2_b2000_1.bvals']
+                                                          ])
       shelve_list.each do |change_type, filename, signature|
         expect(Dor::DigitalStacksService).to receive(:copy_file).with(w.join(filename), s.join(filename), signature)
       end
@@ -158,11 +164,9 @@ describe Dor::DigitalStacksService do
     end
     shelve_list
   end
-
 end
 
 describe 'file operations' do
-
   before(:all) do
     @tmpdir = Pathname(Dir.mktmpdir('stacks'))
   end
@@ -235,19 +239,17 @@ describe 'file operations' do
       expect(Dor::DigitalStacksService.copy_file(workspace_pathname, stacks_pathname, moab_signature)).to be_truthy
     end
   end
-
 end
 
 describe 'deprecated Dor::DigitalStacksService' do
-
   let(:purl_root) { Dir.mktmpdir }
   let(:stacks_root) { Dir.mktmpdir }
   let(:workspace_root) { Dir.mktmpdir }
 
   before(:each) do
-    Dor::Config.push! {|c| c.stacks.local_document_cache_root purl_root}
-    Dor::Config.push! {|c| c.stacks.local_stacks_root stacks_root}
-    Dor::Config.push! {|c| c.stacks.local_workspace_root workspace_root}
+    Dor::Config.push! { |c| c.stacks.local_document_cache_root purl_root }
+    Dor::Config.push! { |c| c.stacks.local_stacks_root stacks_root }
+    Dor::Config.push! { |c| c.stacks.local_workspace_root workspace_root }
   end
 
   after(:each) do
@@ -271,12 +273,11 @@ describe 'deprecated Dor::DigitalStacksService' do
     it 'prunes the stacks directory' do
       dr = DruidTools::StacksDruid.new 'druid:aa123bb4567', stacks_root
       item_root = dr.path(nil, true)
-      File.open(File.join(item_root, 'somefile'), 'w') {|f| f.write 'junk'}
+      File.open(File.join(item_root, 'somefile'), 'w') { |f| f.write 'junk' }
       Dor::DigitalStacksService.prune_stacks_dir 'druid:aa123bb4567'
       item_pathname = Pathname item_root
       expect(File).to_not exist(item_pathname)
       expect(File).to_not exist(item_pathname.parent)
     end
   end
-
 end

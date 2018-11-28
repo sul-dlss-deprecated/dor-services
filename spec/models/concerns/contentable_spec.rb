@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'net/sftp'
 
@@ -19,7 +21,6 @@ class SpecNode
 end
 
 describe Dor::Contentable do
-
   before(:each) {
     stub_config
     Dor.configure do
@@ -82,7 +83,7 @@ describe Dor::Contentable do
       end
     end
     it 'should raise an exception if the resource doesnt exist' do
-      expect{@item.add_file(@file, 'abc0001', 'ab123cd4567_descMetadata.xml')}.to raise_error(RuntimeError)
+      expect{ @item.add_file(@file, 'abc0001', 'ab123cd4567_descMetadata.xml') }.to raise_error(RuntimeError)
     end
 
     it 'should work ok if the object was set up using the old directory structure' do
@@ -123,7 +124,7 @@ describe Dor::Contentable do
       end
     end
     it 'should raise an exception if there isnt a matching file record in the metadata' do
-      expect{ @item.replace_file(@file, 'abcdab123cd4567_00_0001.tif')}.to raise_error(StandardError)
+      expect{ @item.replace_file(@file, 'abcdab123cd4567_00_0001.tif') }.to raise_error(StandardError)
     end
   end
   describe 'get_preserved_file' do
@@ -173,7 +174,6 @@ describe Dor::Contentable do
   end
 
   describe '#decommission' do
-
     let(:dummy_obj) {
       node = SpecNode.new
       allow(node).to receive(:rels_ext).and_return(double('rels_ext', :content_will_change! => true, :content => ''))

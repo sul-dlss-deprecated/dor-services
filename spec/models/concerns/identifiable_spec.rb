@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class IdentifiableItem < ActiveFedora::Base
@@ -28,9 +30,9 @@ describe Dor::Identifiable do
 
   describe 'source_id= (AKA set_source_id)' do
     it 'raises on unsalvageable values' do
-      expect{item.source_id = 'NotEnoughColons'}.to raise_error ArgumentError
-      expect{item.source_id = ':EmptyFirstPart'}.to raise_error ArgumentError
-      expect{item.source_id = 'WhitespaceSecondPart:   '}.to raise_error ArgumentError
+      expect{ item.source_id = 'NotEnoughColons' }.to raise_error ArgumentError
+      expect{ item.source_id = ':EmptyFirstPart' }.to raise_error ArgumentError
+      expect{ item.source_id = 'WhitespaceSecondPart:   ' }.to raise_error ArgumentError
     end
     it 'should set the source_id' do
       item.source_id = 'fake:sourceid'
@@ -70,7 +72,7 @@ describe Dor::Identifiable do
     it 'should raise an exception if a record of that type already exists' do
       item.add_other_Id('mdtoolkit', 'someid123')
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someid123')
-      expect{item.add_other_Id('mdtoolkit', 'someid123')}.to raise_error(RuntimeError)
+      expect{ item.add_other_Id('mdtoolkit', 'someid123') }.to raise_error(RuntimeError)
     end
   end
 
@@ -116,7 +118,7 @@ describe Dor::Identifiable do
       expect(item.identityMetadata.otherId('catkey').length).to eq(1)
       expect(item.catkey).to eq(current_catkey)
       expect(item.previous_catkeys.empty?).to be_truthy
-      item.catkey=new_catkey
+      item.catkey = new_catkey
       expect(item.identityMetadata.otherId('catkey').length).to eq(1)
       expect(item.catkey).to eq(new_catkey)
       expect(item.previous_catkeys.length).to eq(1)
@@ -127,7 +129,7 @@ describe Dor::Identifiable do
       expect(item.identityMetadata.otherId('catkey').length).to eq(0)
       expect(item.catkey).to be_nil
       expect(item.previous_catkeys.empty?).to be_truthy
-      item.catkey=new_catkey
+      item.catkey = new_catkey
       expect(item.identityMetadata.otherId('catkey').length).to eq(1)
       expect(item.catkey).to eq(new_catkey)
       expect(item.previous_catkeys.empty?).to be_truthy
@@ -139,17 +141,17 @@ describe Dor::Identifiable do
       item.identityMetadata.add_otherId("previous_catkey:123") # add a couple previous catkeys
       item.identityMetadata.add_otherId("previous_catkey:456")
       expect(item.previous_catkeys.length).to eq(2)
-      item.catkey=new_catkey
+      item.catkey = new_catkey
       expect(item.identityMetadata.otherId('catkey').length).to eq(1)
       expect(item.catkey).to eq(new_catkey)
       expect(item.previous_catkeys.length).to eq(2) # still two entries, nothing changed in the history
-      expect(item.previous_catkeys).to eq(['123','456'])
+      expect(item.previous_catkeys).to eq(['123', '456'])
     end
     it 'should remove the catkey from the XML when it is set to blank, but store the previously set value in the history' do
       expect(item.identityMetadata.otherId('catkey').length).to eq(1)
       expect(item.catkey).to eq(current_catkey)
       expect(item.previous_catkeys.empty?).to be_truthy
-      item.catkey=''
+      item.catkey = ''
       expect(item.identityMetadata.otherId('catkey').length).to eq(0)
       expect(item.catkey).to be_nil
       expect(item.previous_catkeys.length).to eq(1)
@@ -162,17 +164,17 @@ describe Dor::Identifiable do
       expect(item.catkey).to eq(current_catkey)
       expect(item.previous_catkeys.length).to eq(1)
       expect(item.previous_catkeys.first).to eq(previous_catkey)
-      item.catkey=new_catkey
+      item.catkey = new_catkey
       expect(item.identityMetadata.otherId('catkey').length).to eq(1)
       expect(item.catkey).to eq(new_catkey)
       expect(item.previous_catkeys.length).to eq(2)
-      expect(item.previous_catkeys).to eq([previous_catkey,current_catkey])
+      expect(item.previous_catkeys).to eq([previous_catkey, current_catkey])
     end
     it 'should not do anything if there is a previous catkey and you set the catkey to the same value' do
       expect(item.identityMetadata.otherId('catkey').length).to eq(1)
       expect(item.catkey).to eq(current_catkey)
-      expect(item.previous_catkeys.empty?).to be_truthy  # no previous catkeys
-      item.catkey=current_catkey
+      expect(item.previous_catkeys.empty?).to be_truthy # no previous catkeys
+      item.catkey = current_catkey
       expect(item.identityMetadata.otherId('catkey').length).to eq(1)
       expect(item.catkey).to eq(current_catkey)
       expect(item.previous_catkeys.empty?).to be_truthy # still empty, we haven't updated the previous catkey since it was the same
@@ -191,7 +193,7 @@ describe Dor::Identifiable do
     it 'should raise an exception if there is an existing tag like it' do
       item.add_tag('sometag:someval')
       expect(item.identityMetadata.tags.include?('sometag : someval')).to be_truthy
-      expect {item.add_tag('sometag: someval')}.to raise_error(RuntimeError)
+      expect { item.add_tag('sometag: someval') }.to raise_error(RuntimeError)
     end
   end
 
@@ -266,12 +268,12 @@ describe Dor::Identifiable do
     it 'should throw an exception if tag has too few elements' do
       tag_str = 'just one part'
       expected_err_msg = "Invalid tag structure: tag '#{tag_str}' must have at least 2 elements"
-      expect {item.validate_and_normalize_tag(tag_str, [])}.to raise_error(ArgumentError, expected_err_msg)
+      expect { item.validate_and_normalize_tag(tag_str, []) }.to raise_error(ArgumentError, expected_err_msg)
     end
     it 'should throw an exception if tag has empty elements' do
       tag_str = 'test part1 :  : test part3'
       expected_err_msg = "Invalid tag structure: tag '#{tag_str}' contains empty elements"
-      expect {item.validate_and_normalize_tag(tag_str, [])}.to raise_error(ArgumentError, expected_err_msg)
+      expect { item.validate_and_normalize_tag(tag_str, []) }.to raise_error(ArgumentError, expected_err_msg)
     end
     it 'should throw an exception if tag is the same as an existing tag' do
       # note that tag_str should match existing_tags[1] because the comparison should happen after normalization, and it should
@@ -279,7 +281,7 @@ describe Dor::Identifiable do
       tag_str = 'another:multi:part:test'
       existing_tags = ['test part1 : test part2', 'Another : Multi : Part : Test', 'one : last_tag']
       expected_err_msg = "An existing tag (#{existing_tags[1]}) is the same, consider using update_tag?"
-      expect {item.validate_and_normalize_tag(tag_str, existing_tags)}.to raise_error(StandardError, expected_err_msg)
+      expect { item.validate_and_normalize_tag(tag_str, existing_tags) }.to raise_error(StandardError, expected_err_msg)
     end
   end
 

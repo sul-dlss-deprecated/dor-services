@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'stanford/mods/normalizer'
 module Dor
   class DefaultObjectRightsDS < ActiveFedora::OmDatastream
@@ -90,10 +92,10 @@ module Dor
     def update_term!(term, val)
       ng_xml_will_change!
       if val.blank?
-        update_values({ [ term ] => nil })
+        update_values({ [term] => nil })
       else
         initialize_term! term
-        update_values({ [ term ] => val })
+        update_values({ [term] => val })
       end
       normalize!
     end
@@ -124,11 +126,11 @@ module Dor
         # cleanup ordering is important here
         doc.xpath('//machine/text()').each { |node| node.content = node.content.strip }
         doc.xpath('//human')
-          .tap { |node_set| norm.clean_linefeeds(node_set) }
-          .each do |node|
-            norm.trim_text(node)
-            norm.remove_empty_nodes(node)
-          end
+           .tap { |node_set| norm.clean_linefeeds(node_set) }
+           .each do |node|
+          norm.trim_text(node)
+          norm.remove_empty_nodes(node)
+        end
         doc.xpath('/rightsMetadata/copyright').each { |node| norm.remove_empty_nodes(node) }
         doc.xpath('/rightsMetadata/use').each { |node| norm.remove_empty_nodes(node) }
       end

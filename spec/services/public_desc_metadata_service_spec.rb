@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Dor::PublicDescMetadataService do
@@ -5,10 +7,10 @@ RSpec.describe Dor::PublicDescMetadataService do
   after(:each)  { unstub_config }
 
   let(:obj) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
-  
-  describe '#to_xml' do
 
-    let(:rights_xml) { <<-XML
+  describe '#to_xml' do
+    let(:rights_xml) {
+      <<-XML
       <rightsMetadata>
         <copyright>
           <human type="copyright">
@@ -83,17 +85,17 @@ RSpec.describe Dor::PublicDescMetadataService do
       collections      = doc.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
       collection_title = doc.search('//mods:relatedItem/mods:titleInfo/mods:title')
       collection_uri   = doc.search('//mods:relatedItem/mods:location/mods:url')
-      expect(collections.length     ).to eq 1
+      expect(collections.length).to eq 1
       expect(collection_title.length).to eq 1
-      expect(collection_uri.length  ).to eq 1
+      expect(collection_uri.length).to eq 1
       expect(collection_title.first.content).to eq 'The complete works of Henry George'
-      expect(collection_uri.first.content  ).to eq 'https://purl.stanford.edu/zb871zd0767'
+      expect(collection_uri.first.content).to eq 'https://purl.stanford.edu/zb871zd0767'
       %w(useAndReproduction copyright license).each{ |term|
         expect(doc.xpath('//mods:accessCondition[@type="' + term + '"]').size).to eq 1
       }
       expect(doc.xpath('//mods:accessCondition[@type="useAndReproduction"]').text).to match(/yada/)
-      expect(doc.xpath('//mods:accessCondition[@type="copyright"]'         ).text).to match(/Property rights reside with/)
-      expect(doc.xpath('//mods:accessCondition[@type="license"]'           ).text).to match(/This work is licensed under/)
+      expect(doc.xpath('//mods:accessCondition[@type="copyright"]').text).to match(/Property rights reside with/)
+      expect(doc.xpath('//mods:accessCondition[@type="license"]').text).to match(/This work is licensed under/)
     end
 
     it 'handles mods as the default namespace' do
@@ -108,22 +110,22 @@ RSpec.describe Dor::PublicDescMetadataService do
       collections      = doc.search('//xmlns:relatedItem/xmlns:typeOfResource[@collection=\'yes\']')
       collection_title = doc.search('//xmlns:relatedItem/xmlns:titleInfo/xmlns:title')
       collection_uri   = doc.search('//xmlns:relatedItem/xmlns:location/xmlns:url')
-      expect(collections.length     ).to eq 1
+      expect(collections.length).to eq 1
       expect(collection_title.length).to eq 1
-      expect(collection_uri.length  ).to eq 1
+      expect(collection_uri.length).to eq 1
       expect(collection_title.first.content).to eq 'The complete works of Henry George'
-      expect(collection_uri.first.content  ).to eq 'https://purl.stanford.edu/zb871zd0767'
+      expect(collection_uri.first.content).to eq 'https://purl.stanford.edu/zb871zd0767'
       %w(useAndReproduction copyright license).each{ |term|
         expect(doc.xpath('//xmlns:accessCondition[@type="' + term + '"]').size).to eq 1
       }
       expect(doc.xpath('//xmlns:accessCondition[@type="useAndReproduction"]').text).to match(/yada/)
-      expect(doc.xpath('//xmlns:accessCondition[@type="copyright"]'         ).text).to match(/Property rights reside with/)
-      expect(doc.xpath('//xmlns:accessCondition[@type="license"]'           ).text).to match(/This work is licensed under/)
+      expect(doc.xpath('//xmlns:accessCondition[@type="copyright"]').text).to match(/Property rights reside with/)
+      expect(doc.xpath('//xmlns:accessCondition[@type="license"]').text).to match(/This work is licensed under/)
     end
 
     describe '#add_access_conditions' do
-
-      let(:rights_xml) { <<-XML
+      let(:rights_xml) {
+        <<-XML
         <rightsMetadata>
           <copyright>
             <human type="copyright">
@@ -227,8 +229,8 @@ RSpec.describe Dor::PublicDescMetadataService do
       end
 
       describe 'does not add empty mods nodes when the rightsMetadata has empty' do
-
-        let(:blank_rights_xml) { <<-XML
+        let(:blank_rights_xml) {
+          <<-XML
           <rightsMetadata>
             <copyright>
               <human type="copyright"></human>
@@ -259,7 +261,7 @@ RSpec.describe Dor::PublicDescMetadataService do
           b.datastreams['rightsMetadata'].content = blank_rights_xml
           b
         }
-        
+
         let(:public_mods) { Nokogiri::XML(blank_obj.generate_public_desc_md) }
 
         it 'useAndReproduction nodes' do
@@ -274,7 +276,6 @@ RSpec.describe Dor::PublicDescMetadataService do
           expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq 0
         end
       end
-
     end
     describe 'add_collection_reference' do
       let(:collection) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
@@ -294,7 +295,6 @@ RSpec.describe Dor::PublicDescMetadataService do
         relationships = Nokogiri::XML(relationships_xml)
         allow(obj).to receive(:public_relationships).and_return(relationships)
 
-        
         allow(Dor).to receive(:find) do |pid|
           pid == 'druid:ab123cd4567' ? obj : collection
         end
@@ -309,7 +309,7 @@ RSpec.describe Dor::PublicDescMetadataService do
           obj.datastreams['descMetadata'].ng_xml = Nokogiri::XML(read_fixture('ex2_related_mods.xml'))
           collection.datastreams['descMetadata'].ng_xml = Nokogiri::XML(read_fixture('ex1_mods.xml'))
         end
-        
+
         let(:public_mods) { Nokogiri::XML(obj.generate_public_desc_md) }
 
         context 'if the item is a member of a collection' do
@@ -322,11 +322,11 @@ RSpec.describe Dor::PublicDescMetadataService do
             collections      = public_mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
             collection_title = public_mods.search('//mods:relatedItem/mods:titleInfo/mods:title')
             collection_uri   = public_mods.search('//mods:relatedItem/mods:location/mods:url')
-            expect(collections.length     ).to eq 1
+            expect(collections.length).to eq 1
             expect(collection_title.length).to eq 1
-            expect(collection_uri.length  ).to eq 1
+            expect(collection_uri.length).to eq 1
             expect(collection_title.first.content).to eq 'The complete works of Henry George'
-            expect(collection_uri.first.content  ).to eq 'https://purl.stanford.edu/zb871zd0767'
+            expect(collection_uri.first.content).to eq 'https://purl.stanford.edu/zb871zd0767'
           end
         end
 
@@ -334,11 +334,11 @@ RSpec.describe Dor::PublicDescMetadataService do
           collections      = public_mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
           collection_title = public_mods.search('//mods:relatedItem/mods:titleInfo/mods:title')
           collection_uri   = public_mods.search('//mods:relatedItem/mods:location/mods:url')
-          expect(collections.length     ).to eq 1
+          expect(collections.length).to eq 1
           expect(collection_title.length).to eq 1
-          expect(collection_uri.length  ).to eq 1
+          expect(collection_uri.length).to eq 1
           expect(collection_title.first.content).to eq 'The complete works of Henry George'
-          expect(collection_uri.first.content  ).to eq 'https://purl.stanford.edu/zb871zd0767'
+          expect(collection_uri.first.content).to eq 'https://purl.stanford.edu/zb871zd0767'
         end
 
         context 'if there is no collection relationship' do
@@ -360,12 +360,12 @@ RSpec.describe Dor::PublicDescMetadataService do
           it 'does not touch an existing relatedItem if there is no collection relationship' do
             collections      = public_mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
             collection_title = public_mods.search('//mods:relatedItem/mods:titleInfo/mods:title')
-            expect(collections.length     ).to eq 1
+            expect(collections.length).to eq 1
             expect(collection_title.length).to eq 1
             expect(collection_title.first.content).to eq 'Buckminster Fuller papers, 1920-1983'
           end
         end
-        
+
         context 'if the referenced collection does not exist' do
           let(:relationships) do
             Nokogiri::XML(<<-XML)
@@ -385,14 +385,13 @@ RSpec.describe Dor::PublicDescMetadataService do
             allow(Dor).to receive(:find).with(non_existent_druid).and_raise(ActiveFedora::ObjectNotFoundError)
           end
 
-
           it 'does not add relatedItem and does not error out if the referenced collection does not exist' do
             collections      = public_mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
             collection_title = public_mods.search('//mods:relatedItem/mods:titleInfo/mods:title')
             collection_uri   = public_mods.search('//mods:relatedItem/mods:location/mods:url')
-            expect(collections.length     ).to eq 0
+            expect(collections.length).to eq 0
             expect(collection_title.length).to eq 0
-            expect(collection_uri.length  ).to eq 0
+            expect(collection_uri.length).to eq 0
           end
         end
       end

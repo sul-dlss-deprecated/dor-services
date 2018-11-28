@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module Dor
   module Describable
     extend ActiveSupport::Concern
 
     MODS_TO_DC_XSLT = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/mods2dc.xslt")))
-    XMLNS_OAI_DC = 'http://www.openarchives.org/OAI/2.0/oai_dc/'.freeze
-    XMLNS_DC = 'http://purl.org/dc/elements/1.1/'.freeze
+    XMLNS_OAI_DC = 'http://www.openarchives.org/OAI/2.0/oai_dc/'
+    XMLNS_DC = 'http://purl.org/dc/elements/1.1/'
 
     class CrosswalkError < Exception; end
 

@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 require 'pathname'
 
 module Dor
   # Remove all traces of the object's data files from the workspace and export areas
   class CleanupResetService
-
     # @param [String] druid The identifier for the object whose reset data is to be removed
     # @return [void] remove copy of the reset data that was exported to preservation core
     def self.cleanup_by_reset_druid(druid)

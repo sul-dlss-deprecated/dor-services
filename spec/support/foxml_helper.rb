@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def item_from_foxml(foxml, item_class = Dor::Abstract)
   foxml = Nokogiri::XML(foxml) unless foxml.is_a?(Nokogiri::XML::Node)
   xml_streams = foxml.xpath('//foxml:datastream')
@@ -10,10 +12,10 @@ def item_from_foxml(foxml, item_class = Dor::Abstract)
   xml_streams.each do |stream|
     begin
       xml_content = if stream.xpath('.//foxml:xmlContent/*').any?
-        stream.xpath('.//foxml:xmlContent/*').first
-      elsif stream.xpath('.//foxml:binaryContent').any?
-        Nokogiri::XML(Base64.decode64(stream.xpath('.//foxml:binaryContent').first.text))
-      end
+                      stream.xpath('.//foxml:xmlContent/*').first
+                    elsif stream.xpath('.//foxml:binaryContent').any?
+                      Nokogiri::XML(Base64.decode64(stream.xpath('.//foxml:binaryContent').first.text))
+                    end
 
       content = xml_content.to_xml
       dsid = stream['ID']
@@ -44,11 +46,11 @@ def item_from_foxml(foxml, item_class = Dor::Abstract)
     #   end
     # end
     ds.instance_eval do
-      def save ; true ; end
+      def save; true; end
     end
   end
   result.instance_eval do
-    def save ; true ; end
+    def save; true; end
   end
   result
 end

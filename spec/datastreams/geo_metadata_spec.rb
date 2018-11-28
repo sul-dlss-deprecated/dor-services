@@ -1,10 +1,10 @@
 # encoding: UTF-8
+# frozen_string_literal: true
 
 require 'spec_helper'
 require 'nokogiri'
 
 describe Dor::GeoMetadataDS do
-
   before :each do
     stub_config
     @doc = {}
@@ -16,7 +16,6 @@ describe Dor::GeoMetadataDS do
   end
 
   context 'Exports' do
-
     it '#to_bbox' do
       @test_keys.each do |k|
         expect(@doc[k]).to be_a(Dor::GeoMetadataDS)

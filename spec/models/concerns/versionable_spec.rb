@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class VersionableItem < ActiveFedora::Base
@@ -6,7 +8,6 @@ class VersionableItem < ActiveFedora::Base
 end
 
 describe Dor::Versionable do
-
   let(:dr) { 'ab12cd3456' }
 
   let(:obj) {
@@ -16,14 +17,13 @@ describe Dor::Versionable do
   }
 
   let(:vmd_ds) { obj.datastreams['versionMetadata'] }
-  let(:ev_ds ) { obj.datastreams['events'] }
+  let(:ev_ds) { obj.datastreams['events'] }
 
   before(:each) do
     allow(obj.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)
   end
 
   describe '#open_new_version' do
-
     context 'normal behavior' do
       before(:each) do
         expect(Dor::Config.workflow.client).to receive(:get_lifecycle).with('dor', dr, 'accessioned').and_return(true)
@@ -59,16 +59,16 @@ describe Dor::Versionable do
       end
 
       it 'includes vers_md_upd_info' do
-        vers_md_upd_info = {:significance => 'real_major', :description => 'same as it ever was', :opening_user_name => 'sunetid'}
+        vers_md_upd_info = { :significance => 'real_major', :description => 'same as it ever was', :opening_user_name => 'sunetid' }
         cur_vers = '2'
         allow(vmd_ds).to receive(:current_version).and_return(cur_vers)
         allow(obj).to receive(:save)
 
         expect(ev_ds).to receive(:add_event).with('open', vers_md_upd_info[:opening_user_name], "Version #{cur_vers} opened")
-        expect(vmd_ds).to receive(:update_current_version).with({:description => vers_md_upd_info[:description], :significance => vers_md_upd_info[:significance].to_sym})
+        expect(vmd_ds).to receive(:update_current_version).with({ :description => vers_md_upd_info[:description], :significance => vers_md_upd_info[:significance].to_sym })
         expect(obj).to receive(:save)
 
-        obj.open_new_version({:vers_md_upd_info => vers_md_upd_info})
+        obj.open_new_version({ :vers_md_upd_info => vers_md_upd_info })
       end
 
       it "doesn't include vers_md_upd_info" do
@@ -106,7 +106,6 @@ describe Dor::Versionable do
         expect(Sdr::Client).to receive(:current_version).and_return(3)
         expect { obj.open_new_version }.to raise_error(Dor::Exception, 'Cannot sync to a version greater than current: 1, requested 3')
       end
-
     end
   end
 
@@ -134,7 +133,7 @@ describe Dor::Versionable do
       expect(vmd_ds).to receive(:save)
       obj.close_version :description => 'closing text', :significance => :major
 
-      expect(vmd_ds.to_xml).to be_equivalent_to( <<-XML
+      expect(vmd_ds.to_xml).to be_equivalent_to(<<-XML
         <versionMetadata objectId="druid:ab123cd4567">
           <version versionId="1" tag="1.0.0">
             <description>Initial Version</description>
@@ -144,7 +143,7 @@ describe Dor::Versionable do
           </version>
         </versionMetadata>
       XML
-      )
+                                               )
     end
 
     context 'error handling' do
@@ -182,5 +181,4 @@ describe Dor::Versionable do
       expect(obj.allows_modification?).to be_truthy
     end
   end
-
 end
