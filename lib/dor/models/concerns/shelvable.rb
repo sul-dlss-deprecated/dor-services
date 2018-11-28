@@ -39,6 +39,7 @@ module Dor
       deltas = content_diff.file_deltas
       filelist = deltas[:modified] + deltas[:added] + deltas[:copyadded].collect { |old, new| new }
       return nil if filelist.empty?
+
       content_pathname = Pathname(workspace_druid.find_filelist_parent('content', filelist))
       content_pathname
     end
@@ -50,6 +51,7 @@ module Dor
       unless contentMetadataDS.nil? || contentMetadataDS.stacks.length == 0
         stacks_location = contentMetadataDS.stacks[0]
         return stacks_location if stacks_location.start_with? '/' # Absolute stacks path
+
         raise 'stacks attribute for item: ' + id + ' contentMetadata should start with /. The current value is ' + stacks_location
       end
       Config.stacks.local_stacks_root # Default stacks

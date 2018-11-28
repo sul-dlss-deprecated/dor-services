@@ -13,10 +13,12 @@ module Dor
       # @raise [Dor::DuplicateIdError]
       def unduplicated_pid(pid = nil)
         return Dor::SuriService.mint_id unless pid
+
         existing_pid = SearchService.query_by_id(pid).first
         unless existing_pid.nil?
           raise Dor::DuplicateIdError.new(existing_pid), "An object with the PID #{pid} has already been registered."
         end
+
         pid
       end
 
@@ -28,6 +30,7 @@ module Dor
         unless SearchService.query_by_id("#{source_id_string}").first.nil?
           raise Dor::DuplicateIdError.new(source_id_string), "An object with the source ID '#{source_id_string}' has already been registered."
         end
+
         source_id_string
       end
 
@@ -50,9 +53,10 @@ module Dor
           raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{name}.register_object" unless params[required_param]
         end
         metadata_source = params[:metadata_source]
-        if params[:label].length < 1 && (metadata_source == 'label' || metadata_source == 'none')
+        if params[:label].length < 1 && %w[label none].include?(metadata_source)
           raise Dor::ParameterError, "label cannot be empty to call #{name}.register_object"
         end
+
         object_type = params[:object_type]
         item_class = Dor.registered_classes[object_type]
         raise Dor::ParameterError, "Unknown item type: '#{object_type}'" if item_class.nil?
@@ -157,21 +161,21 @@ module Dor
         end
 
         dor_params = {
-          :pid                => params[:pid],
-          :admin_policy       => params[:admin_policy],
-          :content_model      => params[:model],
-          :label              => params[:label],
-          :object_type        => params[:object_type],
-          :other_ids          => ids_to_hash(other_ids),
-          :parent             => params[:parent],
-          :source_id          => ids_to_hash(params[:source_id]),
-          :tags               => params[:tag] || [],
-          :seed_datastream    => params[:seed_datastream],
-          :initiate_workflow  => Array(params[:initiate_workflow]) + Array(params[:workflow_id]),
-          :rights             => params[:rights],
-          :metadata_source    => params[:metadata_source],
-          :collection         => params[:collection],
-          :workflow_priority  => params[:workflow_priority]
+          :pid => params[:pid],
+          :admin_policy => params[:admin_policy],
+          :content_model => params[:model],
+          :label => params[:label],
+          :object_type => params[:object_type],
+          :other_ids => ids_to_hash(other_ids),
+          :parent => params[:parent],
+          :source_id => ids_to_hash(params[:source_id]),
+          :tags => params[:tag] || [],
+          :seed_datastream => params[:seed_datastream],
+          :initiate_workflow => Array(params[:initiate_workflow]) + Array(params[:workflow_id]),
+          :rights => params[:rights],
+          :metadata_source => params[:metadata_source],
+          :collection => params[:collection],
+          :workflow_priority => params[:workflow_priority]
         }
         dor_params.delete_if { |k, v| v.nil? }
 
@@ -185,6 +189,7 @@ module Dor
 
       def ids_to_hash(ids)
         return nil if ids.nil?
+
         Hash[Array(ids).map { |id| id.split(':', 2) }]
       end
     end

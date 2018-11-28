@@ -20,29 +20,29 @@ module Dor
     # TODO: need some way to do versioning.  for instance, what happens when a new version of an existing license comes
     # out, since it will presumably use the same license code, but a different title and URI?
     CREATIVE_COMMONS_USE_LICENSES = {
-      'by' =>       { :human_readable => 'Attribution 3.0 Unported',
-                      :uri => 'https://creativecommons.org/licenses/by/3.0/' },
-      'by-sa' =>    { :human_readable => 'Attribution Share Alike 3.0 Unported',
-                      :uri => 'https://creativecommons.org/licenses/by-sa/3.0/' },
-      'by_sa' =>    { :human_readable => 'Attribution Share Alike 3.0 Unported',
-                      :uri => 'https://creativecommons.org/licenses/by-sa/3.0/',
-                      :deprecation_warning => 'license code "by_sa" was a typo in argo, prefer "by-sa"' },
-      'by-nd' =>    { :human_readable => 'Attribution No Derivatives 3.0 Unported',
-                      :uri => 'https://creativecommons.org/licenses/by-nd/3.0/' },
-      'by-nc' =>    { :human_readable => 'Attribution Non-Commercial 3.0 Unported',
-                      :uri => 'https://creativecommons.org/licenses/by-nc/3.0/' },
+      'by' => { :human_readable => 'Attribution 3.0 Unported',
+                :uri => 'https://creativecommons.org/licenses/by/3.0/' },
+      'by-sa' => { :human_readable => 'Attribution Share Alike 3.0 Unported',
+                   :uri => 'https://creativecommons.org/licenses/by-sa/3.0/' },
+      'by_sa' => { :human_readable => 'Attribution Share Alike 3.0 Unported',
+                   :uri => 'https://creativecommons.org/licenses/by-sa/3.0/',
+                   :deprecation_warning => 'license code "by_sa" was a typo in argo, prefer "by-sa"' },
+      'by-nd' => { :human_readable => 'Attribution No Derivatives 3.0 Unported',
+                   :uri => 'https://creativecommons.org/licenses/by-nd/3.0/' },
+      'by-nc' => { :human_readable => 'Attribution Non-Commercial 3.0 Unported',
+                   :uri => 'https://creativecommons.org/licenses/by-nc/3.0/' },
       'by-nc-sa' => { :human_readable => 'Attribution Non-Commercial Share Alike 3.0 Unported',
                       :uri => 'https://creativecommons.org/licenses/by-nc-sa/3.0/' },
       'by-nc-nd' => { :human_readable => 'Attribution Non-Commercial, No Derivatives 3.0 Unported',
                       :uri => 'https://creativecommons.org/licenses/by-nc-nd/3.0/' },
-      'pdm' =>      { :human_readable => 'Public Domain Mark 1.0',
-                      :uri => 'https://creativecommons.org/publicdomain/mark/1.0/' }
+      'pdm' => { :human_readable => 'Public Domain Mark 1.0',
+                 :uri => 'https://creativecommons.org/publicdomain/mark/1.0/' }
     }.freeze
     OPEN_DATA_COMMONS_USE_LICENSES = {
-      'pddl' =>     { :human_readable => 'Open Data Commons Public Domain Dedication and License 1.0',
-                      :uri => 'http://opendatacommons.org/licenses/pddl/1.0/' },
-      'odc-by' =>   { :human_readable => 'Open Data Commons Attribution License 1.0',
-                      :uri => 'http://opendatacommons.org/licenses/by/1.0/' },
+      'pddl' => { :human_readable => 'Open Data Commons Public Domain Dedication and License 1.0',
+                  :uri => 'http://opendatacommons.org/licenses/pddl/1.0/' },
+      'odc-by' => { :human_readable => 'Open Data Commons Attribution License 1.0',
+                    :uri => 'http://opendatacommons.org/licenses/by/1.0/' },
       'odc-odbl' => { :human_readable => 'Open Data Commons Open Database License 1.0',
                       :uri => 'http://opendatacommons.org/licenses/odbl/1.0/' }
     }.freeze
@@ -179,18 +179,21 @@ module Dor
     def use_license
       return creative_commons_license unless creative_commons_license.blank?
       return open_data_commons_license unless open_data_commons_license.blank?
+
       nil
     end
 
     def use_license_uri
       return defaultObjectRights.creative_commons.uri.first unless defaultObjectRights.creative_commons.uri.blank?
       return defaultObjectRights.open_data_commons.uri.first unless defaultObjectRights.open_data_commons.uri.blank?
+
       nil
     end
 
     def use_license_human
       return creative_commons_license_human unless creative_commons_license_human.blank?
       return open_data_commons_license_human unless open_data_commons_license_human.blank?
+
       nil
     end
 
@@ -321,6 +324,7 @@ module Dor
     # @param wf [String] the name of the workflow, ex. 'digitizationWF'
     def default_workflow=(wf)
       fail ArgumentError, 'Must have a valid workflow for default' if wf.blank?
+
       xml = administrativeMetadata.ng_xml
       administrativeMetadata.ng_xml_will_change!
       nodes = xml.search('//registration/workflow')
@@ -345,6 +349,7 @@ module Dor
 
     def agreement=(val)
       fail ArgumentError, 'agreement must have a valid druid' if val.blank?
+
       self.agreement_object = Dor.find val.to_s, :cast => true
     end
   end

@@ -22,6 +22,7 @@ module Dor
       xml = Dor::Config.workflow.client.get_workflow_xml(repo, pid, wf)
       xml = Nokogiri::XML(xml)
       return nil if xml.xpath('workflow').length == 0
+
       Workflow::Document.new(xml.to_s)
     end
 
@@ -41,6 +42,7 @@ module Dor
       xml = Nokogiri::XML(%(<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<workflows objectId="#{pid}"/>))
       digital_object.datastreams.keys.each do |dsid|
         next unless dsid =~ /WF$/
+
         ds_content = Nokogiri::XML(Dor::Config.workflow.client.get_workflow_xml('dor', pid, dsid))
         xml.root.add_child(ds_content.root)
       end
@@ -57,6 +59,7 @@ module Dor
     def current_priority
       cp = workflows.detect(&:expedited?)
       return 0 if cp.nil?
+
       cp.priority.to_i
     end
 

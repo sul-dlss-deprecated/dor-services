@@ -25,6 +25,7 @@ module Dor
 
       lane = admin_md.default_workflow_lane
       return 'default' if lane.blank?
+
       lane
     end
 
@@ -83,8 +84,10 @@ module Dor
     def rights
       return nil unless self.respond_to? :rightsMetadata
       return nil if rightsMetadata.nil?
+
       xml = rightsMetadata.ng_xml
       return nil if xml.search('//rightsMetadata').length != 1 # ORLY?
+
       if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
         'Stanford'
       elsif xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length == 1

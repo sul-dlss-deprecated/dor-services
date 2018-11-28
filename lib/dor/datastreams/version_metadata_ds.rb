@@ -9,14 +9,17 @@ module Dor
     def <=>(other)
       diff = @major <=> other.major
       return diff if diff != 0
+
       diff = @minor <=> other.minor
       return diff if diff != 0
+
       @admin <=> other.admin
     end
 
     # @param [String] raw_tag the value of the tag attribute from a Version node
     def self.parse(raw_tag)
       return nil unless raw_tag =~ /(\d+)\.(\d+)\.(\d+)/
+
       VersionTag.new $1, $2, $3
     end
 
@@ -125,6 +128,7 @@ module Dor
       ng_xml.root['objectId'] = pid
       return if find_by_terms(:version).size == 1
       return if opts.empty?
+
       ng_xml_will_change!
       current = current_version_node
       if opts.include? :description
@@ -189,6 +193,7 @@ module Dor
     def current_description
       desc_node = current_version_node.at_xpath('description')
       return desc_node.content if desc_node
+
       ''
     end
 

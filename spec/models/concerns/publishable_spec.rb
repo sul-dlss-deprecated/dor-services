@@ -286,9 +286,9 @@ describe Dor::Publishable do
 
       it 'relationships' do
         ns = {
-          'rdf'          => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-          'hydra'        => 'http://projecthydra.org/ns/relations#',
-          'fedora'       => 'info:fedora/fedora-system:def/relations-external#',
+          'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+          'hydra' => 'http://projecthydra.org/ns/relations#',
+          'fedora' => 'info:fedora/fedora-system:def/relations-external#',
           'fedora-model' => 'info:fedora/fedora-system:def/model#'
         }
         expect(public_xml.at_xpath('/publicObject/rdf:RDF', ns)).to be

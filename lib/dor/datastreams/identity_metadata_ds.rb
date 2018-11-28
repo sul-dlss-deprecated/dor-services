@@ -56,6 +56,7 @@ module Dor
       parts = value.split(':', 2).map(&:strip)
       raise ArgumentError, "Source ID must follow the format 'namespace:value', not '#{value}'" unless
         parts.length == 2 && parts[0].present? && parts[1].present?
+
       node ||= ng_xml.root.add_child('<sourceId/>').first
       node['source'] = parts[0]
       node.content = parts[1]

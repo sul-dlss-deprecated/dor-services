@@ -27,15 +27,15 @@ module Dor
 
     # milestones from accessioning and the order they happen in
     STEPS = {
-      'registered'  => 1,
-      'submitted'   => 2,
-      'described'   => 3,
-      'published'   => 4,
-      'deposited'   => 5,
+      'registered' => 1,
+      'submitted' => 2,
+      'described' => 3,
+      'published' => 4,
+      'deposited' => 5,
       'accessioned' => 6,
-      'indexed'     => 7,
-      'shelved'     => 8,
-      'opened'      => 9
+      'indexed' => 7,
+      'shelved' => 8,
+      'opened' => 9
     }.freeze
 
     # This is a work-around for some strange logic in ActiveFedora that
@@ -44,12 +44,14 @@ module Dor
     def set_workflows_datastream_location
       return if self.respond_to?(:inner_object) && inner_object.is_a?(ActiveFedora::SolrDigitalObject)
       return unless workflows.new?
+
       workflows.mimeType   = 'application/xml'
       workflows.dsLocation = File.join(Dor::Config.workflow.url, "dor/objects/#{pid}/workflows")
     end
 
     def empty_datastream?(datastream)
       return true if datastream.new?
+
       if datastream.class.respond_to?(:xml_template)
         datastream.content.to_s.empty? || EquivalentXml.equivalent?(datastream.content, datastream.class.xml_template)
       else
@@ -92,6 +94,7 @@ module Dor
       end
       # Check for success.
       raise "Required datastream #{datastream} could not be populated!" if is_required && empty_datastream?(ds)
+
       ds
     end
 
@@ -127,6 +130,7 @@ module Dor
         m_name = m[:milestone]
         m_time = m[:at].utc.xmlschema
         next unless STEPS.keys.include?(m_name) && (!status_time || m_time > status_time)
+
         status_code = STEPS[m_name]
         status_time = m_time
       end

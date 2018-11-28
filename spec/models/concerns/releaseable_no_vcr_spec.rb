@@ -104,9 +104,9 @@ describe 'Dor::Releaseable' do
   end
   it 'released_for pulls from identityMetadata for authoritative values (not PURL)' do
     expect(@item.released_for).to match a_hash_including(
-      'Searchworks'        => { 'release' => true },
+      'Searchworks' => { 'release' => true },
       'Some_special_place' => { 'release' => true }, # hey, free annoying capitalization!
-      'Former_place'       => { 'release' => false } # because it isn't in identityMetadata!
+      'Former_place' => { 'release' => false } # because it isn't in identityMetadata!
     )
     expect(@item.released_for).not_to match a_hash_including('other_place')
   end

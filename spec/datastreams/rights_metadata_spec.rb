@@ -341,12 +341,12 @@ describe Dor::RightsMetadataDS do
       doc = @item.to_solr
 
       expect(doc).to match a_hash_including(
-        'rights_primary_ssi'          => 'world_qualified',
-        'rights_descriptions_ssim'    => include(
+        'rights_primary_ssi' => 'world_qualified',
+        'rights_descriptions_ssim' => include(
           'location: reading_room (no-download)', 'stanford', 'world (no-download)', 'dark (file)'
         ),
-        'metadata_source_ssi'         => 'DOR',
-        'title_tesim'                 => ['Indianapolis 500'],
+        'metadata_source_ssi' => 'DOR',
+        'title_tesim' => ['Indianapolis 500'],
         'rights_characteristics_ssim' => include(
           'world_discover', 'has_group_rights', 'has_rule', 'group|stanford', 'location', 'location_with_rule',
           'world_read', 'world|no-download', 'profile:group1|location1|world1', 'none_read_file'
@@ -365,16 +365,16 @@ describe Dor::RightsMetadataDS do
       mock_dra_obj = double(Dor::RightsAuth)
       expect(mock_dra_obj).to receive(:index_elements).with(no_args).at_least(:once).and_return(
         :primary => 'access_restricted',
-        :errors  => [],
-        :terms   => [],
+        :errors => [],
+        :terms => [],
         :obj_locations_qualified => [{ :location => 'someplace', :rule => 'somerule' }],
-        :file_groups_qualified   => [{ :group => 'somegroup', :rule => 'someotherrule' }]
+        :file_groups_qualified => [{ :group => 'somegroup', :rule => 'someotherrule' }]
       )
       expect(rights_md_ds).to receive(:dra_object).and_return(mock_dra_obj)
 
       doc = rights_md_ds.to_solr
       expect(doc).to match a_hash_including(
-        'rights_primary_ssi'       => 'access_restricted',
+        'rights_primary_ssi' => 'access_restricted',
         'rights_descriptions_ssim' => include('location: someplace (somerule)', 'somegroup (file) (someotherrule)'),
       )
       expect(doc).not_to match a_hash_including(
@@ -387,15 +387,15 @@ describe Dor::RightsMetadataDS do
       mock_dra_obj = double(Dor::RightsAuth)
       expect(mock_dra_obj).to receive(:index_elements).with(no_args).at_least(:once).and_return(
         :primary => 'world_qualified',
-        :errors  => [],
-        :terms   => [],
+        :errors => [],
+        :terms => [],
         :obj_world_qualified => [{ :rule => 'somerule' }]
       )
       expect(rights_md_ds).to receive(:dra_object).and_return(mock_dra_obj)
 
       doc = rights_md_ds.to_solr
       expect(doc).to match a_hash_including(
-        'rights_primary_ssi'       => 'world_qualified',
+        'rights_primary_ssi' => 'world_qualified',
         'rights_descriptions_ssim' => include('world (somerule)'),
       )
       expect(doc).not_to match a_hash_including(
@@ -408,21 +408,21 @@ describe Dor::RightsMetadataDS do
       mock_dra_obj = double(Dor::RightsAuth)
       expect(mock_dra_obj).to receive(:index_elements).with(no_args).at_least(:once).and_return(
         :primary => 'access_restricted',
-        :errors  => [],
-        :terms   => [],
-        :obj_locations  => ['location'],
+        :errors => [],
+        :terms => [],
+        :obj_locations => ['location'],
         :file_locations => ['file_specific_location'],
-        :obj_agents     => ['agent'],
-        :file_agents    => ['file_specific_agent']
+        :obj_agents => ['agent'],
+        :file_agents => ['file_specific_agent']
       )
       expect(rights_md_ds).to receive(:dra_object).and_return(mock_dra_obj)
 
       doc = rights_md_ds.to_solr
       expect(doc).to match a_hash_including(
-        'obj_rights_locations_ssim'  => ['location'],
+        'obj_rights_locations_ssim' => ['location'],
         'file_rights_locations_ssim' => ['file_specific_location'],
-        'obj_rights_agents_ssim'     => ['agent'],
-        'file_rights_agents_ssim'    => ['file_specific_agent']
+        'obj_rights_agents_ssim' => ['agent'],
+        'file_rights_agents_ssim' => ['file_specific_agent']
       )
     end
   end

@@ -20,14 +20,14 @@ module Dor
 
       def init_from_node(node)
         @attrs = {
-          'name'         => node['name'],
-          'sequence'     => node['sequence'] ? node['sequence'].to_i : nil,
-          'status'       => node['status'], # TODO: see how this affects argo
-          'lifecycle'    => node['lifecycle'],
-          'label'        => node.at_xpath('label/text()').to_s,
-          'batch_limit'  => node['batch-limit'] ? node['batch-limit'].to_i : nil,
-          'error_limit'  => node['error-limit'] ? node['error-limit'].to_i : nil,
-          'priority'     => node['priority'] ? node['priority'].to_i : 0,
+          'name' => node['name'],
+          'sequence' => node['sequence'] ? node['sequence'].to_i : nil,
+          'status' => node['status'], # TODO: see how this affects argo
+          'lifecycle' => node['lifecycle'],
+          'label' => node.at_xpath('label/text()').to_s,
+          'batch_limit' => node['batch-limit'] ? node['batch-limit'].to_i : nil,
+          'error_limit' => node['error-limit'] ? node['error-limit'].to_i : nil,
+          'priority' => node['priority'] ? node['priority'].to_i : 0,
           'prerequisite' => node.xpath('prereq').collect { |p|
             repo = (p['repository'].nil? || p['repository'] == @repo) ? nil : p['repository']
             wf   = (p['workflow'].nil? || p['workflow'] == @workflow) ? nil : p['workflow']
@@ -92,6 +92,7 @@ module Dor
       # @param new_owner [Dor::Workflow::Document]
       def update!(info, new_owner)
         raise ArgumentError, 'Owner can not be nil. It must be an instance of Dor::Workflow::Document' unless new_owner
+
         @owner = new_owner
         return self if info.nil?
 

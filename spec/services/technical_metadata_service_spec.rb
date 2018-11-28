@@ -290,7 +290,7 @@ describe Dor::TechnicalMetadataService do
         </mix:mix>
       </jhove:properties>
     </file>
-  EOF
+    EOF
                                                    )
   end
 

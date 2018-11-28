@@ -72,6 +72,7 @@ module Dor
     def self.get_old_technical_metadata(dor_item)
       sdr_techmd = get_sdr_technical_metadata(dor_item.pid)
       return sdr_techmd unless sdr_techmd.nil?
+
       get_dor_technical_metadata(dor_item)
     end
 
@@ -82,6 +83,7 @@ module Dor
       sdr_techmd = get_sdr_metadata(druid, 'technicalMetadata')
       return sdr_techmd if sdr_techmd =~ /<technicalMetadata/
       return ::JhoveService.new.upgrade_technical_metadata(sdr_techmd) if sdr_techmd =~ /<jhove/
+
       nil
     end
 
@@ -91,9 +93,11 @@ module Dor
     def self.get_dor_technical_metadata(dor_item)
       ds = 'technicalMetadata'
       return nil unless dor_item.datastreams.keys.include?(ds) && !dor_item.datastreams[ds].new?
+
       dor_techmd = dor_item.datastreams[ds].content
       return dor_techmd if dor_techmd =~ /<technicalMetadata/
       return ::JhoveService.new.upgrade_technical_metadata(dor_techmd) if dor_techmd =~ /<jhove/
+
       nil
     end
 
@@ -109,6 +113,7 @@ module Dor
     # @return [String] The technicalMetadata datastream for the new files of the new digital object version
     def self.get_new_technical_metadata(druid, new_files)
       return nil if new_files.nil? || new_files.empty?
+
       workspace = DruidTools::Druid.new(druid, Dor::Config.sdr.local_workspace_root)
       content_dir = workspace.find_filelist_parent('content', new_files)
       temp_dir = workspace.temp_dir
@@ -164,6 +169,7 @@ module Dor
     def self.get_file_nodes(technical_metadata)
       file_hash = {}
       return file_hash if technical_metadata.nil?
+
       current_file = []
       path = nil
       in_file = false

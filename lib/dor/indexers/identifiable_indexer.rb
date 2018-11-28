@@ -64,6 +64,7 @@ module Dor
       relationships.each do |rel_node|
         rel_druid = rel_node['rdf:resource']
         next unless rel_druid # TODO: warning here would also be useful
+
         rel_druid = rel_druid.gsub('info:fedora/', '')
 
         # populate cache if necessary

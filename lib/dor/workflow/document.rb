@@ -63,6 +63,7 @@ module Dor
       def processes
         # if the workflow service didnt return any processes, dont return any processes from the reified wf
         return [] if ng_xml.search('/workflow/process').length == 0
+
         @processes ||=
           if definition
             definition.processes.collect do |process|
@@ -95,6 +96,7 @@ module Dor
 
         processes.each do |process|
           next unless process.status.present?
+
           # add a record of the robot having operated on this item, so we can track robot activity
           if !process.date_time.blank? && process.status && (process.status == 'completed' || process.status == 'error')
             solr_doc["wf_#{wf_name}_#{process.name}_dttsi"] = Time.parse(process.date_time).utc.iso8601
@@ -109,6 +111,7 @@ module Dor
           add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}", wf_solr_type, wf_solr_attrs)
           add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)
           next unless process.state != process.status
+
           add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.state}:#{process.name}", wf_solr_type, wf_solr_attrs)
           add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.state}", wf_solr_type, wf_solr_attrs)
           add_solr_value(solr_doc, 'wf_swp', "#{process.state}", wf_solr_type, wf_solr_attrs)
