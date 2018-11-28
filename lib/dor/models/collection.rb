@@ -7,6 +7,7 @@ module Dor
     has_object_type 'collection'
 
     self.resource_indexer = CompositeIndexer.new(
+      DataIndexer,
       DescribableIndexer,
       IdentifiableIndexer,
       ProcessableIndexer,
