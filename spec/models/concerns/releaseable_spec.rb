@@ -97,7 +97,7 @@ describe Dor::Releaseable, :vcr do
     it 'should use only the most recent self tag to determine if an item is released, with no release tags on the collection' do
       VCR.use_cassette('should_use_only_the_most_recent_self_tag_to_determine_if_an_item_is_released_with_no_release_tags_on_the_collection') do
         item = instantiate_fixture("druid:vs298kg2555", Dor::Item)
-        expect(item.released_for['Kurita']['release']).to be_truthy 
+        expect(item.released_for['Kurita']['release']).to be_truthy
       end
     end
 
@@ -257,7 +257,7 @@ describe 'Adding release nodes', :vcr do
         @item.add_release_node(true,  {:when => '2016-01-05T23:23:45Z', :who => 'petucket', :to=> 'Revs', :what=> 'self', :blop => "something", :tag => 'Revs', 'something_else' => 'whatup'})
         expect(@item.identityMetadata.to_xml).to include new_tag
       end
-    end    
+    end
     it 'should return true when valid_release_attributes is called with valid attributes and no tag attribute' do
       @args.delete :tag
       expect(@item.valid_release_attributes(true, @args)).to be true
@@ -342,24 +342,5 @@ describe 'Adding release nodes', :vcr do
         expect(final_result_tags['Kurita']).to match('release' => true)
       end
     end
-  end
-end
-
-describe 'to_solr' do
-  before(:each) { stub_config   }
-  after(:each)  { unstub_config }
-
-  before :each do
-    @rlsbl_item = instantiate_fixture('druid:ab123cd4567', ReleaseableItem)
-  end
-
-  it 'should solrize release tags' do
-    released_for_info = {
-      'Project' => {'release'=>true}, 'test_target' => {'release'=>true}, 'test_nontarget' => {'release'=>false}
-    }
-    allow(@rlsbl_item).to receive(:released_for).and_return(released_for_info)
-    solr_doc = @rlsbl_item.to_solr
-    released_to_field_name = Solrizer.solr_name('released_to', :symbol)
-    expect(solr_doc).to match a_hash_including({released_to_field_name => %w(Project test_target)})
   end
 end

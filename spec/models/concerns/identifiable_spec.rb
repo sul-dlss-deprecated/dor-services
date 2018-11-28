@@ -8,18 +8,6 @@ describe Dor::Identifiable do
   before(:each) { stub_config }
   after(:each)  { unstub_config }
 
-  before(:all) do
-    @mock_rel_druid = 'druid:does_not_exist'
-    @mock_rels_ext_xml = %(<rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-            xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:hydra="http://projecthydra.org/ns/relations#">
-            <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
-              <fedora-model:hasModel rdf:resource="info:fedora/testObject"/>
-              <hydra:isGovernedBy rdf:resource="info:fedora/#{@mock_rel_druid}"/>
-              <fedora:isMemberOfCollection rdf:resource="info:fedora/#{@mock_rel_druid}"/>
-            </rdf:Description>
-          </rdf:RDF>)
-  end
-
   let(:item) do
     item = instantiate_fixture('druid:ab123cd4567', IdentifiableItem)
     allow(item).to receive(:new?).and_return(false)
@@ -112,24 +100,9 @@ describe Dor::Identifiable do
       expect(item.remove_other_Id('mdtoolkit', 'someid123')).to be_falsey
       expect(item.identityMetadata).not_to be_changed
     end
-    it 'should affect identity_metadata_source computation' do
-      item.remove_other_Id('catkey', '129483625')
-      item.remove_other_Id('barcode', '36105049267078')
-      item.add_other_Id('catkey', '129483625')
-      expect(item.identity_metadata_source).to eq 'Symphony'
-      item.remove_other_Id('catkey', '129483625')
-      item.add_other_Id('barcode', '36105049267078')
-      expect(item.identity_metadata_source).to eq 'Symphony'
-      item.remove_other_Id('barcode', '36105049267078')
-      expect(item.identity_metadata_source).to eq 'DOR'
-      item.remove_other_Id('foo', 'bar')
-      expect(item.identity_metadata_source).to eq 'DOR'
-      expect(item.identityMetadata).to be_changed
-    end
   end
 
   describe 'catkey' do
-
     let(:current_catkey) { '129483625' }
     let(:new_catkey) { '999' }
 
@@ -307,38 +280,6 @@ describe Dor::Identifiable do
       existing_tags = ['test part1 : test part2', 'Another : Multi : Part : Test', 'one : last_tag']
       expected_err_msg = "An existing tag (#{existing_tags[1]}) is the same, consider using update_tag?"
       expect {item.validate_and_normalize_tag(tag_str, existing_tags)}.to raise_error(StandardError, expected_err_msg)
-    end
-  end
-
-  describe 'identity_metadata_source' do
-    it 'should index metadata source' do
-      expect(item.identity_metadata_source).to eq 'Symphony'
-    end
-  end
-
-  describe 'to_solr' do
-    it 'should generate collection and apo title fields' do
-      allow(item.datastreams['RELS-EXT']).to receive(:content).and_return(@mock_rels_ext_xml)
-      allow(Dor).to receive(:find).with(@mock_rel_druid).and_raise(ActiveFedora::ObjectNotFoundError)
-      doc = item.to_solr
-
-      ['apo_title', 'nonhydrus_apo_title'].each do |field_name|
-        expect(doc[Solrizer.solr_name(field_name, :symbol)].first).to eq(@mock_rel_druid)
-        expect(doc[Solrizer.solr_name(field_name, :stored_searchable)].first).to eq(@mock_rel_druid)
-      end
-    end
-    it 'should index metadata source' do
-      expect(item.to_solr).to match a_hash_including('metadata_source_ssi' => 'Symphony')
-    end
-    it 'should generate set collection and apo fields to the druid if the collection or apo does not exist' do
-      allow(item.datastreams['RELS-EXT']).to receive(:content).and_return(@mock_rels_ext_xml)
-      allow(Dor).to receive(:find).with(@mock_rel_druid).and_raise(ActiveFedora::ObjectNotFoundError)
-      doc = item.to_solr
-
-      ['apo_title', 'collection_title'].each do |field_name|
-        expect(doc[Solrizer.solr_name(field_name, :symbol)].first).to eq(@mock_rel_druid)
-        expect(doc[Solrizer.solr_name(field_name, :stored_searchable)].first).to eq(@mock_rel_druid)
-      end
     end
   end
 

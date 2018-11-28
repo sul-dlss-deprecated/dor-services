@@ -8,6 +8,13 @@ module Dor
     has_object_type 'workflow'
     has_metadata :name => 'workflowDefinition', :type => Dor::WorkflowDefinitionDs, :label => 'Workflow Definition'
 
+    self.resource_indexer = CompositeIndexer.new(
+      DataIndexer,
+      DescribableIndexer,
+      IdentifiableIndexer,
+      ProcessableIndexer
+    )
+
     def self.find_by_name(name)
       Dor::WorkflowObject.where(Solrizer.solr_name('workflow_name', :symbol) => name).first
     end

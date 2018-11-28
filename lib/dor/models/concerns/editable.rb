@@ -45,14 +45,6 @@ module Dor
                       :uri => 'http://opendatacommons.org/licenses/odbl/1.0/' }
     }.freeze
 
-    def to_solr(solr_doc = {}, *args)
-      solr_doc = super(solr_doc, *args)
-      add_solr_value(solr_doc, 'default_rights', default_rights_for_indexing, :string, [:symbol])
-      add_solr_value(solr_doc, 'agreement', agreement, :string, [:symbol]) if agreement_object
-      add_solr_value(solr_doc, 'default_use_license_machine', use_license, :string, [:stored_sortable])
-      solr_doc
-    end
-
     # Adds a person or group to a role in the APO role metadata datastream
     #
     # @param role   [String] the role the group or person will be filed under, ex. dor-apo-manager
@@ -278,11 +270,6 @@ module Dor
         # if none of the above, the rights xml structure is unsupported/unintelligible
         nil
       end
-    end
-
-    # @return [String] A description of the rights defined in the default object rights datastream. Can be 'Stanford', 'World', 'Dark' or 'None'
-    def default_rights_for_indexing
-      RightsMetadataDS::RIGHTS_TYPE_CODES.fetch(default_rights, 'Unrecognized default rights value')
     end
 
     # Set the rights in default object rights

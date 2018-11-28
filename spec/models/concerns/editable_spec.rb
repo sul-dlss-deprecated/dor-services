@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Dor::Editable do
-  before(:each) { stub_config   }
+  before(:each) { stub_config }
   after(:each)  { unstub_config }
   before :each do
     @apo = instantiate_fixture('druid_zt570tx3016', Dor::AdminPolicyObject)
@@ -236,24 +236,22 @@ describe Dor::Editable do
       end
     end
   end
-  describe 'default object rights' do
-    it 'should find the default object rights' do
+  describe '#default_rights' do
+    it 'finds the default object rights' do
       expect(@apo.default_rights).to eq('world')
     end
-    it 'should use the OM template if the ds is empty' do
+    it 'uses the OM template if the ds is empty' do
       expect(@empty_item.default_rights).to eq('world')
-      expect(@empty_item.default_rights_for_indexing).to eq('World')
     end
   end
-  describe 'default_rights=' do
-    it 'should set default rights' do
+  describe '#default_rights=' do
+    it 'sets default rights' do
       @apo.default_rights = 'stanford'
       expect(@apo.default_rights).to eq('stanford')
     end
-    it 'should work on an empty ds' do
+    it 'works on an empty ds' do
       @empty_item.default_rights = 'stanford'
       expect(@empty_item.default_rights).to eq('stanford')
-      expect(@empty_item.default_rights_for_indexing).to eq('Stanford')
     end
   end
   describe 'desc metadata format' do
@@ -271,7 +269,6 @@ describe Dor::Editable do
     it 'setters should be case insensitive' do
       @apo.default_rights = 'Dark'
       expect(@apo.default_rights).to eq('dark')
-      expect(@apo.default_rights_for_indexing).to eq('Dark (Preserve Only)')
     end
     it 'should set read rights to none for dark' do
       @apo.default_rights = 'Dark'
@@ -360,22 +357,6 @@ describe Dor::Editable do
           </registration>
         </administrativeMetadata>
       XML
-    end
-  end
-
-  describe 'to_solr' do
-    it 'should make a solr doc' do
-      allow(@apo).to receive(:milestones).and_return({})
-      allow(@apo).to receive(:agreement).and_return('druid:agreement')
-      allow(@apo).to receive(:agreement_object).and_return(true)
-      solr_doc = @apo.to_solr
-      expect(solr_doc).to match a_hash_including('default_rights_ssim' => ['World']) # note that this is capitalized, because it comes from default_rights_for_indexing
-      expect(solr_doc).to match a_hash_including('agreement_ssim'      => ['druid:agreement'])
-      # expect(solr_doc).to match a_hash_including("registration_default_collection_sim" => ["druid:fz306fj8334"])
-      expect(solr_doc).to match a_hash_including('registration_workflow_id_ssim' => ['digitizationWF'])
-      expect(solr_doc).to match a_hash_including('use_statement_ssim'  => ['Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu.'])
-      expect(solr_doc).to match a_hash_including('copyright_ssim'      => ['Additional copyright info'])
-      expect(solr_doc).to match a_hash_including('default_use_license_machine_ssi' => 'by-nc-sa')
     end
   end
 end
