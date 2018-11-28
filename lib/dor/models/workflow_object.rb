@@ -28,6 +28,7 @@ module Dor
     # @return [String] the initial workflow xml
     def self.initial_workflow(name)
       return @@xml_cache[name] if @@xml_cache.include?(name)
+
       find_and_cache_workflow_xml_and_repo name
       @@xml_cache[name]
     end
@@ -38,6 +39,7 @@ module Dor
     # @return [String] the initial workflow xml
     def self.initial_repo(name)
       return @@repo_cache[name] if @@repo_cache.include?(name)
+
       find_and_cache_workflow_xml_and_repo name
       @@repo_cache[name]
     end
@@ -59,6 +61,7 @@ module Dor
     def self.find_and_cache_workflow_xml_and_repo(name)
       wobj = find_by_name(name)
       raise "Failed to find workflow via find_by_name('#{name}')" if wobj.nil?
+
       @@repo_cache[name] = wobj.definition.repo
       @@xml_cache[name]  = wobj.generate_initial_workflow
       wobj

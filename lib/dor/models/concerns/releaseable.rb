@@ -47,6 +47,7 @@ module Dor
       (potential_applicable_release_tags.keys - released_hash.keys).each do |key| # don't bother checking if already added to the release hash, they were added due to a self tag so that has won
         latest_tag = latest_applicable_release_tag_in_array(potential_applicable_release_tags[key], administrative_tags)
         next if latest_tag.nil? # Otherwise, we have a valid tag, record it
+
         released_hash[key] = { 'release' => latest_tag['release'] }
       end
 
@@ -68,6 +69,7 @@ module Dor
       return_tags = release_nodes || {}
       collections.each do |collection|
         next if collection.id == id # recursive, so parents of parents are found, but we need to avoid an infinite loop if the collection references itself (i.e. bad data)
+
         return_tags = combine_two_release_tag_hashes(return_tags, collection.get_release_tags_for_item_and_all_governing_sets)
       end
       return_tags
@@ -123,6 +125,7 @@ module Dor
     def does_release_tag_apply(release_tag, admin_tags = false)
       # Is the tag global or restricted
       return true if release_tag['tag'].nil?  # no specific tag specificied means this tag is global to all members of the collection
+
       admin_tags = tags unless admin_tags     # We use false instead of [], since an item can have no admin_tags at which point we'd be passing this var as [] and would not attempt to retrieve it
       admin_tags.include?(release_tag['tag'])
     end
@@ -140,6 +143,7 @@ module Dor
       release_tags.slice!(release_tags.index(newest_tag))
 
       return latest_applicable_release_tag_in_array(release_tags, admin_tags) if release_tags.size > 0 # Try again after dropping the inapplicable
+
       nil # We're out of tags, no applicable ones
     end
 
@@ -188,6 +192,7 @@ module Dor
     # @return [Boolean] Returns true if no errors found
     def valid_release_attributes_and_tag(tag, attrs = {})
       raise ArgumentError, ':when is not iso8601' if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z').nil?
+
       [:who, :to, :what].each do |check_attr|
         raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
@@ -198,6 +203,7 @@ module Dor
       end
       raise ArgumentError, ':what must be self or collection' unless what_correct
       raise ArgumentError, 'the value set for this tag is not a boolean' if !!tag != tag # rubocop:disable Style/DoubleNegation
+
       true
     end
 
@@ -229,11 +235,13 @@ module Dor
     # @return [Boolean] Returns true if no errors found
     def valid_release_attributes(tag, attrs = {})
       raise ArgumentError, ':when is not iso8601' if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z').nil?
+
       [:who, :to, :what].each do |check_attr|
         raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
       raise ArgumentError, ':what must be self or collection' unless %w(self collection).include? attrs[:what]
       raise ArgumentError, 'the value set for this tag is not a boolean' unless [true, false].include? tag
+
       true
     end
 

@@ -37,6 +37,7 @@ module Dor
     def build_descMetadata_datastream(ds)
       content = fetch_descMetadata_datastream
       return nil if content.nil?
+
       ds.dsLabel = 'Descriptive Metadata'
       ds.ng_xml = Nokogiri::XML(content)
       ds.ng_xml.normalize_text!
@@ -58,6 +59,7 @@ module Dor
       dc_doc.xpath('/oai_dc:dc/*[count(text()) = 0]', oai_dc: XMLNS_OAI_DC).remove # Remove empty nodes
       raise CrosswalkError, "Dor::Item#generate_dublin_core produced incorrect xml (no root):\n#{dc_doc.to_xml}" if dc_doc.root.nil?
       raise CrosswalkError, "Dor::Item#generate_dublin_core produced incorrect xml (no children):\n#{dc_doc.to_xml}" if dc_doc.root.children.size == 0
+
       dc_doc
     end
 
@@ -72,6 +74,7 @@ module Dor
       unless force || descMetadata.new?
         raise 'Cannot proceed, there is already content in the descriptive metadata datastream: ' + descMetadata.content.to_s
       end
+
       label = self.label
       builder = Nokogiri::XML::Builder.new { |xml|
         xml.mods(Dor::DescMetadataDS::MODS_HEADER_CONFIG) {

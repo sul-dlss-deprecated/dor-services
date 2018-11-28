@@ -46,6 +46,7 @@ module Dor
       len  = node.length
       raise "#{xpath} not found" if len < 1
       raise "#{xpath} duplicated: #{len} found" if len != 1
+
       node.first
     end
 
@@ -132,18 +133,20 @@ module Dor
     def add_file(file, resource_name)
       resource_nodes = ng_xml.search('//resource[@id=\'' + resource_name + '\']')
       raise 'resource doesnt exist.' if resource_nodes.length == 0
+
       self.ng_xml_will_change!
 
       node = resource_nodes.first
       file_node = Nokogiri::XML::Node.new('file', ng_xml)
       file_node['id'] = file[:name]
-      file_node['shelve'] = file[:shelve] ? file[:shelve] : ''
-      file_node['publish'] = file[:publish] ? file[:publish] : ''
-      file_node['preserve'] = file[:preserve] ? file[:preserve] : ''
+      file_node['shelve'] = file[:shelve] || ''
+      file_node['publish'] = file[:publish] || ''
+      file_node['preserve'] = file[:preserve] || ''
       node.add_child(file_node)
 
       [:md5, :sha1].each do |algo|
         next unless file[algo]
+
         checksum_node = Nokogiri::XML::Node.new('checksum', ng_xml)
         checksum_node['type'] = algo.to_s
         checksum_node.content = file[algo]
@@ -187,6 +190,7 @@ module Dor
     # @return [Nokogiri::XML::Node] the new resource that was added to the contentMetadata
     def add_resource(files, resource_name, position, type = 'file')
       raise "resource #{resource_name} already exists" if ng_xml.search('//resource[@id=\'' + resource_name + '\']').length > 0
+
       self.ng_xml_will_change!
       max = ng_xml.search('//resource').map { |node| node['sequence'].to_i }.max
       # renumber all of the resources that will come after the newly added one
@@ -201,12 +205,13 @@ module Dor
       node['type']     = type
       files.each do |file|
         file_node = Nokogiri::XML::Node.new('file', ng_xml)
-        %w(shelve publish preserve).each { |x| file_node[x] = file[x.to_sym] ? file[x.to_sym] : '' }
+        %w(shelve publish preserve).each { |x| file_node[x] = file[x.to_sym] || '' }
         file_node['id'] = file[:name]
         node.add_child(file_node)
 
         [:md5, :sha1].each { |algo|
           next if file[algo].nil?
+
           checksum_node = Nokogiri::XML::Node.new('checksum', ng_xml)
           checksum_node['type'] = algo.to_s
           checksum_node.content = file[algo]
@@ -228,6 +233,7 @@ module Dor
       loop do
         res = ng_xml.search('//resource[@sequence=\'' + position.to_s + '\']')
         break if res.length == 0
+
         res['sequence'] = position.to_s
         position += 1
       end
@@ -262,6 +268,7 @@ module Dor
       file_node['id'] = file[:name]
       [:md5, :sha1].each { |algo|
         next if file[algo].nil?
+
         checksum_node = ng_xml.search('//file[@id=\'' + old_file_id + '\']/checksum[@type=\'' + algo.to_s + '\']').first
         if checksum_node.nil?
           checksum_node = Nokogiri::XML::Node.new('checksum', ng_xml)
@@ -322,6 +329,7 @@ module Dor
       position = node['sequence'].to_i
       new_position = new_position.to_i # tolerate strings as a Legacy behavior
       return node if position == new_position
+
       # otherwise, is the resource being moved earlier in the sequence or later?
       up = new_position > position
       others = new_position..(up ? position - 1 : position + 1) # a range

@@ -17,12 +17,12 @@ module Dor
         client = Config.fedora.client['risearch']
         client.options[:timeout] = opts.delete(:timeout)
         query_params = {
-          :type   => 'tuples',
-          :lang   => 'itql',
+          :type => 'tuples',
+          :lang => 'itql',
           :format => 'CSV',
-          :limit  => '1000',
+          :limit => '1000',
           :stream => 'on',
-          :query  => query
+          :query => query
         }.merge(opts)
         result = client.post(query_params)
         result.split(/\n/)[1..-1].collect { |pid| pid.chomp.sub(/^info:fedora\//, '') }
@@ -50,6 +50,7 @@ module Dor
         params[:start] ||= 0
         resp = solr.get 'select', params: params
         return resp unless block_given?
+
         cont = true
         while cont && resp['response']['docs'].length > 0
           cont = yield(resp)

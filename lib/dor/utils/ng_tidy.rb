@@ -26,7 +26,7 @@ class Nokogiri::XML::Document
         </xsl:copy>
       </xsl:template>
     </xsl:stylesheet>
-    EOC
+  EOC
 
   def prettify
     PRETTIFY_XSLT.transform(self).to_xml

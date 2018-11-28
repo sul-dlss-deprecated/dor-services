@@ -24,6 +24,7 @@ module Dor
       # than the default Fedora sequence
       def assign_pid(_obj)
         return Dor::SuriService.mint_id if Dor::Config.suri.mint_ids
+
         super
       end
     end
@@ -89,6 +90,7 @@ module Dor
       if identityMetadata.otherId(type).length > 0
         raise 'There is an existing entry for ' + type + ', consider using update_other_Id().'
       end
+
       identityMetadata.add_otherId(type + ':' + val)
     end
 
@@ -137,6 +139,7 @@ module Dor
       if dupe_existing_tag
         raise "An existing tag (#{dupe_existing_tag}) is the same, consider using update_tag?"
       end
+
       normalized_tag
     end
 
@@ -151,6 +154,7 @@ module Dor
       if tag_arr.detect { |str| str.empty? }
         raise ArgumentError, "Invalid tag structure: tag '#{tag_str}' contains empty elements"
       end
+
       tag_arr
     end
 

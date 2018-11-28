@@ -36,12 +36,14 @@ module Dor
     # @return [String] the computed thumb filename, with the druid prefix and a slash in front of it, e.g. oo000oo0001/filenamewith space.jp2
     def thumb
       return unless object.respond_to?(:contentMetadata) && object.contentMetadata.present?
+
       cm = object.contentMetadata.ng_xml
       thumb_image = nil
 
       THUMB_XPATH_FINDERS.each do |search_path|
         thumb_files = cm.xpath(search_path[:finder]) # look for a thumb
         next if thumb_files.empty?
+
         # if we find one, return the filename based on whether it is a local file or external file
         thumb_image = if search_path[:image_type] == 'local'
                         "#{object.remove_druid_prefix}/#{thumb_files[0]['id']}"

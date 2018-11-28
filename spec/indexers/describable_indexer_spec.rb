@@ -33,15 +33,15 @@ RSpec.describe Dor::DescribableIndexer do
     it 'includes values from stanford_mods' do
       # require 'pp'; pp doc
       expect(doc).to match a_hash_including(
-        'sw_language_ssim'            => ['English'],
-        'sw_language_tesim'           => ['English'],
-        'sw_format_ssim'              => ['Book'],
-        'sw_format_tesim'             => ['Book'],
-        'sw_subject_temporal_ssim'    => ['1800-1900'],
-        'sw_subject_temporal_tesim'   => ['1800-1900'],
-        'sw_pub_date_sort_ssi'        => '1911',
-        'sw_pub_date_sort_isi'        => 1911,
-        'sw_pub_date_facet_ssi'       => '1911'
+        'sw_language_ssim' => ['English'],
+        'sw_language_tesim' => ['English'],
+        'sw_format_ssim' => ['Book'],
+        'sw_format_tesim' => ['Book'],
+        'sw_subject_temporal_ssim' => ['1800-1900'],
+        'sw_subject_temporal_tesim' => ['1800-1900'],
+        'sw_pub_date_sort_ssi' => '1911',
+        'sw_pub_date_sort_isi' => 1911,
+        'sw_pub_date_facet_ssi' => '1911'
       )
     end
 

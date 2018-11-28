@@ -43,24 +43,30 @@ module Dor
       rights.xpath('//use/human[@type="useAndReproduction"]').each do |use|
         txt = use.text.strip
         next if txt.empty?
+
         doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', txt, :type => 'useAndReproduction')
       end
       rights.xpath('//copyright/human[@type="copyright"]').each do |cr|
         txt = cr.text.strip
         next if txt.empty?
+
         doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', txt, :type => 'copyright')
       end
       rights.xpath("//use/machine[#{ci_compare('type', 'creativecommons')}]").each do |lic_type|
         next if lic_type.text =~ /none/i
+
         lic_text = rights.at_xpath("//use/human[#{ci_compare('type', 'creativecommons')}]").text.strip
         next if lic_text.empty?
+
         new_text = "CC #{lic_type.text}: #{lic_text}"
         doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', new_text, :type => 'license')
       end
       rights.xpath("//use/machine[#{ci_compare('type', 'opendatacommons')}]").each do |lic_type|
         next if lic_type.text =~ /none/i
+
         lic_text = rights.at_xpath("//use/human[#{ci_compare('type', 'opendatacommons')}]").text.strip
         next if lic_text.empty?
+
         new_text = "ODC #{lic_type.text}: #{lic_text}"
         doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', new_text, :type => 'license')
       end

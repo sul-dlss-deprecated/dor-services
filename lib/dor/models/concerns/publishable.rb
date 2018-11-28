@@ -22,6 +22,7 @@ module Dor
     def encoded_thumb
       thumb_image = thumb # store the result locally, so we don't have to compute each time we use it below
       return unless thumb_image
+
       thumb_druid = thumb_image.split('/').first # the druid (before the first slash)
       thumb_filename = thumb_image.split(/#{pid_regex}[\/]/).last # everything after the druid
       "#{thumb_druid}%2F#{ERB::Util.url_encode(thumb_filename)}"
@@ -32,6 +33,7 @@ module Dor
     # @return [String] fully qualified image URL for the computed thumbnail, e.g. https://stacks.stanford.edu/image/iiif/oo000oo0001%2Ffilenamewith%20space/full
     def thumb_url
       return unless encoded_thumb
+
       thumb_basename = File.basename(encoded_thumb, File.extname(encoded_thumb)) # strip the extension for URL generation
       "https://#{Dor::Config.stacks.host}/image/iiif/#{thumb_basename}/full/!400,400/0/default.jpg"
     end
@@ -113,6 +115,7 @@ module Dor
     # When publishing a PURL, we notify purl-fetcher of changes.
     def publish_delete_on_success
       return unless Dor::Config.purl_services.url
+
       id = pid.gsub(/^druid:/, '')
 
       purl_services = Dor::Config.purl_services.rest_client

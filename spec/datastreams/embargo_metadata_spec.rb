@@ -29,7 +29,7 @@ describe Dor::EmbargoMetadataDS do
               </access>
             </releaseAccess>
           </embargoMetadata>
-    EOF
+      EOF
     }
 
     it 'creates itself from xml' do

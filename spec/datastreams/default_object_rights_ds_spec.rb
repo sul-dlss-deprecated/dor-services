@@ -26,7 +26,7 @@ describe Dor::DefaultObjectRightsDS do
          </use>
 
       </rightsMetadata>
-XML
+    XML
   end
 
   it 'understands terms of a rightsMetadata and will normalize the text' do

@@ -9,6 +9,7 @@ module Dor
       xml = datastreams['contentMetadata'].ng_xml
       # make sure the resource exists
       raise 'resource doesnt exist.' if xml.search('//resource[@id=\'' + resource + '\']').length == 0
+
       sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, :auth_methods => ['publickey'])
       druid_tools = DruidTools::Druid.new(pid, Config.content.content_base_dir)
       location = druid_tools.path(file_name)

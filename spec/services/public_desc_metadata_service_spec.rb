@@ -192,7 +192,7 @@ RSpec.describe Dor::PublicDescMetadataService do
               </human>
             </use>
           </rightsMetadata>
-          XML
+        XML
         obj.datastreams['rightsMetadata'].content = rxml
         expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq(1)
         expect(public_mods.xpath('//mods:accessCondition[@type="license"]').text).to match(/by-nc: Open Data hoo ha/)
@@ -205,7 +205,7 @@ RSpec.describe Dor::PublicDescMetadataService do
               <machine type="OpenDatA">none</machine>
             </use>
           </rightsMetadata>
-          XML
+        XML
         obj.datastreams['rightsMetadata'].content = rxml
         expect(public_mods.xpath('//mods:accessCondition[@type="license"]').size).to eq 0
       end

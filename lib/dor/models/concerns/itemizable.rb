@@ -18,6 +18,7 @@ module Dor
       if Dor::Config.stacks.local_workspace_root.nil?
         raise ArgumentError, 'Missing Dor::Config.stacks.local_workspace_root'
       end
+
       druid = DruidTools::Druid.new(pid, Dor::Config.stacks.local_workspace_root)
       diff_pattern = File.join(druid.temp_dir, DIFF_FILENAME + '.*')
       FileUtils.rm_f Dir.glob(diff_pattern)

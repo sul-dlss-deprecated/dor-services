@@ -84,6 +84,7 @@ module Dor
     # Ensures that the template is present for the given term
     def initialize_term!(term)
       return unless find_by_terms(term).length < 1
+
       ng_xml_will_change!
       add_child_node(ng_xml.root, term)
     end

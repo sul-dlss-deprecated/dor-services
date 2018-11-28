@@ -24,13 +24,13 @@ describe Dor::RegistrationService do
       allow_any_instance_of(Dor::Item).to receive(:create).and_return(true)
 
       @params = {
-        :object_type   => 'item',
+        :object_type => 'item',
         :content_model => 'googleScannedBook',
-        :admin_policy  => 'druid:fg890hi1234',
-        :label         => 'Google : Scanned Book 12345',
-        :source_id     => { :barcode => 9191919191 },
-        :other_ids     => { :catkey => '000', :uuid => '111' },
-        :tags          => ['Google : Google Tag!', 'Google : Other Google Tag!']
+        :admin_policy => 'druid:fg890hi1234',
+        :label => 'Google : Scanned Book 12345',
+        :source_id => { :barcode => 9191919191 },
+        :other_ids => { :catkey => '000', :uuid => '111' },
+        :tags => ['Google : Google Tag!', 'Google : Other Google Tag!']
       }
     end
 
@@ -327,10 +327,10 @@ describe Dor::RegistrationService do
       allow_any_instance_of(Dor::Item).to receive(:create).and_return(true)
 
       @params = {
-        :object_type   => 'item',
-        :admin_policy  => 'druid:fg890hi1234',
-        :label         => 'web-archived-crawl for http://www.example.org',
-        :source_id     => 'sul:SOMETHING-www.example.org'
+        :object_type => 'item',
+        :admin_policy => 'druid:fg890hi1234',
+        :label => 'web-archived-crawl for http://www.example.org',
+        :source_id => 'sul:SOMETHING-www.example.org'
       }
     end
 

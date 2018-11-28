@@ -81,6 +81,7 @@ module Dor
     # @param [Moab::FileGroupDifference] content_diff the content file version differences report
     def self.shelve_to_stacks(workspace_content_pathname, stacks_object_pathname, content_diff)
       return false if workspace_content_pathname.nil?
+
       [:added, :copyadded, :modified].each do |change_type|
         subset = content_diff.subset(change_type) # {Moab::FileGroupDifferenceSubset
         subset.files.each do |moab_file| # {Moab::FileInstanceDifference}

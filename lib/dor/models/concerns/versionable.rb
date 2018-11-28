@@ -37,6 +37,7 @@ module Dor
 
       vmd_upd_info = opts[:vers_md_upd_info]
       return unless vmd_upd_info
+
       add_event('open', vmd_upd_info[:opening_user_name], "Version #{vmd_ds.current_version_id} opened")
       vmd_ds.update_current_version({ :description => vmd_upd_info[:description], :significance => vmd_upd_info[:significance].to_sym })
       save
@@ -71,6 +72,7 @@ module Dor
     # @return [Boolean] true if 'opened' lifecycle is active, false otherwise
     def new_version_open?
       return true if Dor::Config.workflow.client.get_active_lifecycle('dor', pid, 'opened')
+
       false
     end
 

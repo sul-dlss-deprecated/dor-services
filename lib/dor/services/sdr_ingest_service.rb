@@ -96,6 +96,7 @@ module Dor
     # @param [Integer] found The version number that is actually in the file
     def self.verify_version_id(pathname, expected, found)
       raise "Version mismatch in #{pathname}, expected #{expected}, found #{found}" unless expected == found
+
       true
     end
 
@@ -166,6 +167,7 @@ module Dor
     # @return [Boolean] true if file exists, raises exception if not
     def self.verify_pathname(pathname)
       raise "#{pathname.basename} not found at #{pathname}" unless pathname.exist?
+
       true
     end
   end
