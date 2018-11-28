@@ -285,27 +285,6 @@ describe Dor::Identifiable do
     end
   end
 
-  describe 'get_related_obj_display_title' do
-    it 'should return the descMetadata main title if it is available' do
-      mock_apo_title = 'apo title'
-      mock_apo_obj = double(Dor::AdminPolicyObject, full_title: mock_apo_title)
-
-      mock_default_title = 'druid:zy098xw7654'
-      expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_apo_title)
-    end
-    it 'should return the default if the first descMetadata main title entry is empty string' do
-      mock_apo_obj = double(Dor::AdminPolicyObject, full_title: nil)
-
-      mock_default_title = 'druid:zy098xw7654'
-      expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_default_title)
-    end
-    it 'should return the default if the related object is nil' do
-      mock_apo_obj = nil
-      mock_default_title = 'druid:zy098xw7654'
-      expect(item.get_related_obj_display_title(mock_apo_obj, mock_default_title)).to eq(mock_default_title)
-    end
-  end
-
   describe '#adapt_to_cmodel' do
     context 'for a Hydrus collection' do
       let(:item) { instantiate_fixture('druid:kq696sh3014', Dor::Abstract) }
