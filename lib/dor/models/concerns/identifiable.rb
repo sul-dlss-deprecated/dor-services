@@ -180,12 +180,6 @@ module Dor
                       .any?
     end
 
-    def get_related_obj_display_title(related_obj, default_title)
-      return default_title unless related_obj
-
-      related_obj.full_title || default_title
-    end
-
     # a regex that can be used to identify the last part of a druid (e.g. oo000oo0001)
     # @return [Regex] a regular expression to identify the ID part of the druid
     def pid_regex

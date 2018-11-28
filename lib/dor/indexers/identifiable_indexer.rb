@@ -48,6 +48,12 @@ module Dor
       end
     end
 
+    # Clears out the cache of items. Used primarily in testing.
+    def self.reset_cache!
+      @@collection_hash = {}
+      @@apo_hash = {}
+    end
+
     private
 
     def solrize_related_obj_titles(solr_doc, relationships, title_hash, union_field_name, nonhydrus_field_name, hydrus_field_name)
@@ -64,7 +70,7 @@ module Dor
         unless title_hash.key?(rel_druid)
           begin
             related_obj = Dor.find(rel_druid)
-            related_obj_title = get_related_obj_display_title(related_obj, rel_druid)
+            related_obj_title = related_obj_display_title(related_obj, rel_druid)
             is_from_hydrus = (related_obj&.tags&.include?('Project : Hydrus'))
             title_hash[rel_druid] = { 'related_obj_title' => related_obj_title, 'is_from_hydrus' => is_from_hydrus }
           rescue ActiveFedora::ObjectNotFoundError
@@ -81,6 +87,12 @@ module Dor
         end
         add_solr_value(solr_doc, union_field_name, title_hash[rel_druid]['related_obj_title'], title_type, title_attrs)
       end
+    end
+
+    def related_obj_display_title(related_obj, default_title)
+      return default_title unless related_obj
+
+      related_obj.full_title || default_title
     end
   end
 end
