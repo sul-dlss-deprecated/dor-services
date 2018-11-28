@@ -21,7 +21,7 @@ module Dor
 
       # Overrides the method in ActiveFedora to mint a pid using SURI rather
       # than the default Fedora sequence
-      def assign_pid(_)
+      def assign_pid(_obj)
         return Dor::SuriService.mint_id if Dor::Config.suri.mint_ids
         super
       end
