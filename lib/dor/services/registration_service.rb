@@ -132,8 +132,6 @@ module Dor
         Array(params[:seed_datastream]).each { |datastream_name| new_item.build_datastream(datastream_name) }
         Array(params[:initiate_workflow]).each { |workflow_id| new_item.create_workflow(workflow_id, !new_item.new_record?, workflow_priority) }
 
-        new_item.assert_content_model
-
         new_item.class.ancestors.select { |x| x.respond_to?(:to_class_uri) && x != ActiveFedora::Base }.each do |parent_class|
           new_item.add_relationship(:has_model, parent_class.to_class_uri)
         end

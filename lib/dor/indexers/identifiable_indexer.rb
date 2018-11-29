@@ -17,8 +17,6 @@ module Dor
     # @return [Hash] the partial solr document for identifiable concerns
     def to_solr
       solr_doc = {}
-      resource.assert_content_model
-
       solr_doc[Dor::INDEX_VERSION_FIELD] = Dor::VERSION
       solr_doc['indexed_at_dtsi'] = Time.now.utc.xmlschema
       resource.datastreams.values.each do |ds|
