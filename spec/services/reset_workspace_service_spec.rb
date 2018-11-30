@@ -46,7 +46,7 @@ describe Dor::ResetWorkspaceService do
       Dor::ResetWorkspaceService.reset_workspace_druid_tree(@archived_druid, '3', @workspace_root)
       expect(File.exist?("#{@archived_druid_tree_path}_v2")).to be_truthy
       expect(File.exist?("#{@archived_druid_tree_path}_v3")).to be_truthy
-      expect(File.exist?("#{@archived_druid_tree_path}")).to be_falsey
+      expect(File.exist?(@archived_druid_tree_path.to_s)).to be_falsey
     end
 
     after(:each) do
@@ -71,7 +71,7 @@ describe Dor::ResetWorkspaceService do
       Dor::ResetWorkspaceService.reset_export_bag(@druid, '2', @export_root)
       expect(File.exist?("#{@bag_path}_v2")).to be_truthy
       expect(File.exist?("#{@bag_path}_v2.tar")).to be_truthy
-      expect(File.exist?("#{@bag_path}")).to be_falsey
+      expect(File.exist?(@bag_path.to_s)).to be_falsey
       expect(File.exist?("#{@bag_path}.tar")).to be_falsey
     end
 

@@ -70,7 +70,7 @@ describe Dor::CleanupResetService, order: :defined do
     it 'should remove the reset druid tree from dor workspace and assembly however they are symlink' do
       create_druid_dir(@druid_id, nil, @assembly_root_pathname.to_s)
       FileUtils.mkdir_p @base_workspace_druid_path.parent
-      FileUtils.ln_s(@base_assembly_druid_dir, @base_workspace_druid_dir + '_v1', :force => true)
+      FileUtils.ln_s(@base_assembly_druid_dir, @base_workspace_druid_dir + '_v1', force: true)
       expect(File.exist?(@base_workspace_druid_dir + '_v1')).to be_truthy
       expect(File.exist?(@base_assembly_druid_dir)).to be_truthy
       Dor::CleanupResetService.cleanup_by_reset_druid(@druid)
@@ -330,7 +330,7 @@ describe Dor::CleanupResetService, order: :defined do
     base_druid_tree = DruidTools::Druid.new(druid, base_dir)
     base_druid_dir = base_druid_tree.pathname.to_s
     if version.nil?
-      Pathname("#{base_druid_dir}").mkpath unless File.exist?("#{base_druid_dir}")
+      Pathname(base_druid_dir.to_s).mkpath unless File.exist?(base_druid_dir.to_s)
     else
       Pathname("#{base_druid_dir}_v#{version}").mkpath unless File.exist?("#{base_druid_dir}_v#{version}")
     end

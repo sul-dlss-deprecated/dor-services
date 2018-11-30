@@ -5,7 +5,7 @@ module Dor
     extend ActiveSupport::Concern
 
     included do
-      has_metadata :name => 'embargoMetadata', :type => Dor::EmbargoMetadataDS, :label => 'Embargo metadata'
+      has_metadata name: 'embargoMetadata', type: Dor::EmbargoMetadataDS, label: 'Embargo metadata'
     end
 
     # These methods manipulate the object for embargo purposes
@@ -25,7 +25,7 @@ module Dor
       rights_md = datastreams['rightsMetadata']
       rights_xml = rights_md.ng_xml
       rights_md.ng_xml_will_change!
-      rights_xml.xpath("//rightsMetadata/access[@type='read']").each { |n| n.remove }
+      rights_xml.xpath("//rightsMetadata/access[@type='read']").each(&:remove)
 
       # Replace rights <access> nodes with those from embargoMetadta
       release_access = embargo_md.release_access_node
@@ -50,7 +50,7 @@ module Dor
       rights_md = datastreams['rightsMetadata']
       rights_xml = rights_md.ng_xml
       rights_md.ng_xml_will_change!
-      rights_xml.xpath("//rightsMetadata/access[@type='read']").each { |n| n.remove }
+      rights_xml.xpath("//rightsMetadata/access[@type='read']").each(&:remove)
 
       # Replace rights <access> nodes with 1 machine/world node
       access_sibling = rights_xml.at_xpath('//rightsMetadata/access[last()]')
@@ -64,12 +64,8 @@ module Dor
     end
 
     def update_embargo(new_date)
-      if embargoMetadata.status != 'embargoed'
-        raise ArgumentError, 'You cannot change the embargo date of an item that is not embargoed.'
-      end
-      if new_date.past?
-        raise ArgumentError, 'You cannot set the embargo date to a past date.'
-      end
+      raise ArgumentError, 'You cannot change the embargo date of an item that is not embargoed.' if embargoMetadata.status != 'embargoed'
+      raise ArgumentError, 'You cannot set the embargo date to a past date.' if new_date.past?
 
       updated = false
       rightsMetadata.ng_xml.search('//embargoReleaseDate').each do |node|

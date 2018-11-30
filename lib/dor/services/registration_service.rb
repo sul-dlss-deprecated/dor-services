@@ -15,9 +15,7 @@ module Dor
         return Dor::SuriService.mint_id unless pid
 
         existing_pid = SearchService.query_by_id(pid).first
-        unless existing_pid.nil?
-          raise Dor::DuplicateIdError.new(existing_pid), "An object with the PID #{pid} has already been registered."
-        end
+        raise Dor::DuplicateIdError.new(existing_pid), "An object with the PID #{pid} has already been registered." unless existing_pid.nil?
 
         pid
       end
@@ -27,7 +25,7 @@ module Dor
       # @raise [Dor::DuplicateIdError]
       def check_source_id(source_id_string)
         return '' if source_id_string == ''
-        unless SearchService.query_by_id("#{source_id_string}").first.nil?
+        unless SearchService.query_by_id(source_id_string.to_s).first.nil?
           raise Dor::DuplicateIdError.new(source_id_string), "An object with the source ID '#{source_id_string}' has already been registered."
         end
 
@@ -49,13 +47,11 @@ module Dor
       # @option params [Array<String>] :initiate_workflow workflow_ids
       # @option params [Array] :tags
       def register_object(params = {})
-        [:object_type, :label].each do |required_param|
+        %i[object_type label].each do |required_param|
           raise Dor::ParameterError, "#{required_param.inspect} must be specified in call to #{name}.register_object" unless params[required_param]
         end
         metadata_source = params[:metadata_source]
-        if params[:label].length < 1 && %w[label none].include?(metadata_source)
-          raise Dor::ParameterError, "label cannot be empty to call #{name}.register_object"
-        end
+        raise Dor::ParameterError, "label cannot be empty to call #{name}.register_object" if params[:label].length < 1 && %w[label none].include?(metadata_source)
 
         object_type = params[:object_type]
         item_class = Dor.registered_classes[object_type]
@@ -78,16 +74,12 @@ module Dor
         rights = nil
         if params[:rights]
           rights = params[:rights]
-          unless rights == 'default' || RightsMetadataDS.valid_rights_type?(rights)
-            raise Dor::ParameterError, "Unknown rights setting '#{rights}' when calling #{name}.register_object"
-          end
+          raise Dor::ParameterError, "Unknown rights setting '#{rights}' when calling #{name}.register_object" unless rights == 'default' || RightsMetadataDS.valid_rights_type?(rights)
         end
 
-        if (other_ids.key?(:uuid) || other_ids.key?('uuid')) == false
-          other_ids[:uuid] = UUIDTools::UUID.timestamp_create.to_s
-        end
+        other_ids[:uuid] = UUIDTools::UUID.timestamp_create.to_s if (other_ids.key?(:uuid) || other_ids.key?('uuid')) == false
         apo_object = Dor.find(params[:admin_policy])
-        new_item = item_class.new(:pid => pid)
+        new_item = item_class.new(pid: pid)
         new_item.label = label.length > 254 ? label[0, 254] : label
         idmd = new_item.identityMetadata
         idmd.sourceId = source_id_string
@@ -117,13 +109,13 @@ module Dor
         # create basic mods from the label
         if metadata_source == 'label'
           ds = new_item.build_datastream('descMetadata')
-          builder = Nokogiri::XML::Builder.new { |xml|
-            xml.mods(Dor::DescMetadataDS::MODS_HEADER_CONFIG) {
-              xml.titleInfo {
+          builder = Nokogiri::XML::Builder.new do |xml|
+            xml.mods(Dor::DescMetadataDS::MODS_HEADER_CONFIG) do
+              xml.titleInfo do
                 xml.title label
-              }
-            }
-          }
+              end
+            end
+          end
           ds.content = builder.to_xml
         end
 
@@ -159,28 +151,28 @@ module Dor
         end
 
         dor_params = {
-          :pid => params[:pid],
-          :admin_policy => params[:admin_policy],
-          :content_model => params[:model],
-          :label => params[:label],
-          :object_type => params[:object_type],
-          :other_ids => ids_to_hash(other_ids),
-          :parent => params[:parent],
-          :source_id => ids_to_hash(params[:source_id]),
-          :tags => params[:tag] || [],
-          :seed_datastream => params[:seed_datastream],
-          :initiate_workflow => Array(params[:initiate_workflow]) + Array(params[:workflow_id]),
-          :rights => params[:rights],
-          :metadata_source => params[:metadata_source],
-          :collection => params[:collection],
-          :workflow_priority => params[:workflow_priority]
+          pid: params[:pid],
+          admin_policy: params[:admin_policy],
+          content_model: params[:model],
+          label: params[:label],
+          object_type: params[:object_type],
+          other_ids: ids_to_hash(other_ids),
+          parent: params[:parent],
+          source_id: ids_to_hash(params[:source_id]),
+          tags: params[:tag] || [],
+          seed_datastream: params[:seed_datastream],
+          initiate_workflow: Array(params[:initiate_workflow]) + Array(params[:workflow_id]),
+          rights: params[:rights],
+          metadata_source: params[:metadata_source],
+          collection: params[:collection],
+          workflow_priority: params[:workflow_priority]
         }
-        dor_params.delete_if { |k, v| v.nil? }
+        dor_params.delete_if { |_k, v| v.nil? }
 
         dor_obj = register_object(dor_params)
         pid = dor_obj.pid
         location = URI.parse(Dor::Config.fedora.safeurl.sub(/\/*$/, '/')).merge("objects/#{pid}").to_s
-        dor_params.dup.merge({ :location => location, :pid => pid })
+        dor_params.dup.merge(location: location, pid: pid)
       end
 
       private

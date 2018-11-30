@@ -92,7 +92,7 @@ class MergeIntegrationTest
       begin
         i = Dor::Item.find pid
         i&.delete
-      rescue
+      rescue StandardError
       end
     end
   end

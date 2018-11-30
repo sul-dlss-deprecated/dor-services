@@ -7,7 +7,7 @@ module Dor
     extend ActiveSupport::Concern
 
     included do
-      has_metadata :name => 'workflows', :type => Dor::WorkflowDs, :label => 'Workflows', :control_group => 'E'
+      has_metadata name: 'workflows', type: Dor::WorkflowDs, label: 'Workflows', control_group: 'E'
       after_initialize :set_workflows_datastream_location
     end
 
@@ -42,7 +42,7 @@ module Dor
     # don't allow self.workflows.new? to work if we load the object using
     # .load_instance_from_solr.
     def set_workflows_datastream_location
-      return if self.respond_to?(:inner_object) && inner_object.is_a?(ActiveFedora::SolrDigitalObject)
+      return if respond_to?(:inner_object) && inner_object.is_a?(ActiveFedora::SolrDigitalObject)
       return unless workflows.new?
 
       workflows.mimeType   = 'application/xml'
@@ -111,14 +111,14 @@ module Dor
       current_version = '1'
       begin
         current_version = versionMetadata.current_version_id
-      rescue
+      rescue StandardError
       end
 
       current_milestones = []
       # only get steps that are part of accessioning and part of the current version. That can mean they were archived with the current version
       # number, or they might be active (no version number).
       milestones.each do |m|
-        if STEPS.keys.include?(m[:milestone]) && (m[:version].nil? || m[:version] == current_version)
+        if STEPS.key?(m[:milestone]) && (m[:version].nil? || m[:version] == current_version)
           current_milestones << m unless m[:milestone] == 'registered' && current_version.to_i > 1
         end
       end
@@ -129,13 +129,13 @@ module Dor
       current_milestones.each do |m|
         m_name = m[:milestone]
         m_time = m[:at].utc.xmlschema
-        next unless STEPS.keys.include?(m_name) && (!status_time || m_time > status_time)
+        next unless STEPS.key?(m_name) && (!status_time || m_time > status_time)
 
         status_code = STEPS[m_name]
         status_time = m_time
       end
 
-      { :current_version => current_version, :status_code => status_code, :status_time => status_time }
+      { current_version: current_version, status_code: status_code, status_time: status_time }
     end
 
     # @param [Boolean] include_time
@@ -160,7 +160,7 @@ module Dor
     # @param [Integer] priority the workflow's priority level
     def create_workflow(name, create_ds = true, priority = 0)
       priority = workflows.current_priority if priority == 0
-      opts = { :create_ds => create_ds, :lane_id => default_workflow_lane }
+      opts = { create_ds: create_ds, lane_id: default_workflow_lane }
       opts[:priority] = priority if priority > 0
       Dor::Config.workflow.client.create_workflow(Dor::WorkflowObject.initial_repo(name), pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
       workflows.content(true) # refresh the copy of the workflows datastream
@@ -183,7 +183,7 @@ module Dor
           DateTime.parse(datetime).in_time_zone(ActiveSupport::TimeZone.new('Pacific Time (US & Canada)'))
         end
       I18n.l(d).strftime('%Y-%m-%d %I:%M%p')
-    rescue
+    rescue StandardError
       d = datetime.is_a?(Time) ? datetime : Time.parse(datetime.to_s)
       d.strftime('%Y-%m-%d %I:%M%p')
     end

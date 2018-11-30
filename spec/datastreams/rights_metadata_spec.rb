@@ -23,7 +23,7 @@ describe Dor::RightsMetadataDS do
   end
 
   describe 'upd_rights_xml_for_rights_type' do
-    let(:original_rights_xml) {
+    let(:original_rights_xml) do
       <<-XML
         <rightsMetadata>
           <copyright>
@@ -48,9 +48,9 @@ describe Dor::RightsMetadataDS do
           </use>
         </rightsMetadata>
       XML
-    }
+    end
 
-    let(:world_rights_xml) {
+    let(:world_rights_xml) do
       <<-XML
         <rightsMetadata>
           <copyright>
@@ -73,8 +73,8 @@ describe Dor::RightsMetadataDS do
           </use>
         </rightsMetadata>
       XML
-    }
-    let(:world_no_download_rights_xml) {
+    end
+    let(:world_no_download_rights_xml) do
       <<-XML
         <rightsMetadata>
           <copyright>
@@ -97,8 +97,8 @@ describe Dor::RightsMetadataDS do
           </use>
         </rightsMetadata>
       XML
-    }
-    let(:stanford_rights_xml) {
+    end
+    let(:stanford_rights_xml) do
       <<-XML
         <rightsMetadata>
           <copyright>
@@ -121,8 +121,8 @@ describe Dor::RightsMetadataDS do
           </use>
         </rightsMetadata>
       XML
-    }
-    let(:stanford_no_download_rights_xml) {
+    end
+    let(:stanford_no_download_rights_xml) do
       <<-XML
         <rightsMetadata>
           <copyright>
@@ -145,8 +145,8 @@ describe Dor::RightsMetadataDS do
           </use>
         </rightsMetadata>
       XML
-    }
-    let(:loc_spec_rights_xml) {
+    end
+    let(:loc_spec_rights_xml) do
       <<-XML
         <rightsMetadata>
           <copyright>
@@ -169,8 +169,8 @@ describe Dor::RightsMetadataDS do
           </use>
         </rightsMetadata>
       XML
-    }
-    let(:dark_rights_xml) {
+    end
+    let(:dark_rights_xml) do
       <<-XML
         <rightsMetadata>
           <copyright>
@@ -193,8 +193,8 @@ describe Dor::RightsMetadataDS do
           </use>
         </rightsMetadata>
       XML
-    }
-    let(:citation_only_rights_xml) {
+    end
+    let(:citation_only_rights_xml) do
       <<-XML
         <rightsMetadata>
           <copyright>
@@ -217,8 +217,8 @@ describe Dor::RightsMetadataDS do
           </use>
         </rightsMetadata>
       XML
-    }
-    let(:loc_unsupported_rights_xml) {
+    end
+    let(:loc_unsupported_rights_xml) do
       <<-XML
         <rightsMetadata>
           <copyright>
@@ -241,7 +241,7 @@ describe Dor::RightsMetadataDS do
           </use>
         </rightsMetadata>
       XML
-    }
+    end
 
     it 'has the expected rights xml when read rights are set to world' do
       rights_ng_xml = Nokogiri::XML(original_rights_xml)
@@ -319,7 +319,7 @@ describe Dor::RightsMetadataDS do
     end
     it 'has a Dor::RightsAuth dra_object' do
       expect(@rm.dra_object).to be_a(Dor::RightsAuth)
-      expect(@rm.dra_object.index_elements).to match a_hash_including(:primary => 'world_qualified', :errors => [])
+      expect(@rm.dra_object.index_elements).to match a_hash_including(primary: 'world_qualified', errors: [])
     end
     it 'reads creative commons licenses correctly' do
       expect(@rm.creative_commons).to eq ['by-nc']
@@ -364,18 +364,18 @@ describe Dor::RightsMetadataDS do
       rights_md_ds = Dor::RightsMetadataDS.new
       mock_dra_obj = double(Dor::RightsAuth)
       expect(mock_dra_obj).to receive(:index_elements).with(no_args).at_least(:once).and_return(
-        :primary => 'access_restricted',
-        :errors => [],
-        :terms => [],
-        :obj_locations_qualified => [{ :location => 'someplace', :rule => 'somerule' }],
-        :file_groups_qualified => [{ :group => 'somegroup', :rule => 'someotherrule' }]
+        primary: 'access_restricted',
+        errors: [],
+        terms: [],
+        obj_locations_qualified: [{ location: 'someplace', rule: 'somerule' }],
+        file_groups_qualified: [{ group: 'somegroup', rule: 'someotherrule' }]
       )
       expect(rights_md_ds).to receive(:dra_object).and_return(mock_dra_obj)
 
       doc = rights_md_ds.to_solr
       expect(doc).to match a_hash_including(
         'rights_primary_ssi' => 'access_restricted',
-        'rights_descriptions_ssim' => include('location: someplace (somerule)', 'somegroup (file) (someotherrule)'),
+        'rights_descriptions_ssim' => include('location: someplace (somerule)', 'somegroup (file) (someotherrule)')
       )
       expect(doc).not_to match a_hash_including(
         'rights_descriptions_ssim' => include('access_restricted')
@@ -386,17 +386,17 @@ describe Dor::RightsMetadataDS do
       rights_md_ds = Dor::RightsMetadataDS.new
       mock_dra_obj = double(Dor::RightsAuth)
       expect(mock_dra_obj).to receive(:index_elements).with(no_args).at_least(:once).and_return(
-        :primary => 'world_qualified',
-        :errors => [],
-        :terms => [],
-        :obj_world_qualified => [{ :rule => 'somerule' }]
+        primary: 'world_qualified',
+        errors: [],
+        terms: [],
+        obj_world_qualified: [{ rule: 'somerule' }]
       )
       expect(rights_md_ds).to receive(:dra_object).and_return(mock_dra_obj)
 
       doc = rights_md_ds.to_solr
       expect(doc).to match a_hash_including(
         'rights_primary_ssi' => 'world_qualified',
-        'rights_descriptions_ssim' => include('world (somerule)'),
+        'rights_descriptions_ssim' => include('world (somerule)')
       )
       expect(doc).not_to match a_hash_including(
         'rights_descriptions_ssim' => include('world_qualified')
@@ -407,13 +407,13 @@ describe Dor::RightsMetadataDS do
       rights_md_ds = Dor::RightsMetadataDS.new
       mock_dra_obj = double(Dor::RightsAuth)
       expect(mock_dra_obj).to receive(:index_elements).with(no_args).at_least(:once).and_return(
-        :primary => 'access_restricted',
-        :errors => [],
-        :terms => [],
-        :obj_locations => ['location'],
-        :file_locations => ['file_specific_location'],
-        :obj_agents => ['agent'],
-        :file_agents => ['file_specific_agent']
+        primary: 'access_restricted',
+        errors: [],
+        terms: [],
+        obj_locations: ['location'],
+        file_locations: ['file_specific_location'],
+        obj_agents: ['agent'],
+        file_agents: ['file_specific_agent']
       )
       expect(rights_md_ds).to receive(:dra_object).and_return(mock_dra_obj)
 

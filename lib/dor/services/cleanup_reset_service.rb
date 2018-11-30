@@ -19,9 +19,7 @@ module Dor
       last_version = druid_obj.current_version.to_i
 
       # if the current version is still open, avoid this versioned directory
-      if Dor::Config.workflow.client.get_lifecycle('dor', druid, 'accessioned').nil?
-        last_version -= 1
-      end
+      last_version -= 1 if Dor::Config.workflow.client.get_lifecycle('dor', druid, 'accessioned').nil?
       last_version
     end
 

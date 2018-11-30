@@ -17,18 +17,18 @@ module Dor
         client = Config.fedora.client['risearch']
         client.options[:timeout] = opts.delete(:timeout)
         query_params = {
-          :type => 'tuples',
-          :lang => 'itql',
-          :format => 'CSV',
-          :limit => '1000',
-          :stream => 'on',
-          :query => query
+          type: 'tuples',
+          lang: 'itql',
+          format: 'CSV',
+          limit: '1000',
+          stream: 'on',
+          query: query
         }.merge(opts)
         result = client.post(query_params)
         result.split(/\n/)[1..-1].collect { |pid| pid.chomp.sub(/^info:fedora\//, '') }
       end
 
-      def iterate_over_pids(opts = {}, &block)
+      def iterate_over_pids(opts = {})
         opts[:query] ||= 'select $object from <#ri> where $object <info:fedora/fedora-system:def/model#label> $label'
         opts[:in_groups_of] ||= 100
         opts[:mode] ||= :single
@@ -46,7 +46,7 @@ module Dor
       end
 
       def query(query, args = {})
-        params = args.merge({ :q => query })
+        params = args.merge(q: query)
         params[:start] ||= 0
         resp = solr.get 'select', params: params
         return resp unless block_given?
@@ -68,7 +68,7 @@ module Dor
         end
         q = "{!term f=#{Solrizer.solr_name 'identifier', :symbol}}#{id}"
         result = []
-        query(q, :fl => 'id', :rows => 1000, :defType => 'lucene') do |resp|
+        query(q, fl: 'id', rows: 1000, defType: 'lucene') do |resp|
           result += resp['response']['docs'].collect { |doc| doc['id'] }
           true
         end
@@ -86,7 +86,7 @@ module Dor
       end
 
       def find_sdr_graveyard_apo_druid
-        r = Dor::SearchService.query('dc_title_tesim:"SDR Graveyard"', :fl => 'id')
+        r = Dor::SearchService.query('dc_title_tesim:"SDR Graveyard"', fl: 'id')
         if r['response']['docs'].empty?
           nil
         else

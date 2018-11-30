@@ -5,7 +5,7 @@ module Dor
     extend ActiveSupport::Concern
 
     included do
-      has_metadata :name => 'rightsMetadata', :type => Dor::RightsMetadataDS, :label => 'Rights metadata'
+      has_metadata name: 'rightsMetadata', type: Dor::RightsMetadataDS, label: 'Rights metadata'
     end
 
     def build_rightsMetadata_datastream(ds)
@@ -16,9 +16,9 @@ module Dor
 
     def world_doc
       Nokogiri::XML::Builder.new do |xml|
-        xml.access(:type => 'read') {
+        xml.access(type: 'read') do
           xml.machine { xml.world }
-        }
+        end
       end.doc
     end
   end

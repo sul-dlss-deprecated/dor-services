@@ -36,7 +36,7 @@ describe Dor::Editable do
 
     it 'should work on an empty datastream' do
       @empty_item.add_roleplayer('dor-apo-manager', 'dlss:some-staff')
-      expect(@empty_item.roles).to eq({ 'dor-apo-manager' => ['workgroup:dlss:some-staff'] })
+      expect(@empty_item.roles).to eq('dor-apo-manager' => ['workgroup:dlss:some-staff'])
     end
   end
 

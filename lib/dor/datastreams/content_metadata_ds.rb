@@ -5,34 +5,34 @@ require 'set'
 module Dor
   class ContentMetadataDS < ActiveFedora::OmDatastream
     set_terminology do |t|
-      t.root        :path => 'contentMetadata',          :index_as => [:not_searchable]
-      t.contentType :path => '/contentMetadata/@type',   :index_as => [:not_searchable]
-      t.stacks      :path => '/contentMetadata/@stacks', :index_as => [:not_searchable]
-      t.resource(:index_as => [:not_searchable]) do
-        t.id_       :path => { :attribute => 'id' }
-        t.sequence  :path => { :attribute => 'sequence' } # , :data_type => :integer
-        t.type_     :path => { :attribute => 'type' }, :index_as => [:displayable]
-        t.attribute(:path => 'attr', :index_as => [:not_searchable]) do
-          t.name    :path => { :attribute => 'name' }, :index_as => [:not_searchable]
+      t.root        path: 'contentMetadata',          index_as: [:not_searchable]
+      t.contentType path: '/contentMetadata/@type',   index_as: [:not_searchable]
+      t.stacks      path: '/contentMetadata/@stacks', index_as: [:not_searchable]
+      t.resource(index_as: [:not_searchable]) do
+        t.id_       path: { attribute: 'id' }
+        t.sequence  path: { attribute: 'sequence' } # , :data_type => :integer
+        t.type_     path: { attribute: 'type' }, index_as: [:displayable]
+        t.attribute(path: 'attr', index_as: [:not_searchable]) do
+          t.name    path: { attribute: 'name' }, index_as: [:not_searchable]
         end
-        t.file(:index_as => [:not_searchable]) do
-          t.id_      :path => { :attribute => 'id' }
-          t.mimeType :path => { :attribute => 'mimeType' }, :index_as => [:displayable]
-          t.dataType :path => { :attribute => 'dataType' }, :index_as => [:displayable]
-          t.size     :path => { :attribute => 'size'     }, :index_as => [:displayable]    # , :data_type => :long
-          t.role     :path => { :attribute => 'role' },     :index_as => [:not_searchable]
-          t.shelve   :path => { :attribute => 'shelve'   }, :index_as => [:not_searchable] # , :data_type => :boolean
-          t.publish  :path => { :attribute => 'publish'  }, :index_as => [:not_searchable] # , :data_type => :boolean
-          t.preserve :path => { :attribute => 'preserve' }, :index_as => [:not_searchable] # , :data_type => :boolean
+        t.file(index_as: [:not_searchable]) do
+          t.id_      path: { attribute: 'id' }
+          t.mimeType path: { attribute: 'mimeType' }, index_as: [:displayable]
+          t.dataType path: { attribute: 'dataType' }, index_as: [:displayable]
+          t.size     path: { attribute: 'size'     }, index_as: [:displayable]    # , :data_type => :long
+          t.role     path: { attribute: 'role' },     index_as: [:not_searchable]
+          t.shelve   path: { attribute: 'shelve'   }, index_as: [:not_searchable] # , :data_type => :boolean
+          t.publish  path: { attribute: 'publish'  }, index_as: [:not_searchable] # , :data_type => :boolean
+          t.preserve path: { attribute: 'preserve' }, index_as: [:not_searchable] # , :data_type => :boolean
           t.checksum do
-            t.type_ :path => { :attribute => 'type' }
+            t.type_ path: { attribute: 'type' }
           end
         end
-        t.shelved_file(:path => 'file', :attributes => { :shelve => 'yes' }, :index_as => [:not_searchable]) do
-          t.id_ :path => { :attribute => 'id' }, :index_as => [:displayable, :stored_searchable]
+        t.shelved_file(path: 'file', attributes: { shelve: 'yes' }, index_as: [:not_searchable]) do
+          t.id_ path: { attribute: 'id' }, index_as: %i[displayable stored_searchable]
         end
       end
-      t.shelved_file_id :proxy => [:resource, :shelved_file, :id], :index_as => [:displayable, :stored_searchable]
+      t.shelved_file_id proxy: %i[resource shelved_file id], index_as: %i[displayable stored_searchable]
     end
 
     ### READ ONLY METHODS
@@ -80,7 +80,7 @@ module Dor
     # Terminology-based solrization is going to be painfully slow for large
     # contentMetadata streams. Just select the relevant elements instead.
     # TODO: Call super()?
-    def to_solr(solr_doc = {}, *args)
+    def to_solr(solr_doc = {}, *_args)
       doc = ng_xml
       return solr_doc unless doc.root['type']
 
@@ -134,7 +134,7 @@ module Dor
       resource_nodes = ng_xml.search('//resource[@id=\'' + resource_name + '\']')
       raise 'resource doesnt exist.' if resource_nodes.length == 0
 
-      self.ng_xml_will_change!
+      ng_xml_will_change!
 
       node = resource_nodes.first
       file_node = Nokogiri::XML::Node.new('file', ng_xml)
@@ -144,7 +144,7 @@ module Dor
       file_node['preserve'] = file[:preserve] || ''
       node.add_child(file_node)
 
-      [:md5, :sha1].each do |algo|
+      %i[md5 sha1].each do |algo|
         next unless file[algo]
 
         checksum_node = Nokogiri::XML::Node.new('checksum', ng_xml)
@@ -165,7 +165,7 @@ module Dor
     # @return [Nokogiri::XML::Element] the new resource that was added to the contentMetadata
     def add_virtual_resource(child_druid, child_resource)
       # create a virtual resource element with attributes linked to the child and omit label
-      self.ng_xml_will_change!
+      ng_xml_will_change!
       sequence_max = ng_xml.search('//resource').map { |node| node[:sequence].to_i }.max
       resource = Nokogiri::XML::Element.new('resource', ng_xml)
       resource[:sequence] = sequence_max + 1
@@ -191,7 +191,7 @@ module Dor
     def add_resource(files, resource_name, position, type = 'file')
       raise "resource #{resource_name} already exists" if ng_xml.search('//resource[@id=\'' + resource_name + '\']').length > 0
 
-      self.ng_xml_will_change!
+      ng_xml_will_change!
       max = ng_xml.search('//resource').map { |node| node['sequence'].to_i }.max
       # renumber all of the resources that will come after the newly added one
       while max > position
@@ -209,14 +209,14 @@ module Dor
         file_node['id'] = file[:name]
         node.add_child(file_node)
 
-        [:md5, :sha1].each { |algo|
+        %i[md5 sha1].each do |algo|
           next if file[algo].nil?
 
           checksum_node = Nokogiri::XML::Node.new('checksum', ng_xml)
           checksum_node['type'] = algo.to_s
           checksum_node.content = file[algo]
           file_node.add_child(checksum_node)
-        }
+        end
         file_node['size'] = file[:size] if file[:size]
         file_node['role'] = file[:role] if file[:role]
       end
@@ -226,7 +226,7 @@ module Dor
 
     # @param [String] resource_name ID of the resource
     def remove_resource(resource_name)
-      self.ng_xml_will_change!
+      ng_xml_will_change!
       node = singular_node('//resource[@id=\'' + resource_name + '\']')
       position = node['sequence'].to_i + 1
       node.remove
@@ -241,7 +241,7 @@ module Dor
 
     # @param [String] file_name ID of the file element
     def remove_file(file_name)
-      self.ng_xml_will_change!
+      ng_xml_will_change!
       ng_xml.search('//file[@id=\'' + file_name + '\']').each(&:remove)
     end
 
@@ -250,7 +250,7 @@ module Dor
     # @param [String] shelve
     # @param [String] preserve
     def update_attributes(file_name, publish, shelve, preserve, attributes = {})
-      self.ng_xml_will_change!
+      ng_xml_will_change!
       file_node = ng_xml.search('//file[@id=\'' + file_name + '\']').first
       file_node['publish'] = publish
       file_node['shelve'] = shelve
@@ -263,10 +263,10 @@ module Dor
     # @param file [Object] some hash-like file
     # @param old_file_id [String] unique id attribute of the file element
     def update_file(file, old_file_id)
-      self.ng_xml_will_change!
+      ng_xml_will_change!
       file_node = ng_xml.search('//file[@id=\'' + old_file_id + '\']').first
       file_node['id'] = file[:name]
-      [:md5, :sha1].each { |algo|
+      %i[md5 sha1].each do |algo|
         next if file[algo].nil?
 
         checksum_node = ng_xml.search('//file[@id=\'' + old_file_id + '\']/checksum[@type=\'' + algo.to_s + '\']').first
@@ -276,18 +276,18 @@ module Dor
         end
         checksum_node['type'] = algo.to_s
         checksum_node.content = file[algo]
-      }
+      end
 
-      [:size, :shelve, :preserve, :publish, :role].each { |x|
+      %i[size shelve preserve publish role].each do |x|
         file_node[x.to_s] = file[x] if file[x]
-      }
+      end
     end
 
     # @param old_name [String] unique id attribute of the file element
     # @param new_name [String] new unique id value being assigned
     # @return [Nokogiri::XML::Element] the file node
     def rename_file(old_name, new_name)
-      self.ng_xml_will_change!
+      ng_xml_will_change!
       file_node = ng_xml.search('//file[@id=\'' + old_name + '\']').first
       file_node['id'] = new_name
       file_node
@@ -298,7 +298,7 @@ module Dor
     # @param new_label [String] label value being assigned
     # @return [Nokogiri::XML::Element] the resource node
     def update_resource_label(resource_name, new_label)
-      self.ng_xml_will_change!
+      ng_xml_will_change!
       node = singular_node('//resource[@id=\'' + resource_name + '\']')
       labels = node.xpath('./label')
       if labels.length == 0
@@ -314,7 +314,7 @@ module Dor
     # @param resource_name [String] unique id attribute of the resource
     # @param new_type [String] type value being assigned
     def update_resource_type(resource_name, new_type)
-      self.ng_xml_will_change!
+      ng_xml_will_change!
       singular_node('//resource[@id=\'' + resource_name + '\']')['type'] = new_type
     end
 
@@ -324,7 +324,7 @@ module Dor
     # @param new_position [Integer, String] new sequence number of the resource, or a string that looks like one
     # @return [Nokogiri::XML::Element] the resource node
     def move_resource(resource_name, new_position)
-      self.ng_xml_will_change!
+      ng_xml_will_change!
       node = singular_node('//resource[@id=\'' + resource_name + '\']')
       position = node['sequence'].to_i
       new_position = new_position.to_i # tolerate strings as a Legacy behavior
@@ -347,7 +347,7 @@ module Dor
     # @param [String] new_type the new content type
     # @param [String] new_resource_type the new type for all resources
     def set_content_type(old_type, old_resource_type, new_type, new_resource_type)
-      self.ng_xml_will_change!
+      ng_xml_will_change!
       ng_xml.search('/contentMetadata[@type=\'' + old_type + '\']').each do |node|
         node['type'] = new_type
         ng_xml.search('//resource[@type=\'' + old_resource_type + '\']').each do |resource|

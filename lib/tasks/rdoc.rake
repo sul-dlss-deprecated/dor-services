@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 desc 'Generate RDoc'
-task :doc => ['doc:generate']
+task doc: ['doc:generate']
 
 namespace :doc do
   project_root = File.expand_path(File.join(File.dirname(__FILE__), '..', '..'))

@@ -10,7 +10,7 @@ module Dor
       # make sure the resource exists
       raise 'resource doesnt exist.' if xml.search('//resource[@id=\'' + resource + '\']').length == 0
 
-      sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, :auth_methods => ['publickey'])
+      sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, auth_methods: ['publickey'])
       druid_tools = DruidTools::Druid.new(pid, Config.content.content_base_dir)
       location = druid_tools.path(file_name)
       oldlocation = location.gsub('/' + pid.gsub('druid:', ''), '')
@@ -18,7 +18,7 @@ module Dor
       sha1 = Digest::SHA1.file(file.path).hexdigest
       size = File.size?(file.path)
       # update contentmd
-      file_hash = { :name => file_name, :md5 => md5, :publish => publish, :shelve => shelve, :preserve => preserve, :size => size.to_s, :sha1 => sha1, :mime_type => mime_type }
+      file_hash = { name: file_name, md5: md5, publish: publish, shelve: shelve, preserve: preserve, size: size.to_s, sha1: sha1, mime_type: mime_type }
       begin
         sftp.stat!(location.gsub(file_name, ''))
         begin
@@ -43,7 +43,7 @@ module Dor
     end
 
     def replace_file(file, file_name)
-      sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, :auth_methods => ['publickey'])
+      sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, auth_methods: ['publickey'])
       item = Dor.find(pid)
       druid_tools = DruidTools::Druid.new(pid, Config.content.content_base_dir)
       location = druid_tools.path(file_name)
@@ -52,13 +52,13 @@ module Dor
       sha1 = Digest::SHA1.file(file.path).hexdigest
       size = File.size?(file.path)
       # update contentmd
-      file_hash = { :name => file_name, :md5 => md5, :size => size.to_s, :sha1 => sha1 }
+      file_hash = { name: file_name, md5: md5, size: size.to_s, sha1: sha1 }
       begin
         sftp.stat!(location)
         sftp.upload!(file.path, location)
         # this doesnt allow renaming files
         item.contentMetadata.update_file(file_hash, file_name)
-      rescue
+      rescue StandardError
         sftp.upload!(file.path, oldlocation)
         item.contentMetadata.update_file(file_hash, file_name)
       end
@@ -72,10 +72,10 @@ module Dor
       druid_tools = DruidTools::Druid.new(pid, Config.content.content_base_dir)
       location = druid_tools.path(file)
       oldlocation = location.gsub('/' + file, '').gsub('/' + pid.gsub('druid:', ''), '') + '/' + file
-      sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, :auth_methods => ['publickey'])
+      sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, auth_methods: ['publickey'])
       begin
         data = sftp.download!(location)
-      rescue
+      rescue StandardError
         data = sftp.download!(oldlocation)
       end
       data
@@ -86,10 +86,10 @@ module Dor
       druid_tools = DruidTools::Druid.new(pid, Config.content.content_base_dir)
       location = druid_tools.path(filename)
       oldlocation = location.gsub('/' + pid.gsub('druid:', ''), '')
-      sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, :auth_methods => ['publickey'])
+      sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, auth_methods: ['publickey'])
       begin
         sftp.remove!(location)
-      rescue
+      rescue StandardError
         # if the file doesnt exist, that is ok, not all files will be present in the workspace
         begin
           sftp.remove!(oldlocation)
@@ -105,10 +105,10 @@ module Dor
       druid_tools = DruidTools::Druid.new(pid, Config.content.content_base_dir)
       location = druid_tools.path(old_name)
       oldlocation = location.gsub('/' + pid.gsub('druid:', ''), '')
-      sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, :auth_methods => ['publickey'])
+      sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, auth_methods: ['publickey'])
       begin
         sftp.rename!(location, location.gsub(old_name, new_name))
-      rescue
+      rescue StandardError
         sftp.rename!(oldlocation, oldlocation.gsub(old_name, new_name))
       end
       contentMetadata.rename_file(old_name, new_name)
@@ -129,7 +129,7 @@ module Dor
     def list_files
       filename = 'none'
       files = []
-      sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, :auth_methods => ['publickey'])
+      sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, auth_methods: ['publickey'])
       druid_tools = DruidTools::Druid.new(pid, Config.content.content_base_dir)
       location = druid_tools.path(filename).gsub(filename, '')
       oldlocation = location.gsub('/' + pid.gsub('druid:', ''), '')
@@ -137,7 +137,7 @@ module Dor
         sftp.dir.entries(location, '*') do |file|
           files << file.name
         end
-      rescue
+      rescue StandardError
         begin
           sftp.dir.glob(oldlocation, '*') do |file|
             files << file.name
@@ -172,7 +172,7 @@ module Dor
         source_cm.xpath('/contentMetadata/resource').each do |old_resource|
           max_sequence += 1
           resource_copy = old_resource.clone
-          resource_copy['sequence'] = "#{max_sequence}"
+          resource_copy['sequence'] = max_sequence.to_s
 
           # Append sequence number to each secondary filename, then
           # look for filename collisions with the primary object
@@ -191,14 +191,12 @@ module Dor
           end
 
           lbl = old_resource.at_xpath 'label'
-          if lbl && lbl.text =~ /^(.*)\s+\d+$/
-            resource_copy.at_xpath('label').content = "#{$1} #{max_sequence}"
-          end
+          resource_copy.at_xpath('label').content = "#{$1} #{max_sequence}" if lbl && lbl.text =~ /^(.*)\s+\d+$/
 
           primary_cm.at_xpath('/contentMetadata/resource[last()]').add_next_sibling resource_copy
-          attr_node = primary_cm.create_element 'attr', src_pid, :name => 'mergedFromPid'
+          attr_node = primary_cm.create_element 'attr', src_pid, name: 'mergedFromPid'
           resource_copy.first_element_child.add_previous_sibling attr_node
-          attr_node = primary_cm.create_element 'attr', old_resource['id'], :name => 'mergedFromResource'
+          attr_node = primary_cm.create_element 'attr', old_resource['id'], name: 'mergedFromResource'
           resource_copy.first_element_child.add_previous_sibling attr_node
         end
       end
@@ -226,7 +224,7 @@ module Dor
       add_tag "Decommissioned : #{tag}"
     end
 
-    alias_method :decomission, :decommission
+    alias decomission decommission
     deprecate decomission: 'Use decommission instead'
 
     # Adds a RELS-EXT constituent relationship to the given druid

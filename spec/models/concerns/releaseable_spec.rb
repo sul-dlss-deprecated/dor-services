@@ -24,7 +24,7 @@ describe Dor::Releaseable, :vcr do
   describe 'handling tags on objects and determining release status' do
     it 'should use only the most recent self tag to determine if an item is released, with no release tags on the collection' do
       VCR.use_cassette('should_use_only_the_most_recent_self_tag_to_determine_if_an_item_is_released_with_no_release_tags_on_the_collection') do
-        item = instantiate_fixture("druid:vs298kg2555", Dor::Item)
+        item = instantiate_fixture('druid:vs298kg2555', Dor::Item)
         expect(item.released_for['Kurita']['release']).to be_truthy
       end
     end
@@ -134,55 +134,55 @@ describe 'Adding release nodes', :vcr do
       allow(@item).to receive(:save).and_return(true) # stud out the true in that it we lack a connection to solr
       expect(@item).to receive(:create_workflow).with('releaseWF') # Make sure releaseWF is called
       expect(@item).to receive(:add_release_node).once
-      expect(@item.add_release_nodes_and_start_releaseWF({ :release => true, :what => 'self', :who => 'carrickr', :to => 'FRDA' })).to eq(nil) # Should run and return void
+      expect(@item.add_release_nodes_and_start_releaseWF(release: true, what: 'self', who: 'carrickr', to: 'FRDA')).to eq(nil) # Should run and return void
     end
     it 'should release an item with multiple release tags supplied' do
       allow(@item).to receive(:save).and_return(true) # stud out the true in that it we lack a connection to solr
       expect(@item).to receive(:create_workflow).with('releaseWF') # Make sure releaseWF is called
       expect(@item).to receive(:add_release_node).twice
-      tags = [{ :release => true, :what => 'self', :who => 'carrickr', :to => 'FRDA' }, { :release => true, :what => 'self', :who => 'carrickr', :to => 'Revs' }]
+      tags = [{ release: true, what: 'self', who: 'carrickr', to: 'FRDA' }, { release: true, what: 'self', who: 'carrickr', to: 'Revs' }]
       expect(@item.add_release_nodes_and_start_releaseWF(tags)).to eq(nil) # Should run and return void
     end
   end
 
   describe 'valid_release_attributes' do
     before :each do
-      @args = { :when => '2015-01-05T23:23:45Z', :who => 'carrickr', :to => 'Revs', :what => 'collection', :tag => 'Project:Fitch:Batch2' }
+      @args = { when: '2015-01-05T23:23:45Z', who: 'carrickr', to: 'Revs', what: 'collection', tag: 'Project:Fitch:Batch2' }
     end
     it 'should raise an error when :who, :to, :what are missing or are not strings' do
-      expect{ @item.valid_release_attributes(true,  @args.merge(:who  => nil)) }.to raise_error(ArgumentError)
-      expect{ @item.valid_release_attributes(false, @args.merge(:to   => nil)) }.to raise_error(ArgumentError)
-      expect{ @item.valid_release_attributes(true,  @args.merge(:what => nil)) }.to raise_error(ArgumentError)
-      expect{ @item.valid_release_attributes(true,  @args.merge(:who  => 1)) }.to raise_error(ArgumentError)
-      expect{ @item.valid_release_attributes(true,  @args.merge(:to   => true)) }.to raise_error(ArgumentError)
-      expect{ @item.valid_release_attributes(false, @args.merge(:what => %w(i am an array))) }.to raise_error(ArgumentError)
+      expect{ @item.valid_release_attributes(true,  @args.merge(who: nil)) }.to raise_error(ArgumentError)
+      expect{ @item.valid_release_attributes(false, @args.merge(to: nil)) }.to raise_error(ArgumentError)
+      expect{ @item.valid_release_attributes(true,  @args.merge(what: nil)) }.to raise_error(ArgumentError)
+      expect{ @item.valid_release_attributes(true,  @args.merge(who: 1)) }.to raise_error(ArgumentError)
+      expect{ @item.valid_release_attributes(true,  @args.merge(to: true)) }.to raise_error(ArgumentError)
+      expect{ @item.valid_release_attributes(false, @args.merge(what: %w(i am an array))) }.to raise_error(ArgumentError)
     end
     it 'should not raise an error when :what is self or collection' do
       expect(@item.valid_release_attributes(false, @args)).to be true
-      expect(@item.valid_release_attributes(true,  @args.merge(:what => 'self'))).to be true
+      expect(@item.valid_release_attributes(true,  @args.merge(what: 'self'))).to be true
     end
     it 'raises an argument error when :what is a string, but is not self or collection' do
-      expect{ @item.valid_release_attributes(true, @args.merge(:what => 'foo')) }.to raise_error(ArgumentError)
+      expect{ @item.valid_release_attributes(true, @args.merge(what: 'foo')) }.to raise_error(ArgumentError)
     end
     it 'should add a tag when all attributes are properly provided, and drop the invalid <tag> attribute' do
       VCR.use_cassette('simple_release_tag_add_success_test') do
-        tag_xml = @item.add_release_node(true, @args.merge(:what => 'self'))
+        tag_xml = @item.add_release_node(true, @args.merge(what: 'self'))
         expect(tag_xml).to be_a_kind_of(Nokogiri::XML::Element)
-        expect(tag_xml.to_xml).to eq("<release when=\"2015-01-05T23:23:45Z\" who=\"carrickr\" to=\"Revs\" what=\"self\">true</release>")
+        expect(tag_xml.to_xml).to eq('<release when="2015-01-05T23:23:45Z" who="carrickr" to="Revs" what="self">true</release>')
       end
     end
     it 'should fail to add a release node when there is an attribute error' do
       VCR.use_cassette('simple_release_tag_add_success_test') do
-        expect{ @item.add_release_node(true,  { :who => nil, :to => 'Revs', :what => 'self' }) }.to raise_error(ArgumentError) # who is not a string
-        expect{ @item.add_release_node(true,  { :who => nil, :to => 'Revs', :what => 'unknown_value' }) }.to raise_error(ArgumentError) # who is not a string
+        expect{ @item.add_release_node(true,  who: nil, to: 'Revs', what: 'self') }.to raise_error(ArgumentError) # who is not a string
+        expect{ @item.add_release_node(true,  who: nil, to: 'Revs', what: 'unknown_value') }.to raise_error(ArgumentError) # who is not a string
         expect{ @item.add_release_node(1, @args) }.to raise_error(ArgumentError) # invalid release value
       end
     end
     it 'should drop all invalid attributes passed in' do
       VCR.use_cassette('simple_release_tag_add_success_test') do
-        new_tag = "<release when=\"2016-01-05T23:23:45Z\" who=\"petucket\" to=\"Revs\" what=\"self\">true</release>"
+        new_tag = '<release when="2016-01-05T23:23:45Z" who="petucket" to="Revs" what="self">true</release>'
         expect(@item.identityMetadata.to_xml).to_not include new_tag
-        @item.add_release_node(true, { :when => '2016-01-05T23:23:45Z', :who => 'petucket', :to => 'Revs', :what => 'self', :blop => "something", :tag => 'Revs', 'something_else' => 'whatup' })
+        @item.add_release_node(true, :when => '2016-01-05T23:23:45Z', :who => 'petucket', :to => 'Revs', :what => 'self', :blop => 'something', :tag => 'Revs', 'something_else' => 'whatup')
         expect(@item.identityMetadata.to_xml).to include new_tag
       end
     end

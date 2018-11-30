@@ -9,8 +9,8 @@ class EmbargoedItem < ActiveFedora::Base
 end
 
 describe Dor::Embargoable do
-  let(:embargo_release_date) { Time.now.utc - 100000 }
-  let(:release_access) {
+  let(:embargo_release_date) { Time.now.utc - 100_000 }
+  let(:release_access) do
     <<-EOXML
     <releaseAccess>
       <access type="read">
@@ -26,8 +26,8 @@ describe Dor::Embargoable do
       </access>
     </releaseAccess>
     EOXML
-  }
-  let(:rights_xml) {
+  end
+  let(:rights_xml) do
     <<-EOXML
     <rightsMetadata objectId="druid:rt923jk342">
       <copyright>
@@ -49,7 +49,7 @@ describe Dor::Embargoable do
       </use>
     </rightsMetadata>
     EOXML
-  }
+  end
 
   before :each do
     stub_config
@@ -60,14 +60,14 @@ describe Dor::Embargoable do
   end
 
   describe '#release_embargo' do
-    let(:embargo_ds) {
+    let(:embargo_ds) do
       eds = Dor::EmbargoMetadataDS.new
       eds.status = 'embargoed'
       eds.release_date = embargo_release_date
       eds.release_access_node = Nokogiri::XML(release_access) { |config| config.default_xml.noblanks }
       eds
-    }
-    let!(:embargo_item) {
+    end
+    let!(:embargo_item) do
       embargo_item = EmbargoedItem.new
       embargo_item.datastreams['embargoMetadata'] = embargo_ds
       rds = Dor::RightsMetadataDS.new
@@ -76,7 +76,7 @@ describe Dor::Embargoable do
       expect(embargo_item.rightsMetadata).to receive(:ng_xml_will_change!)
       embargo_item.release_embargo('application:embargo-release')
       embargo_item
-    }
+    end
 
     it 'sets the embargo status to released' do
       expect(embargo_ds.status).to eq('released')
@@ -105,7 +105,7 @@ describe Dor::Embargoable do
 
     it "writes 'embargo released' to event history" do
       events = embargo_item.datastreams['events']
-      events.find_events_by_type('embargo') do |who, timestamp, message|
+      events.find_events_by_type('embargo') do |who, _timestamp, message|
         expect(who).to eq 'application:embargo-release'
         expect(message).to eq 'Embargo released'
       end
@@ -113,21 +113,21 @@ describe Dor::Embargoable do
   end
 
   describe '#release_20_pct_vis_embargo' do
-    let(:embargo_ds) {
+    let(:embargo_ds) do
       eds = Dor::EmbargoMetadataDS.new
       eds.status = 'embargoed'
       eds.release_date = embargo_release_date
       eds.release_access_node = Nokogiri::XML(release_access) { |config| config.default_xml.noblanks }
       eds
-    }
-    let!(:embargo_item) {
+    end
+    let!(:embargo_item) do
       embargo_item = EmbargoedItem.new
       embargo_item.datastreams['embargoMetadata'] = embargo_ds
       embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }
       expect(embargo_item.rightsMetadata).to receive(:ng_xml_will_change!)
       embargo_item.release_20_pct_vis_embargo('application:embargo-release')
       embargo_item
-    }
+    end
 
     it 'sets the embargo status to released' do
       expect(embargo_ds.twenty_pct_status).to eq 'released'
@@ -147,7 +147,7 @@ describe Dor::Embargoable do
 
     it "writes 'embargo released' to event history" do
       events = embargo_item.datastreams['events']
-      events.find_events_by_type('embargo') do |who, timestamp, message|
+      events.find_events_by_type('embargo') do |who, _timestamp, message|
         expect(who).to eq('application:embargo-release')
         expect(message).to eq('20% Visibility Embargo released')
       end
@@ -155,7 +155,7 @@ describe Dor::Embargoable do
   end
 
   describe '#update_embargo' do
-    let(:embargo_item) {
+    let(:embargo_item) do
       embargo_item = EmbargoedItem.new
       eds = embargo_item.datastreams['embargoMetadata']
       eds.status = 'embargoed'
@@ -164,7 +164,7 @@ describe Dor::Embargoable do
       allow_any_instance_of(ActiveFedora::OmDatastream).to receive(:save).and_return(true)
       embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }
       embargo_item
-    }
+    end
 
     it 'updates embargo date' do
       old_embargo_date = embargo_item.embargoMetadata.release_date

@@ -50,7 +50,7 @@ module Dor
           primary_resource = primary_cm.at_xpath "//resource[attr[@name = 'mergedFromPid']/text() = '#{secondary.pid}' and
                                                              attr[@name = 'mergedFromResource']/text() = '#{src_resource['id']}' ]"
           sequence = primary_resource['sequence']
-          src_resource.xpath('//file/@id').map { |id| id.value }.each do |file_id|
+          src_resource.xpath('//file/@id').map(&:value).each do |file_id|
             copy_path = sec_druid.find_content file_id
             new_name = secondary.new_secondary_file_name(file_id, sequence)
             # TODO: verify new_name exists in primary_cm?
@@ -71,13 +71,13 @@ module Dor
           unpublish
           Dor::CleanupService.cleanup_by_druid @current_secondary.pid
           Dor::Config.workflow.client.archive_active_workflow 'dor', @current_secondary.pid
-        rescue => e
+        rescue StandardError => e
           @logger.error "Unable to decommission #{@current_secondary.pid} with primary object #{@primary.pid}: #{e.inspect}"
           @logger.error e.backtrace.join("\n")
         end
       end
     end
-    alias_method :decomission_secondaries, :decommission_secondaries
+    alias decomission_secondaries decommission_secondaries
     deprecate decomission_secondaries: 'Use decommission_secondaries instead'
 
     # Remove content from stacks

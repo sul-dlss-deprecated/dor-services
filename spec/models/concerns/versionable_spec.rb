@@ -10,11 +10,11 @@ end
 describe Dor::Versionable do
   let(:dr) { 'ab12cd3456' }
 
-  let(:obj) {
+  let(:obj) do
     v = VersionableItem.new
     allow(v).to receive(:pid).and_return(dr)
     v
-  }
+  end
 
   let(:vmd_ds) { obj.datastreams['versionMetadata'] }
   let(:ev_ds) { obj.datastreams['events'] }
@@ -59,16 +59,16 @@ describe Dor::Versionable do
       end
 
       it 'includes vers_md_upd_info' do
-        vers_md_upd_info = { :significance => 'real_major', :description => 'same as it ever was', :opening_user_name => 'sunetid' }
+        vers_md_upd_info = { significance: 'real_major', description: 'same as it ever was', opening_user_name: 'sunetid' }
         cur_vers = '2'
         allow(vmd_ds).to receive(:current_version).and_return(cur_vers)
         allow(obj).to receive(:save)
 
         expect(ev_ds).to receive(:add_event).with('open', vers_md_upd_info[:opening_user_name], "Version #{cur_vers} opened")
-        expect(vmd_ds).to receive(:update_current_version).with({ :description => vers_md_upd_info[:description], :significance => vers_md_upd_info[:significance].to_sym })
+        expect(vmd_ds).to receive(:update_current_version).with(description: vers_md_upd_info[:description], significance: vers_md_upd_info[:significance].to_sym)
         expect(obj).to receive(:save)
 
-        obj.open_new_version({ :vers_md_upd_info => vers_md_upd_info })
+        obj.open_new_version(vers_md_upd_info: vers_md_upd_info)
       end
 
       it "doesn't include vers_md_upd_info" do
@@ -131,7 +131,7 @@ describe Dor::Versionable do
 
       vmd_ds.increment_version
       expect(vmd_ds).to receive(:save)
-      obj.close_version :description => 'closing text', :significance => :major
+      obj.close_version description: 'closing text', significance: :major
 
       expect(vmd_ds.to_xml).to be_equivalent_to(<<-XML
         <versionMetadata objectId="druid:ab123cd4567">

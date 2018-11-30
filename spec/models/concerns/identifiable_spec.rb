@@ -138,14 +138,14 @@ describe Dor::Identifiable do
       item.remove_other_Id('catkey')
       expect(item.identityMetadata.otherId('catkey').length).to eq(0)
       expect(item.catkey).to be_nil
-      item.identityMetadata.add_otherId("previous_catkey:123") # add a couple previous catkeys
-      item.identityMetadata.add_otherId("previous_catkey:456")
+      item.identityMetadata.add_otherId('previous_catkey:123') # add a couple previous catkeys
+      item.identityMetadata.add_otherId('previous_catkey:456')
       expect(item.previous_catkeys.length).to eq(2)
       item.catkey = new_catkey
       expect(item.identityMetadata.otherId('catkey').length).to eq(1)
       expect(item.catkey).to eq(new_catkey)
       expect(item.previous_catkeys.length).to eq(2) # still two entries, nothing changed in the history
-      expect(item.previous_catkeys).to eq(['123', '456'])
+      expect(item.previous_catkeys).to eq(%w[123 456])
     end
     it 'should remove the catkey from the XML when it is set to blank, but store the previously set value in the history' do
       expect(item.identityMetadata.otherId('catkey').length).to eq(1)
@@ -235,7 +235,7 @@ describe Dor::Identifiable do
       expect('ab123cd4567'.match(item.pid_regex).size).to eq(1)
     end
     it 'should pull out a pid by regex' do
-      expect('druid:ab123cd4567/other crappola'.match(item.pid_regex)[0]).to eq("ab123cd4567")
+      expect('druid:ab123cd4567/other crappola'.match(item.pid_regex)[0]).to eq('ab123cd4567')
     end
     it 'should not identify non-pids' do
       expect('bogus'.match(item.pid_regex)).to be_nil
@@ -247,7 +247,7 @@ describe Dor::Identifiable do
       expect('druid:ab123cd4567'.match(item.druid_regex).size).to eq(1)
     end
     it 'should pull out a full druid by regex' do
-      expect('druid:ab123cd4567/other crappola'.match(item.druid_regex)[0]).to eq("druid:ab123cd4567")
+      expect('druid:ab123cd4567/other crappola'.match(item.druid_regex)[0]).to eq('druid:ab123cd4567')
     end
     it 'should not identify non-druids' do
       expect('bogus'.match(item.druid_regex)).to be_nil

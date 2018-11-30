@@ -3,90 +3,90 @@
 module Dor
   class AdministrativeMetadataDS < ActiveFedora::OmDatastream
     set_terminology do |t|
-      t.root :path => 'administrativeMetadata', :index_as => [:not_searchable]
-      t.metadata_format :path => 'descMetadata/format'
-      t.admin_metadata_format :path => 'descMetadata/format', :index_as => [:symbol]
-      t.metadata_source :path => 'descMetadata/source', :index_as => [:symbol]
+      t.root path: 'administrativeMetadata', index_as: [:not_searchable]
+      t.metadata_format path: 'descMetadata/format'
+      t.admin_metadata_format path: 'descMetadata/format', index_as: [:symbol]
+      t.metadata_source path: 'descMetadata/source', index_as: [:symbol]
       t.descMetadata do
         t.source
         t.format
       end
       # Placeholders for existing defined stanzas to be fleshed out as needed
-      t.contact :index_as => [:not_searchable]
-      t.rights :index_as => [:not_searchable]
-      t.relationships :index_as => [:not_searchable]
-      t.registration :index_as => [:not_searchable] do
+      t.contact index_as: [:not_searchable]
+      t.rights index_as: [:not_searchable]
+      t.relationships index_as: [:not_searchable]
+      t.registration index_as: [:not_searchable] do
         t.agreementId
         t.itemTag
-        t.workflow_id :path => 'workflow/@id', :index_as => [:symbol]
-        t.default_collection :path => 'collection/@id'
+        t.workflow_id path: 'workflow/@id', index_as: [:symbol]
+        t.default_collection path: 'collection/@id'
       end
-      t.workflow :path => 'registration/workflow'
-      t.deposit :index_as => [:not_searchable]
+      t.workflow path: 'registration/workflow'
+      t.deposit index_as: [:not_searchable]
 
-      t.accessioning :index_as => [:not_searchable] do
-        t.workflow_id :path => 'workflow/@id', :index_as => [:symbol]
+      t.accessioning index_as: [:not_searchable] do
+        t.workflow_id path: 'workflow/@id', index_as: [:symbol]
       end
 
-      t.preservation :index_as => [:not_searchable]
-      t.dissemination :index_as => [:not_searchable] do
+      t.preservation index_as: [:not_searchable]
+      t.dissemination index_as: [:not_searchable] do
         t.harvester
         t.releaseDelayLimit
       end
       t.defaults do
-        t.initiate_workflow :path => 'initiateWorkflow' do
-          t.lane :path => { :attribute => 'lane' }
+        t.initiate_workflow path: 'initiateWorkflow' do
+          t.lane path: { attribute: 'lane' }
         end
-        t.shelving :path => 'shelving' do
-          t.path :path => { :attribute => 'path' }
+        t.shelving path: 'shelving' do
+          t.path path: { attribute: 'path' }
         end
       end
     end
 
     define_template :default_collection do |xml|
-      xml.administrativeMetadata {
-        xml.registration {
-          xml.collection(:id => '')
-        }
-      }
+      xml.administrativeMetadata do
+        xml.registration do
+          xml.collection(id: '')
+        end
+      end
     end
 
     define_template :agreementId do |xml|
-      xml.administrativeMetadata {
-        xml.registration {
+      xml.administrativeMetadata do
+        xml.registration do
           xml.agreementId
-        }
-      }
+        end
+      end
     end
 
     define_template :metadata_format do |xml|
-      xml.descMetadata {
+      xml.descMetadata do
         xml.format
-      }
+      end
     end
 
     define_template :metadata_source do |xml|
-      xml.administrativeMetadata {
-        xml.descMetadata {
+      xml.administrativeMetadata do
+        xml.descMetadata do
           xml.source
-        }
-      }
+        end
+      end
     end
 
     define_template :registration do |xml|
-      xml.administrativeMetadata {
-        xml.registration {
-          xml.workflow(:id => '')
-        }
-      }
+      xml.administrativeMetadata do
+        xml.registration do
+          xml.workflow(id: '')
+        end
+      end
     end
 
     define_template :default_collection do |xml|
-      xml.administrativeMetadata {
-        xml.registration {
+      xml.administrativeMetadata do
+        xml.registration do
           xml.collection
-        }
-      }
+        end
+      end
     end
 
     def self.xml_template

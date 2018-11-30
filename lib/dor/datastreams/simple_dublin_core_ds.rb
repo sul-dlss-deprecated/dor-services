@@ -10,9 +10,9 @@ module Dor
         namespace_prefix: 'oai_dc',
         index_as: [:not_searchable]
       )
-      t.title(:index_as => [:stored_sortable, :stored_searchable], :xmlns => 'http://purl.org/dc/elements/1.1/', :namespace_prefix => 'dc')
-      t.creator(:index_as => [:stored_sortable, :stored_searchable], :xmlns => 'http://purl.org/dc/elements/1.1/', :namespace_prefix => 'dc')
-      t.identifier(:index_as => [:symbol, :stored_searchable], :xmlns => 'http://purl.org/dc/elements/1.1/', :namespace_prefix => 'dc')
+      t.title(index_as: %i[stored_sortable stored_searchable], xmlns: 'http://purl.org/dc/elements/1.1/', namespace_prefix: 'dc')
+      t.creator(index_as: %i[stored_sortable stored_searchable], xmlns: 'http://purl.org/dc/elements/1.1/', namespace_prefix: 'dc')
+      t.identifier(index_as: %i[symbol stored_searchable], xmlns: 'http://purl.org/dc/elements/1.1/', namespace_prefix: 'dc')
     end
 
     def self.xml_template
@@ -21,7 +21,7 @@ module Dor
           'xmlns:oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/',
           'xmlns:dc' => 'http://purl.org/dc/elements/1.1/',
           'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
-          'xsi:schemaLocation' => 'http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
+          'xsi:schemaLocation' => 'http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd'
         )
       end
 
@@ -34,18 +34,18 @@ module Dor
 
       doc = super solr_doc, *args
 
-      add_solr_value(doc, 'dc_title',   title.first,   :string, [:stored_sortable, :stored_searchable])
-      add_solr_value(doc, 'dc_creator', creator.first, :string, [:stored_sortable, :stored_searchable])
+      add_solr_value(doc, 'dc_title',   title.first,   :string, %i[stored_sortable stored_searchable])
+      add_solr_value(doc, 'dc_creator', creator.first, :string, %i[stored_sortable stored_searchable])
 
       identifiers = {}
 
       identifier.each { |i| ns, val = i.split(':'); identifiers[ns] ||= val }
 
       identifiers.each do |ns, val|
-        add_solr_value(doc, "dc_identifier_#{ns}", val, :string, [:stored_sortable, :stored_searchable])
+        add_solr_value(doc, "dc_identifier_#{ns}", val, :string, %i[stored_sortable stored_searchable])
       end
 
-      return doc
+      doc
     rescue Exception => e
       warn "ERROR in SimpleDublinCoreDs to_solr()! #{e}"
       solr_doc

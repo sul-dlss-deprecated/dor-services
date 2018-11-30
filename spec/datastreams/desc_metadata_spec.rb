@@ -106,7 +106,7 @@ describe Dor::DescMetadataDS do
   context 'Behavior of a freshly initialized Datastream' do
     it 'should not throw an error when retrieving title_info if the datastream object has yet to have XML content set' do
       desc_md_datastream = Dor::DescMetadataDS.new
-      expect(desc_md_datastream.title_info.main_title).to eq([""])
+      expect(desc_md_datastream.title_info.main_title).to eq([''])
     end
 
     it 'should use the expected MODS version' do

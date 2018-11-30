@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # frozen_string_literal: true
 
 require 'scanf'
@@ -13,10 +12,10 @@ module Dor
   class GeoMetadataDS < ActiveFedora::OmDatastream
     # namespaces
     NS = {
-      :rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-      :gco => 'http://www.isotc211.org/2005/gco',
-      :gmd => 'http://www.isotc211.org/2005/gmd',
-      :gfc => 'http://www.isotc211.org/2005/gfc'
+      rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+      gco: 'http://www.isotc211.org/2005/gco',
+      gmd: 'http://www.isotc211.org/2005/gmd',
+      gfc: 'http://www.isotc211.org/2005/gfc'
     }.freeze
 
     # hash with all namespaces

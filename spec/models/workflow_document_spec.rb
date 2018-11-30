@@ -7,10 +7,10 @@ RSpec.describe Dor::Workflow::Document do
     # stub the wf definition. The workflow document updates the processes in the definition with the values from the xml.
     @wf_definition = double(Dor::WorkflowObject)
     wf_definition_procs = []
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', { 'name' => 'hello', 'lifecycle' => 'lc', 'status' => 'stat', 'sequence' => '1' })
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', { 'name' => 'goodbye', 'status' => 'waiting', 'sequence' => '2', 'prerequisite' => ['hello'] })
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', { 'name' => 'technical-metadata', 'status' => 'error', 'sequence' => '3' })
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', { 'name' => 'some-other-step', 'sequence' => '4' })
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => 'hello', 'lifecycle' => 'lc', 'status' => 'stat', 'sequence' => '1')
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => 'goodbye', 'status' => 'waiting', 'sequence' => '2', 'prerequisite' => ['hello'])
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => 'technical-metadata', 'status' => 'error', 'sequence' => '3')
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => 'some-other-step', 'sequence' => '4')
 
     allow(@wf_definition).to receive(:processes).and_return(wf_definition_procs)
   end

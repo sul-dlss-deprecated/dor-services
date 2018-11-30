@@ -44,7 +44,7 @@ module Dor
     def public_relationships
       include_elements = ['fedora:isMemberOf', 'fedora:isMemberOfCollection', 'fedora:isConstituentOf']
       rels_doc = Nokogiri::XML(datastreams['RELS-EXT'].content)
-      rels_doc.xpath('/rdf:RDF/rdf:Description/*', { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' }).each do |rel|
+      rels_doc.xpath('/rdf:RDF/rdf:Description/*', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#').each do |rel|
         unless include_elements.include?([rel.namespace.prefix, rel.name].join(':'))
           rel.next_sibling.remove if rel.next_sibling.content.strip.empty?
           rel.remove
@@ -64,7 +64,7 @@ module Dor
     def publish_metadata
       rights = datastreams['rightsMetadata'].ng_xml.clone.remove_namespaces!
       if rights.at_xpath("//rightsMetadata/access[@type='discover']/machine/world")
-        dc_xml = generate_dublin_core.to_xml { |config| config.no_declaration }
+        dc_xml = generate_dublin_core.to_xml(&:no_declaration)
         DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'dc')
         %w(identityMetadata contentMetadata rightsMetadata).each do |stream|
           DigitalStacksService.transfer_to_document_store(pid, datastreams[stream].content.to_s, stream) if datastreams[stream]

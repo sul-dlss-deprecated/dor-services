@@ -21,9 +21,7 @@ module Dor
 
       FileUtils.mv(bag_dir, "#{bag_dir}_v#{version}") if File.exist?(bag_dir)
 
-      if File.exist?("#{bag_dir}.tar")
-        FileUtils.mv("#{bag_dir}.tar", "#{bag_dir}_v#{version}.tar")
-      end
+      FileUtils.mv("#{bag_dir}.tar", "#{bag_dir}_v#{version}.tar") if File.exist?("#{bag_dir}.tar")
     end
   end
 end

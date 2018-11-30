@@ -4,14 +4,14 @@ module Dor
   module Describable
     extend ActiveSupport::Concern
 
-    MODS_TO_DC_XSLT = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + "/mods2dc.xslt")))
+    MODS_TO_DC_XSLT = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + '/mods2dc.xslt')))
     XMLNS_OAI_DC = 'http://www.openarchives.org/OAI/2.0/oai_dc/'
     XMLNS_DC = 'http://purl.org/dc/elements/1.1/'
 
-    class CrosswalkError < Exception; end
+    class CrosswalkError < RuntimeError; end
 
     included do
-      has_metadata :name => 'descMetadata', :type => Dor::DescMetadataDS, :label => 'Descriptive Metadata', :control_group => 'M'
+      has_metadata name: 'descMetadata', type: Dor::DescMetadataDS, label: 'Descriptive Metadata', control_group: 'M'
     end
 
     require 'stanford-mods'
@@ -29,7 +29,7 @@ module Dor
     end
 
     def fetch_descMetadata_datastream
-      candidates = datastreams['identityMetadata'].otherId.collect { |oid| oid.to_s }
+      candidates = datastreams['identityMetadata'].otherId.collect(&:to_s)
       metadata_id = Dor::MetadataService.resolvable(candidates).first
       metadata_id.nil? ? nil : Dor::MetadataService.fetch(metadata_id.to_s)
     end
@@ -71,18 +71,16 @@ module Dor
     # @param [Boolean] force Overwrite existing XML
     # @return [String] descMetadata.content XML
     def set_desc_metadata_using_label(force = false)
-      unless force || descMetadata.new?
-        raise 'Cannot proceed, there is already content in the descriptive metadata datastream: ' + descMetadata.content.to_s
-      end
+      raise 'Cannot proceed, there is already content in the descriptive metadata datastream: ' + descMetadata.content.to_s unless force || descMetadata.new?
 
       label = self.label
-      builder = Nokogiri::XML::Builder.new { |xml|
-        xml.mods(Dor::DescMetadataDS::MODS_HEADER_CONFIG) {
-          xml.titleInfo {
+      builder = Nokogiri::XML::Builder.new do |xml|
+        xml.mods(Dor::DescMetadataDS::MODS_HEADER_CONFIG) do
+          xml.titleInfo do
             xml.title label
-          }
-        }
-      }
+          end
+        end
+      end
       descMetadata.content = builder.to_xml
     end
 

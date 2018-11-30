@@ -30,7 +30,7 @@ module Dor
     # Dor.load_instance() if the item is not in the index, or is improperly indexed.
     # @param [String] pid The object's PID
     # @return [Object] the ActiveFedora-modeled object
-    def find(pid, opts = {})
+    def find(pid, _opts = {})
       load_instance(pid)
     end
 

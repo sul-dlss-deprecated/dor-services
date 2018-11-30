@@ -27,7 +27,7 @@ describe Dor::DigitalStacksService do
       content_diff = @gj643zf5650_content_diff
       delete_list = get_delete_list(content_diff)
       expect(delete_list.map { |file| file[0, 2] }).to eq([[:deleted, 'page-3.jpg']])
-      delete_list.each do |change_type, filename, signature|
+      delete_list.each do |_change_type, filename, signature|
         expect(Dor::DigitalStacksService).to receive(:delete_file).with(s.join(filename), signature)
       end
       Dor::DigitalStacksService.remove_from_stacks(s, content_diff)
@@ -39,7 +39,7 @@ describe Dor::DigitalStacksService do
                                                             [:deleted, 'intro-2.jpg'],
                                                             [:modified, 'page-1.jpg']
                                                           ])
-      delete_list.each do |change_type, filename, signature|
+      delete_list.each do |_change_type, filename, signature|
         expect(Dor::DigitalStacksService).to receive(:delete_file).with(s.join(filename), signature)
       end
       Dor::DigitalStacksService.remove_from_stacks(s, content_diff)
@@ -51,7 +51,7 @@ describe Dor::DigitalStacksService do
                                                             [:deleted, 'SUB2_b2000_1.bvals'],
                                                             [:deleted, 'SUB2_b2000_1.nii.gz']
                                                           ])
-      delete_list.each do |change_type, filename, signature|
+      delete_list.each do |_change_type, filename, signature|
         expect(Dor::DigitalStacksService).to receive(:delete_file).with(s.join(filename), signature)
       end
       Dor::DigitalStacksService.remove_from_stacks(s, content_diff)
@@ -60,7 +60,7 @@ describe Dor::DigitalStacksService do
 
   def get_delete_list(content_diff)
     delete_list = []
-    [:deleted, :copydeleted, :modified].each do |change_type|
+    %i[deleted copydeleted modified].each do |change_type|
       subset = content_diff.subset(change_type) # {Moab::FileGroupDifferenceSubset}
       subset.files.each do |moab_file| # {Moab::FileInstanceDifference}
         moab_signature = moab_file.signatures.first # {Moab::FileSignature}
@@ -80,7 +80,7 @@ describe Dor::DigitalStacksService do
                                                             [:renamed, 'page-2.jpg', 'page-2a.jpg'],
                                                             [:renamed, 'page-4.jpg', 'page-3.jpg']
                                                           ])
-      rename_list.each do |change_type, oldname, newname, signature|
+      rename_list.each do |_change_type, oldname, newname, signature|
         tempname = signature.checksums.values.last
         expect(Dor::DigitalStacksService).to receive(:rename_file).with(s.join(oldname), s.join(tempname), signature)
         expect(Dor::DigitalStacksService).to receive(:rename_file).with(s.join(tempname), s.join(newname), signature)
@@ -98,7 +98,7 @@ describe Dor::DigitalStacksService do
                                                             [:renamed, 'SUB2_b2000_2.nii.gz', 'SUB2_b2000_1.nii.gz'],
                                                             [:renamed, 'SUB2_b2000_2.bvecs', 'SUB2_b2000_1.bvecs']
                                                           ])
-      rename_list.each do |change_type, oldname, newname, signature|
+      rename_list.each do |_change_type, oldname, newname, signature|
         tempname = signature.checksums.values.last
         expect(Dor::DigitalStacksService).to receive(:rename_file).with(s.join(oldname), s.join(tempname), signature)
         expect(Dor::DigitalStacksService).to receive(:rename_file).with(s.join(tempname), s.join(newname), signature)
@@ -125,7 +125,7 @@ describe Dor::DigitalStacksService do
       content_diff = @gj643zf5650_content_diff
       shelve_list = get_shelve_list(content_diff)
       expect(shelve_list.map { |file| file[0, 2] }).to eq([[:added, 'page-4.jpg']])
-      shelve_list.each do |change_type, filename, signature|
+      shelve_list.each do |_change_type, filename, signature|
         expect(Dor::DigitalStacksService).to receive(:copy_file).with(w.join(filename), s.join(filename), signature)
       end
       Dor::DigitalStacksService.shelve_to_stacks(w, s, content_diff)
@@ -133,7 +133,7 @@ describe Dor::DigitalStacksService do
       content_diff = @jq937jp0017_content_diff
       shelve_list = get_shelve_list(content_diff)
       expect(shelve_list.map { |file| file[0, 2] }).to eq([[:modified, 'page-1.jpg']])
-      shelve_list.each do |change_type, filename, signature|
+      shelve_list.each do |_change_type, filename, signature|
         expect(Dor::DigitalStacksService).to receive(:copy_file).with(w.join(filename), s.join(filename), signature)
       end
       Dor::DigitalStacksService.shelve_to_stacks(w, s, content_diff)
@@ -145,7 +145,7 @@ describe Dor::DigitalStacksService do
                                                             [:added, 'SUB2_b2000_2.nii.gz'],
                                                             [:copyadded, 'SUB2_b2000_1.bvals']
                                                           ])
-      shelve_list.each do |change_type, filename, signature|
+      shelve_list.each do |_change_type, filename, signature|
         expect(Dor::DigitalStacksService).to receive(:copy_file).with(w.join(filename), s.join(filename), signature)
       end
       Dor::DigitalStacksService.shelve_to_stacks(w, s, content_diff)
@@ -154,11 +154,11 @@ describe Dor::DigitalStacksService do
 
   def get_shelve_list(content_diff)
     shelve_list = []
-    [:added, :copyadded, :modified].each do |change_type|
+    %i[added copyadded modified].each do |change_type|
       subset = content_diff.subset(change_type) # {Moab::FileGroupDifferenceSubset
       subset.files.each do |moab_file| # {Moab::FileInstanceDifference}
         moab_signature = moab_file.signatures.last # {Moab::FileSignature}
-        filename = (change_type == :modified) ? moab_file.basis_path : moab_file.other_path
+        filename = change_type == :modified ? moab_file.basis_path : moab_file.other_path
         shelve_list << [change_type, filename, moab_signature]
       end
     end

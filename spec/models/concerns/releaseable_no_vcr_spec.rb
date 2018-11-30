@@ -8,7 +8,7 @@ RSpec.describe 'Dor::Releaseable' do
   before do
     stub_config
     # TODO: move xml to fixture file, obviously
-    allow(item.releases).to receive(:xml_from_purl).and_return(Nokogiri::HTML <<~END_OF_HTML
+    allow(item.releases).to receive(:xml_from_purl).and_return(Nokogiri::HTML(<<~END_OF_HTML)
       <?xml version="1.0" encoding="UTF-8"?>
       <publicObject id="druid:vs298kg2555" published="2015-01-06T11:54:57-08:00">
         <identityMetadata>

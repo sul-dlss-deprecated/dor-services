@@ -5,20 +5,20 @@ module Dor
     include SolrDocHelper
 
     set_terminology do |t|
-      t.root(:path => 'identityMetadata')
-      t.objectId   :index_as => [:symbol]
-      t.objectType :index_as => [:symbol]
+      t.root(path: 'identityMetadata')
+      t.objectId   index_as: [:symbol]
+      t.objectType index_as: [:symbol]
       t.objectLabel
       t.citationCreator
       t.sourceId
-      t.otherId(:path => 'otherId') do
-        t.name_(:path => { :attribute => 'name' })
+      t.otherId(path: 'otherId') do
+        t.name_(path: { attribute: 'name' })
       end
-      t.agreementId :index_as => [:stored_searchable, :symbol]
-      t.tag :index_as => [:symbol]
+      t.agreementId index_as: %i[stored_searchable symbol]
+      t.tag index_as: [:symbol]
       t.citationTitle
-      t.objectCreator :index_as => [:stored_searchable, :symbol]
-      t.adminPolicy   :index_as => [:not_searchable]
+      t.objectCreator index_as: %i[stored_searchable symbol]
+      t.adminPolicy   index_as: [:not_searchable]
     end
 
     define_template :value do |builder, name, value, attrs|
@@ -71,7 +71,7 @@ module Dor
       if type.nil?
         result.collect { |n| [n['name'], n.text].join(':') }
       else
-        result.select { |n| n['name'] == type }.collect { |n| n.text }
+        result.select { |n| n['name'] == type }.collect(&:text)
       end
     end
 
@@ -99,16 +99,16 @@ module Dor
         add_solr_value(solr_doc, 'identifier', sourceId, :symbol, [:stored_searchable])
         add_solr_value(solr_doc, 'source_id', sourceId, :symbol, [])
       end
-      otherId.compact.each { |qid|
+      otherId.compact.each do |qid|
         # this section will solrize barcode and catkey, which live in otherId
         (name, id) = qid.split(/:/, 2)
         add_solr_value(solr_doc, 'dor_id', id, :symbol, [:stored_searchable])
         add_solr_value(solr_doc, 'identifier', qid, :symbol, [:stored_searchable])
         add_solr_value(solr_doc, "#{name}_id", id, :symbol, [])
-      }
+      end
 
       # do some stuff to make tags in general and project tags specifically more easily searchable and facetable
-      find_by_terms(:tag).each { |tag|
+      find_by_terms(:tag).each do |tag|
         (prefix, rest) = tag.text.split(/:/, 2)
         prefix = prefix.downcase.strip.gsub(/\s/, '_')
         unless rest.nil?
@@ -129,7 +129,7 @@ module Dor
           progressive_tag_prefix += part.strip
           add_solr_value(solr_doc, 'exploded_tag', progressive_tag_prefix, :symbol, [])
         end
-      }
+      end
 
       solr_doc
     end

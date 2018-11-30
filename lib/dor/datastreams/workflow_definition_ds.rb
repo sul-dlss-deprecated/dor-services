@@ -5,8 +5,8 @@ module Dor
     include SolrDocHelper
 
     set_terminology do |t|
-      t.root(:path => 'workflow-def', :index_as => [:not_searchable])
-      t.process(:index_as => [:not_searchable])
+      t.root(path: 'workflow-def', index_as: [:not_searchable])
+      t.process(index_as: [:not_searchable])
     end
 
     define_template :process do |builder, workflow, attrs|
@@ -24,7 +24,7 @@ module Dor
             repo = nil
             wf = nil
           end
-          attrs = (repo.nil? && wf.nil?) ? {} : { :repository => repo, :workflow => wf }
+          attrs = repo.nil? && wf.nil? ? {} : { repository: repo, workflow: wf }
           node.prereq(attrs) { node.text prereq_name }
         end
       end
@@ -59,7 +59,7 @@ module Dor
       doc = Nokogiri::XML('<workflow/>')
       root = doc.root
       root['id'] = name
-      processes.each { |proc|
+      processes.each do |proc|
         doc.create_element 'process' do |node|
           node['name'] = proc.name
           if proc.status
@@ -71,8 +71,8 @@ module Dor
           node['lifecycle'] = proc.lifecycle if proc.lifecycle
           root.add_child node
         end
-      }
-      Nokogiri::XML(doc.to_xml) { |x| x.noblanks }.to_xml { |config| config.no_declaration }
+      end
+      Nokogiri::XML(doc.to_xml, &:noblanks).to_xml(&:no_declaration)
     end
 
     def to_solr(solr_doc = {}, *args)

@@ -28,7 +28,7 @@ module Dor
         topic_facet: %w(sw_topic_ssim sw_topic_tesim),
         era_facet: %w(sw_subject_temporal_ssim sw_subject_temporal_tesim),
         geographic_facet: %w(sw_subject_geographic_ssim sw_subject_geographic_tesim),
-        [:term_values, :typeOfResource] => %w(mods_typeOfResource_ssim mods_typeOfResource_tesim),
+        %i[term_values typeOfResource] => %w(mods_typeOfResource_ssim mods_typeOfResource_tesim),
         pub_year_sort_str: %w(sw_pub_date_sort_ssi),
         pub_year_int: %w(sw_pub_date_sort_isi),
         pub_year_display_str: %w(sw_pub_date_facet_ssi)

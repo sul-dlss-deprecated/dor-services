@@ -9,7 +9,7 @@ describe Dor::MetadataService do
 
   it 'should register a new metadata handler' do
     handler = Class.new do
-      def fetch(prefix, identifier)
+      def fetch(_prefix, identifier)
         identifier
       end
 
@@ -39,7 +39,7 @@ describe Dor::MetadataService do
   describe 'Symphony handler' do
     before :each do
       @mods = File.read(File.join(@specdir, 'fixtures', 'mods_record.xml'))
-      @mock_resource = double('catalog-resource', :get => @mods)
+      @mock_resource = double('catalog-resource', get: @mods)
       allow(@mock_resource).to receive(:[]).and_return(@mock_resource)
       expect(RestClient::Resource).to receive(:new).with(Dor::Config.metadata.catalog.url,
                                                          Dor::Config.metadata.catalog.user,

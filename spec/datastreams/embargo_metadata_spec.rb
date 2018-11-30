@@ -9,7 +9,7 @@ describe Dor::EmbargoMetadataDS do
   end
 
   context 'Marshalling to and from a Fedora Datastream' do
-    let(:dsxml) {
+    let(:dsxml) do
       <<-EOF
           <embargoMetadata>
             <status>embargoed</status>
@@ -30,7 +30,7 @@ describe Dor::EmbargoMetadataDS do
             </releaseAccess>
           </embargoMetadata>
       EOF
-    }
+    end
 
     it 'creates itself from xml' do
       ds = Dor::EmbargoMetadataDS.from_xml(dsxml)

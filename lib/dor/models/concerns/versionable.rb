@@ -5,7 +5,7 @@ module Dor
     extend ActiveSupport::Concern
 
     included do
-      has_metadata :name => 'versionMetadata', :type => Dor::VersionMetadataDS, :label => 'Version Metadata', :autocreate => true
+      has_metadata name: 'versionMetadata', type: Dor::VersionMetadataDS, label: 'Version Metadata', autocreate: true
     end
 
     # Increments the version number and initializes versioningWF for the object
@@ -25,7 +25,7 @@ module Dor
 
       vmd_ds = datastreams['versionMetadata']
       vmd_ds.sync_then_increment_version sdr_version
-      vmd_ds.save unless self.new_record?
+      vmd_ds.save unless new_record?
 
       k = :create_workflows_ds
       if opts.key?(k)
@@ -39,7 +39,7 @@ module Dor
       return unless vmd_upd_info
 
       add_event('open', vmd_upd_info[:opening_user_name], "Version #{vmd_ds.current_version_id} opened")
-      vmd_ds.update_current_version({ :description => vmd_upd_info[:description], :significance => vmd_upd_info[:significance].to_sym })
+      vmd_ds.update_current_version(description: vmd_upd_info[:description], significance: vmd_upd_info[:significance].to_sym)
       save
     end
 
@@ -89,7 +89,7 @@ module Dor
     end
 
     # Following chart of processes on this consul page: https://consul.stanford.edu/display/chimera/Versioning+workflows
-    alias_method :start_version,  :open_new_version
-    alias_method :submit_version, :close_version
+    alias start_version open_new_version
+    alias submit_version close_version
   end
 end

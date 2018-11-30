@@ -4,18 +4,18 @@ module Dor
   # TODO: class docs
   class WorkflowDs < ActiveFedora::OmDatastream
     set_terminology do |t|
-      t.root(:path => 'workflows')
-      t.workflow {
-        t.workflowId(:path => { :attribute => 'id' })
-        t.process {
-          t.name_(:path => { :attribute => 'name' }, :index_as => [:displayable, :not_searchable])
-          t.status(:path => { :attribute => 'status' }, :index_as => [:displayable, :not_searchable])
-          t.timestamp(:path => { :attribute => 'datetime' }, :index_as => [:displayable, :not_searchable]) # , :data_type => :date)
-          t.elapsed(:path => { :attribute => 'elapsed' }, :index_as => [:displayable, :not_searchable])
-          t.lifecycle(:path => { :attribute => 'lifecycle' }, :index_as => [:displayable, :not_searchable])
-          t.attempts(:path => { :attribute => 'attempts' }, :index_as => [:displayable, :not_searchable])
-        }
-      }
+      t.root(path: 'workflows')
+      t.workflow do
+        t.workflowId(path: { attribute: 'id' })
+        t.process do
+          t.name_(path: { attribute: 'name' }, index_as: %i[displayable not_searchable])
+          t.status(path: { attribute: 'status' }, index_as: %i[displayable not_searchable])
+          t.timestamp(path: { attribute: 'datetime' }, index_as: %i[displayable not_searchable]) # , :data_type => :date)
+          t.elapsed(path: { attribute: 'elapsed' }, index_as: %i[displayable not_searchable])
+          t.lifecycle(path: { attribute: 'lifecycle' }, index_as: %i[displayable not_searchable])
+          t.attempts(path: { attribute: 'attempts' }, index_as: %i[displayable not_searchable])
+        end
+      end
     end
 
     def get_workflow(wf, repo = 'dor')
@@ -26,7 +26,7 @@ module Dor
       Workflow::Document.new(xml.to_s)
     end
 
-    alias :[] :get_workflow
+    alias [] get_workflow
 
     def ng_xml
       @ng_xml ||= Nokogiri::XML::Document.parse(content)

@@ -29,7 +29,7 @@ describe Dor::Describable do
   end
 
   it 'should provide a descMetadata datastream builder' do
-    stub_request(:get, "#{Dor::Config.metadata.catalog.url}/?barcode=36105049267078").to_return(:body => read_fixture('ab123cd4567_descMetadata.xml'))
+    stub_request(:get, "#{Dor::Config.metadata.catalog.url}/?barcode=36105049267078").to_return(body: read_fixture('ab123cd4567_descMetadata.xml'))
     allow(@item).to receive(:find_metadata_file).and_return(nil)
     expect(Dor::MetadataService).to receive(:fetch).with('barcode:36105049267078').and_call_original
     xml = <<-END_OF_XML

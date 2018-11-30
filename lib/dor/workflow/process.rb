@@ -28,41 +28,88 @@ module Dor
           'batch_limit' => node['batch-limit'] ? node['batch-limit'].to_i : nil,
           'error_limit' => node['error-limit'] ? node['error-limit'].to_i : nil,
           'priority' => node['priority'] ? node['priority'].to_i : 0,
-          'prerequisite' => node.xpath('prereq').collect { |p|
-            repo = (p['repository'].nil? || p['repository'] == @repo) ? nil : p['repository']
-            wf   = (p['workflow'].nil? || p['workflow'] == @workflow) ? nil : p['workflow']
+          'prerequisite' => node.xpath('prereq').collect do |p|
+            repo = p['repository'].nil? || p['repository'] == @repo ? nil : p['repository']
+            wf   = p['workflow'].nil? || p['workflow'] == @workflow ? nil : p['workflow']
             [repo, wf, p.text.to_s].compact.join(':')
-          }
+          end
         }
       end
 
-      def name; @attrs['name']; end
-      def sequence; @attrs['sequence']; end
-      def lifecycle; @attrs['lifecycle']; end
-      def label; @attrs['label']; end
-      def batch_limit; @attrs['batch_limit']; end
-      def error_limit; @attrs['error_limit']; end
-      def error_message; @attrs['errorMessage']; end
-      def prerequisite; @attrs['prerequisite']; end
-      def status; @attrs['status']; end
-      def note; @attrs['note']; end
-      def version; @attrs['version']; end
-      def priority; @attrs['priority']; end
-      def completed?; status == 'completed'; end
-      def error?; status == 'error'; end
-      def waiting?; status == 'waiting'; end
-      def date_time; @attrs['datetime']; end
+      def name
+        @attrs['name']
+      end
+
+      def sequence
+        @attrs['sequence']
+      end
+
+      def lifecycle
+        @attrs['lifecycle']
+      end
+
+      def label
+        @attrs['label']
+      end
+
+      def batch_limit
+        @attrs['batch_limit']
+      end
+
+      def error_limit
+        @attrs['error_limit']
+      end
+
+      def error_message
+        @attrs['errorMessage']
+      end
+
+      def prerequisite
+        @attrs['prerequisite']
+      end
+
+      def status
+        @attrs['status']
+      end
+
+      def note
+        @attrs['note']
+      end
+
+      def version
+        @attrs['version']
+      end
+
+      def priority
+        @attrs['priority']
+      end
+
+      def completed?
+        status == 'completed'
+      end
+
+      def error?
+        status == 'error'
+      end
+
+      def waiting?
+        status == 'waiting'
+      end
+
+      def date_time
+        @attrs['datetime']
+      end
 
       def archived?
         @attrs['archived'] =~ /true$/i
       end
 
       def ready?
-        self.waiting? && !prerequisite.nil? && prerequisite.all? { |pr| (prq = owner[pr]) && prq.completed? }
+        waiting? && !prerequisite.nil? && prerequisite.all? { |pr| (prq = owner[pr]) && prq.completed? }
       end
 
       def blocked?
-        self.waiting? && !prerequisite.nil? && prerequisite.any? { |pr| (prq = owner[pr]) && (prq.error? || prq.blocked?) }
+        waiting? && !prerequisite.nil? && prerequisite.any? { |pr| (prq = owner[pr]) && (prq.error? || prq.blocked?) }
       end
 
       def state
@@ -96,15 +143,13 @@ module Dor
         @owner = new_owner
         return self if info.nil?
 
-        if info.is_a? Nokogiri::XML::Node
-          info = Hash[info.attributes.collect { |k, v| [k, v.value] }]
-        end
+        info = Hash[info.attributes.collect { |k, v| [k, v.value] }] if info.is_a? Nokogiri::XML::Node
         @attrs.merge! info
         self
       end
 
       def to_hash
-        @attrs.reject { |k, v| v.nil? || v == 0 || (v.respond_to?(:empty?) && v.empty?) }
+        @attrs.reject { |_k, v| v.nil? || v == 0 || (v.respond_to?(:empty?) && v.empty?) }
       end
     end
   end

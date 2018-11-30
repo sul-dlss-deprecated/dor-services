@@ -47,7 +47,7 @@ module Dor
     def valid_release_attributes_and_tag(tag, attrs = {})
       raise ArgumentError, ':when is not iso8601' if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z').nil?
 
-      [:who, :to, :what].each do |check_attr|
+      %i[who to what].each do |check_attr|
         raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
 
@@ -75,9 +75,9 @@ module Dor
     # @example
     #  item.add_release_node(true,{:what=>'self',:to=>'Searchworks',:who=>'petucket'})
     def add_release_node(release, attrs = {})
-      allowed_release_attributes = [:what, :to, :who, :when] # any other release attributes sent in will be rejected and not stored
+      allowed_release_attributes = %i[what to who when] # any other release attributes sent in will be rejected and not stored
       identity_metadata_ds = identityMetadata
-      attrs.delete_if { |key, value| !allowed_release_attributes.include?(key) }
+      attrs.delete_if { |key, _value| !allowed_release_attributes.include?(key) }
       attrs[:when] = Time.now.utc.iso8601 if attrs[:when].nil? # add the timestamp
       valid_release_attributes(release, attrs)
       identity_metadata_ds.add_value(:release, release.to_s, attrs)
@@ -93,7 +93,7 @@ module Dor
     def valid_release_attributes(tag, attrs = {})
       raise ArgumentError, ':when is not iso8601' if attrs[:when].match('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z').nil?
 
-      [:who, :to, :what].each do |check_attr|
+      %i[who to what].each do |check_attr|
         raise ArgumentError, "#{check_attr} not supplied as a String" if attrs[check_attr].class != String
       end
       raise ArgumentError, ':what must be self or collection' unless %w(self collection).include? attrs[:what]

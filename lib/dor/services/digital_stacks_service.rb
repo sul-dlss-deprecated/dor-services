@@ -9,7 +9,7 @@ module Dor
     # @param [Pathname] stacks_object_pathname the stacks location of the digital object
     # @param [Moab::FileGroupDifference] content_diff the content file version differences report
     def self.remove_from_stacks(stacks_object_pathname, content_diff)
-      [:deleted, :copydeleted, :modified].each do |change_type|
+      %i[deleted copydeleted modified].each do |change_type|
         subset = content_diff.subset(change_type) # {Moab::FileGroupDifferenceSubset}
         subset.files.each do |moab_file| # {Moab::FileInstanceDifference}
           moab_signature = moab_file.signatures.first # {Moab::FileSignature}
@@ -82,11 +82,11 @@ module Dor
     def self.shelve_to_stacks(workspace_content_pathname, stacks_object_pathname, content_diff)
       return false if workspace_content_pathname.nil?
 
-      [:added, :copyadded, :modified].each do |change_type|
+      %i[added copyadded modified].each do |change_type|
         subset = content_diff.subset(change_type) # {Moab::FileGroupDifferenceSubset
         subset.files.each do |moab_file| # {Moab::FileInstanceDifference}
           moab_signature = moab_file.signatures.last # {Moab::FileSignature}
-          filename = (change_type == :modified) ? moab_file.basis_path : moab_file.other_path
+          filename = change_type == :modified ? moab_file.basis_path : moab_file.other_path
           workspace_pathname = workspace_content_pathname.join(filename)
           stacks_pathname = stacks_object_pathname.join(filename)
           copy_file(workspace_pathname, stacks_pathname, moab_signature)

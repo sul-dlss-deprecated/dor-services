@@ -7,7 +7,7 @@ module DatastreamSpecSolrizer
   def datastream_spec_string
     s = begin
       controlGroup == 'E' ? content.to_s.length : size
-        rescue
+        rescue StandardError
           0
     end
     v = versionID.nil? ? '0' : versionID.to_s.split(/\./).last

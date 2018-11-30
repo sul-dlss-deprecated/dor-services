@@ -2,8 +2,8 @@
 
 module Dor
   class Exception < ::StandardError; end
-  class ParameterError < Exception; end
-  class DuplicateIdError < Exception
+  class ParameterError < RuntimeError; end
+  class DuplicateIdError < RuntimeError
     attr_reader :pid
 
     def initialize(pid)

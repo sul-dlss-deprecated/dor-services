@@ -24,25 +24,25 @@ describe Dor::RegistrationService do
       allow_any_instance_of(Dor::Item).to receive(:create).and_return(true)
 
       @params = {
-        :object_type => 'item',
-        :content_model => 'googleScannedBook',
-        :admin_policy => 'druid:fg890hi1234',
-        :label => 'Google : Scanned Book 12345',
-        :source_id => { :barcode => 9191919191 },
-        :other_ids => { :catkey => '000', :uuid => '111' },
-        :tags => ['Google : Google Tag!', 'Google : Other Google Tag!']
+        object_type: 'item',
+        content_model: 'googleScannedBook',
+        admin_policy: 'druid:fg890hi1234',
+        label: 'Google : Scanned Book 12345',
+        source_id: { barcode: 9_191_919_191 },
+        other_ids: { catkey: '000', uuid: '111' },
+        tags: ['Google : Google Tag!', 'Google : Other Google Tag!']
       }
     end
 
-    let(:mock_collection) {
+    let(:mock_collection) do
       coll = Dor::Collection.new
       allow(coll).to receive(:new?).and_return false
       allow(coll).to receive(:new_record?).and_return false
       allow(coll).to receive(:pid).and_return 'druid:something'
       allow(coll).to receive(:save)
       coll
-    }
-    let(:world_xml) {
+    end
+    let(:world_xml) do
       <<-XML
         <?xml version="1.0"?>
         <rightsMetadata>
@@ -65,8 +65,8 @@ describe Dor::RegistrationService do
           </use>
         </rightsMetadata>
       XML
-    }
-    let(:stanford_xml) {
+    end
+    let(:stanford_xml) do
       <<-XML
         <?xml version="1.0"?>
         <rightsMetadata>
@@ -89,8 +89,8 @@ describe Dor::RegistrationService do
           </use>
         </rightsMetadata>
       XML
-    }
-    let(:stanford_no_download_xml) {
+    end
+    let(:stanford_no_download_xml) do
       <<-XML
         <?xml version="1.0"?>
         <rightsMetadata>
@@ -113,8 +113,8 @@ describe Dor::RegistrationService do
           </use>
         </rightsMetadata>
       XML
-    }
-    let(:location_music_xml) {
+    end
+    let(:location_music_xml) do
       <<-XML
         <?xml version="1.0"?>
         <rightsMetadata>
@@ -137,7 +137,7 @@ describe Dor::RegistrationService do
           </use>
         </rightsMetadata>
       XML
-    }
+    end
 
     context 'exception should be raised for' do
       it 'registering a duplicate PID' do
@@ -177,8 +177,8 @@ describe Dor::RegistrationService do
 
     describe 'should set rightsMetadata based on the APO default (but replace read rights) even if it is a collection' do
       before :each do
-        @coll = Dor::Collection.new(:pid => @pid)
-        expect(Dor::Collection).to receive(:new).with(:pid => @pid).and_return(@coll)
+        @coll = Dor::Collection.new(pid: @pid)
+        expect(Dor::Collection).to receive(:new).with(pid: @pid).and_return(@coll)
         @params[:rights] = 'stanford'
         @params[:object_type] = 'collection'
         @obj = Dor::RegistrationService.register_object(@params)
@@ -327,10 +327,10 @@ describe Dor::RegistrationService do
       allow_any_instance_of(Dor::Item).to receive(:create).and_return(true)
 
       @params = {
-        :object_type => 'item',
-        :admin_policy => 'druid:fg890hi1234',
-        :label => 'web-archived-crawl for http://www.example.org',
-        :source_id => 'sul:SOMETHING-www.example.org'
+        object_type: 'item',
+        admin_policy: 'druid:fg890hi1234',
+        label: 'web-archived-crawl for http://www.example.org',
+        source_id: 'sul:SOMETHING-www.example.org'
       }
     end
 

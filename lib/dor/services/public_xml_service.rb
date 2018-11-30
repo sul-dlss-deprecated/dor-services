@@ -28,7 +28,7 @@ module Dor
       thumb = ThumbnailService.new(object).thumb
       pub.add_child(Nokogiri("<thumb>#{thumb}</thumb>").root) unless thumb.nil?
 
-      new_pub = Nokogiri::XML(pub.to_xml) { |x| x.noblanks }
+      new_pub = Nokogiri::XML(pub.to_xml, &:noblanks)
       new_pub.encoding = 'UTF-8'
       new_pub.to_xml
     end
@@ -38,11 +38,11 @@ module Dor
     def release_xml
       @release_xml ||= begin
         builder = Nokogiri::XML::Builder.new do |xml|
-          xml.releaseData {
+          xml.releaseData do
             object.released_for.each do |project, released_value|
-              xml.release(released_value['release'], :to => project)
+              xml.release(released_value['release'], to: project)
             end
-          }
+          end
         end
         Nokogiri::XML(builder.to_xml)
       end
@@ -83,7 +83,7 @@ module Dor
           src_resource_id = externalFile['resourceId']
           src_druid = externalFile['objectId']
           src_file_id = externalFile['fileId']
-          fail ArgumentError, "Malformed externalFile data: #{externalFile.inspect}" if [src_resource_id, src_file_id, src_druid].map(&:blank?).any?
+          raise ArgumentError, "Malformed externalFile data: #{externalFile.inspect}" if [src_resource_id, src_file_id, src_druid].map(&:blank?).any?
 
           # grab source item
           src_item = Dor.find(src_druid)
