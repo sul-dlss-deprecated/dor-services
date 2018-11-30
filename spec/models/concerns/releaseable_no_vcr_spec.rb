@@ -1,16 +1,14 @@
-# encoding: utf-8
 # frozen_string_literal: true
-
-# Japanese script requires UTF-8
 
 require 'spec_helper'
 
-describe 'Dor::Releaseable' do
-  before :each do
+RSpec.describe 'Dor::Releaseable' do
+  let(:item) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
+
+  before do
     stub_config
-    @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
     # TODO: move xml to fixture file, obviously
-    allow(@item).to receive(:get_xml_from_purl).and_return(Nokogiri::HTML <<~END_OF_HTML
+    allow(item.releases).to receive(:xml_from_purl).and_return(Nokogiri::HTML <<~END_OF_HTML
       <?xml version="1.0" encoding="UTF-8"?>
       <publicObject id="druid:vs298kg2555" published="2015-01-06T11:54:57-08:00">
         <identityMetadata>
@@ -97,20 +95,22 @@ describe 'Dor::Releaseable' do
         </releaseData>
       </publicObject>
     END_OF_HTML
-                                                          )
+                                                              )
   end
-  after :each do
+  after do
     unstub_config
   end
-  it 'released_for pulls from identityMetadata for authoritative values (not PURL)' do
-    expect(@item.released_for).to match a_hash_including(
+
+  it 'pulls from identityMetadata for authoritative values (not PURL)' do
+    expect(item.released_for).to match a_hash_including(
       'Searchworks' => { 'release' => true },
       'Some_special_place' => { 'release' => true }, # hey, free annoying capitalization!
       'Former_place' => { 'release' => false } # because it isn't in identityMetadata!
     )
-    expect(@item.released_for).not_to match a_hash_including('other_place')
+    expect(item.released_for).not_to match a_hash_including('other_place')
   end
-  it 'should return nil if no tags exist on an item with regard to that target' do
-    expect(@item.released_for['Runner II']).to be_nil
+
+  it 'returns nil if no tags exist on an item with regard to that target' do
+    expect(item.released_for['Runner II']).to be_nil
   end
 end

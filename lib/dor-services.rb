@@ -161,6 +161,7 @@ module Dor
     autoload :ProvenanceMetadataService
     autoload :TechnicalMetadataService
     autoload :MergeService
+    autoload :ReleaseTagService
     autoload :ResetWorkspaceService
     autoload :CleanupResetService
     autoload :PublicDescMetadataService
