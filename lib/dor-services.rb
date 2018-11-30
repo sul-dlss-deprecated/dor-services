@@ -150,6 +150,7 @@ module Dor
   # Services
   autoload_under 'services' do
     autoload :SearchService
+    autoload :ShelvingService
     autoload :IndexingService
     autoload :MetadataService
     autoload :RegistrationService
