@@ -223,6 +223,8 @@ describe 'file operations' do
       workspace_pathname = @tmpdir.join('copy-me.txt')
       stacks_pathname = @tmpdir.join('stacks-name.txt')
       FileUtils.touch(workspace_pathname.to_s)
+      FileUtils.chmod 0o640, workspace_pathname.to_s
+      expect(File::Stat.new(workspace_pathname.to_s).mode.to_s(8)).to eq('100640')
       moab_signature = Moab::FileSignature.new.signature_from_file(workspace_pathname)
       expect(workspace_pathname.exist?).to be_truthy
       expect(stacks_pathname.exist?).to be_falsey
@@ -230,6 +232,7 @@ describe 'file operations' do
       # if file exists, and has expected signature
       expect(workspace_pathname.exist?).to be_truthy
       expect(stacks_pathname.exist?).to be_truthy
+      expect(File::Stat.new(stacks_pathname.to_s).mode.to_s(8)).to eq('100644')
       moab_signature = Moab::FileSignature.new.signature_from_file(stacks_pathname)
       expect(Dor::DigitalStacksService.copy_file(workspace_pathname, stacks_pathname, moab_signature)).to be_falsey
       # if file exists, but has unexpected signature

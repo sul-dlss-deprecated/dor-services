@@ -108,6 +108,8 @@ module Dor
       unless stacks_pathname.exist?
         stacks_pathname.parent.mkpath
         FileUtils.cp workspace_pathname.to_s, stacks_pathname.to_s
+        # Change permissions
+        FileUtils.chmod 'u=rw,go=r', stacks_pathname.to_s
         return true
       end
       false
