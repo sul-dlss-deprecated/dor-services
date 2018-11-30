@@ -36,6 +36,7 @@ describe Dor::Assembleable do
       allow(@ai).to receive(:pid).and_return('aa123bb7890')
       @druid_path = File.join(@temp_workspace, 'aa', '123', 'bb', '7890', 'aa123bb7890')
       FileUtils.rm_rf(File.join(@temp_workspace, 'aa'))
+      expect(Deprecation).to receive(:warn)
     end
 
     it 'creates a plain directory in the workspace when passed no params' do
