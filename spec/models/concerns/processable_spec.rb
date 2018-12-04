@@ -199,7 +199,7 @@ describe Dor::Processable do
       allow(item).to receive(:admin_policy_object) { apo }
       expect(Dor::WorkflowObject).to receive(:initial_workflow).and_return('<xml/>')
       expect(Dor::WorkflowObject).to receive(:initial_repo).and_return('dor')
-      expect(Dor::Config.workflow.client).to receive(:create_workflow).with('dor', 'druid:ab123cd4567', 'accessionWF', '<xml/>', { :create_ds => true, :lane_id => 'fast' })
+      expect(Dor::Config.workflow.client).to receive(:create_workflow).with('dor', 'druid:ab123cd4567', 'accessionWF', '<xml/>', create_ds: true, lane_id: 'fast')
       item.create_workflow('accessionWF')
     end
   end

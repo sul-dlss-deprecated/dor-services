@@ -99,7 +99,7 @@ module Dor
       release = 'release'
       when_word = 'when' # TODO: Make to and when_word load from some config file instead of hardcoded here
       attrs = rtag.attributes
-      return_hash = { :to => attrs[to].value }
+      return_hash = { to: attrs[to].value }
       attrs.tap { |a| a.delete(to) }
       attrs[release] = rtag.text.casecmp('true') == 0 # save release as a boolean
       return_hash[:attrs] = attrs
@@ -218,7 +218,7 @@ module Dor
         return Nokogiri::HTML::Document.new if exception.io.status.first == '404' # ["404", "Not Found"] from OpenURI::Meta.status
       end
 
-      with_retries(:max_retries => 3, :base_sleep_seconds => 3, :max_sleep_seconds => 5, :handler => handler) do |attempt|
+      with_retries(max_retries: 3, base_sleep_seconds: 3, max_sleep_seconds: 5, handler: handler) do |attempt|
         # If you change the method used for opening the webpage, you can change the :rescue param to handle the new method's errors
         Dor.logger.info "[Attempt #{attempt}] GET #{url}"
         return Nokogiri::HTML(OpenURI.open_uri(url))

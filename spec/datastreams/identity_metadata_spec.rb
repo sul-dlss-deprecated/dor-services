@@ -67,7 +67,7 @@ describe Dor::IdentityMetadataDS do
     end
 
     describe 'removes source ID node' do
-      let(:resultxml) {
+      let(:resultxml) do
         <<-EOF
           <identityMetadata>
             <objectCreator>DOR</objectCreator>
@@ -80,7 +80,7 @@ describe Dor::IdentityMetadataDS do
             <tag>Project : McLaughlin Maps</tag>
           </identityMetadata>
         EOF
-      }
+      end
       it 'on nil' do
         @dsdoc.sourceId = nil
         expect(@dsdoc.sourceId).to be_nil
@@ -121,8 +121,8 @@ describe Dor::IdentityMetadataDS do
       EOF
       new_doc = Dor::IdentityMetadataDS.new nil, 'identityMetadata'
       new_doc.add_value('objectId', 'druid:ab123cd4567')
-      new_doc.add_value('otherId', '12345678-abcd-1234-ef01-23456789abcd', { 'name' => 'uuid' })
-      new_doc.add_value('otherId', 'ab123cd4567', { 'name' => 'mdtoolkit' })
+      new_doc.add_value('otherId', '12345678-abcd-1234-ef01-23456789abcd', 'name' => 'uuid')
+      new_doc.add_value('otherId', 'ab123cd4567', 'name' => 'mdtoolkit')
       new_doc.add_value('tag', 'Created By : Spec Tests')
       expect(new_doc.to_xml).to be_equivalent_to resultxml
       expect(new_doc.objectId).to eq('druid:ab123cd4567')

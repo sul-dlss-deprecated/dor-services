@@ -9,7 +9,7 @@ RSpec.describe Dor::PublicDescMetadataService do
   let(:obj) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
 
   describe '#to_xml' do
-    let(:rights_xml) {
+    let(:rights_xml) do
       <<-XML
       <rightsMetadata>
         <copyright>
@@ -38,7 +38,7 @@ RSpec.describe Dor::PublicDescMetadataService do
         </use>
       </rightsMetadata>
       XML
-    }
+    end
 
     let(:itm) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
     let(:collection) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
@@ -90,9 +90,9 @@ RSpec.describe Dor::PublicDescMetadataService do
       expect(collection_uri.length).to eq 1
       expect(collection_title.first.content).to eq 'The complete works of Henry George'
       expect(collection_uri.first.content).to eq 'https://purl.stanford.edu/zb871zd0767'
-      %w(useAndReproduction copyright license).each{ |term|
+      %w(useAndReproduction copyright license).each do |term|
         expect(doc.xpath('//mods:accessCondition[@type="' + term + '"]').size).to eq 1
-      }
+      end
       expect(doc.xpath('//mods:accessCondition[@type="useAndReproduction"]').text).to match(/yada/)
       expect(doc.xpath('//mods:accessCondition[@type="copyright"]').text).to match(/Property rights reside with/)
       expect(doc.xpath('//mods:accessCondition[@type="license"]').text).to match(/This work is licensed under/)
@@ -115,16 +115,16 @@ RSpec.describe Dor::PublicDescMetadataService do
       expect(collection_uri.length).to eq 1
       expect(collection_title.first.content).to eq 'The complete works of Henry George'
       expect(collection_uri.first.content).to eq 'https://purl.stanford.edu/zb871zd0767'
-      %w(useAndReproduction copyright license).each{ |term|
+      %w(useAndReproduction copyright license).each do |term|
         expect(doc.xpath('//xmlns:accessCondition[@type="' + term + '"]').size).to eq 1
-      }
+      end
       expect(doc.xpath('//xmlns:accessCondition[@type="useAndReproduction"]').text).to match(/yada/)
       expect(doc.xpath('//xmlns:accessCondition[@type="copyright"]').text).to match(/Property rights reside with/)
       expect(doc.xpath('//xmlns:accessCondition[@type="license"]').text).to match(/This work is licensed under/)
     end
 
     describe '#add_access_conditions' do
-      let(:rights_xml) {
+      let(:rights_xml) do
         <<-XML
         <rightsMetadata>
           <copyright>
@@ -153,19 +153,19 @@ RSpec.describe Dor::PublicDescMetadataService do
           </use>
         </rightsMetadata>
         XML
-      }
+      end
 
-      let(:obj) {
+      let(:obj) do
         mods = read_fixture('ex2_related_mods.xml')
         b = Dor::Item.new
         b.datastreams['descMetadata'].content = mods
         b.datastreams['rightsMetadata'].content = rights_xml
         b
-      }
+      end
 
-      let(:public_mods) {
+      let(:public_mods) do
         Nokogiri::XML(obj.generate_public_desc_md)
-      }
+      end
 
       it 'adds useAndReproduction accessConditions based on rightsMetadata' do
         expect(public_mods.xpath('//mods:accessCondition[@type="useAndReproduction"]').size).to eq 1
@@ -229,7 +229,7 @@ RSpec.describe Dor::PublicDescMetadataService do
       end
 
       describe 'does not add empty mods nodes when the rightsMetadata has empty' do
-        let(:blank_rights_xml) {
+        let(:blank_rights_xml) do
           <<-XML
           <rightsMetadata>
             <copyright>
@@ -252,15 +252,15 @@ RSpec.describe Dor::PublicDescMetadataService do
             </use>
           </rightsMetadata>
           XML
-        }
+        end
 
-        let(:blank_obj) {
+        let(:blank_obj) do
           mods = read_fixture('ex2_related_mods.xml')
           b = Dor::Item.new
           b.datastreams['descMetadata'].content = mods
           b.datastreams['rightsMetadata'].content = blank_rights_xml
           b
-        }
+        end
 
         let(:public_mods) { Nokogiri::XML(blank_obj.generate_public_desc_md) }
 

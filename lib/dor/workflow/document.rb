@@ -7,17 +7,17 @@ module Dor
       include ::OM::XML::Document
 
       set_terminology do |t|
-        t.root(:path => 'workflow')
-        t.repository(:path => { :attribute => 'repository' })
-        t.workflowId(:path => { :attribute => 'id' })
+        t.root(path: 'workflow')
+        t.repository(path: { attribute: 'repository' })
+        t.workflowId(path: { attribute: 'id' })
         t.process do
-          t.name_(:path => { :attribute => 'name' })
-          t.status(:path => { :attribute => 'status' })
-          t.timestamp(:path => { :attribute => 'datetime' }) # , :data_type => :date)
-          t.elapsed(:path => { :attribute => 'elapsed' })
-          t.lifecycle(:path => { :attribute => 'lifecycle' })
-          t.attempts(:path => { :attribute => 'attempts' }, :index_as => [:not_searchable])
-          t.version(:path => { :attribute => 'version' })
+          t.name_(path: { attribute: 'name' })
+          t.status(path: { attribute: 'status' })
+          t.timestamp(path: { attribute: 'datetime' }) # , :data_type => :date)
+          t.elapsed(path: { attribute: 'elapsed' })
+          t.lifecycle(path: { attribute: 'lifecycle' })
+          t.attempts(path: { attribute: 'attempts' }, index_as: [:not_searchable])
+          t.version(path: { attribute: 'version' })
         end
       end
 
@@ -82,7 +82,7 @@ module Dor
         processes.all? { |p| ['skipped', 'completed', '', nil].include?(p.status) }
       end
 
-      def to_solr(solr_doc = {}, *args)
+      def to_solr(solr_doc = {}, *_args)
         wf_name = workflowId.first
         repo = repository.first
         wf_solr_type = :string
@@ -107,14 +107,14 @@ module Dor
           add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}:#{process.name}", wf_solr_type, wf_solr_attrs)
           add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)
           add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.status}", wf_solr_type, wf_solr_attrs)
-          add_solr_value(solr_doc, 'wf_swp', "#{process.status}", wf_solr_type, wf_solr_attrs)
+          add_solr_value(solr_doc, 'wf_swp', process.status.to_s, wf_solr_type, wf_solr_attrs)
           add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}", wf_solr_type, wf_solr_attrs)
           add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)
           next unless process.state != process.status
 
           add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.state}:#{process.name}", wf_solr_type, wf_solr_attrs)
           add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.state}", wf_solr_type, wf_solr_attrs)
-          add_solr_value(solr_doc, 'wf_swp', "#{process.state}", wf_solr_type, wf_solr_attrs)
+          add_solr_value(solr_doc, 'wf_swp', process.state.to_s, wf_solr_type, wf_solr_attrs)
           add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}", wf_solr_type, wf_solr_attrs)
           add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}:#{process.name}", wf_solr_type, wf_solr_attrs)
         end

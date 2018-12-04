@@ -44,13 +44,13 @@ describe Dor::SdrIngestService do
       metadata_string = '<metadata/>'
       expect(@mock_datastream).to receive(:new?).and_return(false)
       expect(@mock_datastream).to receive(:content).and_return(metadata_string)
-      expect(@mock_item).to receive(:datastreams).exactly(3).times.and_return({ @ds_name => @mock_datastream })
+      expect(@mock_item).to receive(:datastreams).exactly(3).times.and_return(@ds_name => @mock_datastream)
       expect(Dor::SdrIngestService.get_datastream_content(@mock_item, @ds_name, 'required')).to eq metadata_string
     end
     context 'when datastream is empty or missing' do
       before :each do
         expect(@mock_datastream).not_to receive(:content)
-        expect(@mock_item).to receive(:datastreams).and_return({ @ds_name => @mock_datastream })
+        expect(@mock_item).to receive(:datastreams).and_return(@ds_name => @mock_datastream)
       end
       it 'returns nil if datastream was optional' do
         expect(Dor::SdrIngestService.get_datastream_content(@mock_item, 'dummy', 'optional')).to be_nil
@@ -158,8 +158,8 @@ describe Dor::SdrIngestService do
     druid = 'druid:ab123cd4567'
     version_id = 2
     version_inventory = Moab::FileInventory.new
-    version_inventory.groups << Moab::FileGroup.new(:group_id => 'content')
-    metadata_group = Moab::FileGroup.new(:group_id => 'metadata')
+    version_inventory.groups << Moab::FileGroup.new(group_id: 'content')
+    metadata_group = Moab::FileGroup.new(group_id: 'metadata')
     expect(Dor::SdrIngestService).to receive(:get_content_inventory).with(metadata_dir, druid, version_id).and_return(version_inventory)
     expect(Dor::SdrIngestService).to receive(:get_metadata_file_group).with(metadata_dir).and_return(metadata_group)
     result = Dor::SdrIngestService.get_version_inventory(metadata_dir, druid, version_id)
@@ -201,7 +201,7 @@ describe Dor::SdrIngestService do
   specify 'get_metadata_file_group' do
     metadata_dir = double(Pathname)
     file_group = double(Moab::FileGroup)
-    expect(Moab::FileGroup).to receive(:new).with({ :group_id => 'metadata' }).and_return(file_group)
+    expect(Moab::FileGroup).to receive(:new).with(group_id: 'metadata').and_return(file_group)
     expect(file_group).to receive(:group_from_directory).with(metadata_dir)
     Dor::SdrIngestService.get_metadata_file_group(metadata_dir)
   end

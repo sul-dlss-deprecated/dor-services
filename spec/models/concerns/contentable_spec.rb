@@ -21,7 +21,7 @@ class SpecNode
 end
 
 describe Dor::Contentable do
-  before(:each) {
+  before(:each) do
     stub_config
     Dor.configure do
       content do
@@ -30,7 +30,7 @@ describe Dor::Contentable do
         content_server 'server'
       end
     end
-  }
+  end
   after(:each)  { unstub_config }
 
   before(:each) do
@@ -174,12 +174,12 @@ describe Dor::Contentable do
   end
 
   describe '#decommission' do
-    let(:dummy_obj) {
+    let(:dummy_obj) do
       node = SpecNode.new
-      allow(node).to receive(:rels_ext).and_return(double('rels_ext', :content_will_change! => true, :content => ''))
+      allow(node).to receive(:rels_ext).and_return(double('rels_ext', content_will_change!: true, content: ''))
       node.pid = 'old:apo'
       node
-    }
+    end
 
     let(:obj) do
       o = Dor::Item.new
@@ -191,7 +191,7 @@ describe Dor::Contentable do
 
     let(:graveyard_apo) do
       node = SpecNode.new
-      allow(node).to receive(:rels_ext).and_return(double('rels_ext', :content_will_change! => true, :content => ''))
+      allow(node).to receive(:rels_ext).and_return(double('rels_ext', content_will_change!: true, content: ''))
       node.pid = 'new:apo'
       node
     end
@@ -227,7 +227,7 @@ describe Dor::Contentable do
 
     let(:child_obj) do
       node = SpecNode.new
-      allow(node).to receive(:rels_ext).and_return(double('rels_ext', :content_will_change! => true, :content => ''))
+      allow(node).to receive(:rels_ext).and_return(double('rels_ext', content_will_change!: true, content: ''))
       node.pid = 'druid:aa111bb2222'
       node
     end

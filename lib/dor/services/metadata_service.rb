@@ -3,7 +3,7 @@
 require 'cache'
 
 module Dor
-  class MetadataError < Exception; end
+  class MetadataError < RuntimeError; end
 
   #  class MetadataHandler
   #
@@ -23,9 +23,7 @@ module Dor
 
       def register(handler_class)
         %w(fetch label prefixes).each do |method|
-          unless handler_class.instance_methods.include?(method) || handler_class.instance_methods.include?(method.to_sym)
-            raise TypeError, "Metadata handlers must define ##{method}"
-          end
+          raise TypeError, "Metadata handlers must define ##{method}" unless handler_class.instance_methods.include?(method) || handler_class.instance_methods.include?(method.to_sym)
         end
         handler = handler_class.new
         handler.prefixes.each do |prefix|
@@ -40,12 +38,12 @@ module Dor
 
       def can_resolve?(identifier)
         (prefix, _identifier) = identifier.split(/:/, 2)
-        handlers.keys.include?(prefix.to_sym)
+        handlers.key?(prefix.to_sym)
       end
 
       # TODO: Return a prioritized list
       def resolvable(identifiers)
-        identifiers.select { |identifier| self.can_resolve?(identifier) }
+        identifiers.select { |identifier| can_resolve?(identifier) }
       end
 
       def fetch(identifier)
@@ -78,6 +76,6 @@ module Dor
   end
 end
 
-Dir[File.join(File.dirname(__FILE__), 'metadata_handlers', '*.rb')].each { |handler_file|
+Dir[File.join(File.dirname(__FILE__), 'metadata_handlers', '*.rb')].each do |handler_file|
   load handler_file
-}
+end

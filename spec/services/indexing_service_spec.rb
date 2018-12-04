@@ -112,14 +112,14 @@ describe Dor::IndexingService do
 
     it 'should reindex the object via Dor::SearchService' do
       expect(@mock_obj).to receive(:to_solr).and_return(@mock_solr_doc)
-      expect(Dor::SearchService.solr).to receive(:add).with(hash_including(:id => @mock_pid), {})
+      expect(Dor::SearchService.solr).to receive(:add).with(hash_including(id: @mock_pid), {})
       ret_val = Dor::IndexingService.reindex_object @mock_obj
       expect(ret_val).to eq(@mock_solr_doc)
     end
 
     it 'passes add_attributes options to solr' do
       expect(@mock_obj).to receive(:to_solr).and_return(@mock_solr_doc)
-      expect(Dor::SearchService.solr).to receive(:add).with(hash_including(:id => @mock_pid), add_attributes: { commitWithin: 10 })
+      expect(Dor::SearchService.solr).to receive(:add).with(hash_including(id: @mock_pid), add_attributes: { commitWithin: 10 })
       ret_val = Dor::IndexingService.reindex_object @mock_obj, add_attributes: { commitWithin: 10 }
       expect(ret_val).to eq(@mock_solr_doc)
     end

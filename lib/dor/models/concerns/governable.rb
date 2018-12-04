@@ -5,13 +5,13 @@ module Dor
     extend ActiveSupport::Concern
 
     included do
-      belongs_to :admin_policy_object, :property => :is_governed_by, :class_name => 'Dor::AdminPolicyObject'
-      has_and_belongs_to_many :collections, :property => :is_member_of_collection, :class_name => 'Dor::Collection'
-      has_and_belongs_to_many :sets, :property => :is_member_of, :class_name => 'Dor::Collection'
+      belongs_to :admin_policy_object, property: :is_governed_by, class_name: 'Dor::AdminPolicyObject'
+      has_and_belongs_to_many :collections, property: :is_member_of_collection, class_name: 'Dor::Collection'
+      has_and_belongs_to_many :sets, property: :is_member_of, class_name: 'Dor::Collection'
     end
 
     def initiate_apo_workflow(name)
-      create_workflow(name, !self.new_record?)
+      create_workflow(name, !new_record?)
     end
 
     # Returns the default lane_id from the item's APO.  Will return 'default' if the item does not have
@@ -39,7 +39,7 @@ module Dor
     end
 
     def unshelve_and_unpublish
-      if self.respond_to? :contentMetadata
+      if respond_to? :contentMetadata
         content_ds = datastreams['contentMetadata']
         unless content_ds.nil?
           content_ds.ng_xml.xpath('/contentMetadata/resource//file').each_with_index do |file_node, index|
@@ -82,7 +82,7 @@ module Dor
     end
 
     def rights
-      return nil unless self.respond_to? :rightsMetadata
+      return nil unless respond_to? :rightsMetadata
       return nil if rightsMetadata.nil?
 
       xml = rightsMetadata.ng_xml

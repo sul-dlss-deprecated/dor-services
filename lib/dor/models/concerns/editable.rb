@@ -6,7 +6,7 @@ module Dor
     extend ActiveSupport::Concern
 
     included do
-      belongs_to :agreement_object, :property => :referencesAgreement, :class_name => 'Dor::Item'
+      belongs_to :agreement_object, property: :referencesAgreement, class_name: 'Dor::Item'
     end
 
     # these hashes map short ("machine") license codes to their corresponding URIs and human readable titles. they
@@ -20,31 +20,31 @@ module Dor
     # TODO: need some way to do versioning.  for instance, what happens when a new version of an existing license comes
     # out, since it will presumably use the same license code, but a different title and URI?
     CREATIVE_COMMONS_USE_LICENSES = {
-      'by' => { :human_readable => 'Attribution 3.0 Unported',
-                :uri => 'https://creativecommons.org/licenses/by/3.0/' },
-      'by-sa' => { :human_readable => 'Attribution Share Alike 3.0 Unported',
-                   :uri => 'https://creativecommons.org/licenses/by-sa/3.0/' },
-      'by_sa' => { :human_readable => 'Attribution Share Alike 3.0 Unported',
-                   :uri => 'https://creativecommons.org/licenses/by-sa/3.0/',
-                   :deprecation_warning => 'license code "by_sa" was a typo in argo, prefer "by-sa"' },
-      'by-nd' => { :human_readable => 'Attribution No Derivatives 3.0 Unported',
-                   :uri => 'https://creativecommons.org/licenses/by-nd/3.0/' },
-      'by-nc' => { :human_readable => 'Attribution Non-Commercial 3.0 Unported',
-                   :uri => 'https://creativecommons.org/licenses/by-nc/3.0/' },
-      'by-nc-sa' => { :human_readable => 'Attribution Non-Commercial Share Alike 3.0 Unported',
-                      :uri => 'https://creativecommons.org/licenses/by-nc-sa/3.0/' },
-      'by-nc-nd' => { :human_readable => 'Attribution Non-Commercial, No Derivatives 3.0 Unported',
-                      :uri => 'https://creativecommons.org/licenses/by-nc-nd/3.0/' },
-      'pdm' => { :human_readable => 'Public Domain Mark 1.0',
-                 :uri => 'https://creativecommons.org/publicdomain/mark/1.0/' }
+      'by' => { human_readable: 'Attribution 3.0 Unported',
+                uri: 'https://creativecommons.org/licenses/by/3.0/' },
+      'by-sa' => { human_readable: 'Attribution Share Alike 3.0 Unported',
+                   uri: 'https://creativecommons.org/licenses/by-sa/3.0/' },
+      'by_sa' => { human_readable: 'Attribution Share Alike 3.0 Unported',
+                   uri: 'https://creativecommons.org/licenses/by-sa/3.0/',
+                   deprecation_warning: 'license code "by_sa" was a typo in argo, prefer "by-sa"' },
+      'by-nd' => { human_readable: 'Attribution No Derivatives 3.0 Unported',
+                   uri: 'https://creativecommons.org/licenses/by-nd/3.0/' },
+      'by-nc' => { human_readable: 'Attribution Non-Commercial 3.0 Unported',
+                   uri: 'https://creativecommons.org/licenses/by-nc/3.0/' },
+      'by-nc-sa' => { human_readable: 'Attribution Non-Commercial Share Alike 3.0 Unported',
+                      uri: 'https://creativecommons.org/licenses/by-nc-sa/3.0/' },
+      'by-nc-nd' => { human_readable: 'Attribution Non-Commercial, No Derivatives 3.0 Unported',
+                      uri: 'https://creativecommons.org/licenses/by-nc-nd/3.0/' },
+      'pdm' => { human_readable: 'Public Domain Mark 1.0',
+                 uri: 'https://creativecommons.org/publicdomain/mark/1.0/' }
     }.freeze
     OPEN_DATA_COMMONS_USE_LICENSES = {
-      'pddl' => { :human_readable => 'Open Data Commons Public Domain Dedication and License 1.0',
-                  :uri => 'http://opendatacommons.org/licenses/pddl/1.0/' },
-      'odc-by' => { :human_readable => 'Open Data Commons Attribution License 1.0',
-                    :uri => 'http://opendatacommons.org/licenses/by/1.0/' },
-      'odc-odbl' => { :human_readable => 'Open Data Commons Open Database License 1.0',
-                      :uri => 'http://opendatacommons.org/licenses/odbl/1.0/' }
+      'pddl' => { human_readable: 'Open Data Commons Public Domain Dedication and License 1.0',
+                  uri: 'http://opendatacommons.org/licenses/pddl/1.0/' },
+      'odc-by' => { human_readable: 'Open Data Commons Attribution License 1.0',
+                    uri: 'http://opendatacommons.org/licenses/by/1.0/' },
+      'odc-odbl' => { human_readable: 'Open Data Commons Open Database License 1.0',
+                      uri: 'http://opendatacommons.org/licenses/odbl/1.0/' }
     }.freeze
 
     # Adds a person or group to a role in the APO role metadata datastream
@@ -79,9 +79,7 @@ module Dor
 
     # remove all people groups and roles from the APO role metadata datastream
     def purge_roles
-      roleMetadata.ng_xml.search('/roleMetadata/role').each do |node|
-        node.remove
-      end
+      roleMetadata.ng_xml.search('/roleMetadata/role').each(&:remove)
     end
 
     def mods_title
@@ -89,7 +87,7 @@ module Dor
     end
 
     def mods_title=(val)
-      descMetadata.update_values({ [:title_info, :main_title] => val })
+      descMetadata.update_values(%i[title_info main_title] => val)
     end
 
     # get all collections listed for this APO, used during registration
@@ -141,7 +139,7 @@ module Dor
         administrativeMetadata.ng_xml_will_change!
         administrativeMetadata.add_child_node(administrativeMetadata, :descMetadata)
       end
-      administrativeMetadata.update_values({ [:descMetadata, :source] => val })
+      administrativeMetadata.update_values(%i[descMetadata source] => val)
     end
 
     def use_statement
@@ -235,7 +233,7 @@ module Dor
         self.open_data_commons_license = use_license_machine
         self.open_data_commons_license_human = OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
       else
-        fail ArgumentError, "'#{use_license_machine}' is not a valid license code"
+        raise ArgumentError, "'#{use_license_machine}' is not a valid license code"
       end
     end
 
@@ -271,9 +269,6 @@ module Dor
       elsif machine_discover_access_node && machine_discover_access_node.search('./none').length == 1
         # if it's not even discoverable, it's "dark"
         'dark'
-      else
-        # if none of the above, the rights xml structure is unsupported/unintelligible
-        nil
       end
     end
 
@@ -298,20 +293,20 @@ module Dor
         administrativeMetadata.ng_xml_will_change!
         administrativeMetadata.add_child_node(administrativeMetadata.ng_xml.root, :metadata_format)
       end
-      administrativeMetadata.update_values({ [:metadata_format] => format })
+      administrativeMetadata.update_values([:metadata_format] => format)
     end
 
     def desc_metadata_source
       administrativeMetadata.metadata_source.first
     end
 
-    def desc_metadata_source=(source)
+    def desc_metadata_source=(_source)
       # create the node if it isnt there already
       unless administrativeMetadata.metadata_source.first
         administrativeMetadata.ng_xml_will_change!
         administrativeMetadata.add_child_node(administrativeMetadata.ng_xml.root, :metadata_source)
       end
-      administrativeMetadata.update_values({ [:metadata_source] => format })
+      administrativeMetadata.update_values([:metadata_source] => format)
     end
 
     # List of default workflows, used to provide choices at registration
@@ -323,7 +318,7 @@ module Dor
     # set a single default workflow
     # @param wf [String] the name of the workflow, ex. 'digitizationWF'
     def default_workflow=(wf)
-      fail ArgumentError, 'Must have a valid workflow for default' if wf.blank?
+      raise ArgumentError, 'Must have a valid workflow for default' if wf.blank?
 
       xml = administrativeMetadata.ng_xml
       administrativeMetadata.ng_xml_will_change!
@@ -348,9 +343,9 @@ module Dor
     end
 
     def agreement=(val)
-      fail ArgumentError, 'agreement must have a valid druid' if val.blank?
+      raise ArgumentError, 'agreement must have a valid druid' if val.blank?
 
-      self.agreement_object = Dor.find val.to_s, :cast => true
+      self.agreement_object = Dor.find val.to_s, cast: true
     end
   end
 end

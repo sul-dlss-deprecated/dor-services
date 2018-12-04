@@ -13,23 +13,23 @@ describe Dor::Contentable do
   let(:src1_pid) { 'druid:ab123cd0002' }
   let(:src2_pid) { 'druid:ab123cd0003' }
 
-  let(:primary) {
+  let(:primary) do
     c = MergeableItem.new
     allow(c).to receive(:pid) { primary_pid }
     c
-  }
+  end
 
-  let(:src1) {
+  let(:src1) do
     c = MergeableItem.new
     allow(c).to receive(:pid) { src1_pid }
     c
-  }
+  end
 
-  let(:src2) {
+  let(:src2) do
     c = MergeableItem.new
     allow(c).to receive(:pid) { src2_pid }
     c
-  }
+  end
 
   before(:each) do
     allow(primary.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)

@@ -12,7 +12,7 @@ end
 
 class Nokogiri::XML::Node
   def normalize_text!
-    xpath('//text()').each { |t| t.normalize! }
+    xpath('//text()').each(&:normalize!)
   end
 end
 

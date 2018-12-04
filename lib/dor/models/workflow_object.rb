@@ -8,7 +8,7 @@ module Dor
     @@repo_cache = {}
 
     has_object_type 'workflow'
-    has_metadata :name => 'workflowDefinition', :type => Dor::WorkflowDefinitionDs, :label => 'Workflow Definition'
+    has_metadata name: 'workflowDefinition', type: Dor::WorkflowDefinitionDs, label: 'Workflow Definition'
 
     self.resource_indexer = CompositeIndexer.new(
       DataIndexer,
@@ -53,7 +53,7 @@ module Dor
       datastreams['workflowDefinition'].initial_workflow
     end
 
-    alias_method :generate_intial_workflow, :generate_initial_workflow
+    alias generate_intial_workflow generate_initial_workflow
 
     # Searches DOR for the workflow definition object.  It then caches the workflow repository and xml
     # @param [String] name the name of the workflow

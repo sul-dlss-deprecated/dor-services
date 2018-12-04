@@ -13,19 +13,19 @@ describe Dor::MergeService do
   let(:primary_pid)   { 'druid:ab123cd0001' }
   let(:secondary_pid) { 'druid:ab123cd0002' }
 
-  let(:primary) {
+  let(:primary) do
     c = MergeableItem.new
     allow(c).to receive(:pid).and_return(primary_pid)
     allow(c.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)
     c
-  }
+  end
 
-  let(:secondary) {
+  let(:secondary) do
     c = MergeableItem.new
     allow(c).to receive(:pid).and_return(secondary_pid)
     allow(c.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)
     c
-  }
+  end
 
   let(:pri_druid_tree) { DruidTools::Druid.new primary_pid, workspace }
   let(:sec_druid_tree) { DruidTools::Druid.new secondary_pid, workspace }

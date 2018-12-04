@@ -55,10 +55,10 @@ module Dor
     before_create :ensure_non_versionable
 
     set_terminology do |t|
-      t.root(:path => 'versionMetadata')
+      t.root(path: 'versionMetadata')
       t.version do
-        t.version_id :path => { :attribute => 'versionID' }
-        t.tag :path => { :attribute => 'tag' }
+        t.version_id path: { attribute: 'versionID' }
+        t.tag path: { attribute: 'tag' }
         t.description
       end
     end
@@ -66,11 +66,11 @@ module Dor
     # Default EventsDS xml
     def self.xml_template
       builder = Nokogiri::XML::Builder.new do |xml|
-        xml.versionMetadata {
-          xml.version(:versionId => '1', :tag => '1.0.0') {
+        xml.versionMetadata do
+          xml.version(versionId: '1', tag: '1.0.0') do
             xml.description 'Initial Version'
-          }
-        }
+          end
+        end
       end
       builder.doc
     end
@@ -86,7 +86,7 @@ module Dor
       ng_xml_will_change!
       if find_by_terms(:version).size == 0
         v = ng_xml.create_element 'version',
-                                  :versionId => '1', :tag => '1.0.0'
+                                  versionId: '1', tag: '1.0.0'
         d = ng_xml.create_element 'description', 'Initial Version'
         ng_xml.root['objectId'] = pid
         ng_xml.root.add_child(v)
@@ -96,10 +96,8 @@ module Dor
         current_id = current[:versionId].to_i
         current_tag = VersionTag.parse(current[:tag])
 
-        v = ng_xml.create_element 'version', :versionId => (current_id + 1).to_s
-        if significance && current_tag
-          v[:tag] = current_tag.increment(significance).to_s
-        end
+        v = ng_xml.create_element 'version', versionId: (current_id + 1).to_s
+        v[:tag] = current_tag.increment(significance).to_s if significance && current_tag
         ng_xml.root['objectId'] = pid
         ng_xml.root.add_child(v)
 

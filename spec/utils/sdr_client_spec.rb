@@ -7,21 +7,21 @@ describe Sdr::Client do
   describe '.get_current_version' do
     it 'returns the current of the object from SDR' do
       stub_request(:get, Sdr::Client.client['objects/druid:ab123cd4567/current_version'].url)
-        .to_return(:body => '<currentVersion>2</currentVersion>')
+        .to_return(body: '<currentVersion>2</currentVersion>')
       expect(Sdr::Client.current_version('druid:ab123cd4567')).to eq 2
     end
 
     context 'raises an exception if the xml' do
       it 'has the wrong root element' do
         stub_request(:get, Sdr::Client.client['objects/druid:ab123cd4567/current_version'].url)
-          .to_return(:body => '<wrongRoot>2</wrongRoot>')
+          .to_return(body: '<wrongRoot>2</wrongRoot>')
         expect{ Sdr::Client.current_version('druid:ab123cd4567') }
           .to raise_error(Exception, 'Unable to parse XML from SDR current_version API call: <wrongRoot>2</wrongRoot>')
       end
 
       it 'does not contain an Integer as its text' do
         stub_request(:get, Sdr::Client.client['objects/druid:ab123cd4567/current_version'].url)
-          .to_return(:body => '<currentVersion>two</currentVersion>')
+          .to_return(body: '<currentVersion>two</currentVersion>')
         expect{ Sdr::Client.current_version('druid:ab123cd4567') }
           .to raise_error(Exception, 'Unable to parse XML from SDR current_version API call: <currentVersion>two</currentVersion>')
       end
@@ -30,7 +30,7 @@ describe Sdr::Client do
 
   describe '.get_sdr_metadata' do
     it 'fetches the datastream from SDR' do
-      stub_request(:get, Sdr::Client.client["objects/druid:ab123cd4567/metadata/technicalMetadata.xml"].url).to_return(:body => '<technicalMetadata/>')
+      stub_request(:get, Sdr::Client.client['objects/druid:ab123cd4567/metadata/technicalMetadata.xml'].url).to_return(body: '<technicalMetadata/>')
       response = Sdr::Client.get_sdr_metadata('druid:ab123cd4567', 'technicalMetadata')
       expect(response).to eq('<technicalMetadata/>')
     end
@@ -40,7 +40,7 @@ describe Sdr::Client do
     let(:druid) { 'druid:zz000zz0000' }
     it 'fetches the signature catalog from SDR' do
       resource = Sdr::Client.client["objects/#{druid}/manifest/signatureCatalog.xml"]
-      stub_request(:get, resource.url).to_return(:body => '<signatureCatalog objectId="druid:zz000zz0000" versionId="0" catalogDatetime="" fileCount="0" byteCount="0" blockCount="0"/>')
+      stub_request(:get, resource.url).to_return(body: '<signatureCatalog objectId="druid:zz000zz0000" versionId="0" catalogDatetime="" fileCount="0" byteCount="0" blockCount="0"/>')
 
       catalog = Sdr::Client.get_signature_catalog(druid)
       expect(catalog.to_xml).to match(/<signatureCatalog/)
@@ -53,7 +53,7 @@ describe Sdr::Client do
 
     it 'fetches the file inventory difference from SDR' do
       resource = Sdr::Client.client["objects/#{druid}/cm-inv-diff?subset=all"]
-      stub_request(:post, resource.url).to_return(:body => '<fileInventoryDifference />')
+      stub_request(:post, resource.url).to_return(body: '<fileInventoryDifference />')
 
       inventory_difference = Sdr::Client.get_content_diff(druid, '')
 
@@ -74,7 +74,7 @@ describe Sdr::Client do
 
     it 'properly encodes filename and passes along the sdr response with the correct content type and status code' do
       resource = Sdr::Client.client["objects/#{druid}/content/#{URI.encode(filename_with_spaces)}?version=#{item_version}"]
-      stub_request(:get, resource.url).to_return(:body => sdr_resp_body, :headers => { :content_type => sdr_resp_content_type })
+      stub_request(:get, resource.url).to_return(body: sdr_resp_body, headers: { content_type: sdr_resp_content_type })
 
       preserved_content = Sdr::Client.get_preserved_file_content(druid, filename_with_spaces, item_version)
       expect(preserved_content).to eq(sdr_resp_body)
@@ -85,7 +85,7 @@ describe Sdr::Client do
 
     it 'passes errors through to the caller' do
       resource = Sdr::Client.client["objects/#{druid}/content/bogus_filename?version=#{item_version}"]
-      stub_request(:get, resource.url).to_return(:status => 404)
+      stub_request(:get, resource.url).to_return(status: 404)
 
       expect { Sdr::Client.get_preserved_file_content(druid, filename_with_spaces, item_version) }.to raise_error RestClient::ResourceNotFound
     end

@@ -34,7 +34,7 @@ describe Dor::EventsDS do
       expect(events.size).to eq(1)
       expect(events.first['type']).to eq('embargo')
       expect(events.first['who']).to eq('application:etd-robot')
-      expect(Time.parse(events.first['when'])).to be > Time.now.utc - 10000
+      expect(Time.parse(events.first['when'])).to be > Time.now.utc - 10_000
       expect(events.first.content).to eq('Embargo released')
     end
 
@@ -58,7 +58,7 @@ describe Dor::EventsDS do
 
       ds.find_events_by_type('publish') do |who, timestamp, message|
         expect(who).to eq('application:common-accessioning-robot')
-        expect(timestamp).to be > Time.now.utc - 10000
+        expect(timestamp).to be > Time.now.utc - 10_000
         expect(message).to eq('Released to the world')
       end
 

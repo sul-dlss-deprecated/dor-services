@@ -9,8 +9,8 @@ module Dor
     PREVIOUS_CATKEY_TYPE_ID = 'previous_catkey'
 
     included do
-      has_metadata :name => 'DC', :type => SimpleDublinCoreDs, :label => 'Dublin Core Record for self object'
-      has_metadata :name => 'identityMetadata', :type => Dor::IdentityMetadataDS, :label => 'Identity Metadata'
+      has_metadata name: 'DC', type: SimpleDublinCoreDs, label: 'Dublin Core Record for self object'
+      has_metadata name: 'identityMetadata', type: Dor::IdentityMetadataDS, label: 'Identity Metadata'
     end
 
     module ClassMethods
@@ -52,7 +52,7 @@ module Dor
     def source_id=(source_id)
       identityMetadata.sourceId = source_id
     end
-    alias_method :set_source_id, :source_id=
+    alias set_source_id source_id=
     deprecate set_source_id: 'Use source_id= instead'
 
     # Convenience method to get the current catkey
@@ -65,9 +65,8 @@ module Dor
     # @param  [String] catkey the new source identifier
     # @return [String] same value, as per Ruby assignment convention
     def catkey=(val)
-      if val != catkey && !catkey.blank? # if there was already a catkey in the record, store that in the "previous" spot (assuming there is no change)
-        identityMetadata.add_otherId("#{PREVIOUS_CATKEY_TYPE_ID}:#{catkey}")
-      end
+      # if there was already a catkey in the record, store that in the "previous" spot (assuming there is no change)
+      identityMetadata.add_otherId("#{PREVIOUS_CATKEY_TYPE_ID}:#{catkey}") if val != catkey && !catkey.blank?
 
       if val.blank? # if we are setting the catkey to blank, remove the node from XML
         remove_other_Id(CATKEY_TYPE_ID)
@@ -87,9 +86,7 @@ module Dor
     end
 
     def add_other_Id(type, val)
-      if identityMetadata.otherId(type).length > 0
-        raise 'There is an existing entry for ' + type + ', consider using update_other_Id().'
-      end
+      raise 'There is an existing entry for ' + type + ', consider using update_other_Id().' if identityMetadata.otherId(type).length > 0
 
       identityMetadata.add_otherId(type + ':' + val)
     end
@@ -113,7 +110,7 @@ module Dor
     # turns a tag string into an array with one element per tag part.
     # split on ":", disregard leading and trailing whitespace on tokens.
     def split_tag_to_arr(tag_str)
-      tag_str.split(':').map { |str| str.strip }
+      tag_str.split(':').map(&:strip)
     end
 
     # turn a tag array back into a tag string with a standard format
@@ -136,9 +133,7 @@ module Dor
       # we return, because we want to preserve the user's intended case.
       normalized_tag = normalize_tag_arr(tag_arr)
       dupe_existing_tag = existing_tag_list.detect { |existing_tag| normalize_tag(existing_tag).casecmp(normalized_tag) == 0 }
-      if dupe_existing_tag
-        raise "An existing tag (#{dupe_existing_tag}) is the same, consider using update_tag?"
-      end
+      raise "An existing tag (#{dupe_existing_tag}) is the same, consider using update_tag?" if dupe_existing_tag
 
       normalized_tag
     end
@@ -148,12 +143,8 @@ module Dor
     # @return [Array] the tag split into an array via ':'
     def validate_tag_format(tag_str)
       tag_arr = split_tag_to_arr(tag_str)
-      if tag_arr.length < 2
-        raise ArgumentError, "Invalid tag structure: tag '#{tag_str}' must have at least 2 elements"
-      end
-      if tag_arr.detect { |str| str.empty? }
-        raise ArgumentError, "Invalid tag structure: tag '#{tag_str}' contains empty elements"
-      end
+      raise ArgumentError, "Invalid tag structure: tag '#{tag_str}' must have at least 2 elements" if tag_arr.length < 2
+      raise ArgumentError, "Invalid tag structure: tag '#{tag_str}' contains empty elements" if tag_arr.detect(&:empty?)
 
       tag_arr
     end
@@ -210,12 +201,12 @@ module Dor
       object_class = Dor.registered_classes[object_type]
 
       if object_class
-        self.instance_of?(object_class) ? self : self.adapt_to(object_class)
+        instance_of?(object_class) ? self : adapt_to(object_class)
       else
         if ActiveFedora::VERSION < '8'
           result = super
           if result.class == Dor::Abstract
-            self.adapt_to(Dor::Item)
+            adapt_to(Dor::Item)
           else
             result
           end
@@ -223,7 +214,7 @@ module Dor
           begin
             super
           rescue ActiveFedora::ModelNotAsserted
-            self.adapt_to(Dor::Item)
+            adapt_to(Dor::Item)
           end
         end
       end

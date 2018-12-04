@@ -26,14 +26,14 @@ class ItemizableItem < ActiveFedora::Base
 end
 
 describe Dor::Publishable do
-  before(:each) {
+  before(:each) do
     stub_config
     Dor.configure do
       stacks do
         host 'stacks.stanford.edu'
       end
     end
-  }
+  end
   after(:each) { unstub_config }
 
   before :each do
@@ -351,8 +351,8 @@ describe Dor::Publishable do
 
       it 'includes releaseData element from release tags' do
         releases = public_xml.xpath('/publicObject/releaseData/release')
-        expect(releases.map(&:inner_text)).to eq ['true', 'true']
-        expect(releases.map{ |r| r['to'] }).to eq ['Searchworks', 'Some_special_place']
+        expect(releases.map(&:inner_text)).to eq %w[true true]
+        expect(releases.map{ |r| r['to'] }).to eq %w[Searchworks Some_special_place]
       end
 
       it 'include a releaseData element when there is content inside it, but does not include this release data in identityMetadata' do
@@ -582,16 +582,16 @@ describe Dor::Publishable do
       end
       it 'writes empty notification file' do
         expect(File).to receive(:directory?).with(changes_dir).and_return(true)
-        expect(File.exists?(changes_file)).to be_falsey
+        expect(File.exist?(changes_file)).to be_falsey
         @item.publish_notify_on_success
-        expect(File.exists?(changes_file)).to be_truthy
+        expect(File.exist?(changes_file)).to be_truthy
       end
       it 'writes empty notification file even when given only the base id' do
         expect(File).to receive(:directory?).with(changes_dir).and_return(true)
         allow(@item).to receive(:pid).and_return('aa111bb2222')
-        expect(File.exists?(changes_file)).to be_falsey
+        expect(File.exist?(changes_file)).to be_falsey
         @item.publish_notify_on_success
-        expect(File.exists?(changes_file)).to be_truthy
+        expect(File.exist?(changes_file)).to be_truthy
       end
       it 'removes any associated delete entry' do
         druid1 = DruidTools::Druid.new @item.pid, purl_root
@@ -599,7 +599,7 @@ describe Dor::Publishable do
         expect(druid1.deletes_record_exists?).to be_truthy # confirm our deletes record is there
         @item.publish_notify_on_success
         expect(druid1.deletes_record_exists?).to be_falsey # deletes record not there anymore
-        expect(File.exists?(changes_file)).to be_truthy # changes file is there
+        expect(File.exist?(changes_file)).to be_truthy # changes file is there
       end
       it 'does not explode if the deletes entry cannot be removed' do
         druid1 = DruidTools::Druid.new @item.pid, purl_root
@@ -609,7 +609,7 @@ describe Dor::Publishable do
         expect(Dor.logger).to receive(:warn).with("Access denied while trying to remove .deletes file for #{@item.pid}") # we will get a warning
         @item.publish_notify_on_success
         expect(druid1.deletes_record_exists?).to be_truthy # deletes record is still there since it cannot be removed
-        expect(File.exists?(changes_file)).to be_truthy # changes file is there
+        expect(File.exist?(changes_file)).to be_truthy # changes file is there
       end
       it 'raises error if misconfigured' do
         Dor::Config.push! { |config| config.stacks.local_recent_changes nil }

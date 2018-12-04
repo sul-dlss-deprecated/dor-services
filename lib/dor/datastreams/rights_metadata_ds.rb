@@ -11,43 +11,43 @@ module Dor
     # Ultimately, default_object_rights should go away and APOs also use an instantation of this class
 
     set_terminology do |t|
-      t.root :path => 'rightsMetadata', :index_as => [:not_searchable]
-      t.copyright :path => 'copyright/human', :index_as => [:symbol]
-      t.use_statement :path => '/use/human[@type=\'useAndReproduction\']', :index_as => [:symbol]
+      t.root path: 'rightsMetadata', index_as: [:not_searchable]
+      t.copyright path: 'copyright/human', index_as: [:symbol]
+      t.use_statement path: '/use/human[@type=\'useAndReproduction\']', index_as: [:symbol]
 
       t.use do
         t.machine
         t.human
       end
 
-      t.creative_commons :path => '/use/machine[@type=\'creativeCommons\']', :type => 'creativeCommons' do
-        t.uri :path => '@uri'
+      t.creative_commons path: '/use/machine[@type=\'creativeCommons\']', type: 'creativeCommons' do
+        t.uri path: '@uri'
       end
-      t.creative_commons_human :path => '/use/human[@type=\'creativeCommons\']'
-      t.open_data_commons :path => '/use/machine[@type=\'openDataCommons\']', :type => 'openDataCommons' do
-        t.uri :path => '@uri'
+      t.creative_commons_human path: '/use/human[@type=\'creativeCommons\']'
+      t.open_data_commons path: '/use/machine[@type=\'openDataCommons\']', type: 'openDataCommons' do
+        t.uri path: '@uri'
       end
-      t.open_data_commons_human :path => '/use/human[@type=\'openDataCommons\']'
+      t.open_data_commons_human path: '/use/human[@type=\'openDataCommons\']'
     end
 
     def self.xml_template
       Nokogiri::XML::Builder.new do |xml|
-        xml.rightsMetadata {
-          xml.access(:type => 'discover') {
+        xml.rightsMetadata do
+          xml.access(type: 'discover') do
             xml.machine { xml.none }
-          }
-          xml.access(:type => 'read') {
+          end
+          xml.access(type: 'read') do
             xml.machine { xml.none } # dark default
-          }
-          xml.use {
-            xml.human(:type => 'useAndReproduction')
-            xml.human(:type => 'creativeCommons')
-            xml.machine(:type => 'creativeCommons', :uri => '')
-            xml.human(:type => 'openDataCommons')
-            xml.machine(:type => 'openDataCommons', :uri => '')
-          }
+          end
+          xml.use do
+            xml.human(type: 'useAndReproduction')
+            xml.human(type: 'creativeCommons')
+            xml.machine(type: 'creativeCommons', uri: '')
+            xml.human(type: 'openDataCommons')
+            xml.machine(type: 'openDataCommons', uri: '')
+          end
           xml.copyright { xml.human }
-        }
+        end
       end.doc
     end
 
@@ -186,7 +186,7 @@ module Dor
 
       # these two values are returned by index_elements[:primary], but are just a less granular version of
       # what the other more specific fields return, so discard them
-      solr_doc['rights_descriptions_ssim'] -= ['access_restricted', 'access_restricted_qualified', 'world_qualified']
+      solr_doc['rights_descriptions_ssim'] -= %w[access_restricted access_restricted_qualified world_qualified]
       solr_doc['rights_descriptions_ssim'] += ['dark (file)'] if dra.index_elements[:terms].include? 'none_read_file'
 
       solr_doc['obj_rights_locations_ssim'] = dra.index_elements[:obj_locations] unless dra.index_elements[:obj_locations].blank?

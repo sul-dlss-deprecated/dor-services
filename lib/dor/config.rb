@@ -52,48 +52,48 @@ module Dor
 
     def make_solr_connection(add_opts = {})
       opts = Dor::Config.solr.opts.merge(add_opts).merge(
-        :url => Dor::Config.solr.url
+        url: Dor::Config.solr.url
       )
       ::RSolr.connect(opts)
     end
 
     set_callback :initialize, :after do |config|
-      config.deep_merge!({
-                           :fedora => {
-                             :client => Confstruct.deferred { |c| CertificateAuthenticatedRestResourceFactory.create(:fedora) },
-                             :safeurl => Confstruct.deferred { |c|
-                               begin
-                                 fedora_uri = URI.parse(config.fedora.url)
-                                 fedora_uri.user = fedora_uri.password = nil
-                                 fedora_uri.to_s
-                               rescue URI::InvalidURIError
-                                 nil
-                               end
-                             }
-                           },
-                           :dor_services => {
-                             :rest_client => Confstruct.deferred { |c| RestResourceFactory.create(:dor_services) }
-                           },
-                           :purl_services => {
-                             :rest_client => Confstruct.deferred { |c| RestResourceFactory.create(:purl_services) }
-                           },
-                           :sdr => {
-                             :rest_client => Confstruct.deferred { |c| RestResourceFactory.create(:sdr) }
-                           },
-                           :workflow => {
-                             :client => Confstruct.deferred do |c|
-                               Dor::WorkflowService.configure c.url, logger: c.client_logger, timeout: c.timeout, dor_services_url: config.dor_services.url
-                               Dor::WorkflowService
-                             end,
-                             :client_logger => Confstruct.deferred do |c|
-                                                 if c.logfile && c.shift_age
-                                                   Logger.new(c.logfile, c.shift_age)
-                                                 elsif c.logfile
-                                                   Logger.new(c.logfile)
-                                                 end
-                                               end
-                           }
-                         })
+      config.deep_merge!(
+        fedora: {
+          client: Confstruct.deferred { |_c| CertificateAuthenticatedRestResourceFactory.create(:fedora) },
+          safeurl: Confstruct.deferred do |_c|
+            begin
+              fedora_uri = URI.parse(config.fedora.url)
+              fedora_uri.user = fedora_uri.password = nil
+              fedora_uri.to_s
+            rescue URI::InvalidURIError
+              nil
+            end
+          end
+        },
+        dor_services: {
+          rest_client: Confstruct.deferred { |_c| RestResourceFactory.create(:dor_services) }
+        },
+        purl_services: {
+          rest_client: Confstruct.deferred { |_c| RestResourceFactory.create(:purl_services) }
+        },
+        sdr: {
+          rest_client: Confstruct.deferred { |_c| RestResourceFactory.create(:sdr) }
+        },
+        workflow: {
+          client: Confstruct.deferred do |c|
+            Dor::WorkflowService.configure c.url, logger: c.client_logger, timeout: c.timeout, dor_services_url: config.dor_services.url
+            Dor::WorkflowService
+          end,
+          client_logger: Confstruct.deferred do |c|
+                           if c.logfile && c.shift_age
+                             Logger.new(c.logfile, c.shift_age)
+                           elsif c.logfile
+                             Logger.new(c.logfile)
+                           end
+                         end
+        }
+      )
       true
     end
 
@@ -101,7 +101,7 @@ module Dor
       if config.solrizer.present?
         stack = Kernel.caller.dup
         stack.shift while stack[0] =~ %r{(active_support/callbacks|dor/config|dor-services)\.rb}
-        ActiveSupport::Deprecation.warn "Dor::Config -- solrizer configuration is deprecated. Please use solr instead.", stack
+        ActiveSupport::Deprecation.warn 'Dor::Config -- solrizer configuration is deprecated. Please use solr instead.', stack
 
         config.solrizer.each do |k, v|
           config.solr[k] ||= v
@@ -120,7 +120,7 @@ module Dor
 
     def fedora_config
       fedora_uri = URI.parse(fedora.url)
-      connection_opts = { :url => fedora.safeurl, :user => fedora_uri.user, :password => fedora_uri.password }
+      connection_opts = { url: fedora.safeurl, user: fedora_uri.user, password: fedora_uri.password }
       connection_opts[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(ssl.cert_file)) if ssl.cert_file.present?
       connection_opts[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(ssl.key_file), ssl.key_pass) if ssl.key_file.present?
       connection_opts[:ssl_cert_store] = default_ssl_cert_store
@@ -128,11 +128,11 @@ module Dor
     end
 
     def solr_config
-      { :url => solr.url }
+      { url: solr.url }
     end
 
     def predicate_config
-      YAML.load(File.read(File.expand_path('../../../config/predicate_mappings.yml', __FILE__)))
+      YAML.load(File.read(File.expand_path('../../config/predicate_mappings.yml', __dir__)))
     end
 
     def default_ssl_cert_store
@@ -140,6 +140,6 @@ module Dor
     end
   end
 
-  Config = Configuration.new(YAML.load(File.read(File.expand_path('../../../config/config_defaults.yml', __FILE__))))
+  Config = Configuration.new(YAML.load(File.read(File.expand_path('../../config/config_defaults.yml', __dir__))))
   ActiveFedora.configurator = Config
 end

@@ -21,7 +21,7 @@ module Dor
       add_constituent_relations!
       strip_comments!
 
-      new_doc = Nokogiri::XML(doc.to_xml) { |x| x.noblanks }
+      new_doc = Nokogiri::XML(doc.to_xml, &:noblanks)
       new_doc.encoding = 'UTF-8'
       new_doc.to_xml
     end
@@ -37,20 +37,20 @@ module Dor
     # @note this method modifies the passed in doc
     def add_access_conditions!
       # clear out any existing accessConditions
-      doc.xpath('//mods:accessCondition', 'mods' => 'http://www.loc.gov/mods/v3').each { |n| n.remove }
+      doc.xpath('//mods:accessCondition', 'mods' => 'http://www.loc.gov/mods/v3').each(&:remove)
       rights = object.datastreams['rightsMetadata'].ng_xml
 
       rights.xpath('//use/human[@type="useAndReproduction"]').each do |use|
         txt = use.text.strip
         next if txt.empty?
 
-        doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', txt, :type => 'useAndReproduction')
+        doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', txt, type: 'useAndReproduction')
       end
       rights.xpath('//copyright/human[@type="copyright"]').each do |cr|
         txt = cr.text.strip
         next if txt.empty?
 
-        doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', txt, :type => 'copyright')
+        doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', txt, type: 'copyright')
       end
       rights.xpath("//use/machine[#{ci_compare('type', 'creativecommons')}]").each do |lic_type|
         next if lic_type.text =~ /none/i
@@ -59,7 +59,7 @@ module Dor
         next if lic_text.empty?
 
         new_text = "CC #{lic_type.text}: #{lic_text}"
-        doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', new_text, :type => 'license')
+        doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', new_text, type: 'license')
       end
       rights.xpath("//use/machine[#{ci_compare('type', 'opendatacommons')}]").each do |lic_type|
         next if lic_type.text =~ /none/i
@@ -68,7 +68,7 @@ module Dor
         next if lic_text.empty?
 
         new_text = "ODC #{lic_type.text}: #{lic_text}"
-        doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', new_text, :type => 'license')
+        doc.root.element_children.last.add_next_sibling doc.create_element('accessCondition', new_text, type: 'license')
       end
     end
 
@@ -133,7 +133,7 @@ module Dor
       end
     end
 
-    def add_related_item_node_for_collection! collection_druid
+    def add_related_item_node_for_collection!(collection_druid)
       begin
         collection_obj = Dor.find(collection_druid)
       rescue ActiveFedora::ObjectNotFoundError

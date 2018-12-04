@@ -12,14 +12,14 @@ describe Dor::Governable do
   before(:each) { stub_config   }
   after(:each)  { unstub_config }
 
-  let(:mock_collection) {
+  let(:mock_collection) do
     coll = Dor::Collection.new
     allow(coll).to receive(:new?).and_return false
     allow(coll).to receive(:new_record?).and_return false
     allow(coll).to receive(:pid).and_return 'druid:oo201oo0002'
     allow(coll).to receive(:save)
     coll
-  }
+  end
 
   before :each do
     @item = instantiate_fixture('druid:oo201oo0001', Dor::AdminPolicyObject)

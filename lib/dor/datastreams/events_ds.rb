@@ -5,12 +5,12 @@ module Dor
     before_create :ensure_non_versionable
 
     set_terminology do |t|
-      t.root(:path => 'events')
+      t.root(path: 'events')
       t.event do
-        t.who     :path => { :attribute => 'who'  }, :index_as => [:displayable, :not_searchable]
-        t.type_   :path => { :attribute => 'type' }, :index_as => [:displayable, :not_searchable]
-        t.when    :path => { :attribute => 'when' }, :index_as => [:displayable, :not_searchable], :data_type => :date
-        t.message :path => 'text()', :index_as => [:displayable, :not_searchable]
+        t.who     path: { attribute: 'who'  }, index_as: %i[displayable not_searchable]
+        t.type_   path: { attribute: 'type' }, index_as: %i[displayable not_searchable]
+        t.when    path: { attribute: 'when' }, index_as: %i[displayable not_searchable], data_type: :date
+        t.message path: 'text()', index_as: %i[displayable not_searchable]
       end
     end
 
@@ -33,7 +33,7 @@ module Dor
     def add_event(type, who, message)
       ng_xml_will_change!
       ev = ng_xml.create_element 'event', message,
-                                 :type => type, :who => who, :when => Time.now.utc.xmlschema
+                                 type: type, who: who, when: Time.now.utc.xmlschema
       ng_xml.root.add_child(ev)
     end
 
@@ -43,9 +43,9 @@ module Dor
     # @yieldparam [String] who thing responsible for creating the event. Value of the 'who' attribute
     # @yieldparam [Time] timestamp when this event was logged.  Value of the 'when' attribute
     # @yieldparam [String] message what happened. Content of the event node
-    def find_events_by_type(tag, &block)
+    def find_events_by_type(tag)
       find_by_terms(:event).xpath("//event[@type='#{tag}']").each do |node|
-        block.call(node['who'], Time.parse(node['when']), node.content)
+        yield(node['who'], Time.parse(node['when']), node.content)
       end
     end
 
@@ -55,9 +55,9 @@ module Dor
     # @yieldparam [String] who thing responsible for creating the event. Value of the 'who' attribute
     # @yieldparam [Time] timestamp when this event was logged.  Value of the 'when' attribute
     # @yieldparam [String] message what happened. Content of the event node
-    def each_event(&block)
+    def each_event
       find_by_terms(:event).each do |node|
-        block.call(node['type'], node['who'], Time.parse(node['when']), node.content)
+        yield(node['type'], node['who'], Time.parse(node['when']), node.content)
       end
     end
 

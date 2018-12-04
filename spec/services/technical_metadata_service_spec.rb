@@ -31,7 +31,7 @@ describe Dor::TechnicalMetadataService do
       @druid_tool[id] = DruidTools::Druid.new(druid, @workspace_pathname.to_s)
       repo_content_pathname = @fixtures.join('sdr_repo', id, 'v0001', 'data', 'content')
       work_content_pathname = Pathname(@druid_tool[id].content_dir)
-      repo_content_inventory = Moab::FileGroup.new(:group_id => 'content').group_from_directory(repo_content_pathname)
+      repo_content_inventory = Moab::FileGroup.new(group_id: 'content').group_from_directory(repo_content_pathname)
       work_content_inventory = Moab::FileGroup.new.group_from_directory(work_content_pathname)
       @inventory_differences[id] = Moab::FileGroupDifference.new
       @inventory_differences[id].compare_file_groups(repo_content_inventory, work_content_inventory)
@@ -79,10 +79,10 @@ describe Dor::TechnicalMetadataService do
     @object_ids.each do |id|
       group_diff = @inventory_differences[id]
       inventory_diff = Moab::FileInventoryDifference.new(
-        :digital_object_id => "druid:#{id}",
-        :basis => 'old_content_metadata',
-        :other => 'new_content_metadata',
-        :report_datetime => Time.now.utc.to_s
+        digital_object_id: "druid:#{id}",
+        basis: 'old_content_metadata',
+        other: 'new_content_metadata',
+        report_datetime: Time.now.utc.to_s
       )
       inventory_diff.group_differences << group_diff
       dor_item = double(Dor::Item)

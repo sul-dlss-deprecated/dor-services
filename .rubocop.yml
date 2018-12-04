@@ -30,3 +30,8 @@ Metrics/LineLength:
     # rights statement is a single string
     - spec/models/concerns/editable_spec.rb
     - spec/indexers/editable_indexer_spec.rb
+
+Style/SymbolProc:
+  Exclude:
+    # causes "Can't create Binding from C level Proc"
+    - lib/dor/datastreams/events_ds.rb

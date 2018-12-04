@@ -9,7 +9,7 @@ module Dor
     # @param [Dor::Item] dor_item The representation of the digital object
     # @param [String] agreement_id  depreciated, included for backward compatability with common-accessoning
     # @return [void] Create the Moab/bag manifests for new version, export data to BagIt bag, kick off the SDR preservation workflow
-    def self.transfer(dor_item, agreement_id = nil)
+    def self.transfer(dor_item, _agreement_id = nil)
       druid = dor_item.pid
       workspace = DruidTools::Druid.new(druid, Dor::Config.sdr.local_workspace_root)
       signature_catalog = get_signature_catalog(druid)
@@ -26,9 +26,7 @@ module Dor
         content_dir = workspace.find_filelist_parent('content', new_file_list)
       end
       content_group = version_inventory.group('content')
-      unless content_group.nil? || content_group.files.empty?
-        signature_catalog.normalize_group_signatures(content_group, content_dir)
-      end
+      signature_catalog.normalize_group_signatures(content_group, content_dir) unless content_group.nil? || content_group.files.empty?
       # export the bag (in tar format)
       bag_dir = Pathname(Dor::Config.sdr.local_export_home).join(druid.sub('druid:', ''))
       bagger = Moab::Bagger.new(version_inventory, signature_catalog, bag_dir)
@@ -74,7 +72,7 @@ module Dor
     #   If not found, return nil unless it is a required datastream in which case raise exception
     def self.get_datastream_content(dor_item, ds_name, required)
       ds = (ds_name == 'relationshipMetadata' ? 'RELS-EXT' : ds_name)
-      if dor_item.datastreams.keys.include?(ds) && !dor_item.datastreams[ds].new?
+      if dor_item.datastreams.key?(ds) && !dor_item.datastreams[ds].new?
         return dor_item.datastreams[ds].content
       elsif required == 'optional'
         return nil
@@ -130,7 +128,7 @@ module Dor
       if content_metadata
         Stanford::ContentInventory.new.inventory_from_cm(content_metadata, druid, 'preserve', version_id)
       else
-        Moab::FileInventory.new(:type => 'version', :digital_object_id => druid, :version_id => version_id)
+        Moab::FileInventory.new(type: 'version', digital_object_id: druid, version_id: version_id)
       end
     end
 
@@ -144,7 +142,7 @@ module Dor
     # @param [Pathname] metadata_dir The location of the the object's metadata files
     # @return [Moab::FileGroup] Traverse the metadata directory and generate a metadata group
     def self.get_metadata_file_group(metadata_dir)
-      file_group = Moab::FileGroup.new(:group_id => 'metadata').group_from_directory(metadata_dir)
+      file_group = Moab::FileGroup.new(group_id: 'metadata').group_from_directory(metadata_dir)
       file_group
     end
 

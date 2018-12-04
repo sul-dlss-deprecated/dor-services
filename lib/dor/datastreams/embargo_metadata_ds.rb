@@ -5,25 +5,25 @@ module Dor
     before_create :ensure_non_versionable
 
     set_terminology do |t|
-      t.root(:path => 'embargoMetadata')
+      t.root(path: 'embargoMetadata')
       t.status
-      t.embargo_status(:path => 'status', :index_as => [:symbol])
-      t.release_date(:path => 'releaseDate', :index_as => [:dateable])
-      t.release_access(:path => 'releaseAccess')
-      t.twenty_pct_status(:path => 'twentyPctVisibilityStatus', :index_as => [:symbol])
-      t.twenty_pct_release_date(:path => 'twentyPctVisibilityReleaseDate')
+      t.embargo_status(path: 'status', index_as: [:symbol])
+      t.release_date(path: 'releaseDate', index_as: [:dateable])
+      t.release_access(path: 'releaseAccess')
+      t.twenty_pct_status(path: 'twentyPctVisibilityStatus', index_as: [:symbol])
+      t.twenty_pct_release_date(path: 'twentyPctVisibilityReleaseDate')
     end
 
     # Default EmbargoMetadataDS xml
     def self.xml_template
       builder = Nokogiri::XML::Builder.new do |xml|
-        xml.embargoMetadata {
+        xml.embargoMetadata do
           xml.status
           xml.releaseDate
           xml.releaseAccess
           xml.twentyPctVisibilityStatus
           xml.twentyPctVisibilityReleaseDate
-        }
+        end
       end
       builder.doc
     end
@@ -65,7 +65,7 @@ module Dor
     # @return [Time]
     def release_date
       rd = term_values(:release_date).first
-      (rd.nil? || rd.empty?) ? nil : Time.parse(rd)
+      rd.nil? || rd.empty? ? nil : Time.parse(rd)
     end
 
     def twenty_pct_status=(new_status)
@@ -86,7 +86,7 @@ module Dor
     # @return [Time]
     def twenty_pct_release_date
       rd = term_values(:twenty_pct_release_date).first
-      (rd.nil? || rd.empty?) ? nil : Time.parse(rd)
+      rd.nil? || rd.empty? ? nil : Time.parse(rd)
     end
 
     # @return [Nokogiri::XML::Element] The releaseAccess node
@@ -97,11 +97,9 @@ module Dor
     # Sets the embargaAccess node
     # @param [Nokogiri::XML::Document] new_doc Document that will replace the existing releaseAccess node
     def release_access_node=(new_doc)
-      if new_doc.root.name != 'releaseAccess'
-        raise 'Trying to replace releaseAccess with a non-releaseAccess document'
-      end
+      raise 'Trying to replace releaseAccess with a non-releaseAccess document' if new_doc.root.name != 'releaseAccess'
 
-      term_value_delete(:select => '//embargoMetadata/releaseAccess')
+      term_value_delete(select: '//embargoMetadata/releaseAccess')
       ng_xml_will_change!
       ng_xml.root.add_child(new_doc.root.clone)
     end

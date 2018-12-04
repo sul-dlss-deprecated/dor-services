@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Dor::WorkflowDefinitionDs do
-  let(:dsxml) {
+  let(:dsxml) do
     <<-EOF
         <workflow-def id="accessionWF" repository="dor">
           <process lifecycle="submitted" name="start-accession" status="completed" sequence="1">
@@ -19,7 +19,7 @@ describe Dor::WorkflowDefinitionDs do
           </process>
         </workflow-def>
     EOF
-  }
+  end
 
   let(:ds) { Dor::WorkflowDefinitionDs.from_xml(dsxml) }
 

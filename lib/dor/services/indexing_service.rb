@@ -12,9 +12,13 @@ module Dor
     #   entry.  a placeholder will be used otherwise. 'request.uuid' might be useful in a Rails app.
     def self.generate_index_logger(&entry_id_block)
       index_logger = Logger.new(Config.indexing_svc.log, Config.indexing_svc.log_rotation_interval)
-      index_logger.formatter = proc do |severity, datetime, progname, msg|
+      index_logger.formatter = proc do |_severity, datetime, _progname, msg|
         date_format_str = Config.indexing_svc.log_date_format_str
-        entry_id = begin entry_id_block.call rescue '---' end
+        entry_id = begin begin
+                           entry_id_block.call
+                         rescue StandardError
+                           '---'
+                         end end
         "[#{entry_id}] [#{datetime.utc.strftime(date_format_str)}] #{msg}\n"
       end
       index_logger
@@ -49,7 +53,7 @@ module Dor
       msg = "failed to reindex #{pid}: #{e}"
       default_index_logger.error msg
       raise ReindexError.new(msg)
-    rescue => e
+    rescue StandardError => e
       default_index_logger.error "failed to reindex #{pid}: #{e}"
       raise
     end
@@ -72,7 +76,7 @@ module Dor
       options = args.pop if args.last.is_a? Hash
 
       if args.length > 0
-        warn "Dor::IndexingService.reindex_pid with primitive arguments is deprecated; pass e.g. { logger: logger, raise_errors: bool } instead"
+        warn 'Dor::IndexingService.reindex_pid with primitive arguments is deprecated; pass e.g. { logger: logger, raise_errors: bool } instead'
         index_logger, should_raise_errors = args
         index_logger ||= default_index_logger
         should_raise_errors = true if should_raise_errors.nil?
