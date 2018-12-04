@@ -66,6 +66,9 @@ describe Dor::Contentable do
     @file = File.new(File.expand_path(file_path))
   end
   describe 'add_file' do
+    before do
+      expect(Deprecation).to receive(:warn)
+    end
     it 'should generate the md5, find the size, attempt to sftp, and call the metadata update' do
       @item.add_file(@file, '0001', 'ab123cd4567_descMetadata.xml')
       xml = @item.contentMetadata.ng_xml
@@ -108,6 +111,10 @@ describe Dor::Contentable do
   end
 
   describe 'replace_file' do
+    before do
+      expect(Deprecation).to receive(:warn)
+    end
+
     it 'should update the md5, sha1, and size for the file, and attempt to ftp it to the workspace' do
       @item.replace_file(@file, 'ab123cd4567_00_0001.tif')
       xml = @item.contentMetadata.ng_xml
@@ -123,10 +130,12 @@ describe Dor::Contentable do
         end
       end
     end
+
     it 'should raise an exception if there isnt a matching file record in the metadata' do
       expect{ @item.replace_file(@file, 'abcdab123cd4567_00_0001.tif') }.to raise_error(StandardError)
     end
   end
+
   describe 'get_preserved_file' do
     let(:filename) { 'old_file' }
     let(:item_version) { 2 }
@@ -145,24 +154,37 @@ describe Dor::Contentable do
       expect(Digest::MD5.hexdigest(data)).to eq('55251c7b93b3fbab83354f28e267f42f')
     end
   end
+
   describe 'rename_file' do
+    before do
+      expect(Deprecation).to receive(:warn)
+    end
+
     it 'should attempt to rename the file in the workspace and update the metadata' do
       expect(@sftp).to receive(:rename!)
       @item.rename_file('ab123cd4567_05_0001.jp2', 'test.jp2')
     end
   end
+
   describe 'remove_file' do
+    before do
+      expect(Deprecation).to receive(:warn)
+    end
+
     it 'should use sftp to remove the file and update the metadata' do
       expect(@sftp).to receive(:remove!)
       @item.remove_file('ab123cd4567_05_0001.jp2')
     end
   end
+
   describe 'is_file_in_workspace?' do
-    before :each do
+    before do
+      expect(Deprecation).to receive(:warn)
       @mock_filename = 'fake_file'
       @mock_druid_obj = double(DruidTools::Druid)
       expect(DruidTools::Druid).to receive(:new).and_return(@mock_druid_obj)
     end
+
     it 'should return true if the file is in the workspace for the object' do
       expect(@mock_druid_obj).to receive(:find_content).with(@mock_filename).and_return('this is not nil')
       expect(@item.is_file_in_workspace?(@mock_filename)).to be_truthy
