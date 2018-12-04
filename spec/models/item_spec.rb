@@ -11,4 +11,21 @@ RSpec.describe Dor::Item do
 
     it { is_expected.to include 'active_fedora_model_ssi' => 'Dor::Item' }
   end
+
+  describe 'the dsLocation for workflow' do
+    let(:obj) { described_class.new }
+    before do
+      allow(Dor::SuriService).to receive(:mint_id).and_return('changeme:1231231')
+      allow(Dor::Config.suri).to receive(:mint_ids).and_return(true)
+      allow(obj).to receive(:update_index)
+      obj.save!
+    end
+    let(:reloaded) { Dor::Item.find(obj.pid) }
+    let(:workflows) { reloaded.workflows }
+
+    it 'is set automatically' do
+      expect(workflows.dsLocation).to eq 'http://example.edu/workflow/dor/objects/changeme:1231231/workflows'
+      expect(workflows.mimeType).to eq 'application/xml'
+    end
+  end
 end
