@@ -9,43 +9,8 @@ module Dor
       belongs_to :agreement_object, property: :referencesAgreement, class_name: 'Dor::Item'
     end
 
-    # these hashes map short ("machine") license codes to their corresponding URIs and human readable titles. they
-    # also allow for deprecated entries (via optional :deprecation_warning).  clients that use these maps are advised to
-    # only display undeprecated entries, except where a deprecated entry is already in use by an object.  e.g., an APO
-    # that already specifies "by_sa" for its default license code could continue displaying that in a list of license options
-    # for editing, preferably with the deprecation warning.  but other deprecated entries would be omitted in such a
-    # selectbox.
-    # TODO: seems like Editable is not the most semantically appropriate place for these mappings?  though they're used
-    # by methods that live in Editable.
-    # TODO: need some way to do versioning.  for instance, what happens when a new version of an existing license comes
-    # out, since it will presumably use the same license code, but a different title and URI?
-    CREATIVE_COMMONS_USE_LICENSES = {
-      'by' => { human_readable: 'Attribution 3.0 Unported',
-                uri: 'https://creativecommons.org/licenses/by/3.0/' },
-      'by-sa' => { human_readable: 'Attribution Share Alike 3.0 Unported',
-                   uri: 'https://creativecommons.org/licenses/by-sa/3.0/' },
-      'by_sa' => { human_readable: 'Attribution Share Alike 3.0 Unported',
-                   uri: 'https://creativecommons.org/licenses/by-sa/3.0/',
-                   deprecation_warning: 'license code "by_sa" was a typo in argo, prefer "by-sa"' },
-      'by-nd' => { human_readable: 'Attribution No Derivatives 3.0 Unported',
-                   uri: 'https://creativecommons.org/licenses/by-nd/3.0/' },
-      'by-nc' => { human_readable: 'Attribution Non-Commercial 3.0 Unported',
-                   uri: 'https://creativecommons.org/licenses/by-nc/3.0/' },
-      'by-nc-sa' => { human_readable: 'Attribution Non-Commercial Share Alike 3.0 Unported',
-                      uri: 'https://creativecommons.org/licenses/by-nc-sa/3.0/' },
-      'by-nc-nd' => { human_readable: 'Attribution Non-Commercial, No Derivatives 3.0 Unported',
-                      uri: 'https://creativecommons.org/licenses/by-nc-nd/3.0/' },
-      'pdm' => { human_readable: 'Public Domain Mark 1.0',
-                 uri: 'https://creativecommons.org/publicdomain/mark/1.0/' }
-    }.freeze
-    OPEN_DATA_COMMONS_USE_LICENSES = {
-      'pddl' => { human_readable: 'Open Data Commons Public Domain Dedication and License 1.0',
-                  uri: 'http://opendatacommons.org/licenses/pddl/1.0/' },
-      'odc-by' => { human_readable: 'Open Data Commons Attribution License 1.0',
-                    uri: 'http://opendatacommons.org/licenses/by/1.0/' },
-      'odc-odbl' => { human_readable: 'Open Data Commons Open Database License 1.0',
-                      uri: 'http://opendatacommons.org/licenses/odbl/1.0/' }
-    }.freeze
+    CREATIVE_COMMONS_USE_LICENSES = ActiveSupport::Deprecation::DeprecatedConstantProxy.new('CREATIVE_COMMONS_USE_LICENSES', 'Dor::CreativeCommonsLicenseService')
+    OPEN_DATA_COMMONS_USE_LICENSES = ActiveSupport::Deprecation::DeprecatedConstantProxy.new('OPEN_DATA_COMMONS_USE_LICENSES', 'Dor::OpenDataLicenseService')
 
     # Adds a person or group to a role in the APO role metadata datastream
     #
@@ -198,7 +163,7 @@ module Dor
     def creative_commons_license=(use_license_machine)
       defaultObjectRights.initialize_term!(:creative_commons)
       defaultObjectRights.creative_commons = use_license_machine
-      defaultObjectRights.creative_commons.uri = CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:uri]
+      defaultObjectRights.creative_commons.uri = CreativeCommonsLicenseService.property(use_license_machine).uri
     end
 
     def creative_commons_license_human=(use_license_human)
@@ -209,7 +174,7 @@ module Dor
     def open_data_commons_license=(use_license_machine)
       defaultObjectRights.initialize_term!(:open_data_commons)
       defaultObjectRights.open_data_commons = use_license_machine
-      defaultObjectRights.open_data_commons.uri = OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine][:uri]
+      defaultObjectRights.open_data_commons.uri = OpenDataLicenseService.property(use_license_machine).uri
     end
 
     def open_data_commons_license_human=(use_license_human)
@@ -226,12 +191,12 @@ module Dor
         defaultObjectRights.update_term!(:creative_commons_human, ' ')
         defaultObjectRights.update_term!(:open_data_commons, ' ')
         defaultObjectRights.update_term!(:open_data_commons_human, ' ')
-      elsif CREATIVE_COMMONS_USE_LICENSES.include? use_license_machine
+      elsif CreativeCommonsLicenseService.key? use_license_machine
         self.creative_commons_license = use_license_machine
-        self.creative_commons_license_human = CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
-      elsif OPEN_DATA_COMMONS_USE_LICENSES.include? use_license_machine
+        self.creative_commons_license_human = CreativeCommonsLicenseService.property(use_license_machine).label
+      elsif OpenDataLicenseService.key? use_license_machine
         self.open_data_commons_license = use_license_machine
-        self.open_data_commons_license_human = OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
+        self.open_data_commons_license_human = OpenDataLicenseService.property(use_license_machine).label
       else
         raise ArgumentError, "'#{use_license_machine}' is not a valid license code"
       end
