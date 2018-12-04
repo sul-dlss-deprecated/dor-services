@@ -71,6 +71,7 @@ module Dor
     def get_preserved_file(file, version)
       Sdr::Client.get_preserved_file_content(pid, file, version)
     end
+    deprecation_deprecate get_preserved_file: 'use dor-services-app/v1/sdr/objects/:druid/content/:filename instead'
 
     def get_file(file)
       druid_tools = DruidTools::Druid.new(pid, Config.content.content_base_dir)
