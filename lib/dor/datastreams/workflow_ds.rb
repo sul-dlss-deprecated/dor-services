@@ -3,6 +3,7 @@
 module Dor
   # TODO: class docs
   class WorkflowDs < ActiveFedora::OmDatastream
+    before_save :build_location
     set_terminology do |t|
       t.root(path: 'workflows')
       t.workflow do
@@ -16,6 +17,18 @@ module Dor
           t.attempts(path: { attribute: 'attempts' }, index_as: %i[displayable not_searchable])
         end
       end
+    end
+
+    # Called before saving, but after a pid has been assigned
+    def build_location
+      return unless new?
+
+      self.dsLocation = File.join(Dor::Config.workflow.url, "dor/objects/#{pid}/workflows")
+    end
+
+    # Called by rubydora. This lets us customize the mime-type
+    def self.default_attributes
+      super.merge(mimeType: 'application/xml')
     end
 
     def get_workflow(wf, repo = 'dor')
