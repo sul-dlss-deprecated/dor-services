@@ -9,7 +9,7 @@ Dor.configure do
     key_pass 'thisisatleast4bytes'
   end
 
-  fedora.url 'http://fedoraUser:fedoraPass@example.edu/fedora'
+  fedora.url 'http://fedoraAdmin:fedoraAdmin@localhost:8983/fedora'
 
   suri do
     mint_ids true

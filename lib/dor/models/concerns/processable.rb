@@ -7,8 +7,11 @@ module Dor
     extend ActiveSupport::Concern
 
     included do
-      has_metadata :name => 'workflows', :type => Dor::WorkflowDs, :label => 'Workflows', :control_group => 'E'
-      after_initialize :set_workflows_datastream_location
+      has_metadata name: 'workflows',
+                   type: Dor::WorkflowDs,
+                   label: 'Workflows',
+                   control_group: 'E',
+                   autocreate: true
     end
 
     # verbiage we want to use to describe an item when it has completed a particular step
@@ -37,17 +40,6 @@ module Dor
       'shelved' => 8,
       'opened' => 9
     }.freeze
-
-    # This is a work-around for some strange logic in ActiveFedora that
-    # don't allow self.workflows.new? to work if we load the object using
-    # .load_instance_from_solr.
-    def set_workflows_datastream_location
-      return if self.respond_to?(:inner_object) && inner_object.is_a?(ActiveFedora::SolrDigitalObject)
-      return unless workflows.new?
-
-      workflows.mimeType   = 'application/xml'
-      workflows.dsLocation = File.join(Dor::Config.workflow.url, "dor/objects/#{pid}/workflows")
-    end
 
     def empty_datastream?(datastream)
       return true if datastream.new?

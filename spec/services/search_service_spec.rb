@@ -16,11 +16,11 @@ describe Dor::SearchService do
         ['druid:rk464yc0651', 'druid:xx122nh4588', 'druid:mj151qw9093', 'druid:mn144df7801', 'druid:rx565mb6270'],
         ['druid:tx361mw6047', 'druid:cm977wg2520', 'druid:tk695fn1971', 'druid:jk486qb3656', 'druid:cd252xn6059'], []
       ]
-      @responses = @druids.collect { |group| { :body => %("object"\n) + group.collect { |d| "info:fedora/#{d}" }.join("\n") } }
-      stub_request(:post, 'http://fedora.edu/fedora/risearch')
-        .to_return(:body => @responses[0][:body]).then
-        .to_return(:body => @responses[1][:body]).then
-        .to_return(:body => @responses[2][:body])
+      @responses = @druids.collect { |group| { body: %("object"\n) + group.collect { |d| "info:fedora/#{d}" }.join("\n") } }
+      stub_request(:post, 'http://localhost:8983/fedora/risearch')
+        .to_return(body: @responses[0][:body]).then
+        .to_return(body: @responses[1][:body]).then
+        .to_return(body: @responses[2][:body])
     end
 
     it 'should execute a proper resource index search' do
