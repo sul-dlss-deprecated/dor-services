@@ -204,6 +204,7 @@ describe Dor::Editable do
   describe 'use_license=' do
     it 'should set the machine and human readable CC licenses given the right license code' do
       use_license_machine = 'by-nc-nd'
+      expect(ActiveSupport::Deprecation.instance).to receive(:warn).at_least(1).times
       use_license_uri   = Dor::Editable::CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:uri]
       use_license_human = Dor::Editable::CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
       @empty_item.use_license = use_license_machine
@@ -217,7 +218,8 @@ describe Dor::Editable do
     end
     it 'should set the machine and human readable ODC licenses given the right license code' do
       use_license_machine = 'odc-by'
-      use_license_human   = Dor::Editable::OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
+      expect(ActiveSupport::Deprecation.instance).to receive(:warn).at_least(1).times
+      use_license_human = Dor::Editable::OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
       @empty_item.use_license = use_license_machine
       expect(@empty_item.use_license).to eq(use_license_machine)
       expect(@empty_item.use_license_human).to eq(use_license_human)

@@ -168,6 +168,9 @@ module Dor
     autoload :PublicDescMetadataService
     autoload :PublicXmlService
     autoload :ThumbnailService
+    autoload :Ontology
+    autoload :CreativeCommonsLicenseService
+    autoload :OpenDataLicenseService
   end
 
   # Workflow Classes
