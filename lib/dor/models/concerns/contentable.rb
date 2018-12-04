@@ -224,9 +224,6 @@ module Dor
       add_tag "Decommissioned : #{tag}"
     end
 
-    alias decomission decommission
-    deprecate decomission: 'Use decommission instead'
-
     # Adds a RELS-EXT constituent relationship to the given druid
     # @param [String] druid the parent druid of the constituent relationship
     #   e.g.: <fedora:isConstituentOf rdf:resource="info:fedora/druid:hj097bm8879" />
