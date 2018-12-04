@@ -161,6 +161,8 @@ module Dor
     autoload :CleanupService
     autoload :ProvenanceMetadataService
     autoload :TechnicalMetadataService
+    autoload :FileMetadataMergeService
+    autoload :SecondaryFileNameService
     autoload :MergeService
     autoload :ReleaseTagService
     autoload :ResetWorkspaceService

@@ -43,7 +43,7 @@ module Dor
       end
       # can only arrive at this point if a non status exception occurred.
     end
-    deprecation_deprecate add_file: 'Add file will be removed and will not be replaced'
+    deprecation_deprecate add_file: 'will be removed without replacement'
 
     def replace_file(file, file_name)
       sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, auth_methods: ['publickey'])
@@ -167,58 +167,6 @@ module Dor
       !druid_obj.find_content(filename).nil?
     end
     deprecation_deprecate is_file_in_workspace?: 'will be removed without replacement'
-
-    # TODO: move to MergeService
-    # Appends contentMetadata file resources from the source objects to this object
-    # @param [Array<String>] source_obj_pids ids of the secondary objects that will get their contentMetadata merged into this one
-    def copy_file_resources(source_obj_pids)
-      primary_cm = contentMetadata.ng_xml
-      contentMetadata.ng_xml_will_change!
-      base_id = primary_cm.at_xpath('/contentMetadata/@objectId').value
-      max_sequence = primary_cm.at_xpath('/contentMetadata/resource[last()]/@sequence').value.to_i
-
-      source_obj_pids.each do |src_pid|
-        source_obj = Dor.find src_pid
-        source_cm = source_obj.contentMetadata.ng_xml
-
-        # Copy the resources from each source object
-        source_cm.xpath('/contentMetadata/resource').each do |old_resource|
-          max_sequence += 1
-          resource_copy = old_resource.clone
-          resource_copy['sequence'] = max_sequence.to_s
-
-          # Append sequence number to each secondary filename, then
-          # look for filename collisions with the primary object
-          resource_copy.xpath('file').each do |secondary_file|
-            secondary_file['id'] = new_secondary_file_name(secondary_file['id'], max_sequence)
-
-            if primary_cm.at_xpath("//file[@id = '#{secondary_file['id']}']")
-              raise Dor::Exception, "File '#{secondary_file['id']}' from secondary object #{src_pid} already exist in primary object: #{pid}"
-            end
-          end
-
-          if old_resource['type']
-            resource_copy['id'] = "#{old_resource['type']}_#{max_sequence}"
-          else
-            resource_copy['id'] = "#{base_id}_#{max_sequence}"
-          end
-
-          lbl = old_resource.at_xpath 'label'
-          resource_copy.at_xpath('label').content = "#{$1} #{max_sequence}" if lbl && lbl.text =~ /^(.*)\s+\d+$/
-
-          primary_cm.at_xpath('/contentMetadata/resource[last()]').add_next_sibling resource_copy
-          attr_node = primary_cm.create_element 'attr', src_pid, name: 'mergedFromPid'
-          resource_copy.first_element_child.add_previous_sibling attr_node
-          attr_node = primary_cm.create_element 'attr', old_resource['id'], name: 'mergedFromResource'
-          resource_copy.first_element_child.add_previous_sibling attr_node
-        end
-      end
-    end
-
-    # TODO: move to MergeService
-    def new_secondary_file_name(old_name, sequence_num)
-      old_name =~ /^(.*)\.(.*)$/ ? "#{$1}_#{sequence_num}.#{$2}" : "#{old_name}_#{sequence_num}"
-    end
 
     # Clears RELS-EXT relationships, sets the isGovernedBy relationship to the SDR Graveyard APO
     # @param [String] tag optional String of text that is concatenated to the identityMetadata/tag "Decommissioned : "
