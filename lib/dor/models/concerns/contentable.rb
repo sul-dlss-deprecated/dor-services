@@ -3,6 +3,8 @@
 module Dor
   module Contentable
     extend ActiveSupport::Concern
+    extend Deprecation
+    self.deprecation_horizon = 'dor-services version 7.0.0'
 
     # add a file to a resource, not to be confused with add a resource to an object
     def add_file(file, resource, file_name, mime_type = nil, publish = 'no', shelve = 'no', preserve = 'no')
@@ -41,6 +43,7 @@ module Dor
       end
       # can only arrive at this point if a non status exception occurred.
     end
+    deprecation_deprecate add_file: 'Add file will be removed and will not be replaced'
 
     def replace_file(file, file_name)
       sftp = Net::SFTP.start(Config.content.content_server, Config.content.content_user, auth_methods: ['publickey'])
@@ -63,6 +66,7 @@ module Dor
         item.contentMetadata.update_file(file_hash, file_name)
       end
     end
+    deprecation_deprecate replace_file: 'will be removed without replacement'
 
     def get_preserved_file(file, version)
       Sdr::Client.get_preserved_file_content(pid, file, version)
@@ -98,6 +102,7 @@ module Dor
       end
       contentMetadata.remove_file filename
     end
+    deprecation_deprecate remove_file: 'will be removed without replacement'
 
     # @param [String] old_name
     # @param [String] new_name
@@ -113,6 +118,7 @@ module Dor
       end
       contentMetadata.rename_file(old_name, new_name)
     end
+    deprecation_deprecate rename_file: 'will be removed without replacement'
 
     # @param [String] resource_name ID of the resource elememnt
     def remove_resource(resource_name)
@@ -123,7 +129,9 @@ module Dor
       # remove the resource record from the metadata and renumber the resource sequence
       contentMetadata.remove_resource resource_name
     end
+    deprecation_deprecate remove_resource: 'will be removed without replacement'
 
+    # TODO: Move to Argo
     # list files in the workspace
     # @return [Array] workspace files
     def list_files
@@ -155,7 +163,9 @@ module Dor
       druid_obj = DruidTools::Druid.new(pid, Dor::Config.stacks.local_workspace_root)
       !druid_obj.find_content(filename).nil?
     end
+    deprecation_deprecate is_file_in_workspace?: 'will be removed without replacement'
 
+    # TODO: move to MergeService
     # Appends contentMetadata file resources from the source objects to this object
     # @param [Array<String>] source_obj_pids ids of the secondary objects that will get their contentMetadata merged into this one
     def copy_file_resources(source_obj_pids)
@@ -202,6 +212,7 @@ module Dor
       end
     end
 
+    # TODO: move to MergeService
     def new_secondary_file_name(old_name, sequence_num)
       old_name =~ /^(.*)\.(.*)$/ ? "#{$1}_#{sequence_num}.#{$2}" : "#{old_name}_#{sequence_num}"
     end
@@ -224,6 +235,7 @@ module Dor
       add_tag "Decommissioned : #{tag}"
     end
 
+    # TODO: Move to Dor-Utils.
     # Adds a RELS-EXT constituent relationship to the given druid
     # @param [String] druid the parent druid of the constituent relationship
     #   e.g.: <fedora:isConstituentOf rdf:resource="info:fedora/druid:hj097bm8879" />
