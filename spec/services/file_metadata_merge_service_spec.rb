@@ -8,7 +8,7 @@ class MergeableItem < ActiveFedora::Base
   include Dor::Contentable
 end
 
-describe Dor::Contentable do
+describe Dor::FileMetadataMergeService do
   let(:primary_pid) { 'druid:ab123cd0001' }
   let(:src1_pid) { 'druid:ab123cd0002' }
   let(:src2_pid) { 'druid:ab123cd0003' }
@@ -31,7 +31,7 @@ describe Dor::Contentable do
     c
   end
 
-  before(:each) do
+  before do
     allow(primary.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)
     allow(src1.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)
     allow(Dor).to receive(:find).with(src1_pid) { src1 }
@@ -72,7 +72,7 @@ describe Dor::Contentable do
       </contentMetadata>
       XML
 
-      primary.copy_file_resources([src1_pid])
+      described_class.copy_file_resources(primary, [src1_pid])
       merged_cm = primary.contentMetadata.ng_xml
       expect(merged_cm.xpath('//resource').size).to eq(3)
       expect(merged_cm.xpath("//resource[@sequence = '2']").size).to eq(1)
@@ -107,7 +107,7 @@ describe Dor::Contentable do
       </contentMetadata>
       XML
 
-      primary.copy_file_resources([src1_pid])
+      described_class.copy_file_resources(primary, [src1_pid])
       merged_cm = primary.contentMetadata.ng_xml
       expect(merged_cm.xpath('//resource').size).to eq(2)
       expect(merged_cm.xpath("//resource[@sequence = '2']").size).to eq(1)
@@ -131,7 +131,7 @@ describe Dor::Contentable do
       </contentMetadata>
       XML
 
-      primary.copy_file_resources([src1_pid])
+      described_class.copy_file_resources(primary, [src1_pid])
       merged_cm = primary.contentMetadata.ng_xml
       expect(merged_cm.xpath('//resource').size).to eq(2)
       expect(merged_cm.xpath("//resource[@sequence = '2']").size).to eq(1)
@@ -165,7 +165,7 @@ describe Dor::Contentable do
       </contentMetadata>
       XML
 
-      expect{ primary.copy_file_resources([src1_pid]) }.to raise_error Dor::Exception
+      expect{ described_class.copy_file_resources(primary, [src1_pid]) }.to raise_error Dor::Exception
     end
 
     it 'processes more than one source object at a time' do
@@ -195,7 +195,7 @@ describe Dor::Contentable do
       </contentMetadata>
       XML
 
-      primary.copy_file_resources([src1_pid, src2_pid])
+      described_class.copy_file_resources(primary, [src1_pid, src2_pid])
       merged_cm = primary.contentMetadata.ng_xml
       expect(merged_cm.xpath('//resource').size).to eq(3)
       expect(merged_cm.xpath("//resource[@sequence = '2']").size).to eq(1)
@@ -226,7 +226,7 @@ describe Dor::Contentable do
         </contentMetadata>
         XML
 
-        primary.copy_file_resources([src1_pid])
+        described_class.copy_file_resources(primary, [src1_pid])
         merged_cm = primary.contentMetadata.ng_xml
         expect(merged_cm.xpath('//resource').size).to eq(2)
         expect(merged_cm.xpath("//resource[@sequence = '2']").size).to eq(1)
@@ -248,7 +248,7 @@ describe Dor::Contentable do
         </contentMetadata>
         XML
 
-        primary.copy_file_resources([src1_pid])
+        described_class.copy_file_resources(primary, [src1_pid])
         merged_cm = primary.contentMetadata.ng_xml
         expect(merged_cm.xpath('//resource').size).to eq(2)
         expect(merged_cm.xpath("//resource[@sequence = '2']").size).to eq(1)

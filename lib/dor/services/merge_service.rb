@@ -31,7 +31,7 @@ module Dor
     end
 
     def move_metadata_and_content
-      @primary.copy_file_resources @secondary_pids
+      FileMetadataMergeService.copy_file_resources @primary, @secondary_pids
       @primary.save
       copy_workspace_content
     end
@@ -52,7 +52,7 @@ module Dor
           sequence = primary_resource['sequence']
           src_resource.xpath('//file/@id').map(&:value).each do |file_id|
             copy_path = sec_druid.find_content file_id
-            new_name = secondary.new_secondary_file_name(file_id, sequence)
+            new_name = SecondaryFileNameService.create(file_id, sequence)
             # TODO: verify new_name exists in primary_cm?
             FileUtils.cp(copy_path, File.join(dest_path, "/#{new_name}"))
           end

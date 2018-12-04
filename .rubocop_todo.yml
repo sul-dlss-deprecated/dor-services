@@ -262,7 +262,7 @@ Style/CommentedKeyword:
 # SupportedStyles: assign_to_condition, assign_inside_condition
 Style/ConditionalAssignment:
   Exclude:
-    - 'lib/dor/models/concerns/contentable.rb'
+    - 'lib/dor/services/file_metadata_merge_service.rb'
     - 'lib/dor/services/merge_service.rb'
     - 'spec/support/foxml_helper.rb'
 
