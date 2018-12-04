@@ -3,11 +3,14 @@
 module Dor
   # Push file changes for shelve-able files into the stacks
   class ShelvingService
+    extend Deprecation
+
     def self.shelve(work)
       new(work).shelve
     end
 
     def initialize(work)
+      Deprecation.warn(self, 'Dor::ShelvingService will be removed in dor-services 7.0.  Commons-accessioning now does shelving in Dor::Shelve.')
       @work = work
     end
 
