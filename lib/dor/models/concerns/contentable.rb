@@ -84,6 +84,7 @@ module Dor
       end
       data
     end
+    deprecation_deprecate get_file: 'use dor-services-app:/v1/objects/:id/contents/*path instead'
 
     # @param [String] filename
     def remove_file(filename)
@@ -156,6 +157,7 @@ module Dor
       end
       files
     end
+    deprecation_deprecate list_files: 'use dor-services-app:/v1/objects/:id/contents instead'
 
     # @param [String] filename
     # @return [Boolean] whether the file in question is present in the object's workspace

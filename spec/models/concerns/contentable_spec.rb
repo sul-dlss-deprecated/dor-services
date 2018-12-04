@@ -150,6 +150,7 @@ describe Dor::Contentable do
     it 'should fetch the file' do
       data_file = File.new(File.join(fixture_dir, 'ab123cd4567_descMetadata.xml'))
       expect(@sftp).to receive(:download!).and_return(data_file.read)
+      expect(Deprecation).to receive(:warn)
       data = @item.get_file('ab123cd4567_descMetadata.xml')
       expect(Digest::MD5.hexdigest(data)).to eq('55251c7b93b3fbab83354f28e267f42f')
     end
