@@ -62,22 +62,9 @@ module Dor
     # Copies this object's public_xml to the Purl document cache if it is world discoverable
     #  otherwise, it prunes the object's metadata from the document cache
     def publish_metadata
-      rights = datastreams['rightsMetadata'].ng_xml.clone.remove_namespaces!
-      if rights.at_xpath("//rightsMetadata/access[@type='discover']/machine/world")
-        dc_xml = generate_dublin_core.to_xml(&:no_declaration)
-        DigitalStacksService.transfer_to_document_store(pid, dc_xml, 'dc')
-        %w(identityMetadata contentMetadata rightsMetadata).each do |stream|
-          DigitalStacksService.transfer_to_document_store(pid, datastreams[stream].content.to_s, stream) if datastreams[stream]
-        end
-        DigitalStacksService.transfer_to_document_store(pid, public_xml, 'public')
-        DigitalStacksService.transfer_to_document_store(pid, generate_public_desc_md, 'mods')
-        publish_notify_on_success
-      else
-        # Clear out the document cache for this item
-        DigitalStacksService.prune_purl_dir pid
-        publish_delete_on_success
-      end
+      PublishMetadataService.publish(self)
     end
+    deprecation_deprecate publish_metadata: 'use Dor::PublishMetadataService.publish(obj) instead or use publish_metadata_remotely'
 
     # Call dor services app to have it publish the metadata
     def publish_metadata_remotely
@@ -85,41 +72,6 @@ module Dor
       endpoint = dor_services["v1/objects/#{pid}/publish"]
       endpoint.post ''
       endpoint.url
-    end
-
-    ##
-    # When publishing a PURL, we notify purl-fetcher of changes.
-    # If the purl service isn't configured, instead we drop a `aa11bb2222` file into the `local_recent_changes` folder
-    # to notify other applications watching the filesystem (i.e., purl-fetcher).
-    # We also remove any .deletes entry that may have left over from a previous removal
-    def publish_notify_on_success
-      id = pid.gsub(/^druid:/, '')
-
-      if Dor::Config.purl_services.url
-        purl_services = Dor::Config.purl_services.rest_client
-        purl_services["purls/#{id}"].post ''
-      else
-        local_recent_changes = Config.stacks.local_recent_changes
-        raise ArgumentError, "Missing local_recent_changes directory: #{local_recent_changes}" unless File.directory?(local_recent_changes)
-
-        FileUtils.touch(File.join(local_recent_changes, id))
-        begin
-          DruidTools::Druid.new(id, Dor::Config.stacks.local_document_cache_root).deletes_delete_record
-        rescue Errno::EACCES
-          Dor.logger.warn "Access denied while trying to remove .deletes file for druid:#{id}"
-        end
-      end
-    end
-
-    ##
-    # When publishing a PURL, we notify purl-fetcher of changes.
-    def publish_delete_on_success
-      return unless Dor::Config.purl_services.url
-
-      id = pid.gsub(/^druid:/, '')
-
-      purl_services = Dor::Config.purl_services.rest_client
-      purl_services["purls/#{id}"].delete
     end
   end
 end

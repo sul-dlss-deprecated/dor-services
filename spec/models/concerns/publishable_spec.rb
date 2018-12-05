@@ -34,9 +34,9 @@ describe Dor::Publishable do
       end
     end
   end
-  after(:each) { unstub_config }
+  after { unstub_config }
 
-  before :each do
+  before do
     @item = instantiate_fixture('druid:ab123cd4567', PublishableItem)
     @collection = instantiate_fixture('druid:ab123cd4567', Dor::Collection)
     @apo = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
@@ -378,64 +378,8 @@ describe Dor::Publishable do
         expect(public_xml.at_xpath('/publicObject/oai_dc:dc', 'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/')).to be
       end
     end
-    describe '#publish_metadata' do
-      context 'with no world discover access in rightsMetadata' do
-        let(:purl_root) { Dir.mktmpdir }
 
-        before(:each) do
-          @item.rightsMetadata.content = <<-EOXML
-            <rightsMetadata objectId="druid:ab123cd4567">
-              <copyright>
-                <human>(c) Copyright 2010 by Sebastian Jeremias Osterfeld</human>
-              </copyright>
-              </access>
-              <access type="read">
-                <machine>
-                  <group>stanford:stanford</group>
-                </machine>
-              </access>
-              <use>
-                <machine type="creativeCommons">by-sa</machine>
-                <human type="creativeCommons">CC Attribution Share Alike license</human>
-              </use>
-            </rightsMetadata>
-          EOXML
-
-          Dor::Config.push! do |config|
-            config.stacks.local_document_cache_root purl_root
-            config.purl_services.url 'http://example.com/purl'
-          end
-
-          stub_request(:delete, 'example.com/purl/purls/ab123cd4567')
-        end
-
-        after(:each) do
-          FileUtils.remove_entry purl_root
-          Dor::Config.pop!
-        end
-
-        it 'does not publish the object' do
-          expect(Dor::DigitalStacksService).not_to receive(:transfer_to_document_store)
-          @item.publish_metadata
-        end
-
-        it 'notifies the purl service of the deletion' do
-          @item.publish_metadata
-          expect(WebMock).to have_requested(:delete, 'example.com/purl/purls/ab123cd4567')
-        end
-
-        it "removes the item's content from the Purl document cache and creates a .delete entry" do
-          # create druid tree and dummy content in purl root
-          druid1 = DruidTools::Druid.new @item.pid, purl_root
-          druid1.mkdir
-          expect(druid1.deletes_record_exists?).to be_falsey # deletes record not there yet
-          File.open(File.join(druid1.path, 'tmpfile'), 'w') { |f| f.write 'junk' }
-          @item.publish_metadata
-          expect(File).to_not exist(druid1.path) # it should now be gone
-          expect(druid1.deletes_record_exists?).to be_truthy # deletes record created
-        end
-      end
-
+    describe '#public_xml' do
       it 'handles externalFile references' do
         correctPublicContentMetadata = Nokogiri::XML(read_fixture('hj097bm8879_publicObject.xml')).at_xpath('/publicObject/contentMetadata').to_xml
         @item.contentMetadata.content = read_fixture('hj097bm8879_contentMetadata.xml')
@@ -450,178 +394,12 @@ describe Dor::Publishable do
         expect(Nokogiri::XML(public_xml).at_xpath('/publicObject/contentMetadata').to_xml).to be_equivalent_to(correctPublicContentMetadata)
         expect(Nokogiri::XML(public_xml).at_xpath('/publicObject/thumb').to_xml).to be_equivalent_to('<thumb>jw923xn5254/2542B.jp2</thumb>')
       end
-
-      context 'handles errors for externalFile references' do
-        it 'is missing resourceId and mimetype attributes' do
-          @item.contentMetadata.content = <<-EOXML
-          <contentMetadata objectId="hj097bm8879" type="map">
-            <resource id="hj097bm8879_1" sequence="1" type="image">
-              <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478"/>
-              <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
-            </resource>
-          </contentMetadata>
-          EOXML
-
-          # generate publicObject XML and verify that the content metadata portion is invalid
-          expect { Nokogiri::XML(@item.public_xml) }.to raise_error(ArgumentError)
-        end
-
-        it 'has blank resourceId attribute' do
-          @item.contentMetadata.content = <<-EOXML
-          <contentMetadata objectId="hj097bm8879" type="map">
-            <resource id="hj097bm8879_1" sequence="1" type="image">
-              <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478" resourceId=" " mimetype="image/jp2"/>
-              <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
-            </resource>
-          </contentMetadata>
-          EOXML
-
-          # generate publicObject XML and verify that the content metadata portion is invalid
-          expect { Nokogiri::XML(@item.public_xml) }.to raise_error(ArgumentError)
-        end
-
-        it 'has blank fileId attribute' do
-          @item.contentMetadata.content = <<-EOXML
-          <contentMetadata objectId="hj097bm8879" type="map">
-            <resource id="hj097bm8879_1" sequence="1" type="image">
-              <externalFile fileId=" " objectId="druid:cg767mn6478" resourceId="cg767mn6478_1" mimetype="image/jp2"/>
-              <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
-            </resource>
-          </contentMetadata>
-          EOXML
-
-          # generate publicObject XML and verify that the content metadata portion is invalid
-          expect { Nokogiri::XML(@item.public_xml) }.to raise_error(ArgumentError)
-        end
-
-        it 'has blank objectId attribute' do
-          @item.contentMetadata.content = <<-EOXML
-          <contentMetadata objectId="hj097bm8879" type="map">
-            <resource id="hj097bm8879_1" sequence="1" type="image">
-              <externalFile fileId="2542A.jp2" objectId=" " resourceId="cg767mn6478_1" mimetype="image/jp2"/>
-              <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
-            </resource>
-          </contentMetadata>
-          EOXML
-
-          # generate publicObject XML and verify that the content metadata portion is invalid
-          expect { Nokogiri::XML(@item.public_xml) }.to raise_error(ArgumentError)
-        end
-      end
-
-      context 'copies to the document cache' do
-        context 'with an item' do
-          before(:each) do
-            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<identityMetadata/, 'identityMetadata')
-            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<contentMetadata/, 'contentMetadata')
-            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<rightsMetadata/, 'rightsMetadata')
-            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<oai_dc:dc/, 'dc')
-            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<publicObject/, 'public')
-            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<mods:mods/, 'mods')
-            expect(@item).to receive(:publish_notify_on_success).with(no_args)
-          end
-          it 'identityMetadta, contentMetadata, rightsMetadata, generated dublin core, and public xml' do
-            @item.rightsMetadata.content = "<rightsMetadata><access type='discover'><machine><world/></machine></access></rightsMetadata>"
-            @item.publish_metadata
-          end
-          it 'even when rightsMetadata uses xml namespaces' do
-            @item.rightsMetadata.content = %q(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1">
-              <access type='discover'><machine><world/></machine></access></rightsMetadata>)
-            @item.publish_metadata
-          end
-        end
-
-        context 'with a collection object' do
-          before do
-            @collection.descMetadata.content = @mods
-            @collection.rightsMetadata.content = "<rightsMetadata><access type='discover'><machine><world/></machine></access></rightsMetadata>"
-            @collection.rels_ext.content = @rels
-            allow(@collection).to receive(:generate_public_desc_md).and_return(@mods) # calls Item.find and not needed in general tests
-          end
-
-          before do
-            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<identityMetadata/, 'identityMetadata')
-            expect(Dor::DigitalStacksService).not_to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<contentMetadata/, 'contentMetadata')
-            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<rightsMetadata/, 'rightsMetadata')
-            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<oai_dc:dc/, 'dc')
-            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<publicObject/, 'public')
-            expect(Dor::DigitalStacksService).to receive(:transfer_to_document_store).with('druid:ab123cd4567', /<mods:mods/, 'mods')
-            expect(@collection).to receive(:publish_notify_on_success).with(no_args)
-          end
-
-          it 'ignores missing data' do
-            @collection.publish_metadata
-          end
-        end
-      end
     end
 
-    context 'publish_notify_on_success' do
-      let(:changes_dir) { Dir.mktmpdir }
-      let(:purl_root) { Dir.mktmpdir }
-      let(:changes_file) { File.join(changes_dir, @item.pid.gsub('druid:', '')) }
-
-      before(:each) do
-        Dor::Config.push! { |config| config.stacks.local_document_cache_root purl_root }
-        Dor::Config.push! { |config| config.stacks.local_recent_changes changes_dir }
-      end
-
-      after(:each) do
-        FileUtils.remove_entry purl_root
-        FileUtils.remove_entry changes_dir
-        Dor::Config.pop!
-      end
-
-      it 'notifies the purl service of the update' do
-        Dor::Config.push! do |config|
-          config.purl_services.url 'http://example.com/purl'
-        end
-        stub_request(:post, 'example.com/purl/purls/ab123cd4567')
-        @item.publish_notify_on_success
-        expect(WebMock).to have_requested(:post, 'example.com/purl/purls/ab123cd4567')
-      end
-      it 'writes empty notification file' do
-        expect(File).to receive(:directory?).with(changes_dir).and_return(true)
-        expect(File.exist?(changes_file)).to be_falsey
-        @item.publish_notify_on_success
-        expect(File.exist?(changes_file)).to be_truthy
-      end
-      it 'writes empty notification file even when given only the base id' do
-        expect(File).to receive(:directory?).with(changes_dir).and_return(true)
-        allow(@item).to receive(:pid).and_return('aa111bb2222')
-        expect(File.exist?(changes_file)).to be_falsey
-        @item.publish_notify_on_success
-        expect(File.exist?(changes_file)).to be_truthy
-      end
-      it 'removes any associated delete entry' do
-        druid1 = DruidTools::Druid.new @item.pid, purl_root
-        druid1.creates_delete_record # create a deletes record so we confirm it is removed by the publish_notify_on_success method
-        expect(druid1.deletes_record_exists?).to be_truthy # confirm our deletes record is there
-        @item.publish_notify_on_success
-        expect(druid1.deletes_record_exists?).to be_falsey # deletes record not there anymore
-        expect(File.exist?(changes_file)).to be_truthy # changes file is there
-      end
-      it 'does not explode if the deletes entry cannot be removed' do
-        druid1 = DruidTools::Druid.new @item.pid, purl_root
-        druid1.creates_delete_record # create a deletes record
-        expect(druid1.deletes_record_exists?).to be_truthy # confirm our deletes record is there
-        allow(FileUtils).to receive(:rm).and_raise(Errno::EACCES) # prevent the deletes method from running
-        expect(Dor.logger).to receive(:warn).with("Access denied while trying to remove .deletes file for #{@item.pid}") # we will get a warning
-        @item.publish_notify_on_success
-        expect(druid1.deletes_record_exists?).to be_truthy # deletes record is still there since it cannot be removed
-        expect(File.exist?(changes_file)).to be_truthy # changes file is there
-      end
-      it 'raises error if misconfigured' do
-        Dor::Config.push! { |config| config.stacks.local_recent_changes nil }
-        expect(File).to receive(:directory?).with(nil).and_return(false)
-        expect(FileUtils).not_to receive(:touch)
-        expect { @item.publish_notify_on_success }.to raise_error(ArgumentError, /Missing local_recent_changes directory/)
-      end
-    end
-
-    context 'error handling' do
-      it 'throws an exception if any of the required datastreams are missing' do
-        skip 'write an error handling test'
+    describe '#publish_metadata' do
+      it 'calls the service' do
+        expect(Dor::PublishMetadataService).to receive(:publish).with(@item)
+        @item.publish_metadata
       end
     end
   end
