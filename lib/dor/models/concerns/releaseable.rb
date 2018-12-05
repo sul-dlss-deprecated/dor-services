@@ -62,7 +62,6 @@ module Dor
     end
     deprecation_deprecate valid_release_attributes_and_tag: 'No longer used by any DLSS code'
 
-    # TODO: Move to dor-services-app
     # Add a release node for the item
     # Will use the current time if timestamp not supplied. You can supply a timestap for correcting history, etc if desired
     # Timestamp will be calculated by the function
@@ -82,8 +81,8 @@ module Dor
       valid_release_attributes(release, attrs)
       identity_metadata_ds.add_value(:release, release.to_s, attrs)
     end
+    deprecation_deprecate add_release_node: 'No longer used by any DLSS code'
 
-    # TODO: Move to dor-services-app
     # Determine if the supplied tag is a valid release node that meets all requirements
     #
     # @param tag [Boolean] True or false for the release node
@@ -101,5 +100,6 @@ module Dor
 
       true
     end
+    deprecation_deprecate valid_release_attributes: 'No longer used by any DLSS code'
   end
 end

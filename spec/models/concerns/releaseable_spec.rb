@@ -146,9 +146,11 @@ describe 'Adding release nodes', :vcr do
   end
 
   describe 'valid_release_attributes' do
-    before :each do
+    before do
+      allow(Deprecation).to receive(:warn)
       @args = { when: '2015-01-05T23:23:45Z', who: 'carrickr', to: 'Revs', what: 'collection', tag: 'Project:Fitch:Batch2' }
     end
+
     it 'should raise an error when :who, :to, :what are missing or are not strings' do
       expect{ @item.valid_release_attributes(true,  @args.merge(who: nil)) }.to raise_error(ArgumentError)
       expect{ @item.valid_release_attributes(false, @args.merge(to: nil)) }.to raise_error(ArgumentError)
