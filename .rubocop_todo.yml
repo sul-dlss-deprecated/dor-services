@@ -159,6 +159,8 @@ Naming/MethodName:
     - 'lib/dor/models/concerns/preservable.rb'
     - 'lib/dor/models/concerns/releaseable.rb'
     - 'lib/dor/models/concerns/rightsable.rb'
+    - 'lib/dor/models/item.rb'
+
 
 # Offense count: 2
 # Configuration parameters: NamePrefix, NamePrefixBlacklist, NameWhitelist, MethodDefinitionMacros.

@@ -9,6 +9,8 @@ module Dor
     include Describable
     include Versionable
     include Processable
+    include Preservable
+
     class_attribute :resource_indexer
 
     def to_solr
