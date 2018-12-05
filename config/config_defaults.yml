@@ -12,7 +12,6 @@
 :solr:
   :url:
   :opts: {}
-:solrizer: {} # deprecated
 :metadata:
   :catalog:
     :url:

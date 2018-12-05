@@ -10,11 +10,6 @@ module Dor
       has_and_belongs_to_many :sets, property: :is_member_of, class_name: 'Dor::Collection'
     end
 
-    def initiate_apo_workflow(name)
-      CreateWorkflowService.create_workflow(self, name: name, create_ds: !new_record?)
-    end
-    deprecation_deprecate initiate_apo_workflow: 'Use Dor::Services::Client.object(object_identifier).workflow.create(wf_name:) instead'
-
     def reset_to_apo_default
       rightsMetadata.content = admin_policy_object.rightsMetadata.ng_xml
     end
@@ -84,18 +79,5 @@ module Dor
         'None'
       end
     end
-
-    delegate :can_manage_item?, :can_manage_desc_metadata?, :can_manage_system_metadata?,
-             :can_manage_content?, :can_manage_rights?, :can_manage_embargo?,
-             :can_view_content?, :can_view_metadata?, to: Dor::Ability
-
-    deprecation_deprecate can_manage_item?: 'Use Dor::Ability.can_manage_item? instead'
-    deprecation_deprecate can_manage_desc_metadata?: 'Use Dor::Ability.can_manage_desc_metadata? instead'
-    deprecation_deprecate can_manage_system_metadata?: 'Use Dor::Ability.can_manage_system_metadata? instead'
-    deprecation_deprecate can_manage_content?: 'Use Dor::Ability.can_manage_content? instead'
-    deprecation_deprecate can_manage_rights?: 'Use Dor::Ability.can_manage_rights? instead'
-    deprecation_deprecate can_manage_embargo?: 'Use Dor::Ability.can_manage_embargo? instead'
-    deprecation_deprecate can_view_content?: 'Use Dor::Ability.can_view_content? instead'
-    deprecation_deprecate can_view_metadata?: 'Use Dor::Ability.can_view_metadata? instead'
   end
 end

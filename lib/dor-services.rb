@@ -18,37 +18,11 @@ module Dor
     end
 
     # Load an object and inspect its identityMetadata to figure out what class
-    # to adapt it to. This is necessary when the object is not indexed, or the
-    # index is missing the objectType property.
-    # @param [String] pid The object's PID
-    def load_instance(pid)
-      Deprecation.warn(self, 'load_instance is deprecated, use Dor.find instead')
-      find(pid)
-    end
-
-    # Load an object and inspect its identityMetadata to figure out what class
     # to adapt it to.
     # @param [String] pid The object's PID
     # @return [Object] the ActiveFedora-modeled object
     def find(pid, _opts = {})
       Dor::Abstract.find pid, cast: true
-    end
-
-    # TODO: return enumerable and lazy load_instance
-    # TODO: restrict fieldlist (fl) for non-:lightweight queries
-    def find_all(query, opts = {})
-      ActiveSupport::Deprecation.warn 'Dor.find_all is deprecated; use activefedora finders instead'
-
-      resp = SearchService.query query, opts
-      resp['response']['docs'].collect do |solr_doc|
-        find solr_doc['id']
-      end
-    end
-
-    # @deprecated
-    def ensure_models_loaded!
-      ActiveSupport::Deprecation.warn 'Dor.ensure_models_loaded! is unnecessary and has been deprecated.'
-      eager_load!
     end
 
     def root
@@ -122,13 +96,10 @@ module Dor
     autoload :Governable
     autoload :Describable
     autoload :Publishable
-    autoload :Shelvable
     autoload :Embargoable
     autoload :Preservable
-    autoload :Assembleable
     autoload :Eventable
     autoload :Versionable
-    autoload :Contentable
     autoload :Discoverable
     autoload :Geoable
     autoload :Releaseable
@@ -160,7 +131,6 @@ module Dor
     autoload :DecommissionService
     autoload :DigitalStacksService
     autoload :DublinCoreService
-    autoload :FileMetadataMergeService
     autoload :IndexingService
     autoload :MetadataService
     autoload :MergeService

@@ -23,22 +23,6 @@ RSpec.describe Dor::Versionable do
     allow(obj.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)
   end
 
-  describe '#open_new_version' do
-    it 'delegates to version service' do
-      expect(Dor::VersionService).to receive(:open).with(obj, {})
-      expect(Deprecation).to receive(:warn)
-      obj.open_new_version
-    end
-  end
-
-  describe '#close_version' do
-    it 'delegates to version service' do
-      expect(Dor::VersionService).to receive(:close).with(obj, {})
-      expect(Deprecation).to receive(:warn)
-      obj.close_version
-    end
-  end
-
   describe 'allows_modification?' do
     it "allows modification if the object hasn't been submitted" do
       allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(false)

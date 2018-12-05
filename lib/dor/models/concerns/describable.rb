@@ -3,8 +3,6 @@
 module Dor
   module Describable
     extend ActiveSupport::Concern
-    extend Deprecation
-    self.deprecation_horizon = 'dor-services version 7.0.0'
 
     included do
       has_metadata name: 'descMetadata', type: Dor::DescMetadataDS, label: 'Descriptive Metadata', control_group: 'M'
@@ -39,21 +37,6 @@ module Dor
       ds.ng_xml.normalize_text!
       ds.content = ds.ng_xml.to_xml
     end
-
-    # Generates Dublin Core from the MODS in the descMetadata datastream using the LoC mods2dc stylesheet
-    #    Should not be used for the Fedora DC datastream
-    # @raise [CrosswalkError] Raises an Exception if the generated DC is empty or has no children
-    # @return [Nokogiri::XML::Document] the DublinCore XML document object
-    def generate_dublin_core(include_collection_as_related_item: true)
-      DublinCoreService.new(self, include_collection_as_related_item: include_collection_as_related_item).ng_xml
-    end
-    deprecation_deprecate generate_dublin_core: 'Use DublinCoreService#ng_xml instead'
-
-    # @return [String] Public descriptive medatada XML
-    def generate_public_desc_md(**options)
-      PublicDescMetadataService.new(self).to_xml(**options)
-    end
-    deprecation_deprecate generate_public_desc_md: 'Use PublicDescMetadataService#to_xml instead'
 
     # @param [Boolean] force Overwrite existing XML
     # @return [String] descMetadata.content XML

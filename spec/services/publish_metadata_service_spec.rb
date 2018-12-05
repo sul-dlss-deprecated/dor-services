@@ -4,7 +4,6 @@ require 'spec_helper'
 
 class PublishableItem < ActiveFedora::Base
   include Dor::Identifiable
-  include Dor::Contentable
   include Dor::Publishable
   include Dor::Describable
   include Dor::Processable
@@ -199,57 +198,16 @@ RSpec.describe Dor::PublishMetadataService do
       let(:changes_file) { File.join(changes_dir, item.pid.gsub('druid:', '')) }
 
       before do
-        expect(Deprecation).to receive(:warn)
         Dor::Config.push! { |config| config.stacks.local_document_cache_root purl_root }
         Dor::Config.push! { |config| config.stacks.local_recent_changes changes_dir }
       end
 
       after do
-        FileUtils.remove_entry purl_root
-        FileUtils.remove_entry changes_dir
         Dor::Config.pop!
       end
 
       it 'writes empty notification file' do
-        expect(File).to receive(:directory?).with(changes_dir).and_return(true)
-        expect(File).not_to exist(changes_file)
-        notify
-        expect(File).to exist(changes_file)
-      end
-
-      it 'writes empty notification file even when given only the base id' do
-        expect(File).to receive(:directory?).with(changes_dir).and_return(true)
-        allow(item).to receive(:pid).and_return('aa111bb2222')
-        expect(File).not_to exist(changes_file)
-        notify
-        expect(File).to exist(changes_file)
-      end
-
-      it 'removes any associated delete entry' do
-        druid1 = DruidTools::Druid.new item.pid, purl_root
-        druid1.creates_delete_record # create a deletes record so we confirm it is removed by the publish_notify_on_success method
-        expect(druid1).to be_deletes_record_exists # confirm our deletes record is there
-        notify
-        expect(druid1).not_to be_deletes_record_exists # deletes record not there anymore
-        expect(File).to exist(changes_file) # changes file is there
-      end
-
-      it 'does not explode if the deletes entry cannot be removed' do
-        druid1 = DruidTools::Druid.new item.pid, purl_root
-        druid1.creates_delete_record # create a deletes record
-        expect(druid1).to be_deletes_record_exists # confirm our deletes record is there
-        allow(FileUtils).to receive(:rm).and_raise(Errno::EACCES) # prevent the deletes method from running
-        expect(Dor.logger).to receive(:warn).with("Access denied while trying to remove .deletes file for #{item.pid}") # we will get a warning
-        notify
-        expect(druid1).to be_deletes_record_exists # deletes record is still there since it cannot be removed
-        expect(File).to exist(changes_file) # changes file is there
-      end
-
-      it 'raises error if misconfigured' do
-        Dor::Config.push! { |config| config.stacks.local_recent_changes nil }
-        expect(File).to receive(:directory?).with(nil).and_return(false)
-        expect(FileUtils).not_to receive(:touch)
-        expect { notify }.to raise_error(ArgumentError, /Missing local_recent_changes directory/)
+        expect { notify }.to raise_error 'You have not configured perl-fetcher (Dor::Config.purl_services.url).'
       end
     end
   end

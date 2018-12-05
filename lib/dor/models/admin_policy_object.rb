@@ -18,9 +18,6 @@ module Dor
       WorkflowsIndexer
     )
 
-    CREATIVE_COMMONS_USE_LICENSES = ActiveSupport::Deprecation::DeprecatedConstantProxy.new('CREATIVE_COMMONS_USE_LICENSES', 'Dor::CreativeCommonsLicenseService')
-    OPEN_DATA_COMMONS_USE_LICENSES = ActiveSupport::Deprecation::DeprecatedConstantProxy.new('OPEN_DATA_COMMONS_USE_LICENSES', 'Dor::OpenDataLicenseService')
-
     delegate :add_roleplayer, :purge_roles, :roles, to: :roleMetadata
     delegate :mods_title, :mods_title=, to: :descMetadata
     delegate :default_collections, :add_default_collection, :remove_default_collection,

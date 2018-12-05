@@ -11,46 +11,6 @@ describe Dor::SearchService do
     RSolr::Client.default_wt = :ruby
   end
 
-  context '.risearch' do
-    before do
-      allow(Deprecation).to receive(:warn)
-      @druids = [
-        ['druid:rk464yc0651', 'druid:xx122nh4588', 'druid:mj151qw9093', 'druid:mn144df7801', 'druid:rx565mb6270'],
-        ['druid:tx361mw6047', 'druid:cm977wg2520', 'druid:tk695fn1971', 'druid:jk486qb3656', 'druid:cd252xn6059'], []
-      ]
-      @responses = @druids.collect { |group| { body: %("object"\n) + group.collect { |d| "info:fedora/#{d}" }.join("\n") } }
-      stub_request(:post, 'http://localhost:8983/fedora/risearch')
-        .to_return(body: @responses[0][:body]).then
-        .to_return(body: @responses[1][:body]).then
-        .to_return(body: @responses[2][:body])
-    end
-
-    it 'executes a proper resource index search' do
-      query = 'select $object from <#ri> where $object <info:fedora/fedora-system:def/model#label> $label'
-      # encoded = 'select%20%24object%20from%20%3C%23ri%3E%20where%20%24object%20%3Cinfo%3Afedora%2Ffedora-system%3Adef%2Fmodel%23label%3E%20%24label'
-      resp = described_class.risearch(query, limit: 5)
-      expect(resp).to eq(@druids[0])
-      resp = described_class.risearch(query, limit: 5, offset: 5)
-      expect(resp).to eq(@druids[1])
-      expect(Deprecation).to have_received(:warn).twice
-    end
-
-    it 'iterates over pids in groups' do
-      receiver = double('block')
-      expect(receiver).to receive(:process).with(@druids[0])
-      expect(receiver).to receive(:process).with(@druids[1])
-      described_class.iterate_over_pids(in_groups_of: 5, mode: :group) { |x| receiver.process(x) }
-      expect(Deprecation).to have_received(:warn).exactly(4).times
-    end
-
-    it 'iterates over pids one at a time' do
-      receiver = double('block')
-      @druids.flatten.each { |druid| expect(receiver).to receive(:process).with(druid) }
-      described_class.iterate_over_pids(in_groups_of: 5, mode: :single) { |x| receiver.process(x) }
-      expect(Deprecation).to have_received(:warn).exactly(4).times
-    end
-  end
-
   context '.query' do
     let(:solr_field) { Solrizer.solr_name('dor_id', :stored_searchable) }
 

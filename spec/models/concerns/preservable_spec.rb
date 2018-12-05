@@ -48,10 +48,4 @@ describe Dor::Preservable do
       expect(event.content).to eql(event_text)
     end
   end
-
-  it 'exports object for sdr ingest' do
-    expect(Deprecation).to receive(:warn)
-    expect(Dor::SdrIngestService).to receive(:transfer).with(item, nil)
-    item.sdr_ingest_transfer(nil)
-  end
 end
