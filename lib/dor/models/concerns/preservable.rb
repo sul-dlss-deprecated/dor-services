@@ -8,6 +8,7 @@ module Dor
       has_metadata name: 'provenanceMetadata', type: ProvenanceMetadataDS, label: 'Provenance Metadata'
     end
 
+    # This is invoked by Robots::DorRepo::Accession::ProvenanceMetadata in common-accessioning
     def build_provenanceMetadata_datastream(workflow_id, event_text)
       workflow_provenance = create_workflow_provenance(workflow_id, event_text)
       ds = datastreams['provenanceMetadata']
