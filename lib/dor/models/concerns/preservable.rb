@@ -20,6 +20,8 @@ module Dor
       SdrIngestService.transfer(self, agreement_id)
     end
 
+    private
+
     # @return [Nokogiri::Document]
     def create_workflow_provenance(workflow_id, event_text)
       builder = Nokogiri::XML::Builder.new do |xml|
