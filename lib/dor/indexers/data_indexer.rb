@@ -18,13 +18,7 @@ module Dor
       end
     end
 
-    # rubocop:disable Naming/PredicateName
-    def has_model
-      resource.class.inspect
-    end
-    # rubocop:enable Naming/PredicateName
-
     delegate :create_date, :modified_date, :state, :pid, :inner_object,
-             :datastreams, :relationships, to: :resource
+             :datastreams, :relationships, :has_model, to: :resource
   end
 end
