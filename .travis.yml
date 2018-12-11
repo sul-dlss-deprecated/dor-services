@@ -22,10 +22,6 @@ matrix:
         - 'RAILS_VERSION="~> 5.2.0"'
       rvm: 2.5.3
     - env:
-        - 'AF_VERSION="~> 7.0"'
-        - 'RAILS_VERSION="~> 4.2"'
-      rvm: 2.5.3
-    - env:
         - 'AF_VERSION="~> 8.0"'
         - 'RAILS_VERSION="~> 4.2"'
       rvm: 2.5.3
