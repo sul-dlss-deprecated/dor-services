@@ -115,29 +115,11 @@ module Dor
       false
     end
 
-    ### depricated ???
-
-    # Create a file inside the content directory under the stacks.local_document_cache_root
-    # @param [String] id The druid identifier for the object
-    # @param [String] content The contents of the file to be created
-    # @param [String] filename The name of the file to be created
-    # @return [void]
-    def self.transfer_to_document_store(id, content, filename)
-      druid = DruidTools::PurlDruid.new id, Config.stacks.local_document_cache_root
-      druid.content_dir # create the druid tree if it doesn't exist yet
-      File.open(File.join(druid.content_dir, filename), 'w') { |f| f.write content }
-    end
-
     # Assumes the digital stacks storage root is mounted to the local file system
     # TODO: since this is delegating to the Druid, this method may not be necessary
     def self.prune_stacks_dir(id)
       stacks_druid_tree = DruidTools::StacksDruid.new(id, Config.stacks.local_stacks_root)
       stacks_druid_tree.prune!
-    end
-
-    def self.prune_purl_dir(id)
-      druid = DruidTools::PurlDruid.new(id, Dor::Config.stacks.local_document_cache_root)
-      druid.prune!
     end
   end
 end

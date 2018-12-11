@@ -169,6 +169,7 @@ module Dor
     autoload :CleanupResetService
     autoload :PublicDescMetadataService
     autoload :PublicXmlService
+    autoload :PublishMetadataService
     autoload :ThumbnailService
     autoload :Ontology
     autoload :CreativeCommonsLicenseService

@@ -30,16 +30,16 @@ require 'retries'
 
 module Dor::SpecHelpers
   def stub_config
-    @fixture_dir = fixture_dir = File.join(File.dirname(__FILE__), 'fixtures')
+    this = self
     Dor::Config.push! do
       suri.mint_ids false
       solr.url 'http://solr.edu/solrizer'
       stacks.document_cache_host       'purl-test.stanford.edu'
-      stacks.local_workspace_root      File.join(fixture_dir, 'workspace')
-      stacks.local_stacks_root         File.join(fixture_dir, 'stacks')
-      stacks.local_document_cache_root File.join(fixture_dir, 'purl')
-      sdr.local_workspace_root         File.join(fixture_dir, 'workspace')
-      sdr.local_export_home            File.join(fixture_dir, 'export')
+      stacks.local_workspace_root      File.join(this.fixture_dir, 'workspace')
+      stacks.local_stacks_root         File.join(this.fixture_dir, 'stacks')
+      stacks.local_document_cache_root File.join(this.fixture_dir, 'purl')
+      sdr.local_workspace_root         File.join(this.fixture_dir, 'workspace')
+      sdr.local_export_home            File.join(this.fixture_dir, 'export')
       indexing_svc.log                 'indexing_svc.log.test'
 
       dor_services do
@@ -54,7 +54,7 @@ module Dor::SpecHelpers
   end
 
   def instantiate_fixture(druid, klass = ActiveFedora::Base)
-    mask = File.join(@fixture_dir, "*_#{druid.sub(/:/, '_')}.xml")
+    mask = File.join(fixture_dir, "*_#{druid.sub(/:/, '_')}.xml")
     fname = Dir[mask].first
     return nil if fname.nil?
 
@@ -62,11 +62,11 @@ module Dor::SpecHelpers
   end
 
   def read_fixture(fname)
-    File.read(File.join(@fixture_dir, fname))
+    File.read(File.join(fixture_dir, fname))
   end
 
   def fixture_dir
-    @fixture_dir
+    @fixture_dir ||= File.join(File.dirname(__FILE__), 'fixtures')
   end
 end
 

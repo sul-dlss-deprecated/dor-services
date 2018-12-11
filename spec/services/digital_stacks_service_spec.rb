@@ -245,31 +245,15 @@ describe 'file operations' do
 end
 
 describe 'deprecated Dor::DigitalStacksService' do
-  let(:purl_root) { Dir.mktmpdir }
   let(:stacks_root) { Dir.mktmpdir }
-  let(:workspace_root) { Dir.mktmpdir }
 
-  before(:each) do
-    Dor::Config.push! { |c| c.stacks.local_document_cache_root purl_root }
+  before do
     Dor::Config.push! { |c| c.stacks.local_stacks_root stacks_root }
-    Dor::Config.push! { |c| c.stacks.local_workspace_root workspace_root }
   end
 
-  after(:each) do
-    FileUtils.remove_entry purl_root
+  after do
     FileUtils.remove_entry stacks_root
-    FileUtils.remove_entry workspace_root
     Dor::Config.pop!
-  end
-
-  describe '.transfer_to_document_store' do
-    it 'copies the given metadata to the document cache in the Digital Stacks' do
-      dr = DruidTools::PurlDruid.new 'druid:aa123bb4567', purl_root
-      Dor::DigitalStacksService.transfer_to_document_store('druid:aa123bb4567', '<xml/>', 'someMd')
-      file_path = dr.find_content('someMd')
-      expect(file_path).to match(/4567\/someMd$/)
-      expect(IO.read(file_path)).to eq('<xml/>')
-    end
   end
 
   describe '.prune_stacks_dir' do
