@@ -11,7 +11,6 @@ RSpec.describe Dor::ShelvingService do
   let!(:workspace_root) { Dir.mktmpdir }
 
   before do
-    expect(Deprecation).to receive(:warn)
     Dor::Config.push! { |c| c.stacks.local_stacks_root stacks_root }
     Dor::Config.push! { |c| c.stacks.local_workspace_root workspace_root }
   end
