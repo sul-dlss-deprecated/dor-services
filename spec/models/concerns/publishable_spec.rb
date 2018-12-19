@@ -398,6 +398,7 @@ describe Dor::Publishable do
 
     describe '#publish_metadata' do
       it 'calls the service' do
+        expect(Deprecation).to receive(:warn)
         expect(Dor::PublishMetadataService).to receive(:publish).with(@item)
         @item.publish_metadata
       end
