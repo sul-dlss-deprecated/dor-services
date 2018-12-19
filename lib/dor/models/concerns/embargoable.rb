@@ -38,7 +38,7 @@ module Dor
         end
       end
 
-      add_event('embargo', release_agent, 'Embargo released')
+      events.add_event('embargo', release_agent, 'Embargo released')
     end
 
     def release_20_pct_vis_embargo(release_agent = 'unknown')
@@ -60,7 +60,7 @@ module Dor
         rights_xml.root.add_child(world_doc.root.clone)
       end
 
-      add_event('embargo', release_agent, '20% Visibility Embargo released')
+      events.add_event('embargo', release_agent, '20% Visibility Embargo released')
     end
 
     def update_embargo(new_date)
