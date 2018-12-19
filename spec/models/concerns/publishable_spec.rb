@@ -406,12 +406,13 @@ describe Dor::Publishable do
   end
 
   describe 'publish remotely' do
-    before(:each) do
+    before do
       Dor::Config.push! { |config| config.dor_services.url 'https://lyberservices-test.stanford.edu/dor' }
-      stub_request(:any, 'https://lyberservices-test.stanford.edu/dor/v1/objects/druid:ab123cd4567/publish')
+      stub_request(:post, 'https://lyberservices-test.stanford.edu/dor/v1/objects/druid:ab123cd4567/publish')
     end
-    it 'should hit the correct url' do
-      expect(@item.publish_metadata_remotely).to eq('https://lyberservices-test.stanford.edu/dor/v1/objects/druid:ab123cd4567/publish')
+    it 'hits the correct url' do
+      expect(Deprecation).to receive(:warn)
+      expect(@item.publish_metadata_remotely).to be true
     end
   end
 end

@@ -4,6 +4,7 @@ require 'confstruct/configuration'
 require 'rsolr'
 require 'yaml'
 require 'dor/certificate_authenticated_rest_resource_factory'
+require 'dor/services/client'
 
 module Dor
   class Configuration < Confstruct::Configuration
@@ -98,6 +99,8 @@ module Dor
     end
 
     set_callback :configure, :after do |config|
+      Dor::Services::Client.configure(url: config.dor_services.url) if config.dor_services
+
       if config.solrizer.present?
         stack = Kernel.caller.dup
         stack.shift while stack[0] =~ %r{(active_support/callbacks|dor/config|dor-services)\.rb}
