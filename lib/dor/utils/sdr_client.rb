@@ -3,6 +3,8 @@
 require 'moab'
 module Sdr
   class Client
+    extend Deprecation
+
     class << self
       # @param [String] druid id of the object you want the version of
       # @return [Integer] the current version from SDR
@@ -60,6 +62,8 @@ module Sdr
 
       # This is used by Argo
       def get_preserved_file_content(druid, filename, version)
+        Deprecation.warn(self, 'Sdr::Client.get_preserved_file_content is deprecated and will be removed in dor-services 7. Use Dor::Services::Client.preserved_content instead')
+
         client["objects/#{druid}/content/#{URI.encode(filename)}?version=#{version}"].get
       end
 

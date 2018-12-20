@@ -75,7 +75,7 @@ describe Sdr::Client do
     it 'properly encodes filename and passes along the sdr response with the correct content type and status code' do
       resource = Sdr::Client.client["objects/#{druid}/content/#{URI.encode(filename_with_spaces)}?version=#{item_version}"]
       stub_request(:get, resource.url).to_return(body: sdr_resp_body, headers: { content_type: sdr_resp_content_type })
-
+      expect(Deprecation).to receive(:warn)
       preserved_content = Sdr::Client.get_preserved_file_content(druid, filename_with_spaces, item_version)
       expect(preserved_content).to eq(sdr_resp_body)
       expect(preserved_content.body).to eq(sdr_resp_body)
@@ -86,7 +86,7 @@ describe Sdr::Client do
     it 'passes errors through to the caller' do
       resource = Sdr::Client.client["objects/#{druid}/content/bogus_filename?version=#{item_version}"]
       stub_request(:get, resource.url).to_return(status: 404)
-
+      expect(Deprecation).to receive(:warn)
       expect { Sdr::Client.get_preserved_file_content(druid, filename_with_spaces, item_version) }.to raise_error RestClient::ResourceNotFound
     end
   end
