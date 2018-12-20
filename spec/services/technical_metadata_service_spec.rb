@@ -3,22 +3,17 @@
 require 'spec_helper'
 require 'moab/stanford'
 
-describe Dor::TechnicalMetadataService do
-  before(:all) do
-    @object_ids = %w(dd116zh0343 du000ps9999 jq937jp0017)
-    @druid_tool = {}
-  end
-
-  before(:each) do
-    @fixtures = fixtures = Pathname(File.dirname(__FILE__)).join('../fixtures')
+RSpec.describe Dor::TechnicalMetadataService do
+  let(:object_ids) { %w(dd116zh0343 du000ps9999 jq937jp0017) }
+  let(:druid_tool) { {} }
+  before do
+    fixtures = Pathname(File.dirname(__FILE__)).join('../fixtures')
     wsfixtures = fixtures.join('workspace').to_s
     Dor::Config.push! do
       sdr.local_workspace_root wsfixtures
     end
 
-    @sdr_repo = @fixtures.join('sdr_repo')
-    @workspace_pathname = Pathname(wsfixtures)
-
+    @sdr_repo = fixtures.join('sdr_repo')
     @inventory_differences = {}
     @deltas      = {}
     @new_files   = {}
@@ -26,20 +21,20 @@ describe Dor::TechnicalMetadataService do
     @new_file_techmd = {}
     @expected_techmd = {}
 
-    @object_ids.each do |id|
+    object_ids.each do |id|
       druid = "druid:#{id}"
-      @druid_tool[id] = DruidTools::Druid.new(druid, @workspace_pathname.to_s)
-      repo_content_pathname = @fixtures.join('sdr_repo', id, 'v0001', 'data', 'content')
-      work_content_pathname = Pathname(@druid_tool[id].content_dir)
+      druid_tool[id] = DruidTools::Druid.new(druid, Pathname(wsfixtures).to_s)
+      repo_content_pathname = fixtures.join('sdr_repo', id, 'v0001', 'data', 'content')
+      work_content_pathname = Pathname(druid_tool[id].content_dir)
       repo_content_inventory = Moab::FileGroup.new(group_id: 'content').group_from_directory(repo_content_pathname)
       work_content_inventory = Moab::FileGroup.new.group_from_directory(work_content_pathname)
       @inventory_differences[id] = Moab::FileGroupDifference.new
       @inventory_differences[id].compare_file_groups(repo_content_inventory, work_content_inventory)
       @deltas[id] = @inventory_differences[id].file_deltas
       @new_files[id] = Dor::TechnicalMetadataService.get_new_files(@deltas[id])
-      @repo_techmd[id] = @fixtures.join('sdr_repo', id, 'v0001', 'data', 'metadata', 'technicalMetadata.xml').read
+      @repo_techmd[id] = fixtures.join('sdr_repo', id, 'v0001', 'data', 'metadata', 'technicalMetadata.xml').read
       @new_file_techmd[id] = Dor::TechnicalMetadataService.get_new_technical_metadata(druid, @new_files[id])
-      @expected_techmd[id] = Pathname(@druid_tool[id].metadata_dir).join('technicalMetadata.xml').read
+      @expected_techmd[id] = Pathname(druid_tool[id].metadata_dir).join('technicalMetadata.xml').read
     end
   end
 
@@ -48,15 +43,15 @@ describe Dor::TechnicalMetadataService do
   end
 
   after(:all) do
-    @object_ids = [] if @object_ids.nil?
-    @object_ids.each do |id|
-      temp_pathname = Pathname(@druid_tool[id].temp_dir(false))
+    object_ids = [] if object_ids.nil?
+    object_ids.each do |id|
+      temp_pathname = Pathname(druid_tool[id].temp_dir(false))
       temp_pathname.rmtree if temp_pathname.exist?
     end
   end
 
   specify 'Dor::TechnicalMetadataService.add_update_technical_metadata' do
-    @object_ids.each do |id|
+    object_ids.each do |id|
       dor_item = double(Dor::Item)
       allow(dor_item).to receive(:pid).and_return("druid:#{id}")
       expect(Dor::TechnicalMetadataService).to receive(:get_content_group_diff).with(dor_item).and_return(@inventory_differences[id])
@@ -75,32 +70,35 @@ describe Dor::TechnicalMetadataService do
     end
   end
 
-  specify 'Dor::TechnicalMetadataService.get_content_group_diff(dor_item)' do
-    @object_ids.each do |id|
-      group_diff = @inventory_differences[id]
-      inventory_diff = Moab::FileInventoryDifference.new(
-        digital_object_id: "druid:#{id}",
-        basis: 'old_content_metadata',
-        other: 'new_content_metadata',
-        report_datetime: Time.now.utc.to_s
-      )
-      inventory_diff.group_differences << group_diff
-      dor_item = double(Dor::Item)
-      allow(dor_item).to receive(:get_content_diff).with('all').and_return(inventory_diff)
-      content_group_diff = Dor::TechnicalMetadataService.get_content_group_diff(dor_item)
-      expect(content_group_diff.to_xml).to eq(group_diff.to_xml)
+  describe 'Dor::TechnicalMetadataService.get_content_group_diff(dor_item)' do
+    let(:contentMetadata) { instance_double(Dor::ContentMetadataDS, content: 'foo') }
+    it 'calculates the differences' do
+      object_ids.each do |id|
+        group_diff = @inventory_differences[id]
+        druid = "druid:#{id}"
+        inventory_diff = Moab::FileInventoryDifference.new(
+          digital_object_id: druid,
+          basis: 'old_content_metadata',
+          other: 'new_content_metadata',
+          report_datetime: Time.now.utc.to_s
+        )
+        inventory_diff.group_differences << group_diff
+        dor_item = instance_double(Dor::Item, contentMetadata: contentMetadata, pid: druid)
+        allow(Sdr::Client).to receive(:get_content_diff).with(druid, 'foo', 'all').and_return(inventory_diff)
+        content_group_diff = Dor::TechnicalMetadataService.get_content_group_diff(dor_item)
+        expect(content_group_diff.to_xml).to eq(group_diff.to_xml)
+      end
     end
   end
 
   specify 'Dor::TechnicalMetadataService.get_content_group_diff(dor_item) without contentMetadata' do
-    dor_item = double(Dor::Item)
-    allow(dor_item).to receive(:get_content_diff).with('all').and_raise(Dor::Exception)
+    dor_item = instance_double(Dor::Item, contentMetadata: nil)
     content_group_diff = Dor::TechnicalMetadataService.get_content_group_diff(dor_item)
     expect(content_group_diff.difference_count).to be_zero
   end
 
   specify 'Dor::TechnicalMetadataService.get_file_deltas(content_group_diff)' do
-    @object_ids.each do |id|
+    object_ids.each do |id|
       group_diff = @inventory_differences[id]
       expect(Dor::TechnicalMetadataService.get_file_deltas(group_diff)).to eq(@deltas[id])
     end
@@ -166,7 +164,7 @@ describe Dor::TechnicalMetadataService do
   end
 
   specify 'Dor::TechnicalMetadataService.get_new_technical_metadata' do
-    @object_ids.each do |id|
+    object_ids.each do |id|
       new_techmd = Dor::TechnicalMetadataService.get_new_technical_metadata("druid:#{id}", @new_files[id])
       file_nodes = Nokogiri::XML(new_techmd).xpath('//file')
       case id
@@ -181,8 +179,8 @@ describe Dor::TechnicalMetadataService do
   end
 
   specify 'Dor::TechnicalMetadataService.write_fileset' do
-    @object_ids.each do |id|
-      temp_dir = @druid_tool[id].temp_dir
+    object_ids.each do |id|
+      temp_dir = druid_tool[id].temp_dir
       new_files = @new_files[id]
       filename = Dor::TechnicalMetadataService.write_fileset(temp_dir, new_files)
       if new_files.size > 0
@@ -194,7 +192,7 @@ describe Dor::TechnicalMetadataService do
   end
 
   specify 'Dor::TechnicalMetadataService.merge_file_nodes' do
-    @object_ids.each do |id|
+    object_ids.each do |id|
       old_techmd = @repo_techmd[id]
       new_techmd = @new_file_techmd[id]
       new_nodes = Dor::TechnicalMetadataService.get_file_nodes(new_techmd)
@@ -295,7 +293,7 @@ describe Dor::TechnicalMetadataService do
   end
 
   specify 'Dor::TechnicalMetadataService.build_technical_metadata(druid,merged_nodes)' do
-    @object_ids.each do |id|
+    object_ids.each do |id|
       old_techmd = @repo_techmd[id]
       new_techmd = @new_file_techmd[id]
       deltas = @deltas[id]

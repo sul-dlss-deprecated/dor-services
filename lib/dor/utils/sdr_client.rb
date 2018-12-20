@@ -36,11 +36,21 @@ module Sdr
         Moab::SignatureCatalog.new(digital_object_id: druid, version_id: 0)
       end
 
-      # @return [Moab::FileInventoryDifference] the differences for the given content and subset
-      def get_content_diff(druid, current_content, subset = :all, version = nil)
-        raise Dor::ParameterError, "Invalid subset value: #{subset}" unless %w(all shelve preserve publish).include?(subset.to_s)
+      # Retrieves file difference manifest for contentMetadata from SDR
+      #
+      # @param [String] druid The object identifier
+      # @param [String] current_content The contentMetadata xml
+      # @param [String] subset ('all') The keyword for file attributes 'shelve', 'preserve', 'publish'.
+      # @param [Integer, NilClass] version (nil)
+      # @return [Moab::FileInventoryDifference] the differences for the given content and subset (i.e.: cm_inv_diff manifest)
+      def get_content_diff(druid, current_content, subset = 'all', version = nil)
+        unless subset.is_a? String
+          Deprecation.warn(self, "subset parameter must be a string. You provided '#{subset.inspect}'. This will be an error in version 7")
+          subset = subset.to_s
+        end
+        raise Dor::ParameterError, "Invalid subset value: #{subset}" unless %w(all shelve preserve publish).include?(subset)
 
-        query_string = { subset: subset.to_s }
+        query_string = { subset: subset }
         query_string[:version] = version.to_s unless version.nil?
         query_string = URI.encode_www_form(query_string)
         sdr_query = "objects/#{druid}/cm-inv-diff?#{query_string}"
@@ -48,6 +58,7 @@ module Sdr
         Moab::FileInventoryDifference.parse(response)
       end
 
+      # This is used by Argo
       def get_preserved_file_content(druid, filename, version)
         client["objects/#{druid}/content/#{URI.encode(filename)}?version=#{version}"].get
       end

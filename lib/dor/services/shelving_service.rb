@@ -34,7 +34,10 @@ module Dor
     # retrieve the differences between the current contentMetadata and the previously ingested version
     # (filtering to select only the files that should be shelved to stacks)
     def shelve_diff
-      inventory_diff = work.get_content_diff(:shelve)
+      raise Dor::ParameterError, 'Missing Dor::Config.stacks.local_workspace_root' if Config.stacks.local_workspace_root.nil?
+      raise Dor::Exception, 'Missing contentMetadata datastream' if work.contentMetadata.nil?
+
+      inventory_diff = Sdr::Client.get_content_diff(work.pid, work.contentMetadata.content, 'shelve')
       inventory_diff.group_difference('content')
     end
 

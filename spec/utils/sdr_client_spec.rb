@@ -108,6 +108,7 @@ describe Sdr::Client do
       end
 
       it 'is configured to use SDR' do
+        expect(Deprecation).to receive(:warn)
         expect(Sdr::Client.client.url).to eq Dor::Config.dor_services.rest_client['v1/sdr'].url
       end
     end
