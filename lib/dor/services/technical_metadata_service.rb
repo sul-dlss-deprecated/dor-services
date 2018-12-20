@@ -49,10 +49,11 @@ module Dor
     # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
     # @return [FileGroupDifference] The differences between two versions of a group of files
     def self.get_content_group_diff(dor_item)
-      inventory_diff = dor_item.get_content_diff('all')
+      return Moab::FileGroupDifference.new if dor_item.contentMetadata.nil?
+      raise Dor::ParameterError, 'Missing Dor::Config.stacks.local_workspace_root' if Config.stacks.local_workspace_root.nil?
+
+      inventory_diff = Sdr::Client.get_content_diff(dor_item.pid, dor_item.contentMetadata.content, 'all')
       inventory_diff.group_difference('content')
-    rescue Dor::Exception # no contentMetadata
-      Moab::FileGroupDifference.new
     end
 
     # @param [FileGroupDifference] content_group_diff
