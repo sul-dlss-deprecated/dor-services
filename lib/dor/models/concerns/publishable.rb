@@ -68,10 +68,8 @@ module Dor
 
     # Call dor services app to have it publish the metadata
     def publish_metadata_remotely
-      dor_services = Dor::Config.dor_services.rest_client
-      endpoint = dor_services["v1/objects/#{pid}/publish"]
-      endpoint.post ''
-      endpoint.url
+      Dor::Services::Client.publish(object: pid)
     end
+    deprecation_deprecate publish_metadata_remotely: 'use Dor::Services::Client.publish instead'
   end
 end
