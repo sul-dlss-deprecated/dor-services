@@ -54,8 +54,11 @@ module Sdr
 
       def client
         if Dor::Config.sdr.url
+          # dor-services-app takes this path
           Dor::Config.sdr.rest_client
         elsif Dor::Config.dor_services.url
+          # Anything that is not dor-servics-app should be through here.
+          Deprecation.warn(self, 'you are using dor-services to invoke calls to dor-services-app.  Use dor-services-client instead.')
           Dor::Config.dor_services.rest_client['v1/sdr']
         else
           raise Dor::ParameterError, 'Missing Dor::Config.sdr and/or Dor::Config.dor_services configuration'
