@@ -156,6 +156,7 @@ module Dor
     autoload :RegistrationService
     autoload :SuriService
     autoload :WorkflowService
+    autoload :DatastreamBuilder
     autoload :DigitalStacksService
     autoload :SdrIngestService
     autoload :CleanupService

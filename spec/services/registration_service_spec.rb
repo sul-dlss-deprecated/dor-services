@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-describe Dor::RegistrationService do
-  before(:each) { stub_config }
-  after(:each)  { unstub_config }
+RSpec.describe Dor::RegistrationService do
+  after(:each) { unstub_config }
 
-  before :each do
+  before do
+    stub_config
     @pid = 'druid:ab123cd4567'
     @mock_repo = instance_double(Rubydora::Repository)
     @apo = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
@@ -284,7 +284,7 @@ describe Dor::RegistrationService do
       end
 
       describe 'when passed metadata_source=label' do
-        before :each do
+        before do
           @params[:metadata_source] = 'label'
           @obj = Dor::RegistrationService.register_object(@params)
         end

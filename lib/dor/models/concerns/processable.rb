@@ -5,6 +5,8 @@ require 'equivalent-xml'
 module Dor
   module Processable
     extend ActiveSupport::Concern
+    extend Deprecation
+    self.deprecation_horizon = 'dor-services version 7.0.0'
 
     included do
       has_metadata name: 'workflows',
@@ -41,54 +43,31 @@ module Dor
       'opened' => 9
     }.freeze
 
-    def empty_datastream?(datastream)
-      return true if datastream.new?
-
-      if datastream.class.respond_to?(:xml_template)
-        datastream.content.to_s.empty? || EquivalentXml.equivalent?(datastream.content, datastream.class.xml_template)
-      else
-        datastream.content.to_s.empty?
-      end
-    end
-
-    # Tries to find a file for the datastream.
-    # @param [String] datastream name of a datastream
-    # @return [String, nil] path to datastream or nil
-    def find_metadata_file(datastream)
-      druid = DruidTools::Druid.new(pid, Dor::Config.stacks.local_workspace_root)
-      druid.find_metadata("#{datastream}.xml")
-    end
-
-    # Builds that datastream using the content of a file if such a file
-    # exists and is newer than the object's current datastream; otherwise,
+    # The ContentMetadata and DescMetadata robot are allowed to build the
+    # datastream by reading a file from the /dor/workspace that matches the
+    # datastream name. This allows assembly or pre-assembly to prebuild the
+    # datastreams from templates or using other means
+    # (like the assembly-objectfile gem) and then have those datastreams picked
+    # up and added to the object during accessionWF.
+    #
+    # This method builds that datastream using the content of a file if such a file
+    # exists and is newer than the object's current datastream (see above); otherwise,
     # builds the datastream by calling build_fooMetadata_datastream.
     # @param [String] datastream name of a datastream (e.g. "fooMetadata")
     # @param [Boolean] force overwrite existing datastream
     # @param [Boolean] is_required
-    # @return [SomeDatastream]
+    # @return [ActiveFedora::Datastream]
     def build_datastream(datastream, force = false, is_required = false)
-      # See if datastream exists as a file and if the file's timestamp is newer than datastream's timestamp.
-      ds       = datastreams[datastream]
-      filename = find_metadata_file(datastream)
-      use_file = filename && (ds.createDate.nil? || File.mtime(filename) >= ds.createDate)
-      # Build datastream.
-      if use_file
-        content = File.read(filename)
-        ds.content = content
-        ds.ng_xml = Nokogiri::XML(content) if ds.respond_to?(:ng_xml)
-        ds.save unless ds.digital_object.new?
-      elsif force || empty_datastream?(ds)
-        meth = "build_#{datastream}_datastream".to_sym
-        if respond_to?(meth)
-          send(meth, ds)
-          ds.save unless ds.digital_object.new?
-        end
-      end
-      # Check for success.
-      raise "Required datastream #{datastream} could not be populated!" if is_required && empty_datastream?(ds)
+      ds = datastreams[datastream]
+      builder = Dor::DatastreamBuilder.new(object: self,
+                                           datastream: ds,
+                                           force: force,
+                                           required: is_required)
+      builder.build
 
       ds
     end
+    deprecation_deprecate build_datastream: 'Use Dor::DatastreamBuilder instead'
 
     def cleanup
       CleanupService.cleanup(self)
