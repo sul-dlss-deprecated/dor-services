@@ -107,21 +107,11 @@ module Dor
           new_item.set_read_rights(rights) unless rights == 'default' # already defaulted to default!
         end
         # create basic mods from the label
-        if metadata_source == 'label'
-          ds = new_item.build_datastream('descMetadata')
-          builder = Nokogiri::XML::Builder.new do |xml|
-            xml.mods(Dor::DescMetadataDS::MODS_HEADER_CONFIG) do
-              xml.titleInfo do
-                xml.title label
-              end
-            end
-          end
-          ds.content = builder.to_xml
-        end
+        build_desc_metadata_from_label(new_item, label) if metadata_source == 'label'
 
         workflow_priority = params[:workflow_priority] ? params[:workflow_priority].to_i : 0
 
-        Array(params[:seed_datastream]).each { |datastream_name| new_item.build_datastream(datastream_name) }
+        seed_datastreams(Array(params[:seed_datastream]), new_item)
         Array(params[:initiate_workflow]).each { |workflow_id| new_item.create_workflow(workflow_id, !new_item.new_record?, workflow_priority) }
 
         new_item.class.ancestors.select { |x| x.respond_to?(:to_class_uri) && x != ActiveFedora::Base }.each do |parent_class|
@@ -181,6 +171,23 @@ module Dor
         return nil if ids.nil?
 
         Hash[Array(ids).map { |id| id.split(':', 2) }]
+      end
+
+      def seed_datastreams(names, item)
+        names.each do |datastream_name|
+          item.build_datastream(datastream_name)
+        end
+      end
+
+      def build_desc_metadata_from_label(new_item, label)
+        builder = Nokogiri::XML::Builder.new do |xml|
+          xml.mods(Dor::DescMetadataDS::MODS_HEADER_CONFIG) do
+            xml.titleInfo do
+              xml.title label
+            end
+          end
+        end
+        new_item.descMetadata.content = builder.to_xml
       end
     end
   end

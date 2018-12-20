@@ -19,11 +19,11 @@ class ProcessableWithApoItem < ActiveFedora::Base
   include Dor::Processable
 end
 
-describe Dor::Processable do
-  before(:each) { stub_config   }
-  after(:each)  { unstub_config }
+RSpec.describe Dor::Processable do
+  after(:each) { unstub_config }
 
-  before :each do
+  before do
+    stub_config
     @item = instantiate_fixture('druid:ab123cd4567', ProcessableItem)
     @item.contentMetadata.content = '<contentMetadata/>'
   end
@@ -48,63 +48,16 @@ describe Dor::Processable do
     expect(@item.workflows.content).to eq('<workflows>with some data</workflows>')
   end
 
-  context 'build_datastream()' do
-    before(:each) do
-      # Paths to two files with the same content.
-      f1 = 'workspace/ab/123/cd/4567/ab123cd4567/metadata/descMetadata.xml'
-      f2 = 'workspace/ab/123/cd/4567/desc_metadata.xml'
-      @dm_filename = File.join(@fixture_dir, f1)  # Path used inside build_datastream().
-      @dm_fixture_xml = read_fixture(f2)          # Path to fixture.
-      @dm_builder_xml = @dm_fixture_xml.sub(/FROM_FILE/, 'FROM_BUILDER')
-    end
+  describe '#build_datastream' do
+    let(:builder) { instance_double(Dor::DatastreamBuilder, build: true) }
 
-    context 'datastream exists as a file' do
-      before(:each) do
-        allow(@item).to receive(:find_metadata_file).and_return(@dm_filename)
-        allow(File).to receive(:read).and_return(@dm_fixture_xml)
-        @t = Time.now.utc
-      end
-
-      it 'file newer than datastream: should read content from file' do
-        allow(File).to receive(:mtime).and_return(@t)
-        allow(@item.descMetadata).to receive(:createDate).and_return(@t - 99)
-        xml = @dm_fixture_xml
-        expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(xml)
-        @item.build_datastream('descMetadata', true)
-        expect(@item.descMetadata.ng_xml).to be_equivalent_to(xml)
-        expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@dm_builder_xml)
-      end
-
-      it 'file older than datastream: should use the builder' do
-        allow(File).to receive(:mtime).and_return(@t - 99)
-        allow(@item.descMetadata).to receive(:createDate).and_return(@t)
-        xml = @dm_builder_xml
-        allow(@item).to receive(:fetch_descMetadata_datastream).and_return(xml)
-        expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(xml)
-        @item.build_datastream('descMetadata', true)
-        expect(@item.descMetadata.ng_xml).to be_equivalent_to(xml)
-        expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@dm_fixture_xml)
-      end
-    end
-
-    context 'datastream does not exist as a file' do
-      before(:each) do
-        allow(@item).to receive(:find_metadata_file).and_return(nil)
-      end
-
-      it 'should use the datastream builder' do
-        xml = @dm_builder_xml
-        allow(@item).to receive(:fetch_descMetadata_datastream).and_return(xml)
-        expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(xml)
-        @item.build_datastream('descMetadata')
-        expect(@item.descMetadata.ng_xml).to be_equivalent_to(xml)
-        expect(@item.descMetadata.ng_xml).not_to be_equivalent_to(@dm_fixture_xml)
-      end
-
-      it 'should raise an exception if required datastream cannot be generated' do
-        # Fails because there is no build_contentMetadata_datastream() method.
-        expect { @item.build_datastream('contentMetadata', false, true) }.to raise_error(RuntimeError)
-      end
+    it 'Calls the datastream builder' do
+      expect(Deprecation).to receive(:warn)
+      expect(Dor::DatastreamBuilder).to receive(:new)
+        .with(datastream: Dor::DescMetadataDS, force: true, object: @item, required: false)
+        .and_return(builder)
+      @item.build_datastream('descMetadata', true)
+      expect(builder).to have_received(:build)
     end
   end
 

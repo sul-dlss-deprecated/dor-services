@@ -92,11 +92,13 @@ describe Dor::Publishable do
     expect(@item.datastreams['rightsMetadata']).to be_a(ActiveFedora::OmDatastream)
   end
 
-  it 'should provide a rightsMetadata datastream builder' do
-    rights_md = @apo.defaultObjectRights.content
-    expect(@item.datastreams['rightsMetadata'].ng_xml.to_s).not_to be_equivalent_to(rights_md)
-    @item.build_datastream('rightsMetadata', true)
-    expect(@item.datastreams['rightsMetadata'].ng_xml.to_s).to be_equivalent_to(rights_md)
+  describe '#build_rightsMetadata_datastream' do
+    it 'copies the default object rights' do
+      rights_md = @apo.defaultObjectRights.content
+      expect(@item.datastreams['rightsMetadata'].ng_xml.to_s).not_to be_equivalent_to(rights_md)
+      @item.build_rightsMetadata_datastream(@item.rightsMetadata)
+      expect(@item.datastreams['rightsMetadata'].ng_xml.to_s).to be_equivalent_to(rights_md)
+    end
   end
 
   describe '#thumb' do
