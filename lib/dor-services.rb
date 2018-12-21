@@ -176,6 +176,7 @@ module Dor
     autoload :CreativeCommonsLicenseService
     autoload :OpenDataLicenseService
     autoload :VersionService
+    autoload :TagService
   end
 
   # Workflow Classes

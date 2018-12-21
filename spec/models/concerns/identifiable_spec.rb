@@ -6,9 +6,9 @@ class IdentifiableItem < ActiveFedora::Base
   include Dor::Identifiable
 end
 
-describe Dor::Identifiable do
-  before(:each) { stub_config }
-  after(:each)  { unstub_config }
+RSpec.describe Dor::Identifiable do
+  before { stub_config }
+  after { unstub_config }
 
   let(:item) do
     item = instantiate_fixture('druid:ab123cd4567', IdentifiableItem)
@@ -185,30 +185,18 @@ describe Dor::Identifiable do
   # when doing the add/update/removal, specify the tag in non-normalized form so that the
   # normalization mechanism actually gets tested.
   describe 'add_tag' do
-    it 'should add a new tag' do
+    it 'delegates to TagService' do
+      expect(Deprecation).to receive(:warn)
+      expect(Dor::TagService).to receive(:add).with(item, 'sometag:someval')
       item.add_tag('sometag:someval')
-      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_truthy
-      expect(item.identityMetadata).to be_changed
-    end
-    it 'should raise an exception if there is an existing tag like it' do
-      item.add_tag('sometag:someval')
-      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_truthy
-      expect { item.add_tag('sometag: someval') }.to raise_error(RuntimeError)
     end
   end
 
   describe 'update_tag' do
-    it 'should update a tag' do
-      item.add_tag('sometag:someval')
-      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_truthy
-      expect(item.update_tag('sometag :someval', 'new :tag')).to be_truthy
-      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_falsey
-      expect(item.identityMetadata.tags.include?('new : tag')).to be_truthy
-      expect(item.identityMetadata).to be_changed
-    end
-    it 'should return false if there is no matching tag to update' do
-      expect(item.update_tag('sometag:someval', 'new:tag')).to be_falsey
-      expect(item.identityMetadata).not_to be_changed
+    it 'delegates to TagService' do
+      expect(Deprecation).to receive(:warn)
+      expect(Dor::TagService).to receive(:update).with(item, 'sometag :someval', 'new :tag')
+      item.update_tag('sometag :someval', 'new :tag')
     end
   end
 
@@ -255,33 +243,10 @@ describe Dor::Identifiable do
   end
 
   describe 'remove_tag' do
-    it 'should delete a tag' do
+    it 'delegates to TagService' do
+      expect(Deprecation).to receive(:warn)
+      expect(Dor::TagService).to receive(:add).with(item, 'sometag:someval')
       item.add_tag('sometag:someval')
-      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_truthy
-      expect(item.remove_tag('sometag:someval')).to be_truthy
-      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_falsey
-      expect(item.identityMetadata).to be_changed
-    end
-  end
-
-  describe 'validate_and_normalize_tag' do
-    it 'should throw an exception if tag has too few elements' do
-      tag_str = 'just one part'
-      expected_err_msg = "Invalid tag structure: tag '#{tag_str}' must have at least 2 elements"
-      expect { item.validate_and_normalize_tag(tag_str, []) }.to raise_error(ArgumentError, expected_err_msg)
-    end
-    it 'should throw an exception if tag has empty elements' do
-      tag_str = 'test part1 :  : test part3'
-      expected_err_msg = "Invalid tag structure: tag '#{tag_str}' contains empty elements"
-      expect { item.validate_and_normalize_tag(tag_str, []) }.to raise_error(ArgumentError, expected_err_msg)
-    end
-    it 'should throw an exception if tag is the same as an existing tag' do
-      # note that tag_str should match existing_tags[1] because the comparison should happen after normalization, and it should
-      # be case-insensitive.
-      tag_str = 'another:multi:part:test'
-      existing_tags = ['test part1 : test part2', 'Another : Multi : Part : Test', 'one : last_tag']
-      expected_err_msg = "An existing tag (#{existing_tags[1]}) is the same, consider using update_tag?"
-      expect { item.validate_and_normalize_tag(tag_str, existing_tags) }.to raise_error(StandardError, expected_err_msg)
     end
   end
 
