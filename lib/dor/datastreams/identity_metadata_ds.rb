@@ -43,7 +43,7 @@ module Dor
       node ? [node['source'], node.text].join(':') : nil
     end
 
-    # @param  [String, Nil] value, or nil/empty string to delete sourceId node
+    # @param  [String, Nil] value The value to set or a nil/empty string to delete sourceId node
     # @return [String, Nil] The same value, as per Ruby convention for assignment operators
     # @note The actual values assigned will have leading/trailing whitespace stripped.
     def sourceId=(value)

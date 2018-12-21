@@ -62,7 +62,7 @@ module Dor
     end
 
     # Convenience method to set the catkey
-    # @param  [String] catkey the new source identifier
+    # @param  [String] val the new source identifier
     # @return [String] same value, as per Ruby assignment convention
     def catkey=(val)
       # if there was already a catkey in the record, store that in the "previous" spot (assuming there is no change)

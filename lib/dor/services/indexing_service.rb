@@ -39,7 +39,7 @@ module Dor
     end
 
     # Use the dor-indexing-app service to reindex a pid
-    # @param [String] `pid` the druid
+    # @param [String] pid the druid
     # @raise [ReindexError] on failure
     def self.reindex_pid_remotely(pid)
       pid = "druid:#{pid}" unless pid =~ /^druid:/

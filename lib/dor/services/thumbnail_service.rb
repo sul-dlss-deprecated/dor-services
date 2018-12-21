@@ -26,7 +26,7 @@ module Dor
       { image_type: 'external', finder: "/contentMetadata/resource[@type='page' or @type='image']/externalFile[#{MIME_TYPE_FINDER}]" }
     ].freeze
 
-    # @params [Dor::Item] object
+    # @param [Dor::Item] object
     def initialize(object)
       @object = object
     end
