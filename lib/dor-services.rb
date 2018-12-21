@@ -175,6 +175,7 @@ module Dor
     autoload :Ontology
     autoload :CreativeCommonsLicenseService
     autoload :OpenDataLicenseService
+    autoload :VersionService
   end
 
   # Workflow Classes

@@ -3,6 +3,8 @@
 module Dor
   module Versionable
     extend ActiveSupport::Concern
+    extend Deprecation
+    self.deprecation_horizon = 'dor-services version 7.0.0'
 
     included do
       has_metadata name: 'versionMetadata', type: Dor::VersionMetadataDS, label: 'Version Metadata', autocreate: true
@@ -15,36 +17,12 @@ module Dor
     # @option opts [Hash] :vers_md_upd_info If present, used to add to the events datastream and set the desc and significance on the versionMetadata datastream
     # @raise [Dor::Exception] if the object hasn't been accessioned, or if a version is already opened
     def open_new_version(opts = {})
-      # During local development, we need a way to open a new version even if the object has not been accessioned.
-      raise(Dor::Exception, 'Object net yet accessioned') unless
-        opts[:assume_accessioned] || Dor::Config.workflow.client.get_lifecycle('dor', pid, 'accessioned')
-      raise Dor::Exception, 'Object already opened for versioning' if new_version_open?
-      raise Dor::Exception, 'Object currently being accessioned' if Dor::Config.workflow.client.get_active_lifecycle('dor', pid, 'submitted')
-
-      sdr_version = Sdr::Client.current_version pid
-
-      vmd_ds = datastreams['versionMetadata']
-      vmd_ds.sync_then_increment_version sdr_version
-      vmd_ds.save unless new_record?
-
-      k = :create_workflows_ds
-      if opts.key?(k)
-        # During local development, Hydrus (or another app w/ local Fedora) does not want to initialize workflows datastream.
-        create_workflow('versioningWF', opts[k])
-      else
-        create_workflow('versioningWF')
-      end
-
-      vmd_upd_info = opts[:vers_md_upd_info]
-      return unless vmd_upd_info
-
-      events.add_event('open', vmd_upd_info[:opening_user_name], "Version #{vmd_ds.current_version_id} opened")
-      vmd_ds.update_current_version(description: vmd_upd_info[:description], significance: vmd_upd_info[:significance].to_sym)
-      save
+      VersionService.open(self, opts)
     end
+    deprecation_deprecate open_new_version: 'Use VersionService.open instead'
 
     def current_version
-      datastreams['versionMetadata'].current_version_id
+      versionMetadata.current_version_id
     end
 
     # Sets versioningWF:submit-version to completed and initiates accessionWF for the object
@@ -57,30 +35,22 @@ module Dor
     # @raise [Dor::Exception] if the object hasn't been opened for versioning, or if accessionWF has
     #   already been instantiated or the current version is missing a tag or description
     def close_version(opts = {})
-      unless opts.empty?
-        datastreams['versionMetadata'].update_current_version opts
-        datastreams['versionMetadata'].save
-      end
-
-      raise Dor::Exception, 'latest version in versionMetadata requires tag and description before it can be closed' unless datastreams['versionMetadata'].current_version_closeable?
-      raise Dor::Exception, 'Trying to close version on an object not opened for versioning' unless new_version_open?
-      raise Dor::Exception, 'accessionWF already created for versioned object' if Dor::Config.workflow.client.get_active_lifecycle('dor', pid, 'submitted')
-
-      Dor::Config.workflow.client.close_version 'dor', pid, opts.fetch(:start_accession, true) # Default to creating accessionWF when calling close_version
+      VersionService.close(self, opts)
     end
+    deprecation_deprecate close_version: 'Use VersionService.close instead'
 
     # @return [Boolean] true if 'opened' lifecycle is active, false otherwise
     def new_version_open?
-      return true if Dor::Config.workflow.client.get_active_lifecycle('dor', pid, 'opened')
-
-      false
+      VersionService.new(self).open?
     end
+    deprecation_deprecate new_version_open?: 'Use VersionService.open? instead'
 
+    # This is used by Argo and the MergeService
     # @return [Boolean] true if the object is in a state that allows it to be modified.
     #  States that will allow modification are: has not been submitted for accessioning, has an open version or has sdr-ingest set to hold
     def allows_modification?
       if Dor::Config.workflow.client.get_lifecycle('dor', pid, 'submitted') &&
-         !new_version_open? &&
+         !VersionService.new(self).open? &&
          Dor::Config.workflow.client.get_workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer') != 'hold'
         false
       else
@@ -89,7 +59,14 @@ module Dor
     end
 
     # Following chart of processes on this consul page: https://consul.stanford.edu/display/chimera/Versioning+workflows
-    alias start_version open_new_version
-    alias submit_version close_version
+    def start_version
+      open_new_version
+    end
+    deprecation_deprecate start_version: 'use VersionService.open'
+
+    def submit_version
+      close_version
+    end
+    deprecation_deprecate submit_version: 'use VersionService.close'
   end
 end
