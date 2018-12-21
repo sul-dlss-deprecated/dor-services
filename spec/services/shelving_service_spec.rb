@@ -29,6 +29,7 @@ RSpec.describe Dor::ShelvingService do
     let(:mock_workspace_path) { double(Pathname) }
 
     before do
+      allow(described_class).to receive(:new).and_return(service)
       # stub the shelve_diff method which is unit tested below
       expect(service).to receive(:shelve_diff).and_return(mock_diff)
       # stub the workspace_content_dir method which is unit tested below
@@ -42,7 +43,7 @@ RSpec.describe Dor::ShelvingService do
       expect(Dor::DigitalStacksService).to receive(:remove_from_stacks).with(stacks_object_pathname, mock_diff)
       expect(Dor::DigitalStacksService).to receive(:rename_in_stacks).with(stacks_object_pathname, mock_diff)
       expect(Dor::DigitalStacksService).to receive(:shelve_to_stacks).with(mock_workspace_path, stacks_object_pathname, mock_diff)
-      service.send(:shelve)
+      described_class.shelve(work)
     end
   end
 
