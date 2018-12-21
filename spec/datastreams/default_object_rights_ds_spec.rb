@@ -32,7 +32,7 @@ describe Dor::DefaultObjectRightsDS do
   it 'understands terms of a rightsMetadata and will normalize the text' do
     subject.normalize!
     expect(subject.copyright).to eq(['All rights reserved.'])
-    expect(subject.use_statement).to eq(['You may re-distribute this object, unaltered, with attribution to the author.'])
+    expect(subject.use_statement).to eq 'You may re-distribute this object, unaltered, with attribution to the author.'
     expect(subject.creative_commons).to eq(['by-nc'])
     expect(subject.creative_commons_human).to eq(['CC Attribution Non-Commercial license'])
     expect(subject.open_data_commons).to eq([])
@@ -45,7 +45,7 @@ describe Dor::DefaultObjectRightsDS do
     subject.content = '<rightsMetadata/>'
     subject.normalize!
     expect(subject.copyright).to eq([])
-    expect(subject.use_statement).to eq([])
+    expect(subject.use_statement).to be_nil
     expect(subject.creative_commons).to eq([])
     expect(subject.creative_commons_human).to eq([])
     expect(subject.open_data_commons).to eq([])
@@ -71,7 +71,7 @@ describe Dor::DefaultObjectRightsDS do
     subject.normalize!
     expect(subject.ng_xml.xpath('/rightsMetadata/use/human[@type=\'useAndReproduction\']').length).to eq(1)
     subject.ng_xml.at_xpath('/rightsMetadata/use/human[@type=\'useAndReproduction\']/text()').remove
-    expect(subject.use_statement).to eq([''])
+    expect(subject.use_statement).to eq('')
     expect(subject.ng_xml.xpath('/rightsMetadata/use/human[@type=\'useAndReproduction\']').length).to eq(1)
     subject.normalize!
     expect(subject.ng_xml.xpath('/rightsMetadata/use/human[@type=\'useAndReproduction\']').length).to eq(0)

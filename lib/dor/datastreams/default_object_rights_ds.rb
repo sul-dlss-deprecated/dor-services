@@ -143,6 +143,147 @@ module Dor
       HUMAN_XSLT.apply_to(xml_doc)
     end
 
+    def use_statement
+      super.first
+    end
+
+    def use_statement=(val)
+      update_term!(:use_statement, val.nil? ? '' : val)
+    end
+
+    def copyright_statement
+      copyright.first
+    end
+
+    def copyright_statement=(val)
+      update_term!(:copyright, val.nil? ? '' : val)
+    end
+
+    def creative_commons_license
+      creative_commons.first
+    end
+
+    def creative_commons_license_human
+      creative_commons_human.first
+    end
+
+    def open_data_commons_license
+      open_data_commons.first
+    end
+
+    def open_data_commons_license_human
+      open_data_commons_human.first
+    end
+
+    def use_license
+      return creative_commons_license unless creative_commons_license.blank?
+      return open_data_commons_license unless open_data_commons_license.blank?
+
+      nil
+    end
+
+    def use_license_uri
+      return creative_commons.uri.first unless creative_commons.uri.blank?
+      return open_data_commons.uri.first unless open_data_commons.uri.blank?
+
+      nil
+    end
+
+    def use_license_human
+      return creative_commons_license_human unless creative_commons_license_human.blank?
+      return open_data_commons_license_human unless open_data_commons_license_human.blank?
+
+      nil
+    end
+
+    def creative_commons_license=(use_license_machine)
+      initialize_term!(:creative_commons)
+      self.creative_commons = use_license_machine
+      creative_commons.uri = CreativeCommonsLicenseService.property(use_license_machine).uri
+    end
+
+    def creative_commons_license_human=(use_license_human)
+      initialize_term!(:creative_commons_human)
+      self.creative_commons_human = use_license_human
+    end
+
+    def open_data_commons_license=(use_license_machine)
+      initialize_term!(:open_data_commons)
+      self.open_data_commons = use_license_machine
+      open_data_commons.uri = OpenDataLicenseService.property(use_license_machine).uri
+    end
+
+    def open_data_commons_license_human=(use_license_human)
+      initialize_term!(:open_data_commons_human)
+      self.open_data_commons_human = use_license_human
+    end
+
+    # @param [String|Symbol] use_license_machine The machine code for the desired Use License
+    # If set to `:none` then Use License is removed
+    def use_license=(use_license_machine)
+      if use_license_machine.blank? || use_license_machine == :none
+        # delete use license by directly removing the XML used to define the use license
+        update_term!(:creative_commons, ' ')
+        update_term!(:creative_commons_human, ' ')
+        update_term!(:open_data_commons, ' ')
+        update_term!(:open_data_commons_human, ' ')
+      elsif CreativeCommonsLicenseService.key? use_license_machine
+        self.creative_commons_license = use_license_machine
+        self.creative_commons_license_human = CreativeCommonsLicenseService.property(use_license_machine).label
+      elsif OpenDataLicenseService.key? use_license_machine
+        self.open_data_commons_license = use_license_machine
+        self.open_data_commons_license_human = OpenDataLicenseService.property(use_license_machine).label
+      else
+        raise ArgumentError, "'#{use_license_machine}' is not a valid license code"
+      end
+    end
+
+    # @return [String] A description of the rights defined in the default object rights datastream. Can be one of
+    # RightsMetadataDS::RIGHTS_TYPE_CODES.keys (so this is essentially the inverse of RightsMetadataDS.upd_rights_xml_for_rights_type).
+    def default_rights
+      xml = ng_xml
+      machine_read_access = xml.search('//rightsMetadata/access[@type="read"]/machine')
+      machine_discover_access = xml.search('//rightsMetadata/access[@type="discover"]/machine')
+
+      machine_read_access_node = machine_read_access.length == 1 ? machine_read_access.first : nil
+      machine_discover_access_node = machine_discover_access.length == 1 ? machine_discover_access.first : nil
+
+      if machine_read_access_node && machine_read_access_node.search('./group[text()="Stanford" or text()="stanford"]').length == 1
+        if machine_read_access_node.search('./group[@rule="no-download"]').length == 1
+          'stanford-nd'
+        else
+          'stanford'
+        end
+      elsif machine_read_access_node && machine_read_access_node.search('./world').length == 1
+        if machine_read_access_node.search('./world[@rule="no-download"]').length == 1
+          'world-nd'
+        else
+          'world'
+        end
+      elsif machine_read_access_node && machine_read_access_node.search('./location[text()="spec"]').length == 1
+        'loc:spec'
+      elsif machine_read_access_node && machine_read_access_node.search('./location[text()="music"]').length == 1
+        'loc:music'
+      elsif machine_discover_access_node && machine_discover_access_node.search('./world').length == 1
+        # if it's not stanford restricted, world readable, or location restricted, but it is world discoverable, it's "citation only"
+        'none'
+      elsif machine_discover_access_node && machine_discover_access_node.search('./none').length == 1
+        # if it's not even discoverable, it's "dark"
+        'dark'
+      end
+    end
+
+    # Set the rights in default object rights
+    # @param rights [String] Stanford, World, Dark, or None
+    def default_rights=(rights)
+      rights = rights.downcase
+      raise(ArgumentError, "Unrecognized rights value '#{rights}'") unless RightsMetadataDS.valid_rights_type? rights
+
+      rights_xml = ng_xml
+      ng_xml_will_change!
+      RightsMetadataDS.upd_rights_xml_for_rights_type(rights_xml, rights)
+    end
+
     # maintain AF < 8 indexing behavior
     def prefix
       ''
