@@ -37,9 +37,9 @@ module Dor
       k = :create_workflows_ds
       if opts.key?(k)
         # During local development, Hydrus (or another app w/ local Fedora) does not want to initialize workflows datastream.
-        work.create_workflow('versioningWF', opts[k])
+        CreateWorkflowService.create_workflow(work, name: 'versioningWF', create_ds: opts[k])
       else
-        work.create_workflow('versioningWF')
+        CreateWorkflowService.create_workflow(work, name: 'versioningWF')
       end
 
       vmd_upd_info = opts[:vers_md_upd_info]
