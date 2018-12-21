@@ -19,8 +19,8 @@ RSpec.describe Dor::ProcessableIndexer do
 
   describe '#simplified_status_code_disp_txt' do
     it "trims off parens but doesn't harm the strings otherwise" do
-      expect(indexer.simplified_status_code_disp_txt(2)).to eq('In accessioning')
-      expect(indexer.simplified_status_code_disp_txt(3)).to eq('In accessioning')
+      expect(indexer.send(:simplified_status_code_disp_txt, 2)).to eq('In accessioning')
+      expect(indexer.send(:simplified_status_code_disp_txt, 3)).to eq('In accessioning')
     end
   end
 
