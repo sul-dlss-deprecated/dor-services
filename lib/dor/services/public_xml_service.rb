@@ -19,7 +19,7 @@ module Dor
       pub.add_child(public_rights_metadata.root)
 
       pub.add_child(public_relationships.root) unless public_relationships.nil? # TODO: Should never be nil in practice; working around an ActiveFedora quirk for testing
-      pub.add_child(object.generate_dublin_core.root)
+      pub.add_child(DublinCoreService.new(object).ng_xml.root)
       pub.add_child(PublicDescMetadataService.new(object).ng_xml.root)
       pub.add_child(release_xml.root) unless release_xml.xpath('//release').children.size == 0 # If there are no release_tags, this prevents an empty <releaseData/> from being added
       # Note we cannot base this on if an individual object has release tags or not, because the collection may cause one to be generated for an item,
