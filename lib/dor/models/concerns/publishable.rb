@@ -58,6 +58,7 @@ module Dor
     def public_xml
       PublicXmlService.new(self).to_xml
     end
+    deprecation_deprecate public_xml: 'Use PublicXmlService#to_xml instead'
 
     # Copies this object's public_xml to the Purl document cache if it is world discoverable
     #  otherwise, it prunes the object's metadata from the document cache
