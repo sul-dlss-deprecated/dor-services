@@ -51,7 +51,7 @@ RSpec.describe Dor::Describable do
 
   describe '#generate_dublin_core' do
     it 'delegates to the DublinCoreService' do
-      expect_any_instance_of(Dor::DublinCoreService).to receive(:to_xml)
+      expect_any_instance_of(Dor::DublinCoreService).to receive(:ng_xml)
       expect(Deprecation).to receive(:warn)
       @item.generate_dublin_core
     end

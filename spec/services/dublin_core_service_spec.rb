@@ -7,8 +7,8 @@ RSpec.describe Dor::DublinCoreService do
 
   subject(:service) { described_class.new(item) }
 
-  describe '#to_xml' do
-    subject(:xml) { service.to_xml }
+  describe '#ng_xml' do
+    subject(:xml) { service.ng_xml }
 
     it 'produces dublin core from the MODS in the descMetadata datastream' do
       item.descMetadata.content = read_fixture('ex1_mods.xml')
