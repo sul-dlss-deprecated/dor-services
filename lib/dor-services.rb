@@ -156,6 +156,7 @@ module Dor
     autoload :CreativeCommonsLicenseService
     autoload :DatastreamBuilder
     autoload :DigitalStacksService
+    autoload :DublinCoreService
     autoload :FileMetadataMergeService
     autoload :IndexingService
     autoload :MetadataService

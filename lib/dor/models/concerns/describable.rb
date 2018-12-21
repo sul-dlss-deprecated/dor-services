@@ -6,12 +6,6 @@ module Dor
     extend Deprecation
     self.deprecation_horizon = 'dor-services version 7.0.0'
 
-    MODS_TO_DC_XSLT = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + '/mods2dc.xslt')))
-    XMLNS_OAI_DC = 'http://www.openarchives.org/OAI/2.0/oai_dc/'
-    XMLNS_DC = 'http://purl.org/dc/elements/1.1/'
-
-    class CrosswalkError < RuntimeError; end
-
     included do
       has_metadata name: 'descMetadata', type: Dor::DescMetadataDS, label: 'Descriptive Metadata', control_group: 'M'
     end
@@ -51,19 +45,9 @@ module Dor
     # @raise [CrosswalkError] Raises an Exception if the generated DC is empty or has no children
     # @return [Nokogiri::Doc] the DublinCore XML document object
     def generate_dublin_core(include_collection_as_related_item: true)
-      desc_md = if include_collection_as_related_item
-                  PublicDescMetadataService.new(self).ng_xml(include_access_conditions: false)
-                else
-                  descMetadata.ng_xml
-                end
-
-      dc_doc = MODS_TO_DC_XSLT.transform(desc_md)
-      dc_doc.xpath('/oai_dc:dc/*[count(text()) = 0]', oai_dc: XMLNS_OAI_DC).remove # Remove empty nodes
-      raise CrosswalkError, "Dor::Item#generate_dublin_core produced incorrect xml (no root):\n#{dc_doc.to_xml}" if dc_doc.root.nil?
-      raise CrosswalkError, "Dor::Item#generate_dublin_core produced incorrect xml (no children):\n#{dc_doc.to_xml}" if dc_doc.root.children.size == 0
-
-      dc_doc
+      DublinCoreService.new(self, include_collection_as_related_item: include_collection_as_related_item).to_xml
     end
+    deprecation_deprecate generate_dublin_core: 'Use DublinCoreService#to_xml instead'
 
     # @return [String] Public descriptive medatada XML
     def generate_public_desc_md(**options)
