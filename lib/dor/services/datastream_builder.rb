@@ -40,6 +40,7 @@ module Dor
 
     attr_reader :datastream, :force, :object, :required, :filename
 
+    # @return [String] datastream name (dsid)
     def datastream_name
       datastream.dsid
     end
@@ -72,7 +73,6 @@ module Dor
     end
 
     # Tries to find a file for the datastream.
-    # @param [String] datastream name of a datastream
     # @return [String, nil] path to datastream or nil
     def find_metadata_file
       druid = DruidTools::Druid.new(object.pid, Dor::Config.stacks.local_workspace_root)

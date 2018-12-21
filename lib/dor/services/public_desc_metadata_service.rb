@@ -10,6 +10,7 @@ module Dor
       @object = object
     end
 
+    # @return [Nokogiri::XML::Document] A copy of the descriptiveMetadata of the object, to be modified
     def doc
       @doc ||= object.descMetadata.ng_xml.dup(NOKOGIRI_DEEP_COPY)
     end
@@ -40,8 +41,6 @@ module Dor
     end
 
     # Create MODS accessCondition statements from rightsMetadata
-    # @param [Nokogiri::XML::Document] doc Document representing the descriptiveMetadata of the object
-    # @note this method modifies the passed in doc
     def add_access_conditions!
       # clear out any existing accessConditions
       doc.xpath('//mods:accessCondition', 'mods' => 'http://www.loc.gov/mods/v3').each(&:remove)
@@ -80,7 +79,6 @@ module Dor
     end
 
     # expand constituent relations into relatedItem references -- see JUMBO-18
-    # @param [Nokogiri::XML] doc public MODS XML being built
     # @return [Void]
     def add_constituent_relations!
       object.public_relationships.search('//rdf:RDF/rdf:Description/fedora:isConstituentOf',
@@ -116,9 +114,7 @@ module Dor
 
     # Adds to desc metadata a relatedItem with information about the collection this object belongs to.
     # For use in published mods and mods-to-DC conversion.
-    # @param [Nokogiri::XML::Document] doc A copy of the descriptiveMetadata of the object, to be modified
     # @return [Void]
-    # @note this method modifies the passed in doc
     def add_collection_reference!
       collections = object.public_relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection',
                                                        'fedora' => 'info:fedora/fedora-system:def/relations-external#',

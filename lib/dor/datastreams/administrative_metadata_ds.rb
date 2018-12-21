@@ -161,7 +161,7 @@ module Dor
     end
 
     # set a single default workflow
-    # @param wf [String] the name of the workflow, ex. 'digitizationWF'
+    # @param wf_name [String] the name of the workflow, ex. 'digitizationWF'
     def default_workflow=(wf_name)
       raise ArgumentError, 'Must have a valid workflow for default' if wf_name.blank?
 
