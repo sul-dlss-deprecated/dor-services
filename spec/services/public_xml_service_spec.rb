@@ -212,5 +212,63 @@ RSpec.describe Dor::PublicXmlService do
         expect(ng_xml.at_xpath('/publicObject/thumb').to_xml).to be_equivalent_to('<thumb>jw923xn5254/2542B.jp2</thumb>')
       end
     end
+
+    context 'when there are errors for externalFile references' do
+      it 'is missing resourceId and mimetype attributes' do
+        item.contentMetadata.content = <<-EOXML
+        <contentMetadata objectId="hj097bm8879" type="map">
+          <resource id="hj097bm8879_1" sequence="1" type="image">
+            <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478"/>
+            <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+          </resource>
+        </contentMetadata>
+        EOXML
+
+        # generate publicObject XML and verify that the content metadata portion is invalid
+        expect { xml }.to raise_error(ArgumentError)
+      end
+
+      it 'has blank resourceId attribute' do
+        item.contentMetadata.content = <<-EOXML
+        <contentMetadata objectId="hj097bm8879" type="map">
+          <resource id="hj097bm8879_1" sequence="1" type="image">
+            <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478" resourceId=" " mimetype="image/jp2"/>
+            <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+          </resource>
+        </contentMetadata>
+        EOXML
+
+        # generate publicObject XML and verify that the content metadata portion is invalid
+        expect { xml }.to raise_error(ArgumentError)
+      end
+
+      it 'has blank fileId attribute' do
+        item.contentMetadata.content = <<-EOXML
+        <contentMetadata objectId="hj097bm8879" type="map">
+          <resource id="hj097bm8879_1" sequence="1" type="image">
+            <externalFile fileId=" " objectId="druid:cg767mn6478" resourceId="cg767mn6478_1" mimetype="image/jp2"/>
+            <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+          </resource>
+        </contentMetadata>
+        EOXML
+
+        # generate publicObject XML and verify that the content metadata portion is invalid
+        expect { xml }.to raise_error(ArgumentError)
+      end
+
+      it 'has blank objectId attribute' do
+        item.contentMetadata.content = <<-EOXML
+        <contentMetadata objectId="hj097bm8879" type="map">
+          <resource id="hj097bm8879_1" sequence="1" type="image">
+            <externalFile fileId="2542A.jp2" objectId=" " resourceId="cg767mn6478_1" mimetype="image/jp2"/>
+            <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+          </resource>
+        </contentMetadata>
+        EOXML
+
+        # generate publicObject XML and verify that the content metadata portion is invalid
+        expect { xml }.to raise_error(ArgumentError)
+      end
+    end
   end
 end
