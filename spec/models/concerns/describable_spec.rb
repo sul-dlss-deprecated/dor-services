@@ -13,9 +13,9 @@ end
 
 RSpec::Matchers.define_negated_matcher :a_hash_excluding, :a_hash_including
 
-describe Dor::Describable do
-  before(:each) { stub_config   }
-  after(:each)  { unstub_config }
+RSpec.describe Dor::Describable do
+  before { stub_config }
+  after { unstub_config }
 
   before do
     @simple = instantiate_fixture('druid:ab123cd4567', SimpleItem)
@@ -49,16 +49,12 @@ describe Dor::Describable do
     end
   end
 
-  it 'produces dublin core from the MODS in the descMetadata datastream' do
-    b = Dor::Item.new
-    b.datastreams['descMetadata'].content = read_fixture('ex1_mods.xml')
-    expect(b.generate_dublin_core).to be_equivalent_to read_fixture('ex1_dc.xml')
-  end
-
-  it 'produces dublin core Stanford-specific mapping for repository, collection and location, from the MODS in the descMetadata datastream' do
-    b = Dor::Item.new
-    b.datastreams['descMetadata'].content = read_fixture('ex2_related_mods.xml')
-    expect(b.generate_dublin_core).to be_equivalent_to read_fixture('ex2_related_dc.xml')
+  describe '#generate_dublin_core' do
+    it 'delegates to the DublinCoreService' do
+      expect_any_instance_of(Dor::DublinCoreService).to receive(:to_xml)
+      expect(Deprecation).to receive(:warn)
+      @item.generate_dublin_core
+    end
   end
 
   describe '#generate_public_desc_md' do
@@ -97,20 +93,6 @@ describe Dor::Describable do
       XML
       expect(Dor::Describable.get_collection_title(@item)).to eq 'Foxml Test Object : Hello world'
     end
-  end
-
-  it 'throws an exception if the generated dc has only a root element with no children' do
-    mods = <<-EOXML
-    <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    version="3.3"
-    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd" />
-    EOXML
-
-    b = Dor::Item.new
-    allow(b).to receive(:add_collection_reference).and_return(mods)
-    b.datastreams['descMetadata'].content = mods
-    expect { b.generate_dublin_core }.to raise_error(Dor::Describable::CrosswalkError)
   end
 
   describe 'set_desc_metadata_using_label' do
