@@ -149,35 +149,36 @@ module Dor
 
   # Services
   autoload_under 'services' do
-    autoload :SearchService
-    autoload :ShelvingService
-    autoload :IndexingService
-    autoload :MetadataService
-    autoload :RegistrationService
-    autoload :SuriService
-    autoload :WorkflowService
-    autoload :DatastreamBuilder
-    autoload :DigitalStacksService
-    autoload :SdrIngestService
+    autoload :CleanupResetService
     autoload :CleanupService
     autoload :CreateWorkflowService
-    autoload :ProvenanceMetadataService
-    autoload :TechnicalMetadataService
+    autoload :CreativeCommonsLicenseService
+    autoload :DatastreamBuilder
+    autoload :DigitalStacksService
     autoload :FileMetadataMergeService
-    autoload :SecondaryFileNameService
+    autoload :IndexingService
+    autoload :MetadataService
     autoload :MergeService
-    autoload :ReleaseTagService
-    autoload :ResetWorkspaceService
-    autoload :CleanupResetService
+    autoload :Ontology
+    autoload :OpenDataLicenseService
+    autoload :ProvenanceMetadataService
     autoload :PublicDescMetadataService
     autoload :PublicXmlService
     autoload :PublishMetadataService
+    autoload :RegistrationService
+    autoload :ReleaseTagService
+    autoload :ResetWorkspaceService
+    autoload :SdrIngestService
+    autoload :SearchService
+    autoload :SecondaryFileNameService
+    autoload :ShelvingService
+    autoload :StatusService
+    autoload :SuriService
     autoload :TagService
+    autoload :TechnicalMetadataService
     autoload :ThumbnailService
-    autoload :Ontology
-    autoload :CreativeCommonsLicenseService
-    autoload :OpenDataLicenseService
     autoload :VersionService
+    autoload :WorkflowService
   end
 
   # Workflow Classes
