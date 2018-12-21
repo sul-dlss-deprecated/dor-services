@@ -8,9 +8,9 @@ class GovernableItem < ActiveFedora::Base
   include Dor::Governable
 end
 
-describe Dor::Governable do
-  before(:each) { stub_config   }
-  after(:each)  { unstub_config }
+RSpec.describe Dor::Governable do
+  before { stub_config }
+  after { unstub_config }
 
   let(:mock_collection) do
     coll = Dor::Collection.new
@@ -21,9 +21,8 @@ describe Dor::Governable do
     coll
   end
 
-  before :each do
+  before do
     @item = instantiate_fixture('druid:oo201oo0001', Dor::AdminPolicyObject)
-    # @item.stub(:new_record? => false)
     allow(Dor::Collection).to receive(:find).with('druid:oo201oo0002').and_return(mock_collection)
   end
 
@@ -37,7 +36,7 @@ describe Dor::Governable do
   end
 
   describe 'unshelve_and_unpublish' do
-    before :each do
+    before do
       @current_item = instantiate_fixture('druid:bb046xn0881', Dor::Item)
     end
     it 'should not do anything if there is no contentMetadata' do
@@ -162,6 +161,11 @@ describe Dor::Governable do
   describe 'add_collection' do
     it 'should add a collection' do
       @item.add_collection('druid:oo201oo0002')
+      expect(@item.collection_ids).to include('druid:oo201oo0002')
+    end
+
+    it 'should add a collection' do
+      @item.add_collection('druid:oo201oo0002')
       rels_ext_ds = @item.datastreams['RELS-EXT']
       xml = Nokogiri::XML(rels_ext_ds.to_rels_ext.to_s)
       expect(xml).to be_equivalent_to <<-XML
@@ -179,6 +183,12 @@ describe Dor::Governable do
   end
 
   describe 'remove_collection' do
+    it 'should delete a collection' do
+      @item.add_collection('druid:oo201oo0002')
+      expect(@item.collection_ids).to include('druid:oo201oo0002')
+      @item.remove_collection('druid:oo201oo0002')
+    end
+
     it 'should delete a collection' do
       @item.add_collection('druid:oo201oo0002')
       rels_ext_ds = @item.datastreams['RELS-EXT']
@@ -254,98 +264,62 @@ describe Dor::Governable do
     end
   end
 
-  describe 'add_collection' do
-    it 'should add a collection' do
-      @item.add_collection('druid:oo201oo0002')
-      expect(@item.collection_ids).to include('druid:oo201oo0002')
-    end
-  end
-
-  describe 'remove_collection' do
-    it 'should delete a collection' do
-      @item.add_collection('druid:oo201oo0002')
-      expect(@item.collection_ids).to include('druid:oo201oo0002')
-      @item.remove_collection('druid:oo201oo0002')
-    end
-  end
-
   describe 'can_manage_item?' do
-    it 'should match a group that has rights' do
-      expect(@item.can_manage_item?(['dor-administrator'])).to be_truthy
-    end
-    it 'should match a group that has rights' do
-      expect(@item.can_manage_item?(['sdr-administrator'])).to be_truthy
-    end
-    it 'shouldnt match a group that doesnt have rights' do
-      expect(@item.can_manage_item?(['dor-apo-metadata'])).to be_falsey
+    it 'delegates to Dor::Ability' do
+      expect(Deprecation).to receive(:warn)
+      expect(Dor::Ability).to receive(:can_manage_item?)
+      @item.can_manage_item?(['dor-administrator'])
     end
   end
+
   describe 'can_manage_desc_metadata?' do
-    it 'should match a group that has rights' do
-      expect(@item.can_manage_desc_metadata?(['dor-apo-metadata'])).to be_truthy
-    end
-    it 'shouldnt match a group that doesnt have rights' do
-      expect(@item.can_manage_desc_metadata?(['dor-viewer'])).to be_falsey
-    end
-    it 'shouldnt match a group that doesnt have rights' do
-      expect(@item.can_manage_desc_metadata?(['sdr-viewer'])).to be_falsey
+    it 'delegates to Dor::Ability' do
+      expect(Deprecation).to receive(:warn)
+      expect(Dor::Ability).to receive(:can_manage_desc_metadata?)
+      @item.can_manage_desc_metadata?(['dor-administrator'])
     end
   end
+
   describe 'can_manage_content?' do
-    it 'should match a group that has rights' do
-      expect(@item.can_manage_content?(['dor-administrator'])).to be_truthy
-    end
-    it 'should match a group that has rights' do
-      expect(@item.can_manage_content?(['sdr-administrator'])).to be_truthy
-    end
-    it 'shouldnt match a group that doesnt have rights' do
-      expect(@item.can_manage_content?(['dor-apo-metadata'])).to be_falsey
+    it 'delegates to Dor::Ability' do
+      expect(Deprecation).to receive(:warn)
+      expect(Dor::Ability).to receive(:can_manage_content?)
+      @item.can_manage_content?(['dor-administrator'])
     end
   end
+
   describe 'can_manage_rights?' do
-    it 'should match a group that has rights' do
-      expect(@item.can_manage_rights?(['dor-administrator'])).to be_truthy
-    end
-    it 'should match a group that has rights' do
-      expect(@item.can_manage_rights?(['sdr-administrator'])).to be_truthy
-    end
-    it 'shouldnt match a group that doesnt have rights' do
-      expect(@item.can_manage_rights?(['dor-apo-metadata'])).to be_falsey
+    it 'delegates to Dor::Ability' do
+      expect(Deprecation).to receive(:warn)
+      expect(Dor::Ability).to receive(:can_manage_rights?)
+      @item.can_manage_rights?(['dor-administrator'])
     end
   end
+
   describe 'can_manage_embargo?' do
-    it 'should match a group that has rights' do
-      expect(@item.can_manage_embargo?(['dor-administrator'])).to be_truthy
-    end
-    it 'should match a group that has rights' do
-      expect(@item.can_manage_embargo?(['sdr-administrator'])).to be_truthy
-    end
-    it 'shouldnt match a group that doesnt have rights' do
-      expect(@item.can_manage_embargo?(['dor-apo-metadata'])).to be_falsey
+    it 'delegates to Dor::Ability' do
+      expect(Deprecation).to receive(:warn)
+      expect(Dor::Ability).to receive(:can_manage_embargo?)
+      @item.can_manage_embargo?(['dor-administrator'])
     end
   end
+
   describe 'can_view_content?' do
-    it 'should match a group that has rights' do
-      expect(@item.can_view_content?(['dor-viewer'])).to be_truthy
-    end
-    it 'should match a group that has rights' do
-      expect(@item.can_view_content?(['sdr-viewer'])).to be_truthy
-    end
-    it 'shouldnt match a group that doesnt have rights' do
-      expect(@item.can_view_content?(['dor-people'])).to be_falsey
+    it 'delegates to Dor::Ability' do
+      expect(Deprecation).to receive(:warn)
+      expect(Dor::Ability).to receive(:can_view_content?)
+      @item.can_view_content?(['dor-administrator'])
     end
   end
+
   describe 'can_view_metadata?' do
-    it 'should match a group that has rights' do
-      expect(@item.can_view_metadata?(['dor-viewer'])).to be_truthy
-    end
-    it 'should match a group that has rights' do
-      expect(@item.can_view_metadata?(['sdr-viewer'])).to be_truthy
-    end
-    it 'shouldnt match a group that doesnt have rights' do
-      expect(@item.can_view_metadata?(['dor-people'])).to be_falsey
+    it 'delegates to Dor::Ability' do
+      expect(Deprecation).to receive(:warn)
+      expect(Dor::Ability).to receive(:can_view_metadata?)
+      @item.can_view_metadata?(['dor-administrator'])
     end
   end
+
   describe 'reapplyAdminPolicyObjectDefaults' do
     it 'should update rightsMetadata from the APO defaultObjectRights' do
       expect(@item.rightsMetadata.ng_xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length).to eq(1)
