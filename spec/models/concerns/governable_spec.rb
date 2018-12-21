@@ -269,42 +269,11 @@ describe Dor::Governable do
   end
 
   describe 'initiate_apo_workflow' do
-    it 'calls Processable.create_workflow without creating a datastream when the object is new' do
+    it 'calls CreateWorkflowService.create_workflow without creating a datastream when the object is new' do
+      expect(Deprecation).to receive(:warn)
       i = GovernableItem.new
-      expect(i).to receive(:create_workflow).with('accessionWF', false)
+      expect(Dor::CreateWorkflowService).to receive(:create_workflow).with(i, name: 'accessionWF', create_ds: false)
       i.initiate_apo_workflow('accessionWF')
-    end
-  end
-
-  describe '#default_workflow_lane' do
-    before :each do
-      @item = instantiate_fixture('druid:ab123cd4567', GovernableItem)
-    end
-    it "returns the default lane as defined in the object's APO" do
-      apo = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
-      allow(@item).to receive(:admin_policy_object) { apo }
-      expect(@item.default_workflow_lane).to eq 'fast'
-    end
-    it "returns the value 'default' if the object does not have an APO" do
-      allow(@item).to receive(:admin_policy_object) { nil }
-      expect(@item.default_workflow_lane).to eq 'default'
-    end
-    it "returns the value 'default' if the object's APO does not have a default lane defined" do
-      apo = instantiate_fixture('druid:zt570tx3016', Dor::AdminPolicyObject)
-      allow(@item).to receive(:admin_policy_object) { apo }
-      expect(@item.default_workflow_lane).to eq 'default'
-    end
-    it "returns the value 'default' if the object's APO does not have administrativeMetadata" do
-      apo = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
-      allow(@item).to receive(:admin_policy_object) { apo }
-      allow(apo.datastreams).to receive(:[]).with('administrativeMetadata').and_return(nil)
-      expect(@item.default_workflow_lane).to eq 'default'
-    end
-    it "returns the value 'default' for a newly created object" do
-      apo  = instantiate_fixture('druid:zt570tx3016', Dor::AdminPolicyObject)
-      item = GovernableItem.new
-      item.admin_policy_object = apo
-      expect(item.default_workflow_lane).to eq 'default'
     end
   end
 
@@ -323,13 +292,6 @@ describe Dor::Governable do
     end
   end
 
-  describe 'initiate_apo_workflow' do
-    it 'calls Processable.create_workflow without creating a datastream when the object is new' do
-      i = GovernableItem.new
-      expect(i).to receive(:create_workflow).with('accessionWF', false)
-      i.initiate_apo_workflow('accessionWF')
-    end
-  end
   describe 'can_manage_item?' do
     it 'should match a group that has rights' do
       expect(@item.can_manage_item?(['dor-administrator'])).to be_truthy

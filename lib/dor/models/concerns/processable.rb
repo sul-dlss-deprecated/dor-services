@@ -130,12 +130,9 @@ module Dor
     # @param [Boolean] create_ds create a 'workflows' datastream in Fedora for the object
     # @param [Integer] priority the workflow's priority level
     def create_workflow(name, create_ds = true, priority = 0)
-      priority = workflows.current_priority if priority == 0
-      opts = { create_ds: create_ds, lane_id: default_workflow_lane }
-      opts[:priority] = priority if priority > 0
-      Dor::Config.workflow.client.create_workflow(Dor::WorkflowObject.initial_repo(name), pid, name, Dor::WorkflowObject.initial_workflow(name), opts)
-      workflows.content(true) # refresh the copy of the workflows datastream
+      CreateWorkflowService.create_workflow(self, name: name, create_ds: create_ds, priority: priority)
     end
+    deprecation_deprecate create_workflow: 'Use CreateWorkflowService.create_workflow'
 
     def initialize_workflow(name, create_ds = true, priority = 0)
       warn 'WARNING: initialize_workflow is deprecated, use create_workflow instead'

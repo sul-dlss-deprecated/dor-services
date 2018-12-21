@@ -160,6 +160,7 @@ module Dor
     autoload :DigitalStacksService
     autoload :SdrIngestService
     autoload :CleanupService
+    autoload :CreateWorkflowService
     autoload :ProvenanceMetadataService
     autoload :TechnicalMetadataService
     autoload :FileMetadataMergeService
@@ -171,12 +172,12 @@ module Dor
     autoload :PublicDescMetadataService
     autoload :PublicXmlService
     autoload :PublishMetadataService
+    autoload :TagService
     autoload :ThumbnailService
     autoload :Ontology
     autoload :CreativeCommonsLicenseService
     autoload :OpenDataLicenseService
     autoload :VersionService
-    autoload :TagService
   end
 
   # Workflow Classes

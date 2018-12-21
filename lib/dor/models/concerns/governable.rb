@@ -11,23 +11,9 @@ module Dor
     end
 
     def initiate_apo_workflow(name)
-      create_workflow(name, !new_record?)
+      CreateWorkflowService.create_workflow(self, name: name, create_ds: !new_record?)
     end
-
-    # Returns the default lane_id from the item's APO.  Will return 'default' if the item does not have
-    #   and APO, or if the APO does not have a default_lane
-    # @return [String] the lane id
-    def default_workflow_lane
-      return 'default' if admin_policy_object.nil? # TODO: log warning?
-
-      admin_md = admin_policy_object.datastreams['administrativeMetadata']
-      return 'default' unless admin_md.respond_to?(:default_workflow_lane) # Some APOs don't have this datastream
-
-      lane = admin_md.default_workflow_lane
-      return 'default' if lane.blank?
-
-      lane
-    end
+    deprecation_deprecate initiate_apo_workflow: 'Use Dor::CreateWorkflowService.create_workflow instead'
 
     def reset_to_apo_default
       rightsMetadata.content = admin_policy_object.rightsMetadata.ng_xml
