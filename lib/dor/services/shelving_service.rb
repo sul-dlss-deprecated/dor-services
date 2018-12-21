@@ -11,10 +11,6 @@ module Dor
       @work = work
     end
 
-    private
-
-    attr_reader :work
-
     def shelve
       # retrieve the differences between the current contentMetadata and the previously ingested version
       diff = shelve_diff
@@ -30,6 +26,10 @@ module Dor
       DigitalStacksService.rename_in_stacks(stacks_object_pathname, diff)
       DigitalStacksService.shelve_to_stacks(workspace_content_pathname, stacks_object_pathname, diff)
     end
+
+    private
+
+    attr_reader :work
 
     # retrieve the differences between the current contentMetadata and the previously ingested version
     # (filtering to select only the files that should be shelved to stacks)
