@@ -14,25 +14,31 @@ module Dor
 
     # Appends contentMetadata file resources from the source objects to this object
     def publish
-      if world_discoverable?
-        dc_xml = item.generate_dublin_core.to_xml(&:no_declaration)
-        transfer_to_document_store(dc_xml, 'dc')
-        %w(identityMetadata contentMetadata rightsMetadata).each do |stream|
-          transfer_to_document_store(item.datastreams[stream].content.to_s, stream) if item.datastreams[stream]
-        end
-        transfer_to_document_store(item.public_xml, 'public')
-        transfer_to_document_store(item.generate_public_desc_md, 'mods')
-        publish_notify_on_success
-      else
-        # Clear out the document cache for this item
-        purl_druid.prune!
-        publish_delete_on_success
-      end
+      return unpublish unless world_discoverable?
+
+      transfer_metadata
+      publish_notify_on_success
     end
 
     private
 
     attr_reader :item
+
+    def transfer_metadata
+      dc_xml = item.generate_dublin_core.to_xml(&:no_declaration)
+      transfer_to_document_store(dc_xml, 'dc')
+      %w(identityMetadata contentMetadata rightsMetadata).each do |stream|
+        transfer_to_document_store(item.datastreams[stream].content.to_s, stream) if item.datastreams[stream]
+      end
+      transfer_to_document_store(item.public_xml, 'public')
+      transfer_to_document_store(item.generate_public_desc_md, 'mods')
+    end
+
+    # Clear out the document cache for this item
+    def unpublish
+      purl_druid.prune!
+      publish_delete_on_success
+    end
 
     def world_discoverable?
       rights = item.rightsMetadata.ng_xml.clone.remove_namespaces!
