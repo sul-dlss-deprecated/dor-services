@@ -102,64 +102,6 @@ RSpec.describe Dor::PublishMetadataService do
       end
     end
 
-    context 'handles errors for externalFile references' do
-      it 'is missing resourceId and mimetype attributes' do
-        item.contentMetadata.content = <<-EOXML
-        <contentMetadata objectId="hj097bm8879" type="map">
-          <resource id="hj097bm8879_1" sequence="1" type="image">
-            <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478"/>
-            <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
-          </resource>
-        </contentMetadata>
-        EOXML
-
-        # generate publicObject XML and verify that the content metadata portion is invalid
-        expect { Nokogiri::XML(item.public_xml) }.to raise_error(ArgumentError)
-      end
-
-      it 'has blank resourceId attribute' do
-        item.contentMetadata.content = <<-EOXML
-        <contentMetadata objectId="hj097bm8879" type="map">
-          <resource id="hj097bm8879_1" sequence="1" type="image">
-            <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478" resourceId=" " mimetype="image/jp2"/>
-            <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
-          </resource>
-        </contentMetadata>
-        EOXML
-
-        # generate publicObject XML and verify that the content metadata portion is invalid
-        expect { Nokogiri::XML(item.public_xml) }.to raise_error(ArgumentError)
-      end
-
-      it 'has blank fileId attribute' do
-        item.contentMetadata.content = <<-EOXML
-        <contentMetadata objectId="hj097bm8879" type="map">
-          <resource id="hj097bm8879_1" sequence="1" type="image">
-            <externalFile fileId=" " objectId="druid:cg767mn6478" resourceId="cg767mn6478_1" mimetype="image/jp2"/>
-            <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
-          </resource>
-        </contentMetadata>
-        EOXML
-
-        # generate publicObject XML and verify that the content metadata portion is invalid
-        expect { Nokogiri::XML(item.public_xml) }.to raise_error(ArgumentError)
-      end
-
-      it 'has blank objectId attribute' do
-        item.contentMetadata.content = <<-EOXML
-        <contentMetadata objectId="hj097bm8879" type="map">
-          <resource id="hj097bm8879_1" sequence="1" type="image">
-            <externalFile fileId="2542A.jp2" objectId=" " resourceId="cg767mn6478_1" mimetype="image/jp2"/>
-            <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
-          </resource>
-        </contentMetadata>
-        EOXML
-
-        # generate publicObject XML and verify that the content metadata portion is invalid
-        expect { Nokogiri::XML(item.public_xml) }.to raise_error(ArgumentError)
-      end
-    end
-
     context 'copies to the document cache' do
       let(:mods) do
         <<-EOXML
