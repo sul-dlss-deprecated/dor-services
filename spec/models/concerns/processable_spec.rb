@@ -146,13 +146,11 @@ RSpec.describe Dor::Processable do
   end
 
   describe '#create_workflow' do
-    it "sets the lane_id option from the object's APO" do
-      apo  = instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject)
-      item = instantiate_fixture('druid:ab123cd4567', ProcessableWithApoItem)
-      allow(item).to receive(:admin_policy_object) { apo }
-      expect(Dor::WorkflowObject).to receive(:initial_workflow).and_return('<xml/>')
-      expect(Dor::WorkflowObject).to receive(:initial_repo).and_return('dor')
-      expect(Dor::Config.workflow.client).to receive(:create_workflow).with('dor', 'druid:ab123cd4567', 'accessionWF', '<xml/>', create_ds: true, lane_id: 'fast')
+    let(:item) { instantiate_fixture('druid:ab123cd4567', ProcessableWithApoItem) }
+
+    it 'delegates to CreateWorkflowService' do
+      expect(Deprecation).to receive(:warn)
+      expect(Dor::CreateWorkflowService).to receive(:create_workflow).with(item, name: 'accessionWF', create_ds: true, priority: 0)
       item.create_workflow('accessionWF')
     end
   end
