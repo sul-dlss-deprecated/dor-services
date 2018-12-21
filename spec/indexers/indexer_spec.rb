@@ -20,7 +20,7 @@ RSpec.describe Dor::CompositeIndexer do
   describe 'to_solr' do
     context 'with mods stuff' do
       before do
-        allow(obj).to receive(:milestones).and_return({})
+        allow_any_instance_of(Dor::StatusService).to receive(:milestones).and_return({})
         obj.datastreams['descMetadata'].content = read_fixture('bs646cd8717_mods.xml')
       end
       let(:doc) { indexer.new(resource: obj).to_solr }

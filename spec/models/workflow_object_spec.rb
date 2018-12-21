@@ -15,17 +15,18 @@ describe Dor::WorkflowObject do
     end
   end
 
+  # TODO: Move to the DataIndexer spec
   describe '#to_solr' do
     before(:each) { stub_config   }
     after(:each)  { unstub_config }
 
-    before :each do
+    before do
       @item = instantiate_fixture('druid:ab123cd4567', Dor::WorkflowObject)
       @item.workflowDefinition.content = '<workflow-def id="accessionWF"/>'
     end
 
     it 'indexes the workflow name' do
-      allow(@item).to receive(:milestones).and_return([])
+      allow_any_instance_of(Dor::StatusService).to receive(:milestones).and_return([])
       expect(@item.to_solr).to include 'workflow_name_ssim' => ['accessionWF']
     end
   end

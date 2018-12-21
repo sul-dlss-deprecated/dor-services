@@ -159,29 +159,6 @@ describe Dor::Governable do
     end
   end
 
-  describe '#to_solr' do
-    let(:indexer) do
-      Dor::CompositeIndexer.new(
-        Dor::DataIndexer,
-        Dor::DescribableIndexer,
-        Dor::IdentifiableIndexer,
-        Dor::ProcessableIndexer
-      ).new(resource: @item)
-    end
-    let(:solr_doc) { indexer.to_solr }
-    before do
-      allow(@item).to receive(:milestones).and_return({})
-    end
-    it 'includes a rights facet' do
-      @item.set_read_rights('world')
-      expect(solr_doc).to match a_hash_including('rights_ssim' => ['World'], :id => @item.pid)
-    end
-    it 'should not error if there is nothing in the datastream' do
-      allow(@item).to receive(:rightsMetadata).and_return(ActiveFedora::OmDatastream.new)
-      expect(solr_doc).not_to include('rights_facet')
-    end
-  end
-
   describe 'add_collection' do
     it 'should add a collection' do
       @item.add_collection('druid:oo201oo0002')

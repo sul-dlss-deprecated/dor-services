@@ -27,12 +27,14 @@ RSpec.describe Dor::EditableIndexer do
 
   describe '#to_solr' do
     let(:indexer) do
-      Dor::AdminPolicyObject.resource_indexer.new(resource: obj)
+      Dor::CompositeIndexer.new(
+        Dor::DataIndexer,
+        described_class
+      ).new(resource: obj)
     end
     let(:doc) { indexer.to_solr }
 
     before do
-      allow(obj).to receive(:milestones).and_return({})
       allow(obj).to receive(:agreement).and_return('druid:agreement')
       allow(obj).to receive(:agreement_object).and_return(true)
     end
