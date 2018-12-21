@@ -53,6 +53,14 @@ module Dor
       end.doc
     end
 
+    def mods_title
+      term_values(:title_info, :main_title).first
+    end
+
+    def mods_title=(val)
+      update_values(%i[title_info main_title] => val)
+    end
+
     # maintain AF < 8 indexing behavior
     def prefix
       ''
