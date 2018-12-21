@@ -11,35 +11,56 @@ module Dor
 
     # @return [Hash] the partial solr document for processable concerns
     def to_solr
-      solr_doc = {}
-      sortable_milestones = {}
-      current_version = '1'
-      begin
-        current_version = resource.versionMetadata.current_version_id
-      rescue StandardError
+      {}.tap do |solr_doc|
+        add_versions(solr_doc)
+        add_milestones(solr_doc, resource.milestones)
+        solr_doc['modified_latest_dttsi'] = resource.modified_date.to_datetime.utc.strftime('%FT%TZ')
+        add_solr_value(solr_doc, 'rights', resource.rights, :string, [:symbol]) if resource.respond_to? :rights
+        add_status(solr_doc)
       end
-      current_version_num = current_version.to_i
+    end
 
-      if resource.respond_to?('versionMetadata')
-        # add an entry with version id, tag and description for each version
-        while current_version_num > 0
-          new_val = "#{current_version_num};#{resource.versionMetadata.tag_for_version(current_version_num.to_s)};#{resource.versionMetadata.description_for_version(current_version_num.to_s)}"
-          add_solr_value(solr_doc, 'versions', new_val, :string, [:displayable])
-          current_version_num -= 1
-        end
-      end
+    private
 
-      resource.milestones.each do |milestone|
+    def current_version
+      @current_version ||= begin
+                             resource.versionMetadata.current_version_id
+                           rescue StandardError
+                             '1'
+                           end
+    end
+
+    def add_status(solr_doc)
+      solr_doc['status_ssi'] = resource.status # status is singular (i.e. the current one)
+      status_info_hash = resource.status_info
+      status_code = status_info_hash[:status_code]
+      add_solr_value(solr_doc, 'processing_status_text', simplified_status_code_disp_txt(status_code), :string, [:stored_sortable])
+      solr_doc['processing_status_code_isi'] = status_code
+    end
+
+    def add_milestones(solr_doc, milestones)
+      milestones.each do |milestone|
         timestamp = milestone[:at].utc.xmlschema
-        sortable_milestones[milestone[:milestone]] ||= []
-        sortable_milestones[milestone[:milestone]] << timestamp
         milestone[:version] ||= current_version
         solr_doc['lifecycle_ssim'] ||= []
         solr_doc['lifecycle_ssim'] << milestone[:milestone]
         add_solr_value(solr_doc, 'lifecycle', "#{milestone[:milestone]}:#{timestamp};#{milestone[:version]}", :symbol)
       end
 
-      sortable_milestones.each do |milestone, unordered_dates|
+      add_sortable_milestones(solr_doc, milestones)
+    end
+
+    def sortable_milestones(milestones)
+      sortable = {}
+      milestones.each do |milestone|
+        sortable[milestone[:milestone]] ||= []
+        sortable[milestone[:milestone]] << milestone[:at].utc.xmlschema
+      end
+      sortable
+    end
+
+    def add_sortable_milestones(solr_doc, milestones)
+      sortable_milestones(milestones).each do |milestone, unordered_dates|
         dates = unordered_dates.sort
         # create the published_dttsi and published_day fields and the like
         dates.each do |date|
@@ -50,17 +71,20 @@ module Dor
         solr_doc["#{milestone}_earliest_dttsi"] = dates.first
         solr_doc["#{milestone}_latest_dttsi"] = dates.last
       end
-      solr_doc['status_ssi'] = resource.status # status is singular (i.e. the current one)
-      solr_doc['current_version_isi'] = current_version.to_i
-      solr_doc['modified_latest_dttsi'] = resource.modified_date.to_datetime.utc.strftime('%FT%TZ')
-      add_solr_value(solr_doc, 'rights', resource.rights, :string, [:symbol]) if resource.respond_to? :rights
+    end
 
-      status_info_hash = resource.status_info
-      status_code = status_info_hash[:status_code]
-      add_solr_value(solr_doc, 'processing_status_text', simplified_status_code_disp_txt(status_code), :string, [:stored_sortable])
-      solr_doc['processing_status_code_isi'] = status_code # no _isi in Solrizer's default descriptors
+    def add_versions(solr_doc)
+      current_version_num = current_version.to_i
+      solr_doc['current_version_isi'] = current_version_num
 
-      solr_doc
+      return unless resource.respond_to?('versionMetadata')
+
+      # add an entry with version id, tag and description for each version
+      while current_version_num > 0
+        new_val = "#{current_version_num};#{resource.versionMetadata.tag_for_version(current_version_num.to_s)};#{resource.versionMetadata.description_for_version(current_version_num.to_s)}"
+        add_solr_value(solr_doc, 'versions', new_val, :string, [:displayable])
+        current_version_num -= 1
+      end
     end
 
     # @return [String] text translation of the status code, minus any trailing parenthetical explanation
