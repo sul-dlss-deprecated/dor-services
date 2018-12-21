@@ -74,12 +74,12 @@ RSpec.describe Dor::ReleaseTagService, :vcr do
       end
     end
 
-    describe '.combine_two_release_tag_hashes' do
+    describe '#combine_two_release_tag_hashes' do
       it 'combines two hashes of tags without overwriting any data' do
         h_one = { 'Revs' => [dummy_tags[0]] }
         h_two = { 'Revs' => [dummy_tags[1]], 'FRDA' => dummy_tags }
         expected_result = { 'Revs' => dummy_tags, 'FRDA' => dummy_tags }
-        expect(described_class.send(:combine_two_release_tag_hashes, h_one, h_two)).to eq(expected_result)
+        expect(releases.send(:combine_two_release_tag_hashes, h_one, h_two)).to eq(expected_result)
       end
     end
 

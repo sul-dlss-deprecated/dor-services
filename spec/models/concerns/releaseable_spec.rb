@@ -37,6 +37,13 @@ describe Dor::Releaseable, :vcr do
       expect(collection.released_for['Kurita']['release']).to be_truthy # we can still get the tags without going into an infinite loop
     end
 
+    it 'merges tags' do
+      item = instantiate_fixture('druid:vs298kg2555', Dor::Item)
+      collection = instantiate_fixture('druid:wz243gf4151', Dor::Item)
+      allow(item).to receive(:collections).and_return([collection]) # force it to return itself as a member
+      expect(item.released_for['Kurita']['release']).to be_truthy # we can still get the tags without going into an infinite loop
+    end
+
     # This test takes an object with a self tag that is older and opposite the tag on this object's collection and ensures the self tag still is the one that is used to decide release status
     it 'should use the self tag over the collection tag to determine if an item is released, even if the collection tag is newer' do
       skip 'VCR cassette recorded on only one (old) version of ActiveFedora.  Stub methods or record on both AF5 and AF6'

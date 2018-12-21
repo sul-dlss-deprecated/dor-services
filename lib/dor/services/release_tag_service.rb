@@ -52,7 +52,7 @@ module Dor
       item.collections.each do |collection|
         next if collection.id == item.id # recursive, so parents of parents are found, but we need to avoid an infinite loop if the collection references itself (i.e. bad data)
 
-        return_tags = Releases.combine_two_release_tag_hashes(return_tags, collection.releases.release_tags_for_item_and_all_governing_sets)
+        return_tags = combine_two_release_tag_hashes(return_tags, collection.releases.release_tags_for_item_and_all_governing_sets)
       end
       return_tags
     end
@@ -137,14 +137,13 @@ module Dor
     # @param hash_one [Hash] a hash of tags obtained via Dor::Item.release_tags or matching format
     # @param hash_two [Hash] a hash of tags obtained via Dor::Item.release_tags or matching format
     # @return [Hash] the combined hash with uniquiness enforced
-    def self.combine_two_release_tag_hashes(hash_one, hash_two)
+    def combine_two_release_tag_hashes(hash_one, hash_two)
       hash_two.keys.each do |key|
         hash_one[key] = hash_two[key] if hash_one[key].nil?
         hash_one[key] = (hash_one[key] + hash_two[key]).uniq unless hash_one[key].nil?
       end
       hash_one
     end
-    private_class_method :combine_two_release_tag_hashes
 
     # Take a hash of tags as obtained via Dor::Item.release_tags and returns the newest tag for each namespace
     # @param tags [Hash] a hash of tags obtained via Dor::Item.release_tags or matching format
