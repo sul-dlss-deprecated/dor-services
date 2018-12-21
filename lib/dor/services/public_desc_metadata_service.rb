@@ -16,14 +16,21 @@ module Dor
 
     # @return [String] Public descriptive medatada XML
     def to_xml(include_access_conditions: true)
-      add_collection_reference!
-      add_access_conditions! if include_access_conditions
-      add_constituent_relations!
-      strip_comments!
+      ng_xml(include_access_conditions: include_access_conditions).to_xml
+    end
 
-      new_doc = Nokogiri::XML(doc.to_xml, &:noblanks)
-      new_doc.encoding = 'UTF-8'
-      new_doc.to_xml
+    # @return [Nokogiri::XML::Document]
+    def ng_xml(include_access_conditions: true)
+      @ng_xml ||= begin
+        add_collection_reference!
+        add_access_conditions! if include_access_conditions
+        add_constituent_relations!
+        strip_comments!
+
+        new_doc = Nokogiri::XML(doc.to_xml, &:noblanks)
+        new_doc.encoding = 'UTF-8'
+        new_doc
+      end
     end
 
     private

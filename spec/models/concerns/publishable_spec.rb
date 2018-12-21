@@ -84,7 +84,7 @@ describe Dor::Publishable do
     @item.descMetadata.content    = @mods
     @item.rightsMetadata.content  = @rights
     @item.rels_ext.content        = @rels
-    allow(@item).to receive(:generate_public_desc_md).and_return(@mods) # calls Item.find and not needed in general tests
+    allow_any_instance_of(Dor::PublicDescMetadataService).to receive(:ng_xml).and_return(Nokogiri::XML(@mods)) # calls Item.find and not needed in general tests
     allow(OpenURI).to receive(:open_uri).with('https://purl-test.stanford.edu/ab123cd4567.xml').and_return('<xml/>')
   end
 
@@ -326,29 +326,6 @@ describe Dor::Publishable do
         XML
         p_xml = Nokogiri::XML(@item.public_xml)
         expect(p_xml.at_xpath('/publicObject/thumb').to_xml).to be_equivalent_to('<thumb>ab123cd4567/ab123cd4567_05_0002.jp2</thumb>')
-      end
-
-      it 'should expand isMemberOfCollection and isConstituentOf into correct MODS' do
-        allow(@item).to receive(:generate_public_desc_md).and_call_original
-        # load up collection and constituent parent items from fixture data
-        expect(Dor).to receive(:find).with('druid:xh235dd9059').and_return(instantiate_fixture('druid:xh235dd9059', DescribableItem))
-        expect(Dor).to receive(:find).with('druid:hj097bm8879').and_return(instantiate_fixture('druid:hj097bm8879', DescribableItem))
-
-        # test that we have 2 expansions
-        doc = Nokogiri::XML(@item.generate_public_desc_md)
-        expect(doc.xpath('//mods:mods/mods:relatedItem[@type="host"]', 'mods' => 'http://www.loc.gov/mods/v3').size).to eq(2)
-
-        # test the validity of the collection expansion
-        xpath_expr = '//mods:mods/mods:relatedItem[@type="host" and not(@displayLabel)]/mods:titleInfo/mods:title'
-        expect(doc.xpath(xpath_expr, 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to eq('David Rumsey Map Collection at Stanford University Libraries')
-        xpath_expr = '//mods:mods/mods:relatedItem[@type="host" and not(@displayLabel)]/mods:location/mods:url'
-        expect(doc.xpath(xpath_expr, 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to match(/^https?:\/\/purl.*\.stanford\.edu\/xh235dd9059$/)
-
-        # test the validity of the constituent expansion
-        xpath_expr = '//mods:mods/mods:relatedItem[@type="host" and @displayLabel="Appears in"]/mods:titleInfo/mods:title'
-        expect(doc.xpath(xpath_expr, 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to start_with("Carey's American Atlas: Containing Twenty Maps")
-        xpath_expr = '//mods:mods/mods:relatedItem[@type="host" and @displayLabel="Appears in"]/mods:location/mods:url'
-        expect(doc.xpath(xpath_expr, 'mods' => 'http://www.loc.gov/mods/v3').first.text.strip).to match(/^http:\/\/purl.*\.stanford\.edu\/hj097bm8879$/)
       end
 
       it 'includes releaseData element from release tags' do

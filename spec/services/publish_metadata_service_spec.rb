@@ -171,7 +171,10 @@ RSpec.describe Dor::PublishMetadataService do
           </mods:mods>
         EOXML
       end
-      before { allow(item).to receive(:generate_public_desc_md).and_return(mods) }
+      before do
+        allow_any_instance_of(Dor::PublicDescMetadataService).to receive(:to_xml).and_return(mods)
+        allow_any_instance_of(Dor::PublicDescMetadataService).to receive(:ng_xml).and_return(Nokogiri::XML(mods))
+      end
 
       context 'with an item' do
         before do
