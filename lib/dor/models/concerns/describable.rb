@@ -3,6 +3,8 @@
 module Dor
   module Describable
     extend ActiveSupport::Concern
+    extend Deprecation
+    self.deprecation_horizon = 'dor-services version 7.0.0'
 
     MODS_TO_DC_XSLT = Nokogiri::XSLT(File.new(File.expand_path(File.dirname(__FILE__) + '/mods2dc.xslt')))
     XMLNS_OAI_DC = 'http://www.openarchives.org/OAI/2.0/oai_dc/'
@@ -50,7 +52,7 @@ module Dor
     # @return [Nokogiri::Doc] the DublinCore XML document object
     def generate_dublin_core(include_collection_as_related_item: true)
       desc_md = if include_collection_as_related_item
-                  Nokogiri::XML(generate_public_desc_md(include_access_conditions: false))
+                  PublicDescMetadataService.new(self).ng_xml(include_access_conditions: false)
                 else
                   descMetadata.ng_xml
                 end
@@ -67,6 +69,7 @@ module Dor
     def generate_public_desc_md(**options)
       PublicDescMetadataService.new(self).to_xml(**options)
     end
+    deprecation_deprecate generate_public_desc_md: 'Use PublicDescMetadataService#to_xml instead'
 
     # @param [Boolean] force Overwrite existing XML
     # @return [String] descMetadata.content XML
