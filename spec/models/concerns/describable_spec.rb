@@ -63,6 +63,7 @@ describe Dor::Describable do
 
   describe '#generate_public_desc_md' do
     it 'calls the PublicDescMetadataService' do
+      expect(Deprecation).to receive(:warn)
       expect(Dor::PublicDescMetadataService).to receive(:new).with(@item).and_return(instance_double(Dor::PublicDescMetadataService, to_xml: '<xml />'))
       expect(@item.generate_public_desc_md).to eq '<xml />'
     end
