@@ -3,8 +3,8 @@
 require 'spec_helper'
 require 'fileutils'
 
-describe Dor::SdrIngestService do
-  before(:each) do
+RSpec.describe Dor::SdrIngestService do
+  before do
     @fixtures = fixtures = Pathname(File.dirname(__FILE__)).join('../fixtures')
     Dor::Config.push! do
       sdr.local_workspace_root fixtures.join('workspace').to_s
@@ -18,7 +18,7 @@ describe Dor::SdrIngestService do
     @agreement_id = 'druid:xx098yy7654'
   end
 
-  after(:each) do
+  after do
     Dor::Config.pop!
     @export_dir.rmtree if @export_dir.exist? && @export_dir.basename.to_s == 'export'
   end
@@ -35,7 +35,7 @@ describe Dor::SdrIngestService do
   end
 
   describe 'get_datastream_content' do
-    before :each do
+    before do
       @ds_name = 'myMetadata'
       @mock_item = double('item')
       @mock_datastream = double('datastream')
@@ -62,10 +62,10 @@ describe Dor::SdrIngestService do
   end
 
   describe 'transfer' do
-    before :each do
+    before do
       druid = 'druid:dd116zh0343'
       @dor_item = double('dor_item')
-      expect(@dor_item).to receive(:create_workflow).with('preservationIngestWF', false)
+      expect(Dor::CreateWorkflowService).to receive(:create_workflow).with(@dor_item, name: 'preservationIngestWF', create_ds: false)
       allow(@dor_item).to receive(:pid).and_return(druid)
       signature_catalog = Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
       @metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')

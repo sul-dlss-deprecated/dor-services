@@ -37,7 +37,7 @@ module Dor
       bagger.create_tagfiles
       verify_bag_structure(bag_dir)
       # start SDR preservation workflow (but do not create the workflows datastream)
-      dor_item.create_workflow('preservationIngestWF', false)
+      CreateWorkflowService.create_workflow(dor_item, name: 'preservationIngestWF', create_ds: false)
     rescue Exception => e
       raise Dor::Exception, "Error exporting new object version to bag: #{e.message}"
     end

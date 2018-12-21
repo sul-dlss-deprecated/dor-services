@@ -112,7 +112,7 @@ module Dor
         workflow_priority = params[:workflow_priority] ? params[:workflow_priority].to_i : 0
 
         seed_datastreams(Array(params[:seed_datastream]), new_item)
-        Array(params[:initiate_workflow]).each { |workflow_id| new_item.create_workflow(workflow_id, !new_item.new_record?, workflow_priority) }
+        initiate_workflow(workflows: Array(params[:initiate_workflow]), item: new_item, priority: workflow_priority)
 
         new_item.class.ancestors.select { |x| x.respond_to?(:to_class_uri) && x != ActiveFedora::Base }.each do |parent_class|
           new_item.add_relationship(:has_model, parent_class.to_class_uri)
@@ -176,6 +176,14 @@ module Dor
       def seed_datastreams(names, item)
         names.each do |datastream_name|
           item.build_datastream(datastream_name)
+        end
+      end
+
+      def initiate_workflow(workflows:, item:, priority:)
+        workflows.each do |workflow_id|
+          Dor::CreateWorkflowService.create_workflow(item, name: workflow_id,
+                                                           create_ds: !item.new_record?,
+                                                           priority: priority)
         end
       end
 

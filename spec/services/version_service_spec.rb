@@ -32,7 +32,7 @@ RSpec.describe Dor::VersionService do
         allow(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'opened').and_return(nil)
         allow(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'submitted').and_return(nil)
         allow(Sdr::Client).to receive(:current_version).and_return(1)
-        allow(obj).to receive(:create_workflow).with('versioningWF')
+        allow(Dor::CreateWorkflowService).to receive(:create_workflow).with(obj, name: 'versioningWF')
         allow(obj).to receive(:new_record?).and_return(false)
         allow(vmd_ds).to receive(:save)
       end
@@ -42,7 +42,7 @@ RSpec.describe Dor::VersionService do
         expect(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'opened').and_return(nil)
         expect(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'submitted').and_return(nil)
         expect(Sdr::Client).to receive(:current_version).and_return(1)
-        expect(obj).to receive(:create_workflow).with('versioningWF')
+        expect(Dor::CreateWorkflowService).to receive(:create_workflow).with(obj, name: 'versioningWF')
         expect(obj).to receive(:new_record?).and_return(false)
         expect(vmd_ds).to receive(:save)
         expect(vmd_ds.ng_xml.to_xml).to match(/Initial Version/)
