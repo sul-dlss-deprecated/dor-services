@@ -183,7 +183,7 @@ module Dor
       contentMetadata.content = '<contentMetadata/>'
       # eliminate rightsMetadata. set it to <rightsMetadata/> ?
       rightsMetadata.content = '<rightsMetadata/>'
-      add_tag "Decommissioned : #{tag}"
+      TagService.add self, "Decommissioned : #{tag}"
     end
 
     # TODO: Move to Dor-Utils.
