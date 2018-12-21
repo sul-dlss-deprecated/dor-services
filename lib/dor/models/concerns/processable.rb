@@ -45,6 +45,7 @@ module Dor
     def cleanup
       CleanupService.cleanup(self)
     end
+    deprecation_deprecate cleanup: 'Use CleanupService.cleanup instead'
 
     # @return [Hash{Symbol => Object}] including :current_version, :status_code and :status_time
     def status_info
