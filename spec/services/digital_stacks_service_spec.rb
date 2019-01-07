@@ -244,7 +244,7 @@ describe 'file operations' do
   end
 end
 
-describe 'deprecated Dor::DigitalStacksService' do
+describe '.prune_stacks_dir' do
   let(:stacks_root) { Dir.mktmpdir }
 
   before do
@@ -256,15 +256,13 @@ describe 'deprecated Dor::DigitalStacksService' do
     Dor::Config.pop!
   end
 
-  describe '.prune_stacks_dir' do
-    it 'prunes the stacks directory' do
-      dr = DruidTools::StacksDruid.new 'druid:aa123bb4567', stacks_root
-      item_root = dr.path(nil, true)
-      File.open(File.join(item_root, 'somefile'), 'w') { |f| f.write 'junk' }
-      Dor::DigitalStacksService.prune_stacks_dir 'druid:aa123bb4567'
-      item_pathname = Pathname item_root
-      expect(File).to_not exist(item_pathname)
-      expect(File).to_not exist(item_pathname.parent)
-    end
+  it 'prunes the stacks directory' do
+    dr = DruidTools::StacksDruid.new 'druid:aa123bb4567', stacks_root
+    item_root = dr.path(nil, true)
+    File.open(File.join(item_root, 'somefile'), 'w') { |f| f.write 'junk' }
+    Dor::DigitalStacksService.prune_stacks_dir 'druid:aa123bb4567'
+    item_pathname = Pathname item_root
+    expect(File).to_not exist(item_pathname)
+    expect(File).to_not exist(item_pathname.parent)
   end
 end
