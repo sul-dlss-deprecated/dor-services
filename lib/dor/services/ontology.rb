@@ -5,31 +5,46 @@ module Dor
     extend Deprecation
     self.deprecation_horizon = 'dor-services version 7.0.0'
 
-    def self.[](key)
-      @data[key]
-    end
-    deprecation_deprecate :[] => 'Use property() instead'
+    class << self
+      def [](key)
+        Deprecation.warn(self, "#{self}.[] is deprecated and will be removed in #{Dor::Ontology.deprecation_horizon}. Use `property' instead.")
+        @data[key]
+      end
 
-    def self.key?(key)
-      @data.key?(key)
-    end
+      def key?(key)
+        @data.key?(key)
+      end
 
-    def self.include?(key)
-      @data.include?(key)
-    end
-    deprecation_deprecate include?: 'Use key? instead'
+      def include?(key)
+        Deprecation.warn(self, "#{self}.include? is deprecated and will be removed in #{Dor::Ontology.deprecation_horizon}. Use `key?' instead.")
+        @data.include?(key)
+      end
 
-    def self.property(key)
-      Term.new(@data[key])
+      def map(&block)
+        Deprecation.warn(self, "#{self}.map is deprecated and will be removed in #{Dor::Ontology.deprecation_horizon}. Use `options' instead.")
+        @data.map(&block)
+      end
+
+      # Yields each term to the block provided
+      def options
+        @data.map do |k, _v|
+          yield property(k)
+        end
+      end
+
+      def property(key)
+        Term.new(@data[key])
+      end
     end
 
     class Term
-      def initialize(uri:, human_readable:)
+      def initialize(uri:, human_readable:, deprecation_warning: nil)
         @label = human_readable
         @uri = uri
+        @deprecation_warning = deprecation_warning
       end
 
-      attr_reader :label, :uri
+      attr_reader :label, :uri, :deprecation_warning
     end
   end
 end
