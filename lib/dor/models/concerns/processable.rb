@@ -16,6 +16,8 @@ module Dor
                    autocreate: true
     end
 
+    STEPS = ActiveSupport::Deprecation::DeprecatedConstantProxy.new('STEPS', 'Dor::StatusService::STEPS')
+
     # The ContentMetadata and DescMetadata robot are allowed to build the
     # datastream by reading a file from the /dor/workspace that matches the
     # datastream name. This allows assembly or pre-assembly to prebuild the
