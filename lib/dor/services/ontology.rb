@@ -33,18 +33,19 @@ module Dor
       end
 
       def property(key)
-        Term.new(@data[key])
+        Term.new(@data[key].merge(key: key))
       end
     end
 
     class Term
-      def initialize(uri:, human_readable:, deprecation_warning: nil)
+      def initialize(uri:, human_readable:, key:, deprecation_warning: nil)
         @label = human_readable
         @uri = uri
         @deprecation_warning = deprecation_warning
+        @key = key
       end
 
-      attr_reader :label, :uri, :deprecation_warning
+      attr_reader :label, :uri, :deprecation_warning, :key
     end
   end
 end
