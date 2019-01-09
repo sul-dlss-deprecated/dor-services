@@ -69,7 +69,7 @@ module Dor
 
     # Call dor services app to have it publish the metadata
     def publish_metadata_remotely
-      Dor::Services::Client.publish(object: pid)
+      Dor::Services::Client.object(pid).publish
     end
     deprecation_deprecate publish_metadata_remotely: 'use Dor::Services::Client.publish instead'
   end
