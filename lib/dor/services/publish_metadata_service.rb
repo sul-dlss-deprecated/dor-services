@@ -30,7 +30,7 @@ module Dor
         transfer_to_document_store(item.datastreams[stream].content.to_s, stream) if item.datastreams[stream]
       end
       transfer_to_document_store(PublicXmlService.new(item).to_xml, 'public')
-      transfer_to_document_store(PublicDescMetadataService.new(self).to_xml, 'mods')
+      transfer_to_document_store(PublicDescMetadataService.new(item).to_xml, 'mods')
     end
 
     # Clear out the document cache for this item

@@ -113,9 +113,14 @@ RSpec.describe Dor::PublishMetadataService do
           </mods:mods>
         EOXML
       end
+      let(:md_service) { instance_double(Dor::PublicDescMetadataService, to_xml: mods, ng_xml: Nokogiri::XML(mods)) }
+      let(:dc_service) { instance_double(Dor::DublinCoreService, ng_xml: Nokogiri::XML('<oai_dc:dc></oai_dc:dc>')) }
+      let(:public_service) { instance_double(Dor::PublicXmlService, to_xml: '<publicObject></publicObject>') }
+
       before do
-        allow_any_instance_of(Dor::PublicDescMetadataService).to receive(:to_xml).and_return(mods)
-        allow_any_instance_of(Dor::PublicDescMetadataService).to receive(:ng_xml).and_return(Nokogiri::XML(mods))
+        allow(Dor::DublinCoreService).to receive(:new).and_return(dc_service)
+        allow(Dor::PublicXmlService).to receive(:new).and_return(public_service)
+        allow(Dor::PublicDescMetadataService).to receive(:new).and_return(md_service)
       end
 
       context 'with an item' do
@@ -128,10 +133,15 @@ RSpec.describe Dor::PublishMetadataService do
           expect_any_instance_of(Dor::PublishMetadataService).to receive(:transfer_to_document_store).with(/<mods:mods/, 'mods')
           expect_any_instance_of(Dor::PublishMetadataService).to receive(:publish_notify_on_success).with(no_args)
         end
+
         it 'identityMetadta, contentMetadata, rightsMetadata, generated dublin core, and public xml' do
           item.rightsMetadata.content = "<rightsMetadata><access type='discover'><machine><world/></machine></access></rightsMetadata>"
           service.publish
+          expect(Dor::DublinCoreService).to have_received(:new).with(item)
+          expect(Dor::PublicXmlService).to have_received(:new).with(item)
+          expect(Dor::PublicDescMetadataService).to have_received(:new).with(item)
         end
+
         it 'even when rightsMetadata uses xml namespaces' do
           item.rightsMetadata.content = %q(<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1">
             <access type='discover'><machine><world/></machine></access></rightsMetadata>)
