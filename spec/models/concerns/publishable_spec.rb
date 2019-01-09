@@ -181,10 +181,12 @@ RSpec.describe Dor::Publishable do
     before do
       Dor::Config.push! { |config| config.dor_services.url 'https://lyberservices-test.stanford.edu/dor' }
       stub_request(:post, 'https://lyberservices-test.stanford.edu/dor/v1/objects/druid:ab123cd4567/publish')
+      allow(Deprecation).to receive(:warn)
     end
+
     it 'hits the correct url' do
-      expect(Deprecation).to receive(:warn)
       expect(item.publish_metadata_remotely).to be true
+      expect(Deprecation).to have_received(:warn)
     end
   end
 end
