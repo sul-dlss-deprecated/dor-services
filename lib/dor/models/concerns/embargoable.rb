@@ -63,6 +63,10 @@ module Dor
       events.add_event('embargo', release_agent, '20% Visibility Embargo released')
     end
 
+    def embargoed?
+      embargoMetadata.status == 'embargoed'
+    end
+
     def update_embargo(new_date)
       raise ArgumentError, 'You cannot change the embargo date of an item that is not embargoed.' if embargoMetadata.status != 'embargoed'
       raise ArgumentError, 'You cannot set the embargo date to a past date.' if new_date.past?
