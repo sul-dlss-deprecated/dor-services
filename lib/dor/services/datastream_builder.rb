@@ -22,10 +22,12 @@ module Dor
       @datastream = datastream
       @force = force
       @required = required
-      @filename = find_metadata_file
+      raise 'Datastream required, but none provided' if required && !datastream
     end
 
     def build
+      return unless datastream
+
       # See if datastream exists as a file and if the file's timestamp is newer than datastream's timestamp.
       if file_newer_than_datastream?
         create_from_file(filename)
@@ -38,7 +40,11 @@ module Dor
 
     private
 
-    attr_reader :datastream, :force, :object, :required, :filename
+    attr_reader :datastream, :force, :object, :required
+
+    def filename
+      @filename ||= find_metadata_file
+    end
 
     # @return [String] datastream name (dsid)
     def datastream_name
