@@ -78,8 +78,9 @@ describe Dor::Embargoable do
       embargo_item
     end
 
-    it 'sets the embargo status to released' do
+    it 'sets the embargo status to released and indicates it is not embargoed' do
       expect(embargo_ds.status).to eq('released')
+      expect(embargo_item.embargoed?).to be_falsey
     end
 
     context 'rightsMetadata modifications' do
@@ -164,6 +165,10 @@ describe Dor::Embargoable do
       allow_any_instance_of(ActiveFedora::OmDatastream).to receive(:save).and_return(true)
       embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }
       embargo_item
+    end
+
+    it 'indicates the item is embargoed' do
+      expect(embargo_item.embargoed?).to be_truthy
     end
 
     it 'updates embargo date' do
