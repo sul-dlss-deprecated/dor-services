@@ -111,32 +111,36 @@ RSpec.describe Dor::ReleaseTagService, :vcr do
     end
   end
 
-  describe '#release_nodes' do
-    subject(:release_nodes) { releases.send(:release_nodes) }
+  describe '#release_tags' do
+    subject(:release_tags) { releases.release_tags }
 
-    context 'for an item that does not have any release nodes' do
+    context 'for an item that does not have any release tags' do
       let(:item) { instantiate_fixture('druid:qv648vd4392', Dor::Item) }
 
       it { is_expected.to eq({}) }
     end
 
     it 'returns the releases for an item that has release tags' do
-      exp_result = { 'Revs' => [
-        { 'tag' => 'true', 'what' => 'collection', 'when' => Time.parse('2015-01-06 23:33:47Z'), 'who' => 'carrickr', 'release' => true },
-        { 'tag' => 'true', 'what' => 'self', 'when' => Time.parse('2015-01-06 23:33:54Z'), 'who' => 'carrickr', 'release' => true },
-        { 'tag' => 'Project : Fitch : Batch2', 'what' => 'self', 'when' => Time.parse('2015-01-06 23:40:01Z'), 'who' => 'carrickr', 'release' => false }
-      ] }
-      expect(release_nodes).to eq exp_result
+      exp_result = {
+        'Revs' => [
+          { 'tag' => 'true', 'what' => 'collection', 'when' => Time.parse('2015-01-06 23:33:47Z'), 'who' => 'carrickr', 'release' => true },
+          { 'tag' => 'true', 'what' => 'self', 'when' => Time.parse('2015-01-06 23:33:54Z'), 'who' => 'carrickr', 'release' => true },
+          { 'tag' => 'Project : Fitch : Batch2', 'what' => 'self', 'when' => Time.parse('2015-01-06 23:40:01Z'), 'who' => 'carrickr', 'release' => false }
+        ]
+      }
+      expect(release_tags).to eq exp_result
     end
   end
 
-  it 'returns a hash created from a single release tag' do
-    n = Nokogiri('<release to="Revs" what="collection" when="2015-01-06T23:33:47Z" who="carrickr">true</release>').xpath('//release')[0]
-    exp_result = { to: 'Revs', attrs: { 'what' => 'collection', 'when' => Time.parse('2015-01-06 23:33:47Z'), 'who' => 'carrickr', 'release' => true } }
-    expect(releases.send(:release_tag_node_to_hash, n)).to eq exp_result
-    n = Nokogiri('<release tag="Project : Fitch: Batch1" to="Revs" what="collection" when="2015-01-06T23:33:47Z" who="carrickr">true</release>').xpath('//release')[0]
-    exp_result = { to: 'Revs', attrs: { 'tag' => 'Project : Fitch: Batch1', 'what' => 'collection', 'when' => Time.parse('2015-01-06 23:33:47Z'), 'who' => 'carrickr', 'release' => true } }
-    expect(releases.send(:release_tag_node_to_hash, n)).to eq exp_result
+  describe '#release_tag_node_to_hash' do
+    it 'returns a hash created from a single release tag' do
+      n = Nokogiri('<release to="Revs" what="collection" when="2015-01-06T23:33:47Z" who="carrickr">true</release>').xpath('//release')[0]
+      exp_result = { to: 'Revs', attrs: { 'what' => 'collection', 'when' => Time.parse('2015-01-06 23:33:47Z'), 'who' => 'carrickr', 'release' => true } }
+      expect(releases.send(:release_tag_node_to_hash, n)).to eq exp_result
+      n = Nokogiri('<release tag="Project : Fitch: Batch1" to="Revs" what="collection" when="2015-01-06T23:33:47Z" who="carrickr">true</release>').xpath('//release')[0]
+      exp_result = { to: 'Revs', attrs: { 'tag' => 'Project : Fitch: Batch1', 'what' => 'collection', 'when' => Time.parse('2015-01-06 23:33:47Z'), 'who' => 'carrickr', 'release' => true } }
+      expect(releases.send(:release_tag_node_to_hash, n)).to eq exp_result
+    end
   end
 
   describe '#form_purl_url' do
