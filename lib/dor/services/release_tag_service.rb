@@ -73,6 +73,13 @@ module Dor
       return_hash
     end
 
+    # Take a hash of tags as obtained via Dor::Item.release_tags and returns the newest tag for each namespace
+    # @param tags [Hash] a hash of tags obtained via Dor::Item.release_tags or matching format
+    # @return [Hash] a hash of latest tags for each to value
+    def newest_release_tag(tags)
+      Hash[tags.map { |key, val| [key, newest_release_tag_in_an_array(val)] }]
+    end
+
     private
 
     # Convert one release element into a Hash
@@ -127,13 +134,6 @@ module Dor
         hash_one[key] = (hash_one[key] + hash_two[key]).uniq unless hash_one[key].nil?
       end
       hash_one
-    end
-
-    # Take a hash of tags as obtained via Dor::Item.release_tags and returns the newest tag for each namespace
-    # @param tags [Hash] a hash of tags obtained via Dor::Item.release_tags or matching format
-    # @return [Hash] a hash of latest tags for each to value
-    def newest_release_tag(tags)
-      Hash[tags.map { |key, val| [key, newest_release_tag_in_an_array(val)] }]
     end
 
     # Takes an array of release tags and returns the most recent one

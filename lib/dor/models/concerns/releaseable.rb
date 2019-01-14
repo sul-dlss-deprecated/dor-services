@@ -40,6 +40,14 @@ module Dor
     delegate :release_tags, to: :releases
     deprecation_deprecate release_tags: 'use ReleaseTagService#release_tags instead'
 
+    # Take a hash of tags as obtained via Dor::Item.release_tags and returns the newest tag for each namespace
+    # @param tags [Hash] a hash of tags obtained via Dor::Item.release_tags or matching format
+    # @return [Hash] a hash of latest tags for each to value
+    def get_newest_release_tag(tags)
+      releases.newest_release_tag(tags)
+    end
+    deprecation_deprecate get_newest_release_tag: 'use ReleaseTagService#newest_release_tag instead'
+
     def releases
       @releases ||= ReleaseTagService.for(self)
     end
