@@ -67,8 +67,40 @@ module Dor
       embargoMetadata.status == 'embargoed'
     end
 
+    def new_embargo(embargo_date, rights)
+      raise ArgumentError, 'You cannot set a new embargo for an already embargoed item.' if embargoed?
+      raise ArgumentError, 'You cannot set the embargo date to a past date.' if embargo_date.past?
+      raise ArgumentError, 'Invalid rights set.' unless RightsMetadataDS.valid_rights_type?(rights)
+
+      rights_node_selector = '//rightsMetadata/access[@type=\'read\']/machine'
+
+      # set release date in rightsMetadata
+      read_node = rightsMetadata.ng_xml.search(rights_node_selector).first
+      builder = Nokogiri::XML::Builder.new { |xml| xml.embargoReleaseDate embargo_date.beginning_of_day }
+      read_node.add_child(builder.doc.root.clone)
+      rightsMetadata.ng_xml_will_change!
+      rightsMetadata.save
+
+      # set values in embargoMetadata
+      embargoMetadata.status = 'embargoed'
+      embargoMetadata.release_date = embargo_date.beginning_of_day.utc
+      builder = Nokogiri::XML::Builder.new do |xml|
+        xml.releaseAccess do
+          xml.access(type: 'read') do
+            xml.machine do
+              xml.group rights
+            end
+          end
+        end
+      end
+      embargoMetadata.release_access_node = builder.doc
+      embargoMetadata.ng_xml_will_change!
+      embargoMetadata.save
+      puts embargoMetadata.to_xml
+    end
+
     def update_embargo(new_date)
-      raise ArgumentError, 'You cannot change the embargo date of an item that is not embargoed.' if embargoMetadata.status != 'embargoed'
+      raise ArgumentError, 'You cannot change the embargo date of an item that is not embargoed.' unless embargoed?
       raise ArgumentError, 'You cannot set the embargo date to a past date.' if new_date.past?
 
       updated = false

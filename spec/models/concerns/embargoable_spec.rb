@@ -50,6 +50,28 @@ describe Dor::Embargoable do
     </rightsMetadata>
     EOXML
   end
+  let(:rights_xml_no_embargo) do
+    <<-EOXML
+    <rightsMetadata objectId="druid:rt923jk342">
+      <copyright>
+        <human>(c) Copyright [conferral year] by [student name]</human>
+      </copyright>
+      <access type="discover">
+        <machine>
+          <world />
+        </machine>
+      </access>
+      <access type="read">
+        <machine>
+          <group>stanford</group>
+        </machine>
+      </access>
+      <use>
+        <machine type="creativeCommons" type="code">value</machine>
+      </use>
+    </rightsMetadata>
+    EOXML
+  end
 
   before :each do
     stub_config
@@ -155,6 +177,51 @@ describe Dor::Embargoable do
     end
   end
 
+  describe '#new_embargo' do
+    describe 'already embargoed items' do
+      let(:embargo_item) do
+        embargo_item = EmbargoedItem.new
+        eds = embargo_item.datastreams['embargoMetadata']
+        eds.status = 'embargoed'
+        eds.release_date = embargo_release_date
+        eds.release_access_node = Nokogiri::XML(release_access) { |config| config.default_xml.noblanks }
+        allow_any_instance_of(ActiveFedora::OmDatastream).to receive(:save).and_return(true)
+        embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }
+        embargo_item
+      end
+      it 'raises ArgumentError if the item is already embargoed' do
+        expect{ embargo_item.new_embargo(Time.now.utc + 1.month, 'world') }.to raise_error(ArgumentError)
+      end
+    end
+    describe 'items not yet embargoed' do
+      let(:embargo_item) do
+        embargo_item = EmbargoedItem.new
+        allow_any_instance_of(ActiveFedora::OmDatastream).to receive(:save).and_return(true)
+        embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml_no_embargo) { |config| config.default_xml.noblanks }
+        embargo_item
+      end
+      it 'raises ArgumentError if the new date is in the past' do
+        expect{ embargo_item.new_embargo(1.month.ago, 'world') }.to raise_error(ArgumentError)
+      end
+      it 'indicates that the item is not embargoed' do
+        expect(embargo_item.embargoed?).to be_falsey
+      end
+      it 'raises ArgumentError if an invalid rights is set' do
+        expect{ embargo_item.new_embargo(Time.now.utc + 1.month, 'bogus_rights') }.to raise_error(ArgumentError)
+      end
+      it 'sets a new embargo with supplied rights, updating rightsMetadata and embargoMetadata' do
+        embargo_relase_date_node_selector = '//rightsMetadata/access[@type=\'read\']/machine/embargoReleaseDate'
+        expect(embargo_item.rightsMetadata.ng_xml.search(embargo_relase_date_node_selector).size).to eq 0
+        expect(embargo_item.embargoed?).to be_falsey
+        expect(embargo_item.embargoMetadata.release_date).to be_nil
+        embargo_item.new_embargo(Time.now.utc + 1.month, 'world')
+        expect(embargo_item.embargoed?).to be_truthy
+        expect(embargo_item.embargoMetadata.release_date).to eq((Time.now.utc + 1.month).beginning_of_day.utc)
+        expect(embargo_item.rightsMetadata.ng_xml.search(embargo_relase_date_node_selector).size).to eq 1
+      end
+    end
+  end
+
   describe '#update_embargo' do
     let(:embargo_item) do
       embargo_item = EmbargoedItem.new
@@ -166,11 +233,9 @@ describe Dor::Embargoable do
       embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }
       embargo_item
     end
-
     it 'indicates the item is embargoed' do
       expect(embargo_item.embargoed?).to be_truthy
     end
-
     it 'updates embargo date' do
       old_embargo_date = embargo_item.embargoMetadata.release_date
       embargo_item.update_embargo(Time.now.utc + 1.month)
