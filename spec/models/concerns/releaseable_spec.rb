@@ -146,6 +146,20 @@ RSpec.describe 'Adding release nodes', :vcr do
     end
   end
 
+  describe '#get_newest_release_tag' do
+    subject(:get_newest_release_tag) { item.get_newest_release_tag('Revs' => %w[foo bar], 'FRDA' => %w[quax qwerk]) }
+    let(:service) { instance_double(Dor::ReleaseTagService, newest_release_tag: { 'Revs' => 'foo', 'FRDA' => 'qwerk' }) }
+
+    before do
+      allow(Dor::ReleaseTagService).to receive(:for).with(item).and_return(service)
+    end
+
+    it 'delegates to the service' do
+      expect(Deprecation).to receive(:warn)
+      expect(get_newest_release_tag).to eq('FRDA' => 'qwerk', 'Revs' => 'foo')
+    end
+  end
+
   describe 'Adding tags and workflows' do
     before do
       expect(Deprecation).to receive(:warn)

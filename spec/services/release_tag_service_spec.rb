@@ -24,11 +24,13 @@ RSpec.describe Dor::ReleaseTagService, :vcr do
     describe '#newest_release_tag_in_an_array' do
       subject { releases.send(:newest_release_tag_in_an_array, dummy_tags) }
       it { is_expected.to eq dummy_tags[1] }
+    end
 
-      it 'returns the latest tag for each key/target in a hash' do
-        dummy_hash = { 'Revs' => dummy_tags, 'FRDA' => dummy_tags }
-        expect(releases.send(:newest_release_tag, dummy_hash)).to eq('Revs' => dummy_tags[1], 'FRDA' => dummy_tags[1])
-      end
+    describe '#newest_release_tag' do
+      subject { releases.newest_release_tag(dummy_hash) }
+      let(:dummy_hash) { { 'Revs' => dummy_tags, 'FRDA' => dummy_tags } }
+
+      it { is_expected.to eq('Revs' => dummy_tags[1], 'FRDA' => dummy_tags[1]) }
     end
 
     describe '#latest_applicable_release_tag_in_array' do
