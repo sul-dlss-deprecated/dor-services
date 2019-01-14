@@ -20,7 +20,7 @@ module Dor
       released_hash = {}
 
       # Get the most recent self tag for all targets and retain their result since most recent self always trumps any other non self tags
-      latest_self_tags = newest_release_tag self_release_tags(release_nodes)
+      latest_self_tags = newest_release_tag self_release_tags(release_tags)
       latest_self_tags.each do |key, payload|
         released_hash[key] = { 'release' => payload['release'] }
       end
@@ -48,7 +48,7 @@ module Dor
     # Take an item and get all of its release tags and all tags on collections it is a member of it
     # @return [Hash] a hash of all tags
     def release_tags_for_item_and_all_governing_sets
-      return_tags = release_nodes || {}
+      return_tags = release_tags || {}
       item.collections.each do |collection|
         next if collection.id == item.id # recursive, so parents of parents are found, but we need to avoid an infinite loop if the collection references itself (i.e. bad data)
 
@@ -57,11 +57,9 @@ module Dor
       return_tags
     end
 
-    private
-
-    # Helper method to get the release nodes as a nodeset
-    # @return [Nokogiri::XML::NodeSet] of all release tags and their attributes
-    def release_nodes
+    # Helper method to get the release tags as a nodeset
+    # @return [Nokogiri::XML::NodeSet] all release tags and their attributes
+    def release_tags
       release_tags = item.identityMetadata.ng_xml.xpath('//release')
       return_hash = {}
       release_tags.each do |release_tag|
@@ -75,21 +73,7 @@ module Dor
       return_hash
     end
 
-    # Helper method to get the release tags as a nodeset
-    # @return [Nokogiri::XML::NodeSet] all release tags and their attributes
-    def release_tags
-      release_tags = identityMetadata.ng_xml.xpath('//release')
-      return_hash = {}
-      release_tags.each do |release_tag|
-        hashed_node = release_tag_node_to_hash(release_tag)
-        if !return_hash[hashed_node[:to]].nil?
-          return_hash[hashed_node[:to]] << hashed_node[:attrs]
-        else
-          return_hash[hashed_node[:to]] = [hashed_node[:attrs]]
-        end
-      end
-      return_hash
-    end
+    private
 
     # Convert one release element into a Hash
     # @param rtag [Nokogiri::XML::Element] the release tag element

@@ -35,6 +35,11 @@ module Dor
       releases.released_for(skip_live_purl: skip_live_purl)
     end
 
+    # Helper method to get the release tags as a nodeset
+    # @return [Nokogiri::XML::NodeSet] all release tags and their attributes
+    delegate :release_tags, to: :releases
+    deprecation_deprecate release_tags: 'use ReleaseTagService#release_tags instead'
+
     def releases
       @releases ||= ReleaseTagService.for(self)
     end
