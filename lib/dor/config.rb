@@ -99,7 +99,7 @@ module Dor
     end
 
     set_callback :configure, :after do |config|
-      Dor::Services::Client.configure(url: config.dor_services.url) if config.dor_services
+      configure_client!(config)
 
       if config.solrizer.present?
         stack = Kernel.caller.dup
@@ -117,8 +117,20 @@ module Dor
       end
     end
 
-    # Act like an ActiveFedora.configurator
+    def configure_client!(config)
+      # Do not configure client if URL not specified
+      return if config.dor_services&.url.blank?
 
+      params = {
+        url: config.dor_services.url
+      }
+      params[:username] = config.dor_services.user if config.dor_services&.user.present?
+      params[:password] = config.dor_services.pass if config.dor_services&.pass.present?
+
+      Dor::Services::Client.configure(params)
+    end
+
+    # Act like an ActiveFedora.configurator
     def init(*args); end
 
     def fedora_config
