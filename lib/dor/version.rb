@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module Dor
-  VERSION = '6.1.12'
+  VERSION = '6.1.13'
 end
