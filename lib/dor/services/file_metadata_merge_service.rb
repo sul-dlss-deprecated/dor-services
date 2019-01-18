@@ -3,6 +3,9 @@
 module Dor
   # Merges contentMetadata from several objects into one.
   class FileMetadataMergeService
+    extend Deprecation
+    self.deprecation_horizon = 'dor-services version 7.0.0'
+
     # @param [Array<String>] secondary_druids ids of the secondary objects that will get their contentMetadata merged into this one
     def self.copy_file_resources(primary, secondary_druids)
       merge_service = FileMetadataMergeService.new primary, secondary_druids
@@ -59,6 +62,7 @@ module Dor
         end
       end
     end
+    deprecation_deprecate copy_file_resources: 'No longer used by any DLSS code'
 
     private
 
