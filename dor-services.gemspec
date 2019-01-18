@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary     = 'Ruby implmentation of DOR services used by the SULAIR Digital Library'
   s.description = 'Contains classes to register objects and initialize workflows'
   s.licenses    = ['ALv2', 'Stanford University']
-
+  s.homepage    = 'http://github.com/sul-dlss/dor-services'
   s.required_rubygems_version = '>= 1.3.6'
 
   # Runtime dependencies
