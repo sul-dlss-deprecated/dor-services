@@ -60,9 +60,9 @@ module Sdr
         Moab::FileInventoryDifference.parse(response)
       end
 
-      # This is used by Argo
+      # This was used by Argo but is no longer used anywhere
       def get_preserved_file_content(druid, filename, version)
-        Deprecation.warn(self, 'Sdr::Client.get_preserved_file_content is deprecated and will be removed in dor-services 7. Use Dor::Services::Client.preserved_content instead')
+        Deprecation.warn(self, 'Sdr::Client.get_preserved_file_content is deprecated and will be removed in dor-services 7. Use Dor::Services::Client.object(object_identifier).files.preserved_content(filename:, version:) instead')
 
         client["objects/#{druid}/content/#{URI.encode(filename)}?version=#{version}"].get
       end
