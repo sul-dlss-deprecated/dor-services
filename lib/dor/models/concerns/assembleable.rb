@@ -13,6 +13,6 @@ module Dor
         druid.mkdir_with_final_link(source)
       end
     end
-    deprecation_deprecate initialize_workspace: 'This functionality has moved to dor_services_app'
+    deprecation_deprecate initialize_workspace: 'Use Dor::Services::Client.object(object_identifier).workspace.create(source:) instead'
   end
 end

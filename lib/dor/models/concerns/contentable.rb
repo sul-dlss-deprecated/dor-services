@@ -71,7 +71,7 @@ module Dor
     def get_preserved_file(file, version)
       Sdr::Client.get_preserved_file_content(pid, file, version)
     end
-    deprecation_deprecate get_preserved_file: 'Use Dor::Services::Client.preserved_content instead'
+    deprecation_deprecate get_preserved_file: 'Use Dor::Services::Client.object(object_identifier).files.preserved_content(filename:, version:) instead'
 
     def get_file(file)
       druid_tools = DruidTools::Druid.new(pid, Config.content.content_base_dir)
@@ -85,7 +85,7 @@ module Dor
       end
       data
     end
-    deprecation_deprecate get_file: 'use dor-services-app:/v1/objects/:id/contents/*path instead'
+    deprecation_deprecate get_file: 'Use Dor::Services::Client.object(object_identifier).files.retrieve(filename:) instead'
 
     # @param [String] filename
     def remove_file(filename)
@@ -133,7 +133,6 @@ module Dor
     end
     deprecation_deprecate remove_resource: 'will be removed without replacement'
 
-    # TODO: Move to Argo
     # list files in the workspace
     # @return [Array] workspace files
     def list_files
@@ -158,7 +157,7 @@ module Dor
       end
       files
     end
-    deprecation_deprecate list_files: 'use dor-services-app:/v1/objects/:id/contents instead'
+    deprecation_deprecate list_files: 'Use Dor::Services::Client.object(object_identifier).files.list instead'
 
     # @param [String] filename
     # @return [Boolean] whether the file in question is present in the object's workspace

@@ -19,7 +19,7 @@ module Dor
     def open_new_version(opts = {})
       VersionService.open(self, opts)
     end
-    deprecation_deprecate open_new_version: 'Use VersionService.open instead'
+    deprecation_deprecate open_new_version: 'Use Dor::Services::Client.object(object_identifier).open_new_version(**params) instead'
 
     def current_version
       versionMetadata.current_version_id
@@ -37,7 +37,7 @@ module Dor
     def close_version(opts = {})
       VersionService.close(self, opts)
     end
-    deprecation_deprecate close_version: 'Use VersionService.close instead'
+    deprecation_deprecate close_version: 'Use Dor::Services::Client.object(object_identifier).close_version(**params) instead'
 
     # @return [Boolean] true if 'opened' lifecycle is active, false otherwise
     def new_version_open?
@@ -62,11 +62,11 @@ module Dor
     def start_version
       open_new_version
     end
-    deprecation_deprecate start_version: 'use VersionService.open'
+    deprecation_deprecate start_version: 'Use Dor::Services::Client.object(object_identifier).open_new_version(**params) instead'
 
     def submit_version
       close_version
     end
-    deprecation_deprecate submit_version: 'use VersionService.close'
+    deprecation_deprecate submit_version: 'Use Dor::Services::Client.object(object_identifier).close_version(**params) instead'
   end
 end

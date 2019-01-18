@@ -76,7 +76,7 @@ module Dor
     def create_workflow(name, create_ds = true, priority = 0)
       CreateWorkflowService.create_workflow(self, name: name, create_ds: create_ds, priority: priority)
     end
-    deprecation_deprecate create_workflow: 'Use CreateWorkflowService.create_workflow'
+    deprecation_deprecate create_workflow: 'Use Dor::Services::Client.object(object_identifier).workflow.create(wf_name:) instead'
 
     def initialize_workflow(name, create_ds = true, priority = 0)
       warn 'WARNING: initialize_workflow is deprecated, use create_workflow instead'
