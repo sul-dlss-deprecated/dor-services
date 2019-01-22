@@ -72,6 +72,7 @@ describe Dor::FileMetadataMergeService do
       </contentMetadata>
       XML
 
+      expect(Deprecation).to receive(:warn)
       described_class.copy_file_resources(primary, [src1_pid])
       merged_cm = primary.contentMetadata.ng_xml
       expect(merged_cm.xpath('//resource').size).to eq(3)
@@ -107,6 +108,7 @@ describe Dor::FileMetadataMergeService do
       </contentMetadata>
       XML
 
+      expect(Deprecation).to receive(:warn)
       described_class.copy_file_resources(primary, [src1_pid])
       merged_cm = primary.contentMetadata.ng_xml
       expect(merged_cm.xpath('//resource').size).to eq(2)
@@ -131,6 +133,7 @@ describe Dor::FileMetadataMergeService do
       </contentMetadata>
       XML
 
+      expect(Deprecation).to receive(:warn)
       described_class.copy_file_resources(primary, [src1_pid])
       merged_cm = primary.contentMetadata.ng_xml
       expect(merged_cm.xpath('//resource').size).to eq(2)
@@ -165,6 +168,7 @@ describe Dor::FileMetadataMergeService do
       </contentMetadata>
       XML
 
+      expect(Deprecation).to receive(:warn)
       expect{ described_class.copy_file_resources(primary, [src1_pid]) }.to raise_error Dor::Exception
     end
 
@@ -195,6 +199,7 @@ describe Dor::FileMetadataMergeService do
       </contentMetadata>
       XML
 
+      expect(Deprecation).to receive(:warn)
       described_class.copy_file_resources(primary, [src1_pid, src2_pid])
       merged_cm = primary.contentMetadata.ng_xml
       expect(merged_cm.xpath('//resource').size).to eq(3)
@@ -226,6 +231,7 @@ describe Dor::FileMetadataMergeService do
         </contentMetadata>
         XML
 
+        expect(Deprecation).to receive(:warn)
         described_class.copy_file_resources(primary, [src1_pid])
         merged_cm = primary.contentMetadata.ng_xml
         expect(merged_cm.xpath('//resource').size).to eq(2)
@@ -248,6 +254,7 @@ describe Dor::FileMetadataMergeService do
         </contentMetadata>
         XML
 
+        expect(Deprecation).to receive(:warn)
         described_class.copy_file_resources(primary, [src1_pid])
         merged_cm = primary.contentMetadata.ng_xml
         expect(merged_cm.xpath('//resource').size).to eq(2)

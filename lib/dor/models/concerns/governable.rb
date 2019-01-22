@@ -13,7 +13,7 @@ module Dor
     def initiate_apo_workflow(name)
       CreateWorkflowService.create_workflow(self, name: name, create_ds: !new_record?)
     end
-    deprecation_deprecate initiate_apo_workflow: 'Use Dor::CreateWorkflowService.create_workflow instead'
+    deprecation_deprecate initiate_apo_workflow: 'Use Dor::Services::Client.object(object_identifier).workflow.create(wf_name:) instead'
 
     def reset_to_apo_default
       rightsMetadata.content = admin_policy_object.rightsMetadata.ng_xml

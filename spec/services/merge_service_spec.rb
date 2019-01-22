@@ -95,6 +95,7 @@ describe Dor::MergeService do
       sec_druid_tree.mkdir
       create_tempfile sec_druid_tree.path, 'image_a.jp2'
 
+      expect(Deprecation).to receive(:warn)
       ms = Dor::MergeService.new primary_pid, [secondary_pid], 'some tag'
       ms.copy_workspace_content
 

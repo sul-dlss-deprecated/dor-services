@@ -2,6 +2,9 @@
 
 module Dor
   class MergeService
+    extend Deprecation
+    self.deprecation_horizon = 'dor-services version 7.0.0'
+
     def self.merge_into_primary(primary_druid, secondary_druids, tag, logger = nil)
       # TODO: test the secondary_obj to see if we've processed it already
       merge_service = Dor::MergeService.new primary_druid, secondary_druids, tag, logger
@@ -29,12 +32,14 @@ module Dor
       non_editable = @secondary_objs.detect { |obj| !obj.allows_modification? }
       raise Dor::Exception, "Secondary object is not editable: #{non_editable.pid}" if non_editable
     end
+    deprecation_deprecate check_objects_editable: 'No longer used by any DLSS code'
 
     def move_metadata_and_content
       FileMetadataMergeService.copy_file_resources @primary, @secondary_pids
       @primary.save
       copy_workspace_content
     end
+    deprecation_deprecate move_metadata_and_content: 'No longer used by any DLSS code'
 
     # Copies the content from the secondary object workspace to the primary object's workspace
     #   Depends on Dor::Config.stacks.local_workspace_root
@@ -59,6 +64,7 @@ module Dor
         end
       end
     end
+    deprecation_deprecate copy_workspace_content: 'No longer used by any DLSS code'
 
     def decommission_secondaries
       @secondary_objs.each do |secondary_obj|
@@ -77,6 +83,8 @@ module Dor
         end
       end
     end
+    deprecation_deprecate decommission_secondaries: 'No longer used by any DLSS code'
+
     alias decomission_secondaries decommission_secondaries
     deprecate decomission_secondaries: 'Use decommission_secondaries instead'
 
@@ -85,11 +93,13 @@ module Dor
     def unshelve
       DigitalStacksService.prune_stacks_dir @current_secondary.pid
     end
+    deprecation_deprecate unshelve: 'No longer used by any DLSS code'
 
     # Withdraw item from Purl
     # TODO: might set workflow status in future for robot to do
     def unpublish
       @current_secondary.publish_metadata
     end
+    deprecation_deprecate unpublish: 'No longer used by any DLSS code'
   end
 end
