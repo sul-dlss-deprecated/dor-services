@@ -3,6 +3,10 @@
 module Dor
   class Exception < ::StandardError; end
   class ParameterError < RuntimeError; end
+
+  # Raised when the data does not conform to expectations
+  class DataError < RuntimeError; end
+
   class DuplicateIdError < RuntimeError
     attr_reader :pid
 

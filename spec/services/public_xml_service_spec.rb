@@ -197,7 +197,7 @@ RSpec.describe Dor::PublicXmlService do
       end
     end
 
-    describe '#public_xml' do
+    context 'with external references' do
       it 'handles externalFile references' do
         correct_content_md = Nokogiri::XML(read_fixture('hj097bm8879_publicObject.xml')).at_xpath('/publicObject/contentMetadata').to_xml
         item.contentMetadata.content = read_fixture('hj097bm8879_contentMetadata.xml')
@@ -211,63 +211,105 @@ RSpec.describe Dor::PublicXmlService do
         expect(ng_xml.at_xpath('/publicObject/contentMetadata').to_xml).to be_equivalent_to(correct_content_md)
         expect(ng_xml.at_xpath('/publicObject/thumb').to_xml).to be_equivalent_to('<thumb>jw923xn5254/2542B.jp2</thumb>')
       end
-    end
 
-    context 'when there are errors for externalFile references' do
-      it 'is missing resourceId and mimetype attributes' do
-        item.contentMetadata.content = <<-EOXML
-        <contentMetadata objectId="hj097bm8879" type="map">
-          <resource id="hj097bm8879_1" sequence="1" type="image">
-            <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478"/>
-            <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
-          </resource>
-        </contentMetadata>
-        EOXML
+      context 'when the referenced object does not have the referenced image' do
+        let(:cover_item) { instance_double(Dor::Item, pid: 'druid:cg767mn6478', contentMetadata: contentMetadata) }
+        let(:contentMetadata) { instance_double(Dor::ContentMetadataDS, ng_xml: Nokogiri::XML(cm_xml)) }
+        let(:cm_xml) do
+          <<-EOXML
+          <contentMetadata objectId="cg767mn6478" type="map">
+            <resource id="cg767mn6478_1" sequence="1" type="image">
+            </resource>
+          </contentMetadata>
+          EOXML
+        end
+        before do
+          item.contentMetadata.content = <<-EOXML
+          <contentMetadata objectId="hj097bm8879" type="map">
+            <resource id="hj097bm8879_1" sequence="1" type="image">
+              <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478" resourceId="cg767mn6478_1" />
+              <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+            </resource>
+          </contentMetadata>
+          EOXML
 
-        # generate publicObject XML and verify that the content metadata portion is invalid
-        expect { xml }.to raise_error(ArgumentError)
+          allow(Dor).to receive(:find).with(cover_item.pid).and_return(cover_item)
+        end
+
+        it 'raises an error' do
+          expect { xml }.to raise_error(Dor::DataError, 'Unable to find a file node with id="2542A.jp2" (child of druid:ab123cd4567)')
+        end
       end
 
-      it 'has blank resourceId attribute' do
-        item.contentMetadata.content = <<-EOXML
-        <contentMetadata objectId="hj097bm8879" type="map">
-          <resource id="hj097bm8879_1" sequence="1" type="image">
-            <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478" resourceId=" " mimetype="image/jp2"/>
-            <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
-          </resource>
-        </contentMetadata>
-        EOXML
-
-        # generate publicObject XML and verify that the content metadata portion is invalid
-        expect { xml }.to raise_error(ArgumentError)
+      context 'when it is missing resourceId and mimetype attributes' do
+        before do
+          item.contentMetadata.content = <<-EOXML
+          <contentMetadata objectId="hj097bm8879" type="map">
+            <resource id="hj097bm8879_1" sequence="1" type="image">
+              <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478"/>
+              <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+            </resource>
+          </contentMetadata>
+          EOXML
+        end
+        it 'raises an error' do
+          # generate publicObject XML and verify that the content metadata portion is invalid
+          expect { xml }.to raise_error(Dor::DataError)
+        end
       end
 
-      it 'has blank fileId attribute' do
-        item.contentMetadata.content = <<-EOXML
-        <contentMetadata objectId="hj097bm8879" type="map">
-          <resource id="hj097bm8879_1" sequence="1" type="image">
-            <externalFile fileId=" " objectId="druid:cg767mn6478" resourceId="cg767mn6478_1" mimetype="image/jp2"/>
-            <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
-          </resource>
-        </contentMetadata>
-        EOXML
+      context 'when it has blank resourceId attribute' do
+        before do
+          item.contentMetadata.content = <<-EOXML
+          <contentMetadata objectId="hj097bm8879" type="map">
+            <resource id="hj097bm8879_1" sequence="1" type="image">
+              <externalFile fileId="2542A.jp2" objectId="druid:cg767mn6478" resourceId=" " mimetype="image/jp2"/>
+              <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+            </resource>
+          </contentMetadata>
+          EOXML
+        end
 
-        # generate publicObject XML and verify that the content metadata portion is invalid
-        expect { xml }.to raise_error(ArgumentError)
+        it 'raises an error' do
+          # generate publicObject XML and verify that the content metadata portion is invalid
+          expect { xml }.to raise_error(Dor::DataError)
+        end
       end
 
-      it 'has blank objectId attribute' do
-        item.contentMetadata.content = <<-EOXML
-        <contentMetadata objectId="hj097bm8879" type="map">
-          <resource id="hj097bm8879_1" sequence="1" type="image">
-            <externalFile fileId="2542A.jp2" objectId=" " resourceId="cg767mn6478_1" mimetype="image/jp2"/>
-            <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
-          </resource>
-        </contentMetadata>
-        EOXML
+      context 'when it has blank fileId attribute' do
+        before do
+          item.contentMetadata.content = <<-EOXML
+          <contentMetadata objectId="hj097bm8879" type="map">
+            <resource id="hj097bm8879_1" sequence="1" type="image">
+              <externalFile fileId=" " objectId="druid:cg767mn6478" resourceId="cg767mn6478_1" mimetype="image/jp2"/>
+              <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+            </resource>
+          </contentMetadata>
+          EOXML
+        end
 
-        # generate publicObject XML and verify that the content metadata portion is invalid
-        expect { xml }.to raise_error(ArgumentError)
+        it 'raises an error' do
+          # generate publicObject XML and verify that the content metadata portion is invalid
+          expect { xml }.to raise_error(Dor::DataError)
+        end
+      end
+
+      context 'when it has blank objectId attribute' do
+        before do
+          item.contentMetadata.content = <<-EOXML
+          <contentMetadata objectId="hj097bm8879" type="map">
+            <resource id="hj097bm8879_1" sequence="1" type="image">
+              <externalFile fileId="2542A.jp2" objectId=" " resourceId="cg767mn6478_1" mimetype="image/jp2"/>
+              <relationship objectId="druid:cg767mn6478" type="alsoAvailableAs"/>
+            </resource>
+          </contentMetadata>
+          EOXML
+        end
+
+        it 'raises an error' do
+          # generate publicObject XML and verify that the content metadata portion is invalid
+          expect { xml }.to raise_error(Dor::DataError)
+        end
       end
     end
   end
