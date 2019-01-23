@@ -78,33 +78,39 @@ module Dor
         result.xpath('/contentMetadata/resource/file/checksum').each(&:remove)
 
         # support for dereferencing links via externalFile element(s) to the source (child) item - see JUMBO-19
-        result.xpath('/contentMetadata/resource/externalFile').each do |externalFile|
-          # enforce pre-conditions that resourceId, objectId, fileId are required
-          src_resource_id = externalFile['resourceId']
-          src_druid = externalFile['objectId']
-          src_file_id = externalFile['fileId']
-          raise ArgumentError, "Malformed externalFile data: #{externalFile.inspect}" if [src_resource_id, src_file_id, src_druid].map(&:blank?).any?
-
-          # grab source item
-          src_item = Dor.find(src_druid)
-
-          # locate and extract the resourceId/fileId elements
-          doc = src_item.datastreams['contentMetadata'].ng_xml
-          src_resource = doc.at_xpath("//resource[@id=\"#{src_resource_id}\"]")
-          src_file = src_resource.at_xpath("file[@id=\"#{src_file_id}\"]")
-          src_image_data = src_file.at_xpath('imageData')
-
-          # always use title regardless of whether a child label is present
-          src_label = doc.create_element('label')
-          src_label.content = src_item.full_title
-
-          # add the extracted label and imageData
-          externalFile.add_previous_sibling(src_label)
-          externalFile << src_image_data unless src_image_data.nil?
+        result.xpath('/contentMetadata/resource/externalFile').each do |external_file|
+          add_data_from_src(external_file)
         end
 
         result
       end
+    end
+
+    def add_data_from_src(external_file)
+      # enforce pre-conditions that resourceId, objectId, fileId are required
+      src_resource_id = external_file['resourceId']
+      src_druid = external_file['objectId']
+      src_file_id = external_file['fileId']
+      raise DataError, "Malformed externalFile data: #{external_file.to_xml}" if [src_resource_id, src_file_id, src_druid].map(&:blank?).any?
+
+      # grab source item
+      src_item = Dor.find(src_druid)
+
+      # locate and extract the resourceId/fileId elements
+      doc = src_item.contentMetadata.ng_xml
+      src_resource = doc.at_xpath("//resource[@id=\"#{src_resource_id}\"]")
+      src_file = src_resource.at_xpath("file[@id=\"#{src_file_id}\"]")
+      raise DataError, "Unable to find a file node with id=\"#{src_file_id}\" (child of #{object.pid})" unless src_file
+
+      src_image_data = src_file.at_xpath('imageData')
+
+      # always use title regardless of whether a child label is present
+      src_label = doc.create_element('label')
+      src_label.content = src_item.full_title
+
+      # add the extracted label and imageData
+      external_file.add_previous_sibling(src_label)
+      external_file << src_image_data unless src_image_data.nil?
     end
   end
 end
