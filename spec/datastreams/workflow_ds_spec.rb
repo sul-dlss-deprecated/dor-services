@@ -2,14 +2,19 @@
 
 require 'spec_helper'
 
-describe Dor::WorkflowDs do
+RSpec.describe Dor::WorkflowDs do
   before(:each) { stub_config }
   after(:each)  { unstub_config }
 
   before(:each) do
     @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
   end
+
   describe '[]' do
+    before do
+      expect(Deprecation).to receive(:warn).twice
+    end
+
     it 'should build a Document object if there is xml' do
       xml = '<?xml version="1.0" encoding="UTF-8"?>
       <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
@@ -44,7 +49,12 @@ describe Dor::WorkflowDs do
       expect(@item.workflows['accessionWF']).to be_nil
     end
   end
+
   describe 'get_workflow' do
+    before do
+      expect(Deprecation).to receive(:warn)
+    end
+
     it 'should build a Document object if there is xml' do
       xml = '<?xml version="1.0" encoding="UTF-8"?>
        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
