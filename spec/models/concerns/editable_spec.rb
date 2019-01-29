@@ -201,39 +201,42 @@ describe Dor::Editable do
       expect(@empty_item.creative_commons_license_human).to eq('greetings')
     end
   end
+
   describe 'use_license=' do
-    it 'should set the machine and human readable CC licenses given the right license code' do
+    it 'sets the machine and human readable CC licenses given the right license code' do
       use_license_machine = 'by-nc-nd'
       expect(ActiveSupport::Deprecation.instance).to receive(:warn).at_least(1).times
-      use_license_uri   = Dor::Editable::CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:uri]
-      use_license_human = Dor::Editable::CREATIVE_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
+      use_license = Dor::Editable::CREATIVE_COMMONS_USE_LICENSES.property(use_license_machine)
       @empty_item.use_license = use_license_machine
-      expect(@empty_item.use_license).to eq(use_license_machine)
-      expect(@empty_item.use_license_uri).to eq(use_license_uri)
-      expect(@empty_item.use_license_human).to eq(use_license_human)
-      expect(@empty_item.creative_commons_license).to eq(use_license_machine)
-      expect(@empty_item.creative_commons_license_human).to eq(use_license_human)
-      expect(@empty_item.open_data_commons_license).to eq('')
-      expect(@empty_item.open_data_commons_license_human).to eq('')
+      expect(@empty_item.use_license).to eq use_license_machine
+      expect(@empty_item.use_license_uri).to eq use_license.uri
+      expect(@empty_item.use_license_human).to eq use_license.label
+      expect(@empty_item.creative_commons_license).to eq use_license_machine
+      expect(@empty_item.creative_commons_license_human).to eq use_license.label
+      expect(@empty_item.open_data_commons_license).to eq ''
+      expect(@empty_item.open_data_commons_license_human).to eq ''
     end
-    it 'should set the machine and human readable ODC licenses given the right license code' do
+
+    it 'sets the machine and human readable ODC licenses given the right license code' do
       use_license_machine = 'odc-by'
       expect(ActiveSupport::Deprecation.instance).to receive(:warn).at_least(1).times
-      use_license_human = Dor::Editable::OPEN_DATA_COMMONS_USE_LICENSES[use_license_machine][:human_readable]
+      use_license = Dor::Editable::OPEN_DATA_COMMONS_USE_LICENSES.property(use_license_machine)
       @empty_item.use_license = use_license_machine
-      expect(@empty_item.use_license).to eq(use_license_machine)
-      expect(@empty_item.use_license_human).to eq(use_license_human)
-      expect(@empty_item.creative_commons_license).to eq('')
-      expect(@empty_item.creative_commons_license_human).to eq('')
-      expect(@empty_item.open_data_commons_license).to eq(use_license_machine)
-      expect(@empty_item.open_data_commons_license_human).to eq(use_license_human)
+      expect(@empty_item.use_license).to eq use_license_machine
+      expect(@empty_item.use_license_human).to eq use_license.label
+      expect(@empty_item.creative_commons_license).to eq ''
+      expect(@empty_item.creative_commons_license_human).to eq ''
+      expect(@empty_item.open_data_commons_license).to eq use_license_machine
+      expect(@empty_item.open_data_commons_license_human).to eq use_license.label
     end
-    it 'should throw an exception if no valid license code is given' do
+
+    it 'throws an exception if no valid license code is given' do
       expect { @empty_item.use_license = 'something-unexpected' }.to raise_exception(ArgumentError)
       expect(@empty_item.use_license).to be_blank
       expect(@empty_item.use_license_human).to be_blank
     end
-    it 'should be able to remove the use license' do
+
+    it 'is able to remove the use license' do
       [:none, '  ', nil].each do |v|
         @apo.use_license = v
         expect(@apo.use_license).to be_blank
@@ -246,6 +249,7 @@ describe Dor::Editable do
       end
     end
   end
+
   describe '#default_rights' do
     it 'finds the default object rights' do
       expect(@apo.default_rights).to eq('world')
