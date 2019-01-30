@@ -3,16 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Dor::Workflow::Document do
+  let(:wf_definition) { instance_double(Dor::WorkflowDefinitionDs, processes: wf_definition_procs) }
+  let(:wf_definition_procs) do
+    [
+      Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step1, 'lifecycle' => 'lc', 'status' => 'stat', 'sequence' => '1'),
+      Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step2, 'status' => 'waiting', 'sequence' => '2', 'prerequisite' => ['hello']),
+      Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step3, 'status' => 'error', 'sequence' => '3'),
+      Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step4, 'sequence' => '4')
+    ]
+  end
+  subject(:document) { described_class.new(xml) }
   before do
-    # stub the wf definition. The workflow document updates the processes in the definition with the values from the xml.
-    @wf_definition = double(Dor::WorkflowObject)
-    wf_definition_procs = []
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step1, 'lifecycle' => 'lc', 'status' => 'stat', 'sequence' => '1')
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step2, 'status' => 'waiting', 'sequence' => '2', 'prerequisite' => ['hello'])
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step3, 'status' => 'error', 'sequence' => '3')
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step4, 'sequence' => '4')
-
-    allow(@wf_definition).to receive(:processes).and_return(wf_definition_procs)
+    allow(document).to receive(:definition).and_return(wf_definition)
   end
 
   let(:step1) { 'hello' }
@@ -21,11 +23,7 @@ RSpec.describe Dor::Workflow::Document do
   let(:step4) { 'some-other-step' }
 
   describe '#processes' do
-    let(:document) { described_class.new(xml) }
     subject(:processes) { document.processes }
-    before do
-      allow(document).to receive(:definition).and_return(@wf_definition)
-    end
 
     context 'when the xml is empty' do
       let(:xml) do
@@ -45,7 +43,7 @@ RSpec.describe Dor::Workflow::Document do
         <<-eos
         <?xml version="1.0" encoding="UTF-8"?>
         <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
-          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="inprogress" name="hello"/>
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="inprogress" name="#{step1}"/>
         </workflow>
         eos
       end
@@ -60,14 +58,14 @@ RSpec.describe Dor::Workflow::Document do
         <<-eos
         <?xml version="1.0" encoding="UTF-8"?>
         <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
-          <process version="1" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="hello"/>
-          <process version="1" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="goodbye"/>
-          <process version="1" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="technical-metadata"/>
-          <process version="1" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="some-other-step"/>
-          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="hello"/>
-          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="queued" name="goodbye"/>
-          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="queued" name="technical-metadata"/>
-          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="queued" name="some-other-step"/>
+          <process version="1" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="#{step1}"/>
+          <process version="1" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="#{step2}"/>
+          <process version="1" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="#{step3}"/>
+          <process version="1" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="#{step4}"/>
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="#{step1}"/>
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="queued" name="#{step2}"/>
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="queued" name="#{step3}"/>
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="queued" name="#{step4}"/>
         </workflow>
         eos
       end
@@ -99,64 +97,64 @@ RSpec.describe Dor::Workflow::Document do
   end
 
   describe 'expedited?' do
-    it 'says false if there are no prioritized items' do
-      xml = <<-eos
-      <?xml version="1.0" encoding="UTF-8"?>
-      <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
-        <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
-         datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
-        <process version="2" elapsed="0.0" archived="true" attempts="1"
-         datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
-      </workflow>
-      eos
-
-      d = Dor::Workflow::Document.new(xml)
-      allow(d).to receive(:definition).and_return(@wf_definition)
-      expect(d.expedited?).to be_falsey
+    context 'when there are no prioritized items' do
+      let(:xml) do
+        <<~eos
+          <?xml version="1.0" encoding="UTF-8"?>
+          <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+            <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+             datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+            <process version="2" elapsed="0.0" archived="true" attempts="1"
+             datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
+          </workflow>
+        eos
+      end
+      it { is_expected.to_not be_expedited }
     end
 
-    it 'says true if there are incomplete prioritized items' do
-      xml = <<-eos
-      <?xml version="1.0" encoding="UTF-8"?>
-      <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
-        <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
-         datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
-        <process version="2" elapsed="0.0" archived="true" attempts="1"
-         datetime="2012-11-06T16:18:58-0800" status="waiting" priority="50" name="technical-metadata"/>
-      </workflow>
-      eos
-
-      d = Dor::Workflow::Document.new(xml)
-      allow(d).to receive(:definition).and_return(@wf_definition)
-      expect(d.expedited?).to be_truthy
+    context 'when there are incomplete prioritized items' do
+      let(:xml) do
+        <<~eos
+          <?xml version="1.0" encoding="UTF-8"?>
+          <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+            <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+             datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+            <process version="2" elapsed="0.0" archived="true" attempts="1"
+             datetime="2012-11-06T16:18:58-0800" status="waiting" priority="50" name="technical-metadata"/>
+          </workflow>
+        eos
+      end
+      it { is_expected.to be_expedited }
     end
   end
 
   describe 'active?' do
-    it 'returns true if there are any non-archived rows' do
-      xml = <<-eos
-      <?xml version="1.0" encoding="UTF-8"?>
-      <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
-        <process lifecycle="submitted" elapsed="0.0" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
-        <process version="2" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:58-0800" status="waiting" priority="50" name="technical-metadata"/>
-      </workflow>
-      eos
+    context 'when there are any non-archived rows' do
+      let(:xml) do
+        <<~eos
+          <?xml version="1.0" encoding="UTF-8"?>
+          <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+            <process lifecycle="submitted" elapsed="0.0" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+            <process version="2" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:58-0800" status="waiting" priority="50" name="technical-metadata"/>
+          </workflow>
+        eos
+      end
 
-      d = Dor::Workflow::Document.new(xml)
-      expect(d.active?).to be_truthy
+      it { is_expected.to be_active }
     end
 
-    it 'returns false if there are only archived rows' do
-      xml = <<-eos
-      <?xml version="1.0" encoding="UTF-8"?>
-      <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
-        <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
-        <process version="2" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:58-0800" status="waiting" priority="50" name="technical-metadata"/>
-      </workflow>
-      eos
+    context 'when there are only archived rows' do
+      let(:xml) do
+        <<~eos
+          <?xml version="1.0" encoding="UTF-8"?>
+          <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+          <process version="2" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:58-0800" status="waiting" priority="50" name="technical-metadata"/>
+          </workflow>
+        eos
+      end
 
-      d = Dor::Workflow::Document.new(xml)
-      expect(d.active?).to be_falsey
+      it { is_expected.not_to be_active }
     end
   end
 
@@ -164,7 +162,7 @@ RSpec.describe Dor::Workflow::Document do
     let(:document) { described_class.new(xml) }
     subject(:solr_doc) { document.to_solr }
     before do
-      allow(document).to receive(:definition).and_return(@wf_definition)
+      allow(document).to receive(:definition).and_return(wf_definition)
     end
     let(:xml) do
       <<-eos
