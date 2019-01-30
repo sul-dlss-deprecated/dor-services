@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Dor::DublinCoreService do
-  let(:item) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
-
   subject(:service) { described_class.new(item) }
+
+  let(:item) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
 
   describe '#ng_xml' do
     subject(:xml) { service.ng_xml }

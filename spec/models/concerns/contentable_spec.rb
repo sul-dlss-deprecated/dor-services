@@ -21,7 +21,7 @@ class SpecNode
 end
 
 describe Dor::Contentable do
-  before(:each) do
+  before do
     stub_config
     Dor.configure do
       content do
@@ -31,9 +31,10 @@ describe Dor::Contentable do
       end
     end
   end
-  after(:each)  { unstub_config }
 
-  before(:each) do
+  after  { unstub_config }
+
+  before do
     @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
     @item.contentMetadata.content = '<?xml version="1.0"?>
     <contentMetadata objectId="druid:ab123cd4567" type="map">
@@ -65,11 +66,13 @@ describe Dor::Contentable do
     allow(Net::SFTP).to receive(:start).and_return(@sftp) # mock sftp obj
     @file = File.new(File.expand_path(file_path))
   end
+
   describe 'add_file' do
     before do
       expect(Deprecation).to receive(:warn)
     end
-    it 'should generate the md5, find the size, attempt to sftp, and call the metadata update' do
+
+    it 'generates the md5, find the size, attempt to sftp, and call the metadata update' do
       @item.add_file(@file, '0001', 'ab123cd4567_descMetadata.xml')
       xml = @item.contentMetadata.ng_xml
       file_node = xml.search('//file[@id=\'ab123cd4567_descMetadata.xml\']')
@@ -85,11 +88,11 @@ describe Dor::Contentable do
         end
       end
     end
-    it 'should raise an exception if the resource doesnt exist' do
+    it 'raises an exception if the resource doesnt exist' do
       expect{ @item.add_file(@file, 'abc0001', 'ab123cd4567_descMetadata.xml') }.to raise_error(RuntimeError)
     end
 
-    it 'should work ok if the object was set up using the old directory structure' do
+    it 'works ok if the object was set up using the old directory structure' do
       allow(@sftp).to receive(:stat!) do |arg|
         raise(Net::SFTP::StatusException.new(@resp, 'sup')) if arg =~ /desc/ || arg =~ /ab123/
       end
@@ -115,7 +118,7 @@ describe Dor::Contentable do
       expect(Deprecation).to receive(:warn)
     end
 
-    it 'should update the md5, sha1, and size for the file, and attempt to ftp it to the workspace' do
+    it 'updates the md5, sha1, and size for the file, and attempt to ftp it to the workspace' do
       @item.replace_file(@file, 'ab123cd4567_00_0001.tif')
       xml = @item.contentMetadata.ng_xml
       file_node = xml.search('//file[@id=\'ab123cd4567_00_0001.tif\']')
@@ -131,7 +134,7 @@ describe Dor::Contentable do
       end
     end
 
-    it 'should raise an exception if there isnt a matching file record in the metadata' do
+    it 'raises an exception if there isnt a matching file record in the metadata' do
       expect{ @item.replace_file(@file, 'abcdab123cd4567_00_0001.tif') }.to raise_error(StandardError)
     end
   end
@@ -140,7 +143,8 @@ describe Dor::Contentable do
     let(:filename) { 'old_file' }
     let(:item_version) { 2 }
     let(:preserved_file_content) { 'expected content' }
-    it 'should get the file content' do
+
+    it 'gets the file content' do
       expect(Sdr::Client).to receive(:get_preserved_file_content).with(@item.id, filename, item_version).and_return(preserved_file_content)
       expect(Deprecation).to receive(:warn)
       returned_content = @item.get_preserved_file(filename, item_version)
@@ -149,7 +153,7 @@ describe Dor::Contentable do
   end
 
   describe 'get_file' do
-    it 'should fetch the file' do
+    it 'fetches the file' do
       data_file = File.new(File.join(fixture_dir, 'ab123cd4567_descMetadata.xml'))
       expect(@sftp).to receive(:download!).and_return(data_file.read)
       expect(Deprecation).to receive(:warn)
@@ -163,7 +167,7 @@ describe Dor::Contentable do
       expect(Deprecation).to receive(:warn)
     end
 
-    it 'should attempt to rename the file in the workspace and update the metadata' do
+    it 'attempts to rename the file in the workspace and update the metadata' do
       expect(@sftp).to receive(:rename!)
       @item.rename_file('ab123cd4567_05_0001.jp2', 'test.jp2')
     end
@@ -174,7 +178,7 @@ describe Dor::Contentable do
       expect(Deprecation).to receive(:warn)
     end
 
-    it 'should use sftp to remove the file and update the metadata' do
+    it 'uses sftp to remove the file and update the metadata' do
       expect(@sftp).to receive(:remove!)
       @item.remove_file('ab123cd4567_05_0001.jp2')
     end
@@ -188,13 +192,13 @@ describe Dor::Contentable do
       expect(DruidTools::Druid).to receive(:new).and_return(@mock_druid_obj)
     end
 
-    it 'should return true if the file is in the workspace for the object' do
+    it 'returns true if the file is in the workspace for the object' do
       expect(@mock_druid_obj).to receive(:find_content).with(@mock_filename).and_return('this is not nil')
-      expect(@item.is_file_in_workspace?(@mock_filename)).to be_truthy
+      expect(@item).to be_is_file_in_workspace(@mock_filename)
     end
-    it 'should return false if the file is not in the workspace for the object' do
+    it 'returns false if the file is not in the workspace for the object' do
       expect(@mock_druid_obj).to receive(:find_content).with(@mock_filename).and_return(nil)
-      expect(@item.is_file_in_workspace?(@mock_filename)).to be_falsey
+      expect(@item).not_to be_is_file_in_workspace(@mock_filename)
     end
   end
 
@@ -221,7 +225,7 @@ describe Dor::Contentable do
       node
     end
 
-    before(:each) do
+    before do
       allow(Dor::SearchService).to receive(:sdr_graveyard_apo_druid)
       allow(ActiveFedora::Base).to receive(:find) { graveyard_apo }
     end
@@ -229,7 +233,7 @@ describe Dor::Contentable do
     it 'removes existing isMemberOf and isGovernedBy relationships' do
       expect(obj.relationships(:is_member_of_collection)).to be_empty
       expect(obj.relationships(:is_member_of)).to be_empty
-      expect(obj.relationships(:is_governed_by)).to_not include('info:fedora/old:apo')
+      expect(obj.relationships(:is_governed_by)).not_to include('info:fedora/old:apo')
     end
 
     it 'adds an isGovernedBy relationship to the SDR graveyard APO' do
@@ -257,7 +261,7 @@ describe Dor::Contentable do
       node
     end
 
-    before(:each) do
+    before do
       allow(ActiveFedora::Base).to receive(:find) { child_obj }
     end
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Dor::RegistrationService do
-  after(:each) { unstub_config }
+  after { unstub_config }
 
   before do
     stub_config
@@ -15,7 +15,7 @@ RSpec.describe Dor::RegistrationService do
   end
 
   context '#register_object' do
-    before :each do
+    before do
       allow(Dor::SuriService).to receive(:mint_id).and_return(@pid)
       allow(Dor::SearchService).to receive(:query_by_id).and_return([])
       allow(ActiveFedora::Base).to receive(:connection_for_pid).and_return(@mock_repo)
@@ -143,25 +143,26 @@ RSpec.describe Dor::RegistrationService do
       it 'registering a duplicate PID' do
         @params[:pid] = @pid
         expect(Dor::SearchService).to receive(:query_by_id).with('druid:ab123cd4567').and_return([@pid])
-        expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::DuplicateIdError)
+        expect { described_class.register_object(@params) }.to raise_error(Dor::DuplicateIdError)
       end
       it 'registering a duplicate source ID' do
         expect(Dor::SearchService).to receive(:query_by_id).with('barcode:9191919191').and_return([@pid])
-        expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::DuplicateIdError)
+        expect { described_class.register_object(@params) }.to raise_error(Dor::DuplicateIdError)
       end
       it 'missing a required parameter' do
         @params.delete(:object_type)
-        expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::ParameterError)
+        expect { described_class.register_object(@params) }.to raise_error(Dor::ParameterError)
       end
       context 'empty label' do
-        before :each do
+        before do
           @params[:label] = ''
         end
+
         it 'and metadata_source is label or none' do
           @params[:metadata_source] = 'label'
-          expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::ParameterError)
+          expect { described_class.register_object(@params) }.to raise_error(Dor::ParameterError)
           @params[:metadata_source] = 'none'
-          expect { Dor::RegistrationService.register_object(@params) }.to raise_error(Dor::ParameterError)
+          expect { described_class.register_object(@params) }.to raise_error(Dor::ParameterError)
         end
       end
     end
@@ -176,13 +177,14 @@ RSpec.describe Dor::RegistrationService do
     end
 
     describe 'should set rightsMetadata based on the APO default (but replace read rights) even if it is a collection' do
-      before :each do
+      before do
         @coll = Dor::Collection.new(pid: @pid)
         expect(Dor::Collection).to receive(:new).with(pid: @pid).and_return(@coll)
         @params[:rights] = 'stanford'
         @params[:object_type] = 'collection'
-        @obj = Dor::RegistrationService.register_object(@params)
+        @obj = described_class.register_object(@params)
       end
+
       it_behaves_like 'common registration'
       it 'produces rightsMetadata XML' do
         expect(@obj.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to stanford_xml
@@ -190,14 +192,15 @@ RSpec.describe Dor::RegistrationService do
     end
 
     context 'common cases' do
-      before :each do
+      before do
         expect_any_instance_of(Dor::Item).to receive(:save).and_return(true)
       end
 
       describe 'object registration' do
-        before :each do
-          @obj = Dor::RegistrationService.register_object(@params)
+        before do
+          @obj = described_class.register_object(@params)
         end
+
         it_behaves_like 'common registration'
         it 'produces correct rels_ext' do
           expect(@obj.rels_ext.to_rels_ext).to be_equivalent_to <<-XML
@@ -216,11 +219,12 @@ RSpec.describe Dor::RegistrationService do
       end
 
       describe 'collection registration' do
-        before :each do
+        before do
           @params[:collection] = 'druid:something'
           expect(Dor::Collection).to receive(:find).with('druid:something').and_return(mock_collection)
-          @obj = Dor::RegistrationService.register_object(@params)
+          @obj = described_class.register_object(@params)
         end
+
         it_behaves_like 'common registration'
         it 'produces correct RELS-EXT' do
           expect(@obj.datastreams['RELS-EXT'].to_rels_ext).to be_equivalent_to <<-XML
@@ -242,40 +246,47 @@ RSpec.describe Dor::RegistrationService do
 
       context 'when passed rights=' do
         describe 'default' do
-          before :each do
+          before do
             @params[:rights] = 'default'
-            @obj = Dor::RegistrationService.register_object(@params)
+            @obj = described_class.register_object(@params)
           end
+
           it_behaves_like 'common registration'
           it 'sets rightsMetadata based on the APO default' do
             expect(@obj.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to stanford_xml
           end
         end
+
         describe 'world' do
-          before :each do
+          before do
             @params[:rights] = 'world'
-            @obj = Dor::RegistrationService.register_object(@params)
+            @obj = described_class.register_object(@params)
           end
+
           it_behaves_like 'common registration'
           it 'sets rightsMetadata based on the APO default but replace read rights to be world' do
             expect(@obj.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to world_xml
           end
         end
+
         describe 'loc:music' do
-          before :each do
+          before do
             @params[:rights] = 'loc:music'
-            @obj = Dor::RegistrationService.register_object(@params)
+            @obj = described_class.register_object(@params)
           end
+
           it_behaves_like 'common registration'
           it 'sets rightsMetadata based on the APO default but replace read rights to be loc:music' do
             expect(@obj.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to location_music_xml
           end
         end
+
         describe 'stanford no-download' do
-          before :each do
+          before do
             @params[:rights] = 'stanford-nd'
-            @obj = Dor::RegistrationService.register_object(@params)
+            @obj = described_class.register_object(@params)
           end
+
           it_behaves_like 'common registration'
           it 'sets rightsMetadata based on the APO default but replace read rights to be group stanford with the no-download rule' do
             expect(@obj.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to stanford_no_download_xml
@@ -286,10 +297,11 @@ RSpec.describe Dor::RegistrationService do
       describe 'when passed metadata_source=label' do
         before do
           @params[:metadata_source] = 'label'
-          @obj = Dor::RegistrationService.register_object(@params)
+          @obj = described_class.register_object(@params)
         end
+
         it_behaves_like 'common registration'
-        it 'should set the descriptive metadata to basic mods using the label as title' do
+        it 'sets the descriptive metadata to basic mods using the label as title' do
           expect(@obj.datastreams['descMetadata'].ng_xml).to be_equivalent_to <<-XML
             <?xml version="1.0"?>
             <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.6" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd">
@@ -304,7 +316,7 @@ RSpec.describe Dor::RegistrationService do
       it 'truncates label if >= 255 chars' do
         # expect(Dor.logger).to receive(:warn).at_least(:once)
         @params[:label] = 'a' * 256
-        obj = Dor::RegistrationService.register_object(@params)
+        obj = described_class.register_object(@params)
         expect(obj.label).to eq('a' * 254)
       end
 
@@ -312,13 +324,13 @@ RSpec.describe Dor::RegistrationService do
         expect(Dor::CreateWorkflowService).to receive(:create_workflow).with(Dor::Item, name: 'digitizationWF', create_ds: false, priority: 50)
         @params[:workflow_priority] = 50
         @params[:initiate_workflow] = 'digitizationWF'
-        Dor::RegistrationService.register_object(@params)
+        described_class.register_object(@params)
       end
     end # context common cases
   end
 
   context '#create_from_request' do
-    before :each do
+    before do
       allow(Dor::SuriService).to receive(:mint_id).and_return(@pid)
       allow(Dor::SearchService).to receive(:query_by_id).and_return([])
       allow(ActiveFedora::Base).to receive(:connection_for_pid).and_return(@mock_repo)
@@ -335,25 +347,25 @@ RSpec.describe Dor::RegistrationService do
     end
 
     it 'source_id may have one or more colons' do
-      expect { Dor::RegistrationService.create_from_request(@params) }.not_to raise_error
+      expect { described_class.create_from_request(@params) }.not_to raise_error
       @params[:source_id] = 'sul:SOMETHING-http://www.example.org'
-      expect { Dor::RegistrationService.create_from_request(@params) }.not_to raise_error
+      expect { described_class.create_from_request(@params) }.not_to raise_error
     end
 
     it 'source_id must have at least one colon' do
       # Execution gets into IdentityMetadataDS code for specific error
       @params[:source_id] = 'no-colon'
       exp_regex = /Source ID must follow the format 'namespace:value'/
-      expect { Dor::RegistrationService.create_from_request(@params) }.to raise_error(ArgumentError, exp_regex)
+      expect { described_class.create_from_request(@params) }.to raise_error(ArgumentError, exp_regex)
     end
 
     it 'other_id may have any number of colons' do
       @params[:other_id] = 'no-colon'
-      expect { Dor::RegistrationService.create_from_request(@params) }.not_to raise_error
+      expect { described_class.create_from_request(@params) }.not_to raise_error
       @params[:other_id] = 'catkey:000'
-      expect { Dor::RegistrationService.create_from_request(@params) }.not_to raise_error
+      expect { described_class.create_from_request(@params) }.not_to raise_error
       @params[:other_id] = 'catkey:oop:sie'
-      expect { Dor::RegistrationService.create_from_request(@params) }.not_to raise_error
+      expect { described_class.create_from_request(@params) }.not_to raise_error
     end
   end # create_from_request
 end

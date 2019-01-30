@@ -14,8 +14,9 @@ describe Dor::Preservable do
 
   let(:event_text) { 'DOR Common Accessioning' }
 
-  before(:each) { stub_config   }
-  after(:each)  { unstub_config }
+  before { stub_config   }
+
+  after  { unstub_config }
 
   describe 'provenanceMetadata' do
     it 'builds the provenanceMetadata datastream' do

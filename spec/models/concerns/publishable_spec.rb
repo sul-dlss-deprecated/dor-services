@@ -42,10 +42,12 @@ RSpec.describe Dor::Publishable do
   end
 
   describe '#thumb' do
+    subject { item.thumb }
+
     before do
       expect(Deprecation).to receive(:warn)
     end
-    subject { item.thumb }
+
     let(:service) { instance_double(Dor::ThumbnailService, thumb: 'Test Result') }
 
     it 'calls the thumbnail service' do
@@ -56,17 +58,18 @@ RSpec.describe Dor::Publishable do
 
   describe '#thumb_url' do
     before do
-      expect(Deprecation).to receive(:warn).at_least(1).times
+      expect(Deprecation).to receive(:warn).at_least(:once)
     end
-    it 'should return nil if there is no contentMetadata datastream' do
+
+    it 'returns nil if there is no contentMetadata datastream' do
       collection = instantiate_fixture('druid:ab123cd4567', Dor::Collection)
       expect(collection.thumb_url).to be_nil
     end
 
-    it 'should return nil if there is no contentMetadata' do
+    it 'returns nil if there is no contentMetadata' do
       expect(item.thumb_url).to be_nil
     end
-    it 'should find the first image as the thumb when no specific thumbs are specified' do
+    it 'finds the first image as the thumb when no specific thumbs are specified' do
       item.contentMetadata.content = <<-XML
         <?xml version="1.0"?>
         <contentMetadata objectId="druid:ab123cd4567" type="image">
@@ -78,7 +81,7 @@ RSpec.describe Dor::Publishable do
       expect(item.thumb_url).to eq('https://stacks.stanford.edu/image/iiif/ab123cd4567%2Fab123cd4567_05_0001/full/!400,400/0/default.jpg')
     end
 
-    it 'should find a page resource marked as thumb with the thumb attribute when there is a resource thumb specified but not the thumb attribute' do
+    it 'finds a page resource marked as thumb with the thumb attribute when there is a resource thumb specified but not the thumb attribute' do
       item.contentMetadata.content = <<-XML
         <?xml version="1.0"?>
         <contentMetadata objectId="druid:ab123cd4567" type="file">
@@ -97,7 +100,7 @@ RSpec.describe Dor::Publishable do
       expect(item.encoded_thumb).to eq('ab123cd4567%2Fab123cd4567_05_0002.jp2')
       expect(item.thumb_url).to eq('https://stacks.stanford.edu/image/iiif/ab123cd4567%2Fab123cd4567_05_0002/full/!400,400/0/default.jpg')
     end
-    it 'should find an externalFile image resource when there are no other images' do
+    it 'finds an externalFile image resource when there are no other images' do
       item.contentMetadata.content = <<-XML
         <?xml version="1.0"?>
         <contentMetadata objectId="druid:ab123cd4567" type="file">
@@ -112,7 +115,7 @@ RSpec.describe Dor::Publishable do
       expect(item.encoded_thumb).to eq('cg767mn6478%2F2542A.jp2')
       expect(item.thumb_url).to eq('https://stacks.stanford.edu/image/iiif/cg767mn6478%2F2542A/full/!400,400/0/default.jpg')
     end
-    it 'should find an externalFile page resource when there are no other images, even if objectId attribute is missing druid prefix' do
+    it 'finds an externalFile page resource when there are no other images, even if objectId attribute is missing druid prefix' do
       item.contentMetadata.content = <<-XML
         <?xml version="1.0"?>
         <contentMetadata objectId="druid:ab123cd4567" type="file">
@@ -127,7 +130,7 @@ RSpec.describe Dor::Publishable do
       expect(item.encoded_thumb).to eq('cg767mn6478%2F2542A.jp2')
       expect(item.thumb_url).to eq('https://stacks.stanford.edu/image/iiif/cg767mn6478%2F2542A/full/!400,400/0/default.jpg')
     end
-    it 'should find an explicit externalFile thumb resource before another image resource, and encode the space' do
+    it 'finds an explicit externalFile thumb resource before another image resource, and encode the space' do
       item.contentMetadata.content = <<-XML
         <?xml version="1.0"?>
         <contentMetadata objectId="druid:ab123cd4567" type="file">
@@ -142,7 +145,7 @@ RSpec.describe Dor::Publishable do
       expect(item.encoded_thumb).to eq('cg767mn6478%2F2542A%20withspace.jp2')
       expect(item.thumb_url).to eq('https://stacks.stanford.edu/image/iiif/cg767mn6478%2F2542A%20withspace/full/!400,400/0/default.jpg')
     end
-    it 'should return nil if no thumb is identified' do
+    it 'returns nil if no thumb is identified' do
       item.contentMetadata.content = <<-XML
         <?xml version="1.0"?>
         <contentMetadata objectId="druid:ab123cd4567" type="file">
@@ -154,7 +157,7 @@ RSpec.describe Dor::Publishable do
       expect(item.encoded_thumb).to be_nil
       expect(item.thumb_url).to be_nil
     end
-    it 'should return nil if there is no contentMetadata datastream at all' do
+    it 'returns nil if there is no contentMetadata datastream at all' do
       item.datastreams['contentMetadata'] = nil
       expect(item.encoded_thumb).to be_nil
       expect(item.thumb_url).to be_nil

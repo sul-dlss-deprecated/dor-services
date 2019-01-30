@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Dor::Configuration do
   let(:config) do
-    Dor::Configuration.new(YAML.load(File.read(File.expand_path('../config/config_defaults.yml', __dir__))))
+    described_class.new(YAML.load(File.read(File.expand_path('../config/config_defaults.yml', __dir__))))
   end
 
   it 'configures the Dor::WorkflowService when Dor::Config.configure is called' do

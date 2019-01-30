@@ -3,10 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Dor::WorkflowDs do
-  before(:each) { stub_config }
-  after(:each)  { unstub_config }
+  before { stub_config }
 
-  before(:each) do
+  after  { unstub_config }
+
+  before do
     @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
   end
 
@@ -15,7 +16,7 @@ RSpec.describe Dor::WorkflowDs do
       expect(Deprecation).to receive(:warn).twice
     end
 
-    it 'should build a Document object if there is xml' do
+    it 'builds a Document object if there is xml' do
       xml = '<?xml version="1.0" encoding="UTF-8"?>
       <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
         <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
@@ -44,7 +45,7 @@ RSpec.describe Dor::WorkflowDs do
       accessionWF = @item.workflows['accessionWF']
       expect(accessionWF).not_to be_nil
     end
-    it 'should return nil if the xml is empty' do
+    it 'returns nil if the xml is empty' do
       allow(Dor::Config.workflow.client).to receive(:get_workflow_xml).and_return('')
       expect(@item.workflows['accessionWF']).to be_nil
     end
@@ -55,7 +56,7 @@ RSpec.describe Dor::WorkflowDs do
       expect(Deprecation).to receive(:warn)
     end
 
-    it 'should build a Document object if there is xml' do
+    it 'builds a Document object if there is xml' do
       xml = '<?xml version="1.0" encoding="UTF-8"?>
        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
@@ -84,11 +85,11 @@ RSpec.describe Dor::WorkflowDs do
       accessionWF = @item.workflows.get_workflow 'accessionWF'
       expect(accessionWF).not_to be_nil
     end
-    it 'should return nil if the xml is empty' do
+    it 'returns nil if the xml is empty' do
       allow(Dor::Config.workflow.client).to receive(:get_workflow_xml).and_return('')
       expect(@item.workflows.get_workflow('accessionWF')).to be_nil
     end
-    it 'should request the workflow for a different repository if one is specified' do
+    it 'requests the workflow for a different repository if one is specified' do
       expect(Dor::Config.workflow.client).to receive(:get_workflow_xml).with('sdr', 'druid:ab123cd4567', 'accessionWF').and_return('')
       @item.workflows.get_workflow('accessionWF', 'sdr')
     end

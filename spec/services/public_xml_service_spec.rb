@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Dor::PublicXmlService do
-  let(:item) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
-
   subject(:service) { described_class.new(item) }
+
+  let(:item) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
 
   describe '#to_xml' do
     subject(:xml) { service.to_xml }
@@ -68,6 +68,7 @@ RSpec.describe Dor::PublicXmlService do
       allow(OpenURI).to receive(:open_uri).with('https://purl-test.stanford.edu/ab123cd4567.xml').and_return('<xml/>')
       WebMock.disable_net_connect!
     end
+
     let(:ng_xml) { Nokogiri::XML(xml) }
 
     context 'when there are no release tags' do
@@ -83,6 +84,7 @@ RSpec.describe Dor::PublicXmlService do
 
     context 'produces xml with' do
       let(:now) { Time.now.utc }
+
       before do
         allow(Time).to receive(:now).and_return(now)
       end
@@ -117,6 +119,7 @@ RSpec.describe Dor::PublicXmlService do
             </contentMetadata>
           XML
         end
+
         it 'include contentMetadata' do
           expect(ng_xml.at_xpath('/publicObject/contentMetadata')).to be
         end
@@ -223,6 +226,7 @@ RSpec.describe Dor::PublicXmlService do
           </contentMetadata>
           EOXML
         end
+
         before do
           item.contentMetadata.content = <<-EOXML
           <contentMetadata objectId="hj097bm8879" type="map">
@@ -252,6 +256,7 @@ RSpec.describe Dor::PublicXmlService do
           </contentMetadata>
           EOXML
         end
+
         it 'raises an error' do
           # generate publicObject XML and verify that the content metadata portion is invalid
           expect { xml }.to raise_error(Dor::DataError)

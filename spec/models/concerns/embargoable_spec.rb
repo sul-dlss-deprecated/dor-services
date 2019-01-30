@@ -51,11 +51,12 @@ describe Dor::Embargoable do
     EOXML
   end
 
-  before :each do
+  before do
     stub_config
     allow(ActiveFedora).to receive(:fedora).and_return(double('frepo').as_null_object)
   end
-  after :each do
+
+  after do
     unstub_config
   end
 
@@ -80,7 +81,7 @@ describe Dor::Embargoable do
 
     it 'sets the embargo status to released and indicates it is not embargoed' do
       expect(embargo_ds.status).to eq('released')
-      expect(embargo_item.embargoed?).to be_falsey
+      expect(embargo_item).not_to be_embargoed
     end
 
     context 'rightsMetadata modifications' do
@@ -168,7 +169,7 @@ describe Dor::Embargoable do
     end
 
     it 'indicates the item is embargoed' do
-      expect(embargo_item.embargoed?).to be_truthy
+      expect(embargo_item).to be_embargoed
     end
 
     it 'updates embargo date' do

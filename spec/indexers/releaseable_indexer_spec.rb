@@ -9,11 +9,13 @@ RSpec.describe Dor::ReleasableIndexer do
     end
   end
   before { stub_config }
+
   after { unstub_config }
+
   let(:obj) { instantiate_fixture('druid:ab123cd4567', model) }
 
   describe 'to_solr' do
-    let(:doc) { Dor::ReleasableIndexer.new(resource: obj).to_solr }
+    let(:doc) { described_class.new(resource: obj).to_solr }
 
     it 'indexes release tags' do
       released_for_info = {

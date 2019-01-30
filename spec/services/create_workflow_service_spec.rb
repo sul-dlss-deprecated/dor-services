@@ -5,9 +5,11 @@ require 'spec_helper'
 RSpec.describe Dor::CreateWorkflowService do
   describe '.create_workflow' do
     subject(:create_workflow) { described_class.create_workflow(item, name: 'accessionWF') }
+
     before do
       allow(item).to receive(:admin_policy_object).and_return(apo)
     end
+
     let(:apo) { instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject) }
     let(:item) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
 
@@ -20,8 +22,9 @@ RSpec.describe Dor::CreateWorkflowService do
   end
 
   describe '#default_workflow_lane' do
-    let(:item) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
     subject { described_class.new(item).send(:default_workflow_lane) }
+
+    let(:item) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
 
     context 'when the object has an APO' do
       before do
@@ -42,6 +45,7 @@ RSpec.describe Dor::CreateWorkflowService do
 
       context 'without administrativeMetadata' do
         let(:apo) { instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject) }
+
         before do
           allow(apo.datastreams).to receive(:[]).with('administrativeMetadata').and_return(nil)
         end
@@ -64,6 +68,7 @@ RSpec.describe Dor::CreateWorkflowService do
           i.admin_policy_object = instantiate_fixture('druid:zt570tx3016', Dor::AdminPolicyObject)
         end
       end
+
       it { is_expected.to eq 'default' }
     end
   end

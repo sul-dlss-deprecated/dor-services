@@ -7,6 +7,7 @@ RSpec.describe Dor::EditableIndexer do
     Dor::AdminPolicyObject
   end
   before { stub_config }
+
   after { unstub_config }
   # @apo = instantiate_fixture('druid_zt570tx3016', Dor::AdminPolicyObject)
 

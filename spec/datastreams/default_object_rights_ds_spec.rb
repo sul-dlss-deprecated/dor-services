@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Dor::DefaultObjectRightsDS do
-  before(:each) do
+  before do
     subject.content = <<~XML
       <rightsMetadata objectId="druid">
          <copyright>
@@ -135,7 +135,7 @@ describe Dor::DefaultObjectRightsDS do
    </use>
 </rightsMetadata>
 '
-      default_object_rights = Dor::DefaultObjectRightsDS.new
+      default_object_rights = described_class.new
       pretty_xml = default_object_rights.prettify(Nokogiri::XML(subject.content))
       expect(pretty_xml).to eq(expected_result)
     end

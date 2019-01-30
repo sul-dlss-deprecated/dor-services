@@ -21,7 +21,7 @@ describe Dor::WorkflowDefinitionDs do
     EOF
   end
 
-  let(:ds) { Dor::WorkflowDefinitionDs.from_xml(dsxml) }
+  let(:ds) { described_class.from_xml(dsxml) }
 
   context 'Marshalling to and from a Fedora Datastream' do
     it 'creates itself from xml' do

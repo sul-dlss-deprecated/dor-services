@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Dor::Item do
   describe '#to_solr' do
     subject(:doc) { item.to_solr }
+
     let(:item) { described_class.new(pid: 'foo:123') }
 
     before { allow(Dor::Config.workflow.client).to receive(:get_milestones).and_return([]) }
@@ -20,7 +21,8 @@ RSpec.describe Dor::Item do
       allow(obj).to receive(:update_index)
       obj.save!
     end
-    let(:reloaded) { Dor::Item.find(obj.pid) }
+
+    let(:reloaded) { described_class.find(obj.pid) }
     let(:workflows) { reloaded.workflows }
 
     it 'is set automatically' do

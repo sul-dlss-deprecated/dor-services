@@ -97,6 +97,7 @@ RSpec.describe 'Dor::Releaseable' do
     END_OF_HTML
                                                               )
   end
+
   after do
     unstub_config
   end

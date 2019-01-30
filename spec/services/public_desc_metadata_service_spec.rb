@@ -3,10 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Dor::PublicDescMetadataService do
+  subject(:service) { described_class.new(obj) }
+
   before { stub_config }
+
   after { unstub_config }
 
-  subject(:service) { described_class.new(obj) }
   let(:obj) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
 
   describe '#ng_xml' do
@@ -363,6 +365,7 @@ RSpec.describe Dor::PublicDescMetadataService do
             node.parent.remove
           end
         end
+
         it 'adds a relatedItem node for the collection' do
           collections      = public_mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
           collection_title = public_mods.search('//mods:relatedItem/mods:titleInfo/mods:title')

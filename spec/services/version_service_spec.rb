@@ -17,7 +17,7 @@ RSpec.describe Dor::VersionService do
   let(:vmd_ds) { obj.datastreams['versionMetadata'] }
   let(:ev_ds) { obj.datastreams['events'] }
 
-  before(:each) do
+  before do
     allow(obj).to receive(:pid).and_return(druid)
 
     allow(obj.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)

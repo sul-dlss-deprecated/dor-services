@@ -16,6 +16,7 @@ end
 
 RSpec.describe Dor::PublishMetadataService do
   before { stub_config }
+
   after { unstub_config }
 
   let(:item) do
@@ -75,7 +76,7 @@ RSpec.describe Dor::PublishMetadataService do
         stub_request(:delete, 'example.com/purl/purls/ab123cd4567')
       end
 
-      after(:each) do
+      after do
         FileUtils.remove_entry purl_root
         Dor::Config.pop!
       end
@@ -94,11 +95,11 @@ RSpec.describe Dor::PublishMetadataService do
         # create druid tree and dummy content in purl root
         druid1 = DruidTools::Druid.new item.pid, purl_root
         druid1.mkdir
-        expect(druid1.deletes_record_exists?).to be_falsey # deletes record not there yet
+        expect(druid1).not_to be_deletes_record_exists # deletes record not there yet
         File.open(File.join(druid1.path, 'tmpfile'), 'w') { |f| f.write 'junk' }
         service.publish
-        expect(File).to_not exist(druid1.path) # it should now be gone
-        expect(druid1.deletes_record_exists?).to be_truthy # deletes record created
+        expect(File).not_to exist(druid1.path) # it should now be gone
+        expect(druid1).to be_deletes_record_exists # deletes record created
       end
     end
 
@@ -125,13 +126,13 @@ RSpec.describe Dor::PublishMetadataService do
 
       context 'with an item' do
         before do
-          expect_any_instance_of(Dor::PublishMetadataService).to receive(:transfer_to_document_store).with(/<identityMetadata/, 'identityMetadata')
-          expect_any_instance_of(Dor::PublishMetadataService).to receive(:transfer_to_document_store).with(/<contentMetadata/, 'contentMetadata')
-          expect_any_instance_of(Dor::PublishMetadataService).to receive(:transfer_to_document_store).with(/<rightsMetadata/, 'rightsMetadata')
-          expect_any_instance_of(Dor::PublishMetadataService).to receive(:transfer_to_document_store).with(/<oai_dc:dc/, 'dc')
-          expect_any_instance_of(Dor::PublishMetadataService).to receive(:transfer_to_document_store).with(/<publicObject/, 'public')
-          expect_any_instance_of(Dor::PublishMetadataService).to receive(:transfer_to_document_store).with(/<mods:mods/, 'mods')
-          expect_any_instance_of(Dor::PublishMetadataService).to receive(:publish_notify_on_success).with(no_args)
+          expect_any_instance_of(described_class).to receive(:transfer_to_document_store).with(/<identityMetadata/, 'identityMetadata')
+          expect_any_instance_of(described_class).to receive(:transfer_to_document_store).with(/<contentMetadata/, 'contentMetadata')
+          expect_any_instance_of(described_class).to receive(:transfer_to_document_store).with(/<rightsMetadata/, 'rightsMetadata')
+          expect_any_instance_of(described_class).to receive(:transfer_to_document_store).with(/<oai_dc:dc/, 'dc')
+          expect_any_instance_of(described_class).to receive(:transfer_to_document_store).with(/<publicObject/, 'public')
+          expect_any_instance_of(described_class).to receive(:transfer_to_document_store).with(/<mods:mods/, 'mods')
+          expect_any_instance_of(described_class).to receive(:publish_notify_on_success).with(no_args)
         end
 
         it 'identityMetadta, contentMetadata, rightsMetadata, generated dublin core, and public xml' do
@@ -159,13 +160,13 @@ RSpec.describe Dor::PublishMetadataService do
         end
 
         before do
-          expect_any_instance_of(Dor::PublishMetadataService).to receive(:transfer_to_document_store).with(/<identityMetadata/, 'identityMetadata')
-          expect_any_instance_of(Dor::PublishMetadataService).not_to receive(:transfer_to_document_store).with(/<contentMetadata/, 'contentMetadata')
-          expect_any_instance_of(Dor::PublishMetadataService).to receive(:transfer_to_document_store).with(/<rightsMetadata/, 'rightsMetadata')
-          expect_any_instance_of(Dor::PublishMetadataService).to receive(:transfer_to_document_store).with(/<oai_dc:dc/, 'dc')
-          expect_any_instance_of(Dor::PublishMetadataService).to receive(:transfer_to_document_store).with(/<publicObject/, 'public')
-          expect_any_instance_of(Dor::PublishMetadataService).to receive(:transfer_to_document_store).with(/<mods:mods/, 'mods')
-          expect_any_instance_of(Dor::PublishMetadataService).to receive(:publish_notify_on_success).with(no_args)
+          expect_any_instance_of(described_class).to receive(:transfer_to_document_store).with(/<identityMetadata/, 'identityMetadata')
+          expect_any_instance_of(described_class).not_to receive(:transfer_to_document_store).with(/<contentMetadata/, 'contentMetadata')
+          expect_any_instance_of(described_class).to receive(:transfer_to_document_store).with(/<rightsMetadata/, 'rightsMetadata')
+          expect_any_instance_of(described_class).to receive(:transfer_to_document_store).with(/<oai_dc:dc/, 'dc')
+          expect_any_instance_of(described_class).to receive(:transfer_to_document_store).with(/<publicObject/, 'public')
+          expect_any_instance_of(described_class).to receive(:transfer_to_document_store).with(/<mods:mods/, 'mods')
+          expect_any_instance_of(described_class).to receive(:publish_notify_on_success).with(no_args)
         end
 
         it 'ignores missing data' do
@@ -185,6 +186,7 @@ RSpec.describe Dor::PublishMetadataService do
         end
         stub_request(:post, 'example.com/purl/purls/ab123cd4567')
       end
+
       it 'notifies the purl service of the update' do
         notify
         expect(WebMock).to have_requested(:post, 'example.com/purl/purls/ab123cd4567')
@@ -210,37 +212,37 @@ RSpec.describe Dor::PublishMetadataService do
 
       it 'writes empty notification file' do
         expect(File).to receive(:directory?).with(changes_dir).and_return(true)
-        expect(File.exist?(changes_file)).to be_falsey
+        expect(File).not_to exist(changes_file)
         notify
-        expect(File.exist?(changes_file)).to be_truthy
+        expect(File).to exist(changes_file)
       end
 
       it 'writes empty notification file even when given only the base id' do
         expect(File).to receive(:directory?).with(changes_dir).and_return(true)
         allow(item).to receive(:pid).and_return('aa111bb2222')
-        expect(File.exist?(changes_file)).to be_falsey
+        expect(File).not_to exist(changes_file)
         notify
-        expect(File.exist?(changes_file)).to be_truthy
+        expect(File).to exist(changes_file)
       end
 
       it 'removes any associated delete entry' do
         druid1 = DruidTools::Druid.new item.pid, purl_root
         druid1.creates_delete_record # create a deletes record so we confirm it is removed by the publish_notify_on_success method
-        expect(druid1.deletes_record_exists?).to be_truthy # confirm our deletes record is there
+        expect(druid1).to be_deletes_record_exists # confirm our deletes record is there
         notify
-        expect(druid1.deletes_record_exists?).to be_falsey # deletes record not there anymore
-        expect(File.exist?(changes_file)).to be_truthy # changes file is there
+        expect(druid1).not_to be_deletes_record_exists # deletes record not there anymore
+        expect(File).to exist(changes_file) # changes file is there
       end
 
       it 'does not explode if the deletes entry cannot be removed' do
         druid1 = DruidTools::Druid.new item.pid, purl_root
         druid1.creates_delete_record # create a deletes record
-        expect(druid1.deletes_record_exists?).to be_truthy # confirm our deletes record is there
+        expect(druid1).to be_deletes_record_exists # confirm our deletes record is there
         allow(FileUtils).to receive(:rm).and_raise(Errno::EACCES) # prevent the deletes method from running
         expect(Dor.logger).to receive(:warn).with("Access denied while trying to remove .deletes file for #{item.pid}") # we will get a warning
         notify
-        expect(druid1.deletes_record_exists?).to be_truthy # deletes record is still there since it cannot be removed
-        expect(File.exist?(changes_file)).to be_truthy # changes file is there
+        expect(druid1).to be_deletes_record_exists # deletes record is still there since it cannot be removed
+        expect(File).to exist(changes_file) # changes file is there
       end
 
       it 'raises error if misconfigured' do
