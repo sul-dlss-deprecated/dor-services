@@ -56,7 +56,8 @@ module Dor
     def content(refresh = false)
       @content = nil if refresh
       @content ||= Dor::Config.workflow.client.get_workflow_xml 'dor', pid, nil
-    rescue Dor::WorkflowException
+    rescue Dor::WorkflowException => e
+      Dor.logger.warn "Unable to connect to the workflow service #{e}. Falling back to placeholder XML"
       xml = Nokogiri::XML(%(<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<workflows objectId="#{pid}"/>))
       digital_object.datastreams.keys.each do |dsid|
         next unless dsid =~ /WF$/
