@@ -67,7 +67,8 @@ module Dor
         @processes ||=
           if definition
             definition.processes.collect do |process|
-              node = ng_xml.at("/workflow/process[@name = '#{process.name}']")
+              nodes = ng_xml.xpath("/workflow/process[@name = '#{process.name}']")
+              node = nodes.max { |a, b| a.attr('version').to_i <=> b.attr('version').to_i }
               process.update!(node, self)
             end
           else

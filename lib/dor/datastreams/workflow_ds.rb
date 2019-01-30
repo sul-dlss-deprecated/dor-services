@@ -82,9 +82,8 @@ module Dor
       cp.priority.to_i
     end
 
-    def to_solr(solr_doc = {}, *args)
-      # super solr_doc, *args
-      workflows.each { |wf| solr_doc = wf.to_solr(solr_doc, *args) }
+    def to_solr(solr_doc = {}, *_args)
+      # noop - indexing is done by the WorkflowIndexer
       solr_doc
     end
 

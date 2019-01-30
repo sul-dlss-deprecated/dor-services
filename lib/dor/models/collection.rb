@@ -11,7 +11,8 @@ module Dor
       DescribableIndexer,
       IdentifiableIndexer,
       ProcessableIndexer,
-      ReleasableIndexer
+      ReleasableIndexer,
+      WorkflowIndexer
     )
   end
 end

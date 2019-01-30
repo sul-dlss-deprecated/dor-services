@@ -18,7 +18,8 @@ module Dor
       DescribableIndexer,
       IdentifiableIndexer,
       ProcessableIndexer,
-      ReleasableIndexer
+      ReleasableIndexer,
+      WorkflowIndexer
     )
 
     has_metadata name: 'technicalMetadata', type: TechnicalMetadataDS, label: 'Technical Metadata', control_group: 'M'
