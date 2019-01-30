@@ -108,7 +108,12 @@ RSpec.describe Dor::AdminPolicyObject do
 
   describe 'use_statement' do
     it 'finds the use statement' do
-      expect(@apo.use_statement).to eq('Rights are owned by Stanford University Libraries. All Rights Reserved. This work is protected by copyright law. No part of the materials may be derived, copied, photocopied, reproduced, translated or reduced to any electronic medium or machine readable form, in whole or in part, without specific permission from the copyright holder. To access this content or to request reproduction permission, please send a written request to speccollref@stanford.edu.')
+      expect(@apo.use_statement).to eq('Rights are owned by Stanford University Libraries. ' \
+        'All Rights Reserved. This work is protected by copyright law. No part of the ' \
+        'materials may be derived, copied, photocopied, reproduced, translated or reduced ' \
+        'to any electronic medium or machine readable form, in whole or in part, without ' \
+        'specific permission from the copyright holder. To access this content or to ' \
+        'request reproduction permission, please send a written request to speccollref@stanford.edu.')
     end
     it 'does not fail on an item with an empty datastream' do
       expect(@empty_item.use_statement).to eq('')
