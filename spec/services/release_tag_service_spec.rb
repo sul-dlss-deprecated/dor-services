@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Dor::ReleaseTagService, :vcr do
   before { stub_config }
+
   after { Dor::Config.pop! }
 
   let(:item) { instantiate_fixture('druid:bb004bn8654', Dor::Item) }
@@ -23,11 +24,13 @@ RSpec.describe Dor::ReleaseTagService, :vcr do
 
     describe '#newest_release_tag_in_an_array' do
       subject { releases.send(:newest_release_tag_in_an_array, dummy_tags) }
+
       it { is_expected.to eq dummy_tags[1] }
     end
 
     describe '#newest_release_tag' do
       subject { releases.newest_release_tag(dummy_hash) }
+
       let(:dummy_hash) { { 'Revs' => dummy_tags, 'FRDA' => dummy_tags } }
 
       it { is_expected.to eq('Revs' => dummy_tags[1], 'FRDA' => dummy_tags[1]) }
@@ -96,6 +99,7 @@ RSpec.describe Dor::ReleaseTagService, :vcr do
   # If these tests fail, check not just the logic, but also the specific tags
   describe 'handling tags on objects and determining release status' do
     let(:item) { instantiate_fixture('druid:vs298kg2555', Dor::Item) }
+
     it 'uses only the most recent self tag to determine if an item is released, with no release tags on the collection' do
       VCR.use_cassette('should_use_only_the_most_recent_self_tag_to_determine_if_an_item_is_released_with_no_release_tags_on_the_collection') do
         expect(releases.released_for(skip_live_purl: false)['Kurita']['release']).to be_truthy
@@ -147,6 +151,7 @@ RSpec.describe Dor::ReleaseTagService, :vcr do
 
   describe '#form_purl_url' do
     subject { releases.send(:form_purl_url) }
+
     it { is_expected.to eq "https://#{Dor::Config.stacks.document_cache_host}/bb004bn8654.xml" }
   end
 

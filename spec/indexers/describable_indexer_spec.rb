@@ -14,6 +14,7 @@ RSpec.describe Dor::DescribableIndexer do
     end
   end
   before { stub_config }
+
   after { unstub_config }
 
   let(:obj) { instantiate_fixture('druid:ab123cd4567', model) }

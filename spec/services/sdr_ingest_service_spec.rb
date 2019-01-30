@@ -30,8 +30,8 @@ RSpec.describe Dor::SdrIngestService do
   end
 
   it 'can find the fixtures workspace and export folders' do
-    expect(File.directory?(Dor::Config.sdr.local_workspace_root)).to be_truthy
-    expect(File.directory?(Dor::Config.sdr.local_export_home)).to be_truthy
+    expect(File).to be_directory(Dor::Config.sdr.local_workspace_root)
+    expect(File).to be_directory(Dor::Config.sdr.local_export_home)
   end
 
   describe 'get_datastream_content' do
@@ -40,23 +40,25 @@ RSpec.describe Dor::SdrIngestService do
       @mock_item = double('item')
       @mock_datastream = double('datastream')
     end
+
     it 'retrieves content of a required datastream' do
       metadata_string = '<metadata/>'
       expect(@mock_datastream).to receive(:new?).and_return(false)
       expect(@mock_datastream).to receive(:content).and_return(metadata_string)
       expect(@mock_item).to receive(:datastreams).exactly(3).times.and_return(@ds_name => @mock_datastream)
-      expect(Dor::SdrIngestService.get_datastream_content(@mock_item, @ds_name, 'required')).to eq metadata_string
+      expect(described_class.get_datastream_content(@mock_item, @ds_name, 'required')).to eq metadata_string
     end
     context 'when datastream is empty or missing' do
-      before :each do
+      before do
         expect(@mock_datastream).not_to receive(:content)
         expect(@mock_item).to receive(:datastreams).and_return(@ds_name => @mock_datastream)
       end
+
       it 'returns nil if datastream was optional' do
-        expect(Dor::SdrIngestService.get_datastream_content(@mock_item, 'dummy', 'optional')).to be_nil
+        expect(described_class.get_datastream_content(@mock_item, 'dummy', 'optional')).to be_nil
       end
       it 'raises exception if datastream was required' do
-        expect{ Dor::SdrIngestService.get_datastream_content(@mock_item, 'dummy', 'required') }.to raise_exception(RuntimeError)
+        expect{ described_class.get_datastream_content(@mock_item, 'dummy', 'required') }.to raise_exception(RuntimeError)
       end
     end
   end
@@ -69,12 +71,13 @@ RSpec.describe Dor::SdrIngestService do
       allow(@dor_item).to receive(:pid).and_return(druid)
       signature_catalog = Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
       @metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
-      expect(Dor::SdrIngestService).to receive(:get_signature_catalog).with(druid).and_return(signature_catalog)
-      expect(Dor::SdrIngestService).to receive(:extract_datastreams).with(@dor_item, an_instance_of(DruidTools::Druid)).and_return(@metadata_dir)
+      expect(described_class).to receive(:get_signature_catalog).with(druid).and_return(signature_catalog)
+      expect(described_class).to receive(:extract_datastreams).with(@dor_item, an_instance_of(DruidTools::Druid)).and_return(@metadata_dir)
       @files = []
     end
+
     specify 'with content changes' do
-      Dor::SdrIngestService.transfer(@dor_item)
+      described_class.transfer(@dor_item)
       @fixtures.join('export/dd116zh0343').find { |f| @files << f.relative_path_from(@fixtures).to_s }
       expect(@files.sort).to eq([
                                   'export/dd116zh0343',
@@ -105,8 +108,8 @@ RSpec.describe Dor::SdrIngestService do
     end
     specify 'with no change in content' do
       v1_content_metadata = @fixtures.join('sdr_repo/dd116zh0343/v0001/data/metadata/contentMetadata.xml')
-      expect(Dor::SdrIngestService).to receive(:get_content_metadata).with(@metadata_dir).and_return(v1_content_metadata.read)
-      Dor::SdrIngestService.transfer(@dor_item)
+      expect(described_class).to receive(:get_content_metadata).with(@metadata_dir).and_return(v1_content_metadata.read)
+      described_class.transfer(@dor_item)
       @fixtures.join('export/dd116zh0343').find { |f| @files << f.relative_path_from(@fixtures).to_s }
       expect(@files.sort).to eq([
                                   'export/dd116zh0343',
@@ -142,15 +145,15 @@ RSpec.describe Dor::SdrIngestService do
     expect(metadata_file).to receive(:open).at_least(5).times
     # Dor::SdrIngestService.stub(:get_datastream_content).and_return('<metadata/>')
     metadata_string = '<metadata/>'
-    expect(Dor::SdrIngestService).to receive(:get_datastream_content).with(dor_item, 'contentMetadata', 'required').once.and_return(metadata_string)
-    expect(Dor::SdrIngestService).to receive(:get_datastream_content).with(dor_item, 'descMetadata', 'required').once.and_return(metadata_string)
-    expect(Dor::SdrIngestService).to receive(:get_datastream_content).with(dor_item, 'identityMetadata', 'required').once.and_return(metadata_string)
-    expect(Dor::SdrIngestService).to receive(:get_datastream_content).with(dor_item, 'provenanceMetadata', 'required').once.and_return(metadata_string)
-    expect(Dor::SdrIngestService).to receive(:get_datastream_content).with(dor_item, 'relationshipMetadata', 'required').once.and_return(metadata_string)
-    expect(Dor::SdrIngestService).to receive(:get_datastream_content).with(dor_item, 'technicalMetadata', 'required').once.and_return(metadata_string)
-    expect(Dor::SdrIngestService).to receive(:get_datastream_content).with(dor_item, 'sourceMetadata', 'optional').once.and_return(metadata_string)
-    expect(Dor::SdrIngestService).to receive(:get_datastream_content).with(dor_item, 'rightsMetadata', 'optional').once.and_return(metadata_string)
-    Dor::SdrIngestService.extract_datastreams(dor_item, workspace)
+    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'contentMetadata', 'required').once.and_return(metadata_string)
+    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'descMetadata', 'required').once.and_return(metadata_string)
+    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'identityMetadata', 'required').once.and_return(metadata_string)
+    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'provenanceMetadata', 'required').once.and_return(metadata_string)
+    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'relationshipMetadata', 'required').once.and_return(metadata_string)
+    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'technicalMetadata', 'required').once.and_return(metadata_string)
+    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'sourceMetadata', 'optional').once.and_return(metadata_string)
+    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'rightsMetadata', 'optional').once.and_return(metadata_string)
+    described_class.extract_datastreams(dor_item, workspace)
   end
 
   specify 'get_version_inventory' do
@@ -160,9 +163,9 @@ RSpec.describe Dor::SdrIngestService do
     version_inventory = Moab::FileInventory.new
     version_inventory.groups << Moab::FileGroup.new(group_id: 'content')
     metadata_group = Moab::FileGroup.new(group_id: 'metadata')
-    expect(Dor::SdrIngestService).to receive(:get_content_inventory).with(metadata_dir, druid, version_id).and_return(version_inventory)
-    expect(Dor::SdrIngestService).to receive(:get_metadata_file_group).with(metadata_dir).and_return(metadata_group)
-    result = Dor::SdrIngestService.get_version_inventory(metadata_dir, druid, version_id)
+    expect(described_class).to receive(:get_content_inventory).with(metadata_dir, druid, version_id).and_return(version_inventory)
+    expect(described_class).to receive(:get_metadata_file_group).with(metadata_dir).and_return(metadata_group)
+    result = described_class.get_version_inventory(metadata_dir, druid, version_id)
     expect(result).to be_instance_of Moab::FileInventory
     expect(result.groups.size).to eq 2
   end
@@ -172,7 +175,7 @@ RSpec.describe Dor::SdrIngestService do
     druid = 'druid:ab123cd4567'
     version_id = 2
 
-    version_inventory = Dor::SdrIngestService.get_content_inventory(metadata_dir, druid, version_id)
+    version_inventory = described_class.get_content_inventory(metadata_dir, druid, version_id)
     expect(version_inventory).to be_instance_of Moab::FileInventory
     expect(version_inventory.version_id).to eq 2
     content_group = version_inventory.groups[0]
@@ -183,18 +186,18 @@ RSpec.describe Dor::SdrIngestService do
 
     # if no content metadata
     metadata_dir = @fixtures.join('workspace/ab/123/cd/4567/ab123cd4567')
-    version_inventory = Dor::SdrIngestService.get_content_inventory(metadata_dir, druid, version_id)
+    version_inventory = described_class.get_content_inventory(metadata_dir, druid, version_id)
     expect(version_inventory.groups.size).to eq 0
   end
 
   specify 'get_content_metadata' do
     metadata_dir = @fixtures.join('workspace/ab/123/cd/4567/ab123cd4567/metadata')
-    content_metadata = Dor::SdrIngestService.get_content_metadata(metadata_dir)
+    content_metadata = described_class.get_content_metadata(metadata_dir)
     expect(content_metadata).to match(/<contentMetadata /)
 
     # if no content metadata
     metadata_dir = @fixtures.join('workspace/ab/123/cd/4567/ab123cd4567')
-    content_metadata = Dor::SdrIngestService.get_content_metadata(metadata_dir)
+    content_metadata = described_class.get_content_metadata(metadata_dir)
     expect(content_metadata).to be_nil
   end
 
@@ -203,26 +206,26 @@ RSpec.describe Dor::SdrIngestService do
     file_group = double(Moab::FileGroup)
     expect(Moab::FileGroup).to receive(:new).with(group_id: 'metadata').and_return(file_group)
     expect(file_group).to receive(:group_from_directory).with(metadata_dir)
-    Dor::SdrIngestService.get_metadata_file_group(metadata_dir)
+    described_class.get_metadata_file_group(metadata_dir)
   end
 
   specify 'verify_version_id' do
-    expect(Dor::SdrIngestService.verify_version_id('/mypath/myfile', 2, 2)).to be_truthy
-    expect{ Dor::SdrIngestService.verify_version_id('/mypath/myfile', 1, 2) }.to raise_exception('Version mismatch in /mypath/myfile, expected 1, found 2')
+    expect(described_class.verify_version_id('/mypath/myfile', 2, 2)).to be_truthy
+    expect{ described_class.verify_version_id('/mypath/myfile', 1, 2) }.to raise_exception('Version mismatch in /mypath/myfile, expected 1, found 2')
   end
 
   specify 'vmfile_version_id' do
     metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
     vmfile = metadata_dir.join('versionMetadata.xml')
-    expect(Dor::SdrIngestService.vmfile_version_id(vmfile)).to eq 2
+    expect(described_class.vmfile_version_id(vmfile)).to eq 2
   end
 
   specify 'verify_pathname' do
     metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
-    expect(Dor::SdrIngestService.verify_pathname(metadata_dir)).to be_truthy
+    expect(described_class.verify_pathname(metadata_dir)).to be_truthy
     vmfile = metadata_dir.join('versionMetadata.xml')
-    expect(Dor::SdrIngestService.verify_pathname(vmfile)).to be_truthy
+    expect(described_class.verify_pathname(vmfile)).to be_truthy
     badfile = metadata_dir.join('badfile.xml')
-    expect{ Dor::SdrIngestService.verify_pathname(badfile) }.to raise_exception(/badfile.xml not found/)
+    expect{ described_class.verify_pathname(badfile) }.to raise_exception(/badfile.xml not found/)
   end
 end

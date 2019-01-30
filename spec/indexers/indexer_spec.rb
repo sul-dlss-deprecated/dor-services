@@ -7,7 +7,9 @@ RSpec.describe Dor::CompositeIndexer do
     Dor::Abstract
   end
   before { stub_config }
+
   after { unstub_config }
+
   let(:obj) { instantiate_fixture('druid:ab123cd4567', model) }
   let(:indexer) do
     described_class.new(
@@ -23,6 +25,7 @@ RSpec.describe Dor::CompositeIndexer do
         allow_any_instance_of(Dor::StatusService).to receive(:milestones).and_return({})
         obj.datastreams['descMetadata'].content = read_fixture('bs646cd8717_mods.xml')
       end
+
       let(:doc) { indexer.new(resource: obj).to_solr }
 
       it 'searchworks date-fu: temporal periods and pub_dates' do

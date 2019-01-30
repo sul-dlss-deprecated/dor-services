@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Dor::Workflow::Document do
+  subject(:document) { described_class.new(xml) }
+
   let(:wf_definition) { instance_double(Dor::WorkflowDefinitionDs, processes: wf_definition_procs) }
   let(:wf_definition_procs) do
     [
@@ -12,9 +14,12 @@ RSpec.describe Dor::Workflow::Document do
       Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step4, 'sequence' => '4')
     ]
   end
-  subject(:document) { described_class.new(xml) }
+  let(:stub_wfo) { instance_double(Dor::WorkflowObject, definition: wf_definition) }
+
   before do
-    allow(document).to receive(:definition).and_return(wf_definition)
+    # Wipe out the cache
+    described_class.class_variable_set(:@@definitions, {})
+    allow(Dor::WorkflowObject).to receive(:find_by_name).and_return(stub_wfo)
   end
 
   let(:step1) { 'hello' }
@@ -85,6 +90,7 @@ RSpec.describe Dor::Workflow::Document do
         </workflow>
         eos
       end
+
       it 'generates a process list based on the reified workflow which has sequence, not the processes list from the workflow service' do
         expect(processes.length).to eq(4)
         proc = processes.first
@@ -109,7 +115,8 @@ RSpec.describe Dor::Workflow::Document do
           </workflow>
         eos
       end
-      it { is_expected.to_not be_expedited }
+
+      it { is_expected.not_to be_expedited }
     end
 
     context 'when there are incomplete prioritized items' do
@@ -124,6 +131,7 @@ RSpec.describe Dor::Workflow::Document do
           </workflow>
         eos
       end
+
       it { is_expected.to be_expedited }
     end
   end
@@ -159,11 +167,14 @@ RSpec.describe Dor::Workflow::Document do
   end
 
   describe '#to_solr' do
-    let(:document) { described_class.new(xml) }
     subject(:solr_doc) { document.to_solr }
+
+    let(:document) { described_class.new(xml) }
+
     before do
       allow(document).to receive(:definition).and_return(wf_definition)
     end
+
     let(:xml) do
       <<-eos
       <?xml version="1.0" encoding="UTF-8"?>
@@ -211,6 +222,7 @@ RSpec.describe Dor::Workflow::Document do
         </workflow>
         eos
       end
+
       it 'indexes the right workflow status (completed)' do
         expect(solr_doc).to match a_hash_including('workflow_status_ssim' => ['accessionWF|completed|0|dor'])
       end
@@ -232,6 +244,7 @@ RSpec.describe Dor::Workflow::Document do
         </workflow>
         eos
       end
+
       it 'indexes the right workflow status (completed)' do
         expect(solr_doc).to match a_hash_including('workflow_status_ssim' => ['accessionWF|completed|0|dor'])
       end

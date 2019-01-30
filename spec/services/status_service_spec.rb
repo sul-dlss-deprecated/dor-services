@@ -7,7 +7,9 @@ RSpec.describe Dor::StatusService do
 
   describe '#status' do
     subject(:status) { described_class.status(item) }
+
     let(:versionMD) { double(Dor::VersionMetadataDS) }
+
     before do
       expect(item).to receive(:versionMetadata).and_return(versionMD)
       expect(Dor::Config.workflow.client).to receive(:query_lifecycle).and_return(xml)
@@ -27,7 +29,7 @@ RSpec.describe Dor::StatusService do
           </lifecycle>')
         end
 
-        it 'should generate a status string' do
+        it 'generates a status string' do
           expect(versionMD).to receive(:current_version_id).and_return('4')
           expect(status).to eq('v4 In accessioning (described, published)')
         end
@@ -41,7 +43,8 @@ RSpec.describe Dor::StatusService do
           <milestone date="2012-11-06T16:59:39-0800" version="3">published</milestone>
           </lifecycle>')
         end
-        it 'should generate a status string' do
+
+        it 'generates a status string' do
           expect(versionMD).to receive(:current_version_id).and_return('3')
           expect(status).to eq('v3 In accessioning (described, published)')
         end
@@ -68,17 +71,17 @@ RSpec.describe Dor::StatusService do
         </lifecycle>')
       end
 
-      it 'should handle a v2 accessioned object' do
+      it 'handles a v2 accessioned object' do
         expect(versionMD).to receive(:current_version_id).and_return('2')
         expect(status).to eq('v2 Accessioned')
       end
 
-      it 'should give a status of unknown if there are no lifecycles for the current version, indicating malfunction in workflow' do
+      it 'gives a status of unknown if there are no lifecycles for the current version, indicating malfunction in workflow' do
         expect(versionMD).to receive(:current_version_id).and_return('3')
         expect(status).to eq('v3 Unknown Status')
       end
 
-      it 'should include a formatted date/time if one is requested' do
+      it 'includes a formatted date/time if one is requested' do
         expect(versionMD).to receive(:current_version_id).and_return('2')
         expect(described_class.status(item, true)).to eq('v2 Accessioned 2013-10-01 07:11PM')
       end

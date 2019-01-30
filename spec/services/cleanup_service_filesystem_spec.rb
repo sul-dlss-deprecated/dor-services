@@ -12,7 +12,7 @@ describe 'Dor::CleanupService specs that check the file system' do
   let(:druid_1) { 'druid:cd456ef7890' }
   let(:druid_2) { 'druid:cd456gh1234' }
 
-  before(:each) do
+  before do
     Dor::Config.push! do |config|
       config.cleanup.local_workspace_root workspace_dir
       config.cleanup.local_export_home export_dir
@@ -27,7 +27,7 @@ describe 'Dor::CleanupService specs that check the file system' do
     FileUtils.mkdir stacks_dir
   end
 
-  after(:each) do
+  after do
     FileUtils.rm_rf fixture_dir
     Dor::Config.pop!
   end
@@ -42,7 +42,7 @@ describe 'Dor::CleanupService specs that check the file system' do
     let(:item1) { double('item1') }
     let(:item2) { double('item1') }
 
-    before(:each) do
+    before do
       allow(item1).to receive(:druid) { druid_1 }
       allow(item2).to receive(:druid) { druid_2 }
     end
@@ -113,7 +113,7 @@ describe 'Dor::CleanupService specs that check the file system' do
       expect(File).to exist(stacks_dr.path)
 
       Dor::CleanupService.cleanup_stacks druid_1
-      expect(File).to_not exist(stacks_dr.path)
+      expect(File).not_to exist(stacks_dr.path)
     end
   end
 end

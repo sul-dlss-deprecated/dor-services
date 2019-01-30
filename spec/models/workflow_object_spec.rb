@@ -6,22 +6,23 @@ describe Dor::WorkflowObject do
   describe '.initial_workflow' do
     it 'caches the intial workflow xml for subsequent requests' do
       wobj = double('workflow_object').as_null_object
-      expect(Dor::WorkflowObject).to receive(:find_by_name).once.and_return(wobj)
+      expect(described_class).to receive(:find_by_name).once.and_return(wobj)
 
       # First call, object not in cache
-      Dor::WorkflowObject.initial_workflow('accessionWF')
+      described_class.initial_workflow('accessionWF')
       # Second call, object in cache
-      expect(Dor::WorkflowObject.initial_workflow('accessionWF')).to eq(wobj)
+      expect(described_class.initial_workflow('accessionWF')).to eq(wobj)
     end
   end
 
   # TODO: Move to the DataIndexer spec
   describe '#to_solr' do
-    before(:each) { stub_config   }
-    after(:each)  { unstub_config }
+    before { stub_config   }
+
+    after  { unstub_config }
 
     before do
-      @item = instantiate_fixture('druid:ab123cd4567', Dor::WorkflowObject)
+      @item = instantiate_fixture('druid:ab123cd4567', described_class)
       @item.workflowDefinition.content = '<workflow-def id="accessionWF"/>'
     end
 

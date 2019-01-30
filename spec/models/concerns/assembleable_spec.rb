@@ -26,12 +26,12 @@ describe Dor::Assembleable do
     FileUtils.rm_rf(@temp_workspace)
   end
 
-  before(:each) do
+  before do
     allow(ActiveFedora).to receive(:fedora).and_return(double('frepo').as_null_object)
   end
 
   describe '#initialize_workspace' do
-    before(:each) do
+    before do
       @ai = AssembleableItem.new
       allow(@ai).to receive(:pid).and_return('aa123bb7890')
       @druid_path = File.join(@temp_workspace, 'aa', '123', 'bb', '7890', 'aa123bb7890')

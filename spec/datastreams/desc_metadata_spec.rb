@@ -4,8 +4,8 @@ require 'spec_helper'
 
 describe Dor::DescMetadataDS do
   context 'Marshalling to/from a Fedora Datastream' do
-    before(:each) do
-      @dsdoc = Dor::DescMetadataDS.from_xml <<-EOF
+    before do
+      @dsdoc = described_class.from_xml <<-EOF
         <mods xmlns="http://www.loc.gov/mods/v3"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3"
           xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
@@ -36,7 +36,7 @@ describe Dor::DescMetadataDS do
           <subject><topic>Topic2: The Interesting Part!</topic></subject>
         </mods>
       EOF
-      @partial = Dor::DescMetadataDS.from_xml <<-EOF
+      @partial = described_class.from_xml <<-EOF
         <mods xmlns="http://www.loc.gov/mods/v3"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3"
           xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
@@ -63,7 +63,7 @@ describe Dor::DescMetadataDS do
           <subject><topic>Topic2: The Interesting Part!</topic></subject>
         </mods>
       EOF
-      @empty = Dor::DescMetadataDS.from_xml <<-EOF
+      @empty = described_class.from_xml <<-EOF
         <mods xmlns:xlink="http://www.w3.org/1999/xlink"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xmlns="http://www.loc.gov/mods/v3" version="3.3"
@@ -72,7 +72,7 @@ describe Dor::DescMetadataDS do
       EOF
     end
 
-    it 'should get correct values from OM terminology' do
+    it 'gets correct values from OM terminology' do
       expect(@dsdoc.term_values(:abstract)).to eq(['Abstract contents.'])
       expect(@dsdoc.abstract).to eq(['Abstract contents.']) # equivalent accessor
       expect(@dsdoc.subject.geographic).to eq(['First Place', 'Other Place, Nation;'])
@@ -82,7 +82,7 @@ describe Dor::DescMetadataDS do
       expect(@dsdoc.language.languageTerm).to eq(['eng'])
     end
 
-    it 'should solrize correctly' do
+    it 'solrizes correctly' do
       doc = @dsdoc.to_solr
       expect(doc).to match a_hash_including('subject_temporal_tesim'   => ['1890-1910', '20th century', 'another'])
       expect(doc).to match a_hash_including('subject_topic_ssim'       => ['Topic1: Boring Part', 'Topic2: The Interesting Part!'])
@@ -98,19 +98,19 @@ describe Dor::DescMetadataDS do
       @partial.abstract = 'Abstract contents.'
       expect(@partial.to_xml).to be_equivalent_to(@dsdoc.to_xml)
     end
-    it 'should not throw an error when retrieving title_info if titleInfo is missing from the xml' do
+    it 'does not throw an error when retrieving title_info if titleInfo is missing from the xml' do
       expect(@empty.title_info.main_title).to eq([])
     end
   end
 
   context 'Behavior of a freshly initialized Datastream' do
-    it 'should not throw an error when retrieving title_info if the datastream object has yet to have XML content set' do
-      desc_md_datastream = Dor::DescMetadataDS.new
+    it 'does not throw an error when retrieving title_info if the datastream object has yet to have XML content set' do
+      desc_md_datastream = described_class.new
       expect(desc_md_datastream.title_info.main_title).to eq([''])
     end
 
-    it 'should use the expected MODS version' do
-      desc_md_datastream = Dor::DescMetadataDS.new
+    it 'uses the expected MODS version' do
+      desc_md_datastream = described_class.new
       base_xpath = desc_md_datastream.ng_xml.at_xpath('/xmlns:mods', 'mods')
       expect(base_xpath.name).to eq 'mods'
       expect(base_xpath['version']).to eq '3.6'

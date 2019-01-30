@@ -36,20 +36,20 @@ describe Dor::MergeService do
     end
   end
 
-  before(:each) do
+  before do
     Dor::Config.push! do |config|
       config.stacks.local_workspace_root workspace
       config.sdr.local_workspace_root workspace
     end
   end
 
-  after(:each) do
+  after do
     unstub_config
     FileUtils.remove_entry workspace
   end
 
   describe '#copy_workspace_content' do
-    before(:each) do
+    before do
       primary.contentMetadata.content = <<-XML
       <?xml version="1.0"?>
       <contentMetadata objectId="ab123cd0001" type="map">
@@ -96,12 +96,12 @@ describe Dor::MergeService do
       create_tempfile sec_druid_tree.path, 'image_a.jp2'
 
       expect(Deprecation).to receive(:warn)
-      ms = Dor::MergeService.new primary_pid, [secondary_pid], 'some tag'
+      ms = described_class.new primary_pid, [secondary_pid], 'some tag'
       ms.copy_workspace_content
 
       druid_primary = DruidTools::Druid.new primary_pid, Dor::Config.stacks.local_workspace_root
-      expect(druid_primary.find_content('image_a.jp2')).to_not be_nil
-      expect(druid_primary.find_content('image_a_2.jp2')).to_not be_nil
+      expect(druid_primary.find_content('image_a.jp2')).not_to be_nil
+      expect(druid_primary.find_content('image_a_2.jp2')).not_to be_nil
       expect(druid_primary.find_content('image_a_2.jp2')).to match(/image_a_2.jp2/)
     end
   end

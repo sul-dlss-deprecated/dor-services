@@ -33,7 +33,7 @@ describe Dor::CleanupService do
     @tarfile_pathname        = @export_pathname.join(@bag_pathname + '.tar')
   end
 
-  before(:each) do
+  before do
     @workitem_pathname.join('content').mkpath
     @workitem_pathname.join('temp').mkpath
     @bag_pathname.mkpath
@@ -55,45 +55,45 @@ describe Dor::CleanupService do
   end
 
   it 'can find the fixtures workspace and export folders' do
-    expect(File.directory?(Dor::Config.cleanup.local_workspace_root)).to be_truthy
-    expect(File.directory?(Dor::Config.cleanup.local_export_home)).to be_truthy
+    expect(File).to be_directory(Dor::Config.cleanup.local_workspace_root)
+    expect(File).to be_directory(Dor::Config.cleanup.local_export_home)
   end
 
   specify 'Dor::CleanupService.cleanup' do
-    expect(Dor::CleanupService).to receive(:cleanup_export).once.with(@druid)
+    expect(described_class).to receive(:cleanup_export).once.with(@druid)
     mock_item = double('item')
     expect(mock_item).to receive(:druid).and_return(@druid)
-    Dor::CleanupService.cleanup(mock_item)
+    described_class.cleanup(mock_item)
   end
 
   specify 'Dor::CleanupService.cleanup_export' do
-    expect(Dor::CleanupService).to receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567').to_s)
-    expect(Dor::CleanupService).to receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567.tar').to_s)
-    Dor::CleanupService.cleanup_export(@druid)
+    expect(described_class).to receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567').to_s)
+    expect(described_class).to receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567.tar').to_s)
+    described_class.cleanup_export(@druid)
   end
 
   specify 'Dor::CleanupService.remove_branch non-existing branch' do
     @bag_pathname.rmtree if @bag_pathname.exist?
     expect(@bag_pathname).not_to receive(:rmtree)
-    Dor::CleanupService.remove_branch(@bag_pathname)
+    described_class.remove_branch(@bag_pathname)
   end
 
   specify 'Dor::CleanupService.remove_branch existing branch' do
     @bag_pathname.mkpath
-    expect(@bag_pathname.exist?).to be_truthy
+    expect(@bag_pathname).to exist
     expect(@bag_pathname).to receive(:rmtree)
-    Dor::CleanupService.remove_branch(@bag_pathname)
+    described_class.remove_branch(@bag_pathname)
   end
 
   it 'can do a complete cleanup' do
-    expect(@workitem_pathname.join('content').exist?).to be_truthy
-    expect(@bag_pathname.exist?).to be_truthy
-    expect(@tarfile_pathname.exist?).to be_truthy
+    expect(@workitem_pathname.join('content')).to exist
+    expect(@bag_pathname).to exist
+    expect(@tarfile_pathname).to exist
     mock_item = double('item')
     expect(mock_item).to receive(:druid).and_return(@druid)
-    Dor::CleanupService.cleanup(mock_item)
-    expect(@workitem_pathname.parent.parent.parent.parent.exist?).to be_falsey
-    expect(@bag_pathname.exist?).to be_falsey
-    expect(@tarfile_pathname.exist?).to be_falsey
+    described_class.cleanup(mock_item)
+    expect(@workitem_pathname.parent.parent.parent.parent).not_to exist
+    expect(@bag_pathname).not_to exist
+    expect(@tarfile_pathname).not_to exist
   end
 end

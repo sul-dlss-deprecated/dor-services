@@ -20,6 +20,7 @@ RSpec.describe Dor::ShelvingService do
     FileUtils.remove_entry workspace_root
     Dor::Config.pop!
   end
+
   let(:work) { shelvable_item.new(pid: druid) }
   let(:service) { described_class.new work }
 
@@ -48,8 +49,9 @@ RSpec.describe Dor::ShelvingService do
   end
 
   describe '#shelve_diff' do
-    let(:druid) { 'druid:jq937jp0017' }
     subject(:result) { service.send(:shelve_diff) }
+
+    let(:druid) { 'druid:jq937jp0017' }
 
     context 'when contentMetadata exists' do
       it 'retrieves the differences between the current contentMetadata and the previously ingested version' do
@@ -102,6 +104,8 @@ RSpec.describe Dor::ShelvingService do
   end
 
   describe '#workspace_content_dir' do
+    subject { service.send(:workspace_content_dir, content_diff, workspace_druid) }
+
     let(:druid) { 'druid:jq937jp0017' }
     let(:workspace_druid) { DruidTools::Druid.new(druid, Dor::Config.stacks.local_workspace_root) }
 
@@ -114,7 +118,6 @@ RSpec.describe Dor::ShelvingService do
     let(:inventory_diff) { Moab::FileInventoryDifference.parse(inventory_diff_xml.read) }
     let(:content_diff) { inventory_diff.group_difference('content') }
 
-    subject { service.send(:workspace_content_dir, content_diff, workspace_druid) }
     context 'when the manifest files are not in the workspace' do
       it 'raises an error' do
         expect { subject }.to raise_error(RuntimeError, /content dir not found/)
@@ -147,8 +150,10 @@ RSpec.describe Dor::ShelvingService do
   end
 
   describe '#stacks_location' do
-    let(:druid) { 'druid:xy123xy1234' }
     subject(:location) { service.send(:stacks_location) }
+
+    let(:druid) { 'druid:xy123xy1234' }
+
     it 'returns the default stack' do
       work.contentMetadata.content = '<contentMetadata/>'
       expect(location).to eq stacks_root

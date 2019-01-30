@@ -3,10 +3,11 @@
 require 'spec_helper'
 
 describe Dor::ContentMetadataDS do
-  before(:each) { stub_config }
-  after(:each)  { unstub_config }
+  before { stub_config }
 
-  before(:each) do
+  after  { unstub_config }
+
+  before do
     @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
     @item.contentMetadata.content = '<?xml version="1.0"?>
     <contentMetadata objectId="druid:gw177fc7976" type="map" stacks="/specialstack">
@@ -42,7 +43,7 @@ describe Dor::ContentMetadataDS do
   end
 
   describe 'add_resource' do
-    it 'should add a resource with default type="file"' do
+    it 'adds a resource with default type="file"' do
       ret = @cm.add_resource(@files, 'resource', 1)
       expect(ret).to be_a(Nokogiri::XML::Node)
       nodes = @cm.ng_xml.search('//resource[@id=\'resource\']')
@@ -57,12 +58,12 @@ describe Dor::ContentMetadataDS do
       %i[shelve publish preserve].each { |x| expect(resource.attr(x.to_s)).to eq(@file[x]) }
     end
 
-    it 'should raise error if same ID resource is added twice' do
+    it 'raises error if same ID resource is added twice' do
       @cm.add_resource(@files, 'resource', 1)
       expect{ @cm.add_resource(@files, 'resource', 1) }.to raise_error StandardError
     end
 
-    it 'should add multiple resources' do
+    it 'adds multiple resources' do
       more_files = [
         @file.merge(name: 'new_file.tiff', size: '23456', preserve: 'yes'),
         @file.merge(name: 'new_file_thumb.gif', size: '678901', publish: 'yes')
@@ -87,7 +88,7 @@ describe Dor::ContentMetadataDS do
       end
     end
 
-    it 'should add a resource with a type="image"' do
+    it 'adds a resource with a type="image"' do
       @cm.add_resource(@files, 'resource', 1, 'image')
       nodes = @cm.ng_xml.search('//resource[@id=\'resource\']')
       expect(nodes.length).to eq(1)
@@ -97,7 +98,7 @@ describe Dor::ContentMetadataDS do
       expect(node['sequence']).to eq('1')
     end
 
-    it 'should add a resource with a checksum' do
+    it 'adds a resource with a checksum' do
       @files[0][:md5 ] = '123456'
       @files[0][:sha1] = '56789'
       @cm.add_resource(@files, 'resource', 1)
@@ -108,7 +109,7 @@ describe Dor::ContentMetadataDS do
       end
     end
 
-    it 'should add a file with a role="transcription"' do
+    it 'adds a file with a role="transcription"' do
       files = [
         @file.merge(name: 'transcription.txt', role: 'transcription', size: '23456', preserve: 'yes')
       ]
@@ -122,11 +123,11 @@ describe Dor::ContentMetadataDS do
   end
 
   describe 'remove_resource' do
-    it 'should remove the only resource' do
+    it 'removes the only resource' do
       @cm.remove_resource('0001')
       expect(@cm.ng_xml.search('//resource').length).to eq(0)
     end
-    it 'should remove one resource and renumber remaining resources' do
+    it 'removes one resource and renumber remaining resources' do
       @cm.add_resource(@files, 'resource', 1)
       @cm.remove_resource('resource')
       resources = @cm.ng_xml.search('//resource')
@@ -134,14 +135,16 @@ describe Dor::ContentMetadataDS do
       expect(resources.first['sequence']).to eq('1')
     end
   end
+
   describe 'remove_file' do
-    it 'should remove the file' do
+    it 'removes the file' do
       @cm.remove_file('gw177fc7976_00_0001.tif')
       expect(@cm.ng_xml.search('//file').length).to eq(2)
     end
   end
+
   describe 'add_file' do
-    it 'should add a file to the resource' do
+    it 'adds a file to the resource' do
       @cm.add_file(@file.merge(role: 'some-role'), '0001')
       xml = @cm.ng_xml
       hits = xml.search('//resource[@id=\'0001\']/file')
@@ -158,7 +161,7 @@ describe Dor::ContentMetadataDS do
   end
 
   describe 'update_file' do
-    it 'should modify an existing file record' do
+    it 'modifies an existing file record' do
       @cm.update_file(@file.merge(role: 'some-role'), 'gw177fc7976_05_0001.jp2')
       file = @cm.ng_xml.search('//file[@id=\'new_file.jp2\']')
       expect(file.length).to eq(1)
@@ -169,51 +172,56 @@ describe Dor::ContentMetadataDS do
       expect(file['size']).to eq('12345')
       expect(file['role']).to eq('some-role')
     end
-    it 'should error out if there isnt an existing record to modify' do
+    it 'errors out if there isnt an existing record to modify' do
       expect { @cm.update_file(@file, 'gw177fc7976_05_0001_different.jp2') }.to raise_error(StandardError)
     end
   end
+
   describe 'rename_file' do
-    it 'should update the file id' do
+    it 'updates the file id' do
       @cm.rename_file('gw177fc7976_05_0001.jp2', 'test.jp2')
       file = @cm.ng_xml.search('//file[@id=\'test.jp2\']')
       expect(file.length).to eq(1)
     end
   end
+
   describe 'move_resource' do
-    it 'should renumber the resources correctly' do
+    it 'renumbers the resources correctly' do
       @cm.add_resource(@files, 'resource', 1)
       @cm.move_resource('0001', '2')
       skip 'No expectation defined!'
     end
   end
+
   describe 'update resource label' do
-    it 'should update an existing label' do
+    it 'updates an existing label' do
       @cm.update_resource_label '0001', 'an old label'
       @cm.update_resource_label '0001', 'label!'
       labels = @cm.ng_xml.search('//resource[@id=\'0001\']/label')
       expect(labels.length).to eq(1)
       expect(labels.first.content).to eq('label!')
     end
-    it 'should add a new label' do
+    it 'adds a new label' do
       @cm.update_resource_label '0001', 'qbert!'
       labels = @cm.ng_xml.search('//resource[@id=\'0001\']/label')
       expect(labels.length).to eq(1)
       expect(labels.first.content).to eq('qbert!')
     end
   end
+
   describe 'update_resource_type' do
-    it 'should update an existing type' do
+    it 'updates an existing type' do
       @cm.update_resource_type '0001', 'book'
       skip 'No expectation defined!'
     end
   end
 
   describe 'to_solr' do
-    before :each do
+    before do
       @doc = @cm.to_solr
     end
-    it 'should generate required fields' do
+
+    it 'generates required fields' do
       expected = {
         'content_type_ssim' => 'map',
         'content_file_mimetypes_ssim' => ['image/jp2', 'image/gif', 'image/tiff'],
@@ -230,20 +238,23 @@ describe Dor::ContentMetadataDS do
       expect(@doc).to include expected
     end
   end
+
   describe 'set_content_type' do
-    it 'should change the content type and the resource types' do
+    it 'changes the content type and the resource types' do
       @cm.set_content_type 'map', 'image', 'book', 'page'
       expect(@cm.ng_xml.search('//contentMetadata[@type=\'book\']').length).to eq(1)
       expect(@cm.ng_xml.search('//contentMetadata/resource[@type=\'page\']').length).to eq(1)
     end
   end
+
   describe 'get stacks value' do
-    it 'should read the stacks value' do
+    it 'reads the stacks value' do
       expect(@cm.stacks).to eq(['/specialstack'])
     end
   end
+
   describe 'add_virtual_resource' do
-    it 'should add a virtual resource to the target child item' do
+    it 'adds a virtual resource to the target child item' do
       child_druid = 'bb273jy3359'
       child_resource = Nokogiri::XML('
       <resource type="image" sequence="1" id="bb273jy3359_1">
@@ -285,7 +296,7 @@ describe Dor::ContentMetadataDS do
       expect(relationship.first['objectId']).to eq('bb273jy3359')
     end
 
-    it 'should add a virtual resource to the target child item even if it has 2 published files' do
+    it 'adds a virtual resource to the target child item even if it has 2 published files' do
       child_druid = 'bb273jy3359'
       child_resource = Nokogiri::XML('
       <resource type="image" sequence="1" id="bb273jy3359_1">

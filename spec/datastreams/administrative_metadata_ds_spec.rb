@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Dor::AdministrativeMetadataDS do
   context 'defaults terms' do
     it '#default_workflow_lane gets and sets the attribute defaults/initiateWorkflow/@lane' do
-      ds = Dor::AdministrativeMetadataDS.new
+      ds = described_class.new
       ds.default_workflow_lane = 'slow'
 
       expect(ds.to_xml).to be_equivalent_to(<<-XML
@@ -20,7 +20,7 @@ describe Dor::AdministrativeMetadataDS do
     end
 
     it '#default_shelving_path gets and sets the attribute defaults/shelving/@path ' do
-      ds = Dor::AdministrativeMetadataDS.new
+      ds = described_class.new
       ds.default_shelving_path = '/hoover'
 
       expect(ds.to_xml).to be_equivalent_to(<<-XML

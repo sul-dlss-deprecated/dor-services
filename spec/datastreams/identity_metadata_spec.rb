@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Dor::IdentityMetadataDS do
   context 'Marshalling to and from a Fedora Datastream' do
-    before(:each) do
+    before do
       @dsxml = <<-EOF
         <identityMetadata>
           <objectCreator>DOR</objectCreator>
@@ -19,7 +19,7 @@ describe Dor::IdentityMetadataDS do
         </identityMetadata>
       EOF
 
-      @dsdoc = Dor::IdentityMetadataDS.from_xml(@dsxml)
+      @dsdoc = described_class.from_xml(@dsxml)
     end
 
     it 'creates itself from xml' do
@@ -81,6 +81,7 @@ describe Dor::IdentityMetadataDS do
           </identityMetadata>
         EOF
       end
+
       it 'on nil' do
         @dsdoc.sourceId = nil
         expect(@dsdoc.sourceId).to be_nil
@@ -106,7 +107,7 @@ describe Dor::IdentityMetadataDS do
     end
 
     it 'creates a simple default with #new' do
-      new_doc = Dor::IdentityMetadataDS.new nil, 'identityMetadata'
+      new_doc = described_class.new nil, 'identityMetadata'
       expect(new_doc.to_xml).to be_equivalent_to '<identityMetadata/>'
     end
 
@@ -119,7 +120,7 @@ describe Dor::IdentityMetadataDS do
           <tag>Created By : Spec Tests</tag>
         </identityMetadata>
       EOF
-      new_doc = Dor::IdentityMetadataDS.new nil, 'identityMetadata'
+      new_doc = described_class.new nil, 'identityMetadata'
       new_doc.add_value('objectId', 'druid:ab123cd4567')
       new_doc.add_value('otherId', '12345678-abcd-1234-ef01-23456789abcd', 'name' => 'uuid')
       new_doc.add_value('otherId', 'ab123cd4567', 'name' => 'mdtoolkit')

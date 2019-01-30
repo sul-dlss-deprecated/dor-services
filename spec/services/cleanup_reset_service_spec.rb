@@ -26,7 +26,7 @@ describe Dor::CleanupResetService, order: :defined do
   end
 
   context 'cleanup_by_reset_druid' do
-    before :each do
+    before do
       @druid_id = 'cc111cm1111'
       @druid = "druid:#{@druid_id}"
       @base_bag_dir = "#{@export_pathname}/#{@druid_id}_v1"
@@ -38,44 +38,44 @@ describe Dor::CleanupResetService, order: :defined do
       @base_assembly_druid_dir   = @base_assembly_druid_path.to_s
     end
 
-    it 'should remove the reset druid tree from dor workspace and assembly, and reset bag from export' do
+    it 'removes the reset druid tree from dor workspace and assembly, and reset bag from export' do
       create_bag_dir(@druid_id + '_v1')
       create_bag_tar(@druid_id + '_v1')
       create_druid_dir(@druid_id, 1, @workspace_root_pathname.to_s)
       create_druid_dir(@druid_id, nil, @assembly_root_pathname.to_s)
-      expect(File.exist?(@base_bag_dir)).to be_truthy
-      expect(File.exist?(@base_tar_dir)).to be_truthy
-      expect(File.exist?(@base_workspace_druid_dir + '_v1')).to be_truthy
-      expect(File.exist?(@base_assembly_druid_dir)).to be_truthy
+      expect(File).to exist(@base_bag_dir)
+      expect(File).to exist(@base_tar_dir)
+      expect(File).to exist(@base_workspace_druid_dir + '_v1')
+      expect(File).to exist(@base_assembly_druid_dir)
       Dor::CleanupResetService.cleanup_by_reset_druid(@druid)
-      expect(File.exist?(@base_bag_dir)).to be_falsey
-      expect(File.exist?(@base_tar_dir)).to be_falsey
-      expect(File.exist?(@base_workspace_druid_dir + '_v1')).to be_falsey
-      expect(File.exist?(@base_assembly_druid_dir)).to be_falsey
+      expect(File).not_to exist(@base_bag_dir)
+      expect(File).not_to exist(@base_tar_dir)
+      expect(File).not_to exist(@base_workspace_druid_dir + '_v1')
+      expect(File).not_to exist(@base_assembly_druid_dir)
     end
-    it 'should remove the reset druid tree from dor workspace and reset bag from export only, there is no assembly ws' do
+    it 'removes the reset druid tree from dor workspace and reset bag from export only, there is no assembly ws' do
       create_bag_dir(@druid_id + '_v1')
       create_bag_tar(@druid_id + '_v1')
       create_druid_dir(@druid_id, 1, @workspace_root_pathname.to_s)
-      expect(File.exist?(@base_bag_dir)).to be_truthy
-      expect(File.exist?(@base_tar_dir)).to be_truthy
-      expect(File.exist?(@base_workspace_druid_dir + '_v1')).to be_truthy
-      expect(File.exist?(@base_assembly_druid_dir)).to be_falsey
+      expect(File).to exist(@base_bag_dir)
+      expect(File).to exist(@base_tar_dir)
+      expect(File).to exist(@base_workspace_druid_dir + '_v1')
+      expect(File).not_to exist(@base_assembly_druid_dir)
       Dor::CleanupResetService.cleanup_by_reset_druid(@druid)
-      expect(File.exist?(@base_bag_dir)).to be_falsey
-      expect(File.exist?(@base_tar_dir)).to be_falsey
-      expect(File.exist?(@base_workspace_druid_dir + '_v1')).to be_falsey
-      expect(File.exist?(@base_assembly_druid_dir)).to be_falsey
+      expect(File).not_to exist(@base_bag_dir)
+      expect(File).not_to exist(@base_tar_dir)
+      expect(File).not_to exist(@base_workspace_druid_dir + '_v1')
+      expect(File).not_to exist(@base_assembly_druid_dir)
     end
-    it 'should remove the reset druid tree from dor workspace and assembly however they are symlink' do
+    it 'removes the reset druid tree from dor workspace and assembly however they are symlink' do
       create_druid_dir(@druid_id, nil, @assembly_root_pathname.to_s)
       FileUtils.mkdir_p @base_workspace_druid_path.parent
       FileUtils.ln_s(@base_assembly_druid_dir, @base_workspace_druid_dir + '_v1', force: true)
-      expect(File.exist?(@base_workspace_druid_dir + '_v1')).to be_truthy
-      expect(File.exist?(@base_assembly_druid_dir)).to be_truthy
+      expect(File).to exist(@base_workspace_druid_dir + '_v1')
+      expect(File).to exist(@base_assembly_druid_dir)
       Dor::CleanupResetService.cleanup_by_reset_druid(@druid)
-      expect(File.exist?(@base_workspace_druid_dir + '_v1')).to be_falsey
-      expect(File.exist?(@base_assembly_druid_dir)).to be_falsey
+      expect(File).not_to exist(@base_workspace_druid_dir + '_v1')
+      expect(File).not_to exist(@base_assembly_druid_dir)
     end
   end
 
@@ -86,19 +86,19 @@ describe Dor::CleanupResetService, order: :defined do
   ## cc111ck1111 - 1 version with immediate ancestor
   ### cc111ck1112 support the previous version
   context 'cleanup_reset_workspace_content' do
-    it 'should remove the reset directory in workspace' do
+    it 'removes the reset directory in workspace' do
       druid_id = 'cc111ci1111'
       druid = "druid:#{druid_id}"
       create_druid_dir(druid_id, 1, @workspace_root_pathname.to_s)
 
       base_druid_dir = DruidTools::Druid.new(druid, @workspace_root_pathname.to_s).pathname.to_s
       last_version = 1
-      expect(File.exist?(base_druid_dir + '_v1')).to be_truthy
+      expect(File).to exist(base_druid_dir + '_v1')
       Dor::CleanupResetService.cleanup_reset_workspace_content(druid, last_version, @workspace_root_pathname.to_s)
-      expect(File.exist?(base_druid_dir + '_v1')).to be_falsey
+      expect(File).not_to exist(base_druid_dir + '_v1')
     end
 
-    it 'should remove the reset directory and keep the open version' do
+    it 'removes the reset directory and keep the open version' do
       druid_id = 'cc111cj1111'
       druid = "druid:#{druid_id}"
       create_druid_dir(druid_id, 2, @workspace_root_pathname.to_s)
@@ -107,25 +107,25 @@ describe Dor::CleanupResetService, order: :defined do
       base_druid_dir = DruidTools::Druid.new(druid, @workspace_root_pathname.to_s).pathname.to_s
 
       last_version = 2
-      expect(File.exist?(base_druid_dir + '_v2')).to be_truthy
-      expect(File.exist?(base_druid_dir + '_v3')).to be_truthy
+      expect(File).to exist(base_druid_dir + '_v2')
+      expect(File).to exist(base_druid_dir + '_v3')
       Dor::CleanupResetService.cleanup_reset_workspace_content(druid, last_version, @workspace_root_pathname.to_s)
-      expect(File.exist?(base_druid_dir + '_v2')).to be_falsey
-      expect(File.exist?(base_druid_dir + '_v3')).to be_truthy
+      expect(File).not_to exist(base_druid_dir + '_v2')
+      expect(File).to exist(base_druid_dir + '_v3')
     end
-    it 'should remove 1 version with root ancestor' do
+    it 'removes 1 version with root ancestor' do
       druid_id = 'cz111cz1111'
       druid = "druid:#{druid_id}"
       create_druid_dir(druid_id, 1, @workspace_root_pathname.to_s)
       base_druid_dir = DruidTools::Druid.new(druid, @workspace_root_pathname.to_s).pathname.to_s
 
       last_version = 1
-      expect(File.exist?(base_druid_dir + '_v1')).to be_truthy
+      expect(File).to exist(base_druid_dir + '_v1')
       Dor::CleanupResetService.cleanup_reset_workspace_content(druid, last_version, @workspace_root_pathname.to_s)
-      expect(File.exist?(@workspace_root_pathname.join('cz'))).to be_falsey
+      expect(File).not_to exist(@workspace_root_pathname.join('cz'))
     end
 
-    it 'should remove 1 version with immediate ancestor' do
+    it 'removes 1 version with immediate ancestor' do
       druid_id1 = 'cc111ck1111'
       druid_1 = "druid:#{druid_id1}"
       create_druid_dir(druid_id1, 1, @workspace_root_pathname.to_s)
@@ -137,13 +137,13 @@ describe Dor::CleanupResetService, order: :defined do
       base_druid_dir_2 = DruidTools::Druid.new(druid_2, @workspace_root_pathname.to_s).pathname.to_s
 
       last_version = 1
-      expect(File.exist?(base_druid_dir_1 + '_v1')).to be_truthy
-      expect(File.exist?(base_druid_dir_2)).to be_truthy
+      expect(File).to exist(base_druid_dir_1 + '_v1')
+      expect(File).to exist(base_druid_dir_2)
       Dor::CleanupResetService.cleanup_reset_workspace_content(druid_1, last_version, @workspace_root_pathname.to_s)
-      expect(File.exist?(base_druid_dir_1 + '_v1')).to be_falsey
-      expect(File.exist?(base_druid_dir_2)).to be_truthy
-      expect(File.exist?(@workspace_root_pathname.join('cc').join('111').join('ck').join('1111'))).to be_falsey
-      expect(File.exist?(@workspace_root_pathname.join('cc').join('111').join('ck'))).to be_truthy
+      expect(File).not_to exist(base_druid_dir_1 + '_v1')
+      expect(File).to exist(base_druid_dir_2)
+      expect(File).not_to exist(@workspace_root_pathname.join('cc').join('111').join('ck').join('1111'))
+      expect(File).to exist(@workspace_root_pathname.join('cc').join('111').join('ck'))
     end
   end
 
@@ -153,7 +153,7 @@ describe Dor::CleanupResetService, order: :defined do
   ## cc111ch1111 - 1 version (v1) and 1 opened version (v2)
 
   context 'get_reset_dirctories_list' do
-    before(:each) do
+    before do
       @druid_1v = 'cc111cf1111'
       @druid_2v = 'cc111cg1111'
       @druid_1_1v = 'cc111ch1111'
@@ -164,7 +164,7 @@ describe Dor::CleanupResetService, order: :defined do
       create_druid_dir(@druid_1_1v, 2, @workspace_root_pathname.to_s)
     end
 
-    it 'should get one reset directory from workspace' do
+    it 'gets one reset directory from workspace' do
       druid = "druid:#{@druid_1v}"
       base_druid_tree = DruidTools::Druid.new(druid, @workspace_root_pathname.to_s)
       last_version = 1
@@ -174,7 +174,7 @@ describe Dor::CleanupResetService, order: :defined do
       expect(dir_list[0]).to eq expect_dir_path
     end
 
-    it 'should get two reset directories from workspace' do
+    it 'gets two reset directories from workspace' do
       druid = "druid:#{@druid_2v}"
       base_druid_tree = DruidTools::Druid.new(druid, @workspace_root_pathname.to_s)
       last_version = 3
@@ -186,7 +186,7 @@ describe Dor::CleanupResetService, order: :defined do
       expect(dir_list[1]).to eq expect_dir_path_2
     end
 
-    it 'should get one reset directory from workspace and avoid the open version' do
+    it 'gets one reset directory from workspace and avoid the open version' do
       druid = "druid:#{@druid_1_1v}"
       base_druid_tree = DruidTools::Druid.new(druid, @workspace_root_pathname.to_s)
       last_version = 1
@@ -202,25 +202,25 @@ describe Dor::CleanupResetService, order: :defined do
   ## cc111ce1111 - 2 dir opened and versioned and 2 tar opened and reset
   ##
   context 'cleanup_reset_export' do
-    before(:each) do
+    before do
       @druid_1v = 'cc111cd1111'
       create_bag_dir(@druid_1v + '_v1')
       create_bag_tar(@druid_1v + '_v1')
     end
 
-    it 'should remove both bag tar and directory' do
+    it 'removes both bag tar and directory' do
       druid = "druid:#{@druid_1v}"
       base_bag_dir = "#{@export_pathname}/#{@druid_1v}_v1"
-      expect(File.exist?(base_bag_dir)).to be_truthy
-      expect(File.exist?(base_bag_dir + '.tar')).to be_truthy
+      expect(File).to exist(base_bag_dir)
+      expect(File).to exist(base_bag_dir + '.tar')
       Dor::CleanupResetService.cleanup_reset_export(druid, 1)
-      expect(File.exist?(base_bag_dir)).to be_falsey
-      expect(File.exist?(base_bag_dir + '.tar')).to be_falsey
+      expect(File).not_to exist(base_bag_dir)
+      expect(File).not_to exist(base_bag_dir + '.tar')
     end
   end
 
   context 'get_reset_bag_dir_list' do
-    before(:each) do
+    before do
       @druid_1v = 'cc111ca1111'
       @druid_2v = 'cc111cb1111'
       @druid_1_1v = 'cc111cc1111'
@@ -231,7 +231,7 @@ describe Dor::CleanupResetService, order: :defined do
       create_bag_dir(@druid_1_1v)
     end
 
-    it 'should read the bag directory with 1 version' do
+    it 'reads the bag directory with 1 version' do
       base_bag_dir = "#{@export_pathname}/#{@druid_1v}"
       dir_list = Dor::CleanupResetService.get_reset_bag_dir_list(1, base_bag_dir)
       expect_dir_file = "#{base_bag_dir}_v1"
@@ -239,7 +239,7 @@ describe Dor::CleanupResetService, order: :defined do
       expect(dir_list[0]).to eq expect_dir_file
     end
 
-    it 'should return a list of bag directories with 2 versions' do
+    it 'returns a list of bag directories with 2 versions' do
       base_bag_dir = "#{@export_pathname}/#{@druid_2v}"
       dir_list = Dor::CleanupResetService.get_reset_bag_dir_list(3, base_bag_dir)
       expect_dir_file_1 = "#{base_bag_dir}_v2"
@@ -249,7 +249,7 @@ describe Dor::CleanupResetService, order: :defined do
       expect(dir_list[1]).to eq expect_dir_file_2
     end
 
-    it 'should return a list of tars with 1 version and 1 opened version' do
+    it 'returns a list of tars with 1 version and 1 opened version' do
       base_bag_dir = "#{@export_pathname}/#{@druid_1_1v}"
       dir_list = Dor::CleanupResetService.get_reset_bag_dir_list(1, base_bag_dir)
       expect_dir_file = "#{base_bag_dir}_v1"
@@ -259,7 +259,7 @@ describe Dor::CleanupResetService, order: :defined do
   end
 
   context 'get_reset_bag_tar_list' do
-    before(:each) do
+    before do
       @druid_1v = 'cc111ca1111'
       @druid_2v = 'cc111cb1111'
       @druid_1_1v = 'cc111cc1111'
@@ -270,7 +270,7 @@ describe Dor::CleanupResetService, order: :defined do
       create_bag_tar(@druid_1_1v)
     end
 
-    it 'should return a list of tars with 1 version' do
+    it 'returns a list of tars with 1 version' do
       base_bag_dir = "#{@export_pathname}/#{@druid_1v}"
       tar_list = Dor::CleanupResetService.get_reset_bag_tar_list(1, base_bag_dir)
       expect_tar_file = "#{base_bag_dir}_v1.tar"
@@ -278,7 +278,7 @@ describe Dor::CleanupResetService, order: :defined do
       expect(tar_list[0]).to eq expect_tar_file
     end
 
-    it 'should return a list of tars with 2 versions' do
+    it 'returns a list of tars with 2 versions' do
       base_bag_dir = "#{@export_pathname}/#{@druid_2v}"
       tar_list = Dor::CleanupResetService.get_reset_bag_tar_list(3, base_bag_dir)
       expect_tar_file_1 = "#{base_bag_dir}_v2.tar"
@@ -288,7 +288,7 @@ describe Dor::CleanupResetService, order: :defined do
       expect(tar_list[1]).to eq expect_tar_file_2
     end
 
-    it 'should return a list of tars with 1 version and 1 opened version' do
+    it 'returns a list of tars with 1 version and 1 opened version' do
       base_bag_dir = "#{@export_pathname}/#{@druid_1_1v}"
       tar_list = Dor::CleanupResetService.get_reset_bag_tar_list(1, base_bag_dir)
       expect_tar_file = "#{base_bag_dir}_v1.tar"
@@ -298,18 +298,18 @@ describe Dor::CleanupResetService, order: :defined do
   end
 
   context 'cleanup_assembly_content' do
-    it 'should cleanup the assembly workspace' do
+    it 'cleanups the assembly workspace' do
       druid_id = 'ab123cd4567'
       create_druid_dir(druid_id, nil, @assembly_root_pathname.to_s)
-      expect(File.exist?(@assembly_root_pathname.join('ab').join('123').join('cd').join('4567'))).to be_truthy
+      expect(File).to exist(@assembly_root_pathname.join('ab').join('123').join('cd').join('4567'))
       Dor::CleanupResetService.cleanup_assembly_content(druid_id, @assembly_root_pathname.to_s)
-      expect(File.exist?(@assembly_root_pathname.join('ab').join('123').join('cd').join('4567'))).to be_falsey
+      expect(File).not_to exist(@assembly_root_pathname.join('ab').join('123').join('cd').join('4567'))
     end
-    it 'should not do anything if the assembly workspace is empty' do
+    it 'does not do anything if the assembly workspace is empty' do
       druid_id = 'ef123gh4567'
-      expect(File.exist?(@assembly_root_pathname.join('ab').join('123').join('cd').join('4567'))).to be_falsey
-      expect{ Dor::CleanupResetService.cleanup_assembly_content(druid_id, @assembly_root_pathname.to_s) }.to_not raise_error
-      expect(File.exist?(@assembly_root_pathname.join('ab').join('123').join('cd').join('4567'))).to be_falsey
+      expect(File).not_to exist(@assembly_root_pathname.join('ab').join('123').join('cd').join('4567'))
+      expect{ Dor::CleanupResetService.cleanup_assembly_content(druid_id, @assembly_root_pathname.to_s) }.not_to raise_error
+      expect(File).not_to exist(@assembly_root_pathname.join('ab').join('123').join('cd').join('4567'))
     end
   end
 

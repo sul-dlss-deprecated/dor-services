@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Dor::WorkflowIndexer do
-  # before { stub_config }
-  # after { unstub_config }
   let(:obj) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
   let(:indexer) { described_class.new(resource: obj) }
 
@@ -77,6 +75,8 @@ RSpec.describe Dor::WorkflowIndexer do
     end
 
     before do
+      # Wipe out the cache
+      Dor::Workflow::Document.class_variable_set(:@@definitions, {})
       WebMock.disable_net_connect!
       allow(Dor::WorkflowObject).to receive(:find_by_name).and_return(assemblyWF)
       allow(Dor::Config.workflow.client).to receive(:get_workflow_xml).and_return(xml)
@@ -84,6 +84,7 @@ RSpec.describe Dor::WorkflowIndexer do
 
     describe 'workflow_status_ssim' do
       subject { solr_doc['workflow_status_ssim'] }
+
       it { is_expected.to eq ['accessionWF|completed|0|dor', 'assemblyWF|active|1|dor', 'disseminationWF|active|1|dor', 'hydrusAssemblyWF|active|1|dor', 'versioningWF|active|1|dor'] }
     end
   end

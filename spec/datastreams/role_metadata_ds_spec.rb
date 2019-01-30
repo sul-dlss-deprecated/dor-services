@@ -14,7 +14,7 @@ describe Dor::RoleMetadataDS do
         </role>
       </roleMetadata>
       XML
-      ds = Dor::RoleMetadataDS.from_xml xml
+      ds = described_class.from_xml xml
       doc = ds.to_solr
 
       expect(doc['apo_register_permissions_ssim']).to include('workgroup:dlss:dor-admin')
@@ -31,11 +31,11 @@ describe Dor::RoleMetadataDS do
         </role>
       </roleMetadata>
       XML
-      ds = Dor::RoleMetadataDS.from_xml xml
+      ds = described_class.from_xml xml
       doc = ds.to_solr
 
-      expect(doc).to_not have_key('apo_register_permissions_ssim')
-      expect(doc).to_not have_key('apo_register_permissions_tesim')
+      expect(doc).not_to have_key('apo_register_permissions_ssim')
+      expect(doc).not_to have_key('apo_register_permissions_tesim')
     end
   end
 end

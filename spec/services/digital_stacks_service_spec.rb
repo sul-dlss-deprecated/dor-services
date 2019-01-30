@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'moab/stanford'
 
 describe Dor::DigitalStacksService do
-  before(:each) do
+  before do
     @content_diff_reports = Pathname('spec').join('fixtures', 'content_diff_reports')
 
     inventory_diff_xml = @content_diff_reports.join('gj643zf5650-v3-v4.xml')
@@ -28,9 +28,9 @@ describe Dor::DigitalStacksService do
       delete_list = get_delete_list(content_diff)
       expect(delete_list.map { |file| file[0, 2] }).to eq([[:deleted, 'page-3.jpg']])
       delete_list.each do |_change_type, filename, signature|
-        expect(Dor::DigitalStacksService).to receive(:delete_file).with(s.join(filename), signature)
+        expect(described_class).to receive(:delete_file).with(s.join(filename), signature)
       end
-      Dor::DigitalStacksService.remove_from_stacks(s, content_diff)
+      described_class.remove_from_stacks(s, content_diff)
 
       content_diff = @jq937jp0017_content_diff
       delete_list = get_delete_list(content_diff)
@@ -40,9 +40,9 @@ describe Dor::DigitalStacksService do
                                                             [:modified, 'page-1.jpg']
                                                           ])
       delete_list.each do |_change_type, filename, signature|
-        expect(Dor::DigitalStacksService).to receive(:delete_file).with(s.join(filename), signature)
+        expect(described_class).to receive(:delete_file).with(s.join(filename), signature)
       end
-      Dor::DigitalStacksService.remove_from_stacks(s, content_diff)
+      described_class.remove_from_stacks(s, content_diff)
 
       content_diff = @ng782rw8378_content_diff
       delete_list = get_delete_list(content_diff)
@@ -52,9 +52,9 @@ describe Dor::DigitalStacksService do
                                                             [:deleted, 'SUB2_b2000_1.nii.gz']
                                                           ])
       delete_list.each do |_change_type, filename, signature|
-        expect(Dor::DigitalStacksService).to receive(:delete_file).with(s.join(filename), signature)
+        expect(described_class).to receive(:delete_file).with(s.join(filename), signature)
       end
-      Dor::DigitalStacksService.remove_from_stacks(s, content_diff)
+      described_class.remove_from_stacks(s, content_diff)
     end
   end
 
@@ -82,15 +82,15 @@ describe Dor::DigitalStacksService do
                                                           ])
       rename_list.each do |_change_type, oldname, newname, signature|
         tempname = signature.checksums.values.last
-        expect(Dor::DigitalStacksService).to receive(:rename_file).with(s.join(oldname), s.join(tempname), signature)
-        expect(Dor::DigitalStacksService).to receive(:rename_file).with(s.join(tempname), s.join(newname), signature)
+        expect(described_class).to receive(:rename_file).with(s.join(oldname), s.join(tempname), signature)
+        expect(described_class).to receive(:rename_file).with(s.join(tempname), s.join(newname), signature)
       end
-      Dor::DigitalStacksService.rename_in_stacks(s, content_diff)
+      described_class.rename_in_stacks(s, content_diff)
 
       content_diff = @jq937jp0017_content_diff
       rename_list = get_rename_list(content_diff)
       expect(rename_list.map { |file| file[0, 3] }).to eq([])
-      expect{ Dor::DigitalStacksService.rename_in_stacks(s, content_diff) }.not_to raise_error
+      expect{ described_class.rename_in_stacks(s, content_diff) }.not_to raise_error
 
       content_diff = @ng782rw8378_content_diff
       rename_list = get_rename_list(content_diff)
@@ -100,10 +100,10 @@ describe Dor::DigitalStacksService do
                                                           ])
       rename_list.each do |_change_type, oldname, newname, signature|
         tempname = signature.checksums.values.last
-        expect(Dor::DigitalStacksService).to receive(:rename_file).with(s.join(oldname), s.join(tempname), signature)
-        expect(Dor::DigitalStacksService).to receive(:rename_file).with(s.join(tempname), s.join(newname), signature)
+        expect(described_class).to receive(:rename_file).with(s.join(oldname), s.join(tempname), signature)
+        expect(described_class).to receive(:rename_file).with(s.join(tempname), s.join(newname), signature)
       end
-      Dor::DigitalStacksService.rename_in_stacks(s, content_diff)
+      described_class.rename_in_stacks(s, content_diff)
     end
   end
 
@@ -126,17 +126,17 @@ describe Dor::DigitalStacksService do
       shelve_list = get_shelve_list(content_diff)
       expect(shelve_list.map { |file| file[0, 2] }).to eq([[:added, 'page-4.jpg']])
       shelve_list.each do |_change_type, filename, signature|
-        expect(Dor::DigitalStacksService).to receive(:copy_file).with(w.join(filename), s.join(filename), signature)
+        expect(described_class).to receive(:copy_file).with(w.join(filename), s.join(filename), signature)
       end
-      Dor::DigitalStacksService.shelve_to_stacks(w, s, content_diff)
+      described_class.shelve_to_stacks(w, s, content_diff)
 
       content_diff = @jq937jp0017_content_diff
       shelve_list = get_shelve_list(content_diff)
       expect(shelve_list.map { |file| file[0, 2] }).to eq([[:modified, 'page-1.jpg']])
       shelve_list.each do |_change_type, filename, signature|
-        expect(Dor::DigitalStacksService).to receive(:copy_file).with(w.join(filename), s.join(filename), signature)
+        expect(described_class).to receive(:copy_file).with(w.join(filename), s.join(filename), signature)
       end
-      Dor::DigitalStacksService.shelve_to_stacks(w, s, content_diff)
+      described_class.shelve_to_stacks(w, s, content_diff)
 
       content_diff = @ng782rw8378_content_diff
       shelve_list = get_shelve_list(content_diff)
@@ -146,9 +146,9 @@ describe Dor::DigitalStacksService do
                                                             [:copyadded, 'SUB2_b2000_1.bvals']
                                                           ])
       shelve_list.each do |_change_type, filename, signature|
-        expect(Dor::DigitalStacksService).to receive(:copy_file).with(w.join(filename), s.join(filename), signature)
+        expect(described_class).to receive(:copy_file).with(w.join(filename), s.join(filename), signature)
       end
-      Dor::DigitalStacksService.shelve_to_stacks(w, s, content_diff)
+      described_class.shelve_to_stacks(w, s, content_diff)
     end
   end
 
@@ -176,49 +176,49 @@ describe 'file operations' do
   end
 
   describe '.delete_file' do
-    it 'should delete a file, but only if it exists and matches the expected signature' do
+    it 'deletes a file, but only if it exists and matches the expected signature' do
       # if file does not exist
       file_pathname = @tmpdir.join('delete-me.txt')
       moab_signature = Moab::FileSignature.new
-      expect(file_pathname.exist?).to be_falsey
+      expect(file_pathname).not_to exist
       expect(Dor::DigitalStacksService.delete_file(file_pathname, moab_signature)).to be_falsey
       # if file exists, but has unexpected signature
       FileUtils.touch(file_pathname.to_s)
-      expect(file_pathname.exist?).to be_truthy
+      expect(file_pathname).to exist
       expect(Dor::DigitalStacksService.delete_file(file_pathname, moab_signature)).to be_falsey
-      expect(file_pathname.exist?).to be_truthy
+      expect(file_pathname).to exist
       # if file exists, and has expected signature
       moab_signature = Moab::FileSignature.new.signature_from_file(file_pathname)
       expect(Dor::DigitalStacksService.delete_file(file_pathname, moab_signature)).to be_truthy
-      expect(file_pathname.exist?).to be_falsey
+      expect(file_pathname).not_to exist
     end
   end
 
   describe '.rename_file' do
-    it 'should rename a file, but only if it exists and has the expected signature' do
+    it 'renames a file, but only if it exists and has the expected signature' do
       # if file does not exist
       old_pathname = @tmpdir.join('rename-me.txt')
       new_pathname = @tmpdir.join('new-name.txt')
       moab_signature = Moab::FileSignature.new
-      expect(old_pathname.exist?).to be_falsey
-      expect(new_pathname.exist?).to be_falsey
+      expect(old_pathname).not_to exist
+      expect(new_pathname).not_to exist
       expect(Dor::DigitalStacksService.rename_file(old_pathname, new_pathname, moab_signature)).to be_falsey
       # if file exists, but has unexpected signature
       FileUtils.touch(old_pathname.to_s)
-      expect(old_pathname.exist?).to be_truthy
+      expect(old_pathname).to exist
       expect(Dor::DigitalStacksService.rename_file(old_pathname, new_pathname, moab_signature)).to be_falsey
-      expect(old_pathname.exist?).to be_truthy
-      expect(new_pathname.exist?).to be_falsey
+      expect(old_pathname).to exist
+      expect(new_pathname).not_to exist
       # if file exists, and has expected signature
       moab_signature = Moab::FileSignature.new.signature_from_file(old_pathname)
       expect(Dor::DigitalStacksService.rename_file(old_pathname, new_pathname, moab_signature)).to be_truthy
-      expect(old_pathname.exist?).to be_falsey
-      expect(new_pathname.exist?).to be_truthy
+      expect(old_pathname).not_to exist
+      expect(new_pathname).to exist
     end
   end
 
   describe '.copy_file' do
-    it 'should copy a file to stacks, but only if it does not yet exist with the expected signature' do
+    it 'copies a file to stacks, but only if it does not yet exist with the expected signature' do
       # if file does not exist in stacks
       workspace_pathname = @tmpdir.join('copy-me.txt')
       stacks_pathname = @tmpdir.join('stacks-name.txt')
@@ -226,19 +226,19 @@ describe 'file operations' do
       FileUtils.chmod 0o640, workspace_pathname.to_s
       expect(File::Stat.new(workspace_pathname.to_s).mode.to_s(8)).to eq('100640')
       moab_signature = Moab::FileSignature.new.signature_from_file(workspace_pathname)
-      expect(workspace_pathname.exist?).to be_truthy
-      expect(stacks_pathname.exist?).to be_falsey
+      expect(workspace_pathname).to exist
+      expect(stacks_pathname).not_to exist
       expect(Dor::DigitalStacksService.copy_file(workspace_pathname, stacks_pathname, moab_signature)).to be_truthy
       # if file exists, and has expected signature
-      expect(workspace_pathname.exist?).to be_truthy
-      expect(stacks_pathname.exist?).to be_truthy
+      expect(workspace_pathname).to exist
+      expect(stacks_pathname).to exist
       expect(File::Stat.new(stacks_pathname.to_s).mode.to_s(8)).to eq('100644')
       moab_signature = Moab::FileSignature.new.signature_from_file(stacks_pathname)
       expect(Dor::DigitalStacksService.copy_file(workspace_pathname, stacks_pathname, moab_signature)).to be_falsey
       # if file exists, but has unexpected signature
       moab_signature = Moab::FileSignature.new
-      expect(workspace_pathname.exist?).to be_truthy
-      expect(stacks_pathname.exist?).to be_truthy
+      expect(workspace_pathname).to exist
+      expect(stacks_pathname).to exist
       expect(Dor::DigitalStacksService.copy_file(workspace_pathname, stacks_pathname, moab_signature)).to be_truthy
     end
   end
@@ -262,7 +262,7 @@ describe '.prune_stacks_dir' do
     File.open(File.join(item_root, 'somefile'), 'w') { |f| f.write 'junk' }
     Dor::DigitalStacksService.prune_stacks_dir 'druid:aa123bb4567'
     item_pathname = Pathname item_root
-    expect(File).to_not exist(item_pathname)
-    expect(File).to_not exist(item_pathname.parent)
+    expect(File).not_to exist(item_pathname)
+    expect(File).not_to exist(item_pathname.parent)
   end
 end

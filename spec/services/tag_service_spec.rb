@@ -20,13 +20,13 @@ RSpec.describe Dor::TagService do
 
     it 'adds a new tag' do
       add
-      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_truthy
+      expect(item.identityMetadata.tags).to include('sometag : someval')
       expect(item.identityMetadata).to be_changed
     end
 
     it 'raises an exception if there is an existing tag like it' do
       described_class.add(item, 'sometag:someval')
-      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_truthy
+      expect(item.identityMetadata.tags).to include('sometag : someval')
       expect { add }.to raise_error(RuntimeError)
     end
   end
@@ -36,10 +36,10 @@ RSpec.describe Dor::TagService do
 
     it 'updates a tag' do
       described_class.add(item, 'sometag:someval')
-      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_truthy
+      expect(item.identityMetadata.tags).to include('sometag : someval')
       expect(update).to be_truthy
-      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_falsey
-      expect(item.identityMetadata.tags.include?('new : tag')).to be_truthy
+      expect(item.identityMetadata.tags).not_to include('sometag : someval')
+      expect(item.identityMetadata.tags).to include('new : tag')
       expect(item.identityMetadata).to be_changed
     end
 
@@ -54,16 +54,18 @@ RSpec.describe Dor::TagService do
 
     it 'deletes a tag' do
       described_class.add(item, 'sometag:someval')
-      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_truthy
+      expect(item.identityMetadata.tags).to include('sometag : someval')
       expect(remove).to be_truthy
-      expect(item.identityMetadata.tags.include?('sometag : someval')).to be_falsey
+      expect(item.identityMetadata.tags).not_to include('sometag : someval')
       expect(item.identityMetadata).to be_changed
     end
   end
 
   describe '#validate_and_normalize_tag' do
-    let(:service) { described_class.new(item) }
     subject(:invoke) { service.send(:validate_and_normalize_tag, tag_str, existing_tags) }
+
+    let(:service) { described_class.new(item) }
+
     let(:existing_tags) { [] }
 
     context 'when the tag has too few elements' do

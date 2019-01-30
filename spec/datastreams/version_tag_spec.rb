@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Dor::VersionTag do
   describe '.parse' do
     it 'parses a String into a VersionTag object' do
-      t = Dor::VersionTag.parse('1.1.0')
+      t = described_class.parse('1.1.0')
       expect(t.major).to eq(1)
       expect(t.minor).to eq(1)
       expect(t.admin).to eq(0)
@@ -13,7 +13,7 @@ describe Dor::VersionTag do
   end
 
   describe '#increment' do
-    let(:tag) { Dor::VersionTag.parse('1.2.3')  }
+    let(:tag) { described_class.parse('1.2.3')  }
 
     it 'adds 1 to major and zeros out minor and admin when :major is passed in' do
       tag.increment(:major)
@@ -36,14 +36,14 @@ describe Dor::VersionTag do
 
   describe 'ordering' do
     it 'handles <, >, == comparisons' do
-      v1 = Dor::VersionTag.new(1, 1, 0)
-      v2 = Dor::VersionTag.new(1, 1, 2)
+      v1 = described_class.new(1, 1, 0)
+      v2 = described_class.new(1, 1, 2)
       expect(v1).to be < v2
 
-      v3 = Dor::VersionTag.new(0, 1, 1)
+      v3 = described_class.new(0, 1, 1)
       expect(v1).to be > v3
 
-      v4 = Dor::VersionTag.new(1, 1, 0)
+      v4 = described_class.new(1, 1, 0)
       expect(v1).to eq(v4)
     end
   end

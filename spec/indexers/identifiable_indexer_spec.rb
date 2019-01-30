@@ -66,6 +66,7 @@ RSpec.describe Dor::IdentifiableIndexer do
               </rdf:Description>
             </rdf:RDF>)
       end
+
       before do
         allow(obj.datastreams['RELS-EXT']).to receive(:content).and_return(mock_rels_ext_xml)
       end
@@ -87,6 +88,7 @@ RSpec.describe Dor::IdentifiableIndexer do
 
       context 'when related collection and APOs are found' do
         let(:mock_obj) { instance_double(Dor::Item, full_title: 'Test object', tags: '') }
+
         before do
           allow(Dor).to receive(:find).with(mock_rel_druid).and_return(mock_obj)
         end

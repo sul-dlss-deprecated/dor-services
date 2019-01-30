@@ -4,8 +4,8 @@ require 'spec_helper'
 require 'nokogiri'
 
 describe Dor::EmbargoMetadataDS do
-  before :each do
-    @ds = Dor::EmbargoMetadataDS.new nil, 'embargoMetadata'
+  before do
+    @ds = described_class.new nil, 'embargoMetadata'
   end
 
   context 'Marshalling to and from a Fedora Datastream' do
@@ -33,7 +33,7 @@ describe Dor::EmbargoMetadataDS do
     end
 
     it 'creates itself from xml' do
-      ds = Dor::EmbargoMetadataDS.from_xml(dsxml)
+      ds = described_class.from_xml(dsxml)
       expect(ds.term_values(:status)).to eq(['embargoed'])
       expect(ds.term_values(:release_date)).to eq(['2011-10-12T15:47:52-07:00'])
       expect(ds.term_values(:twenty_pct_status)).to eq(['released'])
@@ -54,8 +54,8 @@ describe Dor::EmbargoMetadataDS do
       expect(@ds.to_xml).to be_equivalent_to(emb_xml)
     end
 
-    it 'should solrize correctly' do
-      ds = Dor::EmbargoMetadataDS.from_xml(dsxml)
+    it 'solrizes correctly' do
+      ds = described_class.from_xml(dsxml)
       release_date_field = Solrizer.solr_name('embargo_release', :dateable)
       twenty_pct_field   = Solrizer.solr_name('twenty_pct_visibility_release', :dateable)
       expect(ds.to_solr).to match a_hash_including(release_date_field, twenty_pct_field)
@@ -68,6 +68,7 @@ describe Dor::EmbargoMetadataDS do
     before do
       @ds.status = 'released'
     end
+
     it '= sets status' do
       expect(@ds.term_values(:status)).to eq(['released'])
     end
@@ -84,6 +85,7 @@ describe Dor::EmbargoMetadataDS do
       @t = Time.now.utc - 10
       @ds.release_date = @t
     end
+
     it '= sets releaseDate from a Time object' do
       # does NOT do beginning_of_day truncation, leave that for indexing
       rd = Time.parse(@ds.term_values(:release_date).first)

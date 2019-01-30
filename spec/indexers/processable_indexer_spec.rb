@@ -10,7 +10,9 @@ RSpec.describe Dor::ProcessableIndexer do
   end
 
   before { stub_config }
+
   after { unstub_config }
+
   let(:obj) { instantiate_fixture('druid:ab123cd4567', model) }
   let(:indexer) { described_class.new(resource: obj) }
 
@@ -29,7 +31,7 @@ RSpec.describe Dor::ProcessableIndexer do
         let(:indexer) do
           Dor::CompositeIndexer.new(
             Dor::DataIndexer,
-            Dor::ProcessableIndexer
+            described_class
           ).new(resource: obj)
         end
 

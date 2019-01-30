@@ -7,7 +7,7 @@ describe Dor::MetadataService do
     @specdir = File.join(File.dirname(__FILE__), '..')
   end
 
-  it 'should register a new metadata handler' do
+  it 'registers a new metadata handler' do
     handler = Class.new do
       def fetch(_prefix, identifier)
         identifier
@@ -21,23 +21,23 @@ describe Dor::MetadataService do
         ['test']
       end
     end
-    expect(Dor::MetadataService.register(handler)).to be_a(handler)
-    expect(Dor::MetadataService.known_prefixes).to include(:test)
-    expect(Dor::MetadataService.fetch('test:12345')).to eq('12345')
-    expect(Dor::MetadataService.label_for('test:12345')).to eq('title: 12345')
+    expect(described_class.register(handler)).to be_a(handler)
+    expect(described_class.known_prefixes).to include(:test)
+    expect(described_class.fetch('test:12345')).to eq('12345')
+    expect(described_class.label_for('test:12345')).to eq('title: 12345')
   end
 
-  it 'should raise an exception if an invalid handler is registered' do
+  it 'raises an exception if an invalid handler is registered' do
     handler = Class.new
-    expect { Dor::MetadataService.register(handler) }.to raise_exception(TypeError)
+    expect { described_class.register(handler) }.to raise_exception(TypeError)
   end
 
-  it 'should raise an exception if an unknown metadata type is requested' do
-    expect { Dor::MetadataService.fetch('foo:bar') }.to raise_exception(Dor::MetadataError)
+  it 'raises an exception if an unknown metadata type is requested' do
+    expect { described_class.fetch('foo:bar') }.to raise_exception(Dor::MetadataError)
   end
 
   describe 'Symphony handler' do
-    before :each do
+    before do
       @mods = File.read(File.join(@specdir, 'fixtures', 'mods_record.xml'))
       @mock_resource = double('catalog-resource', get: @mods)
       allow(@mock_resource).to receive(:[]).and_return(@mock_resource)
@@ -46,19 +46,19 @@ describe Dor::MetadataService do
                                                          Dor::Config.metadata.catalog.pass).and_return(@mock_resource)
     end
 
-    it 'should fetch a record based on barcode' do
+    it 'fetches a record based on barcode' do
       expect(@mock_resource).to receive(:[]).with('?barcode=12345')
-      expect(Dor::MetadataService.fetch('barcode:12345')).to be_equivalent_to(@mods)
+      expect(described_class.fetch('barcode:12345')).to be_equivalent_to(@mods)
     end
 
-    it 'should fetch a record based on catkey' do
+    it 'fetches a record based on catkey' do
       expect(@mock_resource).to receive(:[]).with('?catkey=12345')
-      expect(Dor::MetadataService.fetch('catkey:12345')).to be_equivalent_to(@mods)
+      expect(described_class.fetch('catkey:12345')).to be_equivalent_to(@mods)
     end
 
-    it 'should return the MODS title as the label' do
+    it 'returns the MODS title as the label' do
       expect(@mock_resource).to receive(:[]).with('?barcode=12345')
-      expect(Dor::MetadataService.label_for('barcode:12345')).to eq('The isomorphism and thermal properties of the feldspars')
+      expect(described_class.label_for('barcode:12345')).to eq('The isomorphism and thermal properties of the feldspars')
     end
   end
 end

@@ -8,14 +8,14 @@ class GeoableItem < ActiveFedora::Base
 end
 
 describe Dor::Geoable do
-  after(:each) { unstub_config }
+  after { unstub_config }
 
-  before :each do
+  before do
     stub_config
     @item = GeoableItem.new
   end
 
-  it 'should have a geoMetadata datastream' do
+  it 'has a geoMetadata datastream' do
     expect(@item.datastreams['geoMetadata']).to be_a(Dor::GeoMetadataDS)
   end
 
