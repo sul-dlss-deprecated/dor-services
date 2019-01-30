@@ -7,13 +7,18 @@ RSpec.describe Dor::Workflow::Document do
     # stub the wf definition. The workflow document updates the processes in the definition with the values from the xml.
     @wf_definition = double(Dor::WorkflowObject)
     wf_definition_procs = []
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => 'hello', 'lifecycle' => 'lc', 'status' => 'stat', 'sequence' => '1')
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => 'goodbye', 'status' => 'waiting', 'sequence' => '2', 'prerequisite' => ['hello'])
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => 'technical-metadata', 'status' => 'error', 'sequence' => '3')
-    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => 'some-other-step', 'sequence' => '4')
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step1, 'lifecycle' => 'lc', 'status' => 'stat', 'sequence' => '1')
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step2, 'status' => 'waiting', 'sequence' => '2', 'prerequisite' => ['hello'])
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step3, 'status' => 'error', 'sequence' => '3')
+    wf_definition_procs << Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step4, 'sequence' => '4')
 
     allow(@wf_definition).to receive(:processes).and_return(wf_definition_procs)
   end
+
+  let(:step1) { 'hello' }
+  let(:step2) { 'goodbye' }
+  let(:step3) { 'technical-metadata' }
+  let(:step4) { 'some-other-step' }
 
   describe '#processes' do
     let(:document) { described_class.new(xml) }
@@ -47,6 +52,28 @@ RSpec.describe Dor::Workflow::Document do
 
       it 'assigns an owner to each' do
         expect(processes.map(&:owner)).to all(be_present)
+      end
+    end
+
+    context 'when the xml contains a process list with an old version completed' do
+      let(:xml) do
+        <<-eos
+        <?xml version="1.0" encoding="UTF-8"?>
+        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+          <process version="1" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="hello"/>
+          <process version="1" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="goodbye"/>
+          <process version="1" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="technical-metadata"/>
+          <process version="1" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="some-other-step"/>
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="completed" name="hello"/>
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="queued" name="goodbye"/>
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="queued" name="technical-metadata"/>
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="queued" name="some-other-step"/>
+        </workflow>
+        eos
+      end
+
+      it 'returns only the most recent versions' do
+        expect(processes.map(&:version)).to all(eq '2')
       end
     end
 

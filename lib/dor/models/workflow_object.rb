@@ -14,7 +14,8 @@ module Dor
       DataIndexer,
       DescribableIndexer,
       IdentifiableIndexer,
-      ProcessableIndexer
+      ProcessableIndexer,
+      WorkflowIndexer
     )
 
     def self.find_by_name(name)

@@ -90,6 +90,7 @@ module Dor
     autoload :IdentifiableIndexer
     autoload :ProcessableIndexer
     autoload :ReleasableIndexer
+    autoload :WorkflowIndexer
   end
 
   # datastreams
