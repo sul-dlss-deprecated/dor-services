@@ -49,6 +49,7 @@ describe Dor::Preservable do
   end
 
   it 'exports object for sdr ingest' do
+    expect(Deprecation).to receive(:warn)
     expect(Dor::SdrIngestService).to receive(:transfer).with(item, nil)
     item.sdr_ingest_transfer(nil)
   end
