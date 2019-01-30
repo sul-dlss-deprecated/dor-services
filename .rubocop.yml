@@ -28,10 +28,6 @@ Layout/EmptyLineBetweenDefs:
 Metrics/LineLength:
   Max: 200
   IgnoredPatterns: ['\A#'] # ignore comments
-  Exclude:
-    # rights statement is a single string
-    - spec/models/concerns/editable_spec.rb
-    - spec/indexers/editable_indexer_spec.rb
 
 Style/SymbolProc:
   Exclude:

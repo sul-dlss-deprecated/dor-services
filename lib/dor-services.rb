@@ -128,7 +128,6 @@ module Dor
     autoload :Eventable
     autoload :Versionable
     autoload :Contentable
-    autoload :Editable
     autoload :Discoverable
     autoload :Geoable
     autoload :Releaseable

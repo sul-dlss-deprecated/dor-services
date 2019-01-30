@@ -76,7 +76,7 @@ module Dor
       @dra_object ||= Dor::RightsAuth.parse(ng_xml, true)
     end
 
-    # key is the rights type code, used by e.g. RightsMetadataDS#set_read_rights and Editable#default_rights=
+    # key is the rights type code, used by e.g. RightsMetadataDS#set_read_rights and AdminPolicyObject#default_rights=
     # value is the human-readable string, used for indexing, and for things like building select lists in the argo UI.
     def self.valid_rights_types
       RIGHTS_TYPE_CODES.keys
