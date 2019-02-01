@@ -63,15 +63,18 @@ RSpec.describe Dor::SdrIngestService do
     end
   end
 
-  describe 'transfer' do
+  describe '.transfer' do
+    let(:object_client) { instance_double(Dor::Services::Client::Object, sdr: sdr_client) }
+    let(:sdr_client) { instance_double(Dor::Services::Client::SDR, signature_catalog: signature_catalog) }
+    let(:signature_catalog) { Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests')) }
+    let(:druid) { 'druid:dd116zh0343' }
+
     before do
-      druid = 'druid:dd116zh0343'
+      allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
       @dor_item = double('dor_item')
       expect(Dor::CreateWorkflowService).to receive(:create_workflow).with(@dor_item, name: 'preservationIngestWF', create_ds: false)
       allow(@dor_item).to receive(:pid).and_return(druid)
-      signature_catalog = Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests'))
       @metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
-      expect(described_class).to receive(:get_signature_catalog).with(druid).and_return(signature_catalog)
       expect(described_class).to receive(:extract_datastreams).with(@dor_item, an_instance_of(DruidTools::Druid)).and_return(@metadata_dir)
       @files = []
     end
