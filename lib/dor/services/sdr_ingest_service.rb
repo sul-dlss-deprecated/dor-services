@@ -47,7 +47,7 @@ module Dor
     # @param [String] druid The object identifier
     # @return [Moab::SignatureCatalog] the catalog of all files previously ingested
     def self.get_signature_catalog(druid)
-      Sdr::Client.get_signature_catalog(druid)
+      Dor::Services::Client.object(druid).sdr.signature_catalog
     end
 
     # @param [Dor::Item] dor_item The representation of the digital object
