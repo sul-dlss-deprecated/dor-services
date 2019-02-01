@@ -137,6 +137,10 @@ RSpec.describe Dor::Workflow::Document do
   end
 
   describe 'active?' do
+    before do
+      expect(Deprecation).to receive(:warn)
+    end
+
     context 'when there are any non-archived rows' do
       let(:xml) do
         <<~eos
