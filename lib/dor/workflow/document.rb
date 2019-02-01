@@ -3,6 +3,7 @@
 module Dor
   module Workflow
     class Document
+      extend Deprecation
       include SolrDocHelper
       include ::OM::XML::Document
 
@@ -41,6 +42,7 @@ module Dor
       def active?
         ng_xml.at_xpath('/workflow/process[not(@version)]') ? true : false
       end
+      deprecation_deprecate active?: 'Workflow::Document#active? has moved to Argo. This implementation does not work with the new workflow server, which returns all versions'
 
       # @return [Dor::WorkflowDefinitionDs]
       def definition
