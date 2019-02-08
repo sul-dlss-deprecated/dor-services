@@ -32,9 +32,9 @@ RSpec.describe Dor::TechnicalMetadataService do
       @inventory_differences[id] = Moab::FileGroupDifference.new
       @inventory_differences[id].compare_file_groups(repo_content_inventory, work_content_inventory)
       @deltas[id] = @inventory_differences[id].file_deltas
-      @new_files[id] = described_class.get_new_files(@deltas[id])
+      @new_files[id] = described_class.send(:get_new_files, @deltas[id])
       @repo_techmd[id] = fixtures.join('sdr_repo', id, 'v0001', 'data', 'metadata', 'technicalMetadata.xml').read
-      @new_file_techmd[id] = described_class.get_new_technical_metadata(druid, @new_files[id])
+      @new_file_techmd[id] = described_class.send(:get_new_technical_metadata, druid, @new_files[id])
       @expected_techmd[id] = Pathname(druid_tool[id].metadata_dir).join('technicalMetadata.xml').read
     end
   end
@@ -87,7 +87,7 @@ RSpec.describe Dor::TechnicalMetadataService do
         inventory_diff.group_differences << group_diff
         dor_item = instance_double(Dor::Item, contentMetadata: contentMetadata, pid: druid)
         allow(Sdr::Client).to receive(:get_content_diff).with(druid, 'foo', 'all').and_return(inventory_diff)
-        content_group_diff = described_class.get_content_group_diff(dor_item)
+        content_group_diff = described_class.send(:get_content_group_diff, dor_item)
         expect(content_group_diff.to_xml).to eq(group_diff.to_xml)
       end
     end
@@ -95,19 +95,19 @@ RSpec.describe Dor::TechnicalMetadataService do
 
   specify 'Dor::TechnicalMetadataService.get_content_group_diff(dor_item) without contentMetadata' do
     dor_item = instance_double(Dor::Item, contentMetadata: nil)
-    content_group_diff = described_class.get_content_group_diff(dor_item)
+    content_group_diff = described_class.send(:get_content_group_diff, dor_item)
     expect(content_group_diff.difference_count).to be_zero
   end
 
   specify 'Dor::TechnicalMetadataService.get_file_deltas(content_group_diff)' do
     object_ids.each do |id|
       group_diff = @inventory_differences[id]
-      expect(described_class.get_file_deltas(group_diff)).to eq(@deltas[id])
+      expect(described_class.send(:get_file_deltas, group_diff)).to eq(@deltas[id])
     end
   end
 
   specify 'Dor::TechnicalMetadataService.get_new_files' do
-    new_files = described_class.get_new_files(@deltas['jq937jp0017'])
+    new_files = described_class.send(:get_new_files, @deltas['jq937jp0017'])
     expect(new_files).to eq(['page-2.jpg', 'page-1.jpg'])
   end
 
@@ -117,28 +117,28 @@ RSpec.describe Dor::TechnicalMetadataService do
     allow(dor_item).to receive(:pid).and_return(druid)
     tech_md = '<technicalMetadata/>'
     expect(described_class).to receive(:get_sdr_technical_metadata).with(druid).and_return(tech_md, nil)
-    old_techmd = described_class.get_old_technical_metadata(dor_item)
+    old_techmd = described_class.send(:get_old_technical_metadata, dor_item)
     expect(old_techmd).to eq(tech_md)
     expect(described_class).to receive(:get_dor_technical_metadata).with(dor_item).and_return(tech_md)
-    old_techmd = described_class.get_old_technical_metadata(dor_item)
+    old_techmd = described_class.send(:get_old_technical_metadata, dor_item)
     expect(old_techmd).to eq(tech_md)
   end
 
   specify 'Dor::TechnicalMetadataService.get_sdr_technical_metadata' do
     druid = 'druid:du000ps9999'
     allow(Sdr::Client).to receive(:get_sdr_metadata).with(druid, 'technicalMetadata').and_return(nil)
-    sdr_techmd = described_class.get_sdr_technical_metadata(druid)
+    sdr_techmd = described_class.send(:get_sdr_technical_metadata, druid)
     expect(sdr_techmd).to be_nil
 
     allow(described_class).to receive(:get_sdr_metadata).with(druid, 'technicalMetadata').and_return('<technicalMetadata/>')
-    sdr_techmd = described_class.get_sdr_technical_metadata(druid)
+    sdr_techmd = described_class.send(:get_sdr_technical_metadata, druid)
     expect(sdr_techmd).to eq('<technicalMetadata/>')
 
     allow(described_class).to receive(:get_sdr_metadata).with(druid, 'technicalMetadata').and_return('<jhove/>')
     jhove_service = double(JhoveService)
     allow(JhoveService).to receive(:new).and_return(jhove_service)
     allow(jhove_service).to receive(:upgrade_technical_metadata).and_return('upgraded techmd')
-    sdr_techmd = described_class.get_sdr_technical_metadata(druid)
+    sdr_techmd = described_class.send(:get_sdr_technical_metadata, druid)
     expect(sdr_techmd).to eq('upgraded techmd')
   end
 
@@ -150,24 +150,24 @@ RSpec.describe Dor::TechnicalMetadataService do
     allow(dor_item).to receive(:datastreams).and_return(datastreams)
 
     allow(tech_ds).to receive(:new?).and_return(true)
-    dor_techmd = described_class.get_dor_technical_metadata(dor_item)
+    dor_techmd = described_class.send(:get_dor_technical_metadata, dor_item)
     expect(dor_techmd).to be_nil
 
     allow(tech_ds).to receive(:new?).and_return(false)
-    dor_techmd = described_class.get_dor_technical_metadata(dor_item)
+    dor_techmd = described_class.send(:get_dor_technical_metadata, dor_item)
     expect(dor_techmd).to eq('<technicalMetadata/>')
 
     allow(tech_ds).to receive(:content).and_return('<jhove/>')
     jhove_service = double(JhoveService)
     allow(JhoveService).to receive(:new).and_return(jhove_service)
     allow(jhove_service).to receive(:upgrade_technical_metadata).and_return('upgraded techmd')
-    dor_techmd = described_class.get_dor_technical_metadata(dor_item)
+    dor_techmd = described_class.send(:get_dor_technical_metadata, dor_item)
     expect(dor_techmd).to eq('upgraded techmd')
   end
 
   specify 'Dor::TechnicalMetadataService.get_new_technical_metadata' do
     object_ids.each do |id|
-      new_techmd = described_class.get_new_technical_metadata("druid:#{id}", @new_files[id])
+      new_techmd = described_class.send(:get_new_technical_metadata, "druid:#{id}", @new_files[id])
       file_nodes = Nokogiri::XML(new_techmd).xpath('//file')
       case id
       when 'dd116zh0343'
@@ -184,7 +184,7 @@ RSpec.describe Dor::TechnicalMetadataService do
     object_ids.each do |id|
       temp_dir = druid_tool[id].temp_dir
       new_files = @new_files[id]
-      filename = described_class.write_fileset(temp_dir, new_files)
+      filename = described_class.send(:write_fileset, temp_dir, new_files)
       if new_files.size > 0
         expect(Pathname(filename).read).to eq(new_files.join("\n") + "\n")
       else
@@ -197,9 +197,9 @@ RSpec.describe Dor::TechnicalMetadataService do
     object_ids.each do |id|
       old_techmd = @repo_techmd[id]
       new_techmd = @new_file_techmd[id]
-      new_nodes = described_class.get_file_nodes(new_techmd)
+      new_nodes = described_class.send(:get_file_nodes, new_techmd)
       deltas = @deltas[id]
-      merged_nodes = described_class.merge_file_nodes(old_techmd, new_techmd, deltas)
+      merged_nodes = described_class.send(:merge_file_nodes, old_techmd, new_techmd, deltas)
       case id
       when 'dd116zh0343'
         expect(new_nodes.keys.sort). to eq([
@@ -236,7 +236,7 @@ RSpec.describe Dor::TechnicalMetadataService do
 
   specify 'Dor::TechnicalMetadataService.get_file_nodes' do
     techmd = @repo_techmd['jq937jp0017']
-    nodes = described_class.get_file_nodes(techmd)
+    nodes = described_class.send(:get_file_nodes, techmd)
     expect(nodes.size).to eq(6)
     expect(nodes.keys.sort).to eq(['intro-1.jpg', 'intro-2.jpg', 'page-1.jpg', 'page-2.jpg', 'page-3.jpg', 'title.jpg'])
     expect(nodes['page-1.jpg']).to be_equivalent_to(<<-EOF
@@ -299,10 +299,10 @@ RSpec.describe Dor::TechnicalMetadataService do
       old_techmd = @repo_techmd[id]
       new_techmd = @new_file_techmd[id]
       deltas = @deltas[id]
-      merged_nodes = described_class.merge_file_nodes(old_techmd, new_techmd, deltas)
+      merged_nodes = described_class.send(:merge_file_nodes, old_techmd, new_techmd, deltas)
 
       # the final and expected_techmd need to be scrubbed of dates in a couple spots for the comparison to match since these will vary from test run to test run
-      final_techmd = described_class.build_technical_metadata("druid:#{id}", merged_nodes).gsub(/datetime=["'].*?["']/, '').gsub(/<jhove:lastModified>.*?<\/jhove:lastModified>/, '')
+      final_techmd = described_class.send(:build_technical_metadata, "druid:#{id}", merged_nodes).gsub(/datetime=["'].*?["']/, '').gsub(/<jhove:lastModified>.*?<\/jhove:lastModified>/, '')
       expected_techmd = @expected_techmd[id].gsub(/datetime=["'].*?["']/, '').gsub(/<jhove:lastModified>.*?<\/jhove:lastModified>/, '')
       expect(final_techmd).to be_equivalent_to expected_techmd
     end
