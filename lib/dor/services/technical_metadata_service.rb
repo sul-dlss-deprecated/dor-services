@@ -6,6 +6,13 @@ require 'jhove_service'
 require 'dor-services'
 
 module Dor
+  # Extracts technical metadata from files using JHOVE
+  # If this is a new version it gets the old technicalMetadata datastream by
+  # making an API call to sdr-services-app (via dor-services-app) and
+  # only overwrites/adds parts for the files that were changed or added.
+  # This allows us to avoid re-staging files that have not changed.
+  # Switching to a more granular data model that has file metadata separate from
+  # the Work metadata will allow us to simplify this greatly.
   class TechnicalMetadataService
     # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
     # @return [Boolean] True if technical metadata is correctly added or updated
@@ -45,6 +52,7 @@ module Dor
         end
       end
     end
+    private_class_method :test_jhove_service
 
     # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
     # @return [FileGroupDifference] The differences between two versions of a group of files
@@ -55,18 +63,21 @@ module Dor
       inventory_diff = Sdr::Client.get_content_diff(dor_item.pid, dor_item.contentMetadata.content, 'all')
       inventory_diff.group_difference('content')
     end
+    private_class_method :get_content_group_diff
 
     # @param [FileGroupDifference] content_group_diff
     # @return [Hash<Symbol,Array>] Sets of filenames grouped by change type for use in performing file or metadata operations
     def self.get_file_deltas(content_group_diff)
       content_group_diff.file_deltas
     end
+    private_class_method :get_file_deltas
 
     # @param [Hash<Symbol,Array>] deltas Sets of filenames grouped by change type for use in performing file or metadata operations
     # @return [Array<String>] The list of filenames for files that are either added or modifed since the previous version
     def self.get_new_files(deltas)
       deltas[:added] + deltas[:modified]
     end
+    private_class_method :get_new_files
 
     # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
     # @return [String] The technicalMetadata datastream from the previous version of the digital object
@@ -76,6 +87,7 @@ module Dor
 
       get_dor_technical_metadata(dor_item)
     end
+    private_class_method :get_old_technical_metadata
 
     # @param [String] druid The identifier of the digital object being processed by the technical metadata robot
     # @return [String] The technicalMetadata datastream from the previous version of the digital object (fetched from SDR storage)
@@ -87,6 +99,7 @@ module Dor
 
       nil
     end
+    private_class_method :get_sdr_technical_metadata
 
     # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
     # @return [String] The technicalMetadata datastream from the previous version of the digital object (fetched from DOR fedora).
@@ -101,6 +114,7 @@ module Dor
 
       nil
     end
+    private_class_method :get_dor_technical_metadata
 
     # @param [String] druid The identifier of the digital object being processed by the technical metadata robot
     # @param [String] dsname The identifier of the metadata datastream
@@ -108,6 +122,7 @@ module Dor
     def self.get_sdr_metadata(druid, dsname)
       Sdr::Client.get_sdr_metadata(druid, dsname)
     end
+    private_class_method :get_sdr_metadata
 
     # @param [DruidTools::Druid] druid A wrapper class for the druid identifier.  Used to generate paths
     # @param [Array<String>] new_files The list of filenames for files that are either added or modifed since the previous version
@@ -125,6 +140,7 @@ module Dor
       tech_md_file = jhove_service.create_technical_metadata(jhove_output_file)
       IO.read(tech_md_file)
     end
+    private_class_method :get_new_technical_metadata
 
     # @param [Pathname]  temp_dir  The pathname of the temp folder in the object's workspace area
     # @param [Object] new_files [Array<String>] The list of filenames for files that are either added or modifed since the previous version
@@ -134,6 +150,7 @@ module Dor
       fileset_pathname.open('w') { |f| f.puts(new_files) }
       fileset_pathname
     end
+    private_class_method :write_fileset
 
     # @param [String] old_techmd The technicalMetadata datastream from the previous version of the digital object
     # @param [String] new_techmd The technicalMetadata datastream for the new files of the new digital object version
@@ -164,6 +181,7 @@ module Dor
       end
       merged_nodes
     end
+    private_class_method :merge_file_nodes
 
     # @param [String] technical_metadata A technicalMetadata datastream contents
     # @return [Hash<String,Nokogiri::XML::Node>] The set of nodes from a technicalMetadata datastream, indexed by filename
@@ -191,6 +209,7 @@ module Dor
       end
       file_hash
     end
+    private_class_method :get_file_nodes
 
     # @param [String] druid The identifier of the digital object being processed by the technical metadata robot
     # @param [Hash<String,Nokogiri::XML::Node>] merged_nodes The complete set of technicalMetadata nodes for the digital object, indexed by filename
@@ -206,5 +225,6 @@ module Dor
       merged_nodes.keys.sort.each { |path| doc << merged_nodes[path] }
       doc + '</technicalMetadata>'
     end
+    private_class_method :build_technical_metadata
   end
 end
