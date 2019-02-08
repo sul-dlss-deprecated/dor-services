@@ -60,7 +60,9 @@ module Dor
       return Moab::FileGroupDifference.new if dor_item.contentMetadata.nil?
       raise Dor::ParameterError, 'Missing Dor::Config.stacks.local_workspace_root' if Config.stacks.local_workspace_root.nil?
 
-      inventory_diff = Sdr::Client.get_content_diff(dor_item.pid, dor_item.contentMetadata.content, 'all')
+      client = Dor::Services::Client.object(dor_item.pid).sdr
+      current_content = dor_item.contentMetadata.content
+      inventory_diff = client.content_diff(current_content: current_content)
       inventory_diff.group_difference('content')
     end
     private_class_method :get_content_group_diff
@@ -120,7 +122,7 @@ module Dor
     # @param [String] dsname The identifier of the metadata datastream
     # @return [String] The datastream contents from the previous version of the digital object (fetched from SDR storage)
     def self.get_sdr_metadata(druid, dsname)
-      Sdr::Client.get_sdr_metadata(druid, dsname)
+      Dor::Services::Client.object(druid).sdr.metadata(datastream: dsname)
     end
     private_class_method :get_sdr_metadata
 

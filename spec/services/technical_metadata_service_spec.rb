@@ -71,25 +71,32 @@ RSpec.describe Dor::TechnicalMetadataService do
     end
   end
 
-  describe 'Dor::TechnicalMetadataService.get_content_group_diff(dor_item)' do
-    let(:contentMetadata) { instance_double(Dor::ContentMetadataDS, content: 'foo') }
+  describe '.get_content_group_diff(dor_item)' do
+    subject(:content_group_diff) { described_class.send(:get_content_group_diff, dor_item) }
 
-    it 'calculates the differences' do
-      object_ids.each do |id|
-        group_diff = @inventory_differences[id]
-        druid = "druid:#{id}"
-        inventory_diff = Moab::FileInventoryDifference.new(
-          digital_object_id: druid,
-          basis: 'old_content_metadata',
-          other: 'new_content_metadata',
-          report_datetime: Time.now.utc.to_s
-        )
-        inventory_diff.group_differences << group_diff
-        dor_item = instance_double(Dor::Item, contentMetadata: contentMetadata, pid: druid)
-        allow(Sdr::Client).to receive(:get_content_diff).with(druid, 'foo', 'all').and_return(inventory_diff)
-        content_group_diff = described_class.send(:get_content_group_diff, dor_item)
-        expect(content_group_diff.to_xml).to eq(group_diff.to_xml)
-      end
+    before do
+      allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
+    end
+
+    let(:contentMetadata) { instance_double(Dor::ContentMetadataDS, content: 'foo') }
+    let(:object_client) { instance_double(Dor::Services::Client::Object, sdr: sdr_client) }
+    let(:sdr_client) { instance_double(Dor::Services::Client::SDR, content_diff: inventory_diff) }
+    let(:object_id) { 'dd116zh0343' }
+    let(:druid) { "druid:#{object_id}" }
+    let(:group_diff) { @inventory_differences[object_id] }
+    let(:dor_item) { instance_double(Dor::Item, contentMetadata: contentMetadata, pid: druid) }
+
+    let(:inventory_diff) do
+      Moab::FileInventoryDifference.new(
+        digital_object_id: druid,
+        basis: 'old_content_metadata',
+        other: 'new_content_metadata',
+        report_datetime: Time.now.utc.to_s
+      ).tap { |diff| diff.group_differences << group_diff }
+    end
+
+    it 'calculates the difference' do
+      expect(content_group_diff.to_xml).to eq(group_diff.to_xml)
     end
   end
 
@@ -124,22 +131,39 @@ RSpec.describe Dor::TechnicalMetadataService do
     expect(old_techmd).to eq(tech_md)
   end
 
-  specify 'Dor::TechnicalMetadataService.get_sdr_technical_metadata' do
-    druid = 'druid:du000ps9999'
-    allow(Sdr::Client).to receive(:get_sdr_metadata).with(druid, 'technicalMetadata').and_return(nil)
-    sdr_techmd = described_class.send(:get_sdr_technical_metadata, druid)
-    expect(sdr_techmd).to be_nil
+  describe '.get_sdr_technical_metadata' do
+    subject(:sdr_techmd) { described_class.send(:get_sdr_technical_metadata, druid) }
 
-    allow(described_class).to receive(:get_sdr_metadata).with(druid, 'technicalMetadata').and_return('<technicalMetadata/>')
-    sdr_techmd = described_class.send(:get_sdr_technical_metadata, druid)
-    expect(sdr_techmd).to eq('<technicalMetadata/>')
+    let(:object_client) { instance_double(Dor::Services::Client::Object, sdr: sdr_client) }
+    let(:sdr_client) { instance_double(Dor::Services::Client::SDR, metadata: metadata) }
+    let(:druid) { 'druid:du000ps9999' }
 
-    allow(described_class).to receive(:get_sdr_metadata).with(druid, 'technicalMetadata').and_return('<jhove/>')
-    jhove_service = double(JhoveService)
-    allow(JhoveService).to receive(:new).and_return(jhove_service)
-    allow(jhove_service).to receive(:upgrade_technical_metadata).and_return('upgraded techmd')
-    sdr_techmd = described_class.send(:get_sdr_technical_metadata, druid)
-    expect(sdr_techmd).to eq('upgraded techmd')
+    before do
+      allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
+    end
+
+    context 'when metadata is nil' do
+      let(:metadata) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when metadata is techmd' do
+      let(:metadata) { '<technicalMetadata/>' }
+
+      it { is_expected.to eq '<technicalMetadata/>' }
+    end
+
+    context 'when metadata is jhove' do
+      let(:metadata) { '<jhove/>' }
+
+      before do
+        jhove_service = instance_double(JhoveService, upgrade_technical_metadata: 'upgraded techmd')
+        allow(JhoveService).to receive(:new).and_return(jhove_service)
+      end
+
+      it { is_expected.to eq 'upgraded techmd' }
+    end
   end
 
   specify 'Dor::TechnicalMetadataService.get_dor_technical_metadata' do

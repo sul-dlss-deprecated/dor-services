@@ -24,6 +24,9 @@ module Sdr
       # @param [String] dsname The identifier of the metadata datastream
       # @return [String] The datastream contents from the previous version of the digital object (fetched from SDR storage)
       def get_sdr_metadata(druid, dsname)
+        Deprecation.warn(self, 'Sdr::Client.get_sdr_metadata is deprecated and will be removed in dor-services 7. ' \
+                           'Use Dor::Services::Client.object(object_identifier).sdr.metadatra(datastream:) instead')
+
         client["objects/#{druid}/metadata/#{dsname}.xml"].get
       rescue RestClient::ResourceNotFound
         nil
@@ -32,6 +35,9 @@ module Sdr
       # @param [String] druid The object identifier
       # @return [Moab::SignatureCatalog] the catalog of all files previously ingested
       def get_signature_catalog(druid)
+        Deprecation.warn(self, 'Sdr::Client.get_signature_catalog is deprecated and will be removed in dor-services 7. ' \
+                           'Use Dor::Services::Client.object(object_identifier).sdr.signature_catalog instead')
+
         response = client["objects/#{druid}/manifest/signatureCatalog.xml"].get
         Moab::SignatureCatalog.parse(response)
       rescue RestClient::ResourceNotFound
