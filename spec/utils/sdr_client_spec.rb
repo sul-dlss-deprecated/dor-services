@@ -55,6 +55,7 @@ describe Sdr::Client do
     let(:druid) { 'druid:zz000zz0000' }
 
     it 'fetches the file inventory difference from SDR' do
+      expect(Deprecation).to receive(:warn)
       resource = described_class.client["objects/#{druid}/cm-inv-diff?subset=all"]
       stub_request(:post, resource.url).to_return(body: '<fileInventoryDifference />')
 
@@ -64,6 +65,7 @@ describe Sdr::Client do
     end
 
     it 'rejects invalid subset parameters' do
+      expect(Deprecation).to receive(:warn)
       expect { described_class.get_content_diff(druid, '', 'bad') }.to raise_error Dor::ParameterError
     end
   end
