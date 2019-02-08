@@ -37,7 +37,9 @@ module Dor
       raise Dor::ParameterError, 'Missing Dor::Config.stacks.local_workspace_root' if Config.stacks.local_workspace_root.nil?
       raise Dor::Exception, 'Missing contentMetadata datastream' if work.contentMetadata.nil?
 
-      inventory_diff = Sdr::Client.get_content_diff(work.pid, work.contentMetadata.content, 'shelve')
+      client = Dor::Services::Client.object(work.pid).sdr
+      current_content = work.contentMetadata.content
+      inventory_diff = client.content_diff(current_content: current_content, subset: 'shelve')
       inventory_diff.group_difference('content')
     end
 

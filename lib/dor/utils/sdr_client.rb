@@ -52,6 +52,9 @@ module Sdr
       # @param [Integer, NilClass] version (nil)
       # @return [Moab::FileInventoryDifference] the differences for the given content and subset (i.e.: cm_inv_diff manifest)
       def get_content_diff(druid, current_content, subset = 'all', version = nil)
+        Deprecation.warn(self, 'Sdr::Client.get_content_diff is deprecated and will be removed in dor-services 7. ' \
+                           'Use Dor::Services::Client.object(object_identifier).sdr.content_diff(current_content:, subset:, version:) instead')
+
         unless subset.is_a? String
           Deprecation.warn(self, "subset parameter must be a string. You provided '#{subset.inspect}'. This will be an error in version 7")
           subset = subset.to_s

@@ -54,10 +54,17 @@ RSpec.describe Dor::ShelvingService do
     let(:druid) { 'druid:jq937jp0017' }
 
     context 'when contentMetadata exists' do
+      before do
+        allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
+      end
+
+      let(:object_client) { instance_double(Dor::Services::Client::Object, sdr: sdr_client) }
+      let(:sdr_client) { instance_double(Dor::Services::Client::SDR, content_diff: inventory_diff) }
+      # read in a FileInventoryDifference manifest from the fixtures area
+      let(:xml_pathname) { Pathname('spec').join('fixtures', 'content_diff_reports', 'jq937jp0017-v1-v2.xml') }
+      let(:inventory_diff) { Moab::FileInventoryDifference.parse(xml_pathname.read) }
+
       it 'retrieves the differences between the current contentMetadata and the previously ingested version' do
-        # read in a FileInventoryDifference manifest from the fixtures area
-        xml_pathname = Pathname('spec').join('fixtures', 'content_diff_reports', 'jq937jp0017-v1-v2.xml')
-        expect(Sdr::Client).to receive(:get_content_diff).with(druid, nil, 'shelve').and_return(Moab::FileInventoryDifference.parse(xml_pathname.read))
         expect(result.to_xml).to be_equivalent_to(<<-XML
           <fileGroupDifference groupId="content" differenceCount="3" identical="3" copyadded="0" copydeleted="0" renamed="0" modified="1" added="0" deleted="2">
             <subset change="identical" count="3">
