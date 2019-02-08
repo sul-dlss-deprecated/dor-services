@@ -30,6 +30,7 @@ describe Sdr::Client do
 
   describe '.get_sdr_metadata' do
     it 'fetches the datastream from SDR' do
+      expect(Deprecation).to receive(:warn)
       stub_request(:get, described_class.client['objects/druid:ab123cd4567/metadata/technicalMetadata.xml'].url).to_return(body: '<technicalMetadata/>')
       response = described_class.get_sdr_metadata('druid:ab123cd4567', 'technicalMetadata')
       expect(response).to eq('<technicalMetadata/>')
@@ -40,6 +41,7 @@ describe Sdr::Client do
     let(:druid) { 'druid:zz000zz0000' }
 
     it 'fetches the signature catalog from SDR' do
+      expect(Deprecation).to receive(:warn)
       resource = described_class.client["objects/#{druid}/manifest/signatureCatalog.xml"]
       stub_request(:get, resource.url).to_return(body: '<signatureCatalog objectId="druid:zz000zz0000" versionId="0" catalogDatetime="" fileCount="0" byteCount="0" blockCount="0"/>')
 
