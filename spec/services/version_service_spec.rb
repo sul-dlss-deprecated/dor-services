@@ -82,7 +82,7 @@ RSpec.describe Dor::VersionService do
       it 'raises an exception' do
         expect(Dor::Config.workflow.client).to receive(:get_lifecycle).with('dor', druid, 'accessioned').and_return(true)
         expect(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'opened').and_return(Time.new)
-        expect { open }.to raise_error(Dor::Exception, 'Object already opened for versioning')
+        expect { open }.to raise_error(Dor::VersionAlreadyOpenError, 'Object already opened for versioning')
       end
     end
 

@@ -25,7 +25,7 @@ module Dor
       # During local development, we need a way to open a new version even if the object has not been accessioned.
       raise(Dor::Exception, 'Object net yet accessioned') unless
         opts[:assume_accessioned] || Dor::Config.workflow.client.get_lifecycle('dor', work.pid, 'accessioned')
-      raise Dor::Exception, 'Object already opened for versioning' if open?
+      raise Dor::VersionAlreadyOpenError, 'Object already opened for versioning' if open?
       raise Dor::Exception, 'Object currently being accessioned' if Dor::Config.workflow.client.get_active_lifecycle('dor', work.pid, 'submitted')
 
       sdr_version = Sdr::Client.current_version work.pid
