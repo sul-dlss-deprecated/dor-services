@@ -3,7 +3,11 @@
 module Dor
   # Indexes the objects position in workflows
   class WorkflowIndexer
-    include SolrDocHelper
+    WORKFLOW_SOLR = 'wf_ssim'
+    WORKFLOW_WPS_SOLR = 'wf_wps_ssim'
+    WORKFLOW_WSP_SOLR = 'wf_wsp_ssim'
+    WORKFLOW_SWP_SOLR = 'wf_swp_ssim'
+    WORKFLOW_STATUS_SOLR = 'workflow_status_ssim'
 
     ERROR_OMISSION = '... (continued)'
     private_constant :ERROR_OMISSION
@@ -22,15 +26,15 @@ module Dor
       {}.tap do |solr_doc|
         wf_name = document.workflowId.first
 
-        solr_doc['wf_ssim'] = [wf_name]
-        solr_doc['wf_wps_ssim'] = [wf_name]
-        solr_doc['wf_wsp_ssim'] = [wf_name]
-        solr_doc['wf_swp_ssim'] = []
+        solr_doc[WORKFLOW_SOLR] = [wf_name]
+        solr_doc[WORKFLOW_WPS_SOLR] = [wf_name]
+        solr_doc[WORKFLOW_WSP_SOLR] = [wf_name]
+        solr_doc[WORKFLOW_SWP_SOLR] = []
 
         errors = processes.count(&:error?)
 
         repo = document.repository.first
-        solr_doc['workflow_status_ssim'] = [[wf_name, workflow_status, errors, repo].join('|')]
+        solr_doc[WORKFLOW_STATUS_SOLR] = [[wf_name, workflow_status, errors, repo].join('|')]
 
         processes.each do |process|
           next unless process.status.present?
@@ -43,19 +47,19 @@ module Dor
           index_error_message(solr_doc, wf_name, process)
 
           # workflow name, process status then process name
-          solr_doc['wf_wsp_ssim'] += ["#{wf_name}:#{process.status}", "#{wf_name}:#{process.status}:#{process.name}"]
+          solr_doc[WORKFLOW_WSP_SOLR] += ["#{wf_name}:#{process.status}", "#{wf_name}:#{process.status}:#{process.name}"]
 
           # workflow name, process name then process status
-          solr_doc['wf_wps_ssim'] += ["#{wf_name}:#{process.name}", "#{wf_name}:#{process.name}:#{process.status}"]
+          solr_doc[WORKFLOW_WPS_SOLR] += ["#{wf_name}:#{process.name}", "#{wf_name}:#{process.name}:#{process.status}"]
 
           # process status, workflowname then process name
-          solr_doc['wf_wps_ssim'] += [process.status.to_s, "#{process.status}:#{wf_name}", "#{process.status}:#{wf_name}:#{process.name}"]
+          solr_doc[WORKFLOW_SWP_SOLR] += [process.status.to_s, "#{process.status}:#{wf_name}", "#{process.status}:#{wf_name}:#{process.name}"]
           next unless process.state != process.status
 
-          solr_doc['wf_wsp_ssim'] += ["#{wf_name}:#{process.state}:#{process.name}"]
-          solr_doc['wf_wps_ssim'] += ["#{wf_name}:#{process.name}:#{process.state}"]
+          solr_doc[WORKFLOW_WSP_SOLR] += ["#{wf_name}:#{process.state}:#{process.name}"]
+          solr_doc[WORKFLOW_WPS_SOLR] += ["#{wf_name}:#{process.name}:#{process.state}"]
 
-          solr_doc['wf_wps_ssim'] += [rocess.state.to_s, "#{process.state}:#{wf_name}", "#{process.state}:#{wf_name}:#{process.name}"]
+          solr_doc[WORKFLOW_SWP_SOLR] += [process.state.to_s, "#{process.state}:#{wf_name}", "#{process.state}:#{wf_name}:#{process.name}"]
         end
       end
     end

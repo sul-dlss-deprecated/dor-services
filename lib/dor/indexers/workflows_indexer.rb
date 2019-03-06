@@ -3,8 +3,6 @@
 module Dor
   # Indexes the objects position in workflows
   class WorkflowsIndexer
-    include SolrDocHelper
-
     attr_reader :resource
     def initialize(resource:)
       @resource = resource
@@ -36,7 +34,13 @@ module Dor
     end
 
     def keys_to_merge
-      %w{wf_ssim wf_wps_ssim wf_wsp_ssim workflow_status_ssim}
+      [
+        WorkflowIndexer::WORKFLOW_SOLR,
+        WorkflowIndexer::WORKFLOW_WPS_SOLR,
+        WorkflowIndexer::WORKFLOW_WSP_SOLR,
+        WorkflowIndexer::WORKFLOW_SWP_SOLR,
+        WorkflowIndexer::WORKFLOW_STATUS_SOLR
+      ]
     end
 
     # @return [Array<Dor::WorkflowDocument>]
