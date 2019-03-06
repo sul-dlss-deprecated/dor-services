@@ -12,11 +12,6 @@ module Dor
     MAX_ERROR_LENGTH = 32_768 - 2 - ERROR_OMISSION.length
     private_constant :MAX_ERROR_LENGTH
 
-    WF_SOLR_TYPE = :string
-    private_constant :WF_SOLR_TYPE
-    WF_SOLR_ATTRS = [:symbol].freeze
-    private_constant :WF_SOLR_ATTRS
-
     # @param [Dor::WorkflowDocument] document the workflow document to index
     def initialize(document:)
       @document = document
@@ -27,13 +22,15 @@ module Dor
       {}.tap do |solr_doc|
         wf_name = document.workflowId.first
 
-        add_solr_value(solr_doc, 'wf',     wf_name, WF_SOLR_TYPE, WF_SOLR_ATTRS)
-        add_solr_value(solr_doc, 'wf_wps', wf_name, WF_SOLR_TYPE, WF_SOLR_ATTRS)
-        add_solr_value(solr_doc, 'wf_wsp', wf_name, WF_SOLR_TYPE, WF_SOLR_ATTRS)
+        solr_doc['wf_ssim'] = [wf_name]
+        solr_doc['wf_wps_ssim'] = [wf_name]
+        solr_doc['wf_wsp_ssim'] = [wf_name]
+        solr_doc['wf_swp_ssim'] = []
+
         errors = processes.count(&:error?)
 
         repo = document.repository.first
-        add_solr_value(solr_doc, 'workflow_status', [wf_name, workflow_status, errors, repo].join('|'), WF_SOLR_TYPE, WF_SOLR_ATTRS)
+        solr_doc['workflow_status_ssim'] = [[wf_name, workflow_status, errors, repo].join('|')]
 
         processes.each do |process|
           next unless process.status.present?
@@ -45,20 +42,20 @@ module Dor
 
           index_error_message(solr_doc, wf_name, process)
 
-          add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}", WF_SOLR_TYPE, WF_SOLR_ATTRS)
-          add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.status}:#{process.name}", WF_SOLR_TYPE, WF_SOLR_ATTRS)
-          add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}", WF_SOLR_TYPE, WF_SOLR_ATTRS)
-          add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.status}", WF_SOLR_TYPE, WF_SOLR_ATTRS)
-          add_solr_value(solr_doc, 'wf_swp', process.status.to_s, WF_SOLR_TYPE, WF_SOLR_ATTRS)
-          add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}", WF_SOLR_TYPE, WF_SOLR_ATTRS)
-          add_solr_value(solr_doc, 'wf_swp', "#{process.status}:#{wf_name}:#{process.name}", WF_SOLR_TYPE, WF_SOLR_ATTRS)
+          # workflow name, process status then process name
+          solr_doc['wf_wsp_ssim'] += ["#{wf_name}:#{process.status}", "#{wf_name}:#{process.status}:#{process.name}"]
+
+          # workflow name, process name then process status
+          solr_doc['wf_wps_ssim'] += ["#{wf_name}:#{process.name}", "#{wf_name}:#{process.name}:#{process.status}"]
+
+          # process status, workflowname then process name
+          solr_doc['wf_wps_ssim'] += [process.status.to_s, "#{process.status}:#{wf_name}", "#{process.status}:#{wf_name}:#{process.name}"]
           next unless process.state != process.status
 
-          add_solr_value(solr_doc, 'wf_wsp', "#{wf_name}:#{process.state}:#{process.name}", WF_SOLR_TYPE, WF_SOLR_ATTRS)
-          add_solr_value(solr_doc, 'wf_wps', "#{wf_name}:#{process.name}:#{process.state}", WF_SOLR_TYPE, WF_SOLR_ATTRS)
-          add_solr_value(solr_doc, 'wf_swp', process.state.to_s, WF_SOLR_TYPE, WF_SOLR_ATTRS)
-          add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}", WF_SOLR_TYPE, WF_SOLR_ATTRS)
-          add_solr_value(solr_doc, 'wf_swp', "#{process.state}:#{wf_name}:#{process.name}", WF_SOLR_TYPE, WF_SOLR_ATTRS)
+          solr_doc['wf_wsp_ssim'] += ["#{wf_name}:#{process.state}:#{process.name}"]
+          solr_doc['wf_wps_ssim'] += ["#{wf_name}:#{process.name}:#{process.state}"]
+
+          solr_doc['wf_wps_ssim'] += [rocess.state.to_s, "#{process.state}:#{wf_name}", "#{process.state}:#{wf_name}:#{process.name}"]
         end
       end
     end
