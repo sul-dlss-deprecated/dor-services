@@ -24,6 +24,8 @@ module Dor
             solr_doc[k] += doc[k]
           end
         end
+
+        keys_to_merge.each { |k| solr_doc[k].uniq! }
       end
     end
 
