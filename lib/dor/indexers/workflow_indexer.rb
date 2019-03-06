@@ -7,6 +7,7 @@ module Dor
     WORKFLOW_WPS_SOLR = 'wf_wps_ssim'
     WORKFLOW_WSP_SOLR = 'wf_wsp_ssim'
     WORKFLOW_SWP_SOLR = 'wf_swp_ssim'
+    WORKFLOW_ERROR_SOLR = 'wf_error_ssim'
     WORKFLOW_STATUS_SOLR = 'workflow_status_ssim'
 
     ERROR_OMISSION = '... (continued)'
@@ -85,7 +86,7 @@ module Dor
       return unless process.error_message
 
       error_message = "#{wf_name}:#{process.name}:#{process.error_message}".truncate(MAX_ERROR_LENGTH, omission: ERROR_OMISSION)
-      add_solr_value(solr_doc, 'wf_error', error_message, WF_SOLR_TYPE, WF_SOLR_ATTRS)
+      solr_doc[WORKFLOW_ERROR_SOLR] = [error_message]
     end
   end
 end
