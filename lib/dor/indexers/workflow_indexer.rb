@@ -3,13 +3,6 @@
 module Dor
   # Indexes the objects position in workflows
   class WorkflowIndexer
-    WORKFLOW_SOLR = 'wf_ssim'
-    WORKFLOW_WPS_SOLR = 'wf_wps_ssim'
-    WORKFLOW_WSP_SOLR = 'wf_wsp_ssim'
-    WORKFLOW_SWP_SOLR = 'wf_swp_ssim'
-    WORKFLOW_ERROR_SOLR = 'wf_error_ssim'
-    WORKFLOW_STATUS_SOLR = 'workflow_status_ssim'
-
     ERROR_OMISSION = '... (continued)'
     private_constant :ERROR_OMISSION
 
@@ -27,16 +20,16 @@ module Dor
       {}.tap do |solr_doc|
         wf_name = document.workflowId.first
 
-        solr_doc[WORKFLOW_SOLR] = [wf_name]
-        solr_doc[WORKFLOW_WPS_SOLR] = [wf_name]
-        solr_doc[WORKFLOW_WSP_SOLR] = [wf_name]
-        solr_doc[WORKFLOW_SWP_SOLR] = []
-        solr_doc[WORKFLOW_ERROR_SOLR] = []
+        solr_doc[WorkflowSolrDocument::WORKFLOW_SOLR] = [wf_name]
+        solr_doc[WorkflowSolrDocument::WORKFLOW_WPS_SOLR] = [wf_name]
+        solr_doc[WorkflowSolrDocument::WORKFLOW_WSP_SOLR] = [wf_name]
+        solr_doc[WorkflowSolrDocument::WORKFLOW_SWP_SOLR] = []
+        solr_doc[WorkflowSolrDocument::WORKFLOW_ERROR_SOLR] = []
 
         errors = processes.count(&:error?)
 
         repo = document.repository.first
-        solr_doc[WORKFLOW_STATUS_SOLR] = [[wf_name, workflow_status, errors, repo].join('|')]
+        solr_doc[WorkflowSolrDocument::WORKFLOW_STATUS_SOLR] = [[wf_name, workflow_status, errors, repo].join('|')]
 
         processes.each do |process|
           index_process(solr_doc, wf_name, process)
@@ -60,19 +53,19 @@ module Dor
       index_error_message(solr_doc, wf_name, process)
 
       # workflow name, process status then process name
-      solr_doc[WORKFLOW_WSP_SOLR] += ["#{wf_name}:#{process.status}", "#{wf_name}:#{process.status}:#{process.name}"]
+      solr_doc[WorkflowSolrDocument::WORKFLOW_WSP_SOLR] += ["#{wf_name}:#{process.status}", "#{wf_name}:#{process.status}:#{process.name}"]
 
       # workflow name, process name then process status
-      solr_doc[WORKFLOW_WPS_SOLR] += ["#{wf_name}:#{process.name}", "#{wf_name}:#{process.name}:#{process.status}"]
+      solr_doc[WorkflowSolrDocument::WORKFLOW_WPS_SOLR] += ["#{wf_name}:#{process.name}", "#{wf_name}:#{process.name}:#{process.status}"]
 
       # process status, workflowname then process name
-      solr_doc[WORKFLOW_SWP_SOLR] += [process.status.to_s, "#{process.status}:#{wf_name}", "#{process.status}:#{wf_name}:#{process.name}"]
+      solr_doc[WorkflowSolrDocument::WORKFLOW_SWP_SOLR] += [process.status.to_s, "#{process.status}:#{wf_name}", "#{process.status}:#{wf_name}:#{process.name}"]
       return if process.state == process.status
 
-      solr_doc[WORKFLOW_WSP_SOLR] += ["#{wf_name}:#{process.state}:#{process.name}"]
-      solr_doc[WORKFLOW_WPS_SOLR] += ["#{wf_name}:#{process.name}:#{process.state}"]
+      solr_doc[WorkflowSolrDocument::WORKFLOW_WSP_SOLR] += ["#{wf_name}:#{process.state}:#{process.name}"]
+      solr_doc[WorkflowSolrDocument::WORKFLOW_WPS_SOLR] += ["#{wf_name}:#{process.name}:#{process.state}"]
 
-      solr_doc[WORKFLOW_SWP_SOLR] += [process.state.to_s, "#{process.state}:#{wf_name}", "#{process.state}:#{wf_name}:#{process.name}"]
+      solr_doc[WorkflowSolrDocument::WORKFLOW_SWP_SOLR] += [process.state.to_s, "#{process.state}:#{wf_name}", "#{process.state}:#{wf_name}:#{process.name}"]
     end
 
     def workflow_status
@@ -91,7 +84,7 @@ module Dor
       return unless process.error_message
 
       error_message = "#{wf_name}:#{process.name}:#{process.error_message}".truncate(MAX_ERROR_LENGTH, omission: ERROR_OMISSION)
-      solr_doc[WORKFLOW_ERROR_SOLR] += [error_message]
+      solr_doc[WorkflowSolrDocument::WORKFLOW_ERROR_SOLR] += [error_message]
     end
   end
 end

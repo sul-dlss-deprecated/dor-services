@@ -145,6 +145,7 @@ module Dor
       autoload :Collection
       autoload :AdminPolicyObject
       autoload :WorkflowObject
+      autoload :WorkflowSolrDocument
     end
   end
 
