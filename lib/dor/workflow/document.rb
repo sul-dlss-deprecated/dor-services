@@ -97,7 +97,8 @@ module Dor
         processes.all? { |p| ['skipped', 'completed', '', nil].include?(p.status) }
       end
 
-      def to_solr(solr_doc = {}, *_args)
+      def to_solr
+        solr_doc = {}
         wf_name = workflowId.first
         repo = repository.first
 
