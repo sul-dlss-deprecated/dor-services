@@ -315,8 +315,33 @@ RSpec.describe Dor::Workflow::Document do
         eos
       end
 
+      let(:wf_error) { solr_doc[Solrizer.solr_name('wf_error', :symbol)] }
+
       it 'indexes the error messages' do
-        expect(solr_doc[Solrizer.solr_name('wf_error', :symbol)].first).to eq('accessionWF:technical-metadata:druid:gv054hp4128 - Item error; caused by 413 Request Entity Too Large:')
+        expect(wf_error).to eq ['accessionWF:technical-metadata:druid:gv054hp4128 - Item error; caused by 413 Request Entity Too Large:']
+      end
+    end
+
+    context 'when the error messages are crazy long' do
+      let(:error_length) { 40_000 }
+      let(:error) { (0...error_length).map { rand(65..90).chr }.join }
+      let(:xml) do
+        <<-eos
+        <?xml version="1.0" encoding="UTF-8"?>
+        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="error" errorMessage="#{error}" name="technical-metadata"/>
+        </workflow>
+        eos
+      end
+
+      let(:wf_error) { solr_doc[Solrizer.solr_name('wf_error', :symbol)] }
+
+      it "truncates the error messages to below Solr's limit" do
+        # 31 is the leader
+        expect(wf_error.first.length).to be < 32_766
       end
     end
   end
