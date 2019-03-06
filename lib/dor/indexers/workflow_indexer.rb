@@ -31,6 +31,7 @@ module Dor
         solr_doc[WORKFLOW_WPS_SOLR] = [wf_name]
         solr_doc[WORKFLOW_WSP_SOLR] = [wf_name]
         solr_doc[WORKFLOW_SWP_SOLR] = []
+        solr_doc[WORKFLOW_ERROR_SOLR] = []
 
         errors = processes.count(&:error?)
 
@@ -38,29 +39,7 @@ module Dor
         solr_doc[WORKFLOW_STATUS_SOLR] = [[wf_name, workflow_status, errors, repo].join('|')]
 
         processes.each do |process|
-          next unless process.status.present?
-
-          # add a record of the robot having operated on this item, so we can track robot activity
-          if !process.date_time.blank? && process.status && (process.status == 'completed' || process.status == 'error')
-            solr_doc["wf_#{wf_name}_#{process.name}_dttsi"] = Time.parse(process.date_time).utc.iso8601
-          end
-
-          index_error_message(solr_doc, wf_name, process)
-
-          # workflow name, process status then process name
-          solr_doc[WORKFLOW_WSP_SOLR] += ["#{wf_name}:#{process.status}", "#{wf_name}:#{process.status}:#{process.name}"]
-
-          # workflow name, process name then process status
-          solr_doc[WORKFLOW_WPS_SOLR] += ["#{wf_name}:#{process.name}", "#{wf_name}:#{process.name}:#{process.status}"]
-
-          # process status, workflowname then process name
-          solr_doc[WORKFLOW_SWP_SOLR] += [process.status.to_s, "#{process.status}:#{wf_name}", "#{process.status}:#{wf_name}:#{process.name}"]
-          next unless process.state != process.status
-
-          solr_doc[WORKFLOW_WSP_SOLR] += ["#{wf_name}:#{process.state}:#{process.name}"]
-          solr_doc[WORKFLOW_WPS_SOLR] += ["#{wf_name}:#{process.name}:#{process.state}"]
-
-          solr_doc[WORKFLOW_SWP_SOLR] += [process.state.to_s, "#{process.state}:#{wf_name}", "#{process.state}:#{wf_name}:#{process.name}"]
+          index_process(solr_doc, wf_name, process)
         end
       end
     end
@@ -69,6 +48,32 @@ module Dor
 
     attr_reader :document
     delegate :processes, to: :document
+
+    def index_process(solr_doc, wf_name, process)
+      return unless process.status.present?
+
+      # add a record of the robot having operated on this item, so we can track robot activity
+      if !process.date_time.blank? && process.status && (process.status == 'completed' || process.status == 'error')
+        solr_doc["wf_#{wf_name}_#{process.name}_dttsi"] = Time.parse(process.date_time).utc.iso8601
+      end
+
+      index_error_message(solr_doc, wf_name, process)
+
+      # workflow name, process status then process name
+      solr_doc[WORKFLOW_WSP_SOLR] += ["#{wf_name}:#{process.status}", "#{wf_name}:#{process.status}:#{process.name}"]
+
+      # workflow name, process name then process status
+      solr_doc[WORKFLOW_WPS_SOLR] += ["#{wf_name}:#{process.name}", "#{wf_name}:#{process.name}:#{process.status}"]
+
+      # process status, workflowname then process name
+      solr_doc[WORKFLOW_SWP_SOLR] += [process.status.to_s, "#{process.status}:#{wf_name}", "#{process.status}:#{wf_name}:#{process.name}"]
+      return if process.state == process.status
+
+      solr_doc[WORKFLOW_WSP_SOLR] += ["#{wf_name}:#{process.state}:#{process.name}"]
+      solr_doc[WORKFLOW_WPS_SOLR] += ["#{wf_name}:#{process.name}:#{process.state}"]
+
+      solr_doc[WORKFLOW_SWP_SOLR] += [process.state.to_s, "#{process.state}:#{wf_name}", "#{process.state}:#{wf_name}:#{process.name}"]
+    end
 
     def workflow_status
       return 'empty' if processes.empty?
@@ -86,7 +91,7 @@ module Dor
       return unless process.error_message
 
       error_message = "#{wf_name}:#{process.name}:#{process.error_message}".truncate(MAX_ERROR_LENGTH, omission: ERROR_OMISSION)
-      solr_doc[WORKFLOW_ERROR_SOLR] = [error_message]
+      solr_doc[WORKFLOW_ERROR_SOLR] += [error_message]
     end
   end
 end
