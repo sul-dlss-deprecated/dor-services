@@ -19,7 +19,7 @@ module Dor
 
     private
 
-    # @returns [Array<Dor::WorkflowDocument>]
+    # @return [Array<Dor::WorkflowDocument>]
     def workflows
       resource.workflows.workflows
     end
