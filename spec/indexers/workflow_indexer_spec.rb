@@ -22,7 +22,7 @@ RSpec.describe Dor::WorkflowIndexer do
   let(:step4) { 'some-other-step' }
 
   describe '#to_solr' do
-    subject(:solr_doc) { indexer.to_solr }
+    subject(:solr_doc) { indexer.to_solr.to_h }
 
     before do
       allow(document).to receive(:definition).and_return(wf_definition)
