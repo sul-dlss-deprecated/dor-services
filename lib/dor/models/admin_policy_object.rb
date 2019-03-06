@@ -15,7 +15,7 @@ module Dor
       EditableIndexer,
       IdentifiableIndexer,
       ProcessableIndexer,
-      WorkflowIndexer
+      WorkflowsIndexer
     )
 
     CREATIVE_COMMONS_USE_LICENSES = ActiveSupport::Deprecation::DeprecatedConstantProxy.new('CREATIVE_COMMONS_USE_LICENSES', 'Dor::CreativeCommonsLicenseService')

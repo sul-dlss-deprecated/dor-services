@@ -2,7 +2,7 @@
 
 module Dor
   # Indexes the objects position in workflows
-  class WorkflowIndexer
+  class WorkflowsIndexer
     include SolrDocHelper
 
     attr_reader :resource

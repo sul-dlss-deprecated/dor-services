@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Dor::WorkflowIndexer do
+RSpec.describe Dor::WorkflowsIndexer do
   let(:obj) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
   let(:indexer) { described_class.new(resource: obj) }
 
