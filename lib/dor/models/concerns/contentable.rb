@@ -174,12 +174,12 @@ module Dor
     end
     deprecation_deprecate decommission: 'Use DecommissionService#decommission instead'
 
-    # TODO: Move to Dor-Utils.
     # Adds a RELS-EXT constituent relationship to the given druid
     # @param [String] druid the parent druid of the constituent relationship
     #   e.g.: <fedora:isConstituentOf rdf:resource="info:fedora/druid:hj097bm8879" />
     def add_constituent(druid)
       add_relationship :is_constituent_of, ActiveFedora::Base.find(druid)
     end
+    deprecation_deprecate add_constituent: 'Use add_relationship :is_constituent_of instead'
   end
 end
