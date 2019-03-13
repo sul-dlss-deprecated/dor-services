@@ -155,6 +155,7 @@ module Dor
     autoload :CreateWorkflowService
     autoload :CreativeCommonsLicenseService
     autoload :DatastreamBuilder
+    autoload :DecommissionService
     autoload :DigitalStacksService
     autoload :DublinCoreService
     autoload :FileMetadataMergeService
