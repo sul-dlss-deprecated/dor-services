@@ -7,7 +7,10 @@ handler = Class.new do
     client = RestClient::Resource.new(Dor::Config.metadata.catalog.url,
                                       Dor::Config.metadata.catalog.user,
                                       Dor::Config.metadata.catalog.pass)
-    client["?#{prefix.chomp}=#{identifier.chomp}"].get
+    params = "?#{prefix.chomp}=#{identifier.chomp}"
+    client[params].get
+  rescue RestClient::Exception => e
+    raise BadResponseFromCatalog, "#{e.class} - when contacting (with BasicAuth hidden): #{Dor::Config.metadata.catalog.url}#{params}"
   end
 
   def label(metadata)
