@@ -262,6 +262,7 @@ describe Dor::Contentable do
     end
 
     before do
+      expect(Deprecation).to receive(:warn)
       allow(ActiveFedora::Base).to receive(:find) { child_obj }
     end
 
