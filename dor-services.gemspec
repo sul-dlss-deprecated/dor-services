@@ -34,7 +34,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'rubydora', '~> 2.1'
   s.add_dependency 'solrizer', '~> 3.0'
   s.add_dependency 'systemu', '~> 2.6'
-  s.add_dependency 'uuidtools', '~> 2.1.4'
   # s.add_dependency 'validatable', '~> 1.6.7'
   s.add_dependency 'retries'
 
