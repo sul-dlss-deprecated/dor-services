@@ -180,7 +180,6 @@ module Dor
     autoload :TechnicalMetadataService
     autoload :ThumbnailService
     autoload :VersionService
-    autoload :WorkflowService
   end
 
   # Workflow Classes
@@ -193,4 +192,5 @@ module Dor
   eager_load!
 
   require 'dor/utils/hydrus_shims'
+  require 'dor-workflow-service'
 end
