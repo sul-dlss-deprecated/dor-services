@@ -203,51 +203,14 @@ describe Dor::Contentable do
   end
 
   describe '#decommission' do
-    let(:dummy_obj) do
-      node = SpecNode.new
-      allow(node).to receive(:rels_ext).and_return(double('rels_ext', content_will_change!: true, content: ''))
-      node.pid = 'old:apo'
-      node
-    end
+    let(:obj) { Dor::Item.new }
+    let(:service) { instance_double(Dor::DecommissionService, decommission: true) }
 
-    let(:obj) do
-      o = Dor::Item.new
-      o.add_relationship :is_member_of, dummy_obj
-      o.add_relationship :is_governed_by, dummy_obj
-      o.decommission ' test '
-      o
-    end
-
-    let(:graveyard_apo) do
-      node = SpecNode.new
-      allow(node).to receive(:rels_ext).and_return(double('rels_ext', content_will_change!: true, content: ''))
-      node.pid = 'new:apo'
-      node
-    end
-
-    before do
-      allow(Dor::SearchService).to receive(:sdr_graveyard_apo_druid)
-      allow(ActiveFedora::Base).to receive(:find) { graveyard_apo }
-    end
-
-    it 'removes existing isMemberOf and isGovernedBy relationships' do
-      expect(obj.relationships(:is_member_of_collection)).to be_empty
-      expect(obj.relationships(:is_member_of)).to be_empty
-      expect(obj.relationships(:is_governed_by)).not_to include('info:fedora/old:apo')
-    end
-
-    it 'adds an isGovernedBy relationship to the SDR graveyard APO' do
-      expect(obj.relationships(:is_governed_by)).to eq(['info:fedora/new:apo'])
-    end
-
-    it 'clears out rightsMetadata and contentMetadata' do
-      expect(obj.rightsMetadata.content).to eq('<rightsMetadata/>')
-      expect(obj.contentMetadata.content).to eq('<contentMetadata/>')
-    end
-
-    it "adds a 'Decommissioned: tag" do
-      # make sure the tag is present in its normalized form
-      expect(obj.identityMetadata.tags).to include('Decommissioned : test')
+    it 'delgates to DecommissionService' do
+      expect(Deprecation).to receive(:warn)
+      allow(Dor::DecommissionService).to receive(:new).with(obj).and_return(service)
+      obj.decommission(' test ')
+      expect(service).to have_received(:decommission).with(' test ')
     end
   end
 
