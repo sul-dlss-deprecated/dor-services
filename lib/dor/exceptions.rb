@@ -11,6 +11,9 @@ module Dor
   # rubocop:disable Lint/InheritException
   # See https://github.com/rubocop-hq/rubocop/issues/6770
   class VersionAlreadyOpenError < Exception; end
+
+  # Raised when we can't get a response from the catalog
+  class BadResponseFromCatalog < Exception; end
   # rubocop:enable Lint/InheritException
 
   class DuplicateIdError < RuntimeError
