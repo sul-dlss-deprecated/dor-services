@@ -7,31 +7,6 @@ describe Dor::MetadataService do
     @specdir = File.join(File.dirname(__FILE__), '..')
   end
 
-  it 'registers a new metadata handler' do
-    handler = Class.new do
-      def fetch(_prefix, identifier)
-        identifier
-      end
-
-      def label(metadata)
-        "title: #{metadata}"
-      end
-
-      def prefixes
-        ['test']
-      end
-    end
-    expect(described_class.register(handler)).to be_a(handler)
-    expect(described_class.known_prefixes).to include(:test)
-    expect(described_class.fetch('test:12345')).to eq('12345')
-    expect(described_class.label_for('test:12345')).to eq('title: 12345')
-  end
-
-  it 'raises an exception if an invalid handler is registered' do
-    handler = Class.new
-    expect { described_class.register(handler) }.to raise_exception(TypeError)
-  end
-
   it 'raises an exception if an unknown metadata type is requested' do
     expect { described_class.fetch('foo:bar') }.to raise_exception(Dor::MetadataError)
   end
