@@ -1,36 +1,14 @@
 # frozen_string_literal: true
 
 require 'cache'
+require 'dor/services/metadata_handlers/catalog_handler'
 
 module Dor
   class MetadataError < RuntimeError; end
 
-  #  class MetadataHandler
-  #
-  #    def fetch(prefix, identifier)
-  #      ### Return metadata for prefix/identifier combo
-  #    end
-  #
-  #    def label(metadata)
-  #      ### Return a Fedora-compatible label from the metadata format returned by #fetch
-  #    end
-  #
-  #  end
-
   class MetadataService
     class << self
       @@cache = Cache.new(nil, nil, 250, 300)
-
-      def register(handler_class)
-        %w(fetch label prefixes).each do |method|
-          raise TypeError, "Metadata handlers must define ##{method}" unless handler_class.instance_methods.include?(method) || handler_class.instance_methods.include?(method.to_sym)
-        end
-        handler = handler_class.new
-        handler.prefixes.each do |prefix|
-          handlers[prefix.to_sym] = handler
-        end
-        handler
-      end
 
       def known_prefixes
         handlers.keys
@@ -62,7 +40,7 @@ module Dor
 
       def handler_for(prefix)
         handler = handlers[prefix.to_sym]
-        raise MetadataError, "Unkown metadata prefix: #{prefix}" if handler.nil?
+        raise MetadataError, "Unknown metadata prefix: #{prefix}" if handler.nil?
 
         handler
       end
@@ -70,12 +48,17 @@ module Dor
       private
 
       def handlers
-        @handlers ||= {}
+        @handlers ||= {}.tap do |md_handlers|
+          # There's only one. If additional handlers are added, will need to be registered here.
+          register(CatalogHandler.new, md_handlers)
+        end
+      end
+
+      def register(handler, md_handlers)
+        handler.prefixes.each do |prefix|
+          md_handlers[prefix.to_sym] = handler
+        end
       end
     end
   end
-end
-
-Dir[File.join(File.dirname(__FILE__), 'metadata_handlers', '*.rb')].each do |handler_file|
-  load handler_file
 end

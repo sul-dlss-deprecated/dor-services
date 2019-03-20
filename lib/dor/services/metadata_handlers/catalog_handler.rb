@@ -2,7 +2,7 @@
 
 require 'rest-client'
 
-handler = Class.new do
+class CatalogHandler
   def fetch(prefix, identifier)
     client = RestClient::Resource.new(Dor::Config.metadata.catalog.url,
                                       Dor::Config.metadata.catalog.user,
@@ -23,5 +23,3 @@ handler = Class.new do
     %w(catkey barcode)
   end
 end
-
-Dor::MetadataService.register(handler)
