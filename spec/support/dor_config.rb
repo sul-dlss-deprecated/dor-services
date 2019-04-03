@@ -26,7 +26,7 @@ Dor.configure do
   end
 
   solr.url         'https://example.edu/solr/solrizer'
-  workflow.url     'http://example.edu/workflow/'
+  workflow.url     'https://workflow.example.edu/'
   sdr.url          'http://example.edu/sdr'
   dor_services.url 'https://example.edu/dor'
   dor_indexing_app.url 'https://example.edu/dor'

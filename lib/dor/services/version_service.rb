@@ -24,9 +24,9 @@ module Dor
     def open(opts = {})
       # During local development, we need a way to open a new version even if the object has not been accessioned.
       raise(Dor::Exception, 'Object net yet accessioned') unless
-        opts[:assume_accessioned] || Dor::Config.workflow.client.get_lifecycle('dor', work.pid, 'accessioned')
+        opts[:assume_accessioned] || Dor::Config.workflow.client.lifecycle('dor', work.pid, 'accessioned')
       raise Dor::VersionAlreadyOpenError, 'Object already opened for versioning' if open?
-      raise Dor::Exception, 'Object currently being accessioned' if Dor::Config.workflow.client.get_active_lifecycle('dor', work.pid, 'submitted')
+      raise Dor::Exception, 'Object currently being accessioned' if Dor::Config.workflow.client.active_lifecycle('dor', work.pid, 'submitted')
 
       sdr_version = Sdr::Client.current_version work.pid
 
@@ -67,14 +67,14 @@ module Dor
 
       raise Dor::Exception, 'latest version in versionMetadata requires tag and description before it can be closed' unless work.versionMetadata.current_version_closeable?
       raise Dor::Exception, 'Trying to close version on an object not opened for versioning' unless open?
-      raise Dor::Exception, 'accessionWF already created for versioned object' if Dor::Config.workflow.client.get_active_lifecycle('dor', work.pid, 'submitted')
+      raise Dor::Exception, 'accessionWF already created for versioned object' if Dor::Config.workflow.client.active_lifecycle('dor', work.pid, 'submitted')
 
       Dor::Config.workflow.client.close_version 'dor', work.pid, opts.fetch(:start_accession, true) # Default to creating accessionWF when calling close_version
     end
 
     # @return [Boolean] true if 'opened' lifecycle is active, false otherwise
     def open?
-      return true if Dor::Config.workflow.client.get_active_lifecycle('dor', work.pid, 'opened')
+      return true if Dor::Config.workflow.client.active_lifecycle('dor', work.pid, 'opened')
 
       false
     end

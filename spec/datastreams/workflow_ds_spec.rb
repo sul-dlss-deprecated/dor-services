@@ -41,12 +41,12 @@ RSpec.describe Dor::WorkflowDs do
           datetime="2012-11-06T16:19:15-0800" status="completed" name="descriptive-metadata"/>
         <process version="2" elapsed="0.0" archived="true" attempts="2"
           datetime="2012-11-06T16:19:16-0800" status="completed" name="content-metadata"/>'
-      allow(Dor::Config.workflow.client).to receive(:get_workflow_xml).and_return(xml)
+      allow(Dor::Config.workflow.client).to receive(:workflow_xml).and_return(xml)
       accessionWF = @item.workflows['accessionWF']
       expect(accessionWF).not_to be_nil
     end
     it 'returns nil if the xml is empty' do
-      allow(Dor::Config.workflow.client).to receive(:get_workflow_xml).and_return('')
+      allow(Dor::Config.workflow.client).to receive(:workflow_xml).and_return('')
       expect(@item.workflows['accessionWF']).to be_nil
     end
   end
@@ -81,16 +81,16 @@ RSpec.describe Dor::WorkflowDs do
            datetime="2012-11-06T16:19:15-0800" status="completed" name="descriptive-metadata"/>
          <process version="2" elapsed="0.0" archived="true" attempts="2"
            datetime="2012-11-06T16:19:16-0800" status="completed" name="content-metadata"/>'
-      allow(Dor::Config.workflow.client).to receive(:get_workflow_xml).and_return(xml)
+      allow(Dor::Config.workflow.client).to receive(:workflow_xml).and_return(xml)
       accessionWF = @item.workflows.get_workflow 'accessionWF'
       expect(accessionWF).not_to be_nil
     end
     it 'returns nil if the xml is empty' do
-      allow(Dor::Config.workflow.client).to receive(:get_workflow_xml).and_return('')
+      allow(Dor::Config.workflow.client).to receive(:workflow_xml).and_return('')
       expect(@item.workflows.get_workflow('accessionWF')).to be_nil
     end
     it 'requests the workflow for a different repository if one is specified' do
-      expect(Dor::Config.workflow.client).to receive(:get_workflow_xml).with('sdr', 'druid:ab123cd4567', 'accessionWF').and_return('')
+      expect(Dor::Config.workflow.client).to receive(:workflow_xml).with('sdr', 'druid:ab123cd4567', 'accessionWF').and_return('')
       @item.workflows.get_workflow('accessionWF', 'sdr')
     end
   end

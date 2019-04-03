@@ -36,15 +36,15 @@ RSpec.describe Dor::Processable do
   end
 
   it 'loads its content directly from the workflow service' do
-    expect(Dor::Config.workflow.client).to receive(:get_workflow_xml).with('dor', 'druid:ab123cd4567', nil).once.and_return('<workflows/>')
+    expect(Dor::Config.workflow.client).to receive(:all_workflows_xml).with('druid:ab123cd4567').and_return('<workflows/>')
     expect(item.workflows.content).to eq('<workflows/>')
   end
 
   it 'is able to invalidate the cache of its content' do
-    expect(Dor::Config.workflow.client).to receive(:get_workflow_xml).with('dor', 'druid:ab123cd4567', nil).once.and_return('<workflows/>')
+    expect(Dor::Config.workflow.client).to receive(:all_workflows_xml).with('druid:ab123cd4567').and_return('<workflows/>')
     expect(item.workflows.content).to eq('<workflows/>')
     expect(item.workflows.content).to eq('<workflows/>') # should be cached copy
-    expect(Dor::Config.workflow.client).to receive(:get_workflow_xml).with('dor', 'druid:ab123cd4567', nil).once.and_return('<workflows>with some data</workflows>')
+    expect(Dor::Config.workflow.client).to receive(:all_workflows_xml).with('druid:ab123cd4567').and_return('<workflows>with some data</workflows>')
     # pass refresh flag and should be refreshed copy
     expect(item.workflows.content(true)).to eq('<workflows>with some data</workflows>')
     expect(item.workflows.content).to eq('<workflows>with some data</workflows>')

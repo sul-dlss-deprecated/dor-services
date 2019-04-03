@@ -28,9 +28,9 @@ RSpec.describe Dor::VersionService do
 
     context 'normal behavior' do
       before do
-        allow(Dor::Config.workflow.client).to receive(:get_lifecycle).with('dor', druid, 'accessioned').and_return(true)
-        allow(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'opened').and_return(nil)
-        allow(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'submitted').and_return(nil)
+        allow(Dor::Config.workflow.client).to receive(:lifecycle).with('dor', druid, 'accessioned').and_return(true)
+        allow(Dor::Config.workflow.client).to receive(:active_lifecycle).with('dor', druid, 'opened').and_return(nil)
+        allow(Dor::Config.workflow.client).to receive(:active_lifecycle).with('dor', druid, 'submitted').and_return(nil)
         allow(Sdr::Client).to receive(:current_version).and_return(1)
         allow(Dor::CreateWorkflowService).to receive(:create_workflow).with(obj, name: 'versioningWF')
         allow(obj).to receive(:new_record?).and_return(false)
@@ -38,9 +38,9 @@ RSpec.describe Dor::VersionService do
       end
 
       it 'creates the versionMetadata datastream and starts a workflow' do
-        expect(Dor::Config.workflow.client).to receive(:get_lifecycle).with('dor', druid, 'accessioned').and_return(true)
-        expect(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'opened').and_return(nil)
-        expect(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'submitted').and_return(nil)
+        expect(Dor::Config.workflow.client).to receive(:lifecycle).with('dor', druid, 'accessioned').and_return(true)
+        expect(Dor::Config.workflow.client).to receive(:active_lifecycle).with('dor', druid, 'opened').and_return(nil)
+        expect(Dor::Config.workflow.client).to receive(:active_lifecycle).with('dor', druid, 'submitted').and_return(nil)
         expect(Sdr::Client).to receive(:current_version).and_return(1)
         expect(Dor::CreateWorkflowService).to receive(:create_workflow).with(obj, name: 'versioningWF')
         expect(obj).to receive(:new_record?).and_return(false)
@@ -73,33 +73,33 @@ RSpec.describe Dor::VersionService do
 
     context 'when the object has not been accessioned' do
       it 'raises an exception' do
-        expect(Dor::Config.workflow.client).to receive(:get_lifecycle).with('dor', druid, 'accessioned').and_return(false)
+        expect(Dor::Config.workflow.client).to receive(:lifecycle).with('dor', druid, 'accessioned').and_return(false)
         expect { open }.to raise_error(Dor::Exception, 'Object net yet accessioned')
       end
     end
 
     context 'when the object has already been opened' do
       it 'raises an exception' do
-        expect(Dor::Config.workflow.client).to receive(:get_lifecycle).with('dor', druid, 'accessioned').and_return(true)
-        expect(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'opened').and_return(Time.new)
+        expect(Dor::Config.workflow.client).to receive(:lifecycle).with('dor', druid, 'accessioned').and_return(true)
+        expect(Dor::Config.workflow.client).to receive(:active_lifecycle).with('dor', druid, 'opened').and_return(Time.new)
         expect { open }.to raise_error(Dor::VersionAlreadyOpenError, 'Object already opened for versioning')
       end
     end
 
     context 'when the object is still being accessioned' do
       it 'raises an exception' do
-        expect(Dor::Config.workflow.client).to receive(:get_lifecycle).with('dor', druid, 'accessioned').and_return(true)
-        expect(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'opened').and_return(nil)
-        expect(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'submitted').and_return(Time.new)
+        expect(Dor::Config.workflow.client).to receive(:lifecycle).with('dor', druid, 'accessioned').and_return(true)
+        expect(Dor::Config.workflow.client).to receive(:active_lifecycle).with('dor', druid, 'opened').and_return(nil)
+        expect(Dor::Config.workflow.client).to receive(:active_lifecycle).with('dor', druid, 'submitted').and_return(Time.new)
         expect { open }.to raise_error(Dor::Exception, 'Object currently being accessioned')
       end
     end
 
     context "SDR's current version is greater than the current version" do
       it 'raises an exception' do
-        expect(Dor::Config.workflow.client).to receive(:get_lifecycle).with('dor', druid, 'accessioned').and_return(true)
-        expect(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'opened').and_return(nil)
-        expect(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'submitted').and_return(nil)
+        expect(Dor::Config.workflow.client).to receive(:lifecycle).with('dor', druid, 'accessioned').and_return(true)
+        expect(Dor::Config.workflow.client).to receive(:active_lifecycle).with('dor', druid, 'opened').and_return(nil)
+        expect(Dor::Config.workflow.client).to receive(:active_lifecycle).with('dor', druid, 'submitted').and_return(nil)
         expect(Sdr::Client).to receive(:current_version).and_return(3)
         expect { open }.to raise_error(Dor::Exception, 'Cannot sync to a version greater than current: 1, requested 3')
       end
@@ -111,7 +111,7 @@ RSpec.describe Dor::VersionService do
 
     it 'sets tag and description if passed in as optional paramaters' do
       allow(vmd_ds).to receive(:pid).and_return('druid:ab123cd4567')
-      allow(Dor::Config.workflow.client).to receive(:get_active_lifecycle).and_return(true, false)
+      allow(Dor::Config.workflow.client).to receive(:active_lifecycle).and_return(true, false)
 
       # Stub out calls to update and archive workflow
       allow(Dor::Config.workflow.client).to receive(:update_workflow_status)
@@ -139,15 +139,15 @@ RSpec.describe Dor::VersionService do
 
     context 'when the object has not been opened for versioning' do
       it 'raises an exception' do
-        expect(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'opened').and_return(nil)
+        expect(Dor::Config.workflow.client).to receive(:active_lifecycle).with('dor', druid, 'opened').and_return(nil)
         expect { close }.to raise_error(Dor::Exception, 'Trying to close version on an object not opened for versioning')
       end
     end
 
     context 'when the object already has an active instance of accesssionWF' do
       it 'raises an exception' do
-        expect(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'opened').and_return(Time.new)
-        expect(Dor::Config.workflow.client).to receive(:get_active_lifecycle).with('dor', druid, 'submitted').and_return(true)
+        expect(Dor::Config.workflow.client).to receive(:active_lifecycle).with('dor', druid, 'opened').and_return(Time.new)
+        expect(Dor::Config.workflow.client).to receive(:active_lifecycle).with('dor', druid, 'submitted').and_return(true)
         expect { close }.to raise_error(Dor::Exception, 'accessionWF already created for versioned object')
       end
     end

@@ -8,7 +8,7 @@ RSpec.describe Dor::Item do
 
     let(:item) { described_class.new(pid: 'foo:123') }
 
-    before { allow(Dor::Config.workflow.client).to receive(:get_milestones).and_return([]) }
+    before { allow(Dor::Config.workflow.client).to receive(:milestones).and_return([]) }
 
     it { is_expected.to include 'active_fedora_model_ssi' => 'Dor::Item' }
   end
@@ -26,7 +26,7 @@ RSpec.describe Dor::Item do
     let(:workflows) { reloaded.workflows }
 
     it 'is set automatically' do
-      expect(workflows.dsLocation).to eq 'http://example.edu/workflow/dor/objects/changeme:1231231/workflows'
+      expect(workflows.dsLocation).to eq 'https://workflow.example.edu/dor/objects/changeme:1231231/workflows'
       expect(workflows.mimeType).to eq 'application/xml'
     end
   end
