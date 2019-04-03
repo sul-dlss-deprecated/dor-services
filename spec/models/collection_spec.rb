@@ -18,7 +18,7 @@ RSpec.describe Dor::Collection do
 
     let(:collection) { described_class.new(pid: 'foo:123') }
 
-    before { allow(Dor::Config.workflow.client).to receive(:get_milestones).and_return([]) }
+    before { allow(Dor::Config.workflow.client).to receive(:milestones).and_return([]) }
 
     it { is_expected.to have_key :id }
   end

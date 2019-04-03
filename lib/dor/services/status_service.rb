@@ -76,7 +76,7 @@ module Dor
     end
 
     def milestones
-      @milestones ||= Dor::Config.workflow.client.get_milestones('dor', work.pid)
+      @milestones ||= Dor::Config.workflow.client.milestones('dor', work.pid)
     end
 
     private

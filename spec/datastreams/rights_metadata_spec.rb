@@ -10,7 +10,7 @@ RSpec.describe Dor::RightsMetadataDS do
   before do
     @item = instantiate_fixture('druid:bb046xn0881', Dor::Item)
     allow(Dor).to receive(:find).with(@item.pid).and_return(@item)
-    allow(Dor::Config.workflow.client).to receive(:get_milestones).and_return([])
+    allow(Dor::Config.workflow.client).to receive(:milestones).and_return([])
   end
 
   it '#new' do

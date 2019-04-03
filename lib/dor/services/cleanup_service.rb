@@ -70,7 +70,7 @@ module Dor
 
     def self.remove_active_workflows(druid)
       %w(dor sdr).each do |repo|
-        dor_wfs = Dor::Config.workflow.client.get_workflows(druid, repo)
+        dor_wfs = Dor::Config.workflow.client.workflows(druid, repo)
         dor_wfs.each { |wf| Dor::Config.workflow.client.delete_workflow(repo, druid, wf) }
       end
     end

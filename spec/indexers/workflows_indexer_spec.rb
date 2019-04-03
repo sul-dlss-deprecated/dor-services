@@ -79,7 +79,7 @@ RSpec.describe Dor::WorkflowsIndexer do
       Dor::Workflow::Document.class_variable_set(:@@definitions, {})
       WebMock.disable_net_connect!
       allow(Dor::WorkflowObject).to receive(:find_by_name).and_return(assemblyWF)
-      allow(Dor::Config.workflow.client).to receive(:get_workflow_xml).and_return(xml)
+      allow(Dor::Config.workflow.client).to receive(:all_workflows_xml).and_return(xml)
     end
 
     describe 'workflow_status_ssim' do

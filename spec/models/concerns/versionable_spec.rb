@@ -41,20 +41,20 @@ RSpec.describe Dor::Versionable do
 
   describe 'allows_modification?' do
     it "allows modification if the object hasn't been submitted" do
-      allow(Dor::Config.workflow.client).to receive(:get_lifecycle).and_return(false)
+      allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(false)
       expect(obj).to be_allows_modification
     end
 
     it 'allows modification if there is an open version' do
-      allow(Dor::Config.workflow.client).to receive(:get_lifecycle).and_return(true)
+      allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true)
       allow_any_instance_of(Dor::VersionService).to receive(:open?).and_return(true)
       expect(obj).to be_allows_modification
     end
 
     it 'allows modification if the item has sdr-ingest-transfer set to hold' do
-      allow(Dor::Config.workflow.client).to receive(:get_lifecycle).and_return(true)
+      allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true)
       allow_any_instance_of(Dor::VersionService).to receive(:open?).and_return(false)
-      allow(Dor::Config.workflow.client).to receive(:get_workflow_status).and_return('hold')
+      allow(Dor::Config.workflow.client).to receive(:workflow_status).and_return('hold')
       expect(obj).to be_allows_modification
     end
   end

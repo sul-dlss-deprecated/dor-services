@@ -49,9 +49,9 @@ module Dor
     # @return [Boolean] true if the object is in a state that allows it to be modified.
     #  States that will allow modification are: has not been submitted for accessioning, has an open version or has sdr-ingest set to hold
     def allows_modification?
-      if Dor::Config.workflow.client.get_lifecycle('dor', pid, 'submitted') &&
+      if Dor::Config.workflow.client.lifecycle('dor', pid, 'submitted') &&
          !VersionService.new(self).open? &&
-         Dor::Config.workflow.client.get_workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer') != 'hold'
+         Dor::Config.workflow.client.workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer') != 'hold'
         false
       else
         true
