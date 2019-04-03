@@ -91,6 +91,7 @@ module Dor
     autoload :ProcessableIndexer
     autoload :ReleasableIndexer
     autoload :WorkflowIndexer
+    autoload :WorkflowsIndexer
   end
 
   # datastreams
@@ -144,6 +145,7 @@ module Dor
       autoload :Collection
       autoload :AdminPolicyObject
       autoload :WorkflowObject
+      autoload :WorkflowSolrDocument
     end
   end
 

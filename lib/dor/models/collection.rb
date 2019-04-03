@@ -12,7 +12,7 @@ module Dor
       IdentifiableIndexer,
       ProcessableIndexer,
       ReleasableIndexer,
-      WorkflowIndexer
+      WorkflowsIndexer
     )
   end
 end

@@ -83,7 +83,7 @@ module Dor
     end
 
     def to_solr(solr_doc = {}, *_args)
-      # noop - indexing is done by the WorkflowIndexer
+      # noop - indexing is done by the WorkflowsIndexer
       solr_doc
     end
 

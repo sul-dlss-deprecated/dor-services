@@ -3,89 +3,195 @@
 require 'spec_helper'
 
 RSpec.describe Dor::WorkflowIndexer do
-  let(:obj) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
-  let(:indexer) { described_class.new(resource: obj) }
+  let(:document) { Dor::Workflow::Document.new(xml) }
+  let(:indexer) { described_class.new(document: document) }
+
+  let(:wf_definition) { instance_double(Dor::WorkflowDefinitionDs, processes: wf_definition_procs) }
+  let(:wf_definition_procs) do
+    [
+      Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step1, 'lifecycle' => 'lc', 'status' => 'stat', 'sequence' => '1'),
+      Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step2, 'status' => 'waiting', 'sequence' => '2', 'prerequisite' => ['hello']),
+      Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step3, 'status' => 'error', 'sequence' => '3'),
+      Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step4, 'sequence' => '4')
+    ]
+  end
+
+  let(:step1) { 'hello' }
+  let(:step2) { 'goodbye' }
+  let(:step3) { 'technical-metadata' }
+  let(:step4) { 'some-other-step' }
 
   describe '#to_solr' do
-    let(:solr_doc) { indexer.to_solr }
+    subject(:solr_doc) { indexer.to_solr.to_h }
+
+    before do
+      allow(document).to receive(:definition).and_return(wf_definition)
+    end
+
     let(:xml) do
-      <<~XML
-        <workflows objectId="druid:ab123cd4567">
-          <workflow repository="dor" objectId="druid:ab123cd4567" id="accessionWF">
-            <process version="1" priority="0" note="" lifecycle="submitted" laneId="default" elapsed="" attempts="0" datetime="2019-01-28T20:41:12+00:00" status="completed" name="start-accession"/>
-            <process version="1" priority="0" note="common-accessioning-stage-a.stanford.edu" lifecycle="described" laneId="default" elapsed="0.258" attempts="0" datetime="2019-01-28T20:41:12+00:00" status="completed" name="descriptive-metadata"/>
-            <process version="1" priority="0" note="common-accessioning-stage-b.stanford.edu" lifecycle="" laneId="default" elapsed="0.188" attempts="0" datetime="2019-01-28T20:41:12+00:00" status="completed" name="rights-metadata"/>
-            <process version="1" priority="0" note="common-accessioning-stage-b.stanford.edu" lifecycle="" laneId="default" elapsed="0.255" attempts="0" datetime="2019-01-28T20:41:12+00:00" status="completed" name="content-metadata"/>
-            <process version="1" priority="0" note="common-accessioning-stage-b.stanford.edu" lifecycle="" laneId="default" elapsed="0.948" attempts="0" datetime="2019-01-28T20:41:12+00:00" status="completed" name="technical-metadata"/>
-            <process version="1" priority="0" note="common-accessioning-stage-b.stanford.edu" lifecycle="" laneId="default" elapsed="0.15" attempts="0" datetime="2019-01-28T20:41:12+00:00" status="completed" name="remediate-object"/>
-            <process version="1" priority="0" note="common-accessioning-stage-b.stanford.edu" lifecycle="" laneId="default" elapsed="0.479" attempts="0" datetime="2019-01-28T20:41:12+00:00" status="completed" name="shelve"/>
-            <process version="1" priority="0" note="common-accessioning-stage-b.stanford.edu" lifecycle="published" laneId="default" elapsed="1.188" attempts="0" datetime="2019-01-28T20:41:12+00:00" status="completed" name="publish"/>
-            <process version="1" priority="0" note="common-accessioning-stage-b.stanford.edu" lifecycle="" laneId="default" elapsed="0.251" attempts="0" datetime="2019-01-28T20:41:12+00:00" status="completed" name="provenance-metadata"/>
-            <process version="1" priority="0" note="common-accessioning-stage-b.stanford.edu" lifecycle="" laneId="default" elapsed="2.257" attempts="0" datetime="2019-01-28T20:41:12+00:00" status="completed" name="sdr-ingest-transfer"/>
-            <process version="1" priority="0" note="preservationIngestWF completed on preservation-robots1-stage.stanford.edu" lifecycle="deposited" laneId="default" elapsed="1.0" attempts="0" datetime="2019-01-28T20:41:12+00:00" status="completed" name="sdr-ingest-received"/>
-            <process version="1" priority="0" note="common-accessioning-stage-b.stanford.edu" lifecycle="" laneId="default" elapsed="0.246" attempts="0" datetime="2019-01-28T20:41:12+00:00" status="completed" name="reset-workspace"/>
-            <process version="1" priority="0" note="common-accessioning-stage-a.stanford.edu" lifecycle="accessioned" laneId="default" elapsed="1.196" attempts="0" datetime="2019-01-28T20:41:12+00:00" status="completed" name="end-accession"/>
-          </workflow>
-          <workflow repository="dor" objectId="druid:ab123cd4567" id="assemblyWF">
-            <process version="1" priority="0" note="" lifecycle="pipelined" laneId="default" elapsed="" attempts="0" datetime="2019-01-28T20:40:18+00:00" status="completed" name="start-assembly"/>
-            <process version="1" priority="0" note="" lifecycle="" laneId="default" elapsed="" attempts="0" datetime="2019-01-28T20:40:18+00:00" status="skipped" name="jp2-create"/>
-            <process version="1" priority="0" note="sul-robots1-test.stanford.edu" lifecycle="" laneId="default" elapsed="0.25" attempts="0" datetime="2019-01-28T20:40:18+00:00" status="completed" name="checksum-compute"/>
-            <process version="1" priority="0" note="sul-robots1-test.stanford.edu" lifecycle="" laneId="default" elapsed="0.306" attempts="0" datetime="2019-01-28T20:40:18+00:00" status="completed" name="exif-collect"/>
-            <process version="1" priority="0" note="sul-robots2-test.stanford.edu" lifecycle="" laneId="default" elapsed="0.736" attempts="0" datetime="2019-01-28T20:40:18+00:00" status="completed" name="accessioning-initiate"/>
-            <process version="2" priority="0" note="" lifecycle="" laneId="default" elapsed="" attempts="0" datetime="2019-01-29T22:51:09+00:00" status="completed" name="start-assembly"/>
-            <process version="2" priority="0" note="contentMetadata.xml exists" lifecycle="" laneId="default" elapsed="0.278" attempts="0" datetime="2019-01-29T22:51:09+00:00" status="skipped" name="content-metadata-create"/>
-            <process version="2" priority="0" note="" lifecycle="" laneId="default" elapsed="0.0" attempts="0" datetime="2019-01-29T22:51:09+00:00" status="error" name="jp2-create"/>
-            <process version="2" priority="0" note="" lifecycle="" laneId="default" elapsed="0.0" attempts="0" datetime="2019-01-29T22:51:09+00:00" status="queued" name="checksum-compute"/>
-            <process version="2" priority="0" note="" lifecycle="" laneId="default" elapsed="0.0" attempts="0" datetime="2019-01-29T22:51:09+00:00" status="queued" name="exif-collect"/>
-            <process version="2" priority="0" note="" lifecycle="" laneId="default" elapsed="0.0" attempts="0" datetime="2019-01-29T22:51:09+00:00" status="queued" name="accessioning-initiate"/>
-          </workflow>
-          <workflow repository="dor" objectId="druid:ab123cd4567" id="disseminationWF">
-            <process version="1" priority="0" note="common-accessioning-stage-b.stanford.edu" lifecycle="" laneId="default" elapsed="0.826" attempts="0" datetime="2019-01-28T20:46:57+00:00" status="completed" name="cleanup"/>
-          </workflow>
-          <workflow repository="dor" objectId="druid:ab123cd4567" id="hydrusAssemblyWF">
-            <process version="1" priority="0" note="" lifecycle="registered" laneId="default" elapsed="" attempts="0" datetime="2019-01-28T20:37:43+00:00" status="completed" name="start-deposit"/>
-            <process version="1" priority="0" note="" lifecycle="" laneId="default" elapsed="0.0" attempts="0" datetime="2019-01-28T20:37:43+00:00" status="completed" name="submit"/>
-            <process version="1" priority="0" note="" lifecycle="" laneId="default" elapsed="0.0" attempts="0" datetime="2019-01-28T20:37:43+00:00" status="completed" name="approve"/>
-            <process version="1" priority="0" note="" lifecycle="" laneId="default" elapsed="0.0" attempts="0" datetime="2019-01-28T20:37:43+00:00" status="completed" name="start-assembly"/>
-            <process version="2" priority="0" note="" lifecycle="" laneId="default" elapsed="0.0" attempts="0" datetime="2019-01-28T20:48:17+00:00" status="completed" name="submit"/>
-            <process version="2" priority="0" note="" lifecycle="" laneId="default" elapsed="0.0" attempts="0" datetime="2019-01-28T20:48:17+00:00" status="completed" name="approve"/>
-            <process version="2" priority="0" note="" lifecycle="" laneId="default" elapsed="0.0" attempts="0" datetime="2019-01-28T20:48:18+00:00" status="completed" name="start-assembly"/>
-          </workflow>
-          <workflow repository="dor" objectId="druid:ab123cd4567" id="versioningWF">
-            <process version="2" priority="0" note="" lifecycle="opened" laneId="default" elapsed="" attempts="0" datetime="2019-01-28T20:48:16+00:00" status="completed" name="start-version"/>
-            <process version="2" priority="0" note="" lifecycle="" laneId="default" elapsed="" attempts="1" datetime="2019-01-28T20:48:16+00:00" status="completed" name="submit-version"/>
-            <process version="2" priority="0" note="" lifecycle="" laneId="default" elapsed="" attempts="1" datetime="2019-01-28T20:48:16+00:00" status="completed" name="start-accession"/>
-          </workflow>
-        </workflows>
+      <<-XML
+      <?xml version="1.0" encoding="UTF-8"?>
+      <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+        <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+        <process version="2" elapsed="0.0" archived="true" attempts="1"
+         datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
+      </workflow>
       XML
     end
 
-    let(:assemblyWF) { instance_double(Dor::WorkflowObject, definition: definition) }
-    let(:definition) { instance_double(Dor::WorkflowDefinitionDs, processes: workflow_steps) }
-    let(:workflow_name) { 'assemblyWF' }
-    let(:workflow_steps) do
-      [
-        Dor::Workflow::Process.new('dor', workflow_name, 'name' => 'start-assembly', 'sequence' => 1),
-        Dor::Workflow::Process.new('dor', workflow_name, 'name' => 'content-metadata-create', 'sequence' => 2),
-        Dor::Workflow::Process.new('dor', workflow_name, 'name' => 'jp2-create', 'sequence' => 3),
-        Dor::Workflow::Process.new('dor', workflow_name, 'name' => 'checksum-compute', 'sequence' => 4),
-        Dor::Workflow::Process.new('dor', workflow_name, 'name' => 'exif-collect', 'sequence' => 5),
-        Dor::Workflow::Process.new('dor', workflow_name, 'name' => 'accessioning-initiate', 'sequence' => 6)
-      ]
+    it 'creates the workflow_status field with the workflow repository included' do
+      expect(solr_doc[Solrizer.solr_name('workflow_status', :symbol)].first).to eq('accessionWF|active|0|dor')
     end
 
-    before do
-      # Wipe out the cache
-      Dor::Workflow::Document.class_variable_set(:@@definitions, {})
-      WebMock.disable_net_connect!
-      allow(Dor::WorkflowObject).to receive(:find_by_name).and_return(assemblyWF)
-      allow(Dor::Config.workflow.client).to receive(:get_workflow_xml).and_return(xml)
+    context 'when the xml contains a process list with a waiting items that have a prerequisite' do
+      let(:xml) do
+        <<-XML
+        <?xml version="1.0" encoding="UTF-8"?>
+        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="inprogress" name="hello"/>
+        </workflow>
+        XML
+      end
+
+      it 'indexes the right workflow status (active)' do
+        expect(solr_doc).to match a_hash_including('workflow_status_ssim' => ['accessionWF|active|1|dor'])
+      end
     end
 
-    describe 'workflow_status_ssim' do
-      subject { solr_doc['workflow_status_ssim'] }
+    context 'when all steps are completed or skipped' do
+      let(:xml) do
+        <<-XML
+        <?xml version="1.0" encoding="UTF-8"?>
+        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="skipped" name="hello"/>
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="skipped" name="goodbye"/>
+        </workflow>
+        XML
+      end
 
-      it { is_expected.to eq ['accessionWF|completed|0|dor', 'assemblyWF|active|1|dor', 'disseminationWF|active|1|dor', 'hydrusAssemblyWF|active|1|dor', 'versioningWF|active|1|dor'] }
+      it 'indexes the right workflow status (completed)' do
+        expect(solr_doc).to match a_hash_including('workflow_status_ssim' => ['accessionWF|completed|0|dor'])
+      end
+    end
+
+    context 'when a step has an empty status' do
+      let(:xml) do
+        <<-XML
+        <?xml version="1.0" encoding="UTF-8"?>
+        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="skipped" name="hello"/>
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="" name="goodbye"/>
+        </workflow>
+        XML
+      end
+
+      it 'indexes the right workflow status (completed)' do
+        expect(solr_doc).to match a_hash_including('workflow_status_ssim' => ['accessionWF|completed|0|dor'])
+      end
+    end
+
+    context 'when the xml has dates for completed and errored steps' do
+      let(:xml) do
+        <<-XML
+        <?xml version="1.0" encoding="UTF-8"?>
+        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:57-0800" status="error" name="hello"/>
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="" name="goodbye"/>
+        </workflow>
+        XML
+      end
+
+      it 'indexes the iso8601 UTC dates' do
+        expect(solr_doc).to match a_hash_including('wf_accessionWF_hello_dttsi' => '2012-11-07T00:18:57Z')
+        expect(solr_doc).to match a_hash_including('wf_accessionWF_technical-metadata_dttsi' => '2012-11-07T00:18:58Z')
+      end
+    end
+
+    context 'when the xml does not have dates for completed and errored steps' do
+      let(:xml) do
+        <<-XML
+        <?xml version="1.0" encoding="UTF-8"?>
+        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="" status="error" name="hello"/>
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="" name="goodbye"/>
+        </workflow>
+        XML
+      end
+
+      it 'only indexes the dates on steps that include a date' do
+        expect(solr_doc).to match a_hash_including('wf_accessionWF_technical-metadata_dttsi')
+        expect(solr_doc).not_to match a_hash_including('wf_accessionWF_hello_dttsi')
+        expect(solr_doc).not_to match a_hash_including('wf_accessionWF_start-accession_dttsi')
+        expect(solr_doc).not_to match a_hash_including('wf_accessionWF_goodbye_dttsi')
+      end
+    end
+
+    context 'when there are error messages' do
+      let(:xml) do
+        <<-XML
+        <?xml version="1.0" encoding="UTF-8"?>
+        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="error" errorMessage="druid:gv054hp4128 - Item error; caused by 413 Request Entity Too Large:" name="technical-metadata"/>
+        </workflow>
+        XML
+      end
+
+      let(:wf_error) { solr_doc[Solrizer.solr_name('wf_error', :symbol)] }
+
+      it 'indexes the error messages' do
+        expect(wf_error).to eq ['accessionWF:technical-metadata:druid:gv054hp4128 - Item error; caused by 413 Request Entity Too Large:']
+      end
+    end
+
+    context 'when the error messages are crazy long' do
+      let(:error_length) { 40_000 }
+      let(:error) { (0...error_length).map { rand(65..90).chr }.join }
+      let(:xml) do
+        <<-XML
+        <?xml version="1.0" encoding="UTF-8"?>
+        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="error" errorMessage="#{error}" name="technical-metadata"/>
+        </workflow>
+        XML
+      end
+
+      let(:wf_error) { solr_doc[Solrizer.solr_name('wf_error', :symbol)] }
+
+      it "truncates the error messages to below Solr's limit" do
+        # 31 is the leader
+        expect(wf_error.first.length).to be < 32_766
+      end
     end
   end
 end
