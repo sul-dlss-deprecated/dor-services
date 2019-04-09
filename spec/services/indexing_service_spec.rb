@@ -94,6 +94,7 @@ describe Dor::IndexingService do
 
   describe '#reindex_pid_list' do
     before do
+      expect(Deprecation).to receive(:warn)
       @mock_solr_conn = double(ActiveFedora.solr.conn)
     end
 
