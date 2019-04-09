@@ -13,15 +13,4 @@ before_install:
   - docker ps
 
 env:
-  - 'RAILS_VERSION="~> 4.2"'
-  - 'RAILS_VERSION="~> 5.1.0"'
-
-matrix:
-  include:
-    - env:
-        - 'RAILS_VERSION="~> 5.2.0"'
-      rvm: 2.5.3
-    - env:
-        - 'AF_VERSION="~> 8.0"'
-        - 'RAILS_VERSION="~> 4.2"'
-      rvm: 2.5.3
+  - 'RAILS_VERSION="~> 5.2.3"'
