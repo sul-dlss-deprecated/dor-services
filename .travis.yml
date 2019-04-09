@@ -1,3 +1,4 @@
+
 language: ruby
 # caches gems between builds
 cache: bundler
@@ -16,3 +17,8 @@ before_install:
 
 env:
   - 'RAILS_VERSION="~> 5.2.4.1"'
+
+matrix:
+  include:
+    - env:
+        - 'RAILS_VERSION="6.0.2.1"'

@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
 
   # Runtime dependencies
   s.add_dependency 'active-fedora', '>= 8.7.0', '< 9'
-  s.add_dependency 'activesupport', '~> 5.1'
+  s.add_dependency 'activesupport', '>= 5.1', '< 7'
   s.add_dependency 'deprecation', '~> 0'
   s.add_dependency 'json', '>= 1.8.1'
   s.add_dependency 'nokogiri', '~> 1.6'
