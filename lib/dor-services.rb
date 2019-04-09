@@ -22,16 +22,16 @@ module Dor
     # index is missing the objectType property.
     # @param [String] pid The object's PID
     def load_instance(pid)
-      Dor::Abstract.find pid, cast: true
+      Deprecation.warn(self, 'load_instance is deprecated, use Dor.find instead')
+      find(pid)
     end
 
-    # Get objectType information from solr and load the correct class the first time,
-    # saving the overhead of using ActiveFedora::Base#adapt_to. It falls back to
-    # Dor.load_instance() if the item is not in the index, or is improperly indexed.
+    # Load an object and inspect its identityMetadata to figure out what class
+    # to adapt it to.
     # @param [String] pid The object's PID
     # @return [Object] the ActiveFedora-modeled object
     def find(pid, _opts = {})
-      load_instance(pid)
+      Dor::Abstract.find pid, cast: true
     end
 
     # TODO: return enumerable and lazy load_instance
