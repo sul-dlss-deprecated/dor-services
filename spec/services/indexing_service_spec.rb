@@ -9,6 +9,7 @@ describe Dor::IndexingService do
 
   describe '#generate_index_logger' do
     before do
+      allow(Deprecation).to receive(:warn)
       @mock_log_msg = 'something noteworthy'
     end
 
@@ -22,6 +23,8 @@ describe Dor::IndexingService do
         # this entry_id_block returns next value from a counter each time its called
         mock_req_id_ctr += 1 # ruby has no [post-]increment operator
       end
+
+      expect(Deprecation).to have_received(:warn)
 
       # log some test messages
       mock_log_messages = ['msg 1', 'msg 2', 'msg 3']
@@ -44,6 +47,9 @@ describe Dor::IndexingService do
 
     it 'logs the default entry_id if entry_id_block is nil' do
       test_index_logger = described_class.generate_index_logger
+
+      expect(Deprecation).to have_received(:warn)
+
       test_index_logger.info @mock_log_msg
       last_log_line = open(Dor::Config.indexing_svc.log).read.split("\n")[-1]
       expect(last_log_line).to match(/\[---\] \[.*\] #{@mock_log_msg}$/)
@@ -53,6 +59,9 @@ describe Dor::IndexingService do
       test_index_logger = described_class.generate_index_logger do
         raise ZeroDivisionError, 'whoops'
       end
+
+      expect(Deprecation).to have_received(:warn)
+
       test_index_logger.info @mock_log_msg
 
       last_log_line = open(Dor::Config.indexing_svc.log).read.split("\n")[-1]
@@ -62,16 +71,24 @@ describe Dor::IndexingService do
     it "does not trap the exception if it's not StandardError" do
       stack_overflow_ex = SystemStackError.new 'really? here?'
       test_index_logger = described_class.generate_index_logger { raise stack_overflow_ex }
+
+      expect(Deprecation).to have_received(:warn)
+
       expect { test_index_logger.info @mock_log_msg }.to raise_error(stack_overflow_ex)
     end
   end
 
   describe '#default_index_logger' do
+    before do
+      allow(Deprecation).to receive(:warn)
+    end
+
     it 'calls generate_index_logger, and memoize the result' do
       mock_default_logger = double(Logger)
       expect(described_class).to receive(:generate_index_logger).once.and_return(mock_default_logger)
       expect(described_class.default_index_logger).to eq(mock_default_logger)
       expect(described_class.default_index_logger).to eq(mock_default_logger)
+      expect(Deprecation).to have_received(:warn).twice
     end
   end
 
