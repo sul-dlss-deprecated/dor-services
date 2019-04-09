@@ -4,6 +4,8 @@ require 'benchmark'
 
 module Dor
   class IndexingService
+    extend Deprecation
+
     class ReindexError < RuntimeError; end
 
     ##
@@ -11,6 +13,7 @@ module Dor
     # @yield attempt to execute 'entry_id_block' and use the result as an extra identifier for the log
     #   entry.  a placeholder will be used otherwise. 'request.uuid' might be useful in a Rails app.
     def self.generate_index_logger(&entry_id_block)
+      Deprecation.warn(self, 'generate_index_logger is deprecated and will be removed in dor-services version 7')
       index_logger = Logger.new(Config.indexing_svc.log, Config.indexing_svc.log_rotation_interval)
       index_logger.formatter = proc do |_severity, datetime, _progname, msg|
         date_format_str = Config.indexing_svc.log_date_format_str
@@ -28,6 +31,7 @@ module Dor
     @@loggers = { default: nil }
 
     def self.default_index_logger
+      Deprecation.warn(self, 'default_index_logger is deprecated and will be removed in dor-services version 7')
       @@loggers[:default] ||= generate_index_logger
     end
 
