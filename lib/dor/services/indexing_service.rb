@@ -115,6 +115,7 @@ module Dor
 
     # given a list of pids, retrieve those objects from fedora, index each to solr, optionally commit
     def self.reindex_pid_list(pid_list, should_commit = false)
+      Deprecation.warn(self, 'reindex_pid_list is deprecated and will be removed in dor-services 7')
       pid_list.each { |pid| reindex_pid pid, raise_errors: false } # use the default logger, don't let individual errors nuke the rest of the batch
       ActiveFedora.solr.conn.commit if should_commit
     end
