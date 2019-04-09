@@ -37,6 +37,7 @@ module Dor
 
     # takes a Dor object and indexes it to solr.  doesn't commit automatically.
     def self.reindex_object(obj, options = {})
+      Deprecation.warn(self, 'reindex_pid is deprecated and will be removed in dor-services 7.')
       solr_doc = obj.to_solr
       Dor::SearchService.solr.add(solr_doc, options)
       solr_doc
@@ -76,6 +77,7 @@ module Dor
     # @overload reindex_pid(pid, index_logger, should_raise_errors, options = {})
     # @overload reindex_pid(pid, options = {})
     def self.reindex_pid(pid, *args)
+      Deprecation.warn(self, 'reindex_pid is deprecated and will be removed in dor-services 7.')
       options = {}
       options = args.pop if args.last.is_a? Hash
 

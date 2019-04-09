@@ -124,6 +124,7 @@ describe Dor::IndexingService do
 
   describe '#reindex_object' do
     before do
+      expect(Deprecation).to receive(:warn)
       @mock_pid = 'unique_id'
       @mock_obj = double(Dor::Item)
       @mock_solr_doc = { id: @mock_pid, text_field_tesim: 'a field to be searched' }
@@ -146,6 +147,7 @@ describe Dor::IndexingService do
 
   describe '#reindex_pid' do
     before do
+      expect(Deprecation).to receive(:warn)
       @mock_pid = 'unique_id'
       @mock_default_logger = double(Logger)
       @mock_obj = double(Dor::Item)
