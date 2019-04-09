@@ -5,6 +5,7 @@ require 'active_support/core_ext'
 
 module Dor
   class SearchService
+    extend Deprecation
     RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'"
     @@index_version = nil
 
@@ -13,7 +14,9 @@ module Dor
         Dor::VERSION
       end
 
+      # @deprecated because this depends on Fedora 3 having sparql turned on
       def risearch(query, opts = {})
+        Deprecation.warn(self, 'risearch is deprecated and will be removed in dor-services 7')
         client = Config.fedora.client['risearch']
         client.options[:timeout] = opts.delete(:timeout)
         query_params = {
@@ -28,7 +31,9 @@ module Dor
         result.split(/\n/)[1..-1].collect { |pid| pid.chomp.sub(/^info:fedora\//, '') }
       end
 
+      # @deprecated because this depends on Fedora 3 having sparql turned on
       def iterate_over_pids(opts = {})
+        Deprecation.warn(self, 'iterate_over_pids is deprecated and will be removed in dor-services 7')
         opts[:query] ||= 'select $object from <#ri> where $object <info:fedora/fedora-system:def/model#label> $label'
         opts[:in_groups_of] ||= 100
         opts[:mode] ||= :single
