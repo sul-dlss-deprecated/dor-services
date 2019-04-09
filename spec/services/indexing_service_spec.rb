@@ -156,42 +156,42 @@ describe Dor::IndexingService do
     end
 
     it 'handles old, primitive arguments' do
-      expect(Dor).to receive(:load_instance).with(@mock_pid).and_raise(ActiveFedora::ObjectNotFoundError)
+      expect(Dor).to receive(:find).with(@mock_pid).and_raise(ActiveFedora::ObjectNotFoundError)
       expect(@mock_default_logger).to receive(:warn).with("failed to update index for #{@mock_pid}, object not found in Fedora")
       expect(described_class).to receive(:warn)
       expect { described_class.reindex_pid(@mock_pid, nil, false) }.not_to raise_error
     end
 
     it 'reindexes the object via Dor::IndexingService.reindex_pid and log success' do
-      expect(Dor).to receive(:load_instance).with(@mock_pid).and_return(@mock_obj)
+      expect(Dor).to receive(:find).with(@mock_pid).and_return(@mock_obj)
       expect(described_class).to receive(:reindex_object).with(@mock_obj, {}).and_return(@mock_solr_doc)
-      expect(@mock_default_logger).to receive(:info).with(/successfully updated index for #{@mock_pid}.*metrics.*load_instance.*to_solr/)
+      expect(@mock_default_logger).to receive(:info).with(/successfully updated index for #{@mock_pid}.*metrics.*find.*to_solr/)
       ret_val = described_class.reindex_pid @mock_pid
       expect(ret_val).to eq(@mock_solr_doc)
     end
 
     it 'logs the right thing if an object is not found, then re-raise the exception by default' do
-      expect(Dor).to receive(:load_instance).with(@mock_pid).and_raise(ActiveFedora::ObjectNotFoundError)
+      expect(Dor).to receive(:find).with(@mock_pid).and_raise(ActiveFedora::ObjectNotFoundError)
       expect(@mock_default_logger).to receive(:warn).with("failed to update index for #{@mock_pid}, object not found in Fedora")
       expect { described_class.reindex_pid(@mock_pid) }.to raise_error(ActiveFedora::ObjectNotFoundError)
     end
 
     it 'logs the right thing if an object is not found, but swallow the exception when should_raise_errors is false' do
-      expect(Dor).to receive(:load_instance).with(@mock_pid).and_raise(ActiveFedora::ObjectNotFoundError)
+      expect(Dor).to receive(:find).with(@mock_pid).and_raise(ActiveFedora::ObjectNotFoundError)
       expect(@mock_default_logger).to receive(:warn).with("failed to update index for #{@mock_pid}, object not found in Fedora")
       expect { described_class.reindex_pid(@mock_pid, raise_errors: false) }.not_to raise_error
     end
 
     it "logs the right thing if there's an unexpected error, then re-raise the exception by default" do
       unexpected_err = ZeroDivisionError.new "how'd that happen?"
-      expect(Dor).to receive(:load_instance).with(@mock_pid).and_raise(unexpected_err)
+      expect(Dor).to receive(:find).with(@mock_pid).and_raise(unexpected_err)
       expect(@mock_default_logger).to receive(:warn).with(start_with("failed to update index for #{@mock_pid}, unexpected StandardError, see main app log: ["))
       expect { described_class.reindex_pid(@mock_pid) }.to raise_error(unexpected_err)
     end
 
     it "logs the right thing if there's an unexpected Exception that's not StandardError, then re-raise the exception, even when should_raise_errors is false" do
       stack_overflow_ex = SystemStackError.new "didn't see that one coming... maybe you shouldn't have self-referential collections?"
-      expect(Dor).to receive(:load_instance).with(@mock_pid).and_raise(stack_overflow_ex)
+      expect(Dor).to receive(:find).with(@mock_pid).and_raise(stack_overflow_ex)
       # TODO: fix this expectation and the code it's testing, as per https://github.com/sul-dlss/dor-services/issues/156
       # expect(@mock_default_logger).to receive(:error).with(start_with("failed to update index for #{@mock_pid}, unexpected Exception, see main app log: ["))
       expect { described_class.reindex_pid(@mock_pid, raise_errors: false) }.to raise_error(stack_overflow_ex)

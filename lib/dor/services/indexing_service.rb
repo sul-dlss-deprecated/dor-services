@@ -95,8 +95,8 @@ module Dor
       solr_doc = nil
 
       # benchmark how long it takes to load the object
-      load_stats = Benchmark.measure('load_instance') do
-        obj = Dor.load_instance pid
+      load_stats = Benchmark.measure('find') do
+        obj = Dor.find pid
       end.format('%n realtime %rs total CPU %ts').gsub(/[\(\)]/, '')
 
       # benchmark how long it takes to convert the object to a Solr document
