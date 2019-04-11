@@ -4,6 +4,7 @@ lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift lib unless $LOAD_PATH.include?(lib)
 require 'dor/version'
 
+# rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |s|
   s.name        = 'dor-services'
   s.version     = Dor::VERSION
@@ -64,3 +65,4 @@ Gem::Specification.new do |s|
   s.bindir       = 'bin'
   s.require_path = 'lib'
 end
+# rubocop:enable Metrics/BlockLength
