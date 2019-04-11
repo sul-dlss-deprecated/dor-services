@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
 
   # Runtime dependencies
   s.add_dependency 'active-fedora', '>= 8.7.0', '< 9'
-  s.add_dependency 'activesupport', '>= 4.2.10', '< 6.0.0'
+  s.add_dependency 'activesupport', '~> 5.1'
   s.add_dependency 'confstruct', '~> 0.2.7'
   s.add_dependency 'deprecation', '~> 0'
   s.add_dependency 'dor-services-client', '~> 1.5'

@@ -52,8 +52,6 @@ module Dor
     def source_id=(source_id)
       identityMetadata.sourceId = source_id
     end
-    alias set_source_id source_id=
-    deprecate set_source_id: 'Use source_id= instead'
 
     # Convenience method to get the current catkey
     # @return [String] current catkey value (or nil if none found)
@@ -106,23 +104,6 @@ module Dor
                       .each(&:remove)
                       .any?
     end
-
-    # Add an administrative tag to an item, you will need to seperately save the item to write it to fedora
-    # @param tag [string] The tag you wish to add
-    def add_tag(tag)
-      TagService.add(self, tag)
-    end
-    deprecation_deprecate add_tag: 'Call TagService.add instead'
-
-    def remove_tag(tag)
-      TagService.remove(self, tag)
-    end
-    deprecation_deprecate remove_tag: 'Call TagService.remove instead'
-
-    def update_tag(old_tag, new_tag)
-      TagService.update(self, old_tag, new_tag)
-    end
-    deprecation_deprecate update_tag: 'Call TagService.update instead'
 
     # a regex that can be used to identify the last part of a druid (e.g. oo000oo0001)
     # @return [Regex] a regular expression to identify the ID part of the druid

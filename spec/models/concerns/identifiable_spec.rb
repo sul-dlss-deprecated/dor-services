@@ -182,25 +182,6 @@ RSpec.describe Dor::Identifiable do
     end
   end
 
-  # when looking for tags after addition/update/removal, check for the normalized form.
-  # when doing the add/update/removal, specify the tag in non-normalized form so that the
-  # normalization mechanism actually gets tested.
-  describe 'add_tag' do
-    it 'delegates to TagService' do
-      expect(Deprecation).to receive(:warn)
-      expect(Dor::TagService).to receive(:add).with(item, 'sometag:someval')
-      item.add_tag('sometag:someval')
-    end
-  end
-
-  describe 'update_tag' do
-    it 'delegates to TagService' do
-      expect(Deprecation).to receive(:warn)
-      expect(Dor::TagService).to receive(:update).with(item, 'sometag :someval', 'new :tag')
-      item.update_tag('sometag :someval', 'new :tag')
-    end
-  end
-
   describe 'remove_druid_prefix' do
     it 'removes the druid prefix if it is present' do
       expect(item.remove_druid_prefix).to eq('ab123cd4567')
@@ -240,14 +221,6 @@ RSpec.describe Dor::Identifiable do
     end
     it 'does not identify non-druids' do
       expect('bogus'.match(item.druid_regex)).to be_nil
-    end
-  end
-
-  describe 'remove_tag' do
-    it 'delegates to TagService' do
-      expect(Deprecation).to receive(:warn)
-      expect(Dor::TagService).to receive(:add).with(item, 'sometag:someval')
-      item.add_tag('sometag:someval')
     end
   end
 

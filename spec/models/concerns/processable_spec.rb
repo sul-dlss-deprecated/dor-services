@@ -49,35 +49,4 @@ RSpec.describe Dor::Processable do
     expect(item.workflows.content(true)).to eq('<workflows>with some data</workflows>')
     expect(item.workflows.content).to eq('<workflows>with some data</workflows>')
   end
-
-  describe '#build_datastream' do
-    let(:builder) { instance_double(Dor::DatastreamBuilder, build: true) }
-
-    it 'Calls the datastream builder' do
-      expect(Deprecation).to receive(:warn)
-      expect(Dor::DatastreamBuilder).to receive(:new)
-        .with(datastream: Dor::DescMetadataDS, force: true, object: item, required: false)
-        .and_return(builder)
-      item.build_datastream('descMetadata', true)
-      expect(builder).to have_received(:build)
-    end
-  end
-
-  describe '#status' do
-    it 'delegates to the StatusService' do
-      expect(Deprecation).to receive(:warn)
-      expect(Dor::StatusService).to receive(:status).with(item, true)
-      item.status(true)
-    end
-  end
-
-  describe '#create_workflow' do
-    let(:item) { instantiate_fixture('druid:ab123cd4567', ProcessableWithApoItem) }
-
-    it 'delegates to CreateWorkflowService' do
-      expect(Deprecation).to receive(:warn)
-      expect(Dor::CreateWorkflowService).to receive(:create_workflow).with(item, name: 'accessionWF', create_ds: true, priority: 0)
-      item.create_workflow('accessionWF')
-    end
-  end
 end

@@ -68,21 +68,10 @@ module Dor
     # We also remove any .deletes entry that may have left over from a previous removal
     def publish_notify_on_success
       id = item.pid.gsub(/^druid:/, '')
-      if Dor::Config.purl_services.url
-        purl_services = Dor::Config.purl_services.rest_client
-        purl_services["purls/#{id}"].post ''
-      else
-        Deprecation.warn(self, 'You have not configured perl-fetcher (Dor::Config.purl_services.url). This will result in an error in dor-services 7 ')
-        local_recent_changes = Config.stacks.local_recent_changes
-        raise ArgumentError, "Missing local_recent_changes directory: #{local_recent_changes}" unless File.directory?(local_recent_changes)
+      raise 'You have not configured perl-fetcher (Dor::Config.purl_services.url).' unless Dor::Config.purl_services.url
 
-        FileUtils.touch(File.join(local_recent_changes, id))
-        begin
-          DruidTools::Druid.new(id, Dor::Config.stacks.local_document_cache_root).deletes_delete_record
-        rescue Errno::EACCES
-          Dor.logger.warn "Access denied while trying to remove .deletes file for druid:#{id}"
-        end
-      end
+      purl_services = Dor::Config.purl_services.rest_client
+      purl_services["purls/#{id}"].post ''
     end
 
     ##

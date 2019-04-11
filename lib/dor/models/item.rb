@@ -2,12 +2,9 @@
 
 module Dor
   class Item < Dor::Abstract
-    include Shelvable
     include Embargoable
     include Publishable
     include Itemizable
-    include Assembleable
-    include Contentable
     include Geoable
     include Releaseable
 

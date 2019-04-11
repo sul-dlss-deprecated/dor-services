@@ -3,8 +3,6 @@
 module Dor
   module Preservable
     extend ActiveSupport::Concern
-    extend Deprecation
-    self.deprecation_horizon = 'dor-services version 7.0.0'
 
     included do
       has_metadata name: 'provenanceMetadata', type: ProvenanceMetadataDS, label: 'Provenance Metadata'
@@ -19,11 +17,6 @@ module Dor
       ds.ng_xml = workflow_provenance
       ds.save
     end
-
-    def sdr_ingest_transfer(agreement_id)
-      SdrIngestService.transfer(self, agreement_id)
-    end
-    deprecation_deprecate sdr_ingest_transfer: 'Use SdrIngestService.transfer instead'
 
     private
 

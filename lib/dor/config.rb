@@ -32,24 +32,9 @@ module Dor
       result
     end
 
-    def autoconfigure(url, cert_file = Config.ssl.cert_file, key_file = Config.ssl.key_file, key_pass = Config.ssl.key_pass)
-      client = make_rest_client(url, cert_file, key_file, key_pass)
-      config = Confstruct::Configuration.symbolize_hash JSON.parse(client.get(accept: 'application/json'))
-      configure(config)
-    end
-    deprecation_deprecate :autoconfigure
-
     def sanitize
       dup
     end
-
-    def make_rest_client(url, cert = Config.ssl.cert_file, key = Config.ssl.key_file, pass = Config.ssl.key_pass)
-      params = {}
-      params[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(cert)) if cert
-      params[:ssl_client_key]  = OpenSSL::PKey::RSA.new(File.read(key), pass) if key
-      RestClient::Resource.new(url, params)
-    end
-    deprecation_deprecate :make_rest_client
 
     def make_solr_connection(add_opts = {})
       opts = Dor::Config.solr.opts.merge(add_opts).merge(
@@ -100,16 +85,6 @@ module Dor
 
     set_callback :configure, :after do |config|
       configure_client!(config)
-
-      if config.solrizer.present?
-        stack = Kernel.caller.dup
-        stack.shift while stack[0] =~ %r{(active_support/callbacks|dor/config|dor-services)\.rb}
-        ActiveSupport::Deprecation.warn 'Dor::Config -- solrizer configuration is deprecated. Please use solr instead.', stack
-
-        config.solrizer.each do |k, v|
-          config.solr[k] ||= v
-        end
-      end
 
       if config.solr.url.present?
         ActiveFedora::SolrService.register

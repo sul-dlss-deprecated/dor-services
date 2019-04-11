@@ -50,22 +50,6 @@ RSpec.describe Dor::Describable do
     end
   end
 
-  describe '#generate_dublin_core' do
-    it 'delegates to the DublinCoreService' do
-      expect_any_instance_of(Dor::DublinCoreService).to receive(:ng_xml)
-      expect(Deprecation).to receive(:warn)
-      @item.generate_dublin_core
-    end
-  end
-
-  describe '#generate_public_desc_md' do
-    it 'calls the PublicDescMetadataService' do
-      expect(Deprecation).to receive(:warn)
-      expect(Dor::PublicDescMetadataService).to receive(:new).with(@item).and_return(instance_double(Dor::PublicDescMetadataService, to_xml: '<xml />'))
-      expect(@item.generate_public_desc_md).to eq '<xml />'
-    end
-  end
-
   describe 'get_collection_title' do
     before do
       @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)

@@ -3,7 +3,6 @@
 module Dor
   module Workflow
     class Document
-      extend Deprecation
       include ::OM::XML::Document
 
       set_terminology do |t|
@@ -36,12 +35,6 @@ module Dor
       def priority
         processes.map { |proc| proc.priority.to_i }.detect(0) { |p| p > 0 }
       end
-
-      # @return [Boolean] if any process node does not have version, returns true, false otherwise (all processes have version)
-      def active?
-        ng_xml.at_xpath('/workflow/process[not(@version)]') ? true : false
-      end
-      deprecation_deprecate active?: 'Workflow::Document#active? has moved to Argo. This implementation does not work with the new workflow server, which returns all versions'
 
       # @return [Dor::WorkflowDefinitionDs]
       def definition

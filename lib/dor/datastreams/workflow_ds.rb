@@ -3,9 +3,6 @@
 module Dor
   # TODO: class docs
   class WorkflowDs < ActiveFedora::OmDatastream
-    extend Deprecation
-    self.deprecation_horizon = 'dor-services version 7.0.0'
-
     before_save :build_location
     set_terminology do |t|
       t.root(path: 'workflows')
@@ -33,18 +30,6 @@ module Dor
     def self.default_attributes
       super.merge(mimeType: 'application/xml')
     end
-
-    def get_workflow(wf, repo = 'dor')
-      xml = Dor::Config.workflow.client.workflow_xml(repo, pid, wf)
-      xml = Nokogiri::XML(xml)
-      return nil if xml.xpath('workflow').length == 0
-
-      Workflow::Document.new(xml.to_s)
-    end
-    deprecation_deprecate get_workflow: 'This has been moved to Argo and will be discontinued'
-
-    alias [] get_workflow
-    deprecation_deprecate :[] => 'This has been moved to Argo and will be discontinued'
 
     def ng_xml
       @ng_xml ||= Nokogiri::XML::Document.parse(content)

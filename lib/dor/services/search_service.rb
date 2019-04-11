@@ -5,49 +5,9 @@ require 'active_support/core_ext'
 
 module Dor
   class SearchService
-    extend Deprecation
-    RISEARCH_TEMPLATE = "select $object from <#ri> where $object <dc:identifier> '%s'"
-    @@index_version = nil
-
     class << self
       def index_version
         Dor::VERSION
-      end
-
-      # @deprecated because this depends on Fedora 3 having sparql turned on
-      def risearch(query, opts = {})
-        Deprecation.warn(self, 'risearch is deprecated and will be removed in dor-services 7')
-        client = Config.fedora.client['risearch']
-        client.options[:timeout] = opts.delete(:timeout)
-        query_params = {
-          type: 'tuples',
-          lang: 'itql',
-          format: 'CSV',
-          limit: '1000',
-          stream: 'on',
-          query: query
-        }.merge(opts)
-        result = client.post(query_params)
-        result.split(/\n/)[1..-1].collect { |pid| pid.chomp.sub(/^info:fedora\//, '') }
-      end
-
-      # @deprecated because this depends on Fedora 3 having sparql turned on
-      def iterate_over_pids(opts = {})
-        Deprecation.warn(self, 'iterate_over_pids is deprecated and will be removed in dor-services 7')
-        opts[:query] ||= 'select $object from <#ri> where $object <info:fedora/fedora-system:def/model#label> $label'
-        opts[:in_groups_of] ||= 100
-        opts[:mode] ||= :single
-        start = 0
-        pids = Dor::SearchService.risearch("#{opts[:query]} limit #{opts[:in_groups_of]} offset #{start}")
-        while pids.present?
-          if opts[:mode] == :single
-            pids.each { |pid| yield pid }
-          else
-            yield pids
-          end
-          start += pids.length
-          pids = Dor::SearchService.risearch("#{opts[:query]} limit #{opts[:in_groups_of]} offset #{start}")
-        end
       end
 
       def query(query, args = {})
