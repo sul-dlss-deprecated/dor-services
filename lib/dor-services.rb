@@ -152,7 +152,6 @@ module Dor
     autoload :TagService
     autoload :TechnicalMetadataService
     autoload :ThumbnailService
-    autoload :VersionService
   end
 
   # Workflow Classes
