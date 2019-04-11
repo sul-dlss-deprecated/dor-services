@@ -138,7 +138,6 @@ module Dor
     autoload :PublicXmlService
     autoload :RegistrationService
     autoload :ReleaseTagService
-    autoload :SdrIngestService
     autoload :SearchService
     autoload :SecondaryFileNameService
     autoload :ShelvingService
