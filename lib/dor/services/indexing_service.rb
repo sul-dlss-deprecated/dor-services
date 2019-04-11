@@ -47,6 +47,8 @@ module Dor
     # @param [String] pid the druid
     # @raise [ReindexError] on failure
     def self.reindex_pid_remotely(pid)
+      Deprecation.warn(self, 'reindex_pid_remotely is deprecated and will be removed in dor-services 7.')
+
       pid = "druid:#{pid}" unless pid =~ /^druid:/
       realtime = Benchmark.realtime do
         with_retries(max_tries: 3, rescue: [RestClient::Exception, Errno::ECONNREFUSED]) do

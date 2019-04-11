@@ -203,6 +203,7 @@ describe Dor::IndexingService do
       @mock_pid = 'druid:aa111bb2222'
       @mock_default_logger = double(Logger)
       expect(described_class).to receive(:default_index_logger).at_least(:once).and_return(@mock_default_logger)
+      expect(Deprecation).to receive(:warn)
     end
 
     it 'calls a remote service to reindex' do
