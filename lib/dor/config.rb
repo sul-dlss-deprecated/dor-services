@@ -68,8 +68,7 @@ module Dor
         },
         workflow: {
           client: Confstruct.deferred do |c|
-            Dor::WorkflowService.configure c.url, logger: c.client_logger, timeout: c.timeout, dor_services_url: config.dor_services.url
-            Dor::WorkflowService
+            @wfs ||= Dor::Workflow::Client.new(url: c.url, logger: c.client_logger, timeout: c.timeout)
           end,
           client_logger: Confstruct.deferred do |c|
                            if c.logfile && c.shift_age

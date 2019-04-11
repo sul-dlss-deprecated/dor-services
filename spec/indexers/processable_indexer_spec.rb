@@ -84,7 +84,7 @@ RSpec.describe Dor::ProcessableIndexer do
         </versionMetadata>
         '
 
-        allow(Dor::Config.workflow.client).to receive(:query_lifecycle).and_return(xml)
+        allow(Dor::Config.workflow.client.lifecycle_routes).to receive(:query_lifecycle).and_return(xml)
         allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
         versionMD = Dor::VersionMetadataDS.from_xml(dsxml)
         allow(obj).to receive(:versionMetadata).and_return(versionMD)
@@ -106,7 +106,7 @@ RSpec.describe Dor::ProcessableIndexer do
       end
 
       it 'skips the versioning related steps if a new version has not been opened' do
-        allow(Dor::Config.workflow.client).to receive(:query_lifecycle).and_return(Nokogiri::XML('<?xml version="1.0" encoding="UTF-8"?>
+        allow(Dor::Config.workflow.client.lifecycle_routes).to receive(:query_lifecycle).and_return(Nokogiri::XML('<?xml version="1.0" encoding="UTF-8"?>
         <lifecycle objectId="druid:gv054hp4128">
         <milestone date="2012-11-06T16:30:03-0800">submitted</milestone>
         <milestone date="2012-11-06T16:35:00-0800">described</milestone>
