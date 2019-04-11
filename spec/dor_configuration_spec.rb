@@ -7,12 +7,18 @@ RSpec.describe Dor::Configuration do
     described_class.new(YAML.load(File.read(File.expand_path('../config/config_defaults.yml', __dir__))))
   end
 
-  it 'configures the Dor::WorkflowService when Dor::Config.configure is called' do
-    config.configure do
-      workflow.url 'http://mynewurl.edu/workflow'
-    end
+  describe '.workflow.client' do
+    context 'when Dor::Config.configure is called' do
+      subject { config.workflow.client.requestor.send(:base_url) }
 
-    expect(config.workflow.client.base_url.to_s).to eq('http://mynewurl.edu/workflow')
+      before do
+        config.configure do
+          workflow.url 'http://mynewurl.edu/workflow'
+        end
+      end
+
+      it { is_expected.to eq URI('http://mynewurl.edu/workflow') }
+    end
   end
 
   it 'adds deprecation warnings for old solrizer configurations' do

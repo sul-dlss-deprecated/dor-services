@@ -53,7 +53,7 @@ module Dor
       ng_xml.at_xpath('/workflow-def/@repository').to_s
     end
 
-    # Creates the xml used by Dor::WorkflowService#create_workflow
+    # Creates the xml used by Dor::Workflow::Client#create_workflow
     # @return [String] An object's initial workflow as defined by the <workflow-def> in content
     def initial_workflow
       doc = Nokogiri::XML('<workflow/>')

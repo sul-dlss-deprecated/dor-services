@@ -12,7 +12,9 @@ RSpec.describe Dor::StatusService do
 
     before do
       expect(item).to receive(:versionMetadata).and_return(versionMD)
-      expect(Dor::Config.workflow.client).to receive(:query_lifecycle).and_return(xml)
+      # TODO: this stub is too knowledgable about the inner workings of the workflow client
+      # instead it should just stub :milestones which returns an array of hashes
+      expect(Dor::Config.workflow.client.lifecycle_routes).to receive(:query_lifecycle).and_return(xml)
     end
 
     context 'for gv054hp4128' do
