@@ -139,7 +139,6 @@ module Dor
     autoload :ProvenanceMetadataService
     autoload :PublicDescMetadataService
     autoload :PublicXmlService
-    autoload :PublishMetadataService
     autoload :RegistrationService
     autoload :ReleaseTagService
     autoload :ResetWorkspaceService
