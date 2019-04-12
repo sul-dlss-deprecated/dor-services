@@ -134,7 +134,6 @@ module Dor
     autoload :Ontology
     autoload :OpenDataLicenseService
     autoload :PublicDescMetadataService
-    autoload :PublicXmlService
     autoload :RegistrationService
     autoload :ReleaseTagService
     autoload :SdrIngestService
