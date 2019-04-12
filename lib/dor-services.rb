@@ -133,7 +133,6 @@ module Dor
     autoload :DublinCoreService
     autoload :IndexingService
     autoload :MetadataService
-    autoload :MergeService
     autoload :Ontology
     autoload :OpenDataLicenseService
     autoload :ProvenanceMetadataService
