@@ -127,7 +127,6 @@ module Dor
     autoload :CreateWorkflowService
     autoload :CreativeCommonsLicenseService
     autoload :DecommissionService
-    autoload :DigitalStacksService
     autoload :DublinCoreService
     autoload :IndexingService
     autoload :MetadataService
@@ -138,7 +137,6 @@ module Dor
     autoload :ReleaseTagService
     autoload :SearchService
     autoload :SecondaryFileNameService
-    autoload :ShelvingService
     autoload :StatusService
     autoload :SuriService
     autoload :TagService
