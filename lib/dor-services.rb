@@ -123,7 +123,6 @@ module Dor
   # Services
   autoload_under 'services' do
     autoload :Ability
-    autoload :CleanupResetService
     autoload :CleanupService
     autoload :CreateWorkflowService
     autoload :CreativeCommonsLicenseService
