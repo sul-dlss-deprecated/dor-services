@@ -126,7 +126,6 @@ module Dor
     autoload :CleanupService
     autoload :CreateWorkflowService
     autoload :CreativeCommonsLicenseService
-    autoload :DatastreamBuilder
     autoload :DecommissionService
     autoload :DigitalStacksService
     autoload :DublinCoreService
