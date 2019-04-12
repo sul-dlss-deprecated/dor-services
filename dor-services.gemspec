@@ -25,7 +25,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'dor-services-client', '~> 1.5'
   s.add_dependency 'equivalent-xml', '~> 0.5', '>= 0.5.1' # 5.0 insufficient
   s.add_dependency 'json', '>= 1.8.1'
-  s.add_dependency 'net-sftp', '~> 2.1'
   s.add_dependency 'nokogiri', '~> 1.6'
   s.add_dependency 'om', '~> 3.0'
   s.add_dependency 'rdf', '~> 1.1', '>= 1.1.7'

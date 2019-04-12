@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'net/ssh'
-require 'net/sftp'
-
 module Dor
   class DigitalStacksService
     # Delete files from stacks that have change type 'deleted', 'copydeleted', or 'modified'
