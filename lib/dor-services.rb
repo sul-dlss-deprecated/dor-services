@@ -139,7 +139,6 @@ module Dor
     autoload :SdrIngestService
     autoload :SearchService
     autoload :SecondaryFileNameService
-    autoload :ShelvingService
     autoload :StatusService
     autoload :SuriService
     autoload :TagService
