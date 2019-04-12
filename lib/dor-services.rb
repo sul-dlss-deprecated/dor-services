@@ -133,7 +133,6 @@ module Dor
     autoload :MetadataService
     autoload :Ontology
     autoload :OpenDataLicenseService
-    autoload :ProvenanceMetadataService
     autoload :PublicDescMetadataService
     autoload :PublicXmlService
     autoload :RegistrationService
