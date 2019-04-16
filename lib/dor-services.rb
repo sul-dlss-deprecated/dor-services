@@ -125,13 +125,10 @@ module Dor
     autoload :Ability
     autoload :CleanupService
     autoload :CreateWorkflowService
-    autoload :CreativeCommonsLicenseService
     autoload :DecommissionService
     autoload :DublinCoreService
     autoload :IndexingService
     autoload :MetadataService
-    autoload :Ontology
-    autoload :OpenDataLicenseService
     autoload :PublicDescMetadataService
     autoload :RegistrationService
     autoload :ReleaseTagService
