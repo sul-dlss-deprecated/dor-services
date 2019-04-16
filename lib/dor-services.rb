@@ -136,7 +136,6 @@ module Dor
     autoload :RegistrationService
     autoload :ReleaseTagService
     autoload :SearchService
-    autoload :SecondaryFileNameService
     autoload :StatusService
     autoload :SuriService
     autoload :TagService
