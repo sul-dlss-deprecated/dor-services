@@ -133,19 +133,10 @@ module Dor
       if object_class
         instance_of?(object_class) ? self : adapt_to(object_class)
       else
-        if ActiveFedora::VERSION < '8'
-          result = super
-          if result.class == Dor::Abstract
-            adapt_to(Dor::Item)
-          else
-            result
-          end
-        else
-          begin
-            super
-          rescue ActiveFedora::ModelNotAsserted
-            adapt_to(Dor::Item)
-          end
+        begin
+          super
+        rescue ActiveFedora::ModelNotAsserted
+          adapt_to(Dor::Item)
         end
       end
     end
