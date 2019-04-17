@@ -22,22 +22,6 @@ module Dor
       end
     end
 
-    def fetch_descMetadata_datastream
-      candidates = datastreams['identityMetadata'].otherId.collect(&:to_s)
-      metadata_id = Dor::MetadataService.resolvable(candidates).first
-      metadata_id.nil? ? nil : Dor::MetadataService.fetch(metadata_id.to_s)
-    end
-
-    def build_descMetadata_datastream(ds)
-      content = fetch_descMetadata_datastream
-      return nil if content.nil?
-
-      ds.dsLabel = 'Descriptive Metadata'
-      ds.ng_xml = Nokogiri::XML(content)
-      ds.ng_xml.normalize_text!
-      ds.content = ds.ng_xml.to_xml
-    end
-
     # @param [Boolean] force Overwrite existing XML
     # @return [String] descMetadata.content XML
     def set_desc_metadata_using_label(force = false)
