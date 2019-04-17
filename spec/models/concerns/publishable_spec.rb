@@ -18,19 +18,4 @@ RSpec.describe Dor::Publishable do
   it 'has a rightsMetadata datastream' do
     expect(item.datastreams['rightsMetadata']).to be_a(ActiveFedora::OmDatastream)
   end
-
-  describe '#build_rightsMetadata_datastream' do
-    let(:apo) { instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject) }
-    let(:rights_md) { apo.defaultObjectRights.content }
-
-    before do
-      allow(item).to receive(:admin_policy_object).and_return(apo)
-    end
-
-    it 'copies the default object rights' do
-      expect(item.datastreams['rightsMetadata'].ng_xml.to_s).not_to be_equivalent_to(rights_md)
-      item.build_rightsMetadata_datastream(item.rightsMetadata)
-      expect(item.datastreams['rightsMetadata'].ng_xml.to_s).to be_equivalent_to(rights_md)
-    end
-  end
 end

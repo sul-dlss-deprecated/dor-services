@@ -7,11 +7,5 @@ module Dor
     included do
       has_metadata name: 'rightsMetadata', type: Dor::RightsMetadataDS, label: 'Rights metadata'
     end
-
-    def build_rightsMetadata_datastream(ds)
-      content_ds = admin_policy_object.datastreams['defaultObjectRights']
-      ds.dsLabel = 'Rights Metadata'
-      ds.ng_xml = content_ds.ng_xml.clone
-    end
   end
 end
