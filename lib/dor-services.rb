@@ -138,7 +138,6 @@ module Dor
     autoload :StatusService
     autoload :SuriService
     autoload :TagService
-    autoload :TechnicalMetadataService
     autoload :ThumbnailService
   end
 
