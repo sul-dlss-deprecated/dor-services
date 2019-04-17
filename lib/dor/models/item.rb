@@ -20,10 +20,6 @@ module Dor
     )
 
     has_metadata name: 'technicalMetadata', type: TechnicalMetadataDS, label: 'Technical Metadata', control_group: 'M'
-
-    def build_technicalMetadata_datastream(_ds = nil)
-      TechnicalMetadataService.add_update_technical_metadata(self)
-    end
   end
 end
 

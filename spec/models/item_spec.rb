@@ -30,13 +30,4 @@ RSpec.describe Dor::Item do
       expect(workflows.mimeType).to eq 'application/xml'
     end
   end
-
-  describe '#build_technicalMetadata_datastream' do
-    let(:item) { described_class.new(pid: 'foo:123') }
-
-    it 'builds the technicalMetadata datastream if the object is an item' do
-      expect(Dor::TechnicalMetadataService).to receive(:add_update_technical_metadata).with(item)
-      item.build_technicalMetadata_datastream('technicalMetadata')
-    end
-  end
 end
