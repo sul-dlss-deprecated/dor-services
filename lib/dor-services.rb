@@ -126,7 +126,6 @@ module Dor
     autoload :CreateWorkflowService
     autoload :CreativeCommonsLicenseService
     autoload :DecommissionService
-    autoload :DublinCoreService
     autoload :IndexingService
     autoload :MetadataService
     autoload :Ontology
