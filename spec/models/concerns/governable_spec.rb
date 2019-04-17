@@ -2,12 +2,6 @@
 
 require 'spec_helper'
 
-class GovernableItem < ActiveFedora::Base
-  include Dor::Itemizable
-  include Dor::Processable
-  include Dor::Governable
-end
-
 RSpec.describe Dor::Governable do
   before { stub_config }
 

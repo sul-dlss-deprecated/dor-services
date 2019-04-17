@@ -2,28 +2,10 @@
 
 require 'spec_helper'
 
-class ProcessableItem < ActiveFedora::Base
-  include Dor::Itemizable
-  include Dor::Processable
-  include Dor::Versionable
-  include Dor::Describable
-end
-
-class ProcessableOnlyItem < ActiveFedora::Base
-  include Dor::Itemizable
-  include Dor::Processable
-end
-
-class ProcessableWithApoItem < ActiveFedora::Base
-  include Dor::Governable
-  include Dor::Processable
-  include Dor::Itemizable
-end
-
 RSpec.describe Dor::Processable do
   after { unstub_config }
 
-  let(:item) { instantiate_fixture('druid:ab123cd4567', ProcessableItem) }
+  let(:item) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
 
   before do
     stub_config
