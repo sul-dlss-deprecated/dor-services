@@ -8,8 +8,15 @@ module Dor
     include Rightsable
     include Describable
     include Versionable
-    include Processable
-    include Preservable
+
+    has_metadata name: 'provenanceMetadata',
+                 type: ProvenanceMetadataDS,
+                 label: 'Provenance Metadata'
+    has_metadata name: 'workflows',
+                 type: Dor::WorkflowDs,
+                 label: 'Workflows',
+                 control_group: 'E',
+                 autocreate: true
 
     class_attribute :resource_indexer
 

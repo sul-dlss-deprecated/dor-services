@@ -96,7 +96,6 @@ module Dor
     autoload :Describable
     autoload :Publishable
     autoload :Embargoable
-    autoload :Preservable
     autoload :Eventable
     autoload :Versionable
     autoload :Discoverable

@@ -3,17 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Dor::ProcessableIndexer do
-  let(:model) do
-    Class.new(Dor::Abstract) do
-      include Dor::Processable
-    end
-  end
-
   before { stub_config }
 
   after { unstub_config }
 
-  let(:obj) { instantiate_fixture('druid:ab123cd4567', model) }
+  let(:obj) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
   let(:indexer) { described_class.new(resource: obj) }
 
   describe '#simplified_status_code_disp_txt' do

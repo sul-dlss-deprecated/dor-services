@@ -27,9 +27,6 @@ end
 # Embargoable  = Time limits and processes for embargoed materials.
 # Governable   = Relationships to collections and codified administrative policies.
 # Identifiable = Object identity and source metadata.
-# Itemizable   = Hierarchical content metadata.
-# Preservable  = Provenance and technical metadata; preservation repository transfer.
-# Processable  = Workflow.
 # Publishable  = Transfer of metadata to discovery and access systems.
 # Shelvable    = Transfer of content to digital stacks.
 # Geoable      = Descriptive metadata for GIS in ISO 19139/19110.
