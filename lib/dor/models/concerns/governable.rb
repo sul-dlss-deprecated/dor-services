@@ -61,23 +61,5 @@ module Dor
     def reapplyAdminPolicyObjectDefaults
       rightsMetadata.content = admin_policy_object.datastreams['defaultObjectRights'].content
     end
-
-    def rights
-      return nil unless respond_to? :rightsMetadata
-      return nil if rightsMetadata.nil?
-
-      xml = rightsMetadata.ng_xml
-      return nil if xml.search('//rightsMetadata').length != 1 # ORLY?
-
-      if xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length == 1
-        'Stanford'
-      elsif xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length == 1
-        'World'
-      elsif xml.search('//rightsMetadata/access[@type=\'discover\']/machine/none').length == 1
-        'Dark'
-      else
-        'None'
-      end
-    end
   end
 end

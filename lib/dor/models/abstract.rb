@@ -45,5 +45,7 @@ module Dor
         client.active_lifecycle('dor', pid, 'opened') ||
         client.workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer') == 'hold'
     end
+
+    delegate :rights, to: :rightsMetadata
   end
 end
