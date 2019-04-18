@@ -86,5 +86,15 @@ module Dor
       embargoMetadata.ng_xml_will_change!
       embargoMetadata.save
     end
+
+    private
+
+    def world_doc
+      Nokogiri::XML::Builder.new do |xml|
+        xml.access(type: 'read') do
+          xml.machine { xml.world }
+        end
+      end.doc
+    end
   end
 end
