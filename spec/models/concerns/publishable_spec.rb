@@ -2,13 +2,6 @@
 
 require 'spec_helper'
 
-class PublishableItem < ActiveFedora::Base
-  include Dor::Identifiable
-  include Dor::Publishable
-  include Dor::Rightsable
-  include Dor::Itemizable
-end
-
 RSpec.describe Dor::Publishable do
   before do
     Dor.configure do
@@ -19,7 +12,7 @@ RSpec.describe Dor::Publishable do
   end
 
   let(:item) do
-    instantiate_fixture('druid:ab123cd4567', PublishableItem)
+    instantiate_fixture('druid:ab123cd4567', Dor::Item)
   end
 
   it 'has a rightsMetadata datastream' do

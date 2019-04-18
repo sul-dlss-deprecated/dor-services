@@ -4,7 +4,6 @@ module Dor
   class Item < Dor::Abstract
     include Embargoable
     include Publishable
-    include Itemizable
     include Geoable
     include Releaseable
 
@@ -20,6 +19,7 @@ module Dor
     )
 
     has_metadata name: 'technicalMetadata', type: TechnicalMetadataDS, label: 'Technical Metadata', control_group: 'M'
+    has_metadata name: 'contentMetadata', type: Dor::ContentMetadataDS, label: 'Content Metadata', control_group: 'M'
   end
 end
 

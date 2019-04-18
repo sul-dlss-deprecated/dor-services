@@ -13,6 +13,14 @@ RSpec.describe Dor::Item do
     it { is_expected.to include 'active_fedora_model_ssi' => 'Dor::Item' }
   end
 
+  describe 'contentMetadata' do
+    let(:item) { described_class.new(pid: 'foo:123') }
+
+    it 'has a contentMetadata datastream' do
+      expect(item.contentMetadata).to be_a(Dor::ContentMetadataDS)
+    end
+  end
+
   describe 'the dsLocation for workflow' do
     let(:obj) { described_class.new }
     before do
