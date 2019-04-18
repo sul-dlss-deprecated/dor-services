@@ -96,12 +96,9 @@ module Dor
     autoload :Describable
     autoload :Publishable
     autoload :Embargoable
-    autoload :Eventable
-    autoload :Versionable
     autoload :Discoverable
     autoload :Geoable
     autoload :Releaseable
-    autoload :Rightsable
   end
 
   eager_autoload do
