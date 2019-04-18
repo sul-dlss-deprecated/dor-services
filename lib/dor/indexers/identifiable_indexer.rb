@@ -4,6 +4,8 @@ module Dor
   class IdentifiableIndexer
     include SolrDocHelper
 
+    INDEX_VERSION_FIELD = 'dor_services_version_ssi'
+
     attr_reader :resource
     def initialize(resource:)
       @resource = resource
@@ -17,7 +19,7 @@ module Dor
     # @return [Hash] the partial solr document for identifiable concerns
     def to_solr
       solr_doc = {}
-      solr_doc[Dor::INDEX_VERSION_FIELD] = Dor::VERSION
+      solr_doc[INDEX_VERSION_FIELD] = Dor::VERSION
       solr_doc['indexed_at_dtsi'] = Time.now.utc.xmlschema
       resource.datastreams.values.each do |ds|
         add_solr_value(solr_doc, 'ds_specs', ds.datastream_spec_string, :string, [:symbol]) unless ds.new?
