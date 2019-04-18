@@ -77,7 +77,6 @@ RSpec.describe Dor::WorkflowsIndexer do
     before do
       # Wipe out the cache
       Dor::Workflow::Document.class_variable_set(:@@definitions, {})
-      WebMock.disable_net_connect!
       allow(Dor::WorkflowObject).to receive(:find_by_name).and_return(assemblyWF)
       allow(Dor::Config.workflow.client).to receive(:all_workflows_xml).and_return(xml)
     end

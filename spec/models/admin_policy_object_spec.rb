@@ -23,8 +23,13 @@ RSpec.describe Dor::AdminPolicyObject do
     subject(:doc) { apo.to_solr }
 
     let(:apo) { described_class.new(pid: 'foo:123') }
+    let(:wf_indexer) { instance_double(Dor::WorkflowsIndexer, to_solr: {}) }
+    let(:process_indexer) { instance_double(Dor::ProcessableIndexer, to_solr: {}) }
 
-    before { allow(Dor::Config.workflow.client).to receive(:milestones).and_return([]) }
+    before do
+      allow(Dor::WorkflowsIndexer).to receive(:new).and_return(wf_indexer)
+      allow(Dor::ProcessableIndexer).to receive(:new).and_return(process_indexer)
+    end
 
     it { is_expected.to include 'active_fedora_model_ssi' => 'Dor::AdminPolicyObject' }
   end

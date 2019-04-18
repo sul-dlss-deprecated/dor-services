@@ -8,7 +8,13 @@ RSpec.describe Dor::Item do
 
     let(:item) { described_class.new(pid: 'foo:123') }
 
-    before { allow(Dor::Config.workflow.client).to receive(:milestones).and_return([]) }
+    let(:wf_indexer) { instance_double(Dor::WorkflowsIndexer, to_solr: {}) }
+    let(:process_indexer) { instance_double(Dor::ProcessableIndexer, to_solr: {}) }
+
+    before do
+      allow(Dor::WorkflowsIndexer).to receive(:new).and_return(wf_indexer)
+      allow(Dor::ProcessableIndexer).to receive(:new).and_return(process_indexer)
+    end
 
     it { is_expected.to include 'active_fedora_model_ssi' => 'Dor::Item' }
   end
@@ -24,6 +30,7 @@ RSpec.describe Dor::Item do
   describe 'the dsLocation for workflow' do
     let(:obj) { described_class.new }
     before do
+      allow(Dor::Config.workflow.client).to receive(:all_workflows_xml).and_return('<workflows />')
       allow(Dor::SuriService).to receive(:mint_id).and_return('changeme:1231231')
       allow(Dor::Config.suri).to receive(:mint_ids).and_return(true)
       allow(obj).to receive(:update_index)
