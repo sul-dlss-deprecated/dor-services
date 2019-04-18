@@ -5,7 +5,6 @@ require 'spec_helper'
 class DescribableItem < ActiveFedora::Base
   include Dor::Identifiable
   include Dor::Describable
-  include Dor::Processable
 end
 class SimpleItem < ActiveFedora::Base
   include Dor::Describable

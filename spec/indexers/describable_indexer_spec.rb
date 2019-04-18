@@ -7,10 +7,6 @@ RSpec.describe Dor::DescribableIndexer do
     Class.new(Dor::Abstract) do
       include Dor::Identifiable
       include Dor::Describable
-      include Dor::Processable
-      # def self.name
-      #   'foo'
-      # end
     end
   end
   before { stub_config }
