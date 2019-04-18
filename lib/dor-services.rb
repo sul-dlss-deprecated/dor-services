@@ -130,7 +130,6 @@ module Dor
     autoload :Ontology
     autoload :OpenDataLicenseService
     autoload :PublicDescMetadataService
-    autoload :RegistrationService
     autoload :ReleaseTagService
     autoload :SearchService
     autoload :StatusService
