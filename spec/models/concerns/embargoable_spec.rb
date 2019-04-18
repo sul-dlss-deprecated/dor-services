@@ -2,13 +2,7 @@
 
 require 'spec_helper'
 
-class EmbargoedItem < ActiveFedora::Base
-  include Dor::Rightsable
-  include Dor::Embargoable
-  include Dor::Eventable
-end
-
-describe Dor::Embargoable do
+RSpec.describe Dor::Embargoable do
   let(:embargo_release_date) { Time.now.utc - 100_000 }
   let(:release_access) do
     <<-EOXML
@@ -69,7 +63,7 @@ describe Dor::Embargoable do
       eds
     end
     let!(:embargo_item) do
-      embargo_item = EmbargoedItem.new
+      embargo_item = Dor::Item.new
       embargo_item.datastreams['embargoMetadata'] = embargo_ds
       rds = Dor::RightsMetadataDS.new
       rds.content = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }.to_s
@@ -123,7 +117,7 @@ describe Dor::Embargoable do
       eds
     end
     let!(:embargo_item) do
-      embargo_item = EmbargoedItem.new
+      embargo_item = Dor::Item.new
       embargo_item.datastreams['embargoMetadata'] = embargo_ds
       embargo_item.datastreams['rightsMetadata'].ng_xml = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }
       expect(embargo_item.rightsMetadata).to receive(:ng_xml_will_change!)
@@ -158,7 +152,7 @@ describe Dor::Embargoable do
 
   describe '#update_embargo' do
     let(:embargo_item) do
-      embargo_item = EmbargoedItem.new
+      embargo_item = Dor::Item.new
       eds = embargo_item.datastreams['embargoMetadata']
       eds.status = 'embargoed'
       eds.release_date = embargo_release_date
