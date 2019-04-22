@@ -63,9 +63,6 @@ module Dor
         purl_services: {
           rest_client: Confstruct.deferred { |_c| RestResourceFactory.create(:purl_services) }
         },
-        sdr: {
-          rest_client: Confstruct.deferred { |_c| RestResourceFactory.create(:sdr) }
-        },
         workflow: {
           client: Confstruct.deferred do |c|
             @wfs ||= Dor::Workflow::Client.new(url: c.url, logger: c.client_logger, timeout: c.timeout)
