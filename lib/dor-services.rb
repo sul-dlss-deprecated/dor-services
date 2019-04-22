@@ -91,7 +91,6 @@ module Dor
   # DOR Concerns
   autoload_under 'models/concerns' do
     autoload :Identifiable
-    autoload :Processable
     autoload :Governable
     autoload :Describable
     autoload :Publishable
