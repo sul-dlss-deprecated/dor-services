@@ -13,7 +13,6 @@ SimpleCov.start 'test_frameworks'
 
 require 'rspec'
 require 'dor-services'
-# require 'ruby-debug'
 require 'support/foxml_helper'
 require 'equivalent-xml/rspec_matchers'
 require 'webmock/rspec'
@@ -23,10 +22,10 @@ require 'tmpdir'
 require 'nokogiri'
 
 require 'support/dor_config'
-require 'vcr'
 require 'retries'
 
-# ::ENABLE_SOLR_UPDATES = true
+WebMock.disable_net_connect!(allow_localhost: true)
+Dor.logger.level = :error
 
 module Dor::SpecHelpers
   def stub_config
@@ -144,14 +143,6 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 
   config.include Dor::SpecHelpers
-end
-
-VCR.configure do |c|
-  c.cassette_library_dir = 'spec/fixtures/vcr_cassettes'
-  c.hook_into :webmock
-  c.allow_http_connections_when_no_cassette = true
-  c.default_cassette_options = { record: :new_episodes }
-  c.configure_rspec_metadata!
 end
 
 Retries.sleep_enabled = false # fail fast in tests

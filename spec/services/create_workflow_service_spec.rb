@@ -8,6 +8,7 @@ RSpec.describe Dor::CreateWorkflowService do
 
     before do
       allow(item).to receive(:admin_policy_object).and_return(apo)
+      allow(Dor::Config.workflow.client).to receive(:all_workflows_xml).with('druid:ab123cd4567').and_return('<workflows/>')
     end
 
     let(:apo) { instantiate_fixture('druid:fg890hi1234', Dor::AdminPolicyObject) }
@@ -17,6 +18,7 @@ RSpec.describe Dor::CreateWorkflowService do
       expect(Dor::WorkflowObject).to receive(:initial_workflow).and_return('<xml/>')
       expect(Dor::WorkflowObject).to receive(:initial_repo).and_return('dor')
       expect(Dor::Config.workflow.client).to receive(:create_workflow).with('dor', 'druid:ab123cd4567', 'accessionWF', '<xml/>', create_ds: true, lane_id: 'fast')
+
       create_workflow
     end
   end

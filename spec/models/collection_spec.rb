@@ -17,8 +17,13 @@ RSpec.describe Dor::Collection do
     subject(:doc) { collection.to_solr }
 
     let(:collection) { described_class.new(pid: 'foo:123') }
+    let(:wf_indexer) { instance_double(Dor::WorkflowsIndexer, to_solr: {}) }
+    let(:process_indexer) { instance_double(Dor::ProcessableIndexer, to_solr: {}) }
 
-    before { allow(Dor::Config.workflow.client).to receive(:milestones).and_return([]) }
+    before do
+      allow(Dor::WorkflowsIndexer).to receive(:new).and_return(wf_indexer)
+      allow(Dor::ProcessableIndexer).to receive(:new).and_return(process_indexer)
+    end
 
     it { is_expected.to have_key :id }
   end
