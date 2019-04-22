@@ -195,14 +195,6 @@ RSpec/DescribeClass:
     - 'spec/models/concerns/releaseable_no_vcr_spec.rb'
     - 'spec/services/cleanup_service_filesystem_spec.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: SkipBlocks, EnforcedStyle.
-# SupportedStyles: described_class, explicit
-RSpec/DescribedClass:
-  Exclude:
-    - 'spec/utils/sdr_client_spec.rb'
-
 # Offense count: 131
 # Configuration parameters: Max.
 RSpec/ExampleLength:
