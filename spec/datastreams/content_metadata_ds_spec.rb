@@ -60,7 +60,7 @@ describe Dor::ContentMetadataDS do
 
     it 'raises error if same ID resource is added twice' do
       @cm.add_resource(@files, 'resource', 1)
-      expect{ @cm.add_resource(@files, 'resource', 1) }.to raise_error StandardError
+      expect { @cm.add_resource(@files, 'resource', 1) }.to raise_error StandardError
     end
 
     it 'adds multiple resources' do

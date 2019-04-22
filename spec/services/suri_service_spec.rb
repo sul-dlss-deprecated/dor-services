@@ -41,7 +41,7 @@ describe Dor::SuriService do
       e = 'thrown exception'
       ex = Exception.new(e)
       expect(@my_client).to receive(:post).with('').and_raise(ex)
-      expect{ described_class.mint_id }.to raise_error(Exception, 'thrown exception')
+      expect { described_class.mint_id }.to raise_error(Exception, 'thrown exception')
     end
   end
 

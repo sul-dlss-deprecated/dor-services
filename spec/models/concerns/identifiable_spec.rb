@@ -31,9 +31,9 @@ RSpec.describe Dor::Identifiable do
 
   describe 'source_id= (AKA set_source_id)' do
     it 'raises on unsalvageable values' do
-      expect{ item.source_id = 'NotEnoughColons' }.to raise_error ArgumentError
-      expect{ item.source_id = ':EmptyFirstPart' }.to raise_error ArgumentError
-      expect{ item.source_id = 'WhitespaceSecondPart:   ' }.to raise_error ArgumentError
+      expect { item.source_id = 'NotEnoughColons' }.to raise_error ArgumentError
+      expect { item.source_id = ':EmptyFirstPart' }.to raise_error ArgumentError
+      expect { item.source_id = 'WhitespaceSecondPart:   ' }.to raise_error ArgumentError
     end
     it 'sets the source_id' do
       item.source_id = 'fake:sourceid'
@@ -73,7 +73,7 @@ RSpec.describe Dor::Identifiable do
     it 'raises an exception if a record of that type already exists' do
       item.add_other_Id('mdtoolkit', 'someid123')
       expect(item.identityMetadata.otherId('mdtoolkit').first).to eq('someid123')
-      expect{ item.add_other_Id('mdtoolkit', 'someid123') }.to raise_error(RuntimeError)
+      expect { item.add_other_Id('mdtoolkit', 'someid123') }.to raise_error(RuntimeError)
     end
   end
 

@@ -286,7 +286,7 @@ describe Dor::VersionMetadataDS do
       ds = described_class.from_xml(five_versions_xml)
       allow(ds).to receive(:pid).and_return('druid:ab123cd4567')
 
-      expect{ ds.sync_then_increment_version(6) }.to raise_error(Dor::Exception, 'Cannot sync to a version greater than current: 5, requested 6')
+      expect { ds.sync_then_increment_version(6) }.to raise_error(Dor::Exception, 'Cannot sync to a version greater than current: 5, requested 6')
     end
   end
 end

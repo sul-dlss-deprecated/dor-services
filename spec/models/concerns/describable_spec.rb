@@ -75,7 +75,7 @@ RSpec.describe Dor::Describable do
     it 'throws an exception if there is content in the descriptive metadata stream' do
       # @obj.stub(:descMetadata).and_return(ActiveFedora::OmDatastream.new)
       allow(@obj.descMetadata).to receive(:new?).and_return(false)
-      expect{ @obj.set_desc_metadata_using_label }.to raise_error(StandardError)
+      expect { @obj.set_desc_metadata_using_label }.to raise_error(StandardError)
     end
     it 'runs if there is content in the descriptive metadata stream and force is true' do
       allow(@obj.descMetadata).to receive(:new?).and_return(false)
@@ -95,7 +95,7 @@ RSpec.describe Dor::Describable do
     it 'fetches Stanford::Mods object' do
       expect(@obj.methods).to include(:stanford_mods)
       sm = nil
-      expect{ sm = @obj.stanford_mods }.not_to raise_error
+      expect { sm = @obj.stanford_mods }.not_to raise_error
       expect(sm).to be_kind_of(Stanford::Mods::Record)
       expect(sm.format_main).to eq(['Book'])
       expect(sm.pub_year_sort_str).to eq('1911')
@@ -103,7 +103,7 @@ RSpec.describe Dor::Describable do
     it 'allows override argument(s)' do
       sm = nil
       nk = Nokogiri::XML('<mods><genre>ape</genre></mods>')
-      expect{ sm = @obj.stanford_mods(nk, false) }.not_to raise_error
+      expect { sm = @obj.stanford_mods(nk, false) }.not_to raise_error
       expect(sm).to be_kind_of(Stanford::Mods::Record)
       expect(sm.genre.text).to eq('ape')
       expect(sm.pub_year_sort_str).to be_nil
