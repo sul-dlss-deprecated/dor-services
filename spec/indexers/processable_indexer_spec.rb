@@ -39,7 +39,7 @@ RSpec.describe Dor::ProcessableIndexer do
         end
 
         it 'does not error if there is nothing in the datastream' do
-          allow(obj).to receive(:rightsMetadata).and_return(ActiveFedora::OmDatastream.new)
+          allow(obj).to receive(:rightsMetadata).and_return(Dor::RightsMetadataDS.new)
           expect { solr_doc }.not_to raise_error
         end
       end
