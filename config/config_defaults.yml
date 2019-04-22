@@ -17,19 +17,6 @@
     :url:
     :user:
     :pass:
-:sdr:
-  :local_workspace_root: /dor/workspace
-  :local_export_home: /dor/export
-  :datastreams:
-    :rightsMetadata: optional
-    :descMetadata: required
-    :sourceMetadata: optional
-    :identityMetadata: required
-    :provenanceMetadata: required
-    :relationshipMetadata: required
-    :technicalMetadata: required
-    :contentMetadata: required
-  :rest_url: ""
 :stacks:
   :local_workspace_root: /dor
   :host:
@@ -53,14 +40,3 @@
   :shift_age: weekly
 :dor_services:
   :url:
-:indexing_svc:
-  :log: 'log/indexing_svc.log'
-  :log_date_format_str: '%Y-%m-%d %H:%M:%S.%L'
-  :log_rotation_interval: 'daily'
-:goobi:
-  :url:
-  :dpg_workflow_name: 'goobiWF'
-  :default_goobi_workflow_name: 'Example_Workflow'
-  :max_tries: 3
-  :max_sleep_seconds: 20
-  :base_sleep_seconds: 2

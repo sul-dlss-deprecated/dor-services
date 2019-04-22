@@ -44,21 +44,4 @@ Dor::Config.configure do
     local_workspace_root '/dor/workspace'
     local_export_home    '/dor/export'
   end
-
-  sdr do
-    local_workspace_root '/dor/workspace'
-    local_export_home    '/dor/export'
-    datastreams do
-      contentMetadata      'required'
-      descMetadata         'required'
-      identityMetadata     'required'
-      provenanceMetadata   'required'
-      relationshipMetadata 'required'
-      rightsMetadata 'optional'
-      sourceMetadata 'optional'
-    end
-  end
-
-  accessioning_robot_sleep_time 30
-
 end

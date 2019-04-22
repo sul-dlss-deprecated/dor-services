@@ -37,9 +37,6 @@ module Dor::SpecHelpers
       stacks.local_workspace_root      File.join(this.fixture_dir, 'workspace')
       stacks.local_stacks_root         File.join(this.fixture_dir, 'stacks')
       stacks.local_document_cache_root File.join(this.fixture_dir, 'purl')
-      sdr.local_workspace_root         File.join(this.fixture_dir, 'workspace')
-      sdr.local_export_home            File.join(this.fixture_dir, 'export')
-      indexing_svc.log                 'indexing_svc.log.test'
 
       dor_services do
         url 'http://localhost/dor'
