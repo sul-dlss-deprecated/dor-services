@@ -5,23 +5,9 @@ AllCops:
   TargetRubyVersion: 2.3
 
 Naming/FileName:
-  Enabled: true
   Exclude:
-    - 'lib/dor/migrations/identifiable/assert_adminPolicy.rb'
     - 'lib/dor-services.rb'
     - 'spec/dor/releaseable_no_VCR_spec.rb'
-
-# rspec expect{...} is conventional
-Layout/SpaceBeforeBlockBraces:
-  Exclude:
-    - 'spec/**/*_spec.rb'
-
-Layout/EmptyLineBetweenDefs:
-  AllowAdjacentOneLineDefs: true
-  Exclude:
-    - lib/dor/models/editable.rb
-    - lib/dor/models/governable.rb
-
 
 # Offense count: 201
 # Configuration parameters: CountComments, ExcludedMethods.
@@ -42,5 +28,5 @@ Metrics/LineLength:
 
 Style/SymbolProc:
   Exclude:
-    # causes "Can't create Binding from C level Proc"
+    # causes "Can't create Binding from C level Proc" https://github.com/rubocop-hq/rubocop/issues/6540
     - lib/dor/datastreams/events_ds.rb

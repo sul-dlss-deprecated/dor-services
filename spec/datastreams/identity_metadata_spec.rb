@@ -95,15 +95,15 @@ describe Dor::IdentityMetadataDS do
     end
 
     it 'raises ArgumentError on malformed sourceIDs' do
-      expect{ @dsdoc.sourceId = 'NotEnoughColons' }.to raise_exception(ArgumentError)
-      expect{ @dsdoc.sourceId = ':EmptyFirstPart' }.to raise_exception(ArgumentError)
-      expect{ @dsdoc.sourceId = 'WhitespaceSecondPart:  ' }.to raise_exception(ArgumentError)
-      expect{ @dsdoc.sourceId = 'WhitespaceSecondPart:  ' }.to raise_exception(ArgumentError)
+      expect { @dsdoc.sourceId = 'NotEnoughColons' }.to raise_exception(ArgumentError)
+      expect { @dsdoc.sourceId = ':EmptyFirstPart' }.to raise_exception(ArgumentError)
+      expect { @dsdoc.sourceId = 'WhitespaceSecondPart:  ' }.to raise_exception(ArgumentError)
+      expect { @dsdoc.sourceId = 'WhitespaceSecondPart:  ' }.to raise_exception(ArgumentError)
     end
 
     it 'does not raise error on a sourceId with multiple colons' do
-      expect{ @dsdoc.sourceId = 'Too:Many:Parts' }.not_to raise_exception
-      expect{ @dsdoc.sourceId = 'Too::ManyColons' }.not_to raise_exception
+      expect { @dsdoc.sourceId = 'Too:Many:Parts' }.not_to raise_exception
+      expect { @dsdoc.sourceId = 'Too::ManyColons' }.not_to raise_exception
     end
 
     it 'creates a simple default with #new' do

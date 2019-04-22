@@ -178,10 +178,10 @@ RSpec.describe Dor::Embargoable do
     end
     it "raises ArgumentError if the item isn't embargoed" do
       embargo_item.release_embargo('application:embargo-release')
-      expect{ embargo_item.update_embargo(Time.now.utc + 1.month) }.to raise_error(ArgumentError)
+      expect { embargo_item.update_embargo(Time.now.utc + 1.month) }.to raise_error(ArgumentError)
     end
     it 'raises ArgumentError if the new date is in the past' do
-      expect{ embargo_item.update_embargo(1.month.ago) }.to raise_error(ArgumentError)
+      expect { embargo_item.update_embargo(1.month.ago) }.to raise_error(ArgumentError)
     end
   end
 end
