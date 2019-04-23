@@ -155,52 +155,32 @@ RSpec.describe Dor::Governable do
   end
 
   describe 'add_collection' do
-    it 'adds a collection' do
-      @item.add_collection('druid:oo201oo0002')
-      expect(@item.collection_ids).to include('druid:oo201oo0002')
+    let(:service) { instance_double(Dor::CollectionService, add: true) }
+
+    before do
+      allow(Dor::CollectionService).to receive(:new).and_return(service)
     end
 
-    it 'adds a collection' do
+    it 'delegates to the CollectionService' do
       @item.add_collection('druid:oo201oo0002')
-      rels_ext_ds = @item.datastreams['RELS-EXT']
-      xml = Nokogiri::XML(rels_ext_ds.to_rels_ext.to_s)
-      expect(xml).to be_equivalent_to <<-XML
-      <?xml version="1.0" encoding="UTF-8"?>
-      <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#">
-       <rdf:Description rdf:about="info:fedora/druid:oo201oo0001">
-         <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
-         <fedora-model:hasModel rdf:resource="info:fedora/afmodel:Hydrus_Item"/>
-         <fedora:isMemberOf rdf:resource="info:fedora/druid:oo201oo0002"/>
-         <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:oo201oo0002"/>
-       </rdf:Description>
-      </rdf:RDF>
-      XML
+      expect(service).to have_received(:add).with('druid:oo201oo0002')
     end
   end
 
   describe 'remove_collection' do
-    it 'deletes a collection' do
-      @item.add_collection('druid:oo201oo0002')
-      expect(@item.collection_ids).to include('druid:oo201oo0002')
-      @item.remove_collection('druid:oo201oo0002')
+    let(:service) { instance_double(Dor::CollectionService, remove: true) }
+
+    before do
+      allow(Dor::CollectionService).to receive(:new).and_return(service)
     end
 
     it 'deletes a collection' do
-      @item.add_collection('druid:oo201oo0002')
-      rels_ext_ds = @item.datastreams['RELS-EXT']
       @item.remove_collection('druid:oo201oo0002')
-      rels_ext_ds.serialize!
-      xml = Nokogiri::XML(rels_ext_ds.content.to_s)
-      expect(xml).to be_equivalent_to <<-XML
-      <?xml version="1.0" encoding="UTF-8"?>
-      <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#">
-        <rdf:Description rdf:about="info:fedora/druid:oo201oo0001">
-          <hydra:isGovernedBy rdf:resource="info:fedora/druid:fg890hi1234"/>
-          <fedora-model:hasModel rdf:resource="info:fedora/afmodel:Hydrus_Item"/>
-        </rdf:Description>
-      </rdf:RDF>
-      XML
+      expect(service).to have_received(:remove).with('druid:oo201oo0002')
     end
+  end
+
+  describe '#set_read_rights' do
     it 'changes the read permissions value from <group>stanford</group> to <none/>' do
       expect(@item.datastreams['rightsMetadata'].ng_xml).to be_equivalent_to <<-XML
     <?xml version="1.0"?>

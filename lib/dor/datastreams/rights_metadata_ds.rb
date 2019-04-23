@@ -120,7 +120,6 @@ module Dor
     end
 
     # @param rights [string] archetypical rights to assign: 'world', 'stanford', 'none', 'dark', etc
-    # Moved from Governable
     # slight misnomer: also sets discover rights!
     # TODO: convert xpath reads to dra_object calls
     def set_read_rights(rights)
