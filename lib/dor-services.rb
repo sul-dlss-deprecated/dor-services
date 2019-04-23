@@ -93,7 +93,6 @@ module Dor
     autoload :Describable
     autoload :Publishable
     autoload :Embargoable
-    autoload :Discoverable
     autoload :Geoable
     autoload :Releaseable
   end
