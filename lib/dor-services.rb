@@ -37,10 +37,6 @@ module Dor
     end
   end
 
-  def logger
-    Dor.logger
-  end
-
   require 'dor/version'
   require 'dor/config'
   require 'dor/exceptions'
