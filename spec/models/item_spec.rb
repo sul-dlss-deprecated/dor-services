@@ -3,12 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Dor::Item do
-  before do
-    @item   = instantiate_fixture('druid:ab123cd4567', described_class)
-    @obj    = instantiate_fixture('druid:ab123cd4567', described_class)
-    @obj.datastreams['descMetadata'].content = read_fixture('ex1_mods.xml')
-  end
-
   describe '#allows_modification?' do
     let(:dr) { 'ab12cd3456' }
     let(:obj) { described_class.new(pid: dr) }
