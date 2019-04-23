@@ -38,10 +38,6 @@ module Dor
       descMetadata.content = builder.to_xml
     end
 
-    def self.get_collection_title(obj)
-      obj.full_title
-    end
-
     def full_title
       stanford_mods.sw_title_display
     end

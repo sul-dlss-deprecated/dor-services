@@ -96,7 +96,7 @@ module Dor
         # load the title from the parent's DC.title
         titleInfo = doc.create_element 'titleInfo'
         title = doc.create_element 'title'
-        title.content = Dor::Describable.get_collection_title(parent_item)
+        title.content = parent_item.full_title
         titleInfo << title
         relatedItem << titleInfo
 
@@ -144,7 +144,7 @@ module Dor
       end
 
       title_node         = Nokogiri::XML::Node.new('title', doc)
-      title_node.content = Dor::Describable.get_collection_title(collection_obj)
+      title_node.content = collection_obj.full_title
 
       title_info_node = Nokogiri::XML::Node.new('titleInfo', doc)
       title_info_node.add_child(title_node)

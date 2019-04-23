@@ -28,37 +28,6 @@ RSpec.describe Dor::Describable do
     expect(@item.datastreams['descMetadata']).to be_a(Dor::DescMetadataDS)
   end
 
-  describe 'get_collection_title' do
-    before do
-      @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
-    end
-
-    it 'gets a titleInfo/title' do
-      @item.descMetadata.content = <<-XML
-      <?xml version="1.0"?>
-      <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
-      <titleInfo>
-      <title>Foxml Test Object</title>
-      </titleInfo>
-      </mods>
-      XML
-      expect(described_class.get_collection_title(@item)).to eq 'Foxml Test Object'
-    end
-
-    it 'includes a subtitle if there is one' do
-      @item.descMetadata.content = <<-XML
-      <?xml version="1.0"?>
-      <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
-      <titleInfo>
-      <title>Foxml Test Object</title>
-      <subTitle>Hello world</note>
-      </titleInfo>
-      </mods>
-      XML
-      expect(described_class.get_collection_title(@item)).to eq 'Foxml Test Object : Hello world'
-    end
-  end
-
   describe 'set_desc_metadata_using_label' do
     it 'creates basic mods using the object label' do
       allow(@obj.datastreams['descMetadata']).to receive(:content).and_return ''
