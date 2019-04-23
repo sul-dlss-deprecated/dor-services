@@ -105,6 +105,7 @@ module Dor
   # Services
   autoload_under 'services' do
     autoload :CleanupService
+    autoload :CollectionService
     autoload :CreateWorkflowService
     autoload :CreativeCommonsLicenseService
     autoload :EmbargoService

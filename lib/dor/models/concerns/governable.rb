@@ -24,28 +24,15 @@ module Dor
     end
 
     def add_collection(collection_or_druid)
-      collection =
-        case collection_or_druid
-        when String
-          Dor::Collection.find(collection_or_druid)
-        when Dor::Collection
-          collection_or_druid
-        end
-      collections << collection
-      sets << collection
+      collection_manager.add(collection_or_druid)
     end
 
     def remove_collection(collection_or_druid)
-      collection =
-        case collection_or_druid
-        when String
-          Dor::Collection.find(collection_or_druid)
-        when Dor::Collection
-          collection_or_druid
-        end
+      collection_manager.remove(collection_or_druid)
+    end
 
-      collections.delete(collection)
-      sets.delete(collection)
+    def collection_manager
+      CollectionService.new(self)
     end
 
     # set the rights metadata datastream to the content of the APO's default object rights
