@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe Dor::PublicDescMetadataService do
   subject(:service) { described_class.new(obj) }
 
-  before { stub_config }
+  before do
+    stub_config
+  end
 
   after { unstub_config }
 
@@ -89,22 +91,28 @@ RSpec.describe Dor::PublicDescMetadataService do
     end
 
     let(:collection) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
+    let(:relationships) { Nokogiri::XML(relationships_xml) }
+
+    let(:relationships_xml) do
+      <<~XML
+        <?xml version="1.0"?>
+        <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+        <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
+        <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
+        <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:zb871zd0767"/>
+        </rdf:Description>
+        </rdf:RDF>
+      XML
+    end
+
+    let(:filter) { instance_double(Dor::PublishedRelationshipsFilter, xml: relationships) }
 
     before do
+      allow(Dor::PublishedRelationshipsFilter).to receive(:new).and_return(filter)
+
       Dor::Config.push! { stacks.document_cache_host 'purl.stanford.edu' }
 
-      relationships_xml = <<-XML
-      <?xml version="1.0"?>
-      <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-      <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
-      <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
-      <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:zb871zd0767"/>
-      </rdf:Description>
-      </rdf:RDF>
-      XML
-
       obj.rightsMetadata.content = rights_xml
-      allow(obj).to receive(:public_relationships).and_return(Nokogiri::XML(relationships_xml))
 
       c_mods = Nokogiri::XML(read_fixture('ex1_mods.xml'))
       collection.descMetadata.content = c_mods.to_s
@@ -323,25 +331,28 @@ RSpec.describe Dor::PublicDescMetadataService do
 
   describe 'add_collection_reference' do
     let(:collection) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
+    let(:filter) { instance_double(Dor::PublishedRelationshipsFilter, xml: relationships) }
+    let(:relationships_xml) do
+      <<~XML
+        <?xml version="1.0"?>
+        <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+        <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
+        <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
+        <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:zb871zd0767"/>
+        </rdf:Description>
+        </rdf:RDF>
+      XML
+    end
+    let(:relationships) { Nokogiri::XML(relationships_xml) }
 
     before do
       Dor::Config.push! { stacks.document_cache_host 'purl.stanford.edu' }
 
-      relationships_xml = <<-XML
-      <?xml version="1.0"?>
-      <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-      <rdf:Description rdf:about="info:fedora/druid:jt667tw2770">
-      <fedora:isMemberOf rdf:resource="info:fedora/druid:zb871zd0767"/>
-      <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:zb871zd0767"/>
-      </rdf:Description>
-      </rdf:RDF>
-      XML
-      relationships = Nokogiri::XML(relationships_xml)
-      allow(obj).to receive(:public_relationships).and_return(relationships)
-
       allow(Dor).to receive(:find) do |pid|
         pid == 'druid:ab123cd4567' ? obj : collection
       end
+
+      allow(Dor::PublishedRelationshipsFilter).to receive(:new).and_return(filter)
     end
 
     after do
@@ -401,10 +412,6 @@ RSpec.describe Dor::PublicDescMetadataService do
           XML
         end
 
-        before do
-          allow(obj).to receive(:public_relationships).and_return(relationships)
-        end
-
         it 'does not touch an existing relatedItem if there is no collection relationship' do
           collections      = public_mods.search('//mods:relatedItem/mods:typeOfResource[@collection=\'yes\']')
           collection_title = public_mods.search('//mods:relatedItem/mods:titleInfo/mods:title')
@@ -429,7 +436,6 @@ RSpec.describe Dor::PublicDescMetadataService do
         let(:non_existent_druid) { 'druid:doesnotexist' }
 
         before do
-          allow(obj).to receive(:public_relationships).and_return(relationships)
           allow(Dor).to receive(:find).with(non_existent_druid).and_raise(ActiveFedora::ObjectNotFoundError)
         end
 

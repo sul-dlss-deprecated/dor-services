@@ -4,18 +4,14 @@ module Dor
   # Transfer of metadata to discovery and access systems.
   module Publishable
     extend ActiveSupport::Concern
+    extend Deprecation
+    self.deprecation_horizon = '8.0'
+
     # strips away the relationships that should not be shown in public desc metadata
     # @return [Nokogiri::XML]
     def public_relationships
-      include_elements = ['fedora:isMemberOf', 'fedora:isMemberOfCollection', 'fedora:isConstituentOf']
-      rels_doc = Nokogiri::XML(datastreams['RELS-EXT'].content)
-      rels_doc.xpath('/rdf:RDF/rdf:Description/*', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#').each do |rel|
-        unless include_elements.include?([rel.namespace.prefix, rel.name].join(':'))
-          rel.next_sibling.remove if rel.next_sibling.content.strip.empty?
-          rel.remove
-        end
-      end
-      rels_doc
+      PublishedRelationshipsFilter.new(self).xml
     end
+    deprecation_deprecate public_relationships: 'use PublishedRelationshipsFilter instead'
   end
 end

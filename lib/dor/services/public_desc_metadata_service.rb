@@ -81,9 +81,9 @@ module Dor
     # expand constituent relations into relatedItem references -- see JUMBO-18
     # @return [Void]
     def add_constituent_relations!
-      object.public_relationships.search('//rdf:RDF/rdf:Description/fedora:isConstituentOf',
-                                         'fedora' => 'info:fedora/fedora-system:def/relations-external#',
-                                         'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#').each do |parent|
+      PublishedRelationshipsFilter.new(object).xml.search('//rdf:RDF/rdf:Description/fedora:isConstituentOf',
+                                                          'fedora' => 'info:fedora/fedora-system:def/relations-external#',
+                                                          'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#').each do |parent|
         # fetch the parent object to get title
         druid = parent['rdf:resource'].gsub(/^info:fedora\//, '')
         parent_item = Dor.find(druid)
@@ -116,9 +116,9 @@ module Dor
     # For use in published mods and mods-to-DC conversion.
     # @return [Void]
     def add_collection_reference!
-      collections = object.public_relationships.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection',
-                                                       'fedora' => 'info:fedora/fedora-system:def/relations-external#',
-                                                       'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+      collections = PublishedRelationshipsFilter.new(object).xml.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection',
+                                                                        'fedora' => 'info:fedora/fedora-system:def/relations-external#',
+                                                                        'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
       return if collections.empty?
 
       remove_related_item_nodes_for_collections!
