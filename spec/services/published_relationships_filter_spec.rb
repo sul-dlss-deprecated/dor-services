@@ -11,8 +11,8 @@ RSpec.describe Dor::PublishedRelationshipsFilter do
     subject(:doc) { service.xml }
 
     context 'with isMemberOfCollection and isConstituentOf relationships' do
-      before do
-        obj.rels_ext.content = <<-EOXML
+      let(:relationships) do
+        <<~EOXML
           <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:hydra="http://projecthydra.org/ns/relations#">
             <rdf:Description rdf:about="info:fedora/druid:ab123cd4567">
               <hydra:isGovernedBy rdf:resource="info:fedora/druid:789012"></hydra:isGovernedBy>
@@ -23,6 +23,13 @@ RSpec.describe Dor::PublishedRelationshipsFilter do
             </rdf:Description>
           </rdf:RDF>
         EOXML
+      end
+
+      before do
+        ActiveFedora::RelsExtDatastream.from_xml(relationships, obj.rels_ext)
+        # Needed to generate the Datastream#content
+        obj.object_relations.dirty = true
+        obj.rels_ext.serialize!
       end
 
       it 'discards the non-allowed relations' do
