@@ -22,22 +22,6 @@ module Dor
       end
     end
 
-    # @param [Boolean] force Overwrite existing XML
-    # @return [String] descMetadata.content XML
-    def set_desc_metadata_using_label(force = false)
-      raise 'Cannot proceed, there is already content in the descriptive metadata datastream: ' + descMetadata.content.to_s unless force || descMetadata.new?
-
-      label = self.label
-      builder = Nokogiri::XML::Builder.new do |xml|
-        xml.mods(Dor::DescMetadataDS::MODS_HEADER_CONFIG) do
-          xml.titleInfo do
-            xml.title label
-          end
-        end
-      end
-      descMetadata.content = builder.to_xml
-    end
-
     def full_title
       stanford_mods.sw_title_display
     end
