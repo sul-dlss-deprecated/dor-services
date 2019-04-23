@@ -4,13 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Dor::DescribableIndexer do
   let(:model) do
-    Class.new(Dor::Abstract) do
-      include Dor::Describable
-    end
+    Class.new(Dor::Abstract)
   end
-  before { stub_config }
-
-  after { unstub_config }
 
   let(:obj) { instantiate_fixture('druid:ab123cd4567', model) }
 

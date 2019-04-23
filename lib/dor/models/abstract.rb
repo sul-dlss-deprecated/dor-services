@@ -3,7 +3,6 @@
 module Dor
   class Abstract < ::ActiveFedora::Base
     include Governable
-    include Describable
 
     has_metadata name: 'provenanceMetadata',
                  type: ProvenanceMetadataDS,
@@ -29,6 +28,10 @@ module Dor
     has_metadata name: 'identityMetadata',
                  type: Dor::IdentityMetadataDS,
                  label: 'Identity Metadata'
+    has_metadata name: 'descMetadata',
+                 type: Dor::DescMetadataDS,
+                 label: 'Descriptive Metadata',
+                 control_group: 'M'
 
     belongs_to :admin_policy_object,
                property: :is_governed_by,
@@ -112,6 +115,7 @@ module Dor
       versionMetadata.current_version_id
     end
 
+    delegate :full_title, :stanford_mods, to: :descMetadata
     delegate :rights, to: :rightsMetadata
     delegate :catkey, :catkey=, :previous_catkeys, :tags, :content_type_tag, :source_id, :source_id=, to: :identityMetadata
   end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Dor
+  # Transfer of metadata to discovery and access systems.
   module Publishable
     extend ActiveSupport::Concern
     # strips away the relationships that should not be shown in public desc metadata
