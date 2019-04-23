@@ -9,11 +9,8 @@ Naming/FileName:
     - 'lib/dor-services.rb'
     - 'spec/dor/releaseable_no_VCR_spec.rb'
 
-# Offense count: 201
-# Configuration parameters: CountComments, ExcludedMethods.
-# ExcludedMethods: refine
 Metrics/BlockLength:
-  Max: 37
+  Max: 38
   ExcludedMethods:
     - set_terminology
     - autoload_under

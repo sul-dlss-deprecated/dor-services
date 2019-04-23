@@ -102,11 +102,13 @@ module Dor
     # ActiveFedora Classes
     autoload_under 'models' do
       autoload :Abstract
-      autoload :Agreement
-      autoload :Item
-      autoload :Set
-      autoload :Collection
       autoload :AdminPolicyObject
+      autoload :Agreement
+      autoload :Collection
+      autoload :Etd
+      autoload :Item
+      autoload :Part
+      autoload :Set
       autoload :WorkflowObject
       autoload :WorkflowSolrDocument
     end
