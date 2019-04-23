@@ -48,6 +48,14 @@ RSpec.describe Dor::Item do
     it { is_expected.to include 'active_fedora_model_ssi' => 'Dor::Item' }
   end
 
+  describe '#geoMetadata' do
+    let(:item) { described_class.new(pid: 'foo:123') }
+
+    it 'has a geoMetadata datastream' do
+      expect(item.geoMetadata).to be_a(Dor::GeoMetadataDS)
+    end
+  end
+
   describe '#descMetadata' do
     let(:item) { described_class.new(pid: 'foo:123') }
 

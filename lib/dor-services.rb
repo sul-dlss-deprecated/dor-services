@@ -83,7 +83,6 @@ module Dor
     autoload :Governable
     autoload :Publishable
     autoload :Embargoable
-    autoload :Geoable
     autoload :Releaseable
   end
 
