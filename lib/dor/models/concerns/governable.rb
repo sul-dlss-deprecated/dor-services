@@ -4,12 +4,6 @@ module Dor
   module Governable
     extend ActiveSupport::Concern
 
-    included do
-      belongs_to :admin_policy_object, property: :is_governed_by, class_name: 'Dor::AdminPolicyObject'
-      has_and_belongs_to_many :collections, property: :is_member_of_collection, class_name: 'Dor::Collection'
-      has_and_belongs_to_many :sets, property: :is_member_of, class_name: 'Dor::Collection'
-    end
-
     def reset_to_apo_default
       rightsMetadata.content = admin_policy_object.rightsMetadata.ng_xml
     end

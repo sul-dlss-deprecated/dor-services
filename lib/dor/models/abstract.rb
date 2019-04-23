@@ -25,6 +25,16 @@ module Dor
                  label: 'Version Metadata',
                  autocreate: true
 
+    belongs_to :admin_policy_object,
+               property: :is_governed_by,
+               class_name: 'Dor::AdminPolicyObject'
+    has_and_belongs_to_many :collections,
+                            property: :is_member_of_collection,
+                            class_name: 'Dor::Collection'
+    has_and_belongs_to_many :sets,
+                            property: :is_member_of,
+                            class_name: 'Dor::Collection'
+
     class_attribute :resource_indexer
 
     def to_solr
