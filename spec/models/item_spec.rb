@@ -48,6 +48,40 @@ RSpec.describe Dor::Item do
     it { is_expected.to include 'active_fedora_model_ssi' => 'Dor::Item' }
   end
 
+  describe '#descMetadata' do
+    let(:item) { described_class.new(pid: 'foo:123') }
+
+    it 'has a descMetadata datastream' do
+      expect(item.descMetadata).to be_a(Dor::DescMetadataDS)
+    end
+  end
+
+  describe '#stanford_mods' do
+    let(:item) { described_class.new(pid: 'foo:123') }
+
+    before do
+      item.descMetadata.content = read_fixture('ex1_mods.xml')
+    end
+
+    it 'fetches Stanford::Mods object' do
+      expect(item.methods).to include(:stanford_mods)
+      sm = nil
+      expect { sm = item.stanford_mods }.not_to raise_error
+      expect(sm).to be_kind_of(Stanford::Mods::Record)
+      expect(sm.format_main).to eq(['Book'])
+      expect(sm.pub_year_sort_str).to eq('1911')
+    end
+
+    it 'allows override argument(s)' do
+      sm = nil
+      nk = Nokogiri::XML('<mods><genre>ape</genre></mods>')
+      expect { sm = item.stanford_mods(nk, false) }.not_to raise_error
+      expect(sm).to be_kind_of(Stanford::Mods::Record)
+      expect(sm.genre.text).to eq('ape')
+      expect(sm.pub_year_sort_str).to be_nil
+    end
+  end
+
   describe 'contentMetadata' do
     let(:item) { described_class.new(pid: 'foo:123') }
 

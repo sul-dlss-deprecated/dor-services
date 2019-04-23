@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Dor
+  # Relationships to collections and codified administrative policies.
   module Governable
     extend ActiveSupport::Concern
 

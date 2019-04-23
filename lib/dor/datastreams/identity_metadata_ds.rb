@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Dor
+  # Object identity and source metadata
   class IdentityMetadataDS < ActiveFedora::OmDatastream
     include SolrDocHelper
 

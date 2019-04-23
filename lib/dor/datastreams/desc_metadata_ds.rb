@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
+require 'stanford-mods'
+
 module Dor
+  # Descriptive metadata
   class DescMetadataDS < ActiveFedora::OmDatastream
     MODS_NS = 'http://www.loc.gov/mods/v3'
     MODS_HEADER_CONFIG = {
@@ -59,6 +62,22 @@ module Dor
 
     def mods_title=(val)
       update_values(%i[title_info main_title] => val)
+    end
+
+    # intended for read-access, "as SearchWorks would see it", mostly for to_solr()
+    # @param [Nokogiri::XML::Document] content Nokogiri descMetadata document (overriding internal data)
+    # @param [boolean] ns_aware namespace awareness toggle for from_nk_node()
+    def stanford_mods(content = nil, ns_aware = true)
+      @stanford_mods ||= begin
+        m = Stanford::Mods::Record.new
+        desc = content.nil? ? ng_xml : content
+        m.from_nk_node(desc.root, ns_aware)
+        m
+      end
+    end
+
+    def full_title
+      stanford_mods.sw_title_display
     end
 
     # maintain AF < 8 indexing behavior
