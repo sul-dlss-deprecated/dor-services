@@ -24,38 +24,6 @@ RSpec.describe Dor::Describable do
     expect(@item.datastreams['descMetadata']).to be_a(Dor::DescMetadataDS)
   end
 
-  describe 'set_desc_metadata_using_label' do
-    it 'creates basic mods using the object label' do
-      allow(@obj.datastreams['descMetadata']).to receive(:content).and_return ''
-      @obj.set_desc_metadata_using_label
-      expect(@obj.datastreams['descMetadata'].ng_xml).to be_equivalent_to <<-XML
-      <?xml version="1.0"?>
-      <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.6" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd">
-      <titleInfo>
-      <title>Foxml Test Object</title>
-      </titleInfo>
-      </mods>
-      XML
-    end
-    it 'throws an exception if there is content in the descriptive metadata stream' do
-      # @obj.stub(:descMetadata).and_return(ActiveFedora::OmDatastream.new)
-      allow(@obj.descMetadata).to receive(:new?).and_return(false)
-      expect { @obj.set_desc_metadata_using_label }.to raise_error(StandardError)
-    end
-    it 'runs if there is content in the descriptive metadata stream and force is true' do
-      allow(@obj.descMetadata).to receive(:new?).and_return(false)
-      @obj.set_desc_metadata_using_label(true)
-      expect(@obj.datastreams['descMetadata'].ng_xml).to be_equivalent_to <<-XML
-      <?xml version="1.0"?>
-      <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.6" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd">
-      <titleInfo>
-      <title>Foxml Test Object</title>
-      </titleInfo>
-      </mods>
-      XML
-    end
-  end
-
   describe 'stanford_mods accessor to DS' do
     it 'fetches Stanford::Mods object' do
       expect(@obj.methods).to include(:stanford_mods)
