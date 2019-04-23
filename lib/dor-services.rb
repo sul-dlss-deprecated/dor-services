@@ -23,10 +23,6 @@ module Dor
       Dor::Abstract.find pid, cast: true
     end
 
-    def root
-      File.dirname(__FILE__)
-    end
-
     def logger
       require 'logger'
       @logger ||= if defined?(::Rails) && ::Rails.respond_to?(:logger)
