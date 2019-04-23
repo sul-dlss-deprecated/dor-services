@@ -4,6 +4,10 @@ module Dor
   class IdentityMetadataDS < ActiveFedora::OmDatastream
     include SolrDocHelper
 
+    # ids for previous and current catkeys
+    CATKEY_TYPE_ID = 'catkey'
+    PREVIOUS_CATKEY_TYPE_ID = 'previous_catkey'
+
     set_terminology do |t|
       t.root(path: 'identityMetadata')
       t.objectId   index_as: [:symbol]
@@ -42,6 +46,7 @@ module Dor
       node = find_by_terms(:sourceId).first
       node ? [node['source'], node.text].join(':') : nil
     end
+    alias source_id sourceId
 
     # @param  [String, Nil] value The value to set or a nil/empty string to delete sourceId node
     # @return [String, Nil] The same value, as per Ruby convention for assignment operators
@@ -61,9 +66,16 @@ module Dor
       node['source'] = parts[0]
       node.content = parts[1]
     end
+    alias source_id= sourceId=
 
     def tags
       ng_xml.search('//tag').collect(&:content)
+    end
+
+    # helper method to get just the content type tag
+    def content_type_tag
+      content_tag = tags.select { |tag| tag.include?('Process : Content Type') }
+      content_tag.size == 1 ? content_tag[0].split(':').last.strip : ''
     end
 
     def otherId(type = nil)
@@ -82,6 +94,58 @@ module Dor
       node['name'] = name
       node.content = val
       node
+    end
+
+    def add_other_Id(type, val)
+      raise 'There is an existing entry for ' + type + ', consider using update_other_Id().' if otherId(type).length > 0
+
+      add_otherId(type + ':' + val)
+    end
+
+    def update_other_Id(type, new_val, val = nil)
+      ng_xml.search('//otherId[@name=\'' + type + '\']')
+            .select { |node| val.nil? || node.content == val }
+            .each { ng_xml_will_change! }
+            .each { |node| node.content = new_val }
+            .any?
+    end
+
+    def remove_other_Id(type, val = nil)
+      ng_xml.search('//otherId[@name=\'' + type + '\']')
+            .select { |node| val.nil? || node.content == val }
+            .each { ng_xml_will_change! }
+            .each(&:remove)
+            .any?
+    end
+
+    # Convenience method to get the current catkey
+    # @return [String] current catkey value (or nil if none found)
+    def catkey
+      otherId(CATKEY_TYPE_ID).first
+    end
+
+    # Convenience method to set the catkey
+    # @param  [String] val the new source identifier
+    # @return [String] same value, as per Ruby assignment convention
+    def catkey=(val)
+      # if there was already a catkey in the record, store that in the "previous" spot (assuming there is no change)
+      add_otherId("#{PREVIOUS_CATKEY_TYPE_ID}:#{catkey}") if val != catkey && !catkey.blank?
+
+      if val.blank? # if we are setting the catkey to blank, remove the node from XML
+        remove_other_Id(CATKEY_TYPE_ID)
+      elsif catkey.blank? # if there is no current catkey, then add it
+        add_other_Id(CATKEY_TYPE_ID, val)
+      else # if there is a current catkey, update the current catkey to the new value
+        update_other_Id(CATKEY_TYPE_ID, val)
+      end
+
+      val
+    end
+
+    # Convenience method to get the previous catkeys (will be an array)
+    # @return [Array] previous catkey values (empty array if none found)
+    def previous_catkeys
+      otherId(PREVIOUS_CATKEY_TYPE_ID)
     end
 
     def to_solr(solr_doc = {}, *args)

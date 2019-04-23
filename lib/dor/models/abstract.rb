@@ -2,7 +2,6 @@
 
 module Dor
   class Abstract < ::ActiveFedora::Base
-    include Identifiable
     include Governable
     include Describable
 
@@ -114,5 +113,6 @@ module Dor
     end
 
     delegate :rights, to: :rightsMetadata
+    delegate :catkey, :catkey=, :previous_catkeys, :tags, :content_type_tag, :source_id, :source_id=, to: :identityMetadata
   end
 end

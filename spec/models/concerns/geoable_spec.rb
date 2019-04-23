@@ -2,17 +2,12 @@
 
 require 'spec_helper'
 
-class GeoableItem < ActiveFedora::Base
-  include Dor::Identifiable
-  include Dor::Geoable
-end
-
 describe Dor::Geoable do
   after { unstub_config }
 
   before do
     stub_config
-    @item = GeoableItem.new
+    @item = Dor::Item.new
   end
 
   it 'has a geoMetadata datastream' do

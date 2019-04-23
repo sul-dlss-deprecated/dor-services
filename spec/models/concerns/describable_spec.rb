@@ -2,10 +2,6 @@
 
 require 'spec_helper'
 
-class DescribableItem < ActiveFedora::Base
-  include Dor::Identifiable
-  include Dor::Describable
-end
 class SimpleItem < ActiveFedora::Base
   include Dor::Describable
 end
@@ -19,8 +15,8 @@ RSpec.describe Dor::Describable do
 
   before do
     @simple = instantiate_fixture('druid:ab123cd4567', SimpleItem)
-    @item   = instantiate_fixture('druid:ab123cd4567', DescribableItem)
-    @obj    = instantiate_fixture('druid:ab123cd4567', DescribableItem)
+    @item   = instantiate_fixture('druid:ab123cd4567', Dor::Item)
+    @obj    = instantiate_fixture('druid:ab123cd4567', Dor::Item)
     @obj.datastreams['descMetadata'].content = read_fixture('ex1_mods.xml')
   end
 
