@@ -4,10 +4,6 @@ module Dor
   module Governable
     extend ActiveSupport::Concern
 
-    def reset_to_apo_default
-      rightsMetadata.content = admin_policy_object.rightsMetadata.ng_xml
-    end
-
     def set_read_rights(rights)
       rightsMetadata.set_read_rights(rights)
       unshelve_and_unpublish if rights == 'dark'
