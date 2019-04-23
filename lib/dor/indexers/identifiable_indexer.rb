@@ -5,6 +5,9 @@ module Dor
     include SolrDocHelper
 
     INDEX_VERSION_FIELD = 'dor_services_version_ssi'
+    NS_HASH = { 'hydra' => 'http://projecthydra.org/ns/relations#',
+                'fedora' => 'info:fedora/fedora-system:def/relations-external#',
+                'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' }.freeze
 
     attr_reader :resource
     def initialize(resource:)
@@ -28,9 +31,8 @@ module Dor
       add_solr_value(solr_doc, 'title_sort', resource.label, :string, [:stored_sortable])
 
       rels_doc = Nokogiri::XML(resource.datastreams['RELS-EXT'].content)
-      ns_hash = { 'hydra' => 'http://projecthydra.org/ns/relations#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' }
-      apos = rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy', ns_hash)
-      collections = rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection', ns_hash)
+      apos = rels_doc.search('//rdf:RDF/rdf:Description/hydra:isGovernedBy', NS_HASH)
+      collections = rels_doc.search('//rdf:RDF/rdf:Description/fedora:isMemberOfCollection', NS_HASH)
       solrize_related_obj_titles(solr_doc, apos, @@apo_hash, 'apo_title', 'nonhydrus_apo_title', 'hydrus_apo_title')
       solrize_related_obj_titles(solr_doc, collections, @@collection_hash, 'collection_title', 'nonhydrus_collection_title', 'hydrus_collection_title')
       solr_doc['public_dc_relation_tesim'] ||= solr_doc['collection_title_tesim'] if solr_doc['collection_title_tesim']
