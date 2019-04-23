@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Dor::IdentityMetadataDS do
+RSpec.describe Dor::IdentityMetadataDS do
   context 'Marshalling to and from a Fedora Datastream' do
     before do
       @dsxml = <<-EOF
@@ -128,6 +128,70 @@ describe Dor::IdentityMetadataDS do
       expect(new_doc.to_xml).to be_equivalent_to resultxml
       expect(new_doc.objectId).to eq('druid:ab123cd4567')
       expect(new_doc.otherId).to match_array(['mdtoolkit:ab123cd4567', 'uuid:12345678-abcd-1234-ef01-23456789abcd'])
+    end
+  end
+
+  describe 'add_other_Id' do
+    let(:ds) { instantiate_fixture('druid:ab123cd4567', Dor::Item).identityMetadata }
+
+    before do
+      ds.instance_variable_set(:@datastream_content, ds.content)
+      allow(ds).to receive(:new?).and_return(false)
+    end
+
+    it 'adds an other_id record' do
+      ds.add_other_Id('mdtoolkit', 'someid123')
+      expect(ds.otherId('mdtoolkit').first).to eq('someid123')
+    end
+
+    it 'raises an exception if a record of that type already exists' do
+      ds.add_other_Id('mdtoolkit', 'someid123')
+      expect(ds.otherId('mdtoolkit').first).to eq('someid123')
+      expect { ds.add_other_Id('mdtoolkit', 'someid123') }.to raise_error(RuntimeError)
+    end
+  end
+
+  describe 'update_other_Id' do
+    let(:ds) { instantiate_fixture('druid:ab123cd4567', Dor::Item).identityMetadata }
+
+    before do
+      ds.instance_variable_set(:@datastream_content, ds.content)
+      allow(ds).to receive(:new?).and_return(false)
+    end
+
+    it 'updates an existing id and return true to indicate that it found something to update' do
+      ds.add_other_Id('mdtoolkit', 'someid123')
+      expect(ds.otherId('mdtoolkit').first).to eq('someid123')
+      # return value should be true when it finds something to update
+      expect(ds.update_other_Id('mdtoolkit', 'someotherid234', 'someid123')).to be_truthy
+      expect(ds).to be_changed
+      expect(ds.otherId('mdtoolkit').first).to eq('someotherid234')
+    end
+
+    it 'returns false if there was no existing record to update' do
+      expect(ds.update_other_Id('mdtoolkit', 'someotherid234')).to be_falsey
+    end
+  end
+
+  describe 'remove_other_Id' do
+    let(:ds) { instantiate_fixture('druid:ab123cd4567', Dor::Item).identityMetadata }
+
+    before do
+      ds.instance_variable_set(:@datastream_content, ds.content)
+      allow(ds).to receive(:new?).and_return(false)
+    end
+
+    it 'removes an existing otherid when the tag and value match' do
+      ds.add_other_Id('mdtoolkit', 'someid123')
+      expect(ds).to be_changed
+      expect(ds.otherId('mdtoolkit').first).to eq('someid123')
+      expect(ds.remove_other_Id('mdtoolkit', 'someid123')).to be_truthy
+      expect(ds.otherId('mdtoolkit').length).to eq(0)
+    end
+
+    it 'returns false if there was nothing to delete' do
+      expect(ds.remove_other_Id('mdtoolkit', 'someid123')).to be_falsey
+      expect(ds).not_to be_changed
     end
   end
 end

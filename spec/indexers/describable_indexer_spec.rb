@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Dor::DescribableIndexer do
   let(:model) do
     Class.new(Dor::Abstract) do
-      include Dor::Identifiable
       include Dor::Describable
     end
   end

@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Dor::IdentifiableIndexer do
   let(:model) do
     Class.new(Dor::Abstract) do
-      include Dor::Identifiable
       def self.name
         'foo'
       end
@@ -33,16 +32,16 @@ RSpec.describe Dor::IdentifiableIndexer do
 
   describe '#identity_metadata_source' do
     it 'depends on remove_other_Id' do
-      obj.remove_other_Id('catkey', '129483625')
-      obj.remove_other_Id('barcode', '36105049267078')
-      obj.add_other_Id('catkey', '129483625')
+      obj.identityMetadata.remove_other_Id('catkey', '129483625')
+      obj.identityMetadata.remove_other_Id('barcode', '36105049267078')
+      obj.identityMetadata.add_other_Id('catkey', '129483625')
       expect(indexer.identity_metadata_source).to eq 'Symphony'
-      obj.remove_other_Id('catkey', '129483625')
-      obj.add_other_Id('barcode', '36105049267078')
+      obj.identityMetadata.remove_other_Id('catkey', '129483625')
+      obj.identityMetadata.add_other_Id('barcode', '36105049267078')
       expect(indexer.identity_metadata_source).to eq 'Symphony'
-      obj.remove_other_Id('barcode', '36105049267078')
+      obj.identityMetadata.remove_other_Id('barcode', '36105049267078')
       expect(indexer.identity_metadata_source).to eq 'DOR'
-      obj.remove_other_Id('foo', 'bar')
+      obj.identityMetadata.remove_other_Id('foo', 'bar')
       expect(indexer.identity_metadata_source).to eq 'DOR'
     end
 
