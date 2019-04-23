@@ -108,6 +108,7 @@ module Dor
     autoload :CleanupService
     autoload :CreateWorkflowService
     autoload :CreativeCommonsLicenseService
+    autoload :EmbargoService
     autoload :IndexingService
     autoload :MetadataService
     autoload :Ontology
