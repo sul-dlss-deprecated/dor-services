@@ -52,7 +52,8 @@ module Dor
       item.collections.each do |collection|
         next if collection.id == item.id # recursive, so parents of parents are found, but we need to avoid an infinite loop if the collection references itself (i.e. bad data)
 
-        return_tags = combine_two_release_tag_hashes(return_tags, collection.releases.release_tags_for_item_and_all_governing_sets)
+        release_service = self.class.for(collection)
+        return_tags = combine_two_release_tag_hashes(return_tags, release_service.release_tags_for_item_and_all_governing_sets)
       end
       return_tags
     end
