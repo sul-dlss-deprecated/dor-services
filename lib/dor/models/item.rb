@@ -3,7 +3,6 @@
 module Dor
   class Item < Dor::Abstract
     include Embargoable
-    include Releaseable
 
     has_object_type 'item'
 
