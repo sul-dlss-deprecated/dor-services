@@ -81,7 +81,6 @@ module Dor
 
   # DOR Concerns
   autoload_under 'models/concerns' do
-    autoload :Publishable
     autoload :Embargoable
     autoload :Releaseable
   end

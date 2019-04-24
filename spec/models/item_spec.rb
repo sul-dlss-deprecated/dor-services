@@ -134,19 +134,37 @@ RSpec.describe Dor::Item do
     it { is_expected.to include 'active_fedora_model_ssi' => 'Dor::Item' }
   end
 
-  describe '#geoMetadata' do
+  describe 'datastreams' do
     let(:item) { described_class.new(pid: 'foo:123') }
 
-    it 'has a geoMetadata datastream' do
-      expect(item.geoMetadata).to be_a(Dor::GeoMetadataDS)
+    describe '#geoMetadata' do
+      it 'has a geoMetadata datastream' do
+        expect(item.geoMetadata).to be_a Dor::GeoMetadataDS
+      end
     end
-  end
 
-  describe '#descMetadata' do
-    let(:item) { described_class.new(pid: 'foo:123') }
+    describe '#rightsMetadata' do
+      it 'has a rightsMetadata datastream' do
+        expect(item.rightsMetadata).to be_a Dor::RightsMetadataDS
+      end
+    end
 
-    it 'has a descMetadata datastream' do
-      expect(item.descMetadata).to be_a(Dor::DescMetadataDS)
+    describe '#descMetadata' do
+      it 'has a descMetadata datastream' do
+        expect(item.descMetadata).to be_a Dor::DescMetadataDS
+      end
+    end
+
+    describe '#contentMetadata' do
+      it 'has a contentMetadata datastream' do
+        expect(item.contentMetadata).to be_a Dor::ContentMetadataDS
+      end
+    end
+
+    describe '#identityMetadata' do
+      it 'has an identityMetadata datastream' do
+        expect(item.identityMetadata).to be_a Dor::IdentityMetadataDS
+      end
     end
   end
 
@@ -173,14 +191,6 @@ RSpec.describe Dor::Item do
       expect(sm).to be_kind_of(Stanford::Mods::Record)
       expect(sm.genre.text).to eq('ape')
       expect(sm.pub_year_sort_str).to be_nil
-    end
-  end
-
-  describe 'contentMetadata' do
-    let(:item) { described_class.new(pid: 'foo:123') }
-
-    it 'has a contentMetadata datastream' do
-      expect(item.contentMetadata).to be_a(Dor::ContentMetadataDS)
     end
   end
 
@@ -229,14 +239,6 @@ RSpec.describe Dor::Item do
       # pass refresh flag and should be refreshed copy
       expect(item.workflows.content(true)).to eq('<workflows>with some data</workflows>')
       expect(item.workflows.content).to eq('<workflows>with some data</workflows>')
-    end
-  end
-
-  describe '#identityMetadata' do
-    let(:item) { instantiate_fixture('druid:ab123cd4567', described_class) }
-
-    it 'has an identityMetadata datastream' do
-      expect(item.datastreams['identityMetadata']).to be_a(Dor::IdentityMetadataDS)
     end
   end
 
