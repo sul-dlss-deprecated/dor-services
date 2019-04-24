@@ -150,6 +150,28 @@ RSpec.describe Dor::ReleaseTagService do
     end
   end
 
+  describe '#release_tags_for_item_and_all_governing_sets' do
+    let(:collection) { Dor::Collection.new }
+    let(:collection_result) do
+      {
+        'Searchworks' => [
+          { 'tag' => 'true', 'what' => 'collection', 'when' => Time.parse('2015-01-06 23:33:47Z'), 'who' => 'carrickr', 'release' => true }
+        ]
+      }
+    end
+    let(:collection_tags) { instance_double(described_class, release_tags_for_item_and_all_governing_sets: collection_result) }
+
+    before do
+      releases # call releases before subbing the invocation.
+      allow(item).to receive(:collections).and_return([collection])
+      allow(described_class).to receive(:for).with(collection).and_return(collection_tags)
+    end
+
+    it 'gets tags from collections and the item' do
+      expect(releases.release_tags_for_item_and_all_governing_sets.keys).to include('Revs', 'Searchworks')
+    end
+  end
+
   describe '#form_purl_url' do
     subject { releases.send(:form_purl_url) }
 
