@@ -80,7 +80,6 @@ module Dor
 
   # DOR Concerns
   autoload_under 'models/concerns' do
-    autoload :Governable
     autoload :Publishable
     autoload :Embargoable
     autoload :Releaseable

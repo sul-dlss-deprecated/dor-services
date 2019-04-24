@@ -32,6 +32,92 @@ RSpec.describe Dor::Item do
     end
   end
 
+  describe '#add_collection' do
+    let(:item) { instantiate_fixture('druid:oo201oo0001', described_class) }
+    let(:service) { instance_double(Dor::CollectionService, add: true) }
+
+    before do
+      allow(Dor::CollectionService).to receive(:new).and_return(service)
+    end
+
+    it 'delegates to the CollectionService' do
+      item.add_collection('druid:oo201oo0002')
+      expect(service).to have_received(:add).with('druid:oo201oo0002')
+    end
+  end
+
+  describe '#remove_collection' do
+    let(:item) { instantiate_fixture('druid:oo201oo0001', described_class) }
+    let(:service) { instance_double(Dor::CollectionService, remove: true) }
+
+    before do
+      allow(Dor::CollectionService).to receive(:new).and_return(service)
+    end
+
+    it 'deletes a collection' do
+      item.remove_collection('druid:oo201oo0002')
+      expect(service).to have_received(:remove).with('druid:oo201oo0002')
+    end
+  end
+
+  describe '#reapply_admin_policy_object_defaults' do
+    let(:item) { instantiate_fixture('druid:oo201oo0001', described_class) }
+    let(:apo) { instantiate_fixture('druid_zt570tx3016', Dor::AdminPolicyObject) }
+
+    before do
+      allow(item).to receive(:admin_policy_object).and_return(apo)
+    end
+
+    it 'updates rightsMetadata from the APO defaultObjectRights' do
+      expect(item.rightsMetadata.ng_xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length).to eq(1)
+      item.reapply_admin_policy_object_defaults
+      expect(item.rightsMetadata.ng_xml.search('//rightsMetadata/access[@type=\'read\']/machine/group').length).to eq(0)
+      expect(item.rightsMetadata.ng_xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length).to eq(1)
+    end
+  end
+
+  describe '#read_rights=' do
+    subject(:set_read_rights) { item.read_rights = rights }
+
+    let(:item) { instantiate_fixture('druid:bb046xn0881', described_class) }
+
+    context 'when set to dark' do
+      let(:rights) { 'dark' }
+
+      it 'unshelves and unpublishes content metadata' do
+        expect(item).to receive(:unshelve_and_unpublish)
+        set_read_rights
+      end
+    end
+  end
+
+  describe '#unshelve_and_unpublish' do
+    subject(:unshelve_and_unpublish) { item.send(:unshelve_and_unpublish) }
+
+    let(:item) { instantiate_fixture('druid:bb046xn0881', described_class) }
+
+    it 'notifies that the XML will change' do
+      expect(item.contentMetadata).to receive(:ng_xml_will_change!).once
+      unshelve_and_unpublish
+    end
+
+    it 'sets publish and shelve to no for all files' do
+      unshelve_and_unpublish
+      new_metadata = item.contentMetadata
+      expect(new_metadata.ng_xml.xpath('/contentMetadata/resource//file[@publish="yes"]').length).to eq(0)
+      expect(new_metadata.ng_xml.xpath('/contentMetadata/resource//file[@shelve="yes"]').length).to eq(0)
+    end
+
+    context 'when there is no contentMetadata' do
+      let(:item) { instantiate_fixture('druid:bb004bn8654', described_class) }
+
+      it 'does nothing' do
+        expect(item).not_to receive(:ng_xml_will_change!)
+        unshelve_and_unpublish
+      end
+    end
+  end
+
   describe '#to_solr' do
     subject(:doc) { item.to_solr }
 

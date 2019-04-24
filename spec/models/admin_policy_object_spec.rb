@@ -34,6 +34,182 @@ RSpec.describe Dor::AdminPolicyObject do
     it { is_expected.to include 'active_fedora_model_ssi' => 'Dor::AdminPolicyObject' }
   end
 
+  describe '#read_rights=' do
+    subject(:set_read_rights) { item.read_rights = rights }
+
+    let(:item) { instantiate_fixture('druid:oo201oo0001', described_class) }
+
+    before do
+      allow(item).to receive(:unshelve_and_unpublish)
+    end
+
+    context 'when set to an unacceptable value' do
+      let(:rights) { 'mambo' }
+
+      it 'raises an exception if the rights option doesnt match the accepted values' do
+        expect { set_read_rights }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when set to dark' do
+      let(:rights) { 'dark' }
+      let(:item) { instantiate_fixture('druid:oo201oo0001', described_class) }
+
+      it 'sets rights to dark (double none), removing the discovery rights' do
+        set_read_rights
+        expect(item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
+        <?xml version="1.0"?>
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">This work is in the Public Domain.</human>
+          </copyright>
+          <access type="discover">
+            <machine><none/></machine>
+          </access>
+          <access type="read">
+            <machine><none/></machine>
+          </access>
+          <use>
+            <human type="creativecommons">Attribution Share Alike license</human>
+            <machine type="creativecommons">by-sa</machine>
+          </use>
+        </rightsMetadata>
+        XML
+      end
+    end
+
+    context 'when set to world' do
+      let(:rights) { 'world' }
+
+      it 'does not change publish or shelve attributes' do
+        set_read_rights
+        expect(item).not_to have_received(:unshelve_and_unpublish)
+        expect(item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
+        <?xml version="1.0"?>
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">This work is in the Public Domain.</human>
+          </copyright>
+          <access type="discover">
+            <machine><world/></machine>
+          </access>
+          <access type="read">
+            <machine><world/></machine>
+          </access>
+          <use>
+            <human type="creativecommons">Attribution Share Alike license</human>
+            <machine type="creativecommons">by-sa</machine>
+          </use>
+        </rightsMetadata>
+        XML
+      end
+    end
+
+    context 'when set to stanford' do
+      let(:rights) { 'stanford' }
+
+      it 'does not change publish or shelve attributes' do
+        set_read_rights
+        expect(item).not_to have_received(:unshelve_and_unpublish)
+        expect(item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
+          <?xml version="1.0"?>
+          <rightsMetadata>
+            <copyright>
+              <human type="copyright">This work is in the Public Domain.</human>
+            </copyright>
+            <access type="discover">
+              <machine><world/></machine>
+            </access>
+            <access type="read">
+              <machine>
+                <group>stanford</group>
+              </machine>
+            </access>
+            <use>
+              <human type="creativecommons">Attribution Share Alike license</human>
+              <machine type="creativecommons">by-sa</machine>
+            </use>
+          </rightsMetadata>
+        XML
+      end
+    end
+
+    context 'when set to none' do
+      let(:rights) { 'none' }
+
+      it 'sets rights to <none/>' do
+        set_read_rights
+
+        expect(item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
+        <?xml version="1.0"?>
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">This work is in the Public Domain.</human>
+          </copyright>
+          <access type="discover">
+            <machine><world/></machine>
+          </access>
+          <access type="read">
+            <machine><none/></machine>
+          </access>
+          <use>
+            <human type="creativecommons">Attribution Share Alike license</human>
+            <machine type="creativecommons">by-sa</machine>
+          </use>
+        </rightsMetadata>
+        XML
+      end
+
+      it 'changes the read permissions value from <group>stanford</group> to <none/>' do
+        expect(item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
+      <?xml version="1.0"?>
+      <rightsMetadata>
+        <copyright>
+          <human type="copyright">This work is in the Public Domain.</human>
+        </copyright>
+        <access type="discover">
+          <machine>
+            <world/>
+          </machine>
+        </access>
+        <access type="read">
+          <machine>
+            <group>Stanford</group>
+          </machine>
+        </access>
+        <use>
+          <human type="creativecommons">Attribution Share Alike license</human>
+          <machine type="creativecommons">by-sa</machine>
+        </use>
+      </rightsMetadata>
+        XML
+        set_read_rights
+        expect(item.rightsMetadata.ng_xml).to be_equivalent_to <<-XML
+      <?xml version="1.0"?>
+      <rightsMetadata>
+        <copyright>
+          <human type="copyright">This work is in the Public Domain.</human>
+        </copyright>
+        <access type="discover">
+          <machine>
+            <world/>
+          </machine>
+        </access>
+        <access type="read">
+          <machine>
+            <none/>
+          </machine>
+        </access>
+        <use>
+          <human type="creativecommons">Attribution Share Alike license</human>
+          <machine type="creativecommons">by-sa</machine>
+        </use>
+      </rightsMetadata>
+        XML
+      end
+    end
+  end
+
   describe 'add_roleplayer' do
     it 'adds a role' do
       @apo.add_roleplayer('dor-apo-manager', 'dlss:some-staff')
