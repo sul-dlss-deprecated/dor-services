@@ -4,6 +4,7 @@ require 'active_fedora'
 require 'active_fedora/version'
 require 'active_support/core_ext/module/attribute_accessors'
 require 'active_support/core_ext/object/blank'
+require 'deprecation'
 
 module Dor
   extend ActiveSupport::Autoload
@@ -113,6 +114,7 @@ module Dor
     autoload :Ontology
     autoload :OpenDataLicenseService
     autoload :PublicDescMetadataService
+    autoload :PublishedRelationshipsFilter
     autoload :ReleaseTagService
     autoload :SearchService
     autoload :StatusService
