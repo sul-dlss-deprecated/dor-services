@@ -34,7 +34,7 @@ RSpec.describe Dor::ProcessableIndexer do
         end
 
         it 'includes a rights facet' do
-          obj.set_read_rights('world')
+          obj.read_rights = 'world'
           expect(solr_doc).to match a_hash_including('rights_ssim' => ['World'], :id => obj.pid)
         end
 
