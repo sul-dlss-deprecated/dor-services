@@ -82,7 +82,6 @@ module Dor
   # DOR Concerns
   autoload_under 'models/concerns' do
     autoload :Embargoable
-    autoload :Releaseable
   end
 
   eager_autoload do
