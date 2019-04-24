@@ -127,6 +127,14 @@ module Dor
     ### END: READ ONLY METHODS
     ### DATSTREAM WRITING METHODS
 
+    def unshelve_and_unpublish
+      ng_xml.xpath('/contentMetadata/resource//file').each_with_index do |file_node, index|
+        ng_xml_will_change! if index == 0
+        file_node['publish'] = 'no'
+        file_node['shelve'] = 'no'
+      end
+    end
+
     # @param [Object] file
     # @param [String] resource_name
     # @return [Nokogiri::XML::Node] the added XML node

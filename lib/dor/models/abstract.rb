@@ -2,7 +2,8 @@
 
 module Dor
   class Abstract < ::ActiveFedora::Base
-    include Governable
+    extend Deprecation
+    self.deprecation_horizon = '8.0'
 
     has_metadata name: 'provenanceMetadata',
                  type: ProvenanceMetadataDS,
@@ -118,5 +119,37 @@ module Dor
     delegate :full_title, :stanford_mods, to: :descMetadata
     delegate :rights, to: :rightsMetadata
     delegate :catkey, :catkey=, :previous_catkeys, :tags, :content_type_tag, :source_id, :source_id=, to: :identityMetadata
+
+    def read_rights=(rights)
+      rightsMetadata.set_read_rights(rights)
+      unshelve_and_unpublish if rights == 'dark'
+    end
+    alias set_read_rights read_rights=
+    deprecation_deprecate set_read_rights: 'Use read_rights= instead'
+
+    def add_collection(collection_or_druid)
+      collection_manager.add(collection_or_druid)
+    end
+
+    def remove_collection(collection_or_druid)
+      collection_manager.remove(collection_or_druid)
+    end
+
+    # set the rights metadata datastream to the content of the APO's default object rights
+    def reapply_admin_policy_object_defaults
+      rightsMetadata.content = admin_policy_object.defaultObjectRights.content
+    end
+    alias reapplyAdminPolicyObjectDefaults reapply_admin_policy_object_defaults
+    deprecation_deprecate reapplyAdminPolicyObjectDefaults: 'Use reapply_admin_policy_object_defaults instead'
+
+    private
+
+    def unshelve_and_unpublish
+      contentMetadata.unshelve_and_unpublish if respond_to? :contentMetadata
+    end
+
+    def collection_manager
+      CollectionService.new(self)
+    end
   end
 end
