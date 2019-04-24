@@ -39,7 +39,7 @@ Gem::Specification.new do |s|
 
   # Stanford dependencies
   s.add_dependency 'dor-rights-auth', '~> 1.0', '>= 1.2.0'
-  s.add_dependency 'dor-workflow-client', '3.0.0.rc1'
+  s.add_dependency 'dor-workflow-client', '~> 3.0'
   s.add_dependency 'druid-tools', '>= 0.4.1'
   s.add_dependency 'moab-versioning', '~> 4.0'
   s.add_dependency 'stanford-mods', '>= 2.3.1'
