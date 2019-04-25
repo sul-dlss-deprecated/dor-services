@@ -22,7 +22,6 @@ require 'tmpdir'
 require 'nokogiri'
 
 require 'support/dor_config'
-require 'retries'
 
 WebMock.disable_net_connect!(allow_localhost: true)
 Dor.logger.level = :error
