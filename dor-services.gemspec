@@ -23,7 +23,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'confstruct', '~> 0.2.7'
   s.add_dependency 'deprecation', '~> 0'
   s.add_dependency 'dor-services-client', '~> 1.5'
-  s.add_dependency 'equivalent-xml', '~> 0.5', '>= 0.5.1' # 5.0 insufficient
   s.add_dependency 'json', '>= 1.8.1'
   s.add_dependency 'nokogiri', '~> 1.6'
   s.add_dependency 'om', '~> 3.0'
@@ -48,6 +47,7 @@ Gem::Specification.new do |s|
   # Bundler will install these gems too if you've checked out dor-services source from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects
   s.add_development_dependency 'coveralls'
+  s.add_development_dependency 'equivalent-xml', '~> 0.6'
   s.add_development_dependency 'jhove-service', '>= 1.1.1'
   s.add_development_dependency 'pry'
   s.add_development_dependency 'rake', '>= 10'
