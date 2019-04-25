@@ -87,19 +87,21 @@ module Dor
     def pid_regex
       /[a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2}[0-9]{4}/
     end
+    deprecation_deprecate pid_regex: 'use PidUtils::PID_REGEX instead'
 
     # a regex that can be used to identify a full druid with prefix (e.g. druid:oo000oo0001)
     # @return [Regex] a regular expression to identify a full druid
     def druid_regex
       /druid:#{pid_regex}/
     end
+    deprecation_deprecate druid_regex: 'will be removed without replacement'
 
     # Since purl does not use the druid: prefix but much of dor does, use this function to strip the druid: if needed
     # @return [String] the druid sans the druid: or if there was no druid: prefix, the entire string you passed
     def remove_druid_prefix(druid = id)
-      result = druid.match(/#{pid_regex}/)
-      result.nil? ? druid : result[0] # if no matches, return the string passed in, otherwise return the match
+      PidUtils.remove_druid_prefix(druid)
     end
+    deprecation_deprecate remove_druid_prefix: 'use PidUtils.remove_druid_prefix instead'
 
     # This is used by Argo and the MergeService
     # @return [Boolean] true if the object is in a state that allows it to be modified.

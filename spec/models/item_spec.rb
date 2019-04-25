@@ -371,10 +371,15 @@ RSpec.describe Dor::Item do
   end
 
   describe '#remove_druid_prefix' do
+    before do
+      allow(Deprecation).to receive(:warn)
+    end
+
     let(:item) { instantiate_fixture('druid:ab123cd4567', described_class) }
 
     it 'removes the druid prefix if it is present' do
       expect(item.remove_druid_prefix).to eq('ab123cd4567')
+      expect(Deprecation).to have_received(:warn)
     end
 
     it 'removes the druid prefix for an arbitrary druid passed in' do
@@ -391,10 +396,15 @@ RSpec.describe Dor::Item do
   end
 
   describe '#pid_regex' do
+    before do
+      allow(Deprecation).to receive(:warn)
+    end
+
     let(:item) { instantiate_fixture('druid:ab123cd4567', described_class) }
 
     it 'identifies pids by regex' do
       expect('ab123cd4567'.match(item.pid_regex).size).to eq(1)
+      expect(Deprecation).to have_received(:warn)
     end
     it 'pulls out a pid by regex' do
       expect('druid:ab123cd4567/other crappola'.match(item.pid_regex)[0]).to eq('ab123cd4567')
