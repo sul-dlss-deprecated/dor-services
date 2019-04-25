@@ -172,103 +172,8 @@ RSpec.describe Dor::ReleaseTagService do
     end
   end
 
-  describe '#form_purl_url' do
-    subject { releases.send(:form_purl_url) }
-
-    it { is_expected.to eq "https://#{Dor::Config.stacks.document_cache_host}/bb004bn8654.xml" }
-  end
-
-  describe '#xml_from_purl' do
-    subject(:xml) { releases.send(:xml_from_purl) }
-
-    context 'when the response is successful' do
-      let(:response) do
-        <<~XML
-          <publicObject id="druid:bb004bn8654" published="2014-06-30T11:38:34-07:00">
-              <identityMetadata>
-                <sourceId source="Revs">2012-027NADI-1966-b1_4.3_0015</sourceId>
-                <objectId>druid:bb004bn8654</objectId>
-                <objectCreator>DOR</objectCreator>
-                <objectLabel>Bryar 250 Trans-American: July 9-10</objectLabel>
-                <objectType>item</objectType>
-                <adminPolicy>druid:qv648vd4392</adminPolicy>
-                <otherId name="uuid">e96fdf84-5c43-11e2-a99a-0050569b52d5</otherId>
-                <tag>Project : Revs</tag>
-                <tag>Remediated By : 3.25.0</tag>
-              </identityMetadata>
-              <contentMetadata type="image" objectId="bb004bn8654">
-                <resource type="image" sequence="1" id="bb004bn8654_1">
-                  <label>Image 1</label>
-                  <file id="2012-027NADI-1966-b1_4.3_0015.jp2" mimetype="image/jp2" size="2006651">
-                    <imageData width="4000" height="2659"/>
-                  </file>
-                </resource>
-              </contentMetadata>
-              <rightsMetadata>
-                <copyright>
-                  <human type="copyright">Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.</human>
-                </copyright>
-                <access type="discover">
-                  <machine>
-                    <world/>
-                  </machine>
-                </access>
-                <access type="read">
-                  <machine>
-                    <group>stanford</group>
-                    <world rule="no-download"/>
-                  </machine>
-                </access>
-                <use>
-                  <human type="useAndReproduction">Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.</human>
-                </use>
-              </rightsMetadata>
-              <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-                <rdf:Description rdf:about="info:fedora/druid:bb004bn8654">
-                  <fedora:isMemberOf rdf:resource="info:fedora/druid:kz071cg8658"/>
-                  <fedora:isMemberOf rdf:resource="info:fedora/druid:nt028fd5773"/>
-                  <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:kz071cg8658"/>
-                  <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:nt028fd5773"/>
-                </rdf:Description>
-              </rdf:RDF>
-              <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
-                <dc:type>StillImage</dc:type>
-                <dc:type>digital image</dc:type>
-                <dc:subject>Automobile--History</dc:subject>
-                <dc:date>1966</dc:date>
-                <dc:title>Bryar 250 Trans-American: July 9-10</dc:title>
-                <dc:description>Strip Negatives</dc:description>
-                <dc:identifier>2012-027NADI-1966-b1_4.3_0015</dc:identifier>
-                <dc:relation type="collection">The David Nadig Collection of the Revs Institute</dc:relation>
-                <dc:relation type="collection">Revs Institute</dc:relation>
-              </oai_dc:dc>
-            </publicObject>
-        XML
-      end
-
-      before do
-        stub_request(:get, 'https://purl-test.stanford.edu/bb004bn8654.xml')
-          .to_return(status: 200, body: response)
-      end
-
-      it 'gets the purl xml for a druid' do
-        expect(xml).to be_a(Nokogiri::HTML::Document)
-        expect(xml.at_xpath('//html/body/publicobject').attr('id')).to eq(item.id)
-      end
-    end
-
-    context 'when the response is a 404' do
-      before do
-        stub_request(:get, 'https://purl-test.stanford.edu/druid:IAmABadDruid.xml')
-          .to_return(status: 404, body: '')
-      end
-
-      it 'does not raise an error' do
-        expect(Dor.logger).to receive(:warn).once
-        expect(item).to receive(:id).and_return('druid:IAmABadDruid').at_least(:once)
-        expect(xml).to be_a(Nokogiri::HTML::Document)
-      end
-    end
+  describe '#add_tags_from_purl' do
+    let(:xml) { Nokogiri::XML(response) }
 
     context 'for targets that are listed on the purl but not in new tag generation' do
       let(:le_mans_druid) { 'druid:dc235vd9662' }
@@ -333,18 +238,21 @@ RSpec.describe Dor::ReleaseTagService do
               <dc:identifier>2011-023CHAM-1.0_0001</dc:identifier>
               <dc:relation type="collection">The Marcus Chambers Collection of the Revs Institute</dc:relation>
             </oai_dc:dc>
-            <ReleaseData>
+            <releaseData>
               <release to="Kurita">true</release>
               <release to="Atago">false</release>
               <release to="Mogami">true</release>
-            </ReleaseData>
+            </releaseData>
           </publicObject>
         XML
       end
 
+      let(:client) { instance_double(Dor::PurlClient, fetch: xml) }
+
       before do
-        stub_request(:get, 'https://purl-test.stanford.edu/dc235vd9662.xml')
-          .to_return(status: 200, body: response)
+        allow(Dor::PurlClient).to receive(:new).and_return(client)
+        # stub_request(:get, 'https://purl-test.stanford.edu/dc235vd9662.xml')
+        #   .to_return(status: 200, body: response)
       end
 
       it 'adds in release tags as false' do

@@ -46,9 +46,9 @@ module Dor
 
         # if we find one, return the filename based on whether it is a local file or external file
         thumb_image = if search_path[:image_type] == 'local'
-                        "#{object.remove_druid_prefix}/#{thumb_files[0]['id']}"
+                        "#{PidUtils.remove_druid_prefix(object.pid)}/#{thumb_files[0]['id']}"
                       else
-                        "#{object.remove_druid_prefix(thumb_files[0]['objectId'])}/#{thumb_files[0]['fileId']}"
+                        "#{PidUtils.remove_druid_prefix(thumb_files[0]['objectId'])}/#{thumb_files[0]['fileId']}"
                       end
         break # break out of the loop so we stop searching
       end

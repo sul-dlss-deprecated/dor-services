@@ -11,6 +11,8 @@ module Dor
 
     def initialize(item)
       @item = item
+      @purl_client = PurlClient.new(host: Dor::Config.stacks.document_cache_host,
+                                    pid: item.pid)
     end
 
     # Called in Dor::UpdateMarcRecordService (in dor-services-app too)
@@ -189,37 +191,11 @@ module Dor
       new_tags
     end
 
-    # Get a list of all release nodes found in a purl document
-    # Fetches purl xml for a druid
-    # @raise [OpenURI::HTTPError]
-    # @return [Nokogiri::HTML::Document] parsed XML for the druid or an empty document if no purl is found
-    def xml_from_purl
-      url = form_purl_url
-      handler = proc do |exception, attempt_number, total_delay|
-        # We assume a 404 means the document has never been published before and thus has no purl
-        Dor.logger.warn "[Attempt #{attempt_number}] GET #{url} -- #{exception.class}: #{exception.message}; #{total_delay} seconds elapsed."
-        raise exception unless exception.is_a? OpenURI::HTTPError
-        return Nokogiri::HTML::Document.new if exception.io.status.first == '404' # ["404", "Not Found"] from OpenURI::Meta.status
-      end
-
-      with_retries(max_retries: 3, base_sleep_seconds: 3, max_sleep_seconds: 5, handler: handler) do |attempt|
-        # If you change the method used for opening the webpage, you can change the :rescue param to handle the new method's errors
-        Dor.logger.info "[Attempt #{attempt}] GET #{url}"
-        return Nokogiri::HTML(OpenURI.open_uri(url))
-      end
-    end
-
-    # Take the and create the entire purl url that will usable for the open method in open-uri, returns http
-    # @return [String] the full url
-    def form_purl_url
-      'https://' + Dor::Config.stacks.document_cache_host + "/#{item.remove_druid_prefix}.xml"
-    end
-
     # Pull all release nodes from the public xml obtained via the purl query
     # @param doc [Nokogiri::HTML::Document] The druid of the object you want
     # @return [Array] An array containing all the release tags
     def release_tags_from_purl_xml(doc)
-      nodes = doc.xpath('//html/body/publicobject/releasedata').children
+      nodes = doc.xpath('//publicObject/releaseData').children
       # We only want the nodes with a name that isn't text
       nodes.reject { |n| n.name.nil? || n.name.casecmp('text') == 0 }.map { |n| n.attr('to') }.uniq
     end
@@ -227,7 +203,7 @@ module Dor
     # Pull all release nodes from the public xml obtained via the purl query
     # @return [Array] An array containing all the release tags
     def release_tags_from_purl
-      release_tags_from_purl_xml(xml_from_purl)
+      release_tags_from_purl_xml(@purl_client.fetch)
     end
 
     attr_reader :item

@@ -42,6 +42,7 @@ module Dor
   require 'dor/utils/ng_tidy'
   require 'dor/utils/solr_doc_helper'
   require 'dor/utils/predicate_patch'
+  require 'dor/utils/pid_utils'
 
   require 'dor/datastreams/datastream_spec_solrizer'
 
@@ -113,6 +114,7 @@ module Dor
     autoload :OpenDataLicenseService
     autoload :PublicDescMetadataService
     autoload :PublishedRelationshipsFilter
+    autoload :PurlClient
     autoload :ReleaseTagService
     autoload :SearchService
     autoload :StatusService
