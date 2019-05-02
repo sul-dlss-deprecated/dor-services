@@ -2,11 +2,14 @@
 
 module Dor
   class PublicDescMetadataService
+    extend Deprecation
+
     attr_reader :object
 
     NOKOGIRI_DEEP_COPY = 1
 
     def initialize(object)
+      Deprecation.warn(self, 'Dor::PublicDescMetadataService has moved to dor-services-app')
       @object = object
     end
 
