@@ -6,6 +6,7 @@ RSpec.describe Dor::PublicDescMetadataService do
   subject(:service) { described_class.new(obj) }
 
   before do
+    allow(Deprecation).to receive(:warn)
     stub_config
   end
 
