@@ -26,16 +26,6 @@ module Dor
         self.ng_xml = Nokogiri::XML(node)
       end
 
-      # is this an incomplete workflow with steps that have a priority > 0
-      def expedited?
-        processes.any? { |proc| !proc.completed? && proc.priority.to_i > 0 }
-      end
-
-      # @return [Integer] value of the first > 0 priority.  Defaults to 0
-      def priority
-        processes.map { |proc| proc.priority.to_i }.detect(0) { |p| p > 0 }
-      end
-
       # @return [Dor::WorkflowDefinitionDs]
       def definition
         @definition ||= begin
