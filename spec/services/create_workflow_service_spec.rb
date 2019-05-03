@@ -7,6 +7,7 @@ RSpec.describe Dor::CreateWorkflowService do
     subject(:create_workflow) { described_class.create_workflow(item, name: 'accessionWF') }
 
     before do
+      allow(Deprecation).to receive(:warn)
       allow(item).to receive(:admin_policy_object).and_return(apo)
       allow(Dor::Config.workflow.client).to receive(:all_workflows_xml).with('druid:ab123cd4567').and_return('<workflows/>')
     end

@@ -101,38 +101,4 @@ RSpec.describe Dor::Workflow::Document do
       end
     end
   end
-
-  describe 'expedited?' do
-    context 'when there are no prioritized items' do
-      let(:xml) do
-        <<~eos
-          <?xml version="1.0" encoding="UTF-8"?>
-          <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
-            <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
-             datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
-            <process version="2" elapsed="0.0" archived="true" attempts="1"
-             datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
-          </workflow>
-        eos
-      end
-
-      it { is_expected.not_to be_expedited }
-    end
-
-    context 'when there are incomplete prioritized items' do
-      let(:xml) do
-        <<~eos
-          <?xml version="1.0" encoding="UTF-8"?>
-          <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
-            <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
-             datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
-            <process version="2" elapsed="0.0" archived="true" attempts="1"
-             datetime="2012-11-06T16:18:58-0800" status="waiting" priority="50" name="technical-metadata"/>
-          </workflow>
-        eos
-      end
-
-      it { is_expected.to be_expedited }
-    end
-  end
 end
