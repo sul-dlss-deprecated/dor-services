@@ -38,5 +38,3 @@
   :timeout: 60
   :logfile: workflow_service.log
   :shift_age: weekly
-:dor_services:
-  :url:
