@@ -57,9 +57,6 @@ module Dor
             end
           end
         },
-        dor_services: {
-          rest_client: Confstruct.deferred { |_c| RestResourceFactory.create(:dor_services) }
-        },
         purl_services: {
           rest_client: Confstruct.deferred { |_c| RestResourceFactory.create(:purl_services) }
         },
@@ -80,25 +77,10 @@ module Dor
     end
 
     set_callback :configure, :after do |config|
-      configure_client!(config)
-
       if config.solr.url.present?
         ActiveFedora::SolrService.register
         ActiveFedora::SolrService.instance.instance_variable_set :@conn, make_solr_connection
       end
-    end
-
-    def configure_client!(config)
-      # Do not configure client if URL not specified
-      return if config.dor_services&.url.blank?
-
-      params = {
-        url: config.dor_services.url
-      }
-      params[:username] = config.dor_services.user if config.dor_services&.user.present?
-      params[:password] = config.dor_services.pass if config.dor_services&.pass.present?
-
-      Dor::Services::Client.configure(params)
     end
 
     # Act like an ActiveFedora.configurator

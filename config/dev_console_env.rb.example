@@ -38,7 +38,6 @@ Dor::Config.configure do
 
   solr.url     'https://host/solr'
   workflow.url     'https://workflow.example.edu/'
-  dor_services.url 'https://host/dor/v1'
 
   cleanup do
     local_workspace_root '/dor/workspace'

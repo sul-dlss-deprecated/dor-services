@@ -36,10 +36,6 @@ module Dor::SpecHelpers
       stacks.local_workspace_root      File.join(this.fixture_dir, 'workspace')
       stacks.local_stacks_root         File.join(this.fixture_dir, 'stacks')
       stacks.local_document_cache_root File.join(this.fixture_dir, 'purl')
-
-      dor_services do
-        url 'http://localhost/dor'
-      end
     end
     allow(ActiveFedora).to receive(:fedora).and_return(double('frepo').as_null_object) # must be used in per-request context: :each not :all
   end
