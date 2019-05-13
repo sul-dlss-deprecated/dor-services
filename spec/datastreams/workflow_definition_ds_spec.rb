@@ -28,17 +28,4 @@ describe Dor::WorkflowDefinitionDs do
       expect(ds.name).to eq('accessionWF')
     end
   end
-
-  describe '#initial_workflow' do
-    it 'creates workflow xml from the definition in its content' do
-      expected = <<-EOXML
-        <workflow id="accessionWF">
-           <process name="start-accession" status="completed" lifecycle="submitted" attempts="1"/>
-           <process name="content-metadata" status="waiting"/>
-           <process name="descriptive-metadata" status="waiting" lifecycle="described"/>
-        </workflow>
-      EOXML
-      expect(ds.initial_workflow).to be_equivalent_to(expected)
-    end
-  end
 end
