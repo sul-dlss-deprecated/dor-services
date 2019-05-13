@@ -30,7 +30,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'rest-client', '>= 1.7', '< 3'
   s.add_dependency 'retries', '~> 0.0.5' # used by the release tag service
   s.add_dependency 'rsolr', '>= 1.0.3', '< 3'
-  s.add_dependency 'ruby-cache', '~> 0.3.0'
   s.add_dependency 'rubydora', '~> 2.1'
   s.add_dependency 'solrizer', '~> 3.0'
 
