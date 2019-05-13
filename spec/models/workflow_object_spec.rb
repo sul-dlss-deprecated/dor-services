@@ -2,19 +2,7 @@
 
 require 'spec_helper'
 
-describe Dor::WorkflowObject do
-  describe '.initial_workflow' do
-    it 'caches the intial workflow xml for subsequent requests' do
-      wobj = double('workflow_object').as_null_object
-      expect(described_class).to receive(:find_by_name).once.and_return(wobj)
-
-      # First call, object not in cache
-      described_class.initial_workflow('accessionWF')
-      # Second call, object in cache
-      expect(described_class.initial_workflow('accessionWF')).to eq(wobj)
-    end
-  end
-
+RSpec.describe Dor::WorkflowObject do
   # TODO: Move to the DataIndexer spec
   describe '#to_solr' do
     let(:wf_indexer) { instance_double(Dor::WorkflowsIndexer, to_solr: {}) }

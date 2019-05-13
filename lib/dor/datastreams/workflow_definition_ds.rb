@@ -53,28 +53,6 @@ module Dor
       ng_xml.at_xpath('/workflow-def/@repository').to_s
     end
 
-    # Creates the xml used by Dor::Workflow::Client#create_workflow
-    # @return [String] An object's initial workflow as defined by the <workflow-def> in content
-    def initial_workflow
-      doc = Nokogiri::XML('<workflow/>')
-      root = doc.root
-      root['id'] = name
-      processes.each do |proc|
-        doc.create_element 'process' do |node|
-          node['name'] = proc.name
-          if proc.status
-            node['status'] = proc.status
-            node['attempts'] = '1'
-          else
-            node['status'] = 'waiting'
-          end
-          node['lifecycle'] = proc.lifecycle if proc.lifecycle
-          root.add_child node
-        end
-      end
-      Nokogiri::XML(doc.to_xml, &:noblanks).to_xml(&:no_declaration)
-    end
-
     def to_solr(solr_doc = {}, *args)
       solr_doc = super(solr_doc, *args)
       add_solr_value(solr_doc, 'workflow_name', name, :symbol, [:symbol])
