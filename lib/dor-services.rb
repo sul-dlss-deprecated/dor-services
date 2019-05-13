@@ -111,7 +111,6 @@ module Dor
     autoload :EmbargoService
     autoload :Ontology
     autoload :OpenDataLicenseService
-    autoload :PublicDescMetadataService
     autoload :PurlClient
     autoload :ReleaseTagService
     autoload :SearchService
