@@ -28,6 +28,7 @@ module Dor
     # @param [String] name the name of the workflow
     # @return [String] the initial workflow xml
     def self.initial_workflow(name)
+      Deprecation.warn(self, 'WorkflowObject#initial_workflow is deprecated and will be removed in dor-services 8.0')
       return @@xml_cache[name] if @@xml_cache.include?(name)
 
       find_and_cache_workflow_xml_and_repo name
@@ -39,6 +40,7 @@ module Dor
     # @param [String] name the name of the workflow
     # @return [String] the initial workflow xml
     def self.initial_repo(name)
+      Deprecation.warn(self, 'WorkflowObject#initial_repo is deprecated and will be removed in dor-services 8.0')
       return @@repo_cache[name] if @@repo_cache.include?(name)
 
       find_and_cache_workflow_xml_and_repo name
