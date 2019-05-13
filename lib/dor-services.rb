@@ -109,12 +109,9 @@ module Dor
     autoload :CreateWorkflowService
     autoload :CreativeCommonsLicenseService
     autoload :EmbargoService
-    autoload :IndexingService
-    autoload :MetadataService
     autoload :Ontology
     autoload :OpenDataLicenseService
     autoload :PublicDescMetadataService
-    autoload :PublishedRelationshipsFilter
     autoload :PurlClient
     autoload :ReleaseTagService
     autoload :SearchService
