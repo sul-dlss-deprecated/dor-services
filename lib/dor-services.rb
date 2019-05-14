@@ -87,6 +87,8 @@ module Dor
   end
 
   eager_autoload do
+    autoload :ReleaseTags
+
     # ActiveFedora Classes
     autoload_under 'models' do
       autoload :Abstract
@@ -108,9 +110,10 @@ module Dor
     autoload :CollectionService
     autoload :CreativeCommonsLicenseService
     autoload :EmbargoService
+    autoload :IdentityMetadataTagService
     autoload :Ontology
     autoload :OpenDataLicenseService
-    autoload :PurlClient
+    autoload :PurlTagService
     autoload :ReleaseTagService
     autoload :SearchService
     autoload :StatusService

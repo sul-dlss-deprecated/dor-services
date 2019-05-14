@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Dor::PurlClient do
+RSpec.describe Dor::ReleaseTags::PurlClient do
   let(:client) do
     described_class.new(pid: pid,
                         host: 'purl-test.stanford.edu')
