@@ -3,11 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Dor::RightsMetadataDS do
-  before { stub_config }
-
-  after  { unstub_config }
-
   before do
+    stub_config
     @item = instantiate_fixture('druid:bb046xn0881', Dor::Item)
     allow(Dor).to receive(:find).with(@item.pid).and_return(@item)
     allow(Dor::Config.workflow.client).to receive(:milestones).and_return([])

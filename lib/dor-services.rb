@@ -36,6 +36,7 @@ module Dor
   end
 
   require 'dor/version'
+  require 'dor/static_config'
   require 'dor/config'
   require 'dor/exceptions'
 

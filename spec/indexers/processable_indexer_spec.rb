@@ -5,8 +5,6 @@ require 'spec_helper'
 RSpec.describe Dor::ProcessableIndexer do
   before { stub_config }
 
-  after { unstub_config }
-
   let(:obj) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
   let(:indexer) { described_class.new(resource: obj) }
 
@@ -77,7 +75,6 @@ RSpec.describe Dor::ProcessableIndexer do
         </version>
         </versionMetadata>
         '
-
         allow(Dor::Config.workflow.client.lifecycle_routes).to receive(:query_lifecycle).and_return(xml)
         allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
         versionMD = Dor::VersionMetadataDS.from_xml(dsxml)

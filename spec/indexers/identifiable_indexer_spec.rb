@@ -15,8 +15,6 @@ RSpec.describe Dor::IdentifiableIndexer do
     described_class.reset_cache!
   end
 
-  after { unstub_config }
-
   let(:obj) do
     item = instantiate_fixture('druid:ab123cd4567', model)
     allow(item).to receive(:new?).and_return(false)

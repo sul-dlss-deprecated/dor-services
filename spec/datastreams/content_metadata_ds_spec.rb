@@ -5,8 +5,6 @@ require 'spec_helper'
 describe Dor::ContentMetadataDS do
   before { stub_config }
 
-  after  { unstub_config }
-
   before do
     @item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
     @item.contentMetadata.content = '<?xml version="1.0"?>

@@ -10,7 +10,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
                                                                  Coveralls::SimpleCov::Formatter
                                                                ])
 SimpleCov.start 'test_frameworks'
-
+require 'byebug'
 require 'rspec'
 require 'dor-services'
 require 'support/foxml_helper'
@@ -29,19 +29,18 @@ Dor.logger.level = :error
 module Dor::SpecHelpers
   def stub_config
     this = self
-    Dor::Config.push! do
-      suri.mint_ids false
-      solr.url 'http://solr.edu/solrizer'
-      stacks.document_cache_host       'purl-test.stanford.edu'
-      stacks.local_workspace_root      File.join(this.fixture_dir, 'workspace')
-      stacks.local_stacks_root         File.join(this.fixture_dir, 'stacks')
-      stacks.local_document_cache_root File.join(this.fixture_dir, 'purl')
-    end
+    allow(Dor::Config.suri).to receive(:mint_ids).and_return(false)
+    allow(Dor::Config.stacks).to receive_messages(
+      document_cache_host: 'purl-test.stanford.edu',
+      local_workspace_root: File.join(this.fixture_dir, 'workspace'),
+      local_stacks_root: File.join(this.fixture_dir, 'stacks'),
+      local_document_cache_root: File.join(this.fixture_dir, 'purl')
+    )
     allow(ActiveFedora).to receive(:fedora).and_return(double('frepo').as_null_object) # must be used in per-request context: :each not :all
   end
 
   def unstub_config
-    Dor::Config.pop!
+    puts 'this does nothning'
   end
 
   def instantiate_fixture(druid, klass = ActiveFedora::Base)
