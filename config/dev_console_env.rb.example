@@ -21,17 +21,9 @@ Dor::Config.configure do
     pass ''
   end
 
-  metadata do
-    exist.url   'http://server/exist/rest/'
-    catalog.url 'http://lyberservices-prod.stanford.edu/catalog/mods'
-  end
-
   stacks do
     document_cache_host 'purl-dev.stanford.edu'
-    document_cache_user ''
     local_workspace_root '/dor/workspace'
-    host 'host'
-    user ''
     local_stacks_root '/stacks'
     local_document_cache_root '/purl'
   end

@@ -12,21 +12,11 @@
 :solr:
   :url:
   :opts: {}
-:metadata:
-  :catalog:
-    :url:
-    :user:
-    :pass:
 :stacks:
   :local_workspace_root: /dor
-  :host:
-  :user:
   :document_cache_host:
-  :document_cache_user:
   :local_stacks_root: /stacks
   :local_document_cache_root: /purl/document_cache
-  :url:
-  :iiif_profile: 'http://iiif.io/api/image/2/level1.json'
 :suri:
   :pass:
   :id_namespace: druid

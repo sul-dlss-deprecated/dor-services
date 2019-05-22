@@ -19,12 +19,6 @@ Dor.configure do
     pass 'lyberteam'
   end
 
-  metadata do
-    catalog.url 'http://example.edu/catalog/mods'
-    catalog.user 'user'
-    catalog.pass 'pass'
-  end
-
   solr.url         'https://example.edu/solr/solrizer'
   workflow.url     'https://workflow.example.edu/'
 end
