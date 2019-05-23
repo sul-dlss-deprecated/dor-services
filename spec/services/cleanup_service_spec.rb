@@ -84,16 +84,18 @@ RSpec.describe Dor::CleanupService do
     end
   end
 
-  it 'can do a complete cleanup' do
-    expect(@workitem_pathname.join('content')).to exist
-    expect(@bag_pathname).to exist
-    expect(@tarfile_pathname).to exist
-    mock_item = double('item')
-    expect(mock_item).to receive(:druid).and_return(@druid)
-    described_class.cleanup(mock_item)
-    expect(@workitem_pathname.parent.parent.parent.parent).not_to exist
-    expect(@bag_pathname).not_to exist
-    expect(@tarfile_pathname).not_to exist
+  describe '#cleanup' do
+    it 'can do a complete cleanup' do
+      expect(@workitem_pathname.join('content')).to exist
+      expect(@bag_pathname).to exist
+      expect(@tarfile_pathname).to exist
+      mock_item = double('item')
+      expect(mock_item).to receive(:druid).and_return(@druid)
+      described_class.cleanup(mock_item)
+      expect(@workitem_pathname.parent.parent.parent.parent).not_to exist
+      expect(@bag_pathname).not_to exist
+      expect(@tarfile_pathname).not_to exist
+    end
   end
 
   context 'with real files' do
