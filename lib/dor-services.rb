@@ -119,7 +119,6 @@ module Dor
     autoload :StatusService
     autoload :SuriService
     autoload :TagService
-    autoload :ThumbnailService
   end
 
   # Workflow Classes
