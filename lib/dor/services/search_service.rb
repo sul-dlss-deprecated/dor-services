@@ -13,7 +13,7 @@ module Dor
       def query(query, args = {})
         params = args.merge(q: query)
         params[:start] ||= 0
-        resp = solr.get 'select', params: params
+        resp = _solr.get 'select', params: params
         return resp unless block_given?
 
         cont = true
@@ -21,7 +21,7 @@ module Dor
           cont = yield(resp)
           params[:rows] ||= resp['response']['docs'].length
           params[:start] += params[:rows]
-          resp = solr.get 'select', params: params
+          resp = _solr.get 'select', params: params
         end
       end
 
@@ -41,9 +41,9 @@ module Dor
       end
 
       def solr
+        Deprecation.warn(self, 'Dor::SearchService.solr is deprecated. Call ActiveFedora.solr.conn directly')
         _solr
       end
-      deprecation_deprecate solr: 'Call ActiveFedora.solr.conn directly'
 
       # @return String druid of the SDR Graveyard APO
       #   nil if APO does not exist in the currently configured environment
