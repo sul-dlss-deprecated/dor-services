@@ -2,12 +2,9 @@
 
 require 'spec_helper'
 
-describe Dor::SearchService do
-  before { stub_config }
-
-  after  { unstub_config }
-
+RSpec.describe Dor::SearchService do
   before do
+    stub_config
     RSolr::Client.default_wt = :ruby
   end
 
@@ -15,7 +12,7 @@ describe Dor::SearchService do
     let(:solr_field) { Solrizer.solr_name('dor_id', :stored_searchable) }
 
     before do
-      solr_url = "http://solr.edu/solrizer/select?fl=id&q=#{solr_field}%3A%22barcode%3A9191919191%22&rows=14&wt=ruby"
+      solr_url = "https://solr.example.edu/solr/collection1/select?fl=id&q=#{solr_field}%3A%22barcode%3A9191919191%22&rows=14&wt=ruby"
       solr_resp = +<<-EOF
         {'responseHeader'=>
           {'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'0','q'=>'#{solr_field}:"barcode:9191919191"','wt'=>'ruby','rows'=>'14'}},
@@ -59,7 +56,7 @@ describe Dor::SearchService do
     it 'looks up an object based on any of its IDs' do
       id = 'barcode:9191919191'
       solr_field = Solrizer.solr_name('identifier', :symbol)
-      solr_url = "http://solr.edu/solrizer/select?fl=id&q=%7B%21term+f%3D#{solr_field}%7Dbarcode%3A9191919191&defType=lucene&rows=1000&wt=ruby"
+      solr_url = "https://solr.example.edu/solr/collection1/select?fl=id&q=%7B%21term+f%3D#{solr_field}%7Dbarcode%3A9191919191&defType=lucene&rows=1000&wt=ruby"
       solr_resp = +<<-EOF
       {'responseHeader'=>
         {'status'=>0,'QTime'=>1,'params'=>{'fl'=>'id','start'=>'0','q'=>'dor_id_t:"barcode:9191919191"','wt'=>'ruby','rows'=>'1000'}},

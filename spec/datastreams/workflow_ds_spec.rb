@@ -6,8 +6,6 @@ require 'spec_helper'
 RSpec.describe Dor::WorkflowDs do
   before { stub_config }
 
-  after  { unstub_config }
-
   let(:item) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
 end
 # rubocop:enable RSpec/EmptyExampleGroup

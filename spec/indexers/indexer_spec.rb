@@ -8,8 +8,6 @@ RSpec.describe Dor::CompositeIndexer do
   end
   before { stub_config }
 
-  after { unstub_config }
-
   let(:obj) { instantiate_fixture('druid:ab123cd4567', model) }
   let(:indexer) do
     described_class.new(

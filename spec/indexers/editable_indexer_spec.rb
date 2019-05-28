@@ -8,9 +8,6 @@ RSpec.describe Dor::EditableIndexer do
   end
   before { stub_config }
 
-  after { unstub_config }
-  # @apo = instantiate_fixture('druid_zt570tx3016', Dor::AdminPolicyObject)
-
   let(:obj) { instantiate_fixture('druid_zt570tx3016', model) }
   let(:indexer) do
     described_class.new(resource: obj)

@@ -2,27 +2,21 @@
 
 require 'spec_helper'
 
-describe Dor::SuriService do
+RSpec.describe Dor::SuriService do
   describe 'an enabled SuriService' do
     before do
-      Dor::Config.push! do
-        suri do
-          mint_ids true
-          url 'http://some.suri.host:8080'
-          id_namespace 'druid'
-          user 'suriuser'
-          pass 'suripword'
-        end
-      end
+      allow(Dor::Config.suri).to receive_messages(
+        mint_ids: true,
+        url: 'http://some.suri.host:8080',
+        id_namespace: 'druid',
+        user: 'suriuser',
+        pass: 'suripword'
+      )
     end
 
     before do
       @my_client = double('restclient').as_null_object
       allow(RestClient::Resource).to receive(:new).and_return(@my_client)
-    end
-
-    after do
-      Dor::Config.pop!
     end
 
     it 'mints a druid using RestClient::Resource' do
@@ -46,24 +40,17 @@ describe Dor::SuriService do
   end
 
   describe 'a disabled SuriService' do
-    before :all do
-      Dor::Config.push! { suri.mint_ids false }
-    end
-
     before do
       @mock_repo = instance_double(Rubydora::Repository)
       @mock_client = instance_double(Rubydora::RestApiClient)
       allow(@mock_repo).to receive(:api).and_return(@mock_client)
+      allow(Dor::Config.suri).to receive(:mint_ids).and_return(false)
 
       if ActiveFedora::Base.respond_to?(:connection_for_pid)
         allow(ActiveFedora::Base).to receive(:connection_for_pid).and_return(@mock_repo)
       else
         ActiveFedora.stub_chain(:fedora, :connection).and_return(@mock_repo)
       end
-    end
-
-    after :all do
-      Dor::Config.pop!
     end
 
     it "mints a single ID using Fedora's getNextPid API-M service" do
@@ -75,7 +62,6 @@ describe Dor::SuriService do
       EOXML
       expect(@mock_client).to receive(:next_pid).with(numPIDs: 1).and_return(xml_response)
       expect(described_class.mint_id).to eq('pid:123')
-      Dor::Config.suri.pop
     end
 
     it "mints several IDs using Fedora's getNextPid API-M service" do
@@ -89,7 +75,6 @@ describe Dor::SuriService do
       EOXML
       expect(@mock_client).to receive(:next_pid).with(numPIDs: 3).and_return(xml_response)
       expect(described_class.mint_id(3)).to eq(['pid:123', 'pid:456', 'pid:789'])
-      Dor::Config.suri.pop
     end
   end
 end

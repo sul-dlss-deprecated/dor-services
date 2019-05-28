@@ -7,21 +7,18 @@ require 'druid-tools'
 RSpec.describe Dor::CleanupService do
   attr_reader :fixture_dir
 
-  before(:all) do
-    # see http://stackoverflow.com/questions/5150483/instance-variable-not-available-inside-a-ruby-block
-    # Access to instance variables depends on how a block is being called.
-    #   If it is called using the yield keyword or the Proc#call method,
-    #   then you'll be able to use your instance variables in the block.
-    #   If it's called using Object#instance_eval or Module#class_eval
-    #   then the context of the block will be changed and you won't be able to access your instance variables.
-    # ModCons is using instance_eval, so you cannot use @fixture_dir in the configure call
-    @fixtures = fixtures = Pathname(File.dirname(__FILE__)).join('../fixtures')
+  let(:fixtures) { Pathname(File.dirname(__FILE__)).join('../fixtures') }
+  let(:cleanup_config) do
+    instance_double(
+      Dor::StaticConfig::CleanupConfig,
+      local_workspace_root: fixtures.join('workspace').to_s,
+      local_export_home: fixtures.join('export').to_s,
+      local_assembly_root: fixtures.join('assembly').to_s
+    )
+  end
 
-    Dor::Config.push! do
-      cleanup.local_workspace_root fixtures.join('workspace').to_s
-      cleanup.local_export_home fixtures.join('export').to_s
-      cleanup.local_assembly_root fixtures.join('assembly').to_s
-    end
+  before do
+    allow(Dor::Config).to receive(:cleanup).and_return(cleanup_config)
 
     @druid = 'druid:aa123bb4567'
     @workspace_root_pathname = Pathname(Dor::Config.cleanup.local_workspace_root)
@@ -31,27 +28,24 @@ RSpec.describe Dor::CleanupService do
     @export_pathname.rmtree if @export_pathname.exist?
     @bag_pathname            = @export_pathname.join(@druid.split(':').last)
     @tarfile_pathname        = @export_pathname.join(@bag_pathname + '.tar')
-  end
 
-  before do
     @workitem_pathname.join('content').mkpath
     @workitem_pathname.join('temp').mkpath
     @bag_pathname.mkpath
     @tarfile_pathname.open('w') { |file| file.write("test tar\n") }
   end
 
-  after(:all) do
+  after do
     item_root_branch = @workspace_root_pathname.join('aa')
     item_root_branch.rmtree  if item_root_branch.exist?
     @bag_pathname.rmtree     if @bag_pathname.exist?
     @tarfile_pathname.rmtree if @tarfile_pathname.exist?
-    Dor::Config.pop!
   end
 
   it 'can access configuration settings' do
     cleanup = Dor::Config.cleanup
-    expect(cleanup.local_workspace_root).to eql @fixtures.join('workspace').to_s
-    expect(cleanup.local_export_home).to eql @fixtures.join('export').to_s
+    expect(cleanup.local_workspace_root).to eql fixtures.join('workspace').to_s
+    expect(cleanup.local_export_home).to eql fixtures.join('export').to_s
   end
 
   it 'can find the fixtures workspace and export folders' do
@@ -68,8 +62,8 @@ RSpec.describe Dor::CleanupService do
 
   describe '.cleanup_export' do
     it 'removes the files exported to preservation' do
-      expect(described_class).to receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567').to_s)
-      expect(described_class).to receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567.tar').to_s)
+      expect(described_class).to receive(:remove_branch).once.with(fixtures.join('export/aa123bb4567').to_s)
+      expect(described_class).to receive(:remove_branch).once.with(fixtures.join('export/aa123bb4567.tar').to_s)
       described_class.send(:cleanup_export, @druid)
     end
   end
@@ -84,8 +78,9 @@ RSpec.describe Dor::CleanupService do
     specify 'Dor::CleanupService.remove_branch existing branch' do
       @bag_pathname.mkpath
       expect(@bag_pathname).to exist
-      expect(@bag_pathname).to receive(:rmtree)
+      allow(@bag_pathname).to receive(:rmtree)
       described_class.send(:remove_branch, @bag_pathname)
+      expect(@bag_pathname).to have_received(:rmtree)
     end
   end
 
@@ -112,12 +107,13 @@ RSpec.describe Dor::CleanupService do
     let(:druid_2) { 'druid:cd456gh1234' }
 
     before do
-      Dor::Config.push! do |config|
-        config.cleanup.local_workspace_root workspace_dir
-        config.cleanup.local_export_home export_dir
-        config.cleanup.local_assembly_root assembly_dir
-        config.stacks.local_stacks_root stacks_dir
-      end
+      cleanup = Dor::Config.cleanup
+      allow(cleanup).to receive_messages(
+        local_workspace_root: workspace_dir,
+        local_export_home: export_dir,
+        local_assembly_root: assembly_dir
+      )
+      allow(Dor::Config.stacks).to receive(:local_stacks_root).and_return(stacks_dir)
 
       FileUtils.mkdir fixture_dir
       FileUtils.mkdir workspace_dir
@@ -128,7 +124,6 @@ RSpec.describe Dor::CleanupService do
 
     after do
       FileUtils.rm_rf fixture_dir
-      Dor::Config.pop!
     end
 
     def create_tempfile(path)

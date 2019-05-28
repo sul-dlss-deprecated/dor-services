@@ -19,6 +19,6 @@ Dor.configure do
     pass 'lyberteam'
   end
 
-  solr.url         'https://example.edu/solr/solrizer'
+  solr.url         'https://solr.example.edu/solr/collection1'
   workflow.url     'https://workflow.example.edu/'
 end

@@ -2,9 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Dor::Configuration do
+RSpec.describe Dor::StaticConfig do
+  let(:defaults) { YAML.safe_load(File.read(File.expand_path('../config/config_defaults.yml', __dir__))).deep_symbolize_keys }
   let(:config) do
-    described_class.new(YAML.load(File.read(File.expand_path('../config/config_defaults.yml', __dir__))))
+    described_class.new(defaults)
   end
 
   describe '.workflow.client' do
