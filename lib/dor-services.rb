@@ -108,6 +108,7 @@ module Dor
     autoload :CollectionService
     autoload :CreateWorkflowService
     autoload :CreativeCommonsLicenseService
+    autoload :DeleteService
     autoload :EmbargoService
     autoload :IndexingService
     autoload :MetadataService
