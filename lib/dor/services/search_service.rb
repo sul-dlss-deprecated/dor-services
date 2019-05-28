@@ -41,8 +41,9 @@ module Dor
       end
 
       def solr
-        @@solr ||= ActiveFedora.solr.conn.is_a?(RSolr::Client) ? ActiveFedora.solr.conn : Dor::Config.make_solr_connection
+        _solr
       end
+      deprecation_deprecate solr: 'Call ActiveFedora.solr.conn directly'
 
       # @return String druid of the SDR Graveyard APO
       #   nil if APO does not exist in the currently configured environment
@@ -57,6 +58,12 @@ module Dor
         else
           r['response']['docs'].first[:id]
         end
+      end
+
+      private
+
+      def _solr
+        ActiveFedora.solr.conn
       end
     end
   end
