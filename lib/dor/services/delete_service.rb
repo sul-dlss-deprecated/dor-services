@@ -42,10 +42,7 @@ module Dor
     end
 
     def remove_active_workflows
-      %w[dor sdr].each do |repo|
-        dor_wfs = Dor::Config.workflow.client.workflows(druid, repo)
-        dor_wfs.each { |wf| Dor::Config.workflow.client.delete_workflow(repo, druid, wf) }
-      end
+      Dor::Config.workflow.client.delete_all_workflows(pid: druid)
     end
 
     # Delete an object from DOR.
