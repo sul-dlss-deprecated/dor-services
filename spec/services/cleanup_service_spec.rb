@@ -66,23 +66,27 @@ RSpec.describe Dor::CleanupService do
     described_class.cleanup(mock_item)
   end
 
-  specify 'Dor::CleanupService.cleanup_export' do
-    expect(described_class).to receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567').to_s)
-    expect(described_class).to receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567.tar').to_s)
-    described_class.cleanup_export(@druid)
+  describe '.cleanup_export' do
+    it 'removes the files exported to preservation' do
+      expect(described_class).to receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567').to_s)
+      expect(described_class).to receive(:remove_branch).once.with(@fixtures.join('export/aa123bb4567.tar').to_s)
+      described_class.send(:cleanup_export, @druid)
+    end
   end
 
-  specify 'Dor::CleanupService.remove_branch non-existing branch' do
-    @bag_pathname.rmtree if @bag_pathname.exist?
-    expect(@bag_pathname).not_to receive(:rmtree)
-    described_class.remove_branch(@bag_pathname)
-  end
+  describe '.remove_branch' do
+    specify 'Dor::CleanupService.remove_branch non-existing branch' do
+      @bag_pathname.rmtree if @bag_pathname.exist?
+      expect(@bag_pathname).not_to receive(:rmtree)
+      described_class.send(:remove_branch, @bag_pathname)
+    end
 
-  specify 'Dor::CleanupService.remove_branch existing branch' do
-    @bag_pathname.mkpath
-    expect(@bag_pathname).to exist
-    expect(@bag_pathname).to receive(:rmtree)
-    described_class.remove_branch(@bag_pathname)
+    specify 'Dor::CleanupService.remove_branch existing branch' do
+      @bag_pathname.mkpath
+      expect(@bag_pathname).to exist
+      expect(@bag_pathname).to receive(:rmtree)
+      described_class.send(:remove_branch, @bag_pathname)
+    end
   end
 
   it 'can do a complete cleanup' do
@@ -159,30 +163,30 @@ RSpec.describe Dor::CleanupService do
 
         # Setup the export content, remove 'druid:' prefix for bag and export/workspace dir
         dr1 = druid_1.split(':').last
-        export_prefix_1 = File.join(export_dir, dr1)
+        export_prefix = File.join(export_dir, dr1)
 
         # Create {export_dir}/druid1
         #        {export_dir}/druid1/tempfile
         #        {export_dir}/druid1.tar
-        FileUtils.mkdir export_prefix_1
-        create_tempfile export_prefix_1
-        File.open(export_prefix_1 + '.tar', 'w') { |f| f.write 'fake tar junk' }
+        FileUtils.mkdir export_prefix
+        create_tempfile export_prefix
+        File.open(export_prefix + '.tar', 'w') { |f| f.write 'fake tar junk' }
 
         expect(File).to exist(dr1_wspace.path)
         expect(File).to exist(dr1_assembly.path)
 
         # druid_1 cleaned up, including files
-        Dor::CleanupService.cleanup item1
+        described_class.cleanup item1
         expect(File).not_to exist(dr1_wspace.path)
         expect(File).not_to exist(dr1_assembly.path)
-        expect(File).not_to exist(export_prefix_1)
-        expect(File).not_to exist(export_prefix_1 + '.tar')
+        expect(File).not_to exist(export_prefix)
+        expect(File).not_to exist(export_prefix + '.tar')
 
         # But not druid_2
         expect(File).to exist(dr2_wspace.path)
         expect(File).to exist(dr2_assembly.path)
 
-        Dor::CleanupService.cleanup item2
+        described_class.cleanup item2
         expect(File).not_to exist(dr2_wspace.path)
         expect(File).not_to exist(dr2_assembly.path)
 
@@ -194,21 +198,8 @@ RSpec.describe Dor::CleanupService do
         dr1_wspace = DruidTools::Druid.new(druid_1, workspace_dir)
         dr1_wspace.mkdir
 
-        Dor::CleanupService.cleanup item1
+        described_class.cleanup item1
         expect(File).not_to exist(dr1_wspace.path)
-      end
-    end
-
-    context '.cleanup_stacks' do
-      it 'prunes the item from the local stacks root' do
-        stacks_dr = DruidTools::StacksDruid.new(druid_1, Dor::Config.stacks.local_stacks_root)
-        stacks_dr.mkdir
-
-        create_tempfile stacks_dr.path
-        expect(File).to exist(stacks_dr.path)
-
-        Dor::CleanupService.cleanup_stacks druid_1
-        expect(File).not_to exist(stacks_dr.path)
       end
     end
   end

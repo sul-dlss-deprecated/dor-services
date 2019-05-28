@@ -24,6 +24,7 @@ module Dor
     def self.cleanup_workspace_content(druid, base)
       DruidTools::Druid.new(druid, base).prune!
     end
+    private_class_method :cleanup_workspace_content
 
     # @param [String] druid The identifier for the object whose data is to be removed
     # @return [void] remove copy of the data that was exported to preservation core
@@ -34,6 +35,7 @@ module Dor
       tarfile = "#{bag_dir}.tar"
       remove_branch(tarfile)
     end
+    private_class_method :cleanup_export
 
     # @param [Pathname,String] pathname The full path of the branch to be removed
     # @return [void] Remove the specified directory and all its children
@@ -41,6 +43,7 @@ module Dor
       pathname = Pathname(pathname) if pathname.instance_of? String
       pathname.rmtree if pathname.exist?
     end
+    private_class_method :remove_branch
 
     # Tries to remove any exsitence of the object in our systems
     #   Does the following:
@@ -53,35 +56,8 @@ module Dor
     #   - Removes active workflows
     # @param [String] druid id of the object you wish to remove
     def self.nuke!(druid)
-      cleanup_by_druid druid
-      cleanup_stacks druid
-      cleanup_purl_doc_cache druid
-      remove_active_workflows druid
-      delete_from_dor druid
-    end
-
-    def self.cleanup_stacks(druid)
-      DruidTools::StacksDruid.new(druid, Config.stacks.local_stacks_root).prune!
-    end
-
-    def self.cleanup_purl_doc_cache(druid)
-      DruidTools::PurlDruid.new(druid, Config.stacks.local_document_cache_root).prune!
-    end
-
-    def self.remove_active_workflows(druid)
-      %w(dor sdr).each do |repo|
-        dor_wfs = Dor::Config.workflow.client.workflows(druid, repo)
-        dor_wfs.each { |wf| Dor::Config.workflow.client.delete_workflow(repo, druid, wf) }
-      end
-    end
-
-    # Delete an object from DOR.
-    #
-    # @param [string] pid the druid
-    def self.delete_from_dor(pid)
-      Dor::Config.fedora.client["objects/#{pid}"].delete
-      Dor::SearchService.solr.delete_by_id(pid)
-      Dor::SearchService.solr.commit
+      Deprecation.warn(self, 'CleanupService.nuke! is deprecated and will be removed in dor-services 8.  Use Dor::DeleteService.destroy() instead.')
+      DeleteService.destroy(druid)
     end
   end
 end
