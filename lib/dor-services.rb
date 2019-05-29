@@ -110,7 +110,6 @@ module Dor
     autoload :CleanupService
     autoload :CollectionService
     autoload :CreativeCommonsLicenseService
-    autoload :DeleteService
     autoload :EmbargoService
     autoload :IdentityMetadataTagService
     autoload :Ontology
