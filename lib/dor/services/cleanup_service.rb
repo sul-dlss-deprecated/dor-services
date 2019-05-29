@@ -44,20 +44,5 @@ module Dor
       pathname.rmtree if pathname.exist?
     end
     private_class_method :remove_branch
-
-    # Tries to remove any exsitence of the object in our systems
-    #   Does the following:
-    #   - Removes item from Dor/Fedora/Solr
-    #   - Removes content from dor workspace
-    #   - Removes content from assembly workspace
-    #   - Removes content from sdr export area
-    #   - Removes content from stacks
-    #   - Removes content from purl
-    #   - Removes active workflows
-    # @param [String] druid id of the object you wish to remove
-    def self.nuke!(druid)
-      Deprecation.warn(self, 'CleanupService.nuke! is deprecated and will be removed in dor-services 8.  Use Dor::DeleteService.destroy() instead.')
-      DeleteService.destroy(druid)
-    end
   end
 end
