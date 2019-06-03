@@ -8,6 +8,10 @@ module Dor
         @url = hash.fetch(:url)
       end
 
+      def configure(&block)
+        instance_eval(&block)
+      end
+
       def url(new_value = nil)
         @url = new_value if new_value
         @url

@@ -10,6 +10,10 @@ module Dor
         @url = hash.fetch(:url)
       end
 
+      def configure(&block)
+        instance_eval(&block)
+      end
+
       def client
         CertificateAuthenticatedRestResourceFactory.create(:fedora)
       end
