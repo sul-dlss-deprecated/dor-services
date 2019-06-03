@@ -11,6 +11,10 @@ module Dor
         @shift_age = hash.fetch(:shift_age)
       end
 
+      def configure(&block)
+        instance_eval(&block)
+      end
+
       def client
         @client ||= Dor::Workflow::Client.new(url: url, logger: client_logger, timeout: timeout)
       end

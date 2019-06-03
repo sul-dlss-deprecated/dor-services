@@ -21,4 +21,28 @@ RSpec.describe Dor::StaticConfig do
       it { is_expected.to eq URI('http://mynewurl.edu/workflow') }
     end
   end
+
+  describe 'nested config' do
+    before do
+      config.configure do
+        fedora do
+          url 'my-fedora'
+        end
+
+        solr do
+          url 'my-solr'
+        end
+
+        workflow do
+          url 'my-workflow'
+        end
+      end
+    end
+
+    it 'configures the items' do
+      expect(config.fedora.url).to eq 'my-fedora'
+      expect(config.solr.url).to eq 'my-solr'
+      expect(config.workflow.url).to eq 'my-workflow'
+    end
+  end
 end
