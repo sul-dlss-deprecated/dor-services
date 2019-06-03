@@ -7,7 +7,6 @@ module Dor
   class StaticConfig
     extend ActiveSupport::Autoload
     eager_autoload do
-      autoload :CleanupConfig
       autoload :SslConfig
       autoload :FedoraConfig
       autoload :SolrConfig
@@ -17,7 +16,6 @@ module Dor
     end
 
     def initialize(hash)
-      @cleanup = CleanupConfig.new(hash.fetch(:cleanup))
       @ssl = SslConfig.new(hash.fetch(:ssl))
       @fedora = FedoraConfig.new(hash.fetch(:fedora))
       @solr = SolrConfig.new(hash.fetch(:solr))
