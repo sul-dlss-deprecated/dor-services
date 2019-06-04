@@ -11,6 +11,10 @@ module Dor
         @local_document_cache_root = hash.fetch(:local_document_cache_root)
       end
 
+      def configure(&block)
+        instance_eval(&block)
+      end
+
       def document_cache_host(new_value = nil)
         @document_cache_host = new_value if new_value
         @document_cache_host

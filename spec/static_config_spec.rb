@@ -36,6 +36,10 @@ RSpec.describe Dor::StaticConfig do
         workflow do
           url 'my-workflow'
         end
+
+        stacks do
+          document_cache_host 'purl-test'
+        end
       end
     end
 
@@ -43,6 +47,7 @@ RSpec.describe Dor::StaticConfig do
       expect(config.fedora.url).to eq 'my-fedora'
       expect(config.solr.url).to eq 'my-solr'
       expect(config.workflow.url).to eq 'my-workflow'
+      expect(config.stacks.document_cache_host).to eq 'purl-test'
     end
   end
 end
