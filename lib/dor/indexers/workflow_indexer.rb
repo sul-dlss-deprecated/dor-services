@@ -45,7 +45,7 @@ module Dor
       index_error_message(solr_doc, wf_name, process)
 
       # workflow name, process status then process name
-      solr_doc.add_wps("#{wf_name}:#{process.status}", "#{wf_name}:#{process.status}:#{process.name}")
+      solr_doc.add_wsp("#{wf_name}:#{process.status}", "#{wf_name}:#{process.status}:#{process.name}")
 
       # workflow name, process name then process status
       solr_doc.add_wps("#{wf_name}:#{process.name}", "#{wf_name}:#{process.name}:#{process.status}")
