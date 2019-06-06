@@ -103,17 +103,4 @@ describe 'Dor::CleanupService specs that check the file system' do
       expect(File).not_to exist(dr1_wspace.path)
     end
   end
-
-  context 'CleanupService.cleanup_stacks' do
-    it 'prunes the item from the local stacks root' do
-      stacks_dr = DruidTools::StacksDruid.new(druid_1, Dor::Config.stacks.local_stacks_root)
-      stacks_dr.mkdir
-
-      create_tempfile stacks_dr.path
-      expect(File).to exist(stacks_dr.path)
-
-      Dor::CleanupService.cleanup_stacks druid_1
-      expect(File).not_to exist(stacks_dr.path)
-    end
-  end
 end
