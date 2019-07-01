@@ -48,11 +48,11 @@ module Dor
     def status_info
       status_code = 0
       status_time = nil
-      # for each milestone in the current version, see if it comes after the current 'last' step, if so, make it the last and record the date/time
+      # for each milestone in the current version, see if it comes at the same time or after the current 'last' step, if so, make it the last and record the date/time
       current_milestones.each do |m|
         m_name = m[:milestone]
         m_time = m[:at].utc.xmlschema
-        next unless STEPS.key?(m_name) && (!status_time || m_time > status_time)
+        next unless STEPS.key?(m_name) && (!status_time || m_time >= status_time)
 
         status_code = STEPS[m_name]
         status_time = m_time
