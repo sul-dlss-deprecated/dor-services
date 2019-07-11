@@ -115,6 +115,32 @@ RSpec.describe Dor::StatusService do
       end
     end
 
+    context 'for an accessioned step with an ealier timestamp than the deposited step' do
+      let(:xml) do
+        Nokogiri::XML('<?xml version="1.0"?>
+        <lifecycle objectId="druid:bd504dj1946">
+        <milestone date="2013-04-03T15:01:57-0700">registered</milestone>
+        <milestone date="2013-04-03T16:20:19-0700">digitized</milestone>
+        <milestone date="2013-04-16T14:18:20-0700" version="1">submitted</milestone>
+        <milestone date="2013-04-16T14:32:54-0700" version="1">described</milestone>
+        <milestone date="2013-04-16T14:55:10-0700" version="1">published</milestone>
+        <milestone date="2013-07-21T05:27:23-0700" version="1">deposited</milestone>
+        <milestone date="2013-07-21T05:28:09-0700" version="1">accessioned</milestone>
+        <milestone date="2013-08-15T11:59:16-0700" version="2">opened</milestone>
+        <milestone date="2013-10-01T12:01:07-0700" version="2">submitted</milestone>
+        <milestone date="2013-10-01T12:01:24-0700" version="2">described</milestone>
+        <milestone date="2013-10-01T12:05:38-0700" version="2">published</milestone>
+        <milestone date="2013-10-01T12:10:56-0700" version="2">deposited</milestone>
+        <milestone date="2013-09-01T12:10:56-0700" version="2">accessioned</milestone>
+        </lifecycle>')
+      end
+
+      it 'has the correct status of accessioned (v2) object' do
+        expect(versionMD).to receive(:current_version_id).and_return('2')
+        expect(described_class.status(item, true)).to eq('v2 Accessioned 2013-09-01 07:10PM')
+      end
+    end
+
     context 'for a deposited step for a non-accessioned object' do
       let(:xml) do
         Nokogiri::XML('<?xml version="1.0"?>
