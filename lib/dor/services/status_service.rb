@@ -46,6 +46,10 @@ module Dor
 
     # @return [Hash{Symbol => Object}] including :current_version, :status_code and :status_time
     def status_info
+      # if we have an accessioned milestone, this is the last possible step and should be the status regardless of time stamp
+      accessioned_milestones = current_milestones.select { |m| m[:milestone] == 'accessioned' }
+      return { current_version: current_version, status_code: STEPS['accessioned'], status_time: accessioned_milestones.last[:at].utc.xmlschema } unless accessioned_milestones.empty?
+
       status_code = 0
       status_time = nil
       # for each milestone in the current version, see if it comes at the same time or after the current 'last' step, if so, make it the last and record the date/time
