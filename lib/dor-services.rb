@@ -117,6 +117,7 @@ module Dor
     autoload :ReleaseTagService
     autoload :SearchService
     autoload :StatusService
+    autoload :StateService
     autoload :SuriService
     autoload :TagService
   end
