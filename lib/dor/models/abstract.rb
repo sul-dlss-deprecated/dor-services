@@ -108,11 +108,9 @@ module Dor
     #  States that will allow modification are: has not been submitted for accessioning, has an open version or has sdr-ingest set to hold
     # @todo this could be a workflow service endpoint
     def allows_modification?
-      client = Dor::Config.workflow.client
-      !client.lifecycle('dor', pid, 'submitted') ||
-        client.active_lifecycle('dor', pid, 'opened') ||
-        client.workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer') == 'hold'
+      Dor::StateService.new(pid).allows_modification?
     end
+    deprecation_deprecate allows_modification?: 'use Dor::StateService#allows_modification? instead'
 
     def current_version
       versionMetadata.current_version_id
