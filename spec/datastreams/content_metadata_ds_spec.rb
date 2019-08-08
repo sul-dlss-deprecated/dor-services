@@ -321,5 +321,48 @@ describe Dor::ContentMetadataDS do
       expect(externalFile[0]['mimetype']).to eq('image/tiff')
       expect(externalFile[1]['mimetype']).to eq('image/jp2')
     end
+
+    it 'adds a virtual resource to parent when parent has no resources in existing contentMetadata' do
+      item = instantiate_fixture('druid:ab123cd4567', Dor::Item)
+      item.contentMetadata.content = '<?xml version="1.0"?>
+      <contentMetadata objectId="druid:gw177fc7976" type="image" />'
+      allow(Dor).to receive(:find).and_return(item)
+
+      child_druid = 'bb273jy3359'
+      child_resource = Nokogiri::XML('
+      <resource type="image" sequence="1" id="bb273jy3359_1">
+        <label>Image 1</label>
+        <file id="00006672_0007.jp2" mimetype="image/jp2" size="2124513" preserve="no" publish="yes" shelve="yes">
+          <checksum type="md5">65fad5e9dbaaef1130e500f6472a7200</checksum>
+          <checksum type="sha1">374d1b71522acf10bbe9fff6af5f50dd5de3022c</checksum>
+          <imageData width="3883" height="2907"/>
+        </file>
+      </resource>
+      ').root
+
+      item.contentMetadata.add_virtual_resource(child_druid, child_resource)
+      # parent contentMetadata is updated
+      expect(item.contentMetadata).to be_changed
+      nodes = item.contentMetadata.ng_xml.search('//resource[@id=\'ab123cd4567_1\']')
+      expect(nodes.length).to eq(1)
+      node = nodes.first
+      expect(node['id']).to eq('ab123cd4567_1')
+      expect(node['type']).to eq('image')
+      expect(node['sequence']).to eq('1')
+
+      expect(nodes.search('label').length).to eq(0)
+
+      externalFile = nodes.search('externalFile')
+      expect(externalFile.length).to eq(1)
+      expect(externalFile.first['objectId']).to eq('bb273jy3359')
+      expect(externalFile.first['resourceId']).to eq('bb273jy3359_1')
+      expect(externalFile.first['fileId']).to eq('00006672_0007.jp2')
+      expect(externalFile.first['mimetype']).to eq('image/jp2')
+
+      relationship = nodes.search('relationship')
+      expect(relationship.length).to eq(1)
+      expect(relationship.first['type']).to eq('alsoAvailableAs')
+      expect(relationship.first['objectId']).to eq('bb273jy3359')
+    end
   end
 end
