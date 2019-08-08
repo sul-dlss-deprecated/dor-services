@@ -174,7 +174,7 @@ module Dor
     def add_virtual_resource(child_druid, child_resource)
       # create a virtual resource element with attributes linked to the child and omit label
       ng_xml_will_change!
-      sequence_max = ng_xml.search('//resource').map { |node| node[:sequence].to_i }.max
+      sequence_max = ng_xml.search('//resource').map { |node| node[:sequence].to_i }.max || 0
       resource = Nokogiri::XML::Element.new('resource', ng_xml)
       resource[:sequence] = sequence_max + 1
       resource[:id] = "#{pid.gsub(/^druid:/, '')}_#{resource[:sequence]}"
