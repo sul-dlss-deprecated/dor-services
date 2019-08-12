@@ -41,6 +41,10 @@ describe Dor::ContentMetadataDS do
   end
 
   describe 'add_resource' do
+    before do
+      allow(Deprecation).to receive(:warn)
+    end
+
     it 'adds a resource with default type="file"' do
       ret = @cm.add_resource(@files, 'resource', 1)
       expect(ret).to be_a(Nokogiri::XML::Node)
@@ -121,6 +125,10 @@ describe Dor::ContentMetadataDS do
   end
 
   describe 'remove_resource' do
+    before do
+      allow(Deprecation).to receive(:warn)
+    end
+
     it 'removes the only resource' do
       @cm.remove_resource('0001')
       expect(@cm.ng_xml.search('//resource').length).to eq(0)
@@ -135,6 +143,10 @@ describe Dor::ContentMetadataDS do
   end
 
   describe 'remove_file' do
+    before do
+      allow(Deprecation).to receive(:warn)
+    end
+
     it 'removes the file' do
       @cm.remove_file('gw177fc7976_00_0001.tif')
       expect(@cm.ng_xml.search('//file').length).to eq(2)
@@ -142,6 +154,10 @@ describe Dor::ContentMetadataDS do
   end
 
   describe 'add_file' do
+    before do
+      allow(Deprecation).to receive(:warn)
+    end
+
     it 'adds a file to the resource' do
       @cm.add_file(@file.merge(role: 'some-role'), '0001')
       xml = @cm.ng_xml
