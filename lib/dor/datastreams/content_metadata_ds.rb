@@ -35,6 +35,9 @@ module Dor
       t.shelved_file_id proxy: %i[resource shelved_file id], index_as: %i[displayable stored_searchable]
     end
 
+    extend Deprecation
+    self.deprecation_horizon = '8.0'
+
     ### READ ONLY METHODS
 
     # Only use this when you want the behavior of raising an exception if anything besides exactly one matching node
@@ -165,6 +168,7 @@ module Dor
       file_node['role'] = file[:role] if file[:role]
       file_node
     end
+    deprecation_deprecate :add_file
 
     # Copies the child's resource into the parent (self) as a virtual resource.
     # Assumes the resource isn't a duplicate of an existing virtual or real resource.
@@ -231,6 +235,7 @@ module Dor
       ng_xml.search('//contentMetadata').first.add_child(node)
       node
     end
+    deprecation_deprecate :add_resource
 
     # @param [String] resource_name ID of the resource
     def remove_resource(resource_name)
@@ -246,12 +251,14 @@ module Dor
         position += 1
       end
     end
+    deprecation_deprecate :remove_resource
 
     # @param [String] file_name ID of the file element
     def remove_file(file_name)
       ng_xml_will_change!
       ng_xml.search('//file[@id=\'' + file_name + '\']').each(&:remove)
     end
+    deprecation_deprecate :remove_file
 
     # @param [String] file_name ID of the file element
     # @param [String] publish
