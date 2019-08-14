@@ -27,7 +27,7 @@ RSpec.describe Dor::IdentityMetadataDS do
       expect(@dsdoc.term_values(:objectType)).to eq(['item'])
       expect(@dsdoc.term_values(:objectLabel)).to eq(['AMERICQVE | SEPTENTRIONALE'])
       expect(@dsdoc.term_values(:tag)).to match_array(['MDForm : mclaughlin', 'Project : McLaughlin Maps'])
-      expect(@dsdoc.term_values(:otherId)).to match_array(['bb110sm8219', 'b382ee92-da77-11e0-9036-0016034322e4'])
+      expect(@dsdoc.term_values(:otherId)).to match_array(%w[bb110sm8219 b382ee92-da77-11e0-9036-0016034322e4])
       expect(@dsdoc.term_values(:sourceId)).to eq(['bb110sm8219'])
       expect(@dsdoc.objectId).to eq('druid:bb110sm8219')
       expect(@dsdoc.otherId).to eq(['mdtoolkit:bb110sm8219', 'uuid:b382ee92-da77-11e0-9036-0016034322e4'])

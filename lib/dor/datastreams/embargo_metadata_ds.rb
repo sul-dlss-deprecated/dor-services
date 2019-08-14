@@ -31,7 +31,7 @@ module Dor
     def to_solr(solr_doc = {}, *args)
       solr_doc = super
       #::Solrizer.insert_field(solr_doc, field_name, value, *index_types)
-      rd1  = release_date
+      rd1 = release_date
       rd20 = twenty_pct_release_date
       ::Solrizer.insert_field(solr_doc, 'embargo_release', rd1.utc.strftime('%FT%TZ'), :dateable) unless rd1.blank?
       ::Solrizer.insert_field(solr_doc, 'twenty_pct_visibility_release', rd20.utc.strftime('%FT%TZ'), :dateable) unless rd20.blank?
