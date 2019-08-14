@@ -97,6 +97,8 @@ module Dor
       }
       params[:username] = config.dor_services.user if config.dor_services&.user.present?
       params[:password] = config.dor_services.pass if config.dor_services&.pass.present?
+      params[:token] = config.dor_services.token if config.dor_services&.token.present?
+      params[:token_header] = config.dor_services.token_header if config.dor_services&.token_header.present?
 
       Dor::Services::Client.configure(params)
     end
