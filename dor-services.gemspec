@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'activesupport', '~> 5.1'
   s.add_dependency 'confstruct', '~> 0.2.7'
   s.add_dependency 'deprecation', '~> 0'
-  s.add_dependency 'dor-services-client', '~> 1.5'
+  s.add_dependency 'dor-services-client', '>= 1.5.0', '< 3.0.0'
   s.add_dependency 'json', '>= 1.8.1'
   s.add_dependency 'nokogiri', '~> 1.6'
   s.add_dependency 'om', '~> 3.0'
