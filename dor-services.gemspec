@@ -9,8 +9,9 @@ Gem::Specification.new do |s|
   s.name        = 'dor-services'
   s.version     = Dor::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ['Michael Klein', 'Willy Mene', 'Chris Fitzpatrick', 'Richard Anderson', 'Renzo Sanchez-Silva', 'Joseph Atzberger', 'Johnathan Martin']
-  s.email       = ['mbklein@stanford.edu']
+  s.authors     = ['Michael Klein', 'Willy Mene', 'Chris Fitzpatrick', 'Richard Anderson', 'Renzo Sanchez-Silva', 'Joseph Atzberger', 'Johnathan Martin', 'Naomi Dushay',
+                   'Justin Coyne', 'Chris Beer', 'Peter Mangiafico', 'Michael J. Giarlo', 'Justin Littman']
+  s.email       = ['dlss-infrastructure-team@lists.stanford.edu']
   s.summary     = 'Ruby implmentation of DOR services used by the SULAIR Digital Library'
   s.description = 'Contains classes to register objects and initialize workflows'
   s.licenses    = ['ALv2', 'Stanford University']
