@@ -81,11 +81,4 @@ RSpec.describe Dor::SearchService do
       expect(result).to include(@pid)
     end
   end
-
-  context '.solr' do
-    it 'uses an RSolr connection' do
-      solr = described_class.solr
-      expect(solr).to be_a(RSolr::Client)
-    end
-  end
 end
