@@ -2,8 +2,11 @@
 
 module Dor
   class StateService
-    def initialize(pid)
+    # having version is prefered as without it, the workflow client will make a
+    # call to dor-services-app to retrieve it.
+    def initialize(pid, version: nil)
       @pid = pid
+      @version = version
     end
 
     def allows_modification?
