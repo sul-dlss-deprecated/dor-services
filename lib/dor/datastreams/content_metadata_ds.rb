@@ -35,9 +35,6 @@ module Dor
       t.shelved_file_id proxy: %i[resource shelved_file id], index_as: %i[displayable stored_searchable]
     end
 
-    extend Deprecation
-    self.deprecation_horizon = '8.0'
-
     ### READ ONLY METHODS
 
     # Only use this when you want the behavior of raising an exception if anything besides exactly one matching node
@@ -138,38 +135,6 @@ module Dor
       end
     end
 
-    # @param [Object] file
-    # @param [String] resource_name
-    # @return [Nokogiri::XML::Node] the added XML node
-    def add_file(file, resource_name)
-      resource_nodes = ng_xml.search('//resource[@id=\'' + resource_name + '\']')
-      raise 'resource doesnt exist.' if resource_nodes.length == 0
-
-      ng_xml_will_change!
-
-      node = resource_nodes.first
-      file_node = Nokogiri::XML::Node.new('file', ng_xml)
-      file_node['id'] = file[:name]
-      file_node['shelve'] = file[:shelve] || ''
-      file_node['publish'] = file[:publish] || ''
-      file_node['preserve'] = file[:preserve] || ''
-      node.add_child(file_node)
-
-      %i[md5 sha1].each do |algo|
-        next unless file[algo]
-
-        checksum_node = Nokogiri::XML::Node.new('checksum', ng_xml)
-        checksum_node['type'] = algo.to_s
-        checksum_node.content = file[algo]
-        file_node.add_child(checksum_node)
-      end
-      file_node['size'] = file[:size] if file[:size]
-      file_node['mimetype'] = file[:mime_type] if file[:mime_type]
-      file_node['role'] = file[:role] if file[:role]
-      file_node
-    end
-    deprecation_deprecate :add_file
-
     # Copies the child's resource into the parent (self) as a virtual resource.
     # Assumes the resource isn't a duplicate of an existing virtual or real resource.
     # @param [String] child_druid druid
@@ -194,71 +159,6 @@ module Dor
       ng_xml.root << resource
       resource
     end
-
-    # @param [Array] files
-    # @param [String] resource_name ID of the resource
-    # @param [Integer] position
-    # @param [String] type Resource type
-    # @return [Nokogiri::XML::Node] the new resource that was added to the contentMetadata
-    def add_resource(files, resource_name, position, type = 'file')
-      raise "resource #{resource_name} already exists" if ng_xml.search('//resource[@id=\'' + resource_name + '\']').length > 0
-
-      ng_xml_will_change!
-      max = ng_xml.search('//resource').map { |node| node['sequence'].to_i }.max
-      # renumber all of the resources that will come after the newly added one
-      while max > position
-        node = ng_xml.search('//resource[@sequence=\'' + position + '\']')
-        node.first[sequence] = max + 1 if node.length > 0
-        max -= 1
-      end
-      node = Nokogiri::XML::Node.new('resource', ng_xml)
-      node['sequence'] = position.to_s
-      node['id']       = resource_name
-      node['type']     = type
-      files.each do |file|
-        file_node = Nokogiri::XML::Node.new('file', ng_xml)
-        %w(shelve publish preserve).each { |x| file_node[x] = file[x.to_sym] || '' }
-        file_node['id'] = file[:name]
-        node.add_child(file_node)
-
-        %i[md5 sha1].each do |algo|
-          next if file[algo].nil?
-
-          checksum_node = Nokogiri::XML::Node.new('checksum', ng_xml)
-          checksum_node['type'] = algo.to_s
-          checksum_node.content = file[algo]
-          file_node.add_child(checksum_node)
-        end
-        file_node['size'] = file[:size] if file[:size]
-        file_node['role'] = file[:role] if file[:role]
-      end
-      ng_xml.search('//contentMetadata').first.add_child(node)
-      node
-    end
-    deprecation_deprecate :add_resource
-
-    # @param [String] resource_name ID of the resource
-    def remove_resource(resource_name)
-      ng_xml_will_change!
-      node = singular_node('//resource[@id=\'' + resource_name + '\']')
-      position = node['sequence'].to_i + 1
-      node.remove
-      loop do
-        res = ng_xml.search('//resource[@sequence=\'' + position.to_s + '\']')
-        break if res.length == 0
-
-        res['sequence'] = position.to_s
-        position += 1
-      end
-    end
-    deprecation_deprecate :remove_resource
-
-    # @param [String] file_name ID of the file element
-    def remove_file(file_name)
-      ng_xml_will_change!
-      ng_xml.search('//file[@id=\'' + file_name + '\']').each(&:remove)
-    end
-    deprecation_deprecate :remove_file
 
     # @param [String] file_name ID of the file element
     # @param [String] publish

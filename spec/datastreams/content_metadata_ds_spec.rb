@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Dor::ContentMetadataDS do
+RSpec.describe Dor::ContentMetadataDS do
   before { stub_config }
 
   before do
@@ -40,140 +40,6 @@ describe Dor::ContentMetadataDS do
     expect(@cm).not_to receive(:save) # IMPORTANT: if you want save (and reindex) to happen, you have to call it yourself!
   end
 
-  describe 'add_resource' do
-    before do
-      allow(Deprecation).to receive(:warn)
-    end
-
-    it 'adds a resource with default type="file"' do
-      ret = @cm.add_resource(@files, 'resource', 1)
-      expect(ret).to be_a(Nokogiri::XML::Node)
-      nodes = @cm.ng_xml.search('//resource[@id=\'resource\']')
-      expect(nodes.length).to eq(1)
-      node = nodes.first
-      expect(node['id']).to eq('resource')
-      expect(node['type']).to eq('file')
-      expect(node['sequence']).to eq('1')
-      resource = node.at_xpath('./file')
-      expect(resource.attr('id')).to eq(@file[:name])
-      expect(resource.attr('size')).to eq(@file[:size])
-      %i[shelve publish preserve].each { |x| expect(resource.attr(x.to_s)).to eq(@file[x]) }
-    end
-
-    it 'raises error if same ID resource is added twice' do
-      @cm.add_resource(@files, 'resource', 1)
-      expect { @cm.add_resource(@files, 'resource', 1) }.to raise_error StandardError
-    end
-
-    it 'adds multiple resources' do
-      more_files = [
-        @file.merge(name: 'new_file.tiff', size: '23456', preserve: 'yes'),
-        @file.merge(name: 'new_file_thumb.gif', size: '678901', publish: 'yes')
-      ]
-      ret = @cm.add_resource(more_files, 'resource', 1)
-      expect(ret).to be_a(Nokogiri::XML::Node)
-      nodes = @cm.ng_xml.search('//resource[@id=\'resource\']')
-      expect(nodes.length).to eq(1)
-      node = nodes.first
-      expect(node['id']).to eq('resource')
-      expect(node['type']).to eq('file')
-      expect(node['sequence']).to eq('1')
-      resource = node.xpath('./file')
-      expect(resource.size).to eq(2)
-      expect(resource.first.attr('id')).to eq(more_files.first[:name])
-      expect(resource.first.attr('size')).to eq(more_files.first[:size])
-      expect(resource.last.attr('id')).to eq(more_files.last[:name])
-      expect(resource.last.attr('size')).to eq(more_files.last[:size])
-      %i[shelve publish preserve].each do |x|
-        expect(resource.first.attr(x.to_s)).to eq(more_files.first[x])
-        expect(resource.last.attr(x.to_s)).to eq(more_files.last[x])
-      end
-    end
-
-    it 'adds a resource with a type="image"' do
-      @cm.add_resource(@files, 'resource', 1, 'image')
-      nodes = @cm.ng_xml.search('//resource[@id=\'resource\']')
-      expect(nodes.length).to eq(1)
-      node = nodes.first
-      expect(node['id']).to eq('resource')
-      expect(node['type']).to eq('image')
-      expect(node['sequence']).to eq('1')
-    end
-
-    it 'adds a resource with a checksum' do
-      @files[0][:md5 ] = '123456'
-      @files[0][:sha1] = '56789'
-      @cm.add_resource(@files, 'resource', 1)
-      checksums = @cm.ng_xml.search('//file[@id=\'new_file.jp2\']//checksum')
-      expect(checksums.length).to eq(2)
-      checksums.each do |checksum|
-        expect(checksum.content).to eq(checksum['type'] == 'md5' ? '123456' : '56789')
-      end
-    end
-
-    it 'adds a file with a role="transcription"' do
-      files = [
-        @file.merge(name: 'transcription.txt', role: 'transcription', size: '23456', preserve: 'yes')
-      ]
-      @cm.add_resource(files, 'resource', 1, 'page')
-      nodes = @cm.ng_xml.search('//resource[@id=\'resource\']/file')
-      expect(nodes.length).to eq(1)
-      node = nodes.first
-      expect(node['id']).to eq('transcription.txt')
-      expect(node['role']).to eq('transcription')
-    end
-  end
-
-  describe 'remove_resource' do
-    before do
-      allow(Deprecation).to receive(:warn)
-    end
-
-    it 'removes the only resource' do
-      @cm.remove_resource('0001')
-      expect(@cm.ng_xml.search('//resource').length).to eq(0)
-    end
-    it 'removes one resource and renumber remaining resources' do
-      @cm.add_resource(@files, 'resource', 1)
-      @cm.remove_resource('resource')
-      resources = @cm.ng_xml.search('//resource')
-      expect(resources.length).to eq(1)
-      expect(resources.first['sequence']).to eq('1')
-    end
-  end
-
-  describe 'remove_file' do
-    before do
-      allow(Deprecation).to receive(:warn)
-    end
-
-    it 'removes the file' do
-      @cm.remove_file('gw177fc7976_00_0001.tif')
-      expect(@cm.ng_xml.search('//file').length).to eq(2)
-    end
-  end
-
-  describe 'add_file' do
-    before do
-      allow(Deprecation).to receive(:warn)
-    end
-
-    it 'adds a file to the resource' do
-      @cm.add_file(@file.merge(role: 'some-role'), '0001')
-      xml = @cm.ng_xml
-      hits = xml.search('//resource[@id=\'0001\']/file')
-      expect(hits.length).to eq(4)
-      expect(xml.search('//file[@id=\'new_file.jp2\']').length).to eq(1)
-      new_file = xml.search('//file[@id=\'new_file.jp2\']').first
-      expect(new_file['shelve']).to eq('no')
-      expect(new_file['publish']).to eq('no')
-      expect(new_file['preserve']).to eq('no')
-      expect(new_file['size']).to eq('12345')
-      expect(new_file['role']).to eq('some-role')
-      expect(@cm).to be_changed
-    end
-  end
-
   describe 'update_file' do
     it 'modifies an existing file record' do
       @cm.update_file(@file.merge(role: 'some-role'), 'gw177fc7976_05_0001.jp2')
@@ -201,7 +67,6 @@ describe Dor::ContentMetadataDS do
 
   describe 'move_resource' do
     it 'renumbers the resources correctly' do
-      @cm.add_resource(@files, 'resource', 1)
       @cm.move_resource('0001', '2')
       skip 'No expectation defined!'
     end
