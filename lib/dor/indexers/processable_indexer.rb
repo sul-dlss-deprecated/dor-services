@@ -27,7 +27,7 @@ module Dor
 
     def current_version
       @current_version ||= begin
-                             resource.versionMetadata.current_version_id
+                             resource.current_version
                            rescue StandardError
                              '1'
                            end
