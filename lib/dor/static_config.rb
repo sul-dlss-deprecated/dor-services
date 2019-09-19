@@ -66,11 +66,6 @@ module Dor
       @default_ssl_cert_store ||= RestClient::Request.default_ssl_cert_store
     end
 
-    def cleanup
-      @cleanup.configure(&block) if block_given?
-      @cleanup
-    end
-
     def ssl(&block)
       @ssl.configure(&block) if block_given?
       @ssl
