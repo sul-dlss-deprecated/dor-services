@@ -3,27 +3,95 @@
 require 'spec_helper'
 
 RSpec.describe Dor::StateService do
-  let(:service) { described_class.new(pid) }
-
   describe '#allows_modification?' do
+    subject(:allows_modification?) { service.allows_modification? }
+
     let(:pid) { 'ab12cd3456' }
 
-    it "allows modification if the object hasn't been submitted" do
-      allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(false)
-      expect(service).to be_allows_modification
+    context 'when version is not passed in' do
+      let(:service) { described_class.new(pid) }
+      let(:item) { instance_double(Dor::Item, current_version: 4) }
+
+      before do
+        allow(Deprecation).to receive(:warn)
+        allow(Dor).to receive(:find).and_return(item)
+      end
+
+      context "if the object hasn't been submitted" do
+        before do
+          allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(false)
+        end
+
+        it 'returns true' do
+          expect(allows_modification?).to be true
+          expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'submitted')
+        end
+      end
+
+      context 'if there is an open version' do
+        before do
+          allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true, true)
+        end
+
+        it 'returns true' do
+          expect(allows_modification?).to be true
+          expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'submitted')
+          expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'opened', version: 4)
+        end
+      end
+
+      context 'when the item has sdr-ingest-transfer set to hold' do
+        before do
+          allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true, false)
+          allow(Dor::Config.workflow.client).to receive(:workflow_status).and_return('hold')
+        end
+
+        it 'returns true' do
+          expect(allows_modification?).to be true
+          expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'submitted')
+          expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'opened', version: 4)
+        end
+      end
     end
 
-    it 'allows modification if there is an open version' do
-      allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true)
-      allow(Dor::Config.workflow.client).to receive(:active_lifecycle).and_return(true)
-      expect(service).to be_allows_modification
-    end
+    context 'when version is passed in' do
+      let(:service) { described_class.new(pid, version: 3) }
 
-    it 'allows modification if the item has sdr-ingest-transfer set to hold' do
-      allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true)
-      allow(Dor::Config.workflow.client).to receive(:active_lifecycle).and_return(false)
-      allow(Dor::Config.workflow.client).to receive(:workflow_status).and_return('hold')
-      expect(service).to be_allows_modification
+      context "if the object hasn't been submitted" do
+        before do
+          allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(false)
+        end
+
+        it 'returns true' do
+          expect(allows_modification?).to be true
+          expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'submitted')
+        end
+      end
+
+      context 'if there is an open version' do
+        before do
+          allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true, true)
+        end
+
+        it 'returns true' do
+          expect(allows_modification?).to be true
+          expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'submitted')
+          expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'opened', version: 3)
+        end
+      end
+
+      context 'when the item has sdr-ingest-transfer set to hold' do
+        before do
+          allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true, false)
+          allow(Dor::Config.workflow.client).to receive(:workflow_status).and_return('hold')
+        end
+
+        it 'returns true' do
+          expect(allows_modification?).to be true
+          expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'submitted')
+          expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'opened', version: 3)
+        end
+      end
     end
   end
 end

@@ -2,22 +2,29 @@
 
 module Dor
   class StateService
-    # having version is prefered as without it, the workflow client will make a
-    # call to dor-services-app to retrieve it.
+    extend Deprecation
+
+    # having version is prefered as without it, a call to
+    # fedora will be made to retrieve it.
     def initialize(pid, version: nil)
       @pid = pid
-      @version = version
+      @version = version || fetch_version
     end
 
     def allows_modification?
       !client.lifecycle('dor', pid, 'submitted') ||
-        client.active_lifecycle('dor', pid, 'opened') ||
+        client.lifecycle('dor', pid, 'opened', version: version) ||
         client.workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer') == 'hold'
     end
 
     private
 
-    attr_reader :pid
+    attr_reader :pid, :version
+
+    def fetch_version
+      Deprecation.warn(self, 'Calling the state service without passing in a version is deprecated and will be removed in dor-services 9')
+      Dor.find(pid).current_version
+    end
 
     def client
       Dor::Config.workflow.client
