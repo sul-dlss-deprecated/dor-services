@@ -37,7 +37,7 @@ RSpec.describe Dor::StateService do
         it 'returns true' do
           expect(allows_modification?).to be true
           expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'submitted')
-          expect(Dor::Config.workflow.client).to have_received(:active_lifecycle).with('dor', 'ab12cd3456', 'opened')
+          expect(Dor::Config.workflow.client).to have_received(:active_lifecycle).with('dor', 'ab12cd3456', 'opened', version: 4)
         end
       end
 
@@ -51,7 +51,7 @@ RSpec.describe Dor::StateService do
         it 'returns true' do
           expect(allows_modification?).to be true
           expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'submitted')
-          expect(Dor::Config.workflow.client).to have_received(:active_lifecycle).with('dor', 'ab12cd3456', 'opened')
+          expect(Dor::Config.workflow.client).to have_received(:active_lifecycle).with('dor', 'ab12cd3456', 'opened', version: 4)
         end
       end
     end
@@ -79,7 +79,7 @@ RSpec.describe Dor::StateService do
         it 'returns true' do
           expect(allows_modification?).to be true
           expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'submitted')
-          expect(Dor::Config.workflow.client).to have_received(:active_lifecycle).with('dor', 'ab12cd3456', 'opened')
+          expect(Dor::Config.workflow.client).to have_received(:active_lifecycle).with('dor', 'ab12cd3456', 'opened', version: 3)
         end
       end
 
@@ -93,7 +93,7 @@ RSpec.describe Dor::StateService do
         it 'returns true' do
           expect(allows_modification?).to be true
           expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'submitted')
-          expect(Dor::Config.workflow.client).to have_received(:active_lifecycle).with('dor', 'ab12cd3456', 'opened')
+          expect(Dor::Config.workflow.client).to have_received(:active_lifecycle).with('dor', 'ab12cd3456', 'opened', version: 3)
         end
       end
     end
