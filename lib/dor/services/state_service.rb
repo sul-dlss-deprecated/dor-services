@@ -13,7 +13,7 @@ module Dor
 
     def allows_modification?
       !client.lifecycle('dor', pid, 'submitted') ||
-        client.lifecycle('dor', pid, 'opened', version: version) ||
+        client.active_lifecycle('dor', pid, 'opened') ||
         client.workflow_status('dor', pid, 'accessionWF', 'sdr-ingest-transfer') == 'hold'
     end
 
