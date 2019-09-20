@@ -4,7 +4,7 @@ module Dor
   class StateService
     extend Deprecation
 
-    # having version is prefered as without it, a call to
+    # having version is preferred as without it, a call to
     # fedora will be made to retrieve it.
     def initialize(pid, version: nil)
       @pid = pid
