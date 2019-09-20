@@ -30,26 +30,28 @@ RSpec.describe Dor::StateService do
 
       context 'if there is an open version' do
         before do
-          allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true, true)
+          allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true)
+          allow(Dor::Config.workflow.client).to receive(:active_lifecycle).and_return(true)
         end
 
         it 'returns true' do
           expect(allows_modification?).to be true
           expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'submitted')
-          expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'opened', version: 4)
+          expect(Dor::Config.workflow.client).to have_received(:active_lifecycle).with('dor', 'ab12cd3456', 'opened')
         end
       end
 
       context 'when the item has sdr-ingest-transfer set to hold' do
         before do
-          allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true, false)
+          allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true)
+          allow(Dor::Config.workflow.client).to receive(:active_lifecycle).and_return(false)
           allow(Dor::Config.workflow.client).to receive(:workflow_status).and_return('hold')
         end
 
         it 'returns true' do
           expect(allows_modification?).to be true
           expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'submitted')
-          expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'opened', version: 4)
+          expect(Dor::Config.workflow.client).to have_received(:active_lifecycle).with('dor', 'ab12cd3456', 'opened')
         end
       end
     end
@@ -70,26 +72,28 @@ RSpec.describe Dor::StateService do
 
       context 'if there is an open version' do
         before do
-          allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true, true)
+          allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true)
+          allow(Dor::Config.workflow.client).to receive(:active_lifecycle).and_return(true)
         end
 
         it 'returns true' do
           expect(allows_modification?).to be true
           expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'submitted')
-          expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'opened', version: 3)
+          expect(Dor::Config.workflow.client).to have_received(:active_lifecycle).with('dor', 'ab12cd3456', 'opened')
         end
       end
 
       context 'when the item has sdr-ingest-transfer set to hold' do
         before do
-          allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true, false)
+          allow(Dor::Config.workflow.client).to receive(:lifecycle).and_return(true)
+          allow(Dor::Config.workflow.client).to receive(:active_lifecycle).and_return(false)
           allow(Dor::Config.workflow.client).to receive(:workflow_status).and_return('hold')
         end
 
         it 'returns true' do
           expect(allows_modification?).to be true
           expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'submitted')
-          expect(Dor::Config.workflow.client).to have_received(:lifecycle).with('dor', 'ab12cd3456', 'opened', version: 3)
+          expect(Dor::Config.workflow.client).to have_received(:active_lifecycle).with('dor', 'ab12cd3456', 'opened')
         end
       end
     end
