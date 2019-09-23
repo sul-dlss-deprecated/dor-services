@@ -8,12 +8,15 @@ RSpec.describe Dor::StateService do
 
     let(:pid) { 'ab12cd3456' }
 
+    before do
+      allow(Deprecation).to receive(:warn)
+    end
+
     context 'when version is not passed in' do
       let(:service) { described_class.new(pid) }
       let(:item) { instance_double(Dor::Item, current_version: 4) }
 
       before do
-        allow(Deprecation).to receive(:warn)
         allow(Dor).to receive(:find).and_return(item)
       end
 
