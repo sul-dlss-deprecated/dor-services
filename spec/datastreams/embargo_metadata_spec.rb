@@ -72,9 +72,11 @@ describe Dor::EmbargoMetadataDS do
     it '= sets status' do
       expect(@ds.term_values(:status)).to eq(['released'])
     end
+
     it '= marks the datastream as changed' do
       expect(@ds).to be_changed
     end
+
     it 'gets the current value of status' do
       expect(@ds.status).to eq('released')
     end
@@ -91,9 +93,11 @@ describe Dor::EmbargoMetadataDS do
       rd = Time.parse(@ds.term_values(:release_date).first)
       expect(rd.strftime('%FT%T%z')).to eq(@t.strftime('%FT%T%z')) # not strictly equal since "now" has millesecond granularity
     end
+
     it '= marks the datastram as changed' do
       expect(@ds).to be_changed
     end
+
     it 'gets the current value of releaseDate as a Time object' do
       rd = @ds.release_date
       expect(rd).to be_a(Time)

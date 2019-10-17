@@ -228,26 +228,31 @@ RSpec.describe Dor::Item do
       expect { item.source_id = ':EmptyFirstPart' }.to raise_error ArgumentError
       expect { item.source_id = 'WhitespaceSecondPart:   ' }.to raise_error ArgumentError
     end
+
     it 'sets the source_id' do
       item.source_id = 'fake:sourceid'
       expect(item.identityMetadata.sourceId).to eq('fake:sourceid')
     end
+
     it 'replaces the source_id if one exists' do
       item.source_id = 'fake:sourceid'
       expect(item.identityMetadata.sourceId).to eq('fake:sourceid')
       item.source_id = 'new:sourceid2'
       expect(item.identityMetadata.sourceId).to eq('new:sourceid2')
     end
+
     it 'does normalization via identityMetadata.sourceID=' do
       item.source_id = ' SourceX :  Value Y  '
       expect(item.source_id).to eq('SourceX:Value Y')
     end
+
     it 'allows colons in the value' do
       item.source_id = 'one:two:three'
       expect(item.source_id).to eq('one:two:three')
       item.source_id = 'one::two::three'
       expect(item.source_id).to eq('one::two::three')
     end
+
     it 'deletes the sourceId node on nil or empty-string' do
       item.source_id = nil
       expect(item.source_id).to be_nil
@@ -267,9 +272,11 @@ RSpec.describe Dor::Item do
     it 'gets the current catkey with the convenience method' do
       expect(item.catkey).to eq(current_catkey)
     end
+
     it 'gets the previous catkeys with the convenience method' do
       expect(item.previous_catkeys).to eq([])
     end
+
     it 'updates the catkey when one exists, and store the previous value (when there is no current history yet)' do
       expect(item.identityMetadata.otherId('catkey').length).to eq(1)
       expect(item.catkey).to eq(current_catkey)
@@ -280,6 +287,7 @@ RSpec.describe Dor::Item do
       expect(item.previous_catkeys.length).to eq(1)
       expect(item.previous_catkeys).to eq([current_catkey])
     end
+
     it 'adds the catkey when it does not exist and never did' do
       item.identityMetadata.remove_other_Id('catkey')
       expect(item.identityMetadata.otherId('catkey').length).to eq(0)
@@ -290,6 +298,7 @@ RSpec.describe Dor::Item do
       expect(item.catkey).to eq(new_catkey)
       expect(item.previous_catkeys).to be_empty
     end
+
     it 'adds the catkey when it does not currently exist and there is a previous history (not touching that)' do
       item.identityMetadata.remove_other_Id('catkey')
       expect(item.identityMetadata.otherId('catkey').length).to eq(0)
@@ -303,6 +312,7 @@ RSpec.describe Dor::Item do
       expect(item.previous_catkeys.length).to eq(2) # still two entries, nothing changed in the history
       expect(item.previous_catkeys).to eq(%w[123 456])
     end
+
     it 'removes the catkey from the XML when it is set to blank, but store the previously set value in the history' do
       expect(item.identityMetadata.otherId('catkey').length).to eq(1)
       expect(item.catkey).to eq(current_catkey)
@@ -375,21 +385,27 @@ RSpec.describe Dor::Item do
       expect('ab123cd4567'.match(item.pid_regex).size).to eq(1)
       expect(Deprecation).to have_received(:warn)
     end
+
     it 'pulls out a pid by regex' do
       expect('druid:ab123cd4567/other crappola'.match(item.pid_regex)[0]).to eq('ab123cd4567')
     end
+
     it 'does not identify non-pids' do
       expect('bogus'.match(item.pid_regex)).to be_nil
     end
+
     it 'does not identify pid by druid regex' do
       expect('ab123cd4567'.match(item.druid_regex)).to be_nil
     end
+
     it 'identifies full druid by regex' do
       expect('druid:ab123cd4567'.match(item.druid_regex).size).to eq(1)
     end
+
     it 'pulls out a full druid by regex' do
       expect('druid:ab123cd4567/other crappola'.match(item.druid_regex)[0]).to eq('druid:ab123cd4567')
     end
+
     it 'does not identify non-druids' do
       expect('bogus'.match(item.druid_regex)).to be_nil
     end

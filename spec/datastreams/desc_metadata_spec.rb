@@ -93,11 +93,13 @@ describe Dor::DescMetadataDS do
       expect(doc).to match a_hash_including('subject_geographic_tesim' => ['First Place', 'Other Place, Nation;'])
       expect(doc).to match a_hash_including('abstract_tesim'           => ['Abstract contents.'])
     end
+
     it 'writing elements via OM terms should produce correct XML' do
       @partial.language.languageTerm = 'eng'
       @partial.abstract = 'Abstract contents.'
       expect(@partial.to_xml).to be_equivalent_to(@dsdoc.to_xml)
     end
+
     it 'does not throw an error when retrieving title_info if titleInfo is missing from the xml' do
       expect(@empty.title_info.main_title).to eq([])
     end

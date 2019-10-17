@@ -151,6 +151,7 @@ describe Dor::VersionMetadataDS do
       ds = described_class.from_xml(dsxml)
       expect(ds.current_tag).to eq('2.1.0')
     end
+
     it 'works if there is no tag' do
       no_tag = '<versionMetadata><version versionId="3">
       <description>Some text</description>
@@ -166,6 +167,7 @@ describe Dor::VersionMetadataDS do
       ds = described_class.from_xml(dsxml)
       expect(ds.current_description).to eq('Fixed title typo')
     end
+
     it 'works ok if there isnt a description' do
       no_desc = '<versionMetadata><version versionId="3" tag="2.1.0">
       </version>
@@ -187,6 +189,7 @@ describe Dor::VersionMetadataDS do
       ds = described_class.from_xml(dsxml)
       expect(ds.description_for_version('3')).to eq('Fixed title typo')
     end
+
     it 'returns empty string if the description doesnt exist' do
       no_desc = '<versionMetadata>
       <version versionId="3" tag="2.1.0">

@@ -8,7 +8,7 @@ RSpec.describe Dor::SearchService do
     RSolr::Client.default_wt = :ruby
   end
 
-  context '.query' do
+  describe '.query' do
     let(:solr_field) { Solrizer.solr_name('dor_id', :stored_searchable) }
 
     before do
@@ -48,7 +48,7 @@ RSpec.describe Dor::SearchService do
     end
   end
 
-  context '.query_by_id' do
+  describe '.query_by_id' do
     before do
       @pid = 'druid:ab123cd4567'
     end

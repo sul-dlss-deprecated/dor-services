@@ -52,6 +52,7 @@ RSpec.describe Dor::ContentMetadataDS do
       expect(file['size']).to eq('12345')
       expect(file['role']).to eq('some-role')
     end
+
     it 'errors out if there isnt an existing record to modify' do
       expect { @cm.update_file(@file, 'gw177fc7976_05_0001_different.jp2') }.to raise_error(StandardError)
     end
@@ -80,6 +81,7 @@ RSpec.describe Dor::ContentMetadataDS do
       expect(labels.length).to eq(1)
       expect(labels.first.content).to eq('label!')
     end
+
     it 'adds a new label' do
       @cm.update_resource_label '0001', 'qbert!'
       labels = @cm.ng_xml.search('//resource[@id=\'0001\']/label')
