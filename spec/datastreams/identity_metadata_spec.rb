@@ -87,6 +87,7 @@ RSpec.describe Dor::IdentityMetadataDS do
         expect(@dsdoc.sourceId).to be_nil
         expect(@dsdoc.to_xml).to be_equivalent_to resultxml
       end
+
       it 'on empty string' do
         @dsdoc.sourceId = ''
         expect(@dsdoc.sourceId).to be_nil

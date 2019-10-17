@@ -244,6 +244,7 @@ RSpec.describe Dor::AdminPolicyObject do
     it 'fetches the default collections' do
       expect(@apo.default_collections).to eq(['druid:fz306fj8334'])
     end
+
     it 'does not fail on an item with an empty datastream' do
       expect(@empty_item.default_collections).to eq([])
     end
@@ -254,6 +255,7 @@ RSpec.describe Dor::AdminPolicyObject do
       @apo.add_default_collection 'druid:fz306fj8335'
       expect(@apo.default_collections).to eq ['druid:fz306fj8334', 'druid:fz306fj8335']
     end
+
     it 'works for empty datastreams' do
       @empty_item.add_default_collection 'druid:fz306fj8335'
       expect(@empty_item.default_collections).to eq ['druid:fz306fj8335']
@@ -265,6 +267,7 @@ RSpec.describe Dor::AdminPolicyObject do
       @apo.remove_default_collection 'druid:fz306fj8334'
       expect(@apo.default_collections).to eq([])
     end
+
     it 'works on an empty datastream' do
       @empty_item.add_default_collection 'druid:fz306fj8335'
       @empty_item.remove_default_collection 'druid:fz306fj8335'
@@ -282,6 +285,7 @@ RSpec.describe Dor::AdminPolicyObject do
       }
       expect(@apo.roles).to eq exp_result
     end
+
     it 'does not fail on an item with an empty datastream' do
       expect(@empty_item.roles).to eq({})
     end
@@ -296,6 +300,7 @@ RSpec.describe Dor::AdminPolicyObject do
         'specific permission from the copyright holder. To access this content or to ' \
         'request reproduction permission, please send a written request to speccollref@stanford.edu.')
     end
+
     it 'does not fail on an item with an empty datastream' do
       expect(@empty_item.use_statement).to eq('')
     end
@@ -306,6 +311,7 @@ RSpec.describe Dor::AdminPolicyObject do
       @apo.use_statement = 'hi'
       expect(@apo.use_statement).to eq('hi')
     end
+
     it 'assigns null use statements' do
       ['  ', nil].each do |v|
         @apo.use_statement = v
@@ -313,6 +319,7 @@ RSpec.describe Dor::AdminPolicyObject do
         expect(@apo.defaultObjectRights.ng_xml.at_xpath('/rightsMetadata/use/human[@type="useAndReproduction"]')).to be_nil
       end
     end
+
     it 'fails if trying to set use statement after it is null' do
       @apo.use_statement = nil
       expect { @apo.use_statement = 'force fail' }.not_to raise_error
@@ -323,6 +330,7 @@ RSpec.describe Dor::AdminPolicyObject do
     it 'finds the copyright statement' do
       expect(@apo.copyright_statement).to eq('Additional copyright info')
     end
+
     it 'does not fail on an item with an empty datastream' do
       expect(@empty_item.copyright_statement).to eq('')
     end
@@ -335,6 +343,7 @@ RSpec.describe Dor::AdminPolicyObject do
       doc = Nokogiri::XML(@apo.defaultObjectRights.content)
       expect(doc.at_xpath('/rightsMetadata/copyright/human[@type="copyright"]').text).to eq('hi')
     end
+
     it 'assigns null copyright' do
       @apo.copyright_statement = nil
       expect(@apo.copyright_statement).to be_nil
@@ -342,10 +351,12 @@ RSpec.describe Dor::AdminPolicyObject do
       expect(doc.at_xpath('/rightsMetadata/copyright')).to be_nil
       expect(doc.at_xpath('/rightsMetadata/copyright/human[@type="copyright"]')).to be_nil
     end
+
     it 'assigns blank copyright' do
       @apo.copyright_statement = ' '
       expect(@apo.copyright_statement).to be_nil
     end
+
     it 'errors if assigning copyright after removing one' do
       @apo.copyright_statement = nil
       @apo.copyright_statement = nil # call twice to ensure repeatability
@@ -357,6 +368,7 @@ RSpec.describe Dor::AdminPolicyObject do
     it 'gets the metadata source' do
       expect(@apo.metadata_source).to eq('MDToolkit')
     end
+
     it 'gets nil for an empty datastream' do
       expect(@empty_item.metadata_source).to eq(nil)
     end
@@ -368,6 +380,7 @@ RSpec.describe Dor::AdminPolicyObject do
       expect(@apo.metadata_source).to eq('Symphony')
       expect(@apo.administrativeMetadata).to be_changed
     end
+
     it 'sets the metadata source for an empty datastream' do
       @empty_item.desc_metadata_format = 'TEI'
       @empty_item.metadata_source = 'Symphony'
@@ -379,6 +392,7 @@ RSpec.describe Dor::AdminPolicyObject do
     it 'finds the creative commons license' do
       expect(@apo.creative_commons_license).to eq('by-nc-sa')
     end
+
     it 'does not fail on an item with an empty datastream' do
       expect(@empty_item.creative_commons_license).to eq('')
     end
@@ -396,6 +410,7 @@ RSpec.describe Dor::AdminPolicyObject do
       @empty_item.creative_commons_license = 'by-nc'
       expect(@empty_item.creative_commons_license).to eq('by-nc')
     end
+
     it 'does not create multiple use nodes' do
       @empty_item.creative_commons_license = 'pdm'
       @empty_item.creative_commons_license_human = 'greetings'
@@ -412,6 +427,7 @@ RSpec.describe Dor::AdminPolicyObject do
       @apo.creative_commons_license_human = 'greetings'
       expect(@apo.creative_commons_license_human).to eq('greetings')
     end
+
     it 'works on an empty ds' do
       @empty_item.creative_commons_license_human = 'greetings'
       expect(@empty_item.creative_commons_license_human).to eq('greetings')
@@ -468,6 +484,7 @@ RSpec.describe Dor::AdminPolicyObject do
     it 'finds the default object rights' do
       expect(@apo.default_rights).to eq('world')
     end
+
     it 'uses the OM template if the ds is empty' do
       expect(@empty_item.default_rights).to eq('world')
     end
@@ -478,6 +495,7 @@ RSpec.describe Dor::AdminPolicyObject do
       @apo.default_rights = 'stanford'
       expect(@apo.default_rights).to eq('stanford')
     end
+
     it 'works on an empty ds' do
       @empty_item.default_rights = 'stanford'
       expect(@empty_item.default_rights).to eq('stanford')
@@ -488,17 +506,21 @@ RSpec.describe Dor::AdminPolicyObject do
     it 'finds the desc metadata format' do
       expect(@apo.desc_metadata_format).to eq('MODS')
     end
+
     it 'does not fail on an item with an empty datastream' do
       expect(@empty_item.desc_metadata_format).to eq(nil)
     end
+
     it 'sets dark correctly' do
       @apo.default_rights = 'dark'
       expect(@apo.default_rights).to eq('dark')
     end
+
     it 'setters should be case insensitive' do
       @apo.default_rights = 'Dark'
       expect(@apo.default_rights).to eq('dark')
     end
+
     it 'sets read rights to none for dark' do
       @apo.default_rights = 'Dark'
       xml = @apo.datastreams['defaultObjectRights'].ng_xml
@@ -511,6 +533,7 @@ RSpec.describe Dor::AdminPolicyObject do
       @apo.desc_metadata_format = 'TEI'
       expect(@apo.desc_metadata_format).to eq('TEI')
     end
+
     it 'sets the desc metadata format for an empty datastream' do
       @empty_item.desc_metadata_format = 'TEI'
       expect(@empty_item.desc_metadata_format).to eq('TEI')
@@ -521,6 +544,7 @@ RSpec.describe Dor::AdminPolicyObject do
     it 'gets the title' do
       expect(@apo.mods_title).to eq('Ampex')
     end
+
     it 'does not fail on an item with an empty datastream' do
       expect(@empty_item.mods_title).to eq('')
     end
@@ -531,6 +555,7 @@ RSpec.describe Dor::AdminPolicyObject do
       @apo.mods_title = 'hello world'
       expect(@apo.mods_title).to eq('hello world')
     end
+
     it 'works on an empty datastream' do
       @empty_item.mods_title = 'hello world'
       expect(@empty_item.mods_title).to eq('hello world')
@@ -541,10 +566,12 @@ RSpec.describe Dor::AdminPolicyObject do
     it 'finds the default workflows' do
       expect(@apo.default_workflows).to eq(['digitizationWF'])
     end
+
     it 'is able to set default workflows' do
       @apo.default_workflow = 'accessionWF'
       expect(@apo.default_workflows).to eq(['accessionWF'])
     end
+
     it 'is not able to set a null default workflows' do
       expect { @apo.default_workflow = '' }.to raise_error(ArgumentError)
       expect(@apo.default_workflows).to eq(['digitizationWF']) # the original default workflow
@@ -556,6 +583,7 @@ RSpec.describe Dor::AdminPolicyObject do
       @apo.copyright_statement = 'hi'
       expect(@apo.copyright_statement).to eq('hi')
     end
+
     it 'works on an empty datastream' do
       @empty_item.copyright_statement = 'hi'
       expect(@empty_item.copyright_statement).to eq('hi')
@@ -580,6 +608,7 @@ RSpec.describe Dor::AdminPolicyObject do
       @apo.default_workflow = 'thisWF'
       expect(@apo.default_workflows).to include('thisWF')
     end
+
     it 'works on an empty ds' do
       @empty_item.default_workflow = 'thisWF'
       expect(@empty_item.default_workflows).to include('thisWF')

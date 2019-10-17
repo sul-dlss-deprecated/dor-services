@@ -35,12 +35,14 @@ RSpec.describe Dor::CompositeIndexer do
           'sw_pub_date_facet_ssi' => '1600'
         )
       end
+
       it 'subject geographic fields' do
         expect(doc).to match a_hash_including(
           'sw_subject_geographic_ssim' => %w(Europe Europe),
           'sw_subject_geographic_tesim' => %w(Europe Europe)
         )
       end
+
       it 'genre fields' do
         genre_list = obj.stanford_mods.sw_genre
         expect(doc).to match a_hash_including(

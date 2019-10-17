@@ -19,6 +19,7 @@ describe Dor::EventsDS do
       ds = described_class.from_xml(@dsxml)
       expect(ds.find_by_terms(:event).size).to eq(4)
     end
+
     it 'creates a simple default with #new' do
       ds = described_class.new nil, 'events'
       expect(ds.to_xml).to be_equivalent_to('<events/>')

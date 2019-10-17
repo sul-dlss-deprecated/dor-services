@@ -315,16 +315,19 @@ RSpec.describe Dor::RightsMetadataDS do
       ## use.human differs from use_statement: the former hits multiple elements, the latter only one
       expect(@rm.use.human).to eq ['Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.', 'Attribution Non-Commercial 3.0 Unported']
     end
+
     it 'has a Dor::RightsAuth dra_object' do
       expect(@rm.dra_object).to be_a(Dor::RightsAuth)
       expect(@rm.dra_object.index_elements).to match a_hash_including(primary: 'world_qualified', errors: [])
     end
+
     it 'reads creative commons licenses correctly' do
       expect(@rm.creative_commons).to eq ['by-nc']
       # The following tests fail if terminology defined with :type instead of :path => '/x/y[@type=...]'
       expect(@rm.creative_commons_human).not_to include 'Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.'
       expect(@rm.creative_commons_human).to eq ['Attribution Non-Commercial 3.0 Unported']
     end
+
     it 'does not test open data commons licenses' do
       skip
     end

@@ -78,6 +78,7 @@ RSpec.describe Dor::EmbargoService do
         rights = embargo_item.datastreams['rightsMetadata'].ng_xml
         expect(rights.at_xpath('//embargoReleaseDate')).to be_nil
       end
+
       it 'replaces/adds access nodes with nodes from embargoMetadata/releaseAccess' do
         rights = embargo_item.datastreams['rightsMetadata'].ng_xml
         expect(rights.xpath("//rightsMetadata/access[@type='read']").size).to eq(2)
@@ -85,10 +86,12 @@ RSpec.describe Dor::EmbargoService do
         expect(rights.xpath("//rightsMetadata/access[@type='read']/machine/world").size).to eq(1)
         expect(rights.at_xpath("//rightsMetadata/access[@type='read' and not(file)]/machine/group")).to be_nil
       end
+
       it "handles more than one <access type='read'> node in <releaseAccess>, even those with <file> nodes" do
         rights = embargo_item.datastreams['rightsMetadata'].ng_xml
         expect(rights.xpath("//rightsMetadata/access[@type='read']/file").size).to eq(1)
       end
+
       it 'marks the datastream as changed' do
         expect(embargo_item.datastreams['rightsMetadata']).to be_changed
       end

@@ -7,6 +7,7 @@ module Dor
     # having version is preferred as without it, a call to
     # fedora will be made to retrieve it.
     def initialize(pid, version: nil)
+      Deprecation.warn(self, 'Dor::StateService is deprecated and will be removed in dor-services 9')
       @pid = pid
       @version = version || fetch_version
     end
