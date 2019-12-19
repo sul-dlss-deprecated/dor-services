@@ -10,7 +10,7 @@ module Dor
     MAX_ERROR_LENGTH = 32_768 - 2 - ERROR_OMISSION.length
     private_constant :MAX_ERROR_LENGTH
 
-    # @param [Dor::WorkflowDocument] document the workflow document to index
+    # @param [Dor::Workflow::Document] document the workflow document to index
     def initialize(document:)
       @document = document
     end
