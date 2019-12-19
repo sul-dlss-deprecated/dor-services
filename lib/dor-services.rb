@@ -57,6 +57,7 @@ module Dor
     autoload :EditableIndexer
     autoload :IdentifiableIndexer
     autoload :ProcessableIndexer
+    autoload :ProcessIndexer
     autoload :ReleasableIndexer
     autoload :WorkflowIndexer
     autoload :WorkflowsIndexer

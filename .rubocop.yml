@@ -9,6 +9,9 @@ Naming/FileName:
     - 'lib/dor-services.rb'
     - 'spec/dor/releaseable_no_VCR_spec.rb'
 
+Naming/PredicateName:
+  NamePrefixBlacklist: is_
+
 Metrics/BlockLength:
   Max: 38
   ExcludedMethods:
