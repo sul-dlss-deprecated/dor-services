@@ -18,11 +18,8 @@ module Dor
     # @return [Hash] the partial solr document for the workflow document
     def to_solr
       WorkflowSolrDocument.new do |solr_doc|
-        wf_name = document.workflowId.first
         solr_doc.name = wf_name
         errors = processes.count(&:error?)
-
-        repo = document.repository.first
         solr_doc.status = [wf_name, workflow_status, errors, repo].join('|')
 
         processes.each do |process|
@@ -35,6 +32,14 @@ module Dor
 
     attr_reader :document
     delegate :processes, to: :document
+
+    def wf_name
+      @wf_name ||= document.workflowId.first
+    end
+
+    def repo
+      document.repository.first
+    end
 
     def index_process(solr_doc, wf_name, process)
       return unless process.status.present?
