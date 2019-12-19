@@ -20,7 +20,7 @@ module Dor
 
     private
 
-    # @return [Array<Dor::WorkflowDocument>]
+    # @return [Array<Dor::Workflow::Document>]
     def workflows
       # TODO: this could use the models in dor-workflow-service: https://github.com/sul-dlss/dor-workflow-client/pull/101
       nodeset = Nokogiri::XML(all_workflows_xml).xpath('/workflows/workflow')
