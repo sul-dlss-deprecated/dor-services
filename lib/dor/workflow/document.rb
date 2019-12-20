@@ -23,6 +23,7 @@ module Dor
       @@definitions = {}
 
       def initialize(node)
+        Deprecation.warn(self, 'Dor::Workflow::Document is deprecated and will be removed from dor-services version 9')
         self.ng_xml = Nokogiri::XML(node)
       end
 

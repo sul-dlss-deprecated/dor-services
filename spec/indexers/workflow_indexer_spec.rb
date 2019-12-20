@@ -3,17 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Dor::WorkflowIndexer do
-  let(:document) { Dor::Workflow::Document.new(xml) }
-  let(:indexer) { described_class.new(document: document) }
+  before do
+    stub_request(:get, 'https://workflow.example.edu/workflow_templates/accessionWF')
+      .to_return(status: 200, body: json)
+  end
 
-  let(:wf_definition) { instance_double(Dor::WorkflowDefinitionDs, processes: wf_definition_procs) }
-  let(:wf_definition_procs) do
-    [
-      Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step1, 'lifecycle' => 'lc', 'status' => 'stat', 'sequence' => '1'),
-      Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step2, 'status' => 'waiting', 'sequence' => '2', 'prerequisite' => ['hello']),
-      Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step3, 'status' => 'error', 'sequence' => '3'),
-      Dor::Workflow::Process.new('accessionWF', 'dor', 'name' => step4, 'sequence' => '4')
-    ]
+  let(:document) { Dor::Workflow::Response::Workflow.new(xml: xml) }
+  let(:indexer) { described_class.new(workflow: document) }
+
+  let(:json) do
+    '{"processes":[{"name":"hello"},{"name":"goodbye"},{"name":"technical-metadata"},{"name":"some-other-step"}]}'
   end
 
   let(:step1) { 'hello' }
@@ -23,10 +22,6 @@ RSpec.describe Dor::WorkflowIndexer do
 
   describe '#to_solr' do
     subject(:solr_doc) { indexer.to_solr.to_h }
-
-    before do
-      allow(document).to receive(:definition).and_return(wf_definition)
-    end
 
     let(:xml) do
       <<-XML
@@ -44,21 +39,6 @@ RSpec.describe Dor::WorkflowIndexer do
       expect(solr_doc[Solrizer.solr_name('workflow_status', :symbol)].first).to eq('accessionWF|active|0|dor')
     end
 
-    context 'when the xml contains a process list with a waiting items that have a prerequisite' do
-      let(:xml) do
-        <<-XML
-        <?xml version="1.0" encoding="UTF-8"?>
-        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
-          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1" datetime="2012-11-06T16:18:24-0800" status="inprogress" name="hello"/>
-        </workflow>
-        XML
-      end
-
-      it 'indexes the right workflow status (active)' do
-        expect(solr_doc).to match a_hash_including('workflow_status_ssim' => ['accessionWF|active|1|dor'])
-      end
-    end
-
     context 'when all steps are completed or skipped' do
       let(:xml) do
         <<-XML
@@ -67,33 +47,11 @@ RSpec.describe Dor::WorkflowIndexer do
           <process version="2" elapsed="0.0" archived="true" attempts="1"
            datetime="2012-11-06T16:18:58-0800" status="skipped" name="hello"/>
           <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
-           datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+           datetime="2012-11-06T16:18:24-0800" status="completed" name="some-other-step"/>
           <process version="2" elapsed="0.0" archived="true" attempts="1"
            datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
           <process version="2" elapsed="0.0" archived="true" attempts="1"
            datetime="2012-11-06T16:18:58-0800" status="skipped" name="goodbye"/>
-        </workflow>
-        XML
-      end
-
-      it 'indexes the right workflow status (completed)' do
-        expect(solr_doc).to match a_hash_including('workflow_status_ssim' => ['accessionWF|completed|0|dor'])
-      end
-    end
-
-    context 'when a step has an empty status' do
-      let(:xml) do
-        <<-XML
-        <?xml version="1.0" encoding="UTF-8"?>
-        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
-          <process version="2" elapsed="0.0" archived="true" attempts="1"
-           datetime="2012-11-06T16:18:58-0800" status="skipped" name="hello"/>
-          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
-           datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
-          <process version="2" elapsed="0.0" archived="true" attempts="1"
-           datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
-          <process version="2" elapsed="0.0" archived="true" attempts="1"
-           datetime="2012-11-06T16:18:58-0800" status="" name="goodbye"/>
         </workflow>
         XML
       end

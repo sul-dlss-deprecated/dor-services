@@ -17,6 +17,7 @@ RSpec.describe Dor::Workflow::Document do
   let(:stub_wfo) { instance_double(Dor::WorkflowObject, definition: wf_definition) }
 
   before do
+    allow(Deprecation).to receive(:warn)
     # Wipe out the cache
     described_class.class_variable_set(:@@definitions, {})
     allow(Dor::WorkflowObject).to receive(:find_by_name).and_return(stub_wfo)

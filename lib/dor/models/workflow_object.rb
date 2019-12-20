@@ -3,6 +3,7 @@
 require 'dor/datastreams/workflow_definition_ds'
 
 module Dor
+  # @deprecated
   class WorkflowObject < Dor::Abstract
     has_object_type 'workflow'
     has_metadata name: 'workflowDefinition', type: Dor::WorkflowDefinitionDs, label: 'Workflow Definition'

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Dor
+  # @deprecated
   class WorkflowDefinitionDs < ActiveFedora::OmDatastream
     include SolrDocHelper
 
