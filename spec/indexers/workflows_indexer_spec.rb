@@ -60,31 +60,75 @@ RSpec.describe Dor::WorkflowsIndexer do
       XML
     end
 
-    let(:assemblyWF) { instance_double(Dor::WorkflowObject, definition: definition) }
-    let(:definition) { instance_double(Dor::WorkflowDefinitionDs, processes: workflow_steps) }
-    let(:workflow_name) { 'assemblyWF' }
-    let(:workflow_steps) do
-      [
-        Dor::Workflow::Process.new('dor', workflow_name, 'name' => 'start-assembly', 'sequence' => 1),
-        Dor::Workflow::Process.new('dor', workflow_name, 'name' => 'content-metadata-create', 'sequence' => 2),
-        Dor::Workflow::Process.new('dor', workflow_name, 'name' => 'jp2-create', 'sequence' => 3),
-        Dor::Workflow::Process.new('dor', workflow_name, 'name' => 'checksum-compute', 'sequence' => 4),
-        Dor::Workflow::Process.new('dor', workflow_name, 'name' => 'exif-collect', 'sequence' => 5),
-        Dor::Workflow::Process.new('dor', workflow_name, 'name' => 'accessioning-initiate', 'sequence' => 6)
-      ]
+    let(:accession_json) do
+      { 'processes' => [
+        { 'name' => 'start-accession' },
+        { 'name' => 'descriptive-metadata' },
+        { 'name' => 'rights-metadata' },
+        { 'name' => 'content-metadata' },
+        { 'name' => 'technical-metadata' },
+        { 'name' => 'remediate-object' },
+        { 'name' => 'shelve' },
+        { 'name' => 'publish' },
+        { 'name' => 'provenance-metadata' },
+        { 'name' => 'sdr-ingest-transfer' },
+        { 'name' => 'sdr-ingest-received' },
+        { 'name' => 'reset-workspace' },
+        { 'name' => 'end-accession' }
+      ] }
+    end
+
+    let(:assembly_json) do
+      { 'processes' => [
+        { 'name' => 'start-assembly' },
+        { 'name' => 'content-metadata-create' },
+        { 'name' => 'jp2-create' },
+        { 'name' => 'checksum-compute' },
+        { 'name' => 'exif-collect' },
+        { 'name' => 'accessioning-initiate' }
+      ] }
+    end
+
+    let(:dissemination_json) do
+      {
+        'processes' => [
+          { 'name' => 'cleanup' }
+        ]
+      }
+    end
+
+    let(:hydrus_json) do
+      { 'processes' => [
+        { 'name' => 'start-deposit' },
+        { 'name' => 'submit' },
+        { 'name' => 'approve' },
+        { 'name' => 'start-assembly' }
+      ] }
+    end
+
+    let(:versioning_json) do
+      { 'processes' => [
+        { 'name' => 'start-version' },
+        { 'name' => 'submit-version' },
+        { 'name' => 'start-accession' }
+      ] }
     end
 
     before do
-      # Wipe out the cache
-      Dor::Workflow::Document.class_variable_set(:@@definitions, {})
-      allow(Dor::WorkflowObject).to receive(:find_by_name).and_return(assemblyWF)
-      allow(Dor::Config.workflow.client).to receive(:all_workflows_xml).and_return(xml)
+      allow(Dor::Config.workflow.client).to receive(:workflow_template).with('accessionWF').and_return(accession_json)
+      allow(Dor::Config.workflow.client).to receive(:workflow_template).with('assemblyWF').and_return(assembly_json)
+      allow(Dor::Config.workflow.client).to receive(:workflow_template).with('disseminationWF').and_return(dissemination_json)
+      allow(Dor::Config.workflow.client).to receive(:workflow_template).with('hydrusAssemblyWF').and_return(hydrus_json)
+      allow(Dor::Config.workflow.client).to receive(:workflow_template).with('versioningWF').and_return(versioning_json)
+
+      allow(Dor::Config.workflow.client.workflow_routes).to receive(:all_workflows)
+        .and_return(Dor::Workflow::Response::Workflows.new(xml: xml))
     end
 
     describe 'workflow_status_ssim' do
       subject { solr_doc['workflow_status_ssim'] }
 
-      it { is_expected.to eq ['accessionWF|completed|0|dor', 'assemblyWF|active|1|dor', 'disseminationWF|active|1|dor', 'hydrusAssemblyWF|active|1|dor', 'versioningWF|active|1|dor'] }
+      it { is_expected.to eq ['accessionWF|completed|0|dor', 'assemblyWF|active|1|dor', 'disseminationWF|completed|0|dor', 'hydrusAssemblyWF|completed|0|dor', 'versioningWF|completed|0|dor'] }
     end
   end
 end

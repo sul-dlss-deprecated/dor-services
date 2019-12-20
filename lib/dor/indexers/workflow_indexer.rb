@@ -10,80 +10,74 @@ module Dor
     MAX_ERROR_LENGTH = 32_768 - 2 - ERROR_OMISSION.length
     private_constant :MAX_ERROR_LENGTH
 
-    # @param [Dor::Workflow::Document] document the workflow document to index
-    def initialize(document:)
-      @document = document
+    # @param [Workflow::Response::Workflow] workflow the workflow document to index
+    def initialize(workflow:)
+      @workflow = workflow
     end
 
     # @return [Hash] the partial solr document for the workflow document
     def to_solr
       WorkflowSolrDocument.new do |solr_doc|
-        solr_doc.name = wf_name
-        errors = processes.count(&:error?)
-        solr_doc.status = [wf_name, workflow_status, errors, repo].join('|')
+        definition = Dor::Config.workflow.client.workflow_template(workflow_name)
+        solr_doc.name = workflow_name
+        processes_names = definition['processes'].map { |p| p['name'] }
 
-        processes.each do |process|
-          index_process(solr_doc, wf_name, process)
+        errors = 0 # The error count is used by the Report class in Argo
+        processes = processes_names.map do |process_name|
+          workflow.process_for_recent_version(name: process_name)
         end
+        processes.each do |process|
+          index_process(solr_doc, process)
+          errors += 1 if process.status == 'error'
+        end
+        solr_doc.status = [workflow_name, workflow_status(processes), errors, repository].join('|')
       end
     end
 
     private
 
-    attr_reader :document
-    delegate :processes, to: :document
+    attr_reader :workflow
+    delegate :workflow_name, :repository, to: :workflow
 
-    def wf_name
-      @wf_name ||= document.workflowId.first
-    end
-
-    def repo
-      document.repository.first
-    end
-
-    def index_process(solr_doc, wf_name, process)
-      return unless process.status.present?
+    # @param [Workflow::Response::Process] process
+    def index_process(solr_doc, process)
+      return unless process.status
 
       # add a record of the robot having operated on this item, so we can track robot activity
-      solr_doc.add_process_time(wf_name, process.name, Time.parse(process.date_time)) if process_has_time?(process)
+      solr_doc.add_process_time(workflow_name, process.name, Time.parse(process.datetime)) if process_has_time?(process)
 
-      index_error_message(solr_doc, wf_name, process)
+      index_error_message(solr_doc, process)
 
       # workflow name, process status then process name
-      solr_doc.add_wsp("#{wf_name}:#{process.status}", "#{wf_name}:#{process.status}:#{process.name}")
+      solr_doc.add_wsp("#{workflow_name}:#{process.status}", "#{workflow_name}:#{process.status}:#{process.name}")
 
       # workflow name, process name then process status
-      solr_doc.add_wps("#{wf_name}:#{process.name}", "#{wf_name}:#{process.name}:#{process.status}")
+      solr_doc.add_wps("#{workflow_name}:#{process.name}", "#{workflow_name}:#{process.name}:#{process.status}")
 
       # process status, workflowname then process name
-      solr_doc.add_swp(process.status.to_s, "#{process.status}:#{wf_name}", "#{process.status}:#{wf_name}:#{process.name}")
-      return if process.state == process.status
-
-      solr_doc.add_wsp("#{wf_name}:#{process.state}:#{process.name}")
-      solr_doc.add_wps("#{wf_name}:#{process.name}:#{process.state}")
-      solr_doc.add_swp(process.state.to_s, "#{process.state}:#{wf_name}", "#{process.state}:#{wf_name}:#{process.name}")
+      solr_doc.add_swp(process.status.to_s, "#{process.status}:#{workflow_name}", "#{process.status}:#{workflow_name}:#{process.name}")
     end
 
     def process_has_time?(process)
-      !process.date_time.blank? && process.status && (process.status == 'completed' || process.status == 'error')
+      process.datetime && process.status && (process.status == 'completed' || process.status == 'error')
     end
 
-    def workflow_status
+    def workflow_status(processes)
       return 'empty' if processes.empty?
 
       workflow_should_show_completed?(processes) ? 'completed' : 'active'
     end
 
     def workflow_should_show_completed?(processes)
-      processes.all? { |p| ['skipped', 'completed', '', nil].include?(p.status) }
+      processes.all? { |p| %w[skipped completed].include?(p.status) }
     end
 
     # index the error message without the druid so we hopefully get some overlap
     # truncate to avoid org.apache.lucene.util.BytesRefHash$MaxBytesLengthExceededException
-    def index_error_message(solr_doc, wf_name, process)
+    def index_error_message(solr_doc, process)
       return unless process.error_message
 
-      solr_doc.error = "#{wf_name}:#{process.name}:#{process.error_message}".truncate(MAX_ERROR_LENGTH, omission: ERROR_OMISSION)
+      solr_doc.error = "#{workflow_name}:#{process.name}:#{process.error_message}".truncate(MAX_ERROR_LENGTH, omission: ERROR_OMISSION)
     end
   end
 end

@@ -9,6 +9,7 @@ module Dor
       # @param workflow [String] the name of the workflow, e.g. 'assemblyWF'
       # @param attrs [Nokogiri::XML::Node, Hash]
       def initialize(repo, workflow, attrs)
+        Deprecation.warn(self, 'Dor::Workflow::Process is deprecated and will be removed from dor-services version 9')
         @workflow = workflow
         @repo = repo
         if attrs.is_a? Nokogiri::XML::Node
