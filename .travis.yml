@@ -7,6 +7,8 @@ notifications:
 
 rvm:
   - 2.5.3
+  - 2.6.5
+  - 2.7.0
 
 before_install:
   - docker run -d -p 8983:8080 suldlss/fcrepo:no-messaging-latest
