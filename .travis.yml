@@ -13,4 +13,4 @@ before_install:
   - docker ps
 
 env:
-  - 'RAILS_VERSION="~> 5.2.3"'
+  - 'RAILS_VERSION="~> 5.2.4.1"'
