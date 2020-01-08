@@ -23,7 +23,7 @@ RSpec.describe Dor::WorkflowIndexer do
   describe '#to_solr' do
     subject(:solr_doc) { indexer.to_solr.to_h }
 
-    context 'when all some of the steps are not completed' do
+    context 'when not all of the steps are completed' do
       let(:xml) do
         <<-XML
         <?xml version="1.0" encoding="UTF-8"?>
