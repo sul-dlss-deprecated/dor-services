@@ -15,7 +15,7 @@ module Dor
       end
 
       def client
-        CertificateAuthenticatedRestResourceFactory.create(:fedora)
+        CertificateAuthenticatedRestResourceFactory.create(url)
       end
 
       def url(new_value = nil)
