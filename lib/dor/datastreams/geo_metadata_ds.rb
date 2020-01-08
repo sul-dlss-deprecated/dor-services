@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'scanf'
 require 'uri'
 
 module Dor
