@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe Dor::WorkflowIndexer do
   before do
     stub_request(:get, 'https://workflow.example.edu/workflow_templates/accessionWF')
-      .to_return(status: 200, body: json)
+      .to_return(status: 200, body: workflow_template_json)
   end
 
   let(:document) { Dor::Workflow::Response::Workflow.new(xml: xml) }
   let(:indexer) { described_class.new(workflow: document) }
 
-  let(:json) do
+  let(:workflow_template_json) do
     '{"processes":[{"name":"hello"},{"name":"goodbye"},{"name":"technical-metadata"},{"name":"some-other-step"}]}'
   end
 
@@ -23,20 +23,44 @@ RSpec.describe Dor::WorkflowIndexer do
   describe '#to_solr' do
     subject(:solr_doc) { indexer.to_solr.to_h }
 
-    let(:xml) do
-      <<-XML
-      <?xml version="1.0" encoding="UTF-8"?>
-      <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
-        <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
-         datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
-        <process version="2" elapsed="0.0" archived="true" attempts="1"
-         datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
-      </workflow>
-      XML
+    context 'when all some of the steps are not completed' do
+      let(:xml) do
+        <<-XML
+        <?xml version="1.0" encoding="UTF-8"?>
+        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="waiting" name="technical-metadata"/>
+        </workflow>
+        XML
+      end
+
+      it 'creates the workflow_status field with the workflow repository included' do
+        expect(solr_doc[Solrizer.solr_name('workflow_status', :symbol)].first).to eq('accessionWF|active|0|dor')
+      end
     end
 
-    it 'creates the workflow_status field with the workflow repository included' do
-      expect(solr_doc[Solrizer.solr_name('workflow_status', :symbol)].first).to eq('accessionWF|active|0|dor')
+    context 'when the template has been changed to have new steps, but the workflow service indicates all steps are completed' do
+      let(:workflow_template_json) do
+        '{"processes":[{"name":"hello"},{"name":"goodbye"},{"name":"technical-metadata"},{"name":"some-other-step"}]}'
+      end
+
+      let(:xml) do
+        <<-XML
+        <?xml version="1.0" encoding="UTF-8"?>
+        <workflow repository="dor" objectId="druid:gv054hp4128" id="accessionWF">
+          <process version="2" lifecycle="submitted" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:24-0800" status="completed" name="start-accession"/>
+          <process version="2" elapsed="0.0" archived="true" attempts="1"
+           datetime="2012-11-06T16:18:58-0800" status="completed" name="technical-metadata"/>
+        </workflow>
+        XML
+      end
+
+      it 'indicates that the workflow is complete' do
+        expect(solr_doc[Solrizer.solr_name('workflow_status', :symbol)].first).to eq('accessionWF|completed|0|dor')
+      end
     end
 
     context 'when all steps are completed or skipped' do
