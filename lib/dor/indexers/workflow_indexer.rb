@@ -64,10 +64,7 @@ module Dor
     end
 
     def workflow_status(workflow)
-      version = workflow.send(:ng_xml).xpath('/workflow/process/@version').map { |attr| attr.value.to_i }.max
-
-      completed = workflow.send(:ng_xml).xpath("/workflow/process[@version=#{version}]/@status").map(&:value).all? { |p| %w[skipped completed].include?(p) }
-      completed ? 'completed' : 'active'
+      workflow.complete? ? 'completed' : 'active'
     end
 
     # index the error message without the druid so we hopefully get some overlap
