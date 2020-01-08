@@ -20,17 +20,18 @@ module Dor
       WorkflowSolrDocument.new do |solr_doc|
         definition = Dor::Config.workflow.client.workflow_template(workflow_name)
         solr_doc.name = workflow_name
-        processes_names = definition['processes'].map { |p| p['name'] }
+        definition_process_names = definition['processes'].map { |p| p['name'] }
 
         errors = 0 # The error count is used by the Report class in Argo
-        processes = processes_names.map do |process_name|
+        processes = definition_process_names.map do |process_name|
           workflow.process_for_recent_version(name: process_name)
         end
+
         processes.each do |process|
           index_process(solr_doc, process)
           errors += 1 if process.status == 'error'
         end
-        solr_doc.status = [workflow_name, workflow_status(processes), errors, repository].join('|')
+        solr_doc.status = [workflow_name, workflow_status(workflow), errors, repository].join('|')
       end
     end
 
@@ -62,14 +63,8 @@ module Dor
       process.datetime && process.status && (process.status == 'completed' || process.status == 'error')
     end
 
-    def workflow_status(processes)
-      return 'empty' if processes.empty?
-
-      workflow_should_show_completed?(processes) ? 'completed' : 'active'
-    end
-
-    def workflow_should_show_completed?(processes)
-      processes.all? { |p| %w[skipped completed].include?(p.status) }
+    def workflow_status(workflow)
+      workflow.complete? ? 'completed' : 'active'
     end
 
     # index the error message without the druid so we hopefully get some overlap
