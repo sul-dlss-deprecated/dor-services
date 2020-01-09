@@ -12,8 +12,6 @@ module Dor
     def initialize(item)
       @identity_metadata_service = ReleaseTags::IdentityMetadata.new(item)
       @purl_service = ReleaseTags::Purl.new(pid: item.pid, purl_host: Dor::Config.stacks.document_cache_host)
-
-      @item = item
     end
 
     # Called in Dor::UpdateMarcRecordService (in dor-services-app too)
