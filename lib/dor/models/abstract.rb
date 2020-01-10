@@ -121,7 +121,7 @@ module Dor
     delegate :catkey, :catkey=, :source_id, :source_id=,
              :objectId, :objectId=, :objectCreator, :objectCreator=,
              :objectLabel, :objectLabel=, :objectType, :objectType=,
-             :other_ids=, :otherId, :tag=, :tags,
+             :other_ids=, :otherId, :tag=, :tags, :release_tags,
              :previous_catkeys, :content_type_tag, to: :identityMetadata
 
     def read_rights=(rights)

@@ -132,6 +132,20 @@ RSpec.describe Dor::IdentityMetadataDS do
     end
   end
 
+  describe '#release_tag_node_to_hash' do
+    let(:item) { instantiate_fixture('druid:bb004bn8654', Dor::Item) }
+    let(:ds) { item.identityMetadata }
+
+    it 'returns a hash created from a single release tag' do
+      n = Nokogiri('<release to="Revs" what="collection" when="2015-01-06T23:33:47Z" who="carrickr">true</release>').xpath('//release')[0]
+      exp_result = { to: 'Revs', attrs: { 'what' => 'collection', 'when' => Time.parse('2015-01-06 23:33:47Z'), 'who' => 'carrickr', 'release' => true } }
+      expect(ds.send(:release_tag_node_to_hash, n)).to eq exp_result
+      n = Nokogiri('<release tag="Project : Fitch: Batch1" to="Revs" what="collection" when="2015-01-06T23:33:47Z" who="carrickr">true</release>').xpath('//release')[0]
+      exp_result = { to: 'Revs', attrs: { 'tag' => 'Project : Fitch: Batch1', 'what' => 'collection', 'when' => Time.parse('2015-01-06 23:33:47Z'), 'who' => 'carrickr', 'release' => true } }
+      expect(ds.send(:release_tag_node_to_hash, n)).to eq exp_result
+    end
+  end
+
   describe 'add_other_Id' do
     let(:ds) { instantiate_fixture('druid:ab123cd4567', Dor::Item).identityMetadata }
 
