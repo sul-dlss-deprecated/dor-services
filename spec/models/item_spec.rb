@@ -181,7 +181,6 @@ RSpec.describe Dor::Item do
   describe 'the dsLocation for workflow' do
     let(:obj) { described_class.new }
     before do
-      allow(Dor::Config.workflow.client).to receive(:all_workflows_xml).and_return('<workflows />')
       allow(Dor::SuriService).to receive(:mint_id).and_return('changeme:1231231')
       allow(Dor::Config.suri).to receive(:mint_ids).and_return(true)
       allow(obj).to receive(:update_index)
