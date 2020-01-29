@@ -4,9 +4,6 @@ module Dor
   class StaticConfig
     # Represents the configuration for the shared filesystem direcotories
     class StacksConfig
-      extend Deprecation
-      self.deprecation_horizon = 'dor-services 9.0'
-
       def initialize(hash)
         @document_cache_host = hash.fetch(:document_cache_host)
         @local_stacks_root = hash.fetch(:local_stacks_root)
@@ -32,12 +29,6 @@ module Dor
         @local_workspace_root = new_value if new_value
         @local_workspace_root
       end
-
-      def local_document_cache_root(new_value = nil)
-        @local_document_cache_root = new_value if new_value
-        @local_document_cache_root
-      end
-      deprecation_deprecate :local_document_cache_root
     end
   end
 end

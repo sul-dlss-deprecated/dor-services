@@ -3,19 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Dor::Item do
-  describe '#allows_modification?' do
-    let(:pid) { 'ab12cd3456' }
-    let(:obj) { described_class.new(pid: pid) }
-    let(:service) { instance_double(Dor::StateService, allows_modification?: true) }
-
-    it 'delegates to StateService' do
-      allow(Deprecation).to receive(:warn)
-      allow(Dor::StateService).to receive(:new).with(pid).and_return(service)
-      obj.allows_modification?
-      expect(service).to have_received(:allows_modification?)
-    end
-  end
-
   describe '#add_collection' do
     let(:item) { instantiate_fixture('druid:oo201oo0001', described_class) }
     let(:service) { instance_double(Dor::CollectionService, add: true) }
@@ -351,68 +338,6 @@ RSpec.describe Dor::Item do
     it 'is settable and gettable' do
       item.tag = ['tag:1', 'tag:2']
       expect(item.tags).to eq ['tag:1', 'tag:2']
-    end
-  end
-
-  describe '#remove_druid_prefix' do
-    before do
-      allow(Deprecation).to receive(:warn)
-    end
-
-    let(:item) { instantiate_fixture('druid:ab123cd4567', described_class) }
-
-    it 'removes the druid prefix if it is present' do
-      expect(item.remove_druid_prefix).to eq('ab123cd4567')
-      expect(Deprecation).to have_received(:warn)
-    end
-
-    it 'removes the druid prefix for an arbitrary druid passed in' do
-      expect(item.remove_druid_prefix('druid:oo000oo0001')).to eq('oo000oo0001')
-    end
-
-    it 'leaves the string unchanged if the druid prefix is already stripped' do
-      expect(item.remove_druid_prefix('oo000oo0001')).to eq('oo000oo0001')
-    end
-
-    it 'justs return the input string if there are no matches' do
-      expect(item.remove_druid_prefix('bogus')).to eq('bogus')
-    end
-  end
-
-  describe '#pid_regex' do
-    before do
-      allow(Deprecation).to receive(:warn)
-    end
-
-    let(:item) { instantiate_fixture('druid:ab123cd4567', described_class) }
-
-    it 'identifies pids by regex' do
-      expect('ab123cd4567'.match(item.pid_regex).size).to eq(1)
-      expect(Deprecation).to have_received(:warn)
-    end
-
-    it 'pulls out a pid by regex' do
-      expect('druid:ab123cd4567/other crappola'.match(item.pid_regex)[0]).to eq('ab123cd4567')
-    end
-
-    it 'does not identify non-pids' do
-      expect('bogus'.match(item.pid_regex)).to be_nil
-    end
-
-    it 'does not identify pid by druid regex' do
-      expect('ab123cd4567'.match(item.druid_regex)).to be_nil
-    end
-
-    it 'identifies full druid by regex' do
-      expect('druid:ab123cd4567'.match(item.druid_regex).size).to eq(1)
-    end
-
-    it 'pulls out a full druid by regex' do
-      expect('druid:ab123cd4567/other crappola'.match(item.druid_regex)[0]).to eq('druid:ab123cd4567')
-    end
-
-    it 'does not identify non-druids' do
-      expect('bogus'.match(item.druid_regex)).to be_nil
     end
   end
 
