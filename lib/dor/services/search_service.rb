@@ -4,6 +4,7 @@ require 'json'
 require 'active_support/core_ext'
 
 module Dor
+  # Used by Argo and dor-services-app
   class SearchService
     class << self
       def index_version

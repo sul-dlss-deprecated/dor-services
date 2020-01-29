@@ -93,10 +93,8 @@ module Dor
     autoload :CollectionService
     autoload :CreativeCommonsLicenseService
     autoload :EmbargoService
-    autoload :IdentityMetadataTagService
     autoload :Ontology
     autoload :OpenDataLicenseService
-    autoload :PurlTagService
     autoload :ReleaseTagService
     autoload :SearchService
     autoload :StatusService
