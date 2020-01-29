@@ -76,7 +76,6 @@ RSpec.describe Dor::ProcessableIndexer do
         </versionMetadata>
         '
         allow(Dor::Config.workflow.client.lifecycle_routes).to receive(:query_lifecycle).and_return(xml)
-        allow_any_instance_of(Dor::Workflow::Document).to receive(:to_solr).and_return(nil)
         versionMD = Dor::VersionMetadataDS.from_xml(dsxml)
         allow(obj).to receive(:versionMetadata).and_return(versionMD)
       end

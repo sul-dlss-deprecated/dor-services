@@ -14,7 +14,7 @@ RSpec.describe Dor::AdminPolicyObject do
     it do
       expect(subject).to match_array %w[RELS-EXT DC identityMetadata
                                         events rightsMetadata descMetadata versionMetadata
-                                        workflows administrativeMetadata roleMetadata
+                                        administrativeMetadata roleMetadata
                                         defaultObjectRights provenanceMetadata]
     end
   end

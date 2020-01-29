@@ -58,14 +58,9 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
 </foxml:xmlContent>
 </foxml:datastreamVersion>
 </foxml:datastream>
-<foxml:datastream ID="workflows" STATE="A" CONTROL_GROUP="E" VERSIONABLE="true">
-<foxml:datastreamVersion ID="workflows.0" LABEL="Workflows" CREATED="2015-06-30T17:36:18.921Z" MIMETYPE="application/xml">
-<foxml:contentLocation TYPE="URL" REF="https://lyberservices-prod.stanford.edu/workflow/dor/objects/druid:jw923xn5254/workflows"/>
-</foxml:datastreamVersion>
-</foxml:datastream>
 <foxml:datastream ID="descMetadata" STATE="A" CONTROL_GROUP="M" VERSIONABLE="true">
 <foxml:datastreamVersion ID="descMetadata.1" LABEL="Descriptive Metadata" CREATED="2015-08-11T19:44:02.087Z" MIMETYPE="text/xml" SIZE="3827">
-<foxml:binaryContent> 
+<foxml:binaryContent>
               PG1vZHMgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOnhzaT0i
               aHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vd3d3
               LmxvYy5nb3YvbW9kcy92MyIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vd3d3LmxvYy5nb3YvbW9k
@@ -130,7 +125,7 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
               aXR5PSJpc282MzktMmIiPmVuZzwvbGFuZ3VhZ2VUZXJtPgogICAgICAgIDwvbGFuZ3VhZ2VPZkNhdGFs
               b2dpbmc+CiAgICAgICAgPHJlY29yZENvbnRlbnRTb3VyY2UgYXV0aG9yaXR5PSJtYXJjb3JnIj5DU3Q8
               L3JlY29yZENvbnRlbnRTb3VyY2U+CiAgICA8L3JlY29yZEluZm8+CjwvbW9kcz4=
-</foxml:binaryContent> 
+</foxml:binaryContent>
 </foxml:datastreamVersion>
 </foxml:datastream>
 <foxml:datastream ID="rightsMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
@@ -163,7 +158,7 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
 </foxml:datastream>
 <foxml:datastream ID="contentMetadata" STATE="A" CONTROL_GROUP="M" VERSIONABLE="true">
 <foxml:datastreamVersion ID="contentMetadata.0" LABEL="Content Metadata" CREATED="2015-06-30T18:22:36.390Z" MIMETYPE="text/xml" SIZE="796">
-<foxml:binaryContent> 
+<foxml:binaryContent>
               PGNvbnRlbnRNZXRhZGF0YSBvYmplY3RJZD0ianc5MjN4bjUyNTQiIHR5cGU9ImltYWdlIj4KICA8cmVz
               b3VyY2UgaWQ9Imp3OTIzeG41MjU0XzEiIHNlcXVlbmNlPSIxIiB0eXBlPSJpbWFnZSI+CiAgICA8bGFi
               ZWw+SW1hZ2UgMTwvbGFiZWw+CiAgICA8ZmlsZSBpZD0iMjU0MkIudGlmIiBwcmVzZXJ2ZT0ieWVzIiBw
@@ -178,12 +173,12 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
               MTExNjc1ZWM3ZTJjNDI1ZTkwOTgxMGM0OWE2OWZmZWYyNjwvY2hlY2tzdW0+CiAgICAgIDxpbWFnZURh
               dGEgd2lkdGg9IjMxMzkiIGhlaWdodD0iNDY3NSIvPgogICAgPC9maWxlPgogIDwvcmVzb3VyY2U+Cjwv
               Y29udGVudE1ldGFkYXRhPg==
-</foxml:binaryContent> 
+</foxml:binaryContent>
 </foxml:datastreamVersion>
 </foxml:datastream>
 <foxml:datastream ID="technicalMetadata" STATE="A" CONTROL_GROUP="M" VERSIONABLE="true">
 <foxml:datastreamVersion ID="technicalMetadata.3" LABEL="Technical Metadata" CREATED="2015-08-11T19:47:33.072Z" MIMETYPE="text/xml" SIZE="4669">
-<foxml:binaryContent> 
+<foxml:binaryContent>
               PHRlY2huaWNhbE1ldGFkYXRhIHhtbG5zOmpob3ZlPSJodHRwOi8vaHVsLmhhcnZhcmQuZWR1L29pcy94
               bWwvbnMvamhvdmUiIHhtbG5zOm1peD0iaHR0cDovL3d3dy5sb2MuZ292L21peC92MTAiIHhtbG5zOnRl
               eHRtZD0iaW5mbzpsYy94bWxucy90ZXh0TUQtdjMiIG9iamVjdElkPSJkcnVpZDpqdzkyM3huNTI1NCIg
@@ -262,7 +257,7 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
               PC9taXg6c2FtcGxlc1BlclBpeGVsPgogICAgICAgICAgPC9taXg6SW1hZ2VDb2xvckVuY29kaW5nPgog
               ICAgICAgIDwvbWl4OkltYWdlQXNzZXNzbWVudE1ldGFkYXRhPgogICAgICA8L21peDptaXg+CiAgICA8
               L2pob3ZlOnByb3BlcnRpZXM+CiAgPC9maWxlPgo8L3RlY2huaWNhbE1ldGFkYXRhPg==
-</foxml:binaryContent> 
+</foxml:binaryContent>
 </foxml:datastreamVersion>
 </foxml:datastream>
 <foxml:datastream ID="provenanceMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">

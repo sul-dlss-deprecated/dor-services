@@ -161,11 +161,6 @@
 </foxml:xmlContent>
 </foxml:datastreamVersion>
 </foxml:datastream>
-<foxml:datastream ID="workflows" STATE="A" CONTROL_GROUP="E" VERSIONABLE="true">
-<foxml:datastreamVersion ID="workflows.0" LABEL="Workflows" CREATED="2015-01-21T22:32:14.050Z" MIMETYPE="application/xml">
-<foxml:contentLocation TYPE="URL" REF="https://lyberservices-test.stanford.edu/workflow/dor/objects/druid:wz243gf4151/workflows"/>
-</foxml:datastreamVersion>
-</foxml:datastream>
 <foxml:datastream ID="events" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
 <foxml:datastreamVersion ID="events.0" LABEL="Events" CREATED="2015-01-21T22:37:23.808Z" MIMETYPE="text/xml" SIZE="19">
 <foxml:xmlContent>

@@ -180,38 +180,6 @@ RSpec.describe Dor::Item do
     end
   end
 
-  describe 'the dsLocation for workflow' do
-    let(:obj) { described_class.new }
-    before do
-      allow(Dor::SuriService).to receive(:mint_id).and_return('changeme:1231231')
-      allow(Dor::Config.suri).to receive(:mint_ids).and_return(true)
-      allow(obj).to receive(:update_index)
-      obj.save!
-    end
-
-    let(:reloaded) { described_class.find(obj.pid) }
-    let(:workflows) { reloaded.workflows }
-
-    it 'is set automatically' do
-      expect(workflows.dsLocation).to eq 'https://workflow.example.edu/dor/objects/changeme:1231231/workflows'
-      expect(workflows.mimeType).to eq 'application/xml'
-    end
-  end
-
-  describe '#workflows' do
-    let(:item) { instantiate_fixture('druid:ab123cd4567', described_class) }
-
-    before do
-      stub_config
-      item.contentMetadata.content = '<contentMetadata/>'
-    end
-
-    it 'has a workflows datastream and workflows shortcut method' do
-      expect(item.datastreams['workflows']).to be_a(Dor::WorkflowDs)
-      expect(item.workflows).to eq(item.datastreams['workflows'])
-    end
-  end
-
   describe '#source_id' do
     let(:item) { instantiate_fixture('druid:ab123cd4567', described_class) }
 

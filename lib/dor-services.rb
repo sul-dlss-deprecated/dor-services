@@ -79,8 +79,6 @@ module Dor
     autoload :SimpleDublinCoreDs
     autoload :TechnicalMetadataDS
     autoload :VersionMetadataDS
-    autoload :WorkflowDefinitionDs
-    autoload :WorkflowDs
   end
 
   # DOR Concerns
@@ -101,7 +99,6 @@ module Dor
       autoload :Item
       autoload :Part
       autoload :Set
-      autoload :WorkflowObject
       autoload :WorkflowSolrDocument
     end
   end
@@ -121,13 +118,6 @@ module Dor
     autoload :StateService
     autoload :SuriService
     autoload :TagService
-  end
-
-  # Workflow Classes
-  module Workflow
-    extend ActiveSupport::Autoload
-    autoload :Process
-    autoload :Document
   end
 
   eager_load!

@@ -10,8 +10,7 @@ describe Dor do
         'agreement' => Dor::Agreement,
         'collection' => Dor::Collection,
         'item' => Dor::Item,
-        'set' => Dor::Set,
-        'workflow' => Dor::WorkflowObject
+        'set' => Dor::Set
     end
   end
 end

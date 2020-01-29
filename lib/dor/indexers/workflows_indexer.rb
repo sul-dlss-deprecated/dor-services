@@ -25,7 +25,6 @@ module Dor
       all_workflows.workflows
     end
 
-    # TODO: remove Dor::Workflow::Document
     # @return [Workflow::Response::Workflows]
     def all_workflows
       @all_workflows ||= Dor::Config.workflow.client.workflow_routes.all_workflows pid: resource.pid

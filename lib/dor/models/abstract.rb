@@ -8,11 +8,6 @@ module Dor
     has_metadata name: 'provenanceMetadata',
                  type: ProvenanceMetadataDS,
                  label: 'Provenance Metadata'
-    has_metadata name: 'workflows',
-                 type: WorkflowDs,
-                 label: 'Workflows',
-                 control_group: 'E',
-                 autocreate: true
     has_metadata name: 'rightsMetadata',
                  type: RightsMetadataDS,
                  label: 'Rights metadata'

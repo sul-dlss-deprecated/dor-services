@@ -9,7 +9,7 @@ RSpec.describe Dor::Collection do
     it do
       expect(subject).to match_array %w[RELS-EXT DC identityMetadata
                                         events rightsMetadata descMetadata versionMetadata
-                                        workflows provenanceMetadata]
+                                        provenanceMetadata]
     end
   end
 
