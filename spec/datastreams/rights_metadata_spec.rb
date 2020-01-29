@@ -334,40 +334,6 @@ RSpec.describe Dor::RightsMetadataDS do
   end
 
   describe 'to_solr' do
-    let(:wf_indexer) { instance_double(Dor::WorkflowsIndexer, to_solr: {}) }
-    let(:process_indexer) { instance_double(Dor::ProcessableIndexer, to_solr: {}) }
-    let(:release_indexer) { instance_double(Dor::ReleasableIndexer, to_solr: {}) }
-
-    before do
-      allow(Dor::ReleasableIndexer).to receive(:new).and_return(release_indexer)
-      allow(Dor::WorkflowsIndexer).to receive(:new).and_return(wf_indexer)
-      allow(Dor::ProcessableIndexer).to receive(:new).and_return(process_indexer)
-      allow(OpenURI).to receive(:open_uri).with('https://purl-test.stanford.edu/bb046xn0881.xml').and_return('<xml/>')
-    end
-
-    it 'has correct primary' do
-      doc = @item.to_solr
-
-      expect(doc).to match a_hash_including(
-        'rights_primary_ssi' => 'world_qualified',
-        'rights_descriptions_ssim' => include(
-          'location: reading_room (no-download)', 'stanford', 'world (no-download)', 'dark (file)'
-        ),
-        'metadata_source_ssi' => 'DOR',
-        'title_tesim' => ['Indianapolis 500'],
-        'rights_characteristics_ssim' => include(
-          'world_discover', 'has_group_rights', 'has_rule', 'group|stanford', 'location', 'location_with_rule',
-          'world_read', 'world|no-download', 'profile:group1|location1|world1', 'none_read_file'
-        ),
-        'use_license_machine_ssi' => 'by-nc',
-        'use_licenses_machine_ssim' => ['by-nc'],
-        'obj_rights_locations_ssim' => ['reading_room']
-      )
-      expect(doc).not_to include(
-        'rights_errors_ssim', 'file_rights_locations_ssim', 'obj_rights_agents_ssim', 'file_rights_agents_ssim'
-      ) # don't include empties
-    end
-
     it 'filters access_restricted from what gets aggregated into rights_descriptions_ssim' do
       rights_md_ds = described_class.new
       mock_dra_obj = double(Dor::RightsAuth)

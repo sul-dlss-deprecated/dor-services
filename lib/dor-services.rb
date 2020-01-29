@@ -50,19 +50,6 @@ module Dor
 
   require 'druid-tools'
 
-  autoload_under 'indexers' do
-    autoload :CompositeIndexer
-    autoload :DataIndexer
-    autoload :DescribableIndexer
-    autoload :EditableIndexer
-    autoload :IdentifiableIndexer
-    autoload :ProcessableIndexer
-    autoload :ProcessIndexer
-    autoload :ReleasableIndexer
-    autoload :WorkflowIndexer
-    autoload :WorkflowsIndexer
-  end
-
   # datastreams
   autoload_under 'datastreams' do
     autoload :AdministrativeMetadataDS

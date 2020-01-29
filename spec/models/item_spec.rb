@@ -102,24 +102,6 @@ RSpec.describe Dor::Item do
     end
   end
 
-  describe '#to_solr' do
-    subject(:doc) { item.to_solr }
-
-    let(:item) { described_class.new(pid: 'foo:123') }
-
-    let(:wf_indexer) { instance_double(Dor::WorkflowsIndexer, to_solr: {}) }
-    let(:process_indexer) { instance_double(Dor::ProcessableIndexer, to_solr: {}) }
-    let(:release_indexer) { instance_double(Dor::ReleasableIndexer, to_solr: {}) }
-
-    before do
-      allow(Dor::ReleasableIndexer).to receive(:new).and_return(release_indexer)
-      allow(Dor::WorkflowsIndexer).to receive(:new).and_return(wf_indexer)
-      allow(Dor::ProcessableIndexer).to receive(:new).and_return(process_indexer)
-    end
-
-    it { is_expected.to include 'active_fedora_model_ssi' => 'Dor::Item' }
-  end
-
   describe 'datastreams' do
     let(:item) { described_class.new(pid: 'foo:123') }
 

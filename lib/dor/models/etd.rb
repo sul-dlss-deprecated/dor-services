@@ -4,10 +4,6 @@ module Dor
   class Etd < Abstract
     include Dor::Embargoable
 
-    self.resource_indexer = CompositeIndexer.new(
-      DataIndexer
-    )
-
     # This relationship was modeled incorrectly when first implemented.
     # It should have been has_and_belongs_to_many so that the ETD is aware of
     # its component parts.  Presently there is no way to discover which parts

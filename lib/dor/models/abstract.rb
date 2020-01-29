@@ -39,7 +39,6 @@ module Dor
                             property: :is_member_of,
                             class_name: 'Dor::Collection'
 
-    class_attribute :resource_indexer
     class_attribute :object_type
 
     def self.has_object_type(str)
@@ -57,7 +56,7 @@ module Dor
 
     # Overrides the method in ActiveFedora
     def to_solr
-      resource_indexer.new(resource: self).to_solr
+      raise 'this should never be called'
     end
 
     # Override ActiveFedora::Core#adapt_to_cmodel (used with associations, among other places) to
