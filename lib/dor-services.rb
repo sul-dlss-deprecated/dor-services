@@ -97,7 +97,6 @@ module Dor
     autoload :OpenDataLicenseService
     autoload :ReleaseTagService
     autoload :SearchService
-    autoload :StateService
     autoload :SuriService
     autoload :TagService
   end
