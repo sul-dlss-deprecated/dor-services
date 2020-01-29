@@ -85,7 +85,6 @@ module Dor
       autoload :Item
       autoload :Part
       autoload :Set
-      autoload :WorkflowSolrDocument
     end
   end
 
