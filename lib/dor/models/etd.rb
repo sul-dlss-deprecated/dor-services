@@ -70,8 +70,6 @@ module Dor
       m.field 'submitted_to_registrar', :string
     end
 
-    has_metadata name: 'DC', type: Dor::SimpleDublinCoreDs, versionable: false, label: 'DC', control_group: 'X'
-
     def etd_embargo_date
       regaction = properties.regactiondttm.first
       embargo = properties.embargo.first

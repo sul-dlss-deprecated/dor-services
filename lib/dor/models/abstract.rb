@@ -15,9 +15,6 @@ module Dor
                  type: VersionMetadataDS,
                  label: 'Version Metadata',
                  autocreate: true
-    has_metadata name: 'DC',
-                 type: SimpleDublinCoreDs,
-                 label: 'Dublin Core Record for self object'
     has_metadata name: 'identityMetadata',
                  type: Dor::IdentityMetadataDS,
                  label: 'Identity Metadata'

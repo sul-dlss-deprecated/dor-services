@@ -7,7 +7,7 @@ RSpec.describe Dor::Collection do
     subject { described_class.ds_specs.keys }
 
     it do
-      expect(subject).to match_array %w[RELS-EXT DC identityMetadata
+      expect(subject).to match_array %w[RELS-EXT identityMetadata
                                         events rightsMetadata descMetadata versionMetadata
                                         provenanceMetadata]
     end

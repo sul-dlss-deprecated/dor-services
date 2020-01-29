@@ -63,7 +63,6 @@ module Dor
     autoload :ProvenanceMetadataDS
     autoload :RightsMetadataDS
     autoload :RoleMetadataDS
-    autoload :SimpleDublinCoreDs
     autoload :TechnicalMetadataDS
     autoload :VersionMetadataDS
   end
