@@ -12,7 +12,6 @@ module Dor
       autoload :SolrConfig
       autoload :StacksConfig
       autoload :SuriConfig
-      autoload :WorkflowConfig
     end
 
     def initialize(hash)
@@ -21,7 +20,6 @@ module Dor
       @solr = SolrConfig.new(hash.fetch(:solr))
       @stacks = StacksConfig.new(hash.fetch(:stacks))
       @suri = SuriConfig.new(hash.fetch(:suri))
-      @workflow = WorkflowConfig.new(hash.fetch(:workflow))
     end
 
     def configure(&block)
@@ -92,12 +90,6 @@ module Dor
       @suri.configure(&block) if block_given?
 
       @suri
-    end
-
-    def workflow(&block)
-      @workflow.configure(&block) if block_given?
-
-      @workflow
     end
   end
 end

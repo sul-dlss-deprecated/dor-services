@@ -104,5 +104,4 @@ module Dor
   eager_load!
 
   require 'dor/utils/hydrus_shims'
-  require 'dor/workflow/client'
 end
