@@ -181,6 +181,8 @@ module Dor
       # @return [Hash] same form as new_tags, with all missing tags not in new_tags, but in current_tag_names, added in with a Boolean value of false
       def add_tags_from_purl(new_tags)
         missing_tags = release_tags_from_purl.map(&:downcase) - new_tags.keys.map(&:downcase)
+        Honeybadger.notify("Found missing release tags on PURL for #{pid}: #{missing_tags.inspect}") if missing_tags.present? && defined? Honeybadger
+
         missing_tags.each do |missing_tag|
           new_tags[missing_tag.capitalize] = { 'release' => false }
         end
