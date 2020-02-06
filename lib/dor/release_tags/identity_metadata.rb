@@ -175,29 +175,6 @@ module Dor
         nil # We're out of tags, no applicable ones
       end
 
-      # This function calls purl and gets a list of all release tags currently in purl.  It then compares to the list you have generated.
-      # Any tag that is on purl, but not in the newly generated list is added to the new list with a value of false.
-      # @param new_tags [Hash{String => Boolean}] all new tags in the form of !{"Project" => Boolean}
-      # @return [Hash] same form as new_tags, with all missing tags not in new_tags, but in current_tag_names, added in with a Boolean value of false
-      def add_tags_from_purl(new_tags)
-        missing_tags = release_tags_from_purl.map(&:downcase) - new_tags.keys.map(&:downcase)
-        Honeybadger.notify("Found missing release tags on PURL for #{pid}: #{missing_tags.inspect}") if missing_tags.present? && defined? Honeybadger
-
-        missing_tags.each do |missing_tag|
-          new_tags[missing_tag.capitalize] = { 'release' => false }
-        end
-        new_tags
-      end
-
-      # Pull all release nodes from the public xml obtained via the purl query
-      # @param doc [Nokogiri::HTML::Document] The druid of the object you want
-      # @return [Array] An array containing all the release tags
-      def release_tags_from_purl_xml(doc)
-        nodes = doc.xpath('//publicObject/releaseData').children
-        # We only want the nodes with a name that isn't text
-        nodes.reject { |n| n.name.nil? || n.name.casecmp('text') == 0 }.map { |n| n.attr('to') }.uniq
-      end
-
       attr_reader :item
     end
   end
