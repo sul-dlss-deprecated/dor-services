@@ -70,7 +70,7 @@ module Dor
     alias source_id= sourceId=
 
     def tags
-      ng_xml.search('//tag').collect(&:content)
+      tag
     end
 
     # helper method to get just the content type tag
@@ -86,6 +86,11 @@ module Dor
       else
         result.select { |n| n['name'] == type }.collect(&:text)
       end
+    end
+
+    # @param [Array<String>] values
+    def other_ids=(values)
+      values.each { |value| add_otherId(value) }
     end
 
     def add_otherId(other_id)

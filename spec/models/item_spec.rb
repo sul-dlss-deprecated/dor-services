@@ -348,6 +348,60 @@ RSpec.describe Dor::Item do
     end
   end
 
+  describe '#objectId=' do
+    let(:item) { described_class.new }
+
+    it 'is settable and gettable' do
+      item.objectId = 'foo'
+      expect(item.objectId).to eq 'foo'
+    end
+  end
+
+  describe '#objectCreator=' do
+    let(:item) { described_class.new }
+
+    it 'is settable and gettable' do
+      item.objectCreator = 'foo'
+      expect(item.objectCreator).to eq ['foo']
+    end
+  end
+
+  describe '#objectLabel=' do
+    let(:item) { described_class.new }
+
+    it 'is settable and gettable' do
+      item.objectLabel = 'foo'
+      expect(item.objectLabel).to eq ['foo']
+    end
+  end
+
+  describe '#objectType=' do
+    let(:item) { described_class.new }
+
+    it 'is settable and gettable' do
+      item.objectType = 'foo'
+      expect(item.objectType).to eq ['foo']
+    end
+  end
+
+  describe '#other_ids=' do
+    let(:item) { described_class.new }
+
+    it 'is settable and gettable' do
+      item.other_ids = ['catkey:123', 'other:566']
+      expect(item.otherId).to eq ['catkey:123', 'other:566']
+    end
+  end
+
+  describe '#tag=' do
+    let(:item) { described_class.new }
+
+    it 'is settable and gettable' do
+      item.tag = ['tag:1', 'tag:2']
+      expect(item.tags).to eq ['tag:1', 'tag:2']
+    end
+  end
+
   describe '#remove_druid_prefix' do
     before do
       allow(Deprecation).to receive(:warn)

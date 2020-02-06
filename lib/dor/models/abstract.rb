@@ -118,7 +118,11 @@ module Dor
 
     delegate :full_title, :stanford_mods, to: :descMetadata
     delegate :rights, to: :rightsMetadata
-    delegate :catkey, :catkey=, :previous_catkeys, :tags, :content_type_tag, :source_id, :source_id=, to: :identityMetadata
+    delegate :catkey, :catkey=, :source_id, :source_id=,
+             :objectId, :objectId=, :objectCreator, :objectCreator=,
+             :objectLabel, :objectLabel=, :objectType, :objectType=,
+             :other_ids=, :otherId, :tag=, :tags,
+             :previous_catkeys, :content_type_tag, to: :identityMetadata
 
     def read_rights=(rights)
       rightsMetadata.set_read_rights(rights)
