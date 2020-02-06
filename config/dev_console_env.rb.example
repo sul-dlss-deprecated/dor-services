@@ -22,7 +22,6 @@ Dor::Config.configure do
   end
 
   stacks do
-    document_cache_host 'purl-dev.stanford.edu'
     local_workspace_root '/dor/workspace'
     local_stacks_root '/stacks'
     local_document_cache_root '/purl'

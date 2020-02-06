@@ -5,7 +5,6 @@ require 'active_fedora/version'
 require 'active_support/core_ext/module/attribute_accessors'
 require 'active_support/core_ext/object/blank'
 require 'deprecation'
-require 'retries' # Used by Dor::ReleaseTagService
 
 module Dor
   extend ActiveSupport::Autoload
@@ -95,7 +94,6 @@ module Dor
     autoload :EmbargoService
     autoload :Ontology
     autoload :OpenDataLicenseService
-    autoload :ReleaseTagService
     autoload :SearchService
     autoload :SuriService
     autoload :TagService

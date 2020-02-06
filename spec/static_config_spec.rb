@@ -20,7 +20,7 @@ RSpec.describe Dor::StaticConfig do
         end
 
         stacks do
-          document_cache_host 'purl-test'
+          local_stacks_root '/foo'
         end
       end
     end
@@ -28,7 +28,7 @@ RSpec.describe Dor::StaticConfig do
     it 'configures the items' do
       expect(config.fedora.url).to eq 'my-fedora'
       expect(config.solr.url).to eq 'my-solr'
-      expect(config.stacks.document_cache_host).to eq 'purl-test'
+      expect(config.stacks.local_stacks_root).to eq '/foo'
     end
   end
 end
