@@ -12,7 +12,6 @@ module Dor
     # @return [Hash] the partial solr document for releasable concerns
     def to_solr
       solr_doc = {}
-
       # TODO: sort of worried about the performance impact in bulk reindex
       # situations, since released_for recurses all parent collections.  jmartin 2015-07-14
       released_for.each do |release_target, release_info|

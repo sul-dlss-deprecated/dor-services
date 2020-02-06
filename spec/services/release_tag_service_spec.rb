@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Dor::ReleaseTagService do
   before do
+    allow(Deprecation).to receive(:warn)
     allow(Dor::Config.stacks).to receive(:document_cache_host).and_return('purl-test.stanford.edu')
   end
 

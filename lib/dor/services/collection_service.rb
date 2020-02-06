@@ -2,7 +2,7 @@
 
 module Dor
   # Adds and removes collections to and from objects
-  # Collections are added as Compollections and Sets.
+  # Collections are added as Collections and Sets.
   class CollectionService
     def initialize(obj)
       @obj = obj

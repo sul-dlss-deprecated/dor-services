@@ -336,8 +336,10 @@ RSpec.describe Dor::RightsMetadataDS do
   describe 'to_solr' do
     let(:wf_indexer) { instance_double(Dor::WorkflowsIndexer, to_solr: {}) }
     let(:process_indexer) { instance_double(Dor::ProcessableIndexer, to_solr: {}) }
+    let(:release_indexer) { instance_double(Dor::ReleasableIndexer, to_solr: {}) }
 
     before do
+      allow(Dor::ReleasableIndexer).to receive(:new).and_return(release_indexer)
       allow(Dor::WorkflowsIndexer).to receive(:new).and_return(wf_indexer)
       allow(Dor::ProcessableIndexer).to receive(:new).and_return(process_indexer)
       allow(OpenURI).to receive(:open_uri).with('https://purl-test.stanford.edu/bb046xn0881.xml').and_return('<xml/>')
