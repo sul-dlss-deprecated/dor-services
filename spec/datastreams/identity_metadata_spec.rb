@@ -195,4 +195,35 @@ RSpec.describe Dor::IdentityMetadataDS do
       expect(ds).not_to be_changed
     end
   end
+
+  describe 'source_id=' do
+    subject(:assign) { datastream.source_id = value }
+
+    let(:datastream) { described_class.new }
+    let(:value) { 'sul:SOMETHING-www.example.org' }
+
+    context 'when source_id has one colon' do
+      it 'is successful' do
+        expect { assign }.not_to raise_error
+      end
+    end
+
+    context 'when source_id has more than one colon' do
+      let(:value) { 'sul:SOMETHING-http://www.example.org' }
+
+      it 'is successful' do
+        expect { assign }.not_to raise_error
+      end
+    end
+
+    context 'when source_id has no colon' do
+      let(:value) { 'no-colon' }
+
+      it 'is raises an exception' do
+        # Execution gets into IdentityMetadataDS code for specific error
+        exp_regex = /Source ID must follow the format 'namespace:value'/
+        expect { assign }.to raise_error(ArgumentError, exp_regex)
+      end
+    end
+  end
 end
