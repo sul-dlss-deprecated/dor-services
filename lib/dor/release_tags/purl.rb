@@ -6,6 +6,7 @@ module Dor
       # Determine projects in which an item is released
       # @param [String] pid identifier of the item to get the release tags for
       def initialize(pid:, purl_host:)
+        Deprecation.warn(self, "Dor::ReleaseTags::Purl is deprecated and will be removed in dor-services 9.0. (it's moving to dor-services-app)")
         @pid = pid
         @purl_host = purl_host
       end

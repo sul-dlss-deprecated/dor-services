@@ -10,6 +10,7 @@ module Dor
     end
 
     def initialize(item)
+      Deprecation.warn(self, "Dor::ReleaseTagService is deprecated and will be removed in dor-services 9.0. (it's moving to dor-services-app)")
       @identity_metadata_service = ReleaseTags::IdentityMetadata.new(item)
       @purl_service = ReleaseTags::Purl.new(pid: item.pid, purl_host: Dor::Config.stacks.document_cache_host)
     end

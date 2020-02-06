@@ -7,6 +7,10 @@ RSpec.describe Dor::ReleaseTags::Purl do
   let(:releases) { described_class.new(pid: druid, purl_host: 'purl-test.stanford.edu') }
 
   describe '#released_for' do
+    before do
+      allow(Deprecation).to receive(:warn)
+    end
+
     let(:xml) { Nokogiri::XML(response) }
 
     context 'for targets that are listed on the purl but not in new tag generation' do
