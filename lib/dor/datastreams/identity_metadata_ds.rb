@@ -154,6 +154,22 @@ module Dor
       otherId(PREVIOUS_CATKEY_TYPE_ID)
     end
 
+    # Helper method to get the release tags as a nodeset
+    # @return [Nokogiri::XML::NodeSet] all release tags and their attributes
+    def release_tags
+      release_tags = ng_xml.xpath('//release')
+      return_hash = {}
+      release_tags.each do |release_tag|
+        hashed_node = release_tag_node_to_hash(release_tag)
+        if !return_hash[hashed_node[:to]].nil?
+          return_hash[hashed_node[:to]] << hashed_node[:attrs]
+        else
+          return_hash[hashed_node[:to]] = [hashed_node[:attrs]]
+        end
+      end
+      return_hash
+    end
+
     def to_solr(solr_doc = {}, *args)
       solr_doc = super(solr_doc, *args)
 
@@ -207,6 +223,30 @@ module Dor
     # maintain AF < 8 indexing behavior
     def prefix
       ''
+    end
+
+    private
+
+    # Convert one release element into a Hash
+    # @param rtag [Nokogiri::XML::Element] the release tag element
+    # @return [Hash{:to, :attrs => String, Hash}] in the form of !{:to => String :attrs = Hash}
+    def release_tag_node_to_hash(rtag)
+      to = 'to'
+      release = 'release'
+      when_word = 'when' # TODO: Make to and when_word load from some config file instead of hardcoded here
+      attrs = rtag.attributes
+      return_hash = { to: attrs[to].value }
+      attrs.tap { |a| a.delete(to) }
+      attrs[release] = rtag.text.casecmp('true') == 0 # save release as a boolean
+      return_hash[:attrs] = attrs
+
+      # convert all the attrs beside :to to strings, they are currently Nokogiri::XML::Attr
+      (return_hash[:attrs].keys - [to]).each do |a|
+        return_hash[:attrs][a] = return_hash[:attrs][a].to_s if a != release
+      end
+
+      return_hash[:attrs][when_word] = Time.parse(return_hash[:attrs][when_word]) # convert when to a datetime
+      return_hash
     end
   end # class
 end
