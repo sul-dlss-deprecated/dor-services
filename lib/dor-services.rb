@@ -72,8 +72,6 @@ module Dor
   end
 
   eager_autoload do
-    autoload :ReleaseTags
-
     # ActiveFedora Classes
     autoload_under 'models' do
       autoload :Abstract
