@@ -39,12 +39,6 @@ def item_from_foxml(foxml, item_class = Dor::Abstract)
 
   # stub item and datastream repo access methods
   result.datastreams.each_pair do |_dsid, ds|
-    # if ds.is_a?(ActiveFedora::OmDatastream) && !ds.is_a?(Dor::WorkflowDs)
-    #   ds.instance_eval do
-    #     def content       ; self.ng_xml.to_s                 ; end
-    #     def content=(val) ; self.ng_xml = Nokogiri::XML(val) ; end
-    #   end
-    # end
     ds.instance_eval do
       def save
         true

@@ -7,20 +7,6 @@ RSpec.describe Dor::Etd do
     described_class.new
   end
 
-  describe '#to_solr' do
-    subject { etd.to_solr }
-
-    let(:wf_indexer) { instance_double(Dor::WorkflowsIndexer, to_solr: {}) }
-    let(:process_indexer) { instance_double(Dor::ProcessableIndexer, to_solr: {}) }
-
-    before do
-      allow(Dor::WorkflowsIndexer).to receive(:new).and_return(wf_indexer)
-      allow(Dor::ProcessableIndexer).to receive(:new).and_return(process_indexer)
-    end
-
-    it { is_expected.to be_a_kind_of Hash }
-  end
-
   describe '#etd_embargo_date' do
     it 'calculates the data of the embargo release' do
       t = Time.now.beginning_of_hour

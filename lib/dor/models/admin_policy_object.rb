@@ -9,15 +9,6 @@ module Dor
     has_metadata name: 'defaultObjectRights',    type: Dor::DefaultObjectRightsDS,    label: 'Default Object Rights'
     belongs_to :agreement_object, property: :referencesAgreement, class_name: 'Dor::Item'
 
-    self.resource_indexer = CompositeIndexer.new(
-      DataIndexer,
-      DescribableIndexer,
-      EditableIndexer,
-      IdentifiableIndexer,
-      ProcessableIndexer,
-      WorkflowsIndexer
-    )
-
     delegate :add_roleplayer, :purge_roles, :roles, to: :roleMetadata
     delegate :mods_title, :mods_title=, to: :descMetadata
     delegate :default_collections, :add_default_collection, :remove_default_collection,

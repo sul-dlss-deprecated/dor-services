@@ -31,7 +31,6 @@ module Dor::SpecHelpers
     this = self
     allow(Dor::Config.suri).to receive(:mint_ids).and_return(false)
     allow(Dor::Config.stacks).to receive_messages(
-      document_cache_host: 'purl-test.stanford.edu',
       local_workspace_root: File.join(this.fixture_dir, 'workspace'),
       local_stacks_root: File.join(this.fixture_dir, 'stacks'),
       local_document_cache_root: File.join(this.fixture_dir, 'purl')
@@ -135,5 +134,3 @@ RSpec.configure do |config|
 
   config.include Dor::SpecHelpers
 end
-
-Retries.sleep_enabled = false # fail fast in tests

@@ -27,14 +27,12 @@ Gem::Specification.new do |s|
   s.add_dependency 'om', '~> 3.0'
   s.add_dependency 'rdf', '~> 1.1', '>= 1.1.7'
   s.add_dependency 'rest-client', '>= 1.7', '< 3'
-  s.add_dependency 'retries', '~> 0.0.5' # used by the release tag service
   s.add_dependency 'rsolr', '>= 1.0.3', '< 3'
   s.add_dependency 'rubydora', '~> 2.1'
   s.add_dependency 'solrizer', '~> 3.0'
 
   # Stanford dependencies
   s.add_dependency 'dor-rights-auth', '~> 1.0', '>= 1.2.0'
-  s.add_dependency 'dor-workflow-client', '~> 3.1'
   s.add_dependency 'druid-tools', '>= 0.4.1'
   s.add_dependency 'stanford-mods', '>= 2.3.1'
   s.add_dependency 'stanford-mods-normalizer', '~> 0.1'

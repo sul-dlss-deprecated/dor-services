@@ -3,19 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Dor::Item do
-  describe '#allows_modification?' do
-    let(:pid) { 'ab12cd3456' }
-    let(:obj) { described_class.new(pid: pid) }
-    let(:service) { instance_double(Dor::StateService, allows_modification?: true) }
-
-    it 'delegates to StateService' do
-      allow(Deprecation).to receive(:warn)
-      allow(Dor::StateService).to receive(:new).with(pid).and_return(service)
-      obj.allows_modification?
-      expect(service).to have_received(:allows_modification?)
-    end
-  end
-
   describe '#add_collection' do
     let(:item) { instantiate_fixture('druid:oo201oo0001', described_class) }
     let(:service) { instance_double(Dor::CollectionService, add: true) }
@@ -102,24 +89,6 @@ RSpec.describe Dor::Item do
     end
   end
 
-  describe '#to_solr' do
-    subject(:doc) { item.to_solr }
-
-    let(:item) { described_class.new(pid: 'foo:123') }
-
-    let(:wf_indexer) { instance_double(Dor::WorkflowsIndexer, to_solr: {}) }
-    let(:process_indexer) { instance_double(Dor::ProcessableIndexer, to_solr: {}) }
-    let(:release_indexer) { instance_double(Dor::ReleasableIndexer, to_solr: {}) }
-
-    before do
-      allow(Dor::ReleasableIndexer).to receive(:new).and_return(release_indexer)
-      allow(Dor::WorkflowsIndexer).to receive(:new).and_return(wf_indexer)
-      allow(Dor::ProcessableIndexer).to receive(:new).and_return(process_indexer)
-    end
-
-    it { is_expected.to include 'active_fedora_model_ssi' => 'Dor::Item' }
-  end
-
   describe 'datastreams' do
     let(:item) { described_class.new(pid: 'foo:123') }
 
@@ -177,38 +146,6 @@ RSpec.describe Dor::Item do
       expect(sm).to be_kind_of(Stanford::Mods::Record)
       expect(sm.genre.text).to eq('ape')
       expect(sm.pub_year_sort_str).to be_nil
-    end
-  end
-
-  describe 'the dsLocation for workflow' do
-    let(:obj) { described_class.new }
-    before do
-      allow(Dor::SuriService).to receive(:mint_id).and_return('changeme:1231231')
-      allow(Dor::Config.suri).to receive(:mint_ids).and_return(true)
-      allow(obj).to receive(:update_index)
-      obj.save!
-    end
-
-    let(:reloaded) { described_class.find(obj.pid) }
-    let(:workflows) { reloaded.workflows }
-
-    it 'is set automatically' do
-      expect(workflows.dsLocation).to eq 'https://workflow.example.edu/dor/objects/changeme:1231231/workflows'
-      expect(workflows.mimeType).to eq 'application/xml'
-    end
-  end
-
-  describe '#workflows' do
-    let(:item) { instantiate_fixture('druid:ab123cd4567', described_class) }
-
-    before do
-      stub_config
-      item.contentMetadata.content = '<contentMetadata/>'
-    end
-
-    it 'has a workflows datastream and workflows shortcut method' do
-      expect(item.datastreams['workflows']).to be_a(Dor::WorkflowDs)
-      expect(item.workflows).to eq(item.datastreams['workflows'])
     end
   end
 
@@ -401,68 +338,6 @@ RSpec.describe Dor::Item do
     it 'is settable and gettable' do
       item.tag = ['tag:1', 'tag:2']
       expect(item.tags).to eq ['tag:1', 'tag:2']
-    end
-  end
-
-  describe '#remove_druid_prefix' do
-    before do
-      allow(Deprecation).to receive(:warn)
-    end
-
-    let(:item) { instantiate_fixture('druid:ab123cd4567', described_class) }
-
-    it 'removes the druid prefix if it is present' do
-      expect(item.remove_druid_prefix).to eq('ab123cd4567')
-      expect(Deprecation).to have_received(:warn)
-    end
-
-    it 'removes the druid prefix for an arbitrary druid passed in' do
-      expect(item.remove_druid_prefix('druid:oo000oo0001')).to eq('oo000oo0001')
-    end
-
-    it 'leaves the string unchanged if the druid prefix is already stripped' do
-      expect(item.remove_druid_prefix('oo000oo0001')).to eq('oo000oo0001')
-    end
-
-    it 'justs return the input string if there are no matches' do
-      expect(item.remove_druid_prefix('bogus')).to eq('bogus')
-    end
-  end
-
-  describe '#pid_regex' do
-    before do
-      allow(Deprecation).to receive(:warn)
-    end
-
-    let(:item) { instantiate_fixture('druid:ab123cd4567', described_class) }
-
-    it 'identifies pids by regex' do
-      expect('ab123cd4567'.match(item.pid_regex).size).to eq(1)
-      expect(Deprecation).to have_received(:warn)
-    end
-
-    it 'pulls out a pid by regex' do
-      expect('druid:ab123cd4567/other crappola'.match(item.pid_regex)[0]).to eq('ab123cd4567')
-    end
-
-    it 'does not identify non-pids' do
-      expect('bogus'.match(item.pid_regex)).to be_nil
-    end
-
-    it 'does not identify pid by druid regex' do
-      expect('ab123cd4567'.match(item.druid_regex)).to be_nil
-    end
-
-    it 'identifies full druid by regex' do
-      expect('druid:ab123cd4567'.match(item.druid_regex).size).to eq(1)
-    end
-
-    it 'pulls out a full druid by regex' do
-      expect('druid:ab123cd4567/other crappola'.match(item.druid_regex)[0]).to eq('druid:ab123cd4567')
-    end
-
-    it 'does not identify non-druids' do
-      expect('bogus'.match(item.druid_regex)).to be_nil
     end
   end
 

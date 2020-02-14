@@ -68,14 +68,6 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
 </foxml:xmlContent>
 </foxml:datastreamVersion>
 </foxml:datastream>
-<foxml:datastream ID="workflows" STATE="A" CONTROL_GROUP="E" VERSIONABLE="false">
-<foxml:datastreamVersion ID="workflows.0" LABEL="Workflows" CREATED="2013-01-31T20:34:03.958Z" MIMETYPE="application/xml">
-<foxml:contentLocation TYPE="URL" REF="https://sul-lyberservices-prod.stanford.edu/workflow/dor/objects/druid:kq696sh3014/workflows"/>
-</foxml:datastreamVersion>
-<foxml:datastreamVersion ID="workflows.5" LABEL="Workflow" CREATED="2013-06-05T21:41:38.112Z" MIMETYPE="application/xml">
-<foxml:contentLocation TYPE="URL" REF="https://lyberservices-prod.stanford.edu/workflow/dor/objects/druid:kq696sh3014/workflows"/>
-</foxml:datastreamVersion>
-</foxml:datastream>
 <foxml:datastream ID="hydrusProperties" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
 <foxml:datastreamVersion ID="hydrusProperties.34" LABEL="Hydrus Properties" CREATED="2015-03-25T20:07:44.488Z" MIMETYPE="text/xml" SIZE="725">
 <foxml:xmlContent>
@@ -100,7 +92,7 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
 </foxml:datastream>
 <foxml:datastream ID="descMetadata" STATE="A" CONTROL_GROUP="M" VERSIONABLE="true">
 <foxml:datastreamVersion ID="descMetadata.34" LABEL="Descriptive Metadata" CREATED="2015-03-25T20:07:44.627Z" MIMETYPE="text/xml" SIZE="1350">
-<foxml:binaryContent> 
+<foxml:binaryContent>
               PG1vZHMgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOnhzaT0i
               aHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vd3d3
               LmxvYy5nb3YvbW9kcy92MyIgdmVyc2lvbj0iMy4zIiB4c2k6c2NoZW1hTG9jYXRpb249Imh0dHA6Ly93
@@ -124,26 +116,26 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
               PHRpdGxlSW5mbz48dGl0bGU+dGl0bGUgMzwvdGl0bGU+PC90aXRsZUluZm8+PGxvY2F0aW9uPjx1cmw+
               aHR0cDovL3d3dy5qb2Vsb25zb2Z0d2FyZS5jb20vaXRlbXMvMjAwOS8wMy8wOS5odG1sPC91cmw+PC9s
               b2NhdGlvbj48L3JlbGF0ZWRJdGVtPgo8L21vZHM+
-</foxml:binaryContent> 
+</foxml:binaryContent>
 </foxml:datastreamVersion>
 </foxml:datastream>
 <foxml:datastream ID="rightsMetadata" STATE="A" CONTROL_GROUP="M" VERSIONABLE="true">
 <foxml:datastreamVersion ID="rightsMetadata.18" LABEL="Rights Metadata" CREATED="2015-03-25T20:07:44.736Z" MIMETYPE="text/xml" SIZE="329">
-<foxml:binaryContent> 
+<foxml:binaryContent>
               PHJpZ2h0c01ldGFkYXRhPgogIDxhY2Nlc3MgdHlwZT0iZGlzY292ZXIiPgogICAgPG1hY2hpbmU+CiAg
               ICAgIDx3b3JsZC8+CiAgICA8L21hY2hpbmU+CiAgPC9hY2Nlc3M+CiAgPGFjY2VzcyB0eXBlPSJyZWFk
               Ij4KICAgIDxtYWNoaW5lPgogICAgICAKICAgIDx3b3JsZC8+PC9tYWNoaW5lPgogIDwvYWNjZXNzPgog
               IAo8dXNlPjxodW1hbiB0eXBlPSJjcmVhdGl2ZUNvbW1vbnMiPkNDIEJZLU5DIEF0dHJpYnV0aW9uLU5v
               bkNvbW1lcmNpYWw8L2h1bWFuPjxtYWNoaW5lIHR5cGU9ImNyZWF0aXZlQ29tbW9ucyI+YnktbmM8L21h
               Y2hpbmU+PC91c2U+PC9yaWdodHNNZXRhZGF0YT4=
-</foxml:binaryContent> 
+</foxml:binaryContent>
 </foxml:datastreamVersion>
 </foxml:datastream>
 <foxml:datastream ID="contentMetadata" STATE="A" CONTROL_GROUP="M" VERSIONABLE="true">
 <foxml:datastreamVersion ID="contentMetadata.3" LABEL="Content Metadata" CREATED="2013-03-01T01:53:36.826Z" MIMETYPE="text/xml" SIZE="54">
-<foxml:binaryContent> 
+<foxml:binaryContent>
               PGNvbnRlbnRNZXRhZGF0YSBvYmplY3RJZD0ia3E2OTZzaDMwMTQiIHR5cGU9ImZpbGUiLz4K
-</foxml:binaryContent> 
+</foxml:binaryContent>
 </foxml:datastreamVersion>
 </foxml:datastream>
 <foxml:datastream ID="versionMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">

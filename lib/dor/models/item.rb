@@ -6,15 +6,6 @@ module Dor
 
     has_object_type 'item'
 
-    self.resource_indexer = CompositeIndexer.new(
-      DataIndexer,
-      DescribableIndexer,
-      IdentifiableIndexer,
-      ProcessableIndexer,
-      ReleasableIndexer,
-      WorkflowsIndexer
-    )
-
     has_metadata name: 'technicalMetadata',
                  type: TechnicalMetadataDS,
                  label: 'Technical Metadata',

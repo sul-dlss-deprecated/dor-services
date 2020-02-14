@@ -12,7 +12,5 @@ module Dor
       m.field 'size', :string
       m.field 'label', :string
     end
-
-    has_metadata name: 'DC', type: Dor::SimpleDublinCoreDs, versionable: false, label: 'DC', control_group: 'X'
   end
 end

@@ -211,14 +211,6 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
 <foxml:contentLocation TYPE="INTERNAL_ID" REF="http://sul-dor-test.stanford.edu/fedora/get/druid:dc235vd9662/technicalMetadata/2012-11-21T19:06:36.744Z"/>
 </foxml:datastreamVersion>
 </foxml:datastream>
-<foxml:datastream ID="workflows" FEDORA_URI="info:fedora/druid:dc235vd9662/workflows" STATE="A" CONTROL_GROUP="E" VERSIONABLE="false">
-<foxml:datastreamVersion ID="workflows.0" LABEL="Workflows" CREATED="2012-05-03T20:38:35.443Z" MIMETYPE="application/xml">
-<foxml:contentLocation TYPE="URL" REF="https://sul-lyberservices-test.stanford.edu/workflow/dor/objects/druid:dc235vd9662/workflows"/>
-</foxml:datastreamVersion>
-<foxml:datastreamVersion ID="workflows.3" LABEL="Workflow" CREATED="2015-02-04T22:00:22.026Z" MIMETYPE="application/xml">
-<foxml:contentLocation TYPE="URL" REF="https://lyberservices-test.stanford.edu/workflow/dor/objects/druid:dc235vd9662/workflows"/>
-</foxml:datastreamVersion>
-</foxml:datastream>
 <foxml:datastream ID="versionMetadata" FEDORA_URI="info:fedora/druid:dc235vd9662/versionMetadata" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
 <foxml:datastreamVersion ID="versionMetadata.0" LABEL="Version Metadata" CREATED="2015-04-07T22:04:57.549Z" MIMETYPE="text/xml" SIZE="136">
 <foxml:xmlContent>

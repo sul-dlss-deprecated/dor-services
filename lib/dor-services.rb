@@ -5,7 +5,6 @@ require 'active_fedora/version'
 require 'active_support/core_ext/module/attribute_accessors'
 require 'active_support/core_ext/object/blank'
 require 'deprecation'
-require 'retries' # Used by Dor::ReleaseTagService
 
 module Dor
   extend ActiveSupport::Autoload
@@ -50,19 +49,6 @@ module Dor
 
   require 'druid-tools'
 
-  autoload_under 'indexers' do
-    autoload :CompositeIndexer
-    autoload :DataIndexer
-    autoload :DescribableIndexer
-    autoload :EditableIndexer
-    autoload :IdentifiableIndexer
-    autoload :ProcessableIndexer
-    autoload :ProcessIndexer
-    autoload :ReleasableIndexer
-    autoload :WorkflowIndexer
-    autoload :WorkflowsIndexer
-  end
-
   # datastreams
   autoload_under 'datastreams' do
     autoload :AdministrativeMetadataDS
@@ -76,11 +62,8 @@ module Dor
     autoload :ProvenanceMetadataDS
     autoload :RightsMetadataDS
     autoload :RoleMetadataDS
-    autoload :SimpleDublinCoreDs
     autoload :TechnicalMetadataDS
     autoload :VersionMetadataDS
-    autoload :WorkflowDefinitionDs
-    autoload :WorkflowDs
   end
 
   # DOR Concerns
@@ -89,8 +72,6 @@ module Dor
   end
 
   eager_autoload do
-    autoload :ReleaseTags
-
     # ActiveFedora Classes
     autoload_under 'models' do
       autoload :Abstract
@@ -101,8 +82,6 @@ module Dor
       autoload :Item
       autoload :Part
       autoload :Set
-      autoload :WorkflowObject
-      autoload :WorkflowSolrDocument
     end
   end
 
@@ -111,27 +90,14 @@ module Dor
     autoload :CollectionService
     autoload :CreativeCommonsLicenseService
     autoload :EmbargoService
-    autoload :IdentityMetadataTagService
     autoload :Ontology
     autoload :OpenDataLicenseService
-    autoload :PurlTagService
-    autoload :ReleaseTagService
     autoload :SearchService
-    autoload :StatusService
-    autoload :StateService
     autoload :SuriService
     autoload :TagService
-  end
-
-  # Workflow Classes
-  module Workflow
-    extend ActiveSupport::Autoload
-    autoload :Process
-    autoload :Document
   end
 
   eager_load!
 
   require 'dor/utils/hydrus_shims'
-  require 'dor/workflow/client'
 end
