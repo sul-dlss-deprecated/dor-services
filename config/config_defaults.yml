@@ -17,8 +17,3 @@ suri:
   url:
   user:
   mint_ids: false
-workflow:
-  url:
-  timeout: 60
-  logfile: workflow_service.log
-  shift_age: weekly
