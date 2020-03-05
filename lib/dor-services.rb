@@ -47,8 +47,6 @@ module Dor
 
   require 'dor/datastreams/datastream_spec_solrizer'
 
-  require 'druid-tools'
-
   # datastreams
   autoload_under 'datastreams' do
     autoload :AdministrativeMetadataDS
