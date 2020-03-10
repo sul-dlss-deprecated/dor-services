@@ -17,12 +17,12 @@ module Dor
     def release_embargo(release_agent = 'unknown')
       embargo_service.release(release_agent)
     end
-    deprecation_deprecate release_embargo: 'Use the method in EmbargoService instead'
+    deprecation_deprecate release_embargo: 'this moved to dor-service-app'
 
     def release_20_pct_vis_embargo(release_agent = 'unknown')
       embargo_service.release_20_pct_vis(release_agent)
     end
-    deprecation_deprecate release_20_pct_vis_embargo: 'Use the method in EmbargoService instead'
+    deprecation_deprecate release_20_pct_vis_embargo: 'this moved to dor-service-app'
 
     def embargoed?
       embargoMetadata.status == 'embargoed'

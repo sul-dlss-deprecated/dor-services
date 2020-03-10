@@ -35,6 +35,7 @@ module Dor
 
       events.add_event('embargo', release_agent, 'Embargo released')
     end
+    deprecation_deprecate release: 'this moved to dor-service-app'
 
     def release_20_pct_vis(release_agent)
       # Set status to released
@@ -55,6 +56,7 @@ module Dor
 
       events.add_event('embargo', release_agent, '20% Visibility Embargo released')
     end
+    deprecation_deprecate release_20_pct_vis: 'this moved to dor-service-app'
 
     def update(new_date)
       raise ArgumentError, 'You cannot change the embargo date of an item that is not embargoed.' if embargoMetadata.status != 'embargoed'
