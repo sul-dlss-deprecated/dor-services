@@ -12,6 +12,22 @@ module Dor
     has_many :supplemental_files, property: :is_constituent_of, class_name: 'Part'
     has_many :permission_files, property: :is_dependent_of, class_name: 'Part'
 
+    has_attributes :name, :prefix, :suffix, :major, :degree, :advisor, :etd_type,
+                   :title, :abstract, :containscopyright, :copyrightclearance,
+                   :sulicense, :cclicense, :cclicensetype, :embargo,
+                   :external_visibility, :term, :sub, :univid, :sunetid, :ps_career,
+                   :ps_program, :ps_plan, :ps_subplan, :dissertation_id, :provost,
+                   :degreeconfyr, :schoolname, :department, :readerapproval,
+                   :readercomment, :readeractiondttm, :regapproval, :regcomment,
+                   :regactiondttm, :documentaccess, :submit_date, :symphonyStatus,
+                   datastream: 'properties', multiple: false
+
+    has_attributes :citation_verified, :abstract_provided, :dissertation_uploaded,
+                   :supplemental_files_uploaded, :permissions_provided,
+                   :permission_files_uploaded, :rights_selected,
+                   :cc_license_selected, :submitted_to_registrar,
+                   datastream: 'workflow', multiple: false
+
     has_metadata name: 'properties', type: ActiveFedora::SimpleDatastream, versionable: false do |m|
       m.field 'name',  :string                    # PS:name
       m.field 'prefix', :string                   # PS:prefix
