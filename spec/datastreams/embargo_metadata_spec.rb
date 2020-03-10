@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'nokogiri'
 
-describe Dor::EmbargoMetadataDS do
+RSpec.describe Dor::EmbargoMetadataDS do
   before do
     @ds = described_class.new nil, 'embargoMetadata'
   end
@@ -136,5 +135,17 @@ describe Dor::EmbargoMetadataDS do
       expect(embargo.at_xpath("//releaseAccess/access[@type='read']/machine/world")).to be
       expect(@ds).to be_changed
     end
+  end
+
+  describe 'use_and_reproduction_statement' do
+    subject { ds.use_and_reproduction_statement }
+
+    let(:ds) { described_class.new nil, 'embargoMetadata' }
+
+    before do
+      ds.use_and_reproduction_statement = 'These materials are in the public domain.'
+    end
+
+    it { is_expected.to eq ['These materials are in the public domain.'] }
   end
 end
