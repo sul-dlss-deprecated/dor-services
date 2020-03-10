@@ -37,4 +37,24 @@ RSpec.describe Dor::Etd do
     eds = etd.datastreams['embargoMetadata']
     expect(eds).to be_a_kind_of Dor::EmbargoMetadataDS
   end
+
+  describe '#name' do
+    subject { etd.name }
+
+    before do
+      etd.name = 'Bob'
+    end
+
+    it { is_expected.to eq 'Bob' }
+  end
+
+  describe '#citation_verified' do
+    subject { etd.citation_verified }
+
+    before do
+      etd.citation_verified = 'true'
+    end
+
+    it { is_expected.to eq 'true' }
+  end
 end
