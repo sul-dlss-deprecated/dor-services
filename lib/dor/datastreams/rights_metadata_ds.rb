@@ -20,6 +20,14 @@ module Dor
         t.human
       end
 
+      t._read(path: 'access', attributes: { type: 'read' }) do
+        t.machine do
+          t.embargo_release_date(path: 'embargoReleaseDate', type: :time)
+        end
+      end
+
+      t.embargo_release_date(proxy: %i[_read machine embargo_release_date])
+
       t.creative_commons path: '/use/machine[@type=\'creativeCommons\']', type: 'creativeCommons' do
         t.uri path: '@uri'
       end

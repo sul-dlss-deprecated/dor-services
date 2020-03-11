@@ -167,8 +167,7 @@ RSpec.describe Dor::EmbargoService do
     end
 
     before do
-      allow(embargo_item.rightsMetadata).to receive(:save).and_return(true)
-      allow(embargo_item.embargoMetadata).to receive(:save).and_return(true)
+      allow(embargo_item).to receive(:save!).and_return(true)
     end
 
     it 'indicates the item is embargoed' do
@@ -176,15 +175,9 @@ RSpec.describe Dor::EmbargoService do
     end
 
     it 'updates embargo date' do
-      old_embargo_date = embargo_item.embargoMetadata.release_date
-      service.update(Time.now.utc + 1.month)
-      expect(embargo_item.embargoMetadata.release_date).not_to eq old_embargo_date
-    end
-
-    it 'updates embargo and rights datastreams with content= ' do
-      expect(embargo_item.embargoMetadata).to receive(:ng_xml_will_change!)
-      expect(embargo_item.rightsMetadata).to receive(:ng_xml_will_change!)
-      service.update(Time.now.utc + 1.month)
+      old_embargo_date = embargo_item.embargoMetadata.release_date.first
+      service.update(DateTime.now.utc + 1.month)
+      expect(embargo_item.embargoMetadata.release_date.first).not_to eq old_embargo_date
     end
 
     context "when the item isn't embargoed" do
