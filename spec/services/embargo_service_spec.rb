@@ -65,6 +65,7 @@ RSpec.describe Dor::EmbargoService do
     end
 
     before do
+      allow(Deprecation).to receive(:warn)
       service.release('application:embargo-release')
     end
 
@@ -124,6 +125,7 @@ RSpec.describe Dor::EmbargoService do
     end
 
     before do
+      allow(Deprecation).to receive(:warn)
       service.release_20_pct_vis('application:embargo-release')
     end
 
@@ -185,9 +187,14 @@ RSpec.describe Dor::EmbargoService do
       service.update(Time.now.utc + 1.month)
     end
 
-    it "raises ArgumentError if the item isn't embargoed" do
-      service.release('application:embargo-release')
-      expect { service.update(Time.now.utc + 1.month) }.to raise_error(ArgumentError)
+    context "when the item isn't embargoed" do
+      let(:embargo_item) do
+        Dor::Item.new
+      end
+
+      it 'raises ArgumentError' do
+        expect { service.update(Time.now.utc + 1.month) }.to raise_error(ArgumentError)
+      end
     end
 
     it 'raises ArgumentError if the new date is in the past' do
