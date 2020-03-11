@@ -82,25 +82,19 @@ RSpec.describe Dor::EmbargoMetadataDS do
   end
 
   describe '#release_date' do
+    subject { ds.release_date }
+
+    let(:ds) { described_class.new }
+    let(:time) { DateTime.parse('2039-10-30T12:22:33Z') }
+
     before do
-      @t = Time.now.utc - 10
-      @ds.release_date = @t
+      ds.release_date = time
     end
 
-    it '= sets releaseDate from a Time object' do
-      # does NOT do beginning_of_day truncation, leave that for indexing
-      rd = Time.parse(@ds.term_values(:release_date).first)
-      expect(rd.strftime('%FT%T%z')).to eq(@t.strftime('%FT%T%z')) # not strictly equal since "now" has millesecond granularity
-    end
+    it { is_expected.to eq [time] }
 
     it '= marks the datastram as changed' do
-      expect(@ds).to be_changed
-    end
-
-    it 'gets the current value of releaseDate as a Time object' do
-      rd = @ds.release_date
-      expect(rd).to be_a(Time)
-      expect(rd).to be < Time.now.utc
+      expect(ds).to be_changed
     end
   end
 

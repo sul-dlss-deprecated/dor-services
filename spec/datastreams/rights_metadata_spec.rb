@@ -3,19 +3,21 @@
 require 'spec_helper'
 
 RSpec.describe Dor::RightsMetadataDS do
-  before do
-    stub_config
-    @item = instantiate_fixture('druid:bb046xn0881', Dor::Item)
-    allow(Dor).to receive(:find).with(@item.pid).and_return(@item)
-  end
-
   it '#new' do
     expect { described_class.new }.not_to raise_error
   end
 
-  it 'has a rightsMetadata datastream accessible' do
-    expect(@item.datastreams['rightsMetadata']).to be_a(described_class)
-    expect(@item.rightsMetadata).to eq(@item.datastreams['rightsMetadata'])
+  describe '#embargo_release_date' do
+    subject(:embargo_release_date) { ds.embargo_release_date }
+
+    let(:ds) { described_class.new }
+    let(:time) { DateTime.parse('2039-10-30T12:22:33Z') }
+
+    before do
+      ds.embargo_release_date = time
+    end
+
+    it { is_expected.to eq [time] }
   end
 
   describe 'upd_rights_xml_for_rights_type' do
@@ -289,42 +291,46 @@ RSpec.describe Dor::RightsMetadataDS do
   end
 
   describe 'set_read_rights' do
+    let(:rights_md) do
+      instantiate_fixture('druid:bb046xn0881', Dor::Item).rightsMetadata
+    end
+
     it 'will raise an exception when an unsupported rights type is given' do
-      expect { @item.rightsMetadata.set_read_rights 'loc:unsupported' }.to raise_error ArgumentError, "Argument 'loc:unsupported' is not a recognized value"
+      expect { rights_md.set_read_rights 'loc:unsupported' }.to raise_error ArgumentError, "Argument 'loc:unsupported' is not a recognized value"
     end
 
     it 'will set the xml properly and indicate that datastream content has changed' do
-      expect(described_class).to receive(:upd_rights_xml_for_rights_type).with(@item.rightsMetadata.ng_xml, 'world')
-      expect(@item.rightsMetadata).to receive(:ng_xml_will_change!).and_call_original
+      expect(described_class).to receive(:upd_rights_xml_for_rights_type).with(rights_md.ng_xml, 'world')
+      expect(rights_md).to receive(:ng_xml_will_change!).and_call_original
 
-      @item.rightsMetadata.set_read_rights 'world'
-      expect(@item.rightsMetadata.instance_variable_get(:@dra_object)).to be_nil
+      rights_md.set_read_rights 'world'
+      expect(rights_md.instance_variable_get(:@dra_object)).to be_nil
     end
   end
 
   describe 'rightsMetadata' do
-    before do
-      @rm = @item.rightsMetadata
+    let(:rights_md) do
+      instantiate_fixture('druid:bb046xn0881', Dor::Item).rightsMetadata
     end
 
     it 'has accessors from defined terminology' do
-      expect(@rm.copyright).to eq ['Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.']
-      expect(@rm.use_statement).to eq ['Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.']
-      expect(@rm.use_license).to eq ['by-nc']
+      expect(rights_md.copyright).to eq ['Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.']
+      expect(rights_md.use_statement).to eq ['Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.']
+      expect(rights_md.use_license).to eq ['by-nc']
       ## use.human differs from use_statement: the former hits multiple elements, the latter only one
-      expect(@rm.use.human).to eq ['Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.', 'Attribution Non-Commercial 3.0 Unported']
+      expect(rights_md.use.human).to eq ['Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.', 'Attribution Non-Commercial 3.0 Unported']
     end
 
     it 'has a Dor::RightsAuth dra_object' do
-      expect(@rm.dra_object).to be_a(Dor::RightsAuth)
-      expect(@rm.dra_object.index_elements).to match a_hash_including(primary: 'world_qualified', errors: [])
+      expect(rights_md.dra_object).to be_a(Dor::RightsAuth)
+      expect(rights_md.dra_object.index_elements).to match a_hash_including(primary: 'world_qualified', errors: [])
     end
 
     it 'reads creative commons licenses correctly' do
-      expect(@rm.creative_commons).to eq ['by-nc']
+      expect(rights_md.creative_commons).to eq ['by-nc']
       # The following tests fail if terminology defined with :type instead of :path => '/x/y[@type=...]'
-      expect(@rm.creative_commons_human).not_to include 'Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.'
-      expect(@rm.creative_commons_human).to eq ['Attribution Non-Commercial 3.0 Unported']
+      expect(rights_md.creative_commons_human).not_to include 'Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.'
+      expect(rights_md.creative_commons_human).to eq ['Attribution Non-Commercial 3.0 Unported']
     end
 
     it 'does not test open data commons licenses' do

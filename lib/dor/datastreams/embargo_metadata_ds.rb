@@ -8,7 +8,7 @@ module Dor
       t.root(path: 'embargoMetadata')
       t.status
       t.embargo_status(path: 'status', index_as: [:symbol])
-      t.release_date(path: 'releaseDate', index_as: [:dateable])
+      t.release_date(path: 'releaseDate', type: :time)
       t.release_access(path: 'releaseAccess') do
         t.use do
           t.human(attributes: { type: 'useAndReproduction' })
@@ -35,10 +35,8 @@ module Dor
 
     def to_solr(solr_doc = {}, *args)
       solr_doc = super
-      #::Solrizer.insert_field(solr_doc, field_name, value, *index_types)
-      rd1 = release_date
       rd20 = twenty_pct_release_date
-      ::Solrizer.insert_field(solr_doc, 'embargo_release', rd1.utc.strftime('%FT%TZ'), :dateable) unless rd1.blank?
+      ::Solrizer.insert_field(solr_doc, 'embargo_release', release_date.first.utc.strftime('%FT%TZ'), :dateable) unless release_date.blank?
       ::Solrizer.insert_field(solr_doc, 'twenty_pct_visibility_release', rd20.utc.strftime('%FT%TZ'), :dateable) unless rd20.blank?
       solr_doc
     end
@@ -58,19 +56,6 @@ module Dor
 
     def status
       term_values(:status).first
-    end
-
-    # Sets the release date.  Does NOT convert to beginning-of-day.
-    # @param [Time] rd the release date object
-    def release_date=(rd = Time.now.utc)
-      update_values([:release_date] => rd.utc.xmlschema)
-    end
-
-    # Current releaseDate value
-    # @return [Time]
-    def release_date
-      rd = term_values(:release_date).first
-      rd.nil? || rd.empty? ? nil : Time.parse(rd)
     end
 
     def twenty_pct_status=(new_status)
