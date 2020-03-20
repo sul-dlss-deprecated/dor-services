@@ -332,15 +332,6 @@ RSpec.describe Dor::Item do
     end
   end
 
-  describe '#tag=' do
-    let(:item) { described_class.new }
-
-    it 'is settable and gettable' do
-      item.tag = ['tag:1', 'tag:2']
-      expect(item.tags).to eq ['tag:1', 'tag:2']
-    end
-  end
-
   describe '#adapt_to_cmodel' do
     context 'for a Hydrus collection' do
       let(:item) { instantiate_fixture('druid:kq696sh3014', Dor::Abstract) }
