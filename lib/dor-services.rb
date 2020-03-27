@@ -92,7 +92,6 @@ module Dor
     autoload :OpenDataLicenseService
     autoload :SearchService
     autoload :SuriService
-    autoload :TagService
   end
 
   eager_load!

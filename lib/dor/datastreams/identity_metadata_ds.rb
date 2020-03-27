@@ -69,16 +69,6 @@ module Dor
     end
     alias source_id= sourceId=
 
-    def tags
-      tag
-    end
-
-    # helper method to get just the content type tag
-    def content_type_tag
-      content_tag = tags.select { |tag| tag.include?('Process : Content Type') }
-      content_tag.size == 1 ? content_tag[0].split(':').last.strip : ''
-    end
-
     def otherId(type = nil)
       result = find_by_terms(:otherId).to_a
       if type.nil?
@@ -191,30 +181,6 @@ module Dor
         add_solr_value(solr_doc, 'dor_id', id, :symbol, [:stored_searchable])
         add_solr_value(solr_doc, 'identifier', qid, :symbol, [:stored_searchable])
         add_solr_value(solr_doc, "#{name}_id", id, :symbol, [])
-      end
-
-      # do some stuff to make tags in general and project tags specifically more easily searchable and facetable
-      find_by_terms(:tag).each do |tag|
-        (prefix, rest) = tag.text.split(/:/, 2)
-        prefix = prefix.downcase.strip.gsub(/\s/, '_')
-        unless rest.nil?
-          # this part will index a value in a field specific to the tag, e.g. registered_by_tag_*,
-          # book_tag_*, project_tag_*, remediated_by_tag_*, etc.  project_tag_* and registered_by_tag_*
-          # definitley get used, but most don't.  we can limit the prefixes that get solrized if things
-          # get out of hand.
-          add_solr_value(solr_doc, "#{prefix}_tag", rest.strip, :symbol, [])
-        end
-
-        # solrize each possible prefix for the tag, inclusive of the full tag.
-        # e.g., for a tag such as "A : B : C", this will solrize to an _ssim field
-        # that contains ["A",  "A : B",  "A : B : C"].
-        tag_parts = tag.text.split(/:/)
-        progressive_tag_prefix = ''
-        tag_parts.each_with_index do |part, index|
-          progressive_tag_prefix += ' : ' if index > 0
-          progressive_tag_prefix += part.strip
-          add_solr_value(solr_doc, 'exploded_tag', progressive_tag_prefix, :symbol, [])
-        end
       end
 
       solr_doc
