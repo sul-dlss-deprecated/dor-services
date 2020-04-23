@@ -57,4 +57,14 @@ RSpec.describe Dor::Etd do
 
     it { is_expected.to eq 'true' }
   end
+
+  describe '#format_reviewed' do
+    subject { etd.format_reviewed }
+
+    before do
+      etd.format_reviewed = 'false'
+    end
+
+    it { is_expected.to eq 'false' }
+  end
 end
