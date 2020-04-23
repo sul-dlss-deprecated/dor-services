@@ -22,10 +22,11 @@ module Dor
                    :regactiondttm, :documentaccess, :submit_date, :symphonyStatus,
                    datastream: 'properties', multiple: false
 
-    has_attributes :citation_verified, :abstract_provided, :dissertation_uploaded,
-                   :supplemental_files_uploaded, :permissions_provided,
-                   :permission_files_uploaded, :rights_selected,
-                   :cc_license_selected, :submitted_to_registrar,
+    has_attributes :citation_verified, :abstract_provided, :format_reviewed,
+                   :dissertation_uploaded, :supplemental_files_uploaded,
+                   :permissions_provided, :permission_files_uploaded,
+                   :rights_selected, :cc_license_selected,
+                   :submitted_to_registrar,
                    datastream: 'workflow', multiple: false
 
     has_metadata name: 'properties', type: ActiveFedora::SimpleDatastream, versionable: false do |m|
@@ -77,6 +78,7 @@ module Dor
     has_metadata name: 'workflow', type: ActiveFedora::SimpleDatastream, versionable: false do |m|
       m.field 'citation_verified', :string
       m.field 'abstract_provided', :string
+      m.field 'format_reviewed', :string
       m.field 'dissertation_uploaded', :string
       m.field 'supplemental_files_uploaded', :string
       m.field 'permissions_provided', :string
