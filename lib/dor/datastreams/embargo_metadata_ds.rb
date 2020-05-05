@@ -33,14 +33,6 @@ module Dor
       builder.doc
     end
 
-    def to_solr(solr_doc = {}, *args)
-      solr_doc = super
-      rd20 = twenty_pct_release_date
-      ::Solrizer.insert_field(solr_doc, 'embargo_release', release_date.first.utc.strftime('%FT%TZ'), :dateable) unless release_date.first.blank?
-      ::Solrizer.insert_field(solr_doc, 'twenty_pct_visibility_release', rd20.utc.strftime('%FT%TZ'), :dateable) unless rd20.blank?
-      solr_doc
-    end
-
     def ensure_non_versionable
       self.versionable = 'false'
     end
@@ -92,11 +84,6 @@ module Dor
       term_value_delete(select: '//embargoMetadata/releaseAccess')
       ng_xml_will_change!
       ng_xml.root.add_child(new_doc.root.clone)
-    end
-
-    # maintain AF < 8 indexing behavior
-    def prefix
-      ''
     end
   end
 end

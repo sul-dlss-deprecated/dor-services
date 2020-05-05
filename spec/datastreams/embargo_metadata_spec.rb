@@ -52,15 +52,6 @@ RSpec.describe Dor::EmbargoMetadataDS do
       XML
       expect(@ds.to_xml).to be_equivalent_to(emb_xml)
     end
-
-    it 'solrizes correctly' do
-      ds = described_class.from_xml(dsxml)
-      release_date_field = Solrizer.solr_name('embargo_release', :dateable)
-      twenty_pct_field   = Solrizer.solr_name('twenty_pct_visibility_release', :dateable)
-      expect(ds.to_solr).to match a_hash_including(release_date_field, twenty_pct_field)
-      expect(ds.to_solr[release_date_field]).to eq ['2011-10-12T00:00:00Z'] # field removes time granularity -- for questionable reasons
-      expect(ds.to_solr[twenty_pct_field]).to eq ['2016-10-12T00:00:00Z'] # field removes time granularity -- for questionable reasons
-    end
   end
 
   describe '#status' do
@@ -95,39 +86,6 @@ RSpec.describe Dor::EmbargoMetadataDS do
 
     it '= marks the datastram as changed' do
       expect(ds).to be_changed
-    end
-  end
-
-  describe '#to_solr' do
-    it 'copes with empty releaseDate' do
-      empty_rel_date_xml =
-        <<-XML
-          <embargoMetadata>
-            <status/>
-            <releaseDate/>
-            <releaseAccess/>
-            <twentyPctVisibilityStatus/>
-            <twentyPctVisibilityReleaseDate/>
-          </embargoMetadata>
-        XML
-      ds = described_class.from_xml(empty_rel_date_xml)
-      release_date_field = Solrizer.solr_name('embargo_release', :dateable)
-      expect(ds.to_solr).not_to match a_hash_including(release_date_field)
-    end
-
-    it 'copes with missing releaseDate' do
-      missing_rel_date_xml =
-        <<-XML
-          <embargoMetadata>
-            <status/>
-            <releaseAccess/>
-            <twentyPctVisibilityStatus/>
-            <twentyPctVisibilityReleaseDate/>
-          </embargoMetadata>
-        XML
-      ds = described_class.from_xml(missing_rel_date_xml)
-      release_date_field = Solrizer.solr_name('embargo_release', :dateable)
-      expect(ds.to_solr).not_to match a_hash_including(release_date_field)
     end
   end
 
