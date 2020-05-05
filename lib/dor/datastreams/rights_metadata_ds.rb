@@ -144,84 +144,12 @@ module Dor
       @dra_object = nil # until TODO complete, we'll expect to have to reparse after modification
     end
 
-    def to_solr(solr_doc = {}, *args)
-      solr_doc = super(solr_doc, *args)
-      dra = dra_object
-      solr_doc['rights_primary_ssi'] = dra.index_elements[:primary]
-      solr_doc['rights_errors_ssim'] = dra.index_elements[:errors] if dra.index_elements[:errors].size > 0
-      solr_doc['rights_characteristics_ssim'] = dra.index_elements[:terms] if dra.index_elements[:terms].size > 0
-
-      solr_doc['rights_descriptions_ssim'] = [
-        dra.index_elements[:primary],
-
-        (dra.index_elements[:obj_locations_qualified] || []).map do |rights_info|
-          rule_suffix = rights_info[:rule] ? " (#{rights_info[:rule]})" : ''
-          "location: #{rights_info[:location]}#{rule_suffix}"
-        end,
-        (dra.index_elements[:file_locations_qualified] || []).map do |rights_info|
-          rule_suffix = rights_info[:rule] ? " (#{rights_info[:rule]})" : ''
-          "location: #{rights_info[:location]} (file)#{rule_suffix}"
-        end,
-
-        (dra.index_elements[:obj_agents_qualified] || []).map do |rights_info|
-          rule_suffix = rights_info[:rule] ? " (#{rights_info[:rule]})" : ''
-          "agent: #{rights_info[:agent]}#{rule_suffix}"
-        end,
-        (dra.index_elements[:file_agents_qualified] || []).map do |rights_info|
-          rule_suffix = rights_info[:rule] ? " (#{rights_info[:rule]})" : ''
-          "agent: #{rights_info[:agent]} (file)#{rule_suffix}"
-        end,
-
-        (dra.index_elements[:obj_groups_qualified] || []).map do |rights_info|
-          rule_suffix = rights_info[:rule] ? " (#{rights_info[:rule]})" : ''
-          "#{rights_info[:group]}#{rule_suffix}"
-        end,
-        (dra.index_elements[:file_groups_qualified] || []).map do |rights_info|
-          rule_suffix = rights_info[:rule] ? " (#{rights_info[:rule]})" : ''
-          "#{rights_info[:group]} (file)#{rule_suffix}"
-        end,
-
-        (dra.index_elements[:obj_world_qualified] || []).map do |rights_info|
-          rule_suffix = rights_info[:rule] ? " (#{rights_info[:rule]})" : ''
-          "world#{rule_suffix}"
-        end,
-        (dra.index_elements[:file_world_qualified] || []).map do |rights_info|
-          rule_suffix = rights_info[:rule] ? " (#{rights_info[:rule]})" : ''
-          "world (file)#{rule_suffix}"
-        end
-      ].flatten.uniq
-
-      # these two values are returned by index_elements[:primary], but are just a less granular version of
-      # what the other more specific fields return, so discard them
-      solr_doc['rights_descriptions_ssim'] -= %w[access_restricted access_restricted_qualified world_qualified]
-      solr_doc['rights_descriptions_ssim'] += ['dark (file)'] if dra.index_elements[:terms].include? 'none_read_file'
-
-      solr_doc['obj_rights_locations_ssim'] = dra.index_elements[:obj_locations] unless dra.index_elements[:obj_locations].blank?
-      solr_doc['file_rights_locations_ssim'] = dra.index_elements[:file_locations] unless dra.index_elements[:file_locations].blank?
-      solr_doc['obj_rights_agents_ssim'] = dra.index_elements[:obj_agents] unless dra.index_elements[:obj_agents].blank?
-      solr_doc['file_rights_agents_ssim'] = dra.index_elements[:file_agents] unless dra.index_elements[:file_agents].blank?
-
-      # suppress empties
-      %w(use_statement_ssim copyright_ssim).each do |key|
-        solr_doc[key] = solr_doc[key].reject(&:blank?).flatten unless solr_doc[key].nil?
-      end
-      add_solr_value(solr_doc, 'use_license_machine', use_license.first, :string, [:stored_sortable])
-      add_solr_value(solr_doc, 'use_licenses_machine', use_license, :symbol, [:stored_searchable])
-
-      solr_doc
-    end
-
     def use_license
       use_license = []
       use_license += Array(creative_commons)
       use_license += Array(open_data_commons)
 
       use_license.reject(&:blank?)
-    end
-
-    # maintain AF < 8 indexing behavior
-    def prefix
-      ''
     end
 
     def rights
