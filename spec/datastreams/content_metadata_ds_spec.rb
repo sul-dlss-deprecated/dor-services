@@ -97,29 +97,6 @@ RSpec.describe Dor::ContentMetadataDS do
     end
   end
 
-  describe 'to_solr' do
-    before do
-      @doc = @cm.to_solr
-    end
-
-    it 'generates required fields' do
-      expected = {
-        'content_type_ssim' => 'map',
-        'content_file_mimetypes_ssim' => ['image/jp2', 'image/gif', 'image/tiff'],
-        'content_file_roles_ssim' => ['derivative'],
-        'shelved_content_file_count_itsi' => 1,
-        'resource_count_itsi' => 1,
-        'content_file_count_itsi' => 3,
-        'image_resource_count_itsi' => 1,
-        'first_shelved_image_ss' => 'gw177fc7976_05_0001.jp2',
-        'preserved_size_dbtsi' => 86_774_303,
-        'shelved_size_dbtsi' => 5_143_883
-      }
-
-      expect(@doc).to include expected
-    end
-  end
-
   describe 'set_content_type' do
     it 'changes the content type and the resource types' do
       @cm.set_content_type 'map', 'image', 'book', 'page'

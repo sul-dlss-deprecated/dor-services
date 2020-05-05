@@ -77,53 +77,6 @@ module Dor
       relationship
     end
 
-    # Terminology-based solrization is going to be painfully slow for large
-    # contentMetadata streams. Just select the relevant elements instead.
-    # TODO: Call super()?
-    def to_solr(solr_doc = {}, *_args)
-      doc = ng_xml
-      return solr_doc unless doc.root['type']
-
-      preserved_size = 0
-      shelved_size = 0
-      counts = Hash.new(0)                # default count is zero
-      resource_type_counts = Hash.new(0)  # default count is zero
-      file_roles = ::Set.new
-      mime_types = ::Set.new
-      first_shelved_image = nil
-
-      doc.xpath('contentMetadata/resource').sort { |a, b| a['sequence'].to_i <=> b['sequence'].to_i }.each do |resource|
-        counts['resource'] += 1
-        resource_type_counts[resource['type']] += 1 if resource['type']
-        resource.xpath('file').each do |file|
-          counts['content_file'] += 1
-          preserved_size += file['size'].to_i if file['preserve'] == 'yes'
-          shelved_size += file['size'].to_i if file['shelve'] == 'yes'
-          if file['shelve'] == 'yes'
-            counts['shelved_file'] += 1
-            first_shelved_image ||= file['id'] if file['id'] =~ /jp2$/
-          end
-          mime_types << file['mimetype']
-          file_roles << file['role'] if file['role']
-        end
-      end
-      solr_doc['content_type_ssim'] = doc.root['type']
-      solr_doc['content_file_mimetypes_ssim'] = mime_types.to_a
-      solr_doc['content_file_count_itsi'] = counts['content_file']
-      solr_doc['shelved_content_file_count_itsi'] = counts['shelved_file']
-      solr_doc['resource_count_itsi'] = counts['resource']
-      solr_doc['preserved_size_dbtsi'] = preserved_size # double (trie) to support very large sizes
-      solr_doc['shelved_size_dbtsi'] = shelved_size # double (trie) to support very large sizes
-      solr_doc['resource_types_ssim'] = resource_type_counts.keys if resource_type_counts.size > 0
-      solr_doc['content_file_roles_ssim'] = file_roles.to_a if file_roles.size > 0
-      resource_type_counts.each do |key, count|
-        solr_doc["#{key}_resource_count_itsi"] = count
-      end
-      # first_shelved_image is neither indexed nor multiple
-      solr_doc['first_shelved_image_ss'] = first_shelved_image unless first_shelved_image.nil?
-      solr_doc
-    end
-
     ### END: READ ONLY METHODS
     ### DATSTREAM WRITING METHODS
 
