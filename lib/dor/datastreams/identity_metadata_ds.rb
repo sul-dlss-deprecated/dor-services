@@ -160,37 +160,6 @@ module Dor
       return_hash
     end
 
-    def to_solr(solr_doc = {}, *args)
-      solr_doc = super(solr_doc, *args)
-
-      if digital_object.respond_to?(:profile)
-        digital_object.profile.each_pair do |property, value|
-          add_solr_value(solr_doc, property.underscore, value, (property =~ /Date/ ? :date : :symbol), [:stored_searchable])
-        end
-      end
-
-      if sourceId.present?
-        (name, id) = sourceId.split(/:/, 2)
-        add_solr_value(solr_doc, 'dor_id', id, :symbol, [:stored_searchable])
-        add_solr_value(solr_doc, 'identifier', sourceId, :symbol, [:stored_searchable])
-        add_solr_value(solr_doc, 'source_id', sourceId, :symbol, [])
-      end
-      otherId.compact.each do |qid|
-        # this section will solrize barcode and catkey, which live in otherId
-        (name, id) = qid.split(/:/, 2)
-        add_solr_value(solr_doc, 'dor_id', id, :symbol, [:stored_searchable])
-        add_solr_value(solr_doc, 'identifier', qid, :symbol, [:stored_searchable])
-        add_solr_value(solr_doc, "#{name}_id", id, :symbol, [])
-      end
-
-      solr_doc
-    end
-
-    # maintain AF < 8 indexing behavior
-    def prefix
-      ''
-    end
-
     private
 
     # Convert one release element into a Hash
