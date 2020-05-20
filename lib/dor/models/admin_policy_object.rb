@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
+require 'deprecation'
+
 module Dor
   class AdminPolicyObject < Dor::Abstract
+    extend Deprecation
     has_many :things, property: :is_governed_by, class_name: 'ActiveFedora::Base'
     has_object_type 'adminPolicy'
     has_metadata name: 'administrativeMetadata', type: Dor::AdministrativeMetadataDS, label: 'Administrative Metadata'
@@ -29,11 +32,13 @@ module Dor
     def agreement
       agreement_object ? agreement_object.pid : ''
     end
+    deprecation_deprecate agreement: 'use #agreement_object_id instead'
 
     def agreement=(val)
       raise ArgumentError, 'agreement must have a valid druid' if val.blank?
 
       self.agreement_object = Dor.find val.to_s, cast: true
     end
+    deprecation_deprecate :agreement= => 'use #agreement_object_id= instead'
   end
 end
