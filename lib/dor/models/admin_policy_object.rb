@@ -7,7 +7,7 @@ module Dor
     has_metadata name: 'administrativeMetadata', type: Dor::AdministrativeMetadataDS, label: 'Administrative Metadata'
     has_metadata name: 'roleMetadata',           type: Dor::RoleMetadataDS,           label: 'Role Metadata'
     has_metadata name: 'defaultObjectRights',    type: Dor::DefaultObjectRightsDS,    label: 'Default Object Rights'
-    belongs_to :agreement_object, property: :referencesAgreement, class_name: 'Dor::Item'
+    belongs_to :agreement_object, property: :referencesAgreement, class_name: 'Dor::Agreement'
 
     delegate :add_roleplayer, :purge_roles, :roles, to: :roleMetadata
     delegate :mods_title, :mods_title=, to: :descMetadata
