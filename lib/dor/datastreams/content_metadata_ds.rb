@@ -6,7 +6,7 @@ module Dor
   class ContentMetadataDS < ActiveFedora::OmDatastream
     set_terminology do |t|
       t.root        path: 'contentMetadata',          index_as: [:not_searchable]
-      t.contentType path: '/contentMetadata/@type',   index_as: [:not_searchable]
+      t.contentType path: { attribute: 'type' },      index_as: [:not_searchable]
       t.stacks      path: '/contentMetadata/@stacks', index_as: [:not_searchable]
       t.resource(index_as: [:not_searchable]) do
         t.id_       path: { attribute: 'id' }
@@ -33,6 +33,10 @@ module Dor
         end
       end
       t.shelved_file_id proxy: %i[resource shelved_file id], index_as: %i[displayable stored_searchable]
+    end
+
+    def self.xml_template
+      Nokogiri::XML.parse('<contentMetadata/>')
     end
 
     ### READ ONLY METHODS

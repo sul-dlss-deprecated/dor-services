@@ -246,4 +246,16 @@ RSpec.describe Dor::ContentMetadataDS do
       expect(relationship.first['objectId']).to eq('bb273jy3359')
     end
   end
+
+  describe '#contentType=' do
+    let(:contentMetadata) { described_class.new }
+
+    before do
+      contentMetadata.contentType = 'map'
+    end
+
+    it 'sets the value' do
+      expect(contentMetadata.to_xml).to be_equivalent_to '<contentMetadata type="map"/>'
+    end
+  end
 end
