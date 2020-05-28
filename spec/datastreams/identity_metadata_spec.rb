@@ -240,4 +240,34 @@ RSpec.describe Dor::IdentityMetadataDS do
       end
     end
   end
+
+  describe '#barcode=' do
+    let(:datastream) { described_class.new }
+
+    context 'when no barcode is set' do
+      it 'adds one' do
+        datastream.barcode = '123'
+        expect(datastream.to_xml).to be_equivalent_to '<identityMetadata><otherId name="barcode">123</otherId></identityMetadata>'
+      end
+    end
+
+    context 'when an existing barcode is set' do
+      before do
+        datastream.barcode = '321'
+      end
+
+      context 'when it is replaced' do
+        it 'replaces the previous one' do
+          expect { datastream.barcode = '123' }.to change(datastream, :barcode).from('321').to('123')
+        end
+      end
+
+      context 'when it is blank' do
+        it 'removes the barcode node' do
+          datastream.barcode = ''
+          expect(datastream.to_xml).to be_equivalent_to '<identityMetadata></identityMetadata>'
+        end
+      end
+    end
+  end
 end
