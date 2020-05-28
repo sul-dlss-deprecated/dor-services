@@ -76,7 +76,7 @@ module Dor
 
     delegate :full_title, :stanford_mods, to: :descMetadata
     delegate :rights, to: :rightsMetadata
-    delegate :catkey, :catkey=, :source_id, :source_id=,
+    delegate :catkey, :catkey=, :source_id, :source_id=, :barcode, :barcode=,
              :objectId, :objectId=, :objectCreator, :objectCreator=,
              :objectLabel, :objectLabel=, :objectType, :objectType=,
              :other_ids=, :otherId, :release_tags, :previous_catkeys,

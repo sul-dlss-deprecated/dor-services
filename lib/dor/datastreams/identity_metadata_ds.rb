@@ -8,6 +8,7 @@ module Dor
     # ids for previous and current catkeys
     CATKEY_TYPE_ID = 'catkey'
     PREVIOUS_CATKEY_TYPE_ID = 'previous_catkey'
+    BARCODE_TYPE_ID = 'barcode'
 
     set_terminology do |t|
       t.root(path: 'identityMetadata')
@@ -142,6 +143,25 @@ module Dor
     # @return [Array] previous catkey values (empty array if none found)
     def previous_catkeys
       otherId(PREVIOUS_CATKEY_TYPE_ID)
+    end
+
+    def barcode
+      otherId(BARCODE_TYPE_ID).first
+    end
+
+    # Convenience method to set the barcode
+    # @param  [String] val the new barcode
+    # @return [String] same value, as per Ruby assignment convention
+    def barcode=(val)
+      if val.blank? # if we are setting the barcode to blank, remove the node from XML
+        remove_other_Id(BARCODE_TYPE_ID)
+      elsif barcode.blank? # if there is no current barcode, then add it
+        add_other_Id(BARCODE_TYPE_ID, val)
+      else # if there is a current barcode, update the current barcode to the new value
+        update_other_Id(BARCODE_TYPE_ID, val)
+      end
+
+      val
     end
 
     # Helper method to get the release tags as a nodeset
