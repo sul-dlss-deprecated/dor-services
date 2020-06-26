@@ -45,8 +45,6 @@ module Dor
   require 'dor/utils/predicate_patch'
   require 'dor/utils/pid_utils'
 
-  require 'dor/datastreams/datastream_spec_solrizer'
-
   # datastreams
   autoload_under 'datastreams' do
     autoload :AdministrativeMetadataDS
