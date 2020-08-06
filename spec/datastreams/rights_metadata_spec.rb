@@ -240,6 +240,32 @@ RSpec.describe Dor::RightsMetadataDS do
         </rightsMetadata>
       XML
     end
+    let(:cdl_no_download_rights_xml) do
+      <<-XML
+        <rightsMetadata>
+          <copyright>
+            <human type="copyright">Courtesy of the Revs Institute for Automotive Research. All rights reserved unless otherwise indicated.</human>
+          </copyright>
+          <access type="discover">
+            <machine>
+              <world/>
+            </machine>
+          </access>
+          <access type="read">
+            <machine>
+              <cdl>
+                <group rule="no-download">stanford</group>
+              </cdl>
+            </machine>
+          </access>
+          <use>
+            <human type="useAndReproduction">Users must contact the The Revs Institute for Automotive Research for re-use and reproduction information.</human>
+            <human type="creativeCommons">Attribution Non-Commercial 3.0 Unported</human>
+            <machine type="creativeCommons">by-nc</machine>
+          </use>
+        </rightsMetadata>
+      XML
+    end
 
     it 'has the expected rights xml when read rights are set to world' do
       rights_ng_xml = Nokogiri::XML(original_rights_xml)
@@ -265,6 +291,12 @@ RSpec.describe Dor::RightsMetadataDS do
       expect(rights_ng_xml).to be_equivalent_to stanford_no_download_rights_xml
     end
 
+    it 'has the expected rights xml when read rights are set to controlled digital lending with the no-download rule' do
+      rights_ng_xml = Nokogiri::XML(original_rights_xml)
+      described_class.upd_rights_xml_for_rights_type(rights_ng_xml, 'cdl-nd')
+      expect(rights_ng_xml).to be_equivalent_to cdl_no_download_rights_xml
+    end
+
     it 'has the expected rights xml when read rights are set to location spec' do
       rights_ng_xml = Nokogiri::XML(original_rights_xml)
       described_class.upd_rights_xml_for_rights_type(rights_ng_xml, 'loc:spec')
@@ -287,6 +319,32 @@ RSpec.describe Dor::RightsMetadataDS do
       rights_ng_xml = Nokogiri::XML(original_rights_xml)
       described_class.upd_rights_xml_for_rights_type(rights_ng_xml, 'loc:unsupported')
       expect(rights_ng_xml).to be_equivalent_to loc_unsupported_rights_xml
+    end
+  end
+
+  describe 'rights' do
+    let(:rights_md) do
+      # this fixture has world read rights by default
+      instantiate_fixture('druid:cg767mn6478', Dor::Item).rightsMetadata
+    end
+
+    it 'indicates the rights as world' do
+      expect(rights_md.rights).to eq 'World'
+    end
+
+    it 'indicates the rights as controlled digital lending' do
+      rights_md.set_read_rights 'cdl-stanford-nd'
+      expect(rights_md.rights).to eq 'Controlled Digital Lending'
+    end
+
+    it 'indicates the rights as stanford' do
+      rights_md.set_read_rights 'stanford'
+      expect(rights_md.rights).to eq 'Stanford'
+    end
+
+    it 'indicates the rights as dark' do
+      rights_md.set_read_rights 'dark'
+      expect(rights_md.rights).to eq 'Dark'
     end
   end
 
