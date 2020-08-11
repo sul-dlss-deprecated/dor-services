@@ -112,7 +112,7 @@ module Dor
     def current_version_id
       current_version = current_version_node
       if current_version.nil?
-        return '1'
+        '1'
       else
         current_version[:versionId].to_s
       end
@@ -157,9 +157,9 @@ module Dor
     def current_version_closeable?
       current = current_version_node
       if current[:tag] && current.at_xpath('description')
-        return true
+        true
       else
-        return false
+        false
       end
     end
 

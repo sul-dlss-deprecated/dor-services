@@ -27,9 +27,10 @@ module Dor
       end
 
       def query_by_id(id)
-        if id.is_a?(Hash) # Single valued: { :google => 'STANFORD_0123456789' }
+        case id
+        when Hash # Single valued: { :google => 'STANFORD_0123456789' }
           id = id.collect { |*v| v.join(':') }.first
-        elsif id.is_a?(Array) # Two values: [ 'google', 'STANFORD_0123456789' ]
+        when Array # Two values: [ 'google', 'STANFORD_0123456789' ]
           id = id.join(':')
         end
         q = "{!term f=#{Solrizer.solr_name 'identifier', :symbol}}#{id}"

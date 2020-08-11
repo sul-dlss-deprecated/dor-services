@@ -10,31 +10,30 @@ def item_from_foxml(foxml, item_class = Dor::Abstract)
   result.label    = properties['label']
   result.owner_id = properties['ownerId']
   xml_streams.each do |stream|
-    begin
-      xml_content = if stream.xpath('.//foxml:xmlContent/*').any?
-                      stream.xpath('.//foxml:xmlContent/*').first
-                    elsif stream.xpath('.//foxml:binaryContent').any?
-                      Nokogiri::XML(Base64.decode64(stream.xpath('.//foxml:binaryContent').first.text))
-                    end
+    xml_content = if stream.xpath('.//foxml:xmlContent/*').any?
+                    stream.xpath('.//foxml:xmlContent/*').first
+                  elsif stream.xpath('.//foxml:binaryContent').any?
+                    Nokogiri::XML(Base64.decode64(stream.xpath('.//foxml:binaryContent').first.text))
+                  end
 
-      content = xml_content.to_xml
-      dsid = stream['ID']
-      ds = result.datastreams[dsid]
-      if ds.nil?
-        ds = ActiveFedora::OmDatastream.new(result, dsid)
-        result.add_datastream(ds)
-      end
-
-      if ds.is_a?(ActiveFedora::OmDatastream)
-        result.datastreams[dsid] = ds.class.from_xml(Nokogiri::XML(content), ds)
-      elsif ds.is_a?(ActiveFedora::RelsExtDatastream)
-        result.datastreams[dsid] = ds.class.from_xml(content, ds)
-      else
-        result.datastreams[dsid] = ds.class.from_xml(ds, stream)
-      end
-    rescue StandardError
-      # TODO: (?) rescue if 1 datastream failed
+    content = xml_content.to_xml
+    dsid = stream['ID']
+    ds = result.datastreams[dsid]
+    if ds.nil?
+      ds = ActiveFedora::OmDatastream.new(result, dsid)
+      result.add_datastream(ds)
     end
+
+    case ds
+    when ActiveFedora::OmDatastream
+      result.datastreams[dsid] = ds.class.from_xml(Nokogiri::XML(content), ds)
+    when ActiveFedora::RelsExtDatastream
+      result.datastreams[dsid] = ds.class.from_xml(content, ds)
+    else
+      result.datastreams[dsid] = ds.class.from_xml(ds, stream)
+    end
+  rescue StandardError
+    # TODO: (?) rescue if 1 datastream failed
   end
 
   # stub item and datastream repo access methods

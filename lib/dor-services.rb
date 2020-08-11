@@ -29,7 +29,7 @@ module Dor
       @logger ||= if defined?(::Rails) && ::Rails.respond_to?(:logger)
                     Rails.logger
                   else
-                    Logger.new(STDOUT)
+                    Logger.new($stdout)
                   end
     end
   end
