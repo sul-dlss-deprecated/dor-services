@@ -26,11 +26,9 @@ end
 check_config_and_boot
 
 silence_warnings do
-  begin
-    require 'pry'
-    IRB = Pry
-  rescue LoadError
-  end
+  require 'pry'
+  IRB = Pry
+rescue LoadError
 end
 WebMock.allow_net_connect!
 
