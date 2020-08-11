@@ -59,8 +59,6 @@ module Dor
       end.doc
     end
 
-    # NOTE: 8/6/2020 In the future, 'cdl' could be a valid option in the list below.  It will generate a <cdl> node
-    #  but without the no-download rule.
     RIGHTS_TYPE_CODES = {
       'world' => 'World',
       'world-nd' => 'World (no-download)',
@@ -128,12 +126,10 @@ module Dor
           machine_node.add_child(loc_node)
         elsif rights_type.start_with?('cdl')
           cdl_node = Nokogiri::XML::Node.new('cdl', rights_xml)
-          if rights_type.end_with?('-nd')
-            group_node = Nokogiri::XML::Node.new('group', cdl_node)
-            group_node.content = 'stanford'
-            group_node.set_attribute('rule', 'no-download')
-            cdl_node.add_child(group_node)
-          end
+          group_node = Nokogiri::XML::Node.new('group', cdl_node)
+          group_node.content = 'stanford'
+          group_node.set_attribute('rule', 'no-download')
+          cdl_node.add_child(group_node)
           machine_node.add_child(cdl_node)
         else # we know it is none or dark by the argument filter (first line)
           machine_node.add_child Nokogiri::XML::Node.new('none', rights_xml)

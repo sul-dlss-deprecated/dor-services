@@ -293,7 +293,7 @@ RSpec.describe Dor::RightsMetadataDS do
 
     it 'has the expected rights xml when read rights are set to controlled digital lending with the no-download rule' do
       rights_ng_xml = Nokogiri::XML(original_rights_xml)
-      described_class.upd_rights_xml_for_rights_type(rights_ng_xml, 'cdl-nd')
+      described_class.upd_rights_xml_for_rights_type(rights_ng_xml, 'cdl-stanford-nd')
       expect(rights_ng_xml).to be_equivalent_to cdl_no_download_rights_xml
     end
 
