@@ -168,8 +168,8 @@ module Dor
       current_version_node[:tag].to_s
     end
 
-    def tag_for_version(versionId)
-      nodes = ng_xml.search('//version[@versionId=\'' + versionId + '\']')
+    def tag_for_version(version_id)
+      nodes = ng_xml.search('//version[@versionId=\'' + version_id + '\']')
       if nodes.length == 1
         nodes.first['tag'].to_s
       else
@@ -178,8 +178,8 @@ module Dor
     end
 
     # @return [String] The description for the specified version, or empty string if there is no description
-    def description_for_version(versionId)
-      nodes = ng_xml.search('//version[@versionId=\'' + versionId + '\']')
+    def description_for_version(version_id)
+      nodes = ng_xml.search('//version[@versionId=\'' + version_id + '\']')
       if nodes.length == 1 && nodes.first.at_xpath('description')
         nodes.first.at_xpath('description').content.to_s
       else

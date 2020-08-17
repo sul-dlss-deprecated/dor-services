@@ -68,8 +68,8 @@ module Dor
 
     # Sets the 20% visibility release date.  Converts the date to beginning-of-day, UTC to help with Solr indexing
     # @param [Time] rd A Time object represeting the release date.  By default, it is set to now
-    def twenty_pct_release_date=(rd = Time.now.utc)
-      update_values([:twenty_pct_release_date] => rd.beginning_of_day.utc.xmlschema)
+    def twenty_pct_release_date=(release_date = Time.now.utc)
+      update_values([:twenty_pct_release_date] => release_date.beginning_of_day.utc.xmlschema)
     end
 
     # Current twentyPctVisibilityReleaseDate value

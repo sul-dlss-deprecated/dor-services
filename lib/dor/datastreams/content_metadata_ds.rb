@@ -61,11 +61,11 @@ module Dor
     # @param [String] fileId the linked druid's resource's file identifier
     # @param [String] mimetype the file's MIME type
     # @return [Nokogiri::XML::Element]
-    def generate_external_file_node(objectId, resourceId, fileId, mimetype)
+    def generate_external_file_node(object_id, resource_id, file_id, mimetype)
       externalFile = ng_xml.create_element 'externalFile'
-      externalFile[:objectId]   = objectId
-      externalFile[:resourceId] = resourceId
-      externalFile[:fileId]     = fileId
+      externalFile[:objectId]   = object_id
+      externalFile[:resourceId] = resource_id
+      externalFile[:fileId]     = file_id
       externalFile[:mimetype]   = mimetype
       externalFile
     end
@@ -74,10 +74,10 @@ module Dor
     #   <relationship type="alsoAvailableAs" objectId="druid:mn123pq4567" />
     # @param [String] objectId the linked druid
     # @return [Nokogiri::XML::Element]
-    def generate_also_available_as_node(objectId)
+    def generate_also_available_as_node(object_id)
       relationship = ng_xml.create_element 'relationship'
       relationship[:type] = 'alsoAvailableAs'
-      relationship[:objectId] = objectId
+      relationship[:objectId] = object_id
       relationship
     end
 
