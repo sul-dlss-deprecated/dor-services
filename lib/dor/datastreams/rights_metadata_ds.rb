@@ -64,6 +64,7 @@ module Dor
       'world-nd' => 'World (no-download)',
       'stanford' => 'Stanford',
       'stanford-nd' => 'Stanford (no-download)',
+      'cdl-stanford-nd' => 'Controlled Digital Lending (no-download)',
       'loc:spec' => 'Location: Special Collections',
       'loc:music' => 'Location: Music Library',
       'loc:ars' => 'Location: Archive of Recorded Sound',
@@ -98,12 +99,14 @@ module Dor
     # @param rights_xml [ng_xml] a nokogiri xml (ruby) object that represents the rights xml for a DOR object
     # @param rights_type [string] a recognized rights type code ('world', 'dark', 'loc:spec', etc)
     def self.upd_rights_xml_for_rights_type(rights_xml, rights_type)
+      # Note: The discover node is either 'none' for a dark object or 'world' for any other rights option
       label = rights_type == 'dark' ? 'none' : 'world'
       rights_xml.search('//rightsMetadata/access[@type=\'discover\']/machine').each do |node|
         node.children.remove
         node.add_child Nokogiri::XML::Node.new(label, rights_xml)
       end
 
+      # The read node varies by rights option
       rights_xml.search('//rightsMetadata/access[@type=\'read\']').each do |node|
         node.children.remove
         machine_node = Nokogiri::XML::Node.new('machine', rights_xml)
@@ -121,6 +124,13 @@ module Dor
           loc_node = Nokogiri::XML::Node.new('location', rights_xml)
           loc_node.content = rights_type.split(':').last
           machine_node.add_child(loc_node)
+        elsif rights_type.start_with?('cdl')
+          cdl_node = Nokogiri::XML::Node.new('cdl', rights_xml)
+          group_node = Nokogiri::XML::Node.new('group', cdl_node)
+          group_node.content = 'stanford'
+          group_node.set_attribute('rule', 'no-download')
+          cdl_node.add_child(group_node)
+          machine_node.add_child(cdl_node)
         else # we know it is none or dark by the argument filter (first line)
           machine_node.add_child Nokogiri::XML::Node.new('none', rights_xml)
         end
@@ -158,6 +168,8 @@ module Dor
         'Stanford'
       elsif xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length == 1
         'World'
+      elsif xml.search('//rightsMetadata/access[@type=\'read\']/machine/cdl').length == 1
+        'Controlled Digital Lending'
       elsif xml.search('//rightsMetadata/access[@type=\'discover\']/machine/none').length == 1
         'Dark'
       else
