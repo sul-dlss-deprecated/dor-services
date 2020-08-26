@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'solrizer', '~> 3.0'
 
   # Stanford dependencies
-  s.add_dependency 'dor-rights-auth', '~> 1.0', '>= 1.2.0'
+  s.add_dependency 'dor-rights-auth', '~> 1.0', '>= 1.5.0'
   s.add_dependency 'stanford-mods', '>= 2.3.1'
   s.add_dependency 'stanford-mods-normalizer', '~> 0.1'
 
