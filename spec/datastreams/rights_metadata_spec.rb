@@ -332,9 +332,9 @@ RSpec.describe Dor::RightsMetadataDS do
       expect(rights_md.rights).to eq 'World'
     end
 
-    it 'indicates the rights as controlled digital lending' do
+    it 'indicates the rights as None for controlled digital lending (which will have a separate attribute to indicate it is cdl)' do
       rights_md.set_read_rights 'cdl-stanford-nd'
-      expect(rights_md.rights).to eq 'Controlled Digital Lending'
+      expect(rights_md.rights).to eq 'None'
     end
 
     it 'indicates the rights as stanford' do
