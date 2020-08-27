@@ -168,8 +168,6 @@ module Dor
         'Stanford'
       elsif xml.search('//rightsMetadata/access[@type=\'read\']/machine/world').length == 1
         'World'
-      elsif xml.search('//rightsMetadata/access[@type=\'read\']/machine/cdl').length == 1
-        'Controlled Digital Lending'
       elsif xml.search('//rightsMetadata/access[@type=\'discover\']/machine/none').length == 1
         'Dark'
       else
