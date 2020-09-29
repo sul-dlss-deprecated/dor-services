@@ -7,6 +7,72 @@ RSpec.describe Dor::RightsMetadataDS do
     expect { described_class.new }.not_to raise_error
   end
 
+  describe '#copyright=' do
+    subject(:update) { ds.copyright = 'All rights reserved' }
+
+    let(:ds) { described_class.from_xml(before_xml) }
+
+    context 'when no copyright node exists in the xml' do
+      let(:before_xml) do
+        <<-XML
+          <rightsMetadata>
+          </rightsMetadata>
+        XML
+      end
+
+      let(:result_xml) do
+        <<-XML
+          <rightsMetadata>
+            <copyright>
+              <human>All rights reserved</human>
+            </copyright>
+          </rightsMetadata>
+        XML
+      end
+
+      before do
+        update
+      end
+
+      it 'adds the nodes to the xml' do
+        expect(ds.ng_xml).to be_equivalent_to(result_xml)
+      end
+    end
+  end
+
+  describe '#use_statement=' do
+    subject(:update) { ds.use_statement = 'Must be used at high volume, preferably in a residential area' }
+
+    let(:ds) { described_class.from_xml(before_xml) }
+
+    context 'when no use statement node exists in the xml' do
+      let(:before_xml) do
+        <<-XML
+          <rightsMetadata>
+          </rightsMetadata>
+        XML
+      end
+
+      let(:result_xml) do
+        <<-XML
+          <rightsMetadata>
+            <use>
+              <human type="useAndReproduction">Must be used at high volume, preferably in a residential area</human>
+            </use>
+          </rightsMetadata>
+        XML
+      end
+
+      before do
+        update
+      end
+
+      it 'adds the nodes to the xml' do
+        expect(ds.ng_xml).to be_equivalent_to(result_xml)
+      end
+    end
+  end
+
   describe '#embargo_release_date' do
     subject(:embargo_release_date) { ds.embargo_release_date }
 
