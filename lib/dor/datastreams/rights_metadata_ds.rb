@@ -12,11 +12,16 @@ module Dor
 
     set_terminology do |t|
       t.root path: 'rightsMetadata', index_as: [:not_searchable]
-      t.copyright path: 'copyright/human', index_as: [:symbol]
-      t.use_statement path: '/use/human[@type=\'useAndReproduction\']', index_as: [:symbol]
+      t.copyright proxy: %i[_copyright human], index_as: [:symbol]
+      t.use_statement proxy: %i[use use_and_reproduction], index_as: [:symbol]
 
       t.use do
         t.machine
+        t.human
+        t.use_and_reproduction path: 'human', attributes: { type: 'useAndReproduction' }
+      end
+
+      t._copyright path: 'copyright' do
         t.human
       end
 
